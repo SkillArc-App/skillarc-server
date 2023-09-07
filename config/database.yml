@@ -95,6 +95,5 @@ staging:
 #
 production:
   <<: *default
-  database: blocktrain_rails_production
-  username: blocktrain_rails
-  password: <%= ENV["BLOCKTRAIN_RAILS_DATABASE_PASSWORD"] %>
+  database: prod
+  port: 5432

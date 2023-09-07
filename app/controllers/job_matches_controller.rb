@@ -4,8 +4,12 @@ class JobMatchesController < ApplicationController
   end
 
   def show
-    jm = JobMatch::JobMatch.new(profile_id: params[:id])
+    begin
+      jm = JobMatch::JobMatch.new(profile_id: params[:id])
 
-    render json: {jobs: jm.jobs}
+      render json: {jobs: jm.jobs}
+    rescue
+      render json: {error: "Profile not found"}
+    end
   end
 end

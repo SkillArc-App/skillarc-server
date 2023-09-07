@@ -13,7 +13,26 @@ class JobMatchesController < ApplicationController
 
       jm = JobMatch::JobMatch.new(profile_id: profile.id)
 
-      render json: {jobs: jm.jobs}
+      matched_jobs = jm.jobs
+      # matched_jobs = jm.jobs.map do |job|
+      #   {
+      #     id: job[:id],
+      #     employerId: job[:employerId],
+      #     benefitsDescription: job[:benefitsDescription],
+      #     responsibilitiesDescription: job[:responsibilitiesDescription],
+      #     employmentTitle: job[:employmentTitle],
+      #     location: job[:location],
+      #     employmentType: job[:employmentType],
+      #     hideJob: job[:hideJob],
+      #     schedule: job[:schedule],
+      #     workDays: job[:workDays],
+      #     requirementsDescription: job[:requirementsDescription],
+      #     industry: job[:industry],
+      #     percent_match: job[:percent_match]
+      #   }
+      # end
+
+      render json: { matchedJobs: matched_jobs }
     rescue
       render json: {error: "Profile not found"}
     end

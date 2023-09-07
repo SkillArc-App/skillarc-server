@@ -10,7 +10,32 @@ module JobMatch
 
     def jobs
       @jobs ||= Job.all.map do |job|
-        { id: job.id, percent_match: match_score(job) }
+        # binding.pry
+        # employer = job.employer
+        # binding.pry
+
+        {
+          id: job.id,
+          employerId: job.employerId,
+          employer: {
+            id: job.employer.id,
+            name: job.employer.name,
+            location: job.employer.location,
+            bio: job.employer.bio,
+            logoUrl: job.employer.logoUrl,
+          },
+          employmentTitle: job.employmentTitle,
+          industry: job.industry,
+          benefitsDescription: job.benefitsDescription,
+          responsibilitiesDescription: job.responsibilitiesDescription,
+          location: job.location,
+          employmentType: job.employmentType,
+          hideJob: job.hideJob,
+          schedule: job.schedule,
+          workDays: job.workDays,
+          requirementsDescription: job.requirementsDescription,
+          percent_match: match_score(job)
+        }
       end.sort_by { |job| job[:percent_match] }.reverse
     end
 

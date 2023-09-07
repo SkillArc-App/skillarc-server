@@ -1,5 +1,6 @@
 class JobMatchesController < ApplicationController
   def index
+    render html: "Hello, world!"
   end
 
   def show

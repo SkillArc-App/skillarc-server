@@ -8,7 +8,10 @@ class JobMatchesController < ApplicationController
 
   def show
     begin
-      jm = JobMatch::JobMatch.new(profile_id: params[:id])
+      user_id = params[:id]
+      profile = Profile.where(userId: user_id).first
+
+      jm = JobMatch::JobMatch.new(profile_id: profile.id)
 
       render json: {jobs: jm.jobs}
     rescue

@@ -10,10 +10,6 @@ module JobMatch
 
     def jobs
       @jobs ||= Job.all.map do |job|
-        # binding.pry
-        # employer = job.employer
-        # binding.pry
-
         {
           id: job.id,
           employerId: job.employerId,

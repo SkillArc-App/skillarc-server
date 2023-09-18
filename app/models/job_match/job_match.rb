@@ -10,8 +10,18 @@ module JobMatch
 
     def jobs
       @jobs ||= Job.all.map do |job|
+        career_paths = job.career_paths.map do |career_path|
+          {
+            id: career_path.id,
+            title: career_path.title,
+            upperLimit: career_path.upperLimit,
+            lowerLimit: career_path.lowerLimit,
+            order: career_path.order,
+          }
+        end
         {
           id: job.id,
+          careerPaths: career_paths,
           employerId: job.employerId,
           employer: {
             id: job.employer.id,

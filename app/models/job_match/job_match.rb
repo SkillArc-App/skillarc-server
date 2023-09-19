@@ -19,6 +19,7 @@ module JobMatch
             order: career_path.order,
           }
         end
+
         {
           id: job.id,
           careerPaths: career_paths,

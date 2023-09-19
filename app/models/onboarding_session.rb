@@ -2,6 +2,10 @@ class OnboardingSession < ApplicationRecord
   self.table_name = "OnboardingSession"
 
   def industry_interests
-    responses["opportunityInterests"]["response"].map(&:downcase)
+    begin
+      responses["opportunityInterests"]["response"].map(&:downcase)
+    rescue
+      ['construction', 'manufacturing', 'healthcare']
+    end
   end
 end

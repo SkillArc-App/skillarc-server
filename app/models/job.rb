@@ -3,4 +3,6 @@ class Job < ApplicationRecord
 
   belongs_to :employer, foreign_key: "employerId"
   has_many :career_paths, foreign_key: "jobId"
+
+  scope :shown, -> { where(hideJob: false) }
 end

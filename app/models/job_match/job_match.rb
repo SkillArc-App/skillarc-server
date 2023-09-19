@@ -9,7 +9,7 @@ module JobMatch
     end
 
     def jobs
-      @jobs ||= Job.all.map do |job|
+      @jobs ||= Job.shown.map do |job|
         career_paths = job.career_paths.map do |career_path|
           {
             id: career_path.id,

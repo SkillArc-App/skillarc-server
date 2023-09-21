@@ -18,7 +18,7 @@ module JobMatch
             lowerLimit: career_path.lowerLimit,
             order: career_path.order,
           }
-        end.order(:order)
+        end.sort_by { |career_path| career_path[:order] }
 
         {
           id: job.id,

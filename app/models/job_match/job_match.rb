@@ -20,6 +20,13 @@ module JobMatch
           }
         end.sort_by { |career_path| career_path[:order] }
 
+        job_tags = job.job_tags.map do |job_tag| 
+          {
+            id: job_tag.id,
+            tag: { name: job_tag.tag.name },
+          }
+        end
+
         {
           id: job.id,
           careerPaths: career_paths,
@@ -39,6 +46,7 @@ module JobMatch
           employmentType: job.employmentType,
           hideJob: job.hideJob,
           schedule: job.schedule,
+          jobTag: job_tags,
           workDays: job.workDays,
           requirementsDescription: job.requirementsDescription,
           percent_match: match_score(job)

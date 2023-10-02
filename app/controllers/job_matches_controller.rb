@@ -9,7 +9,7 @@ class JobMatchesController < ApplicationController
   def show
     begin
       user_id = params[:id]
-      profile = Profile.where(userId: user_id).first
+      profile = Profile.where(user_id: user_id).first
 
       jm = JobMatch::JobMatch.new(profile_id: profile.id)
 

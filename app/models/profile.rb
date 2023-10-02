@@ -5,8 +5,6 @@ class Profile < ApplicationRecord
   belongs_to :onboarding_session, foreign_key: "onboardingSessionId"
 
   def onboarding_session
-    user_id = userId
-
-    OnboardingSession.where(userId: user_id).first
+    OnboardingSession.where(user_id: user_id).first
   end
 end

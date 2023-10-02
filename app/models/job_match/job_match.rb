@@ -10,15 +10,15 @@ module JobMatch
 
     def jobs
       @jobs ||= Job.shown.map do |job|
-        career_paths = job.career_paths.map do |career_path|
-          {
-            id: career_path.id,
-            title: career_path.title,
-            upperLimit: career_path.upperLimit,
-            lowerLimit: career_path.lowerLimit,
-            order: career_path.order,
-          }
-        end.sort_by { |career_path| career_path[:order] }
+        # career_paths = job.career_paths.map do |career_path|
+        #   {
+        #     id: career_path.id,
+        #     title: career_path.title,
+        #     upperLimit: career_path.upperLimit,
+        #     lowerLimit: career_path.lowerLimit,
+        #     order: career_path.order,
+        #   }
+        # end.sort_by { |career_path| career_path[:order] }
 
         job_tags = job.job_tags.map do |job_tag| 
           {
@@ -29,26 +29,20 @@ module JobMatch
 
         {
           id: job.id,
-          careerPaths: career_paths,
-          employerId: job.employerId,
-          employer: {
-            id: job.employer.id,
-            name: job.employer.name,
-            location: job.employer.location,
-            bio: job.employer.bio,
-            logoUrl: job.employer.logoUrl,
-          },
-          employmentTitle: job.employmentTitle,
+          careerPaths: job.career_paths.sort_by { |cp| cp[:order] },
+          employerId: job.employer_id,
+          employer: job.employer,
+          employment_title: job.employment_title,
           industry: job.industry,
-          benefitsDescription: job.benefitsDescription,
-          responsibilitiesDescription: job.responsibilitiesDescription,
+          benefitsDescription: job.benefits_description,
+          responsibilitiesDescription: job.responsibilities_description,
           location: job.location,
-          employmentType: job.employmentType,
-          hideJob: job.hideJob,
+          employmentType: job.employment_type,
+          hideJob: job.hide_job,
           schedule: job.schedule,
           jobTag: job_tags,
-          workDays: job.workDays,
-          requirementsDescription: job.requirementsDescription,
+          workDays: job.work_days,
+          requirementsDescription: job.requirements_description,
           percent_match: match_score(job)
         }
       end.sort_by { |job| job[:percent_match] }.reverse

@@ -1,6 +1,4 @@
 class Job < ApplicationRecord
-  self.table_name = "Job"
-
   belongs_to :employer, foreign_key: "employer_id"
   has_many :career_paths, foreign_key: "job_id"
   # has many tags through job tag join table

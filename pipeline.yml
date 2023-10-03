@@ -1,7 +1,9 @@
 steps:
   - command: "bundle install"
     name: "Install dependencies"
+  - wait
   - command: "bundle exec rake db:migrate"
     name: "Migrate database"
+  - wait
   - command: "bundle exec rspec"
     name: "Run tests"

@@ -8,7 +8,7 @@ class ProfilesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-    ps = Profile.all.map do |p|
+    ps = Profile.all.order(created_at: :desc).map do |p|
       {
         **p.as_json,
         user: {

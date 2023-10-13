@@ -11,4 +11,18 @@ class Job < ApplicationRecord
   has_many :job_tags
 
   scope :shown, -> { where(hide_job: false) }
+
+  def self.with_everything
+    includes(
+      :employer,
+      :learned_skills,
+      :desired_skills,
+      :desired_certifications,
+      :job_photos,
+      :testimonials,
+      :job_tags,
+      :career_paths,
+      :applicants
+    )
+  end
 end

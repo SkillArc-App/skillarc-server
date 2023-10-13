@@ -1,0 +1,2 @@
+class JobPhoto < ApplicationRecord
+end

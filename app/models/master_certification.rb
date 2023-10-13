@@ -1,0 +1,2 @@
+class MasterCertification < ApplicationRecord
+end

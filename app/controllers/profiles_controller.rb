@@ -8,7 +8,9 @@ class ProfilesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-    ps = Profile.all.order(created_at: :desc).map do |p|
+    # Profile all with nested include of user and seeker_training_providers
+
+    ps = Profile.includes(user: {seeker_training_providers: [:training_provider, :program]}).all.order(created_at: :desc).map do |p|
       {
         **p.as_json,
         user: {

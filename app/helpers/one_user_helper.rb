@@ -1,0 +1,2 @@
+module OneUserHelper
+end

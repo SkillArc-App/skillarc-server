@@ -1,0 +1,2 @@
+module MasterCertificationsHelper
+end

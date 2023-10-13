@@ -1,6 +1,6 @@
 module JobMatch
   class JobMatch
-    attr_reader :profile, :jobs
+    attr_reader :profile
 
     def initialize(profile_id:)
       profile_profile = Profile.find(profile_id)
@@ -10,20 +10,10 @@ module JobMatch
 
     def jobs
       @jobs ||= Job.shown.map do |job|
-        # career_paths = job.career_paths.map do |career_path|
-        #   {
-        #     id: career_path.id,
-        #     title: career_path.title,
-        #     upperLimit: career_path.upperLimit,
-        #     lowerLimit: career_path.lowerLimit,
-        #     order: career_path.order,
-        #   }
-        # end.sort_by { |career_path| career_path[:order] }
-
-        job_tags = job.job_tags.map do |job_tag| 
+        job_tags = job.job_tags.map do |job_tag|
           {
             id: job_tag.id,
-            tag: { name: job_tag.tag.name },
+            tag: { name: job_tag.tag.name }
           }
         end
 

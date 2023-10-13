@@ -1,8 +1,23 @@
 class Profile < ApplicationRecord
-  belongs_to :user, foreign_key: "userId"
-  belongs_to :onboarding_session, foreign_key: "onboardingSessionId"
+  belongs_to :user
+
+  has_many :applicants
+  has_many :education_experiences
+  has_many :other_experiences
+  has_many :personal_experiences
+  has_many :profile_skills
+  has_many :references, class_name: "Reference", foreign_key: "seeker_profile_id"
+  has_many :stories
 
   def onboarding_session
-    OnboardingSession.where(user_id: user_id).first
+    OnboardingSession.where(user_id:).first
+  end
+
+  def hiring_status
+    return 'Interviewing' if applicants.any? { |a| a.status.status == 'interviewing' }
+
+    return 'Applying to Jobs' if applicants.count > 0
+
+    'Profile Complete'
   end
 end

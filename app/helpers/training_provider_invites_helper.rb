@@ -1,0 +1,2 @@
+module TrainingProviderInvitesHelper
+end

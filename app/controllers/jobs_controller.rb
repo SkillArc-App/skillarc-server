@@ -74,6 +74,7 @@ class JobsController < ApplicationController
     jobs = Job.includes(
       :applicants,
       :career_paths,
+      :employer,
       :job_photos,
       :testimonials,
       job_tags: :tag,
@@ -121,7 +122,7 @@ class JobsController < ApplicationController
           tag: jt.tag.as_json
         }
       end.as_json,
-      numberOfApplicants: j.applicants.count,
+      numberOfApplicants: j.applicants.length,
       testimonials: j.testimonials.as_json
     }
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_09_173706) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_16_174504) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -454,6 +454,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_09_173706) do
     t.string "sub"
     t.index ["email"], name: "User_email_key", unique: true
     t.index ["onboarding_session_id"], name: "User_onboarding_session_id_key", unique: true
+    t.index ["sub"], name: "index_users_on_sub", unique: true
   end
 
   create_table "verification_tokens", id: false, force: :cascade do |t|

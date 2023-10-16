@@ -75,9 +75,9 @@ class JobsController < ApplicationController
       :applicants,
       :career_paths,
       :job_photos,
-      :desired_skills,
       :testimonials,
       job_tags: :tag,
+      desired_skills: :master_skill,
       learned_skills: :master_skill,
       desired_certifications: :master_certification
     ).all

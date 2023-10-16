@@ -71,7 +71,18 @@ class JobsController < ApplicationController
   end
 
   def index
-    render json: Job.all.with_everything.map { |j| serialize_job(j) }
+    jobs = Job.includes(
+      :applicants,
+      :career_paths,
+      :job_photos,
+      :desired_skills,
+      :testimonials,
+      job_tags: :tag,
+      learned_skills: :master_skill,
+      desired_certifications: :master_certification
+    ).all
+
+    render json: jobs.map { |j| serialize_job(j) }
   end
 
   def show

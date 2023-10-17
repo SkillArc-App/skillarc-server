@@ -6,7 +6,20 @@ class StudentsController < ApplicationController
   before_action :training_provider_authorize
 
   def index
-    training_provider = training_provider_profile.training_provider
+    training_provider = TrainingProvider.includes(
+      programs: {
+        seeker_invites: {},
+        students: {
+          program_statuses: {},
+          user: {
+            profile: {
+              applicants: :applicant_statuses,
+              references: {}
+            }
+          }
+        }
+      }
+    ).find_by(id: training_provider_profile.training_provider_id)
 
     programs = training_provider.programs.map do |program|
       students = program.students.map do |stp|

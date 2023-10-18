@@ -2,7 +2,6 @@ class OneUserController < ApplicationController
   include Secured
   include Cereal
 
-  skip_before_action :verify_authenticity_token
   before_action :authorize, only: [:index]
 
   def index

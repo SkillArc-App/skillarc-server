@@ -5,7 +5,6 @@ class ProfilesController < ApplicationController
 
   before_action :authorize
   before_action :admin_authorize, only: [:index]
-  skip_before_action :verify_authenticity_token
 
   def index
     # Profile all with nested include of user and seeker_training_providers

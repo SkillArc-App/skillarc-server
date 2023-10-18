@@ -4,7 +4,6 @@ class EmployersController < ApplicationController
 
   before_action :authorize
   before_action :admin_authorize
-  skip_before_action :verify_authenticity_token
 
   def create
     employer = Employer.create!(**params.require(:employer).permit(:name, :bio, :logo_url, :location), id: SecureRandom.uuid)

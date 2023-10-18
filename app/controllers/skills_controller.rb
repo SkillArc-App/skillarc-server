@@ -2,7 +2,6 @@ class SkillsController < ApplicationController
   include Secured
 
   before_action :authorize
-  skip_before_action :verify_authenticity_token
 
   def create
     skill = ProfileSkill.create!(

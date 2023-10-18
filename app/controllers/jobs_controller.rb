@@ -4,7 +4,6 @@ class JobsController < ApplicationController
 
   before_action :authorize
   before_action :admin_authorize, only: [:index, :create, :update]
-  skip_before_action :verify_authenticity_token
 
   def apply
     job = Job.find(params[:job_id])

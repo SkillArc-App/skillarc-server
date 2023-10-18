@@ -3,7 +3,6 @@ class OnboardingSessionsController < ApplicationController
   include Cereal
 
   before_action :authorize
-  skip_before_action :verify_authenticity_token
 
   def index
     os = OnboardingSession.where(user_id: current_user.id).first

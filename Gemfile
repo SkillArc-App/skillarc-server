@@ -57,6 +57,8 @@ gem "redis"
 gem "resque"
 gem "rubocop", require: false
 gem 'scout_apm'
+gem "sentry-rails"
+gem "sentry-ruby"
 gem "strong_migrations"
 
 group :development, :test do

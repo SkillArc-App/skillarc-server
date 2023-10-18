@@ -95,6 +95,7 @@ class JobsController < ApplicationController
   def serialize_job(j)
     {
       **j.as_json,
+      industry: j.industry || [],
       employer: j.employer.as_json,
       learnedSkills: j.learned_skills.map do |ls|
         {

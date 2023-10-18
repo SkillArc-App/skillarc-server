@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_16_174504) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_18_002925) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -131,6 +131,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_16_174504) do
     t.text "logo_url"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
+  end
+
+  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "aggregate_id", null: false
+    t.string "event_type", null: false
+    t.jsonb "data", default: {}, null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.integer "version", default: 0, null: false
+    t.datetime "occurred_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["aggregate_id", "version"], name: "index_events_on_aggregate_id_and_version", unique: true
+    t.index ["event_type"], name: "index_events_on_event_type"
   end
 
   create_table "job_interactions", id: :text, force: :cascade do |t|

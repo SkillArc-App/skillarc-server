@@ -1,7 +1,10 @@
 require "rails_helper"
 
 RSpec.describe JobMatch::JobMatch do
-  subject { described_class.new(profile_id: "047aebd1-f3af-41d0-b96f-1af8e7344ba8") }
+  subject { described_class.new(profile_id: profile.id) }
+
+  let!(:profile) { create(:profile) }
+  let!(:job) { create(:job) }
 
   it "initalizes with a profile" do
     expect(subject.profile).not_to be_nil
@@ -13,6 +16,6 @@ RSpec.describe JobMatch::JobMatch do
   end
 
   it "returns a list of jobs with a percent match" do
-    expect(subject.jobs.first[:percent_match]).to eq(0)
+    expect(subject.jobs.first[:percent_match]).to eq(1)
   end
 end

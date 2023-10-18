@@ -15,13 +15,15 @@ module Secured
     message: 'Bad credentials'
   }.freeze
 
-  def authorize(auth_client: Auth0Client, user_finder: UserFinder.new)
+  def authorize(user_finder: UserFinder.new)
     token = token_from_request
 
-    return if performed?
+    return if performed? 
+
+    auth_client = AuthClient::Factory.build
 
     validation_response = auth_client.validate_token(token)
-    user = user_finder.find_or_create(validation_response.decoded_token, token)
+    user = user_finder.find_or_create(validation_response.decoded_token, token, auth_client: auth_client)
 
     @current_user = user
 
@@ -33,6 +35,8 @@ module Secured
   private
 
   def token_from_request
+    return if ENV['MOCK_AUTH'] == 'true'
+
     authorization_header_elements = request.headers['Authorization']&.split
 
     render json: REQUIRES_AUTHENTICATION, status: :unauthorized and return unless authorization_header_elements

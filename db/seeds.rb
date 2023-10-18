@@ -606,7 +606,8 @@ trained_seeker = Profile.create!(
     name: 'Tom Hanks',
     first_name: 'Tom',
     last_name: 'Hanks',
-    email: 'tom@blocktrainapp.com'
+    email: 'tom@blocktrainapp.com',
+    sub: 'tomsub'
   )
 )
 
@@ -619,7 +620,8 @@ tim_allen = Profile.create!(
     name: 'Tim Allen',
     first_name: 'Tim',
     last_name: 'Allen',
-    email: 'tim@blocktrainapp.com'
+    email: 'tim@blocktrainapp.com',
+    sub: 'timsub'
   )
 )
 
@@ -632,7 +634,8 @@ Profile.create!(
     name: 'Rita Wilson',
     first_name: 'Rita',
     last_name: 'Wilson',
-    email: 'rita@blocktrainapp.com'
+    email: 'rita@blocktrainapp.com',
+    sub: 'ritasub'
   )
 )
 
@@ -655,7 +658,8 @@ megan = User.create!(
   first_name: 'Meghan',
   last_name: 'Trainer',
   email: 'meg@blocktrainapp.com',
-  user_type: 'TRAINING_PROVIDER'
+  user_type: 'TRAINING_PROVIDER',
+  sub: 'megsub'
 )
 
 bill = User.create!(
@@ -664,7 +668,8 @@ bill = User.create!(
   first_name: 'Bill',
   last_name: 'Traynor',
   email: 'bill@blocktrainapp.com',
-  user_type: 'TRAINING_PROVIDER'
+  user_type: 'TRAINING_PROVIDER',
+  sub: 'billsub'
 )
 
 User.create!(
@@ -672,7 +677,8 @@ User.create!(
   name: 'Jake Not-Onboard',
   first_name: 'Jake',
   last_name: 'Not-Onboard',
-  email: 'jake@statefarm.com'
+  email: 'jake@statefarm.com',
+  sub: 'jakesub'
 )
 
 admin = Role.create!(id: SecureRandom.uuid, name: "admin")

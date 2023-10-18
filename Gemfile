@@ -53,6 +53,8 @@ gem 'omniauth-rails_csrf_protection'
 
 gem "rack-cors"
 
+gem "redis"
+gem "resque"
 gem "rubocop", require: false
 gem 'scout_apm'
 gem "strong_migrations"

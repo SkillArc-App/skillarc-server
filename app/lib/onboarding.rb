@@ -9,7 +9,8 @@ class Onboarding
     if (name_response = responses.dig("name", "response"))
       user.update!(
         first_name: name_response["firstName"],
-        last_name: name_response["lastName"]
+        last_name: name_response["lastName"],
+        phone_number: name_response["phoneNumber"]
       )
 
       unless user.profile

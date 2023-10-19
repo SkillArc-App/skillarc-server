@@ -36,6 +36,7 @@ RSpec.describe Onboarding do
 
         expect(user.first_name).to eq("John")
         expect(user.last_name).to eq("Doe")
+        expect(user.phone_number).to eq("1234567890")
       end
 
       it "updates the onboarding session responses" do

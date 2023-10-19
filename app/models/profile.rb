@@ -16,7 +16,7 @@ class Profile < ApplicationRecord
   def hiring_status
     return 'Interviewing' if applicants.any? { |a| a.status.status == 'interviewing' }
 
-    return 'Applying to Jobs' if applicants.length > 0
+    return 'Applying to Jobs' unless applicants.empty?
 
     'Profile Complete'
   end

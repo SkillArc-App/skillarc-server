@@ -3,11 +3,7 @@ module AuthClient
     Error = Struct.new(:message, :status)
     Response = Struct.new(:decoded_token, :error)
 
-    def self.validate_token(token)
-      email = ENV['MOCK_USER_EMAIL']
-
-      u = User.find_by(email: email)
-
+    def self.validate_token(_token)
       Response.new(
         [{
           'sub' => "email|#{ENV['MOCK_USER_SUB']}"
@@ -16,7 +12,7 @@ module AuthClient
       )
     end
 
-    def self.get_user_info(token)
+    def self.get_user_info(_token)
       {
         'email' => ENV['MOCK_USER_EMAIL'],
         'email_verified' => nil,

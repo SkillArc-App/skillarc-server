@@ -2,7 +2,7 @@ class UserFinder
   def find_or_create(decoded_token, token, auth_client:)
     _, sub = decoded_token[0]['sub'].split('|')
 
-    u = User.find_by(sub: sub)
+    u = User.find_by(sub:)
 
     return u if u
 
@@ -14,7 +14,7 @@ class UserFinder
       email_verified: info['email_verified'],
       image: info['picture'],
       name: info['nickname'],
-      sub: sub,
+      sub:
     )
 
     Resque.enqueue(

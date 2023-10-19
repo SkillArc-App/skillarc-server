@@ -12,7 +12,7 @@ class Onboarding
         last_name: name_response["lastName"]
       )
 
-      if (!user.profile)
+      unless user.profile
         Profile.create!(
           id: SecureRandom.uuid,
           user_id: user.id
@@ -179,44 +179,41 @@ class Onboarding
       end
     end
 
-    onboarding_session.update!(responses: responses)
+    onboarding_session.update!(responses:)
 
-    if (onboarding_complete?(responses.dig("reliability", "response"), responses) && !onboarding_session.completed_at)
-      completed_at = Time.now
+    return unless onboarding_complete?(responses.dig("reliability", "response"), responses) && !onboarding_session.completed_at
 
-      onboarding_session.update!(completed_at: completed_at)
+    completed_at = Time.now
 
-      Resque.enqueue(
-        CreateEventJob,
-        aggregate_id: user.id,
-        event_type: "onboarding_completed",
-        data: {
-          responses: responses
-        },
-        metadata: {},
-        occurred_at: completed_at
-      )
-    end
+    onboarding_session.update!(completed_at:)
+
+    Resque.enqueue(
+      CreateEventJob,
+      aggregate_id: user.id,
+      event_type: "onboarding_completed",
+      data: {
+        responses:
+      },
+      metadata: {},
+      occurred_at: completed_at
+    )
   end
 
   private
 
   def onboarding_complete?(reliability, responses)
     return false unless reliability
-    return false unless (responses.dig("opportunityInterests", "response")&.length || 0) > 0
-  
+    return false unless (responses.dig("opportunityInterests", "response")&.length || 0).positive?
+
     reliability.all? do |r|
-      if (r == "I've had or currently have a job" && ((responses.dig("experience", "response")&.length || 0) > 0))
+      if r == "I've had or currently have a job" && (responses.dig("experience", "response")&.length || 0).positive?
         true
-      elsif (r == 'I have a High School Diploma / GED' && ((responses.dig("education", "response")&.length) > 0))
+      elsif r == 'I have a High School Diploma / GED' && responses.dig("education", "response")&.length&.positive?
         true
-      elsif (
-        r == "I've attended a Training Program" && ((responses.dig("trainingProvider", "response")&.length || 0) > 0)
-      )
+      elsif r == "I've attended a Training Program" && (responses.dig("trainingProvider", "response")&.length || 0).positive?
         true
-      elsif (
-        r == "I have other experience I'd like to share" && ((responses.dig("other", "response")&.length || 0) > 0)
-      )
+      elsif r == "I have other experience I'd like to share" && (responses.dig("other", "response")&.length || 0).positive?
+
         true
       else
         false

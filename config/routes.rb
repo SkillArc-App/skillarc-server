@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   put 'employers/applicants/:id' => 'employers/applicants#update'
   resources :employers
 
-  mount Resque::Server.new, :at => "/resque"
+  mount Resque::Server.new, at: "/resque"
 
   resources :job_matches
   resources :master_certifications

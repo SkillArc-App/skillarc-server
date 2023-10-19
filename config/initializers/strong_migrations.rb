@@ -1,5 +1,7 @@
 # Mark existing migrations as safe
+# rubocop:disable Style/NumericLiterals
 StrongMigrations.start_after = 20231013160229
+# rubocop:enable Style/NumericLiterals
 
 # Set timeouts for migrations
 # If you use PgBouncer in transaction mode, delete these lines and set timeouts on the database user

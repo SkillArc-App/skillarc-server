@@ -9,7 +9,7 @@ class ProfilesController < ApplicationController
   def index
     # Profile all with nested include of user and seeker_training_providers
 
-    ps = Profile.includes(user: {seeker_training_providers: [:training_provider, :program]}).all.order(created_at: :desc).map do |p|
+    ps = Profile.includes(user: { seeker_training_providers: [:training_provider, :program] }).all.order(created_at: :desc).map do |p|
       {
         **p.as_json,
         user: {

@@ -74,7 +74,7 @@ class OnboardingSessionsController < ApplicationController
 
     responses = filtered[:responses]
 
-    Onboarding.new(onboarding_session: os).update(responses: responses)
+    Onboarding.new(onboarding_session: os).update(responses:)
 
     render json: deep_transform_keys(os.as_json) { |key| to_camel_case(key) }
   end

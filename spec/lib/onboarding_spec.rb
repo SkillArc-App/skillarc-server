@@ -1,5 +1,6 @@
 require 'rails_helper'
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe Onboarding do
   subject { described_class.new(onboarding_session:) }
 
@@ -8,7 +9,6 @@ RSpec.describe Onboarding do
   end
   let(:user) { create(:user) }
   let(:training_provider) { create(:training_provider) }
-
 
   it "initalizes with an onboarding session" do
     expect(subject.onboarding_session).not_to be_nil
@@ -64,7 +64,6 @@ RSpec.describe Onboarding do
     context "when the responses include experience" do
       let(:responses) do
         {
-        
           "name" => {
             "response" => {
               "firstName" => "John",
@@ -240,8 +239,8 @@ RSpec.describe Onboarding do
         expect { subject }.to change { SeekerTrainingProvider.count }.by(1)
 
         expect(SeekerTrainingProvider.last_created).to have_attributes(
-          user: user,
-          training_provider: training_provider
+          user:,
+          training_provider:
         )
       end
 
@@ -397,7 +396,7 @@ RSpec.describe Onboarding do
 
       it "creates a Professsional Interest" do
         expect { subject }.to change { ProfessionalInterest.count }.by(1)
-        
+
         expect(ProfessionalInterest.last_created).to have_attributes(
           response: "construction",
           profile: user.profile
@@ -488,7 +487,7 @@ RSpec.describe Onboarding do
             aggregate_id: user.id,
             event_type: "onboarding_completed",
             data: {
-              responses: responses
+              responses:
             },
             metadata: {},
             occurred_at: be_present
@@ -555,3 +554,4 @@ RSpec.describe Onboarding do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

@@ -10,7 +10,10 @@ Rails.application.routes.draw do
   resources :job_matches
   resources :master_certifications
   resources :master_skills
+
+  put 'one_user' => 'one_user#update'
   resources :one_user
+
   resources :onboarding_sessions
   resources :profiles do
     resources :stories

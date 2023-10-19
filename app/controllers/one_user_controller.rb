@@ -2,7 +2,7 @@ class OneUserController < ApplicationController
   include Secured
   include Cereal
 
-  before_action :authorize, only: [:index]
+  before_action :authorize
 
   def index
     user_ret = deep_transform_keys(current_user.slice(:id, :name, :email, :first_name, :last_name, :zip_code, :phone_number)) { |key| to_camel_case(key) }
@@ -43,5 +43,11 @@ class OneUserController < ApplicationController
       recruiter: current_user.recruiter&.as_json,
       trainingProviderProfile: current_user.training_provider_profile&.as_json
     }
+  end
+
+  def update
+    current_user.update!(params.require(:one_user).permit(:first_name, :last_name, :phone_number, :zip_code))
+
+    render json: current_user
   end
 end

@@ -99,6 +99,28 @@ RSpec.describe Onboarding do
         )
       end
 
+      it "publishes an event" do
+        expect(Resque).to receive(:enqueue).with(
+          CreateEventJob,
+          aggregate_id: user.id,
+          event_type: "experience_created",
+          data: {
+            id: be_present,
+            organization_name: "Company",
+            position: "Position",
+            start_date: "01/01/2000",
+            is_current: true,
+            end_date: nil,
+            description: "Description",
+            profile_id: be_present # TODO: Come up with a way to check the profile id as well
+          },
+          metadata: {},
+          occurred_at: be_present
+        )
+
+        subject
+      end
+
       it "updates the onboarding session responses" do
         subject
 
@@ -132,6 +154,7 @@ RSpec.describe Onboarding do
           },
           "education" => {
             "response" => [{
+              "activities" => "Football",
               "org" => "School",
               "title" => "Title",
               "gradYear" => "2000",
@@ -145,12 +168,34 @@ RSpec.describe Onboarding do
         expect { subject }.to change { EducationExperience.count }.by(1)
 
         expect(EducationExperience.last_created).to have_attributes(
+          activities: "Football",
           organization_name: "School",
           title: "Title",
           graduation_date: "2000",
           gpa: "4.0",
           profile: user.profile
         )
+      end
+
+      it "publishes an event" do
+        expect(Resque).to receive(:enqueue).with(
+          CreateEventJob,
+          aggregate_id: user.id,
+          event_type: "education_experience_created",
+          data: {
+            id: be_present,
+            activities: "Football",
+            organization_name: "School",
+            title: "Title",
+            graduation_date: "2000",
+            gpa: "4.0",
+            profile_id: be_present # TODO: Come up with a way to check the profile id as well
+          },
+          metadata: {},
+          occurred_at: be_present
+        )
+
+        subject
       end
 
       it "updates the onboarding session responses" do
@@ -160,6 +205,7 @@ RSpec.describe Onboarding do
           {
             "education" => {
               "response" => [{
+                "activities" => "Football",
                 "org" => "School",
                 "title" => "Title",
                 "gradYear" => "2000",
@@ -197,6 +243,23 @@ RSpec.describe Onboarding do
           user: user,
           training_provider: training_provider
         )
+      end
+
+      it "publishes an event" do
+        expect(Resque).to receive(:enqueue).with(
+          CreateEventJob,
+          aggregate_id: user.id,
+          event_type: "seeker_training_provider_created",
+          data: {
+            id: be_present,
+            user_id: user.id,
+            training_provider_id: training_provider.id
+          },
+          metadata: {},
+          occurred_at: be_present
+        )
+
+        subject
       end
 
       it "updates the onboarding session responses" do
@@ -275,6 +338,26 @@ RSpec.describe Onboarding do
           description: "Learning",
           profile: user.profile
         )
+      end
+
+      it "publishes an event" do
+        expect(Resque).to receive(:enqueue).with(
+          CreateEventJob,
+          aggregate_id: user.id,
+          event_type: "personal_experience_created",
+          data: {
+            id: be_present,
+            activity: "Activity",
+            start_date: "01/01/2000",
+            end_date: "01/01/2001",
+            description: "Learning",
+            profile_id: be_present # TODO: Come up with a way to check the profile id as well
+          },
+          metadata: {},
+          occurred_at: be_present
+        )
+
+        subject
       end
 
       it "updates the onboarding session responses" do
@@ -358,6 +441,7 @@ RSpec.describe Onboarding do
             },
             "education" => {
               "response" => [{
+                "activities" => "Football",
                 "org" => "School",
                 "title" => "Title",
                 "gradYear" => "2000",
@@ -398,6 +482,7 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
+          expect(Resque).to receive(:enqueue).exactly(4).times
           expect(Resque).to receive(:enqueue).with(
             CreateEventJob,
             aggregate_id: user.id,

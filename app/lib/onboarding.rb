@@ -34,12 +34,31 @@ class Onboarding
       end
 
       data.each do |d|
-        oe = OtherExperience.find_or_initialize_by(
+        OtherExperience.find_or_initialize_by(
           profile_id: user.profile.id,
           **d
-        )
-        oe.id = SecureRandom.uuid
-        oe.save!
+        ) do |oe|
+          oe.id = SecureRandom.uuid
+          oe.save!
+
+          Resque.enqueue(
+            CreateEventJob,
+            aggregate_id: user.id,
+            event_type: "experience_created",
+            data: {
+              id: oe.id,
+              organization_name: oe.organization_name,
+              position: oe.position,
+              start_date: oe.start_date,
+              end_date: oe.end_date,
+              description: oe.description,
+              is_current: oe.is_current,
+              profile_id: oe.profile_id
+            },
+            metadata: {},
+            occurred_at: oe.created_at
+          )
+        end
       end
     end
 
@@ -56,23 +75,54 @@ class Onboarding
       end
 
       data.each do |d|
-        ee = EducationExperience.find_or_initialize_by(
+        EducationExperience.find_or_initialize_by(
           **d
-        )
-        ee.id = SecureRandom.uuid
-        ee.save!
+        ) do |ee|
+          ee.id = SecureRandom.uuid
+          ee.save!
+
+          Resque.enqueue(
+            CreateEventJob,
+            aggregate_id: user.id,
+            event_type: "education_experience_created",
+            data: {
+              id: ee.id,
+              organization_name: ee.organization_name,
+              title: ee.title,
+              activities: ee.activities,
+              graduation_date: ee.graduation_date,
+              gpa: ee.gpa,
+              profile_id: ee.profile_id
+            },
+            metadata: {},
+            occurred_at: ee.created_at
+          )
+        end
       end
     end
 
     if (tp_response = responses.dig("trainingProvider", "response"))
       tp_response.each do |tr|
-        stp = SeekerTrainingProvider.find_or_initialize_by(
+        SeekerTrainingProvider.find_or_initialize_by(
           user_id: user.id,
           training_provider_id: tr
-        )
+        ) do |stp|
+          stp.id = SecureRandom.uuid
+          stp.save!
 
-        stp.id = SecureRandom.uuid
-        stp.save!
+          Resque.enqueue(
+            CreateEventJob,
+            aggregate_id: user.id,
+            event_type: "seeker_training_provider_created",
+            data: {
+              id: stp.id,
+              user_id: stp.user_id,
+              training_provider_id: stp.training_provider_id
+            },
+            metadata: {},
+            occurred_at: stp.created_at
+          )
+        end
       end
     end
 
@@ -93,6 +143,22 @@ class Onboarding
         )
         pe.id = SecureRandom.uuid
         pe.save!
+
+        Resque.enqueue(
+          CreateEventJob,
+          aggregate_id: user.id,
+          event_type: "personal_experience_created",
+          data: {
+            id: pe.id,
+            activity: pe.activity,
+            description: pe.description,
+            start_date: pe.start_date,
+            end_date: pe.end_date,
+            profile_id: pe.profile_id
+          },
+          metadata: {},
+          occurred_at: pe.created_at
+        )
       end
     end
 
@@ -115,7 +181,7 @@ class Onboarding
 
     onboarding_session.update!(responses: responses)
 
-    if (onboarding_complete?(responses.dig("reliability", "response"), responses))
+    if (onboarding_complete?(responses.dig("reliability", "response"), responses) && !onboarding_session.completed_at)
       completed_at = Time.now
 
       onboarding_session.update!(completed_at: completed_at)

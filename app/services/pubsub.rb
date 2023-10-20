@@ -22,3 +22,8 @@ Pubsub.subscribe(
   event: Event::EventTypes::USER_CREATED,
   subscriber: Klayvio::UserSignup.new
 )
+
+Pubsub.subscribe(
+  event: Event::EventTypes::EXPERIENCE_CREATED,
+  subscriber: Klayvio::ExperienceEntered.new
+)

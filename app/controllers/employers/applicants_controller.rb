@@ -8,11 +8,7 @@ class Employers::ApplicantsController < ApplicationController
   def update
     applicant = Applicant.find(params[:id])
 
-    applicant.applicant_statuses << ApplicantStatus.new(
-      id: SecureRandom.uuid,
-      status: params[:status]
-    )
-    applicant.save!
+    ApplicantService.new(applicant).update_status(params[:status])
 
     render json: applicant
   end

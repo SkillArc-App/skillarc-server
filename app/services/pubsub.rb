@@ -24,6 +24,11 @@ Pubsub.subscribe(
 )
 
 Pubsub.subscribe(
+  event: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
+  subscriber: Klayvio::EducationExperienceEntered.new
+)
+
+Pubsub.subscribe(
   event: Event::EventTypes::EXPERIENCE_CREATED,
   subscriber: Klayvio::ExperienceEntered.new
 )

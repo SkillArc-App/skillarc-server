@@ -10,6 +10,13 @@ FactoryBot.define do
       occurred_at { Time.new(2020, 1, 1) }
     end
 
+    trait :education_experience_created do
+      event_type { Event::EventTypes::EDUCATION_EXPERIENCE_CREATED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
     trait :experience_created do
       event_type { Event::EventTypes::EXPERIENCE_CREATED }
       data {{}}

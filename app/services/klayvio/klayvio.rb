@@ -11,6 +11,14 @@ module Klayvio
       post(url, data)
     end
 
+    def education_experience_entered(email:, occurred_at:, event_id:)
+      data = event_data(event_type: 'Education Experience Entered', email: email, time: occurred_at, event_id: event_id)
+
+      url = URI("https://a.klaviyo.com/api/events/")
+
+      post(url, data)
+    end
+
     def experience_entered(email:, occurred_at:, event_id:)
       data = event_data(event_type: 'Experience Entered', email: email, time: occurred_at, event_id: event_id)
   

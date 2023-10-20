@@ -9,8 +9,9 @@ RSpec.describe Klayvio::UserSignup do
     let(:occurred_at) { Date.new(2020, 1, 1) }
 
     it "calls the Klayvio API" do
-      expect(Klayvio::Klayvio).to receive(:user_signup).with(
+      expect_any_instance_of(Klayvio::Klayvio).to receive(:user_signup).with(
         email: event.data["email"],
+        event_id: event.id,
         occurred_at: event.occurred_at
       )
 

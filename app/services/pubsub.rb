@@ -16,3 +16,9 @@ class Pubsub
     @subscribers ||= {}
   end
 end
+
+# TODO: Move this to a config file
+Pubsub.subscribe(
+  event: Event::EventTypes::USER_CREATED,
+  subscriber: Klayvio::UserSignup.new
+)

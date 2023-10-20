@@ -18,7 +18,7 @@ FactoryBot.define do
     end
 
     trait :onboarding_complete do
-      event_type { Event::EventTypes::ONBOARDING_COMPLETE }
+      event_type { Event::EventTypes::ONBOARDING_COMPLETED }
       data {{}}
       metadata {{}}
       occurred_at { Time.new(2020, 1, 1) }

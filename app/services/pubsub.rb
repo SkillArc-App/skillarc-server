@@ -29,6 +29,6 @@ Pubsub.subscribe(
 )
 
 Pubsub.subscribe(
-  event: Event::EventTypes::ONBOARDING_COMPLETE,
+  event: Event::EventTypes::ONBOARDING_COMPLETED,
   subscriber: Klayvio::OnboardingComplete.new
 )

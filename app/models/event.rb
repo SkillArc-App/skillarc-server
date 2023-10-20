@@ -7,7 +7,7 @@ class Event < ApplicationRecord
       EDUCATION_EXPERIENCE_CREATED = 'education_experience_created',
       PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created',
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created',
-      ONBOARDING_COMPLETE = 'onboarding_complete'
+      ONBOARDING_COMPLETED = 'onboarding_completed'
     ]
   end
 

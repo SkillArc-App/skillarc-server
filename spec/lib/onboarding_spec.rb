@@ -486,7 +486,7 @@ RSpec.describe Onboarding do
           expect(Resque).to receive(:enqueue).with(
             CreateEventJob,
             aggregate_id: user.id,
-            event_type: "onboarding_completed",
+            event_type: Event::EventTypes::ONBOARDING_COMPLETED,
             data: {
               responses:
             },

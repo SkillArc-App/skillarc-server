@@ -1,6 +1,6 @@
 class Pubsub
   def self.publish(event:)
-    subscribers[event]&.each do |subscriber|
+    subscribers[event.event_type]&.each do |subscriber|
       subscriber.call(event: event)
     end
   end

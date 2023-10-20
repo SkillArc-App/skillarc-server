@@ -14,15 +14,15 @@ class Job < ApplicationRecord
 
   def self.with_everything
     includes(
+      :applicants,
+      :career_paths,
       :employer,
-      :learned_skills,
-      :desired_skills,
-      :desired_certifications,
       :job_photos,
       :testimonials,
-      :job_tags,
-      :career_paths,
-      :applicants
+      job_tags: :tag,
+      desired_skills: :master_skill,
+      learned_skills: :master_skill,
+      desired_certifications: :master_certification
     )
   end
 end

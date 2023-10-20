@@ -9,7 +9,7 @@ module JobMatch
     end
 
     def jobs
-      @jobs ||= Job.shown.map do |job|
+      @jobs ||= Job.shown.with_everything.map do |job|
         job_tags = job.job_tags.map do |job_tag|
           {
             id: job_tag.id,

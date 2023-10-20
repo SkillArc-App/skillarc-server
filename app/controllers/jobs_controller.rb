@@ -10,8 +10,8 @@ class JobsController < ApplicationController
 
     applicant = Applicant.find_or_initialize_by(profile_id: current_user.profile.id, job_id: job.id) do |a|
       a.id = SecureRandom.uuid
-      a.applicant_statuses << ApplicantStatus.new(id: SecureRandom.uuid, status: 'new')
       a.save!
+      ApplicantService.new(a).update_status(ApplicantStatus::StatusTypes::NEW)
     end
 
     render json: { applicant: }

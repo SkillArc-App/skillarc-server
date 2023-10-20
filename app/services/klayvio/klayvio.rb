@@ -19,6 +19,14 @@ module Klayvio
       post(url, data)
     end
 
+    def onboarding_complete(email:, occurred_at:, event_id:)
+      data = event_data(event_type: 'Onboarding Complete', email: email, time: occurred_at, event_id: event_id)
+
+      url = URI("https://a.klaviyo.com/api/events/")
+
+      post(url, data)
+    end
+
     private
 
     attr_reader :base_url

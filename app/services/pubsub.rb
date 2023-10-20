@@ -27,3 +27,8 @@ Pubsub.subscribe(
   event: Event::EventTypes::EXPERIENCE_CREATED,
   subscriber: Klayvio::ExperienceEntered.new
 )
+
+Pubsub.subscribe(
+  event: Event::EventTypes::ONBOARDING_COMPLETE,
+  subscriber: Klayvio::OnboardingComplete.new
+)

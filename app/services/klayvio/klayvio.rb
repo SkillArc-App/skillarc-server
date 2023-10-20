@@ -38,7 +38,7 @@ module Klayvio
                 }
               }
             },
-            "time": Time.parse(time).strftime("%Y-%m-%dT%H:%M"),
+            "time": time.strftime("%Y-%m-%dT%H:%M"),
             "unique_id": event_id
           }
         }

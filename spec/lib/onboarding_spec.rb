@@ -70,7 +70,8 @@ RSpec.describe Onboarding do
             email: user.email,
             first_name: "John",
             last_name: "Doe",
-            phone_number: "1234567890"
+            phone_number: "1234567890",
+            date_of_birth: Date.new(2000, 1, 1)
           },
           metadata: {},
           occurred_at: be_present

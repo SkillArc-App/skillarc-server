@@ -10,6 +10,20 @@ FactoryBot.define do
       occurred_at { Time.new(2020, 1, 1) }
     end
 
+    trait :user_updated do
+      event_type { Event::EventTypes::USER_UPDATED }
+      data do
+        {
+          email: "tom@blocktrainapp.com",
+          first_name: "Tom",
+          last_name: "Block",
+          zip: "43210"
+        }
+      end
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
     trait :education_experience_created do
       event_type { Event::EventTypes::EDUCATION_EXPERIENCE_CREATED }
       data {{}}

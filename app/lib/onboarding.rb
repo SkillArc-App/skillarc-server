@@ -21,7 +21,8 @@ class Onboarding
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
-          phone_number: user.phone_number
+          phone_number: user.phone_number,
+          date_of_birth: Date.parse(name_response["dateOfBirth"]),
         },
         metadata: {},
         occurred_at: user.updated_at

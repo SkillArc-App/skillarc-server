@@ -11,6 +11,21 @@ module Klayvio
       post(url, data)
     end
 
+    def user_updated(email:, occurred_at:, event_id:, profile_properties:, profile_attributes:)
+      data = event_data(
+        event_type: 'User Updated',
+        email: email,
+        time: occurred_at,
+        event_id: event_id,
+        profile_properties: profile_properties,
+        profile_attributes: profile_attributes
+      )
+  
+      url = URI("https://a.klaviyo.com/api/events/")
+  
+      post(url, data)
+    end
+
     def education_experience_entered(email:, occurred_at:, event_id:)
       data = event_data(event_type: 'Education Experience Entered', email: email, time: occurred_at, event_id: event_id)
 
@@ -39,7 +54,7 @@ module Klayvio
 
     attr_reader :base_url
 
-    def event_data(event_type:, email:, time:, event_id:)
+    def event_data(event_type:, email:, time:, event_id:, profile_properties: {}, profile_attributes: {})
       {
         "data": {
           "type": "event",
@@ -57,8 +72,11 @@ module Klayvio
               "data": {
                 "type": "profile",
                 "attributes": {
+                  **profile_attributes,
                   "email": email,
-                  "properties": {}
+                  "properties": {
+                    **profile_properties
+                  }
                 }
               }
             },

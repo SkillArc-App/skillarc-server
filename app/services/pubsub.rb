@@ -40,5 +40,5 @@ Pubsub.subscribe(
 
 Pubsub.subscribe(
   event: Event::EventTypes::APPLICANT_STATUS_UPDATED,
-  subscriber: Klayvio::ApplicantStatusUpdated.new
+  subscriber: Klayvio::ApplicationStatusUpdated.new
 )

@@ -3,7 +3,7 @@ class ProfilesController < ApplicationController
   include Admin
   include Cereal
 
-  before_action :authorize
+  before_action :authorize, only: [:index]
   before_action :admin_authorize, only: [:index]
 
   def index

@@ -3,7 +3,6 @@ class OneUserController < ApplicationController
   include Cereal
 
   before_action :authorize
-  skip_before_action :verify_authenticity_token
 
   def index
     user_ret = deep_transform_keys(current_user.slice(:id, :name, :email, :first_name, :last_name, :zip_code, :phone_number)) { |key| to_camel_case(key) }

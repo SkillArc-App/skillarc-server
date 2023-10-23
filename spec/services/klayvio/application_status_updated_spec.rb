@@ -22,6 +22,8 @@ RSpec.describe Klayvio::ApplicationStatusUpdated do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:application_status_updated).with(
         application_id: applicant.id,
         email: user.email,
+        employment_title: job.employment_title,
+        employer_name: job.employer.name,
         event_id: event.id,
         occurred_at: event.occurred_at,
         status: "new"

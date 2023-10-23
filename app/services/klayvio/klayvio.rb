@@ -3,7 +3,7 @@ module Klayvio
     def initialize
     end
 
-    def application_status_updated(application_id:, email:, event_id:, occurred_at:, status:)
+    def application_status_updated(application_id:, email:, event_id:, employment_title:, employer_name:, occurred_at:, status:)
       data = event_data(
         event_type: 'Application Status Updated',
         email: email,
@@ -11,6 +11,8 @@ module Klayvio
         event_id: event_id,
         event_properties: {
           application_id: application_id,
+          employment_title: employment_title,
+          employer_name: employer_name,
           status: status
         }
       )

@@ -44,5 +44,12 @@ FactoryBot.define do
       metadata {{}}
       occurred_at { Time.new(2020, 1, 1) }
     end
+
+    trait :applicant_status_updated do
+      event_type { Event::EventTypes::APPLICANT_STATUS_UPDATED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
   end
 end

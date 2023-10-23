@@ -3,6 +3,23 @@ module Klayvio
     def initialize
     end
 
+    def application_status_updated(application_id:, email:, event_id:, occurred_at:, status:)
+      data = event_data(
+        event_type: 'Application Status Updated',
+        email: email,
+        time: occurred_at,
+        event_id: event_id,
+        event_properties: {
+          application_id: application_id,
+          status: status
+        }
+      )
+
+      url = URI("https://a.klaviyo.com/api/events/")
+
+      post(url, data)
+    end
+
     def user_signup(email:, occurred_at:, event_id:)
       data = event_data(event_type: 'User Signup', email: email, time: occurred_at, event_id: event_id)
   
@@ -54,12 +71,14 @@ module Klayvio
 
     attr_reader :base_url
 
-    def event_data(event_type:, email:, time:, event_id:, profile_properties: {}, profile_attributes: {})
+    def event_data(event_type:, email:, time:, event_id:, event_properties: {}, profile_properties: {}, profile_attributes: {})
       {
         "data": {
           "type": "event",
           "attributes": {
-            "properties": {},
+            "properties": {
+              **event_properties
+            },
             "metric": {
               "data": {
                 "type": "metric",

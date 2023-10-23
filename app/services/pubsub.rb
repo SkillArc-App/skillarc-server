@@ -37,3 +37,8 @@ Pubsub.subscribe(
   event: Event::EventTypes::ONBOARDING_COMPLETED,
   subscriber: Klayvio::OnboardingComplete.new
 )
+
+Pubsub.subscribe(
+  event: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+  subscriber: Klayvio::ApplicantStatusUpdated.new
+)

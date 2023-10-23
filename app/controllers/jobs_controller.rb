@@ -2,7 +2,7 @@ class JobsController < ApplicationController
   include Secured
   include Admin
 
-  before_action :authorize
+  before_action :authorize, only: [:apply, :create, :update, :index]
   before_action :admin_authorize, only: [:index, :create, :update]
 
   def apply

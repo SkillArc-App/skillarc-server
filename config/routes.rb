@@ -56,7 +56,9 @@ Rails.application.routes.draw do
   end
 
   resources :seeker_invites
-  resources :employer_invites
+  resources :employer_invites do
+    put 'used' => 'employer_invites#used'
+  end
   resources :training_provider_invites
 
   if Rails.env.test?

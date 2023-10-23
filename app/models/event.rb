@@ -3,6 +3,7 @@ class Event < ApplicationRecord
     ALL = [
       APPLICANT_STATUS_UPDATED = 'applicant_status_updated',
       USER_CREATED = 'user_created',
+      USER_UPDATED = 'user_updated',
       EXPERIENCE_CREATED = 'experience_created',
       EDUCATION_EXPERIENCE_CREATED = 'education_experience_created',
       PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created',

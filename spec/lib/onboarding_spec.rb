@@ -60,6 +60,24 @@ RSpec.describe Onboarding do
         expect { subject }.to change { Profile.count }.by(1)
         expect(Profile.last_created.user).to eq(user)
       end
+
+      it "publishes an event" do
+        expect(Resque).to receive(:enqueue).with(
+          CreateEventJob,
+          aggregate_id: user.id,
+          event_type: Event::EventTypes::USER_UPDATED,
+          data: {
+            email: user.email,
+            first_name: "John",
+            last_name: "Doe",
+            phone_number: "1234567890"
+          },
+          metadata: {},
+          occurred_at: be_present
+        )
+
+        subject
+      end
     end
 
     context "when the responses include experience" do
@@ -100,6 +118,7 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
+        expect(Resque).to receive(:enqueue)
         expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           aggregate_id: user.id,
@@ -178,6 +197,7 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
+        expect(Resque).to receive(:enqueue)
         expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           aggregate_id: user.id,
@@ -246,6 +266,7 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
+        expect(Resque).to receive(:enqueue)
         expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           aggregate_id: user.id,
@@ -341,6 +362,7 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
+        expect(Resque).to receive(:enqueue)
         expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           aggregate_id: user.id,
@@ -482,7 +504,7 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
-          expect(Resque).to receive(:enqueue).exactly(4).times
+          expect(Resque).to receive(:enqueue).exactly(5).times
           expect(Resque).to receive(:enqueue).with(
             CreateEventJob,
             aggregate_id: user.id,

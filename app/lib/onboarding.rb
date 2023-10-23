@@ -13,6 +13,20 @@ class Onboarding
         phone_number: name_response["phoneNumber"]
       )
 
+      Resque.enqueue(
+        CreateEventJob,
+        aggregate_id: user.id,
+        event_type: Event::EventTypes::USER_UPDATED,
+        data: {
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          phone_number: user.phone_number
+        },
+        metadata: {},
+        occurred_at: user.updated_at
+      )
+
       unless user.profile
         Profile.create!(
           id: SecureRandom.uuid,

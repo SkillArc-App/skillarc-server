@@ -14,4 +14,8 @@ class User < ApplicationRecord
   def training_provider_profile
     training_provider_profiles.order(created_at: :desc).first
   end
+
+  def employer_admin?
+    user_roles.map(&:role).map(&:name).include?(Role::Types::EMPLOYER_ADMIN)
+  end
 end

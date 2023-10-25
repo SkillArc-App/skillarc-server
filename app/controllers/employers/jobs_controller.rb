@@ -6,11 +6,13 @@ class Employers::JobsController < ApplicationController
   before_action :employer_authorize
 
   def index
-    jobs = recruiter.employer.jobs
+    jobs = current_user.employer_admin? ? Job.all : recruiter.employer.jobs
 
     ret_jobs = jobs.map do |job|
       {
         id: job.id,
+        employerId: job.employer_id,
+        employerName: job.employer.name,
         name: job.employment_title,
         description: "descriptions don't exist yet"
       }

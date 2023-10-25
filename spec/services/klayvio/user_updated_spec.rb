@@ -9,7 +9,7 @@ RSpec.describe Klayvio::UserUpdated do
         data: {
           first_name: "Tom",
           last_name: "Hanks",
-          phone_number: "1234567890",
+          phone_number: "8155201035",
           date_of_birth: Date.new(1980, 1, 1)
         }
       )
@@ -25,7 +25,7 @@ RSpec.describe Klayvio::UserUpdated do
         profile_attributes: {
           first_name: "Tom",
           last_name: "Hanks",
-          phone_number: "1234567890",
+          phone_number: "+18155201035",
         },
         profile_properties: {
           date_of_birth: Date.new(1980, 1, 1)

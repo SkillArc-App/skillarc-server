@@ -7,26 +7,28 @@ class Onboarding
 
   def update(responses:)
     if (name_response = responses.dig("name", "response"))
-      user.update!(
-        first_name: name_response["firstName"],
-        last_name: name_response["lastName"],
-        phone_number: name_response["phoneNumber"]
-      )
+      unless user.first_name == name_response["firstName"] && user.last_name == name_response["lastName"] && user.phone_number == name_response["phoneNumber"]
+        user.update!(
+          first_name: name_response["firstName"],
+          last_name: name_response["lastName"],
+          phone_number: name_response["phoneNumber"]
+        )
 
-      Resque.enqueue(
-        CreateEventJob,
-        aggregate_id: user.id,
-        event_type: Event::EventTypes::USER_UPDATED,
-        data: {
-          email: user.email,
-          first_name: user.first_name,
-          last_name: user.last_name,
-          phone_number: user.phone_number,
-          date_of_birth: Date.strptime(name_response["dateOfBirth"], "%m/%d/%Y"),
-        },
-        metadata: {},
-        occurred_at: user.updated_at
-      )
+        Resque.enqueue(
+          CreateEventJob,
+          aggregate_id: user.id,
+          event_type: Event::EventTypes::USER_UPDATED,
+          data: {
+            email: user.email,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            phone_number: user.phone_number,
+            date_of_birth: Date.strptime(name_response["dateOfBirth"], "%m/%d/%Y"),
+          },
+          metadata: {},
+          occurred_at: user.updated_at
+        )
+      end
 
       unless user.profile
         Profile.create!(

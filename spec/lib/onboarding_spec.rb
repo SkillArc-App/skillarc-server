@@ -576,6 +576,55 @@ RSpec.describe Onboarding do
         end
       end
     end
+
+    context "when there are repetitive responses" do
+      subject { described_class.new(onboarding_session:) }
+
+      let(:responses1) do
+        {
+          "name" => {
+            "response" => {
+              "firstName" => "John",
+              "lastName" => "Doe",
+              "phoneNumber" => "1234567890",
+              "dateOfBirth" => "01/01/2000"
+            }
+          },
+        }
+      end
+      let(:responses2) do
+        {
+          "name" => {
+            "response" => {
+              "firstName" => "John",
+              "lastName" => "Doe",
+              "phoneNumber" => "1234567890",
+              "dateOfBirth" => "01/01/2000"
+            }
+          },
+        }
+      end
+
+      it "does not duplicate job calls" do
+        expect(Resque).to receive(:enqueue).with(
+          CreateEventJob,
+          aggregate_id: user.id,
+          event_type: Event::EventTypes::USER_UPDATED,
+          data: {
+            email: user.email,
+            first_name: "John",
+            last_name: "Doe",
+            phone_number: "1234567890",
+            date_of_birth: Date.new(2000, 1, 1)
+          },
+          metadata: {},
+          occurred_at: be_present
+        ).once
+
+        subject.update(responses: responses1)
+        subject.update(responses: responses2)
+      end
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength

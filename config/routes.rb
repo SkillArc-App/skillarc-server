@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   mount Resque::Server.new, at: "/resque"
 
-  resources :job_matches
+  get 'job_matches' => 'job_matches#index'
   resources :master_certifications
   resources :master_skills
 
@@ -48,6 +48,14 @@ Rails.application.routes.draw do
   resources :training_providers do
     scope module: 'training_providers' do
       resources :programs
+    end
+  end
+
+
+  scope module: 'seekers', path: 'seekers' do
+    resources :jobs do
+      post 'save' => 'jobs#save'
+      post 'unsave' => 'jobs#unsave'
     end
   end
 

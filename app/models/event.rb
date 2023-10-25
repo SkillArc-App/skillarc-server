@@ -2,6 +2,8 @@ class Event < ApplicationRecord
   module EventTypes
     ALL = [
       APPLICANT_STATUS_UPDATED = 'applicant_status_updated',
+      JOB_SAVED = 'job_saved',
+      JOB_UNSAVED = 'job_unsaved',
       USER_CREATED = 'user_created',
       USER_UPDATED = 'user_updated',
       EXPERIENCE_CREATED = 'experience_created',

@@ -1,16 +1,11 @@
 class JobMatchesController < ApplicationController
   include Secured
 
-  before_action :authorize, only: [:index]
+  before_action :authorize
 
   def index
-    render html: "HELLO, WORLD!"
-  end
-
-  def show
     begin
-      user_id = params[:id]
-      profile = Profile.where(user_id:).first
+      profile = current_user.profile
 
       jm = JobMatch::JobMatch.new(profile_id: profile.id)
 

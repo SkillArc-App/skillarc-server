@@ -26,6 +26,8 @@ class Employers::JobsController < ApplicationController
           jobName: job.employment_title,
           firstName: a.profile.user.first_name,
           lastName: a.profile.user.last_name,
+          email: a.profile.user.email,
+          phoneNumber: a.profile.user.phone_number,
           profileLink: "/profiles/#{a.profile.id}",
           programs: [],
           status: a.status.status

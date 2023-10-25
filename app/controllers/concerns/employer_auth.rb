@@ -1,6 +1,6 @@
 module EmployerAuth
   def employer_authorize
-    unless (@recruiter = current_user.recruiter)
+    unless (@recruiter = current_user.recruiter || current_user.employer_admin?)
       render json: { error: 'Not authorized' }, status: 401
       return
     end

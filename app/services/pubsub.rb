@@ -47,3 +47,8 @@ Pubsub.subscribe(
   event: Event::EventTypes::APPLICANT_STATUS_UPDATED,
   subscriber: Klayvio::ApplicationStatusUpdated.new
 )
+
+Pubsub.subscribe(
+  event: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+  subscriber: Slack::UserApplied.new
+)

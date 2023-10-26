@@ -60,6 +60,7 @@ gem "rubocop", require: false
 gem 'scout_apm'
 gem "sentry-rails"
 gem "sentry-ruby"
+gem "slack-notifier"
 gem "strong_migrations"
 
 group :development, :test do

@@ -122,7 +122,7 @@ module Klayvio
   
       response = http.request(request)
   
-      puts response
+      Rails.logger.info("Klayvio response: #{response.body}")
   
       response.read_body
     end

@@ -25,6 +25,7 @@ class StoriesController < ApplicationController
 
       render json: story
     rescue => e
+      binding.pry
       render json: { error: e.message }, status: 400
     end
   end

@@ -2,7 +2,7 @@ require 'resque/server'
 
 Rails.application.routes.draw do
   get 'employers/jobs' => 'employers/jobs#index'
-  put 'employers/applicants/:id' => 'employers/applicants#update'
+  put 'employers/applicants/:id' => 'employers/applicants#update', as: 'employers_applicant'
   resources :employers
 
   mount Resque::Server.new, at: "/resque"
@@ -48,6 +48,30 @@ Rails.application.routes.draw do
   resources :training_providers do
     scope module: 'training_providers' do
       resources :programs
+    end
+  end
+
+
+  scope module: 'seekers', path: 'seekers' do
+    resources :jobs do
+      post 'save' => 'jobs#save'
+      post 'unsave' => 'jobs#unsave'
+    end
+  end
+
+
+  scope module: 'seekers', path: 'seekers' do
+    resources :jobs do
+      post 'save' => 'jobs#save'
+      post 'unsave' => 'jobs#unsave'
+    end
+  end
+
+
+  scope module: 'seekers', path: 'seekers' do
+    resources :jobs do
+      post 'save' => 'jobs#save'
+      post 'unsave' => 'jobs#unsave'
     end
   end
 

@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe "Students", type: :request do
   describe "GET /index" do
-    pending "add some examples (or delete) #{__FILE__}"
+    subject { get students_path }
+
+    it_behaves_like "training provider secured endpoint"
   end
 end

@@ -7,7 +7,7 @@ class JobTagsController < ApplicationController
   before_action :set_job
 
   def create
-    job_tag = job.job_tags.find_or_initialize_by(tag:) do |jt|
+    job_tag = job.job_tags.find_or_initialize_by(tag_id: params[:tag_id]) do |jt|
       jt.id = SecureRandom.uuid
       jt.save!
     end

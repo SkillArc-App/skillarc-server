@@ -94,3 +94,7 @@ RSpec.configure do |config|
 end
 
 require 'pry'
+require 'shared_examples/secure_endpoint'
+require 'shared_examples/admin_secure_endpoint'
+require 'shared_examples/training_provider_secure_endpoint'
+require "shared_examples/employer_secure_endpoint"

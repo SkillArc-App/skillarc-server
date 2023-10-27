@@ -2,6 +2,12 @@ require 'rails_helper'
 
 RSpec.describe "MasterSkills", type: :request do
   describe "GET /index" do
-    pending "add some examples (or delete) #{__FILE__}"
+    subject { get master_skills_path }
+
+    it "returns a 200" do
+      subject
+
+      expect(response).to have_http_status(200)
+    end
   end
 end

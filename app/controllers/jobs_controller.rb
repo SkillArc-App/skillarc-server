@@ -30,7 +30,7 @@ class JobsController < ApplicationController
           :employment_type,
           :hide_job,
           :schedule,
-          :work_day,
+          :work_days,
           :requirements_description,
           :industry
         ),

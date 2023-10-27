@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe "MasterCertifications", type: :request do
   describe "GET /index" do
-    pending "add some examples (or delete) #{__FILE__}"
+    subject { get master_certifications_path }
+
+    it_behaves_like "admin secured endpoint"
   end
 end

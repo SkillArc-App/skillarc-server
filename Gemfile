@@ -62,6 +62,7 @@ gem "sentry-rails"
 gem "sentry-ruby"
 gem "slack-notifier"
 gem "strong_migrations"
+gem 'tzinfo-data'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

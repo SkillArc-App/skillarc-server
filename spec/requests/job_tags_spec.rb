@@ -8,7 +8,7 @@ RSpec.describe "JobTags", type: :request do
 
     let(:params) do
       {
-        tag_id: tag.id
+        tag: tag.name
       }
     end
     let(:tag) { create(:tag) }

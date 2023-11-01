@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     resources :skills
     resources :education_experiences
     resources :personal_experiences
+    resources :other_experiences
   end
   resources :programs do
     scope module: 'programs' do

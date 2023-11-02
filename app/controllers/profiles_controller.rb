@@ -50,6 +50,7 @@ class ProfilesController < ApplicationController
       reference: [],
       skills: [],
       stories: profile.stories,
+      missingProfileItems: ProfileCompleteness.new(profile).status.missing,
       user: {
         **profile.user.as_json,
         SeekerTrainingProvider: profile.user.seeker_training_providers.map do |stp|

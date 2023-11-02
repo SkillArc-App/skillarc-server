@@ -15,6 +15,8 @@ class OneUserController < ApplicationController
       :bio
     ) || {}
 
+    fast_track_tasks = FastTrackTasks.new(current_user)
+
     render json: {
       **user_ret,
       onboardingSession: os_ret,
@@ -24,6 +26,10 @@ class OneUserController < ApplicationController
           role: ur.role.as_json
         }
       end || [],
+      fastTrackTasks: {
+        profile: fast_track_tasks.profile,
+        career: fast_track_tasks.career,
+      },
       profile: {
         **profile,
         educationExperiences: current_user.profile&.education_experiences || [],

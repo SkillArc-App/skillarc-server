@@ -38,7 +38,8 @@ class OneUserController < ApplicationController
         end || [],
         stories: current_user.profile&.stories || [],
         otherExperiences: current_user.profile&.other_experiences || [],
-        personalExperience: current_user.profile&.personal_experiences || []
+        personalExperience: current_user.profile&.personal_experiences || [],
+        missingProfileItems: ProfileCompleteness.new(current_user.profile).status.missing
       },
       recruiter: current_user.recruiter&.as_json,
       trainingProviderProfile: current_user.training_provider_profile&.as_json

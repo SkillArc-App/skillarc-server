@@ -6,6 +6,8 @@ class ProfileCompleteness
   end
 
   def status
+    return Result.new("incomplete", ["education", "work"]) if profile.nil?
+
     missing = []
 
     missing << "education" if missing_education?

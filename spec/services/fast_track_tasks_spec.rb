@@ -3,16 +3,19 @@ require 'rails_helper'
 RSpec.describe FastTrackTasks do
   subject { described_class.new(user) }
 
-  let(:user) { create(:user, profile: nil) }
+  let(:user) { create(:user, profile: nil, onboarding_sessions: [onboarding_session]) }
+  let(:onboarding_session) { build(:onboarding_session, completed_at:) }
+  let(:completed_at) { Date.new(2020, 1, 1) }
 
-  describe "#profile" do
+  # shared examples
+  shared_examples "base exits" do
     context "when the user is a training provider" do
       before do
         create(:training_provider_profile, user: user)
       end
 
       it "returns an empty array" do
-        expect(subject.profile).to eq([])
+        expect(result).to eq([])
       end
     end
 
@@ -22,8 +25,22 @@ RSpec.describe FastTrackTasks do
       end
 
       it "returns an empty array" do
-        expect(subject.profile).to eq([])
+        expect(result).to eq([])
       end
+    end
+
+    context "when onboarding is not complete" do
+      let(:completed_at) { nil }
+
+      it "returns an empty array" do
+        expect(result).to eq([])
+      end
+    end
+  end
+
+  describe "#profile" do
+    it_behaves_like "base exits" do
+      let(:result) { subject.profile }
     end
 
     context "when the profile is nil" do
@@ -69,14 +86,8 @@ RSpec.describe FastTrackTasks do
   end
 
   describe "#career" do
-    context "when the user is a training provider" do
-      before do
-        create(:training_provider_profile, user: user)
-      end
-
-      it "returns an empty array" do
-        expect(subject.career).to eq([])
-      end
+    it_behaves_like "base exits" do
+      let(:result) { subject.career }
     end
 
     context "when the user is a recruiter" do

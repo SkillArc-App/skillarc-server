@@ -5,6 +5,7 @@ class FastTrackTasks
 
   def career
     return [] unless seeker?
+    return [] unless onboarding_complete?
 
     save_3_jobs = {
       name: "Save 3 jobs",
@@ -23,6 +24,7 @@ class FastTrackTasks
 
   def profile
     return [] unless seeker?
+    return [] unless onboarding_complete?
 
     if user.profile.nil?
       return [
@@ -46,6 +48,10 @@ class FastTrackTasks
   end
 
   private
+
+  def onboarding_complete?
+    user.onboarding_session&.completed_at
+  end
 
   def seeker?
     !user.recruiter && !user.training_provider_profile

@@ -39,6 +39,11 @@ Pubsub.subscribe(
 )
 
 Pubsub.subscribe(
+  event: Event::EventTypes::EMPLOYER_INVITE_ACCEPTED,
+  subscriber: Klayvio::EmployerInviteAccepted.new
+)
+
+Pubsub.subscribe(
   event: Event::EventTypes::EXPERIENCE_CREATED,
   subscriber: Klayvio::ExperienceEntered.new
 )

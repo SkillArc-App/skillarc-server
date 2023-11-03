@@ -23,10 +23,10 @@ Pubsub.subscribe(
   subscriber: Klayvio::UserSignup.new
 )
 
-# Pubsub.subscribe(
-#   event: Event::EventTypes::USER_CREATED,
-#   subscriber: Slack::UserSignup.new
-# )
+Pubsub.subscribe(
+  event: Event::EventTypes::USER_CREATED,
+  subscriber: Slack::UserSignup.new
+)
 
 Pubsub.subscribe(
   event: Event::EventTypes::USER_UPDATED,

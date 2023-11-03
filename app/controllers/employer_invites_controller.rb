@@ -3,7 +3,7 @@ class EmployerInvitesController < ApplicationController
   include Admin
 
   before_action :authorize
-  before_action :admin_authorize
+  before_action :admin_authorize, only: [:index, :create]
 
   def index
     render json: EmployerInvite.all.map { |invite| serialize_invite(invite) }

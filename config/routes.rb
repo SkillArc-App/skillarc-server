@@ -92,7 +92,9 @@ Rails.application.routes.draw do
   resources :employer_invites do
     put 'used' => 'employer_invites#used'
   end
-  resources :training_provider_invites
+  resources :training_provider_invites do
+    post 'accept', on: :member
+  end
 
   if Rails.env.test?
     post '/reset_test_database' => 'test#reset_test_database'

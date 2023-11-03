@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe ProfileCompleteness do
   subject { described_class.new(profile) }
 
-
   describe "#status" do
     context "when the profile is nil" do
       let(:profile) { nil }

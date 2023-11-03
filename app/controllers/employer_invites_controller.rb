@@ -17,16 +17,8 @@ class EmployerInvitesController < ApplicationController
 
   def used
     invite = EmployerInvite.find(params[:employer_invite_id])
-    user = User.find_by(email: invite.email)
 
-    EmployerInvite.transaction do
-      invite.update!(used_at: DateTime.now)
-      Recruiter.create!(
-        id: SecureRandom.uuid,
-        employer_id: invite.employer_id,
-        user: user
-      )
-    end
+    EmployerInviteService.new(invite).accept
 
     render json: invite
   end

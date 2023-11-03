@@ -1,8 +1,5 @@
 module Klayvio
   class Klayvio
-    def initialize
-    end
-
     def application_status_updated(application_id:, email:, event_id:, employment_title:, employer_name:, occurred_at:, status:)
       data = event_data(
         event_type: 'Application Status Updated',
@@ -47,6 +44,20 @@ module Klayvio
 
     def education_experience_entered(email:, occurred_at:, event_id:)
       data = event_data(event_type: 'Education Experience Entered', email: email, time: occurred_at, event_id: event_id)
+
+      url = URI("https://a.klaviyo.com/api/events/")
+
+      post(url, data)
+    end
+
+    def employer_invite_accepted(email:, occurred_at:, event_id:, profile_properties:)
+      data = event_data(
+        event_type: 'Employer Invite Accepted',
+        email: email,
+        time: occurred_at,
+        event_id: event_id,
+        profile_properties: profile_properties
+      )
 
       url = URI("https://a.klaviyo.com/api/events/")
 

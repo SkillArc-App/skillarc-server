@@ -33,6 +33,11 @@ Pubsub.subscribe(
   subscriber: Klayvio::UserUpdated.new
 )
 
+# Pubsub.subscribe(
+#   event: Event::EventTypes::NOTIFICATION_CREATED,
+#   subscriber: NotificationService.new
+# )
+
 Pubsub.subscribe(
   event: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
   subscriber: Klayvio::EducationExperienceEntered.new

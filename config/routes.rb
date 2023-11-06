@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   put 'employers/applicants/:id' => 'employers/applicants#update', as: 'employers_applicant'
   resources :employers
 
+  post 'hooks/:id' => 'hooks#event', as: 'hooks_event'
+
   mount Resque::Server.new, at: "/resque"
 
   get 'job_matches' => 'job_matches#index'

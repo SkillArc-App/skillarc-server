@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_02_161743) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_06_151307) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -211,6 +211,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_02_161743) do
     t.text "response", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string "type"
+    t.string "title"
+    t.string "body"
+    t.string "url"
+    t.text "user_id", null: false
+    t.datetime "read_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "onboarding_sessions", id: :text, force: :cascade do |t|
@@ -505,6 +517,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_02_161743) do
   add_foreign_key "learned_skills", "jobs", name: "LearnedSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "learned_skills", "master_skills", name: "LearnedSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "network_interests", "profiles", name: "NetworkInterests_profile_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "notifications", "users"
   add_foreign_key "onboarding_sessions", "users", name: "OnboardingSession_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "other_experiences", "organizations", name: "OtherExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "other_experiences", "profiles", name: "OtherExperience_profile_id_fkey", on_update: :cascade, on_delete: :restrict

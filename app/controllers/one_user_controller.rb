@@ -17,6 +17,15 @@ class OneUserController < ApplicationController
 
     fast_track_tasks = FastTrackTasks.new(current_user)
 
+    notifications = Notification.where(user: current_user).order(created_at: :desc).limit(10).map do |n|
+      {
+        notificationTitle: n.title,
+        notificationBody: n.body,
+        read: n.read?,
+        url: n.url
+      }
+    end
+
     render json: {
       **user_ret,
       onboardingSession: os_ret,
@@ -30,6 +39,7 @@ class OneUserController < ApplicationController
         profile: fast_track_tasks.profile,
         career: fast_track_tasks.career,
       },
+      notifications:,
       profile: {
         **profile,
         educationExperiences: current_user.profile&.education_experiences || [],

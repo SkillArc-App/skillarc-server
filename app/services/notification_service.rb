@@ -1,6 +1,6 @@
 class NotificationService
   def call(event:)
-    user = User.find_by!(email: event.data["email"])
+    user = User.find(event.aggregate_id)
 
     Notification.create!(
       user:,

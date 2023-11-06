@@ -4,11 +4,10 @@ RSpec.describe NotificationService do
   describe "#call" do
     subject { described_class.new.call(event:) }
 
-    let(:event) { double(:event, data:) }
+    let(:event) { double(:event, aggregate_id: user.id, data:) }
 
     let(:data) do
       {
-        "email" => email,
         "title" => title,
         "body" => body,
         "url" => url,

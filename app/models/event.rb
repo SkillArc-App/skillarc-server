@@ -8,6 +8,7 @@ class Event < ApplicationRecord
       JOB_SAVED = 'job_saved',
       JOB_UNSAVED = 'job_unsaved',
       NOTIFICATION_CREATED = 'notification_created',
+      NOTIFICATIONS_MARKED_READ = 'notifications_marked_read',
       ONBOARDING_COMPLETED = 'onboarding_completed',
       PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created',
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created',

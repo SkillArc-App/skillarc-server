@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   post 'hooks/:id' => 'hooks#event', as: 'hooks_event'
 
+  post 'notifications/mark_read' => 'notifications#mark_read'
+
   mount Resque::Server.new, at: "/resque"
 
   get 'job_matches' => 'job_matches#index'

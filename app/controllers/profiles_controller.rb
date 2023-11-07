@@ -31,11 +31,14 @@ class ProfilesController < ApplicationController
   def show
     profile = Profile.includes(profile_skills: :master_skill).find(params[:id])
 
+    industry_interests = profile.user.onboarding_session.responses.dig("opportunityInterests", "response")
+
     render json: {
       **profile.as_json,
       desired_outcomes: [],
       educationExperiences: profile.education_experiences,
       hiringStatus: profile.hiring_status,
+      industryInterests: industry_interests,
       otherExperiences: profile.other_experiences,
       personalExperience: profile.personal_experiences,
       profileCertifications: [],

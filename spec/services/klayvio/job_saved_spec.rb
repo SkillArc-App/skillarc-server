@@ -8,6 +8,7 @@ RSpec.describe Klayvio::JobSaved do
       build(
         :event,
         :job_saved,
+        aggregate_id: user.id,
         data: {
           job_id: "A",
           employment_title: "Welder",
@@ -16,9 +17,11 @@ RSpec.describe Klayvio::JobSaved do
       )
     end
 
+    let(:user) { create(:user) }
+
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:job_saved).with(
-        email: event.data["email"],
+        email: user.email,
         event_id: event.id,
         event_properties: {
           job_id: "A",

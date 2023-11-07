@@ -1,8 +1,10 @@
 module Klayvio
   class JobSaved
     def call(event:)
+      user = User.find(event.aggregate_id)
+
       Klayvio.new.job_saved(
-        email: event.data["email"],
+        email: user.email,
         event_id: event.id,
         event_properties: {
           job_id: event.data["job_id"],

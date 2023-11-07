@@ -12,6 +12,16 @@ class Job < ApplicationRecord
 
   scope :shown, -> { where(hide_job: false) }
 
+  def self.with_employer_info
+    includes(
+      :employer,
+      applicants: [
+        :status,
+        profile: :user
+      ]
+    )
+  end
+
   def self.with_everything
     includes(
       :applicants,

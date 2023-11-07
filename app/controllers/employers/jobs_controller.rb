@@ -6,7 +6,7 @@ class Employers::JobsController < ApplicationController
   before_action :employer_authorize
 
   def index
-    jobs = current_user.employer_admin? ? Job.all : recruiter.employer.jobs
+    jobs = current_user.employer_admin? ? Job.all.with_employer_info : recruiter.employer.jobs.with_employer_info
 
     ret_jobs = jobs.map do |job|
       {

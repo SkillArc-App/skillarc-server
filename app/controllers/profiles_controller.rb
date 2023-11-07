@@ -29,7 +29,7 @@ class ProfilesController < ApplicationController
   end
 
   def show
-    profile = Profile.find(params[:id])
+    profile = Profile.includes(profile_skills: :master_skill).find(params[:id])
 
     render json: {
       **profile.as_json,

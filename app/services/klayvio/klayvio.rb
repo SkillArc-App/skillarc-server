@@ -19,6 +19,20 @@ module Klayvio
       post(url, data)
     end
 
+    def job_saved(email:, event_id:, event_properties:, occurred_at:)
+      data = event_data(
+        event_type: 'Job Saved',
+        email: email,
+        time: occurred_at,
+        event_id: event_id,
+        event_properties: event_properties
+      )
+
+      url = URI("https://a.klaviyo.com/api/events/")
+
+      post(url, data)
+    end
+
     def user_signup(email:, occurred_at:, event_id:)
       data = event_data(event_type: 'User Signup', email: email, time: occurred_at, event_id: event_id)
   

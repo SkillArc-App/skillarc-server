@@ -16,7 +16,7 @@ class Job < ApplicationRecord
     includes(
       :employer,
       applicants: [
-        :status,
+        :applicant_statuses,
         profile: :user
       ]
     )

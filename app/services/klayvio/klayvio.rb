@@ -64,6 +64,20 @@ module Klayvio
       post(url, data)
     end
 
+    def training_provider_invite_accepted(email:, occurred_at:, event_id:, profile_properties:)
+      data = event_data(
+        event_type: 'Training Provider Invite Accepted',
+        email: email,
+        time: occurred_at,
+        event_id: event_id,
+        profile_properties: profile_properties
+      )
+
+      url = URI("https://a.klaviyo.com/api/events/")
+
+      post(url, data)
+    end
+
     def experience_entered(email:, occurred_at:, event_id:)
       data = event_data(event_type: 'Experience Entered', email: email, time: occurred_at, event_id: event_id)
   

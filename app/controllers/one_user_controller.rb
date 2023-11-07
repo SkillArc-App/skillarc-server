@@ -8,6 +8,15 @@ class OneUserController < ApplicationController
     user_ret = deep_transform_keys(current_user.slice(:id, :name, :email, :first_name, :last_name, :zip_code, :phone_number)) { |key| to_camel_case(key) }
     os_ret = (current_user.onboarding_session || {}).slice(:id, :started_at, :completed_at, :responses)
 
+    ActiveRecord::Associations::Preloader.new(
+      records: [current_user],
+      associations: {
+        profile: {
+          profile_skills: [ :master_skill ]
+        }
+      }
+    ).call
+
     profile = current_user.profile&.slice(
       :id,
       :image,

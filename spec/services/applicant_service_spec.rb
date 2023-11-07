@@ -9,7 +9,7 @@ RSpec.describe ApplicantService do
     it "creates a new applicant status" do
       expect do
         subject.update_status(ApplicantStatus::StatusTypes::PENDING_INTRO)
-      end.to change { applicant.applicant_statuses.count }.by(1)
+      end.to change { applicant.reload.applicant_statuses.count }.by(1)
 
       expect(applicant.status.status).to eq(ApplicantStatus::StatusTypes::PENDING_INTRO)
     end

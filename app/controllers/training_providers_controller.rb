@@ -12,7 +12,7 @@ class TrainingProvidersController < ApplicationController
   end
 
   def index
-    render json: TrainingProvider.all.map { |tp| serialize_training_provider(tp) }
+    render json: TrainingProvider.includes(:programs).map { |tp| serialize_training_provider(tp) }
   end
 
   def show

@@ -31,7 +31,7 @@ class ProfilesController < ApplicationController
   def show
     profile = Profile.includes(profile_skills: :master_skill).find(params[:id])
 
-    industry_interests = profile.user.onboarding_session.responses.dig("opportunityInterests", "response")
+    industry_interests = profile.user.onboarding_session&.responses&.dig("opportunityInterests", "response") || []
 
     render json: {
       **profile.as_json,

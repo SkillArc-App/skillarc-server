@@ -34,6 +34,11 @@ Pubsub.subscribe(
 )
 
 Pubsub.subscribe(
+  event: Event::EventTypes::MET_CAREER_COACH_UPDATED,
+  subscriber: Klayvio::MetCareerCoachUpdated.new
+)
+
+Pubsub.subscribe(
   event: Event::EventTypes::NOTIFICATION_CREATED,
   subscriber: NotificationService.new
 )

@@ -10,7 +10,7 @@ RSpec.describe Klayvio::MetCareerCoachUpdated do
         :met_career_coach_updated,
         aggregate_id: user.id,
         data: {
-          met_with_career_coach: true,
+          met_career_coach: true,
         }
       )
     end
@@ -23,7 +23,7 @@ RSpec.describe Klayvio::MetCareerCoachUpdated do
         event_id: event.id,
         occurred_at: event.occurred_at,
         profile_properties: {
-          met_with_career_coach: true,
+          met_career_coach: true,
         }
       )
 

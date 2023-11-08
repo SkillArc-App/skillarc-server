@@ -8,7 +8,7 @@ module Klayvio
         event_id: event.id,
         occurred_at: event.occurred_at,
         profile_properties: {
-          met_with_career_coach: event.data["met_with_career_coach"],
+          met_career_coach: event.data["met_career_coach"],
         }
       )
     end

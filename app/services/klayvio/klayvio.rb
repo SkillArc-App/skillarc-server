@@ -33,6 +33,20 @@ module Klayvio
       post(url, data)
     end
 
+    def met_with_career_coach_updated(email:, occurred_at:, event_id:, profile_properties:)
+      data = event_data(
+        event_type: 'Met With Career Coach Updated',
+        email: email,
+        time: occurred_at,
+        event_id: event_id,
+        profile_properties: profile_properties
+      )
+
+      url = URI("https://a.klaviyo.com/api/events/")
+
+      post(url, data)
+    end
+
     def user_signup(email:, occurred_at:, event_id:)
       data = event_data(event_type: 'User Signup', email: email, time: occurred_at, event_id: event_id)
   

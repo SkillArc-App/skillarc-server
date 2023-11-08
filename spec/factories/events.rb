@@ -38,6 +38,13 @@ FactoryBot.define do
       occurred_at { Time.new(2020, 1, 1) }
     end
 
+    trait :met_career_coach_updated do
+      event_type { Event::EventTypes::MET_CAREER_COACH_UPDATED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
     trait :training_provider_invite_accepted do
       event_type { Event::EventTypes::TRAINING_PROVIDER_INVITE_ACCEPTED }
       data {{}}

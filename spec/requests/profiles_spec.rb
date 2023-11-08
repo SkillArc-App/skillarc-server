@@ -18,4 +18,31 @@ RSpec.describe "Profiles", type: :request do
       expect(response).to have_http_status(200)
     end
   end
+
+  describe "PUT /update" do
+    subject { put profile_path(profile), params: params }
+
+    let(:profile) { create(:profile) }
+
+    let(:params) do
+      {
+        profile: {
+          bio: "New Bio",
+          met_career_coach: true,
+        }
+      }
+    end
+
+    it_behaves_like "admin secured endpoint"
+
+    context "admin authenticated" do
+      include_context "admin authenticated"
+
+      it "updates the profile" do
+        expect { subject }
+          .to change { profile.reload.bio }.to("New Bio")
+          .and change { profile.reload.met_career_coach }.to(true)
+      end
+    end
+  end
 end

@@ -3,8 +3,9 @@ class ProfilesController < ApplicationController
   include Admin
   include Cereal
 
-  before_action :authorize, only: [:index]
-  before_action :admin_authorize, only: [:index]
+  before_action :authorize, only: [:index, :update]
+  before_action :admin_authorize, only: [:index, :update]
+  before_action :set_profile, only: [:show, :update]
 
   def index
     # Profile all with nested include of user and seeker_training_providers
@@ -29,8 +30,6 @@ class ProfilesController < ApplicationController
   end
 
   def show
-    profile = Profile.includes(profile_skills: :master_skill).find(params[:id])
-
     industry_interests = profile.user.onboarding_session&.responses&.dig("opportunityInterests", "response") || []
 
     render json: {
@@ -65,5 +64,28 @@ class ProfilesController < ApplicationController
         end.as_json
       }
     }
+  end
+
+  def update
+    ProfileService.new(profile).update(profile_params)
+
+    render json: profile
+  end
+
+  private
+
+  attr_reader :profile
+
+  def profile_params
+    params.require(:profile).permit(
+      :bio,
+      :image,
+      :met_career_coach,
+      :status
+    )
+  end
+
+  def set_profile
+    @profile = Profile.includes(profile_skills: :master_skill).find(params[:id])
   end
 end

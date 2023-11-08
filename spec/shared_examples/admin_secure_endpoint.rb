@@ -1,7 +1,10 @@
 RSpec.shared_context "admin authenticated" do
   before do
-    r = Role.create(id: SecureRandom.uuid, name: "admin")
-    u = User.create!(
+    r = Role.find_or_initialize_by(name: "admin") do |r|
+      r.id = SecureRandom.uuid
+      r.save!
+    end
+    u = User.find_or_create_by!(
       id: 'clem7u5uc0007mi0rne4h3be0',
       name: 'Jake Not-Onboard',
       first_name: 'Jake',

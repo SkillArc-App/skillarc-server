@@ -22,6 +22,14 @@ class UserEvents
 
   def event_message(event)
     case event.event_type
+    when Event::EventTypes::EDUCATION_EXPERIENCE_CREATED
+      "Education Experience Created: #{event.data["organization_name"]}"
+    when Event::EventTypes::EXPERIENCE_CREATED
+      "Work Experience Created: #{event.data["organization_name"]}"
+    when Event::EventTypes::JOB_SAVED
+      "Job Saved: #{event.data["employment_title"]}"
+    when Event::EventTypes::ONBOARDING_COMPLETED
+      "Onboarding Complete"
     when Event::EventTypes::USER_CREATED
       "Signed Up"
     end

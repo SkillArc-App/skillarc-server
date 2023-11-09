@@ -9,7 +9,7 @@ class UserEvents
     applicant_events = Event.where(event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED)
                             .where("data->>'user_id' = ?", user.id)
 
-    (events + applicant_events).sort_by(&:occurred_at).map do |event|
+    (events + applicant_events).sort_by(&:occurred_at).reverse.map do |event|
       event_message = event_message(event)
 
       next unless event_message

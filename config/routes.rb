@@ -34,6 +34,8 @@ Rails.application.routes.draw do
   resources :references
   resources :students
 
+  resources :user_events
+
   resources :jobs do
     post 'apply' => 'jobs#apply'
     resources :career_paths do

@@ -5,7 +5,7 @@ Employer.create!(
     bio: 'Turner is a North America-based, international construction services company and is a leading builder in diverse and numerous market segments. The company has earned recognition for undertaking large, complex projects, fostering',
     location: 'Global',
     logo_url:
-      'https://media.licdn.com/dms/image/C4D0BAQFdzRrX3YAi9w/company-logo_100_100/0/1519856425185?e=1694044800&v=beta&t=hIX-hEWiNY3srQehf_eGOSxkYaThtMKRT4RCUMGAMgc'
+      'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
   },
    {
      id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
@@ -13,7 +13,7 @@ Employer.create!(
      bio: 'The Superior Group is a ​national leader in electrical construction, engineering, and technology services.',
      location: 'Ohio',
      logo_url:
-       'https://media.licdn.com/dms/image/C560BAQE7KJz9WqvtvQ/company-logo_100_100/0/1528981770616?e=1694044800&v=beta&t=xXjDqNmJ0Rtdi7siJweAdLIvWdtCIubvmIG7kt8Fj9Y'
+       'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
    }]
 )
 

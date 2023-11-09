@@ -49,7 +49,23 @@ RSpec.describe UserEvents do
       )
     end
 
+    let!(:applicant_status_updated_event) do
+      create(
+        :event,
+        :applicant_status_updated,
+        occurred_at: occurred_at,
+        aggregate_id: job.id,
+        data: {
+          user_id: user.id,
+          employment_title: "Test Job",
+          status: "new"
+        }
+      )
+    end
+
     let(:occurred_at) { Time.utc(2023, 12, 1) }
+
+    let(:job) { create(:job) }
 
     it "returns the events" do
       expect(subject).to contain_exactly(
@@ -58,6 +74,7 @@ RSpec.describe UserEvents do
         { datetime: '2023-12-01 12:00AM', event_message: "Work Experience Created: Test Company" },
         { datetime: '2023-12-01 12:00AM', event_message: "Onboarding Complete" },
         { datetime: '2023-12-01 12:00AM', event_message: "Job Saved: Test Job" },
+        { datetime: '2023-12-01 12:00AM', event_message: "Applicant Status Updated: Test Job - new" },
       )
     end
   end

@@ -6,7 +6,10 @@ class UserEvents
   def all
     events = Event.where(aggregate_id: user.id).order(occurred_at: :desc)
 
-    events.map do |event|
+    applicant_events = Event.where(event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED)
+                            .where("data->>'user_id' = ?", user.id)
+
+    (events + applicant_events).map do |event|
       event_message = event_message(event)
 
       next unless event_message
@@ -22,6 +25,8 @@ class UserEvents
 
   def event_message(event)
     case event.event_type
+    when Event::EventTypes::APPLICANT_STATUS_UPDATED
+      "Applicant Status Updated: #{event.data["employment_title"]} - #{event.data["status"]}"
     when Event::EventTypes::EDUCATION_EXPERIENCE_CREATED
       "Education Experience Created: #{event.data["organization_name"]}"
     when Event::EventTypes::EXPERIENCE_CREATED

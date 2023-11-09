@@ -15,7 +15,7 @@ class UserEvents
       next unless event_message
 
       {
-        datetime: event.occurred_at.strftime("%Y-%m-%d %l:%M%p"),
+        datetime: event.occurred_at.in_time_zone('Eastern Time (US & Canada)').strftime("%Y-%m-%d %l:%M%p"),
         event_message:,
       }
     end.compact

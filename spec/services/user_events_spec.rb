@@ -69,12 +69,12 @@ RSpec.describe UserEvents do
 
     it "returns the events" do
       expect(subject).to contain_exactly(
-        { datetime: '2023-12-01 12:00AM', event_message: "Signed Up" },
-        { datetime: '2023-12-01 12:00AM', event_message: "Education Experience Created: Test University" },
-        { datetime: '2023-12-01 12:00AM', event_message: "Work Experience Created: Test Company" },
-        { datetime: '2023-12-01 12:00AM', event_message: "Onboarding Complete" },
-        { datetime: '2023-12-01 12:00AM', event_message: "Job Saved: Test Job" },
-        { datetime: '2023-12-01 12:00AM', event_message: "Applicant Status Updated: Test Job - new" },
+        { datetime: '2023-11-30  7:00PM', event_message: "Signed Up" },
+        { datetime: '2023-11-30  7:00PM', event_message: "Education Experience Created: Test University" },
+        { datetime: '2023-11-30  7:00PM', event_message: "Work Experience Created: Test Company" },
+        { datetime: '2023-11-30  7:00PM', event_message: "Onboarding Complete" },
+        { datetime: '2023-11-30  7:00PM', event_message: "Job Saved: Test Job" },
+        { datetime: '2023-11-30  7:00PM', event_message: "Applicant Status Updated: Test Job - new" },
       )
     end
   end

@@ -3,12 +3,20 @@ class ApplicantService
     @applicant = applicant
   end
 
-  def update_status(status)
+  def update_status(status:, reasons: [])
     applicant_status = ApplicantStatus.create!(
       id: SecureRandom.uuid,
       applicant: applicant,
       status: status
     )
+
+    # binding.pry
+    reasons.each do |reason_id|
+      ApplicantStatusReason.create!(
+        applicant_status: applicant_status,
+        reason_id: reason_id
+      )
+    end
 
     Resque.enqueue(
       CreateEventJob, 

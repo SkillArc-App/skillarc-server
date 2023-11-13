@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   put 'one_user' => 'one_user#update'
   resources :one_user
 
+  resources :pass_reasons
+
   resources :onboarding_sessions
   resources :profiles do
     resources :stories

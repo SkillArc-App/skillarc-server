@@ -1,14 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe ApplicantService do
-  subject { described_class.new(applicant) }
-
   let(:applicant) { create(:applicant) }
 
   describe "#update_status" do
+    subject { described_class.new(applicant).update_status(status: status, reasons: reasons) }
+
+    let(:status) { ApplicantStatus::StatusTypes::PENDING_INTRO }
+    let(:reasons) { [reason.id] }
+    let(:reason) { create(:reason) }
+
     it "creates a new applicant status" do
       expect do
-        subject.update_status(ApplicantStatus::StatusTypes::PENDING_INTRO)
+        subject
       end.to change { applicant.reload.applicant_statuses.count }.by(1)
 
       expect(applicant.status.status).to eq(ApplicantStatus::StatusTypes::PENDING_INTRO)
@@ -30,7 +34,15 @@ RSpec.describe ApplicantService do
         occurred_at: anything
       )
 
-      subject.update_status(ApplicantStatus::StatusTypes::PENDING_INTRO)
+      subject
+    end
+
+    it "attaches applicant status reasons" do
+      expect do
+        subject
+      end.to change { applicant.reload.applicant_statuses.last.applicant_status_reasons.count }.by(1)
+
+      expect(applicant.applicant_statuses.last.applicant_status_reasons.last.reason).to eq(reason)
     end
   end
 end

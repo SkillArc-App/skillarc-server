@@ -1,5 +1,6 @@
 class ApplicantStatus < ApplicationRecord
   belongs_to :applicant
+  has_many :applicant_status_reasons
 
   module StatusTypes
     ALL = [

@@ -8,8 +8,15 @@ class Employers::ApplicantsController < ApplicationController
   def update
     applicant = Applicant.find(params[:id])
 
-    ApplicantService.new(applicant).update_status(params[:status])
+    status = applicant_update_params[:status]
+    reasons = applicant_update_params[:reasons]
+
+    ApplicantService.new(applicant).update_status(status:, reasons: reasons || [])
 
     render json: applicant
+  end
+
+  def applicant_update_params
+    params.permit(:status, reasons: [])
   end
 end

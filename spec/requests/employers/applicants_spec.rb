@@ -9,10 +9,8 @@ RSpec.describe "Employers::Applicants", type: :request do
     let(:applicant) { create(:applicant) }
     let(:params) do
       {
-        status: {
-          status: ApplicantStatus::StatusTypes::PENDING_INTRO,
-          reasons: [reason.id]
-        }
+        status: ApplicantStatus::StatusTypes::PENDING_INTRO,
+        reasons: [reason.id]
       }
     end
     let(:reason) { create(:reason) }
@@ -32,9 +30,7 @@ RSpec.describe "Employers::Applicants", type: :request do
     context "when there are no reasons" do
       let(:params) do
         {
-          status: {
-            status: ApplicantStatus::StatusTypes::PENDING_INTRO,
-          }
+          status: ApplicantStatus::StatusTypes::PENDING_INTRO,
         }
       end
 

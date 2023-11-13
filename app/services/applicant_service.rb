@@ -10,7 +10,6 @@ class ApplicantService
       status: status
     )
 
-    # binding.pry
     reasons.each do |reason_id|
       ApplicantStatusReason.create!(
         applicant_status: applicant_status,

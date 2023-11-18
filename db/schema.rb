@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_13_142049) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_20_170122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_13_142049) do
     t.index ["provider", "provider_account_id"], name: "Account_provider_provider_account_id_key", unique: true
   end
 
+  create_table "applicant_chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "applicant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["applicant_id"], name: "index_applicant_chats_on_applicant_id"
+  end
+
   create_table "applicant_status_reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "applicant_status_id", null: false
     t.uuid "reason_id", null: false
@@ -78,6 +85,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_13_142049) do
     t.text "job_id", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
+  end
+
+  create_table "chat_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "applicant_chat_id", null: false
+    t.text "user_id", null: false
+    t.text "message", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["applicant_chat_id"], name: "index_chat_messages_on_applicant_chat_id"
+    t.index ["user_id"], name: "index_chat_messages_on_user_id"
   end
 
   create_table "credentials", id: :text, force: :cascade do |t|
@@ -140,6 +157,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_13_142049) do
     t.text "logo_url"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
+    t.boolean "chat_enabled", default: false, null: false
   end
 
   create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -153,6 +171,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_13_142049) do
     t.datetime "updated_at", null: false
     t.index ["aggregate_id", "version"], name: "index_events_on_aggregate_id_and_version"
     t.index ["event_type"], name: "index_events_on_event_type"
+  end
+
+  create_table "flipper_features", force: :cascade do |t|
+    t.string "key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_flipper_features_on_key", unique: true
+  end
+
+  create_table "flipper_gates", force: :cascade do |t|
+    t.string "feature_key", null: false
+    t.string "key", null: false
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
   end
 
   create_table "job_interactions", id: :text, force: :cascade do |t|
@@ -515,12 +549,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_13_142049) do
   end
 
   add_foreign_key "accounts", "users", name: "Account_user_id_fkey", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "applicant_chats", "applicants"
   add_foreign_key "applicant_status_reasons", "applicant_statuses"
   add_foreign_key "applicant_status_reasons", "reasons"
   add_foreign_key "applicant_statuses", "applicants", name: "ApplicantStatus_applicant_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "applicants", "jobs", name: "Applicant_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "applicants", "profiles", name: "Applicant_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "career_paths", "jobs", name: "CareerPath_job_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "chat_messages", "applicant_chats"
+  add_foreign_key "chat_messages", "users"
   add_foreign_key "credentials", "organizations", name: "Credential_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "credentials", "profiles", name: "Credential_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_certifications", "jobs", name: "DesiredCertification_job_id_fkey", on_update: :cascade, on_delete: :restrict

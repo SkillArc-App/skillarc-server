@@ -3,6 +3,13 @@ require 'resque/server'
 Rails.application.routes.draw do
   get 'employers/jobs' => 'employers/jobs#index'
   put 'employers/applicants/:id' => 'employers/applicants#update', as: 'employers_applicant'
+
+  scope module: 'employers', path: 'employers' do
+    resources :chats do
+      post 'send_message' => 'chats#send_message', on: :collection
+    end
+  end
+
   resources :employers
 
   post 'hooks/:id' => 'hooks#event', as: 'hooks_event'
@@ -91,6 +98,7 @@ Rails.application.routes.draw do
       post 'unsave' => 'jobs#unsave'
     end
   end
+
 
   resources :seekers do
     resources :training_providers, controller: 'seeker_training_providers'

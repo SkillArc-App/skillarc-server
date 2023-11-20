@@ -10,7 +10,34 @@ RSpec.describe "Employers::Chats", type: :request do
       include_context "employer authenticated"
 
       it "calls the EmployerChats service" do
-        expect(EmployerChats).to receive(:new).with(recruiter).and_call_original
+        expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
+          user: user,
+          employer_id: employer.id
+        )).and_call_original
+        
+
+        expect_any_instance_of(EmployerChats).to receive(:get)
+
+        subject
+      end
+    end
+
+    context "when the user is an employer admin" do
+      include_context "employer authenticated"
+
+      let(:recruiter) { nil }
+
+      before do
+        create(:user_role, user: user, role: Role.create!(id: SecureRandom.uuid, name: "employer_admin"))
+      end
+
+      it "calls the EmployerChats service" do
+        expect(EmployerChats).to receive(:new).with(
+          EmployerChats::Recruiter.new(
+            user: user,
+            employer_id: [employer.id]
+          )
+        ).and_call_original
 
         expect_any_instance_of(EmployerChats).to receive(:get)
 
@@ -36,7 +63,10 @@ RSpec.describe "Employers::Chats", type: :request do
       include_context "employer authenticated"
 
       it "calls the EmployerChats service" do
-        expect(EmployerChats).to receive(:new).with(recruiter).and_call_original
+        expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
+          user: user,
+          employer_id: employer.id
+        )).and_call_original
 
         expect_any_instance_of(EmployerChats)
           .to receive(:send_message)
@@ -66,7 +96,10 @@ RSpec.describe "Employers::Chats", type: :request do
       include_context "employer authenticated"
 
       it "calls the EmployerChats service" do
-        expect(EmployerChats).to receive(:new).with(recruiter).and_call_original
+        expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
+          user: user,
+          employer_id: employer.id
+        )).and_call_original
 
         expect_any_instance_of(EmployerChats)
           .to receive(:create)

@@ -1,4 +1,6 @@
 class EmployerChats
+  Recruiter = Struct.new(:user, :employer_id)
+
   def initialize(recruiter)
     @recruiter = recruiter
   end
@@ -13,8 +15,8 @@ class EmployerChats
         {
           id: applicant_chat.applicant.id,
           name: "#{applicant_user.first_name} #{applicant_user.last_name} - #{applicant_chat.applicant.job.employment_title}",
-          updatedAt: applicant_chat.messages.last&.created_at || applicant_chat.created_at,
-          messages: applicant_chat.messages.map do |message|
+          updatedAt: applicant_chat.messages.last_created&.created_at || applicant_chat.created_at,
+          messages: applicant_chat.messages.sort_by(&:created_at).map do |message|
             {
               id: message.id,
               text: message.message,

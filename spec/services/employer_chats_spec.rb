@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe EmployerChats do
   let!(:recruiter) { create(:recruiter, employer: employer, user: recruiter_user) }
+  # let(:r) { EmployerChats::Recruiter.new(recruiter.user, recruiter.employer_id) }
   let(:employer) { create(:employer) }
 
   let(:recruiter_user) { create(:user, first_name: "Recruiter", last_name: "User") }
@@ -17,7 +18,7 @@ RSpec.describe EmployerChats do
 
     let!(:applicant_chat) { create(:applicant_chat, applicant: applicant) }
     let!(:chat_message) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the applicant", user: user) }
-    let!(:chat_message_2) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the recruiter", user: recruiter.user) }
+    let!(:chat_message_2) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the recruiter", user: recruiter.user, created_at: chat_message.created_at + 1.minute) }
 
     it "returns the applicant chat" do
       expect(subject.first).to eq(

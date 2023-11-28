@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_20_170122) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_22_155455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -51,7 +51,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_20_170122) do
     t.text "applicant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["applicant_id"], name: "index_applicant_chats_on_applicant_id"
+    t.index ["applicant_id"], name: "index_applicant_chats_on_applicant_id", unique: true
   end
 
   create_table "applicant_status_reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -367,6 +367,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_20_170122) do
     t.datetime "updated_at", precision: 3, null: false
   end
 
+  create_table "read_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "chat_message_id", null: false
+    t.text "user_id", null: false
+    t.datetime "read_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chat_message_id"], name: "index_read_receipts_on_chat_message_id"
+    t.index ["user_id"], name: "index_read_receipts_on_user_id"
+  end
+
   create_table "reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "description"
     t.datetime "created_at", null: false
@@ -592,6 +602,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_20_170122) do
   add_foreign_key "program_skills", "master_skills", column: "skill_id", name: "ProgramSkill_skill_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "program_skills", "programs", name: "ProgramSkill_program_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "programs", "training_providers", name: "Program_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "read_receipts", "chat_messages"
+  add_foreign_key "read_receipts", "users"
   add_foreign_key "recruiters", "employers", name: "Recruiter_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "recruiters", "users", name: "Recruiter_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_invites", "programs", name: "SeekerInvite_program_id_fkey", on_update: :cascade, on_delete: :restrict

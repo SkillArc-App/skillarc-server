@@ -10,6 +10,14 @@ class Employers::ChatsController < ApplicationController
     render json: EmployerChats.new(r).get
   end
 
+  def mark_read
+    EmployerChats.new(r).mark_read(
+      applicant_id: params[:applicant_id]
+    )
+
+    render json: { success: true }
+  end
+
   def send_message
     EmployerChats.new(r).send_message(
       applicant_id: params[:applicant_id],

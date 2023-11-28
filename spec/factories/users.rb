@@ -9,5 +9,6 @@ FactoryBot.define do
         build(:onboarding_session)
       ]
     end
+    sub { Faker::Internet.uuid }
   end
 end

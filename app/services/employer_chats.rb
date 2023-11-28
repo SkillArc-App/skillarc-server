@@ -6,7 +6,7 @@ class EmployerChats
   end
 
   def get
-    ApplicantChat
+    ac = ApplicantChat
       .includes(messages: :user, applicant: { profile: :user, job: :employer })
       .references(:messages, applicant: { profile: :user, job: :employer })
       .where(jobs: { employers: { id: recruiter.employer_id } }).map do |applicant_chat|
@@ -21,10 +21,25 @@ class EmployerChats
               id: message.id,
               text: message.message,
               isUser: message.user == recruiter.user,
+              isRead: message.read_receipts.any? { |read_receipt| read_receipt.user == recruiter.user },
               sender: "#{message.user.first_name} #{message.user.last_name}"
             }
           end
         }
+      end
+
+    ac
+  end
+
+  def mark_read(applicant_id:)
+    ApplicantChat
+      .includes(messages: :user, applicant: { profile: :user, job: :employer })
+      .references(:messages, applicant: { profile: :user, job: :employer })
+      .where(applicants: { id: applicant_id })
+      .each do |applicant_chat|
+        applicant_chat.messages.each do |message|
+          message.read_receipts.find_or_create_by!(user: recruiter.user)
+        end
       end
   end
 

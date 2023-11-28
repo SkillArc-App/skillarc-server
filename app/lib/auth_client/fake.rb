@@ -3,10 +3,10 @@ module AuthClient
     Error = Struct.new(:message, :status)
     Response = Struct.new(:decoded_token, :error)
 
-    def self.validate_token(_token)
+    def self.validate_token(token)
       Response.new(
         [{
-          'sub' => "email|#{ENV['MOCK_USER_SUB']}"
+          'sub' => "email|#{token}"
         }],
         nil
       )

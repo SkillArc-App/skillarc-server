@@ -46,6 +46,36 @@ RSpec.describe "Employers::Chats", type: :request do
     end
   end
 
+  describe "POST /mark_read" do
+    subject { post mark_read_chats_path, params: params }
+
+    let(:params) do
+      {
+        applicant_id: applicant.id
+      }
+    end
+    let(:applicant) { create(:applicant) }
+
+    it_behaves_like "employer secured endpoint"
+
+    context "when the employer has a recruiter" do
+      include_context "employer authenticated"
+
+      it "calls the EmployerChats service" do
+        expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
+          user: user,
+          employer_id: employer.id
+        )).and_call_original
+
+        expect_any_instance_of(EmployerChats).to receive(:mark_read).with(
+          applicant_id: applicant.id
+        )
+
+        subject
+      end
+    end
+  end
+
   describe "POST /send_message" do
     subject { post send_message_chats_path, params: params }
 

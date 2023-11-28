@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   scope module: 'employers', path: 'employers' do
     resources :chats do
       post 'send_message' => 'chats#send_message', on: :collection
+      post 'mark_read' => 'chats#mark_read', on: :collection
     end
   end
 
@@ -73,13 +74,10 @@ Rails.application.routes.draw do
       post 'save' => 'jobs#save'
       post 'unsave' => 'jobs#unsave'
     end
-  end
 
-
-  scope module: 'seekers', path: 'seekers' do
-    resources :jobs do
-      post 'save' => 'jobs#save'
-      post 'unsave' => 'jobs#unsave'
+    resources :chats do
+      post 'send_message' => 'chats#send_message', on: :collection
+      post 'mark_read' => 'chats#mark_read', on: :collection
     end
   end
 
@@ -97,6 +95,18 @@ Rails.application.routes.draw do
       post 'save' => 'jobs#save'
       post 'unsave' => 'jobs#unsave'
     end
+  end
+
+
+  scope module: 'seekers', path: 'seekers' do
+    resources :jobs do
+      post 'save' => 'jobs#save'
+      post 'unsave' => 'jobs#unsave'
+    end
+  end
+
+  scope module: 'admin', path: 'admin' do
+    resources :users
   end
 
 

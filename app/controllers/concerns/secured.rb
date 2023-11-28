@@ -35,7 +35,7 @@ module Secured
   private
 
   def token_from_request
-    return if ENV['MOCK_AUTH'] == 'true'
+    return request.headers['Authorization']&.split.second if ENV['MOCK_AUTH'] == 'true'
 
     authorization_header_elements = request.headers['Authorization']&.split
 

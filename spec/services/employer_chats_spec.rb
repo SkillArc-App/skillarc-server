@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe EmployerChats do
   let!(:recruiter) { create(:recruiter, employer: employer, user: recruiter_user) }
-  # let(:r) { EmployerChats::Recruiter.new(recruiter.user, recruiter.employer_id) }
   let(:employer) { create(:employer) }
 
   let(:recruiter_user) { create(:user, first_name: "Recruiter", last_name: "User") }
@@ -20,6 +19,8 @@ RSpec.describe EmployerChats do
     let!(:chat_message) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the applicant", user: user) }
     let!(:chat_message_2) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the recruiter", user: recruiter.user, created_at: chat_message.created_at + 1.minute) }
 
+    let!(:read_receipt) { create(:read_receipt, chat_message: chat_message, user: recruiter_user) }
+
     it "returns the applicant chat" do
       expect(subject.first).to eq(
         {
@@ -31,17 +32,36 @@ RSpec.describe EmployerChats do
               id: chat_message.id,
               text: "This is a message from the applicant",
               isUser: false,
+              isRead: true,
               sender: "Hannah Block"
             },
             {
               id: chat_message_2.id,
               text: "This is a message from the recruiter",
               isUser: true,
+              isRead: false,
               sender: "Recruiter User"
             }
           ]
         }
       )
+    end
+  end
+
+  describe "#mark_read" do
+    subject { described_class.new(recruiter).mark_read(applicant_id: applicant.id) }
+
+    let!(:applicant_chat) { create(:applicant_chat, applicant: applicant) }
+    let!(:chat_message) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the applicant", user: user) }
+    let!(:chat_message_2) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the applicant") }
+
+    let!(:applicant) { create(:applicant, profile: profile) }
+
+    let!(:profile) { create(:profile, user: user) }
+    let(:user) { create(:user, first_name: "Hannah", last_name: "Block") }
+
+    it "creates a read receipt for each message" do
+      expect { subject }.to change { ReadReceipt.count }.by(2)
     end
   end
 

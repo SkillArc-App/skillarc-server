@@ -35,15 +35,18 @@ class OneUserController < ApplicationController
       }
     end
 
+    roles = current_user.user_roles.map do |ur|
+      {
+        **ur.as_json,
+        role: ur.role.as_json
+      }
+    end || []
+
+
     render json: {
       **user_ret,
       onboardingSession: os_ret,
-      userRoles: current_user.user_roles.map do |ur|
-        {
-          **ur.as_json,
-          role: ur.role.as_json
-        }
-      end || [],
+      userRoles: roles,
       fastTrackTasks: {
         profile: fast_track_tasks.profile,
         career: fast_track_tasks.career,

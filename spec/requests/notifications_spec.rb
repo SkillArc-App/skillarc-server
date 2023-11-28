@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Notifications", type: :request do
   describe "POST /mark_read" do
-    subject { post notifications_mark_read_path }
+    subject { post notifications_mark_read_path, headers: headers }
 
     it_behaves_like "a secured endpoint"
 

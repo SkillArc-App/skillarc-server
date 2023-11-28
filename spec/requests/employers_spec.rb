@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe "Employers", type: :request do
   describe "GET /index" do
-    subject { get employers_path }
+    subject { get employers_path, headers: headers }
 
     it_behaves_like "admin secured endpoint"
   end
 
   describe "GET /show" do
-    subject { get employer_path(employer) }
+    subject { get employer_path(employer), headers: headers }
 
     let(:employer) { create(:employer) }
 
@@ -16,7 +16,7 @@ RSpec.describe "Employers", type: :request do
   end
 
   describe "POST /create" do
-    subject { post employers_path, params: params }
+    subject { post employers_path, params: params, headers: headers }
 
     include_context "admin authenticated"
 
@@ -43,7 +43,7 @@ RSpec.describe "Employers", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put employer_path(employer), params: params }
+    subject { put employer_path(employer), params: params, headers: headers }
 
     include_context "admin authenticated"
 

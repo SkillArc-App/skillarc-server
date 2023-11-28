@@ -7,6 +7,7 @@ RSpec.shared_context "authenticated" do
 
     ENV["MOCK_AUTH"] = original
   end
+  let(:headers) { { "Authorization" => "Bearer #{user.sub}" } }
 
   let!(:user) do
     User.create!(

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Program::Students", type: :request do
   describe "PUT /update" do
-    subject { put program_student_path(program, student), params: }
+    subject { put program_student_path(program, student), params:, headers: headers }
 
     include_context "training provider authenticated"
 

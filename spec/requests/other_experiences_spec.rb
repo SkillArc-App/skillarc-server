@@ -6,7 +6,7 @@ RSpec.describe "OtherExperiences", type: :request do
   let(:profile) { create(:profile, user: user) }
 
   describe "POST /create" do
-    subject { post profile_other_experiences_path(profile_id: profile.id), params: params }
+    subject { post profile_other_experiences_path(profile_id: profile.id), params: params, headers: headers }
 
     let(:params) do
       {
@@ -33,7 +33,7 @@ RSpec.describe "OtherExperiences", type: :request do
   end
 
   describe "UPDATE /update" do
-    subject { put profile_other_experience_path(profile_id: profile.id, id: other_experience.id), params: params }
+    subject { put profile_other_experience_path(profile_id: profile.id, id: other_experience.id), params: params, headers: headers }
 
     let(:other_experience) { create(:other_experience, profile: profile) }
 
@@ -57,7 +57,7 @@ RSpec.describe "OtherExperiences", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete profile_other_experience_path(profile_id: profile.id, id: other_experience.id) }
+    subject { delete profile_other_experience_path(profile_id: profile.id, id: other_experience.id), headers: headers }
 
     let!(:other_experience) { create(:other_experience, profile: profile) }
 

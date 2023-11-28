@@ -6,7 +6,7 @@ RSpec.describe "LearnedSkills", type: :request do
   let(:job) { create(:job) }
 
   describe "POST /create" do
-    subject { post job_learned_skills_path(job), params: params }
+    subject { post job_learned_skills_path(job), params: params, headers: headers }
 
     let(:params) do
       {

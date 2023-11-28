@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "DesiredCertifications", type: :request do
   describe "CREATE /create" do
-    subject { post job_desired_certifications_path(job), params: params }
+    subject { post job_desired_certifications_path(job), params: params, headers: headers }
 
     include_context "admin authenticated"
 
@@ -26,7 +26,7 @@ RSpec.describe "DesiredCertifications", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete job_desired_certification_path(job, desired_certification) }
+    subject { delete job_desired_certification_path(job, desired_certification), headers: headers }
 
     include_context "admin authenticated"
 

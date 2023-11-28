@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "TrainingProviders", type: :request do
   describe "GET /index" do
-    subject { get training_providers_path }
+    subject { get training_providers_path, headers: headers }
 
     it_behaves_like "a secured endpoint"
   end

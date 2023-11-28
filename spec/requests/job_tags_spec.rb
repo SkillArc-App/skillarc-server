@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "JobTags", type: :request do
   describe "POST /create" do
-    subject { post job_job_tags_path(job), params: params }
+    subject { post job_job_tags_path(job), params: params, headers: headers }
 
     include_context "admin authenticated"
 
@@ -26,7 +26,7 @@ RSpec.describe "JobTags", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete job_job_tag_path(job, job_tag) }
+    subject { delete job_job_tag_path(job, job_tag), headers: headers }
 
     include_context "admin authenticated"
 

@@ -6,7 +6,7 @@ RSpec.describe "JobPhotos", type: :request do
   let(:job) { create(:job) }
 
   describe "POST /create" do
-    subject { post job_job_photos_path(job), params: params }
+    subject { post job_job_photos_path(job), params: params, headers: headers }
 
     let(:params) do
       {
@@ -28,7 +28,7 @@ RSpec.describe "JobPhotos", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete job_job_photo_path(job, job_photo) }
+    subject { delete job_job_photo_path(job, job_photo), headers: headers }
 
     let!(:job_photo) { create(:job_photo, job: job) }
 

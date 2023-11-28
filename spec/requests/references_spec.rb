@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "References", type: :request do
   describe "GET /show" do
-    subject { get reference_path(reference) }
+    subject { get reference_path(reference), headers: headers }
 
     let(:reference) { create(:reference, author_profile: training_provider_profile) }  
     let!(:training_provider_profile) do
@@ -27,7 +27,7 @@ RSpec.describe "References", type: :request do
   end
 
   describe "POST /create" do
-    subject { post references_path, params: params }
+    subject { post references_path, params: params, headers: headers }
 
     include_context "training provider authenticated"
 
@@ -52,7 +52,7 @@ RSpec.describe "References", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put reference_path(reference), params: params }
+    subject { put reference_path(reference), params: params, headers: headers }
 
     include_context "training provider authenticated"
 

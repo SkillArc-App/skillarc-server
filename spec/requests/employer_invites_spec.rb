@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe "EmployerInvites", type: :request do
   describe "GET /index" do
-    subject { get employer_invites_path }
+    subject { get employer_invites_path, headers: headers }
 
     it_behaves_like "admin secured endpoint"
   end
 
   describe "PUT /used" do
-    subject { put employer_invite_used_path(employer_invite) }
+    subject { put employer_invite_used_path(employer_invite), headers: headers }
 
     let(:employer_invite) { create(:employer_invite, email: invited_user.email) }
     let(:invited_user) { create(:user) }
@@ -17,7 +17,7 @@ RSpec.describe "EmployerInvites", type: :request do
   end
 
   describe "POST /create" do
-    subject { post employer_invites_path, params: params }
+    subject { post employer_invites_path, params: params, headers: headers }
 
     include_context "admin authenticated"
 

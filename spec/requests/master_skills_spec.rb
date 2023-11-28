@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "MasterSkills", type: :request do
   describe "GET /index" do
-    subject { get master_skills_path }
+    subject { get master_skills_path, headers: headers }
 
     it "returns a 200" do
       subject

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Hooks", type: :request do
   describe "POST /event" do
-    subject { post hooks_event_path(hook), params: params }
+    subject { post hooks_event_path(hook), params: params, headers: headers }
 
     let(:hook) { create(:webhook) }
 

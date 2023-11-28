@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe "Profiles", type: :request do
   describe "GET /index" do
-    subject { get profiles_path }
+    subject { get profiles_path, headers: headers }
 
     it_behaves_like "admin secured endpoint"
   end
 
   describe "GET /show" do
-    subject { get profile_path(profile) }
+    subject { get profile_path(profile), headers: headers }
 
     let(:profile) { create(:profile) }
 
@@ -20,7 +20,7 @@ RSpec.describe "Profiles", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put profile_path(profile), params: params }
+    subject { put profile_path(profile), params: params, headers: headers }
 
     let(:profile) { create(:profile) }
 

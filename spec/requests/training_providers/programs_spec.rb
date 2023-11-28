@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "TrainingProviders::Programs", type: :request do
   describe "GET /index" do
-    subject { get training_providers_programs_path }
+    subject { get training_providers_programs_path, headers: headers }
 
     it_behaves_like "training provider secured endpoint"
   end
@@ -10,7 +10,7 @@ RSpec.describe "TrainingProviders::Programs", type: :request do
   describe "POST /create" do
     include_context "admin authenticated"
 
-    subject { post training_provider_programs_path(training_provider_id: training_provider.id), params: params }
+    subject { post training_provider_programs_path(training_provider_id: training_provider.id), params: params, headers: headers }
 
     let(:params) do
       {
@@ -36,7 +36,7 @@ RSpec.describe "TrainingProviders::Programs", type: :request do
   describe "PUT /update" do
     include_context "admin authenticated"
 
-    subject { put training_provider_program_path(training_provider_id: training_provider.id, id: program.id), params: params }
+    subject { put training_provider_program_path(training_provider_id: training_provider.id, id: program.id), params: params, headers: headers }
 
     let(:params) do
       {

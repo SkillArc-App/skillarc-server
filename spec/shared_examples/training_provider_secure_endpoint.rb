@@ -16,6 +16,7 @@ RSpec.shared_context "training provider authenticated" do
       sub: 'jakesub'
     )
   end
+  let(:headers) { { "Authorization" => "Bearer #{user.sub}" } }
 
   around do |example|
     original = ENV["MOCK_AUTH"]

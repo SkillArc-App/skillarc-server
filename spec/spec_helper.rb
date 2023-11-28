@@ -13,6 +13,14 @@
 # it.
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+require 'pry'
+require 'shared_examples/secure_endpoint'
+require 'shared_examples/admin_secure_endpoint'
+require 'shared_examples/training_provider_secure_endpoint'
+require "shared_examples/employer_secure_endpoint"
+require "shared_examples/default_headers_context"
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -91,10 +99,6 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
-end
 
-require 'pry'
-require 'shared_examples/secure_endpoint'
-require 'shared_examples/admin_secure_endpoint'
-require 'shared_examples/training_provider_secure_endpoint'
-require "shared_examples/employer_secure_endpoint"
+  config.include_context "default headers", type: :request
+end

@@ -6,7 +6,7 @@ RSpec.describe "EducationExperiences", type: :request do
   let(:profile) { create(:profile, user: user) }
 
   describe "GET /create" do
-    subject { post profile_education_experiences_path(profile), params: params }
+    subject { post profile_education_experiences_path(profile), params: params, headers: headers }
 
     let(:params) do
       {
@@ -32,7 +32,7 @@ RSpec.describe "EducationExperiences", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put profile_education_experience_path(profile, education_experience), params: params }
+    subject { put profile_education_experience_path(profile, education_experience), params: params, headers: headers }
 
     let(:education_experience) { create(:education_experience, profile: profile) }
     let(:params) do
@@ -55,7 +55,7 @@ RSpec.describe "EducationExperiences", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete profile_education_experience_path(profile, education_experience) }
+    subject { delete profile_education_experience_path(profile, education_experience), headers: headers }
 
     let!(:education_experience) { create(:education_experience, profile: profile) }
 

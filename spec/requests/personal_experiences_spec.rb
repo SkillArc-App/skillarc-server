@@ -6,7 +6,7 @@ RSpec.describe "PersonalExperiences", type: :request do
   let!(:profile) { create(:profile, user:) }
 
   describe "POST /create" do
-    subject { post profile_personal_experiences_path(profile), params: params }
+    subject { post profile_personal_experiences_path(profile), params: params, headers: headers }
 
     let(:params) do
       {
@@ -31,7 +31,7 @@ RSpec.describe "PersonalExperiences", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put profile_personal_experience_path(profile, personal_experience), params: params }
+    subject { put profile_personal_experience_path(profile, personal_experience), params: params, headers: headers }
 
     let(:params) do
       {
@@ -56,7 +56,7 @@ RSpec.describe "PersonalExperiences", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete profile_personal_experience_path(profile, personal_experience) }
+    subject { delete profile_personal_experience_path(profile, personal_experience), headers: headers }
 
     let(:params) do
       {

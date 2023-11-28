@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Seekers::Chats", type: :request do
   describe "GET /index" do
-    subject { get "/seekers/chats" }
+    subject { get "/seekers/chats", headers: headers }
 
     it_behaves_like "a secured endpoint"
 
@@ -20,7 +20,7 @@ RSpec.describe "Seekers::Chats", type: :request do
   end
 
   describe "POST /mark_read" do
-    subject { post "/seekers/chats/mark_read", params: params }
+    subject { post "/seekers/chats/mark_read", params: params, headers: headers }
 
     let(:params) do
       {
@@ -47,7 +47,7 @@ RSpec.describe "Seekers::Chats", type: :request do
   end
 
   describe "POST /send_message" do
-    subject { post "/seekers/chats/send_message", params: params }
+    subject { post "/seekers/chats/send_message", params: params, headers: headers }
 
     let(:params) do
       {

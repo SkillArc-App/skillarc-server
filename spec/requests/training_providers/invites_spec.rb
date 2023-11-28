@@ -4,7 +4,7 @@ RSpec.describe "TrainingProviders::Invites", type: :request do
   describe "POST /create" do
     include_context "training provider authenticated"
 
-    subject { post training_providers_invites_path, params: params }
+    subject { post training_providers_invites_path, params: params, headers: headers }
 
     let(:params) do
       {

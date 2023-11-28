@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe "SeekerInvites", type: :request do
   describe "GET /index" do
-    subject { get seeker_invites_path }
+    subject { get seeker_invites_path, headers: headers }
 
     it_behaves_like "admin authenticated"
   end
 
   describe "POST /create" do
-    subject { post seeker_invites_path, params: params }
+    subject { post seeker_invites_path, params: params, headers: headers }
 
     include_context "admin authenticated"
 

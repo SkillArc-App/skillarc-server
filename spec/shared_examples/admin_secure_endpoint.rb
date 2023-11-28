@@ -1,9 +1,6 @@
 RSpec.shared_context "admin authenticated" do
-  before do
-    r = Role.find_or_initialize_by(name: "admin") do |r|
-      r.id = SecureRandom.uuid
-      r.save!
-    end
+  let(:headers) { { "Authorization" => "Bearer #{user.sub}" } }
+  let!(:user) do
     u = User.find_or_create_by!(
       id: 'clem7u5uc0007mi0rne4h3be0',
       name: 'Jake Not-Onboard',
@@ -12,8 +9,10 @@ RSpec.shared_context "admin authenticated" do
       email: 'jake@statefarm.com',
       sub: 'jakesub'
     )
-    UserRole.create!(id: SecureRandom.uuid, user: u, role: r)
+    UserRole.create!(id: SecureRandom.uuid, user: u, role: role)
+    u
   end
+  let(:role) { Role.create!(id: SecureRandom.uuid, name: "admin") }
 
   around do |example|
     original = ENV["MOCK_AUTH"]

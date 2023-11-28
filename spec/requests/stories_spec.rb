@@ -4,7 +4,7 @@ RSpec.describe "Stories", type: :request do
   describe "POST /create" do
     include_context "authenticated"
 
-    subject { post profile_stories_path(profile_id: profile.id), params: params }
+    subject { post profile_stories_path(profile_id: profile.id), params: params, headers: headers }
 
     let(:params) do
       {
@@ -33,7 +33,7 @@ RSpec.describe "Stories", type: :request do
     let(:profile) { create(:profile, user: User.find("clem7u5uc0007mi0rne4h3be0")) }
     let!(:story) { create(:story, profile: profile) }
 
-    subject { patch profile_story_path(profile_id: profile.id, id: story.id), params: params }
+    subject { patch profile_story_path(profile_id: profile.id, id: story.id), params: params, headers: headers }
 
     let(:params) do
       {

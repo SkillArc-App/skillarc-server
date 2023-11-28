@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe "Jobs", type: :request do
   describe "GET /index" do
-    subject { get jobs_path }
+    subject { get jobs_path, headers: headers }
 
     it_behaves_like "admin secured endpoint"
   end
 
   describe "GET /show" do
-    subject { get job_path(job) }
+    subject { get job_path(job), headers: headers }
 
     let(:job) { create(:job) }
 
@@ -22,7 +22,7 @@ RSpec.describe "Jobs", type: :request do
   describe "POST /apply" do
     include_context "authenticated"
 
-    subject { post job_apply_path(job) }
+    subject { post job_apply_path(job), headers: headers }
 
     let(:job) { create(:job) }
     let!(:profile) { create(:profile, user: user) }
@@ -39,7 +39,7 @@ RSpec.describe "Jobs", type: :request do
   end
 
   describe "POST /create" do
-    subject { post jobs_path, params: params }
+    subject { post jobs_path, params: params, headers: headers }
 
     include_context "admin authenticated"
 
@@ -73,7 +73,7 @@ RSpec.describe "Jobs", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put job_path(job), params: params }
+    subject { put job_path(job), params: params, headers: headers }
 
     include_context "admin authenticated"
 

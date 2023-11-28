@@ -7,7 +7,7 @@ RSpec.describe "Skills", type: :request do
   let(:profile) { create(:profile, user: user) }
 
   describe "POST /create" do
-    subject { post profile_skills_path(profile_id: profile.id), params: params }
+    subject { post profile_skills_path(profile_id: profile.id), params: params, headers: headers }
 
     let(:params) do
       {
@@ -30,7 +30,7 @@ RSpec.describe "Skills", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put profile_skill_path(profile_id: profile.id, id: skill.id), params: params }
+    subject { put profile_skill_path(profile_id: profile.id, id: skill.id), params: params, headers: headers }
 
     let(:skill) { create(:profile_skill, profile: profile) }
 
@@ -56,7 +56,7 @@ RSpec.describe "Skills", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete profile_skill_path(profile_id: profile.id, id: skill.id) }
+    subject { delete profile_skill_path(profile_id: profile.id, id: skill.id), headers: headers }
 
     let!(:skill) { create(:profile_skill, profile: profile) }
 

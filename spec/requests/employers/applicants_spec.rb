@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Employers::Applicants", type: :request do
   describe "PUT /update" do
-    subject { put employers_applicant_path(applicant), params: params }
+    subject { put employers_applicant_path(applicant), params: params, headers: headers }
 
     include_context "employer authenticated"
 

@@ -107,6 +107,7 @@ Rails.application.routes.draw do
 
   scope module: 'admin', path: 'admin' do
     resources :users
+    resources :application_analytics
   end
 
 

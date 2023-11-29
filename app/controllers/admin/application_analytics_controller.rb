@@ -1,0 +1,18 @@
+class Admin::ApplicationAnalyticsController < ApplicationController
+  include Secured
+  include Admin
+
+  before_action :authorize, unless: -> { Rails.env.development? }
+
+  def index
+    application_analytics = ApplicationAnalytics.new
+
+    average_status_times = application_analytics.average_status_times
+    current_status_times = application_analytics.current_status_times
+
+    render json: {
+      average_status_times: average_status_times,
+      current_status_times: current_status_times
+    }
+  end
+end

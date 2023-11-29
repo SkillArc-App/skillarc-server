@@ -40,7 +40,7 @@ RSpec.describe "ApplicationAnalytics", type: :request do
 
         json_response = JSON.parse(response.body)
 
-        expect(json_response["average_status_times"]).to eq([
+        expect(json_response["averageStatusTimes"]).to eq([
           {
             "status" => ApplicantStatus::StatusTypes::NEW,
             "time" => {
@@ -50,7 +50,7 @@ RSpec.describe "ApplicationAnalytics", type: :request do
           }
         ])
 
-        expect(json_response["current_status_times"]).to eq([
+        expect(json_response["currentStatusTimes"]).to eq([
           {
             "id" => 1,
             "applicant_name" => "John Doe",

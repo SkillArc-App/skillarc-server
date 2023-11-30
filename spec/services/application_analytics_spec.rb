@@ -68,4 +68,39 @@ RSpec.describe ApplicationAnalytics do
       end
     end
   end
+
+  describe "#persist_current_status_times" do
+    it "persists the current status times" do
+      Timecop.freeze(Date.new(2020, 7, 1)) do
+        expect { subject.persist_current_status_times }.to change { ApplicantAnalytic.count }.by(2)
+
+        expect(ApplicantAnalytic.all).to contain_exactly(
+          have_attributes(
+            applicant_id: applicant1.id,
+            job_id: applicant1.job.id,
+            employer_id: applicant1.job.employer.id,
+            employer_name: applicant1.job.employer.name,
+            employment_title: applicant1.job.employment_title,
+            applicant_name: "Tom Hanks",
+            applicant_email: user1.email,
+            status: ApplicantStatus::StatusTypes::PENDING_INTRO,
+            days: 29,
+            hours: 0
+          ),
+          have_attributes(
+            applicant_id: applicant2.id,
+            job_id: applicant2.job.id,
+            employer_id: applicant2.job.employer.id,
+            employer_name: applicant2.job.employer.name,
+            employment_title: applicant2.job.employment_title,
+            applicant_name: "Tim Allen",
+            applicant_email: user2.email,
+            status: ApplicantStatus::StatusTypes::NEW,
+            days: 16,
+            hours: 0
+          )
+        )
+      end
+    end
+  end
 end

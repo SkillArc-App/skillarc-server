@@ -60,4 +60,27 @@ class ApplicationAnalytics
       }
     end
   end
+
+  def persist_current_status_times
+    ApplicantAnalytic.delete_all
+
+    a = current_status_times.map do |current_status_time|
+      applicant = Applicant.find(current_status_time[:id])
+
+      {
+        applicant_id: applicant.id,
+        job_id: applicant.job.id,
+        employer_id: applicant.job.employer.id,
+        employer_name: applicant.job.employer.name,
+        employment_title: applicant.job.employment_title,
+        applicant_name: "#{applicant.profile.user.first_name} #{applicant.profile.user.last_name}",
+        applicant_email: applicant.profile.user.email,
+        status: current_status_time[:status],
+        days: current_status_time[:time][:days],
+        hours: current_status_time[:time][:hours]
+      }
+    end
+
+    ApplicantAnalytic.create(a)
+  end
 end

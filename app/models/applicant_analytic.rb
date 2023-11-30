@@ -1,0 +1,2 @@
+class ApplicantAnalytic < ApplicationRecord
+end

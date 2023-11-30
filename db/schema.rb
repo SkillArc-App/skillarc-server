@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_22_155455) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_30_190055) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,6 +45,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_22_155455) do
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.index ["provider", "provider_account_id"], name: "Account_provider_provider_account_id_key", unique: true
+  end
+
+  create_table "applicant_analytics", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "applicant_id", null: false
+    t.text "job_id", null: false
+    t.text "employer_id", null: false
+    t.string "employer_name"
+    t.string "employment_title"
+    t.string "applicant_name"
+    t.string "applicant_email"
+    t.string "status"
+    t.integer "days"
+    t.integer "hours"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["applicant_id"], name: "index_applicant_analytics_on_applicant_id"
+    t.index ["employer_id"], name: "index_applicant_analytics_on_employer_id"
+    t.index ["job_id"], name: "index_applicant_analytics_on_job_id"
   end
 
   create_table "applicant_chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -559,6 +577,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_22_155455) do
   end
 
   add_foreign_key "accounts", "users", name: "Account_user_id_fkey", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "applicant_analytics", "applicants"
+  add_foreign_key "applicant_analytics", "employers"
+  add_foreign_key "applicant_analytics", "jobs"
   add_foreign_key "applicant_chats", "applicants"
   add_foreign_key "applicant_status_reasons", "applicant_statuses"
   add_foreign_key "applicant_status_reasons", "reasons"

@@ -1,6 +1,6 @@
 class ApplicationAnalytics
   def average_status_times
-    times = Applicant.all.map do |applicant|
+    times = filtered_applicants.map do |applicant|
       statuses = applicant.applicant_statuses
       statuses.count.times.map do |i|
         status = statuses[i]
@@ -39,7 +39,7 @@ class ApplicationAnalytics
   end
 
   def current_status_times
-    Applicant.all.includes(profile: :user).map do |applicant|
+    filtered_applicants.map do |applicant|
       status = applicant.applicant_statuses.last_created
 
       days = (Time.now - status.created_at).to_i / 1.day
@@ -82,5 +82,11 @@ class ApplicationAnalytics
     end
 
     ApplicantAnalytic.create(a)
+  end
+
+  private
+
+  def filtered_applicants
+    Applicant.where.not(job_id: Job.where(hide_job: true).pluck(:id)).includes(profile: :user)
   end
 end

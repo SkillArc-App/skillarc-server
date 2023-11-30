@@ -69,6 +69,7 @@ class ApplicationAnalytics
 
       {
         applicant_id: applicant.id,
+        applicant_created_at: applicant.created_at,
         job_id: applicant.job.id,
         employer_id: applicant.job.employer.id,
         employer_name: applicant.job.employer.name,

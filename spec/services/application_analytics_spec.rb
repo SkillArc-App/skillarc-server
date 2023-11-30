@@ -82,6 +82,7 @@ RSpec.describe ApplicationAnalytics do
         expect(ApplicantAnalytic.all).to contain_exactly(
           have_attributes(
             applicant_id: applicant1.id,
+            applicant_created_at: applicant1.created_at,
             job_id: applicant1.job.id,
             employer_id: applicant1.job.employer.id,
             employer_name: applicant1.job.employer.name,
@@ -94,6 +95,7 @@ RSpec.describe ApplicationAnalytics do
           ),
           have_attributes(
             applicant_id: applicant2.id,
+            applicant_created_at: applicant2.created_at,
             job_id: applicant2.job.id,
             employer_id: applicant2.job.employer.id,
             employer_name: applicant2.job.employer.name,

@@ -24,6 +24,7 @@ class Employers::JobsController < ApplicationController
           id: a.id,
           jobId: job.id,
           chatEnabled: job.employer.chat_enabled,
+          createdAt: a.created_at,
           jobName: job.employment_title,
           firstName: a.profile.user.first_name,
           lastName: a.profile.user.last_name,

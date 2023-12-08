@@ -123,8 +123,9 @@ Rails.application.routes.draw do
     post 'accept', on: :member
   end
 
-  if Rails.env.test?
+  if Rails.env.test? || Rails.env.development?
     post '/reset_test_database' => 'test#reset_test_database'
+    post '/create_test_user' => 'test#create_test_user'
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

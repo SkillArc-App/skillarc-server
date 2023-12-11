@@ -10,6 +10,13 @@ FactoryBot.define do
       occurred_at { Time.new(2020, 1, 1) }
     end
 
+    trait :chat_message_sent do
+      event_type { Event::EventTypes::CHAT_MESSAGE_SENT }
+      occurred_at { Time.new(2020, 1, 1) }
+      data { {} }
+      metadata { {} }
+    end
+
     trait :user_updated do
       event_type { Event::EventTypes::USER_UPDATED }
       data do

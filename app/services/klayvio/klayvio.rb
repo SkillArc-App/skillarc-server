@@ -19,6 +19,26 @@ module Klayvio
       post(url, data)
     end
 
+    def chat_message_sent(email:, event_id:, occurred_at:, applicant_id:, profile_id:, employment_title:, employer_name:)
+      data = event_data(
+        event_type: 'Chat Message Sent',
+        email: email,
+        time: occurred_at,
+        event_id: event_id,
+        event_properties: {
+          applicant_id: applicant_id,
+          profile_id: profile_id,
+          user_id: user_id,
+          employer_name: employer_name,
+          employment_title: employment_title,
+        }
+      )
+
+      url = URI("https://a.klaviyo.com/api/events/")
+
+      post(url, data)
+    end
+
     def job_saved(email:, event_id:, event_properties:, occurred_at:)
       data = event_data(
         event_type: 'Job Saved',

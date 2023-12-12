@@ -72,3 +72,8 @@ Pubsub.subscribe(
   event: Event::EventTypes::APPLICANT_STATUS_UPDATED,
   subscriber: Slack::UserApplied.new
 )
+
+Pubsub.subscribe(
+  event: Event::EventTypes::CHAT_MESSAGE_SENT,
+  subscriber: Klayvio::ChatMessageReceived.new
+)

@@ -1,17 +1,20 @@
 module Klayvio
-  class ChatMessageSent
+  class ChatMessageReceived
     def call(event:)
       applicant = Applicant.find(event.data["applicant_id"])
-      user = User.find(event.data["user_id"])
+      recipient_user = applicant.profile.user
 
-      Klayvio.new.chat_message_sent(
+      user = User.find(event.data["from_user_id"])
+
+      return if user == recipient_user
+
+      Klayvio.new.chat_message_received(
         applicant_id: event.data["applicant_id"],
-        email: user.email,
+        email: recipient_user.email,
         employment_title: applicant.job.employment_title,
         employer_name: applicant.job.employer.name,
         event_id: event.id,
         occurred_at: event.occurred_at,
-        profile_id: event.data["profile_id"],
       )
     end
   end

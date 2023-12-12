@@ -95,7 +95,8 @@ RSpec.describe EmployerChats do
         data: {
           applicant_id: applicant.id,
           profile_id: profile.id,
-          user_id: user.id,
+          from_user_id: recruiter.user.id,
+          employer_name: employer.name,
           employment_title: job.employment_title,
           message: message
         },

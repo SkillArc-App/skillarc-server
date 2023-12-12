@@ -34,7 +34,7 @@ RSpec.describe SeekerChats do
         data: {
           applicant_id: applicant.id,
           profile_id: profile.id,
-          user_id: user.id,
+          from_user_id: user.id,
           employment_title: job.employment_title,
           message: message
         },

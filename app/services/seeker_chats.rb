@@ -15,7 +15,7 @@ class SeekerChats
       data: {
         applicant_id: applicant_chat.applicant.id,
         profile_id: applicant_chat.applicant.profile.id,
-        user_id: applicant_chat.applicant.profile.user.id,
+        from_user_id: applicant_chat.applicant.profile.user.id,
         employment_title: applicant_chat.applicant.job.employment_title,
         message: message
       },

@@ -9,6 +9,7 @@ class Event < ApplicationRecord
       EXPERIENCE_CREATED = 'experience_created',
       MET_CAREER_COACH_UPDATED = 'met_career_coach_updated',
       JOB_CREATED = 'job_created',
+      JOB_UPDATED = 'job_updated',
       JOB_SAVED = 'job_saved',
       JOB_UNSAVED = 'job_unsaved',
       NOTIFICATION_CREATED = 'notification_created',

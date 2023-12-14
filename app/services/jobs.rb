@@ -14,7 +14,6 @@ class Jobs
         employer_id: job.employer_id,
         benefits_description: job.benefits_description,
         responsibilities_description: job.responsibilities_description,
-        employment_title: job.employment_title,
         location: job.location,
         employment_type: job.employment_type,
         hide_job: job.hide_job,

@@ -80,6 +80,20 @@ FactoryBot.define do
       occurred_at { Time.new(2020, 1, 1) }
     end
 
+    trait :job_created do
+      event_type { Event::EventTypes::JOB_CREATED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
+    trait :job_updated do
+      event_type { Event::EventTypes::JOB_UPDATED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
     trait :job_saved do
       event_type { Event::EventTypes::JOB_SAVED }
       data {{}}

@@ -10,7 +10,6 @@ RSpec.describe Jobs do
         employer_id: employer_id,
         benefits_description: benefits_description,
         responsibilities_description: responsibilities_description,
-        employment_title: employment_title,
         location: location,
         employment_type: employment_type,
         hide_job: hide_job,

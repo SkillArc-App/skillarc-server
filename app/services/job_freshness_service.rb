@@ -1,4 +1,6 @@
 class JobFreshnessService
+  FreshnessContext = Struct.new(:job_id, :status, :employment_title, :hidden, :applicants, keyword_init: true)
+
   def initialize(job_events=nil, now: Time.now)
     @job_events = job_events
     @now = now
@@ -16,10 +18,10 @@ class JobFreshnessService
       end
     end
 
-    return "stale" if hidden?
-    return "stale" if any_ignored?
+    freshness_context[:status] = "stale" if hidden?
+    freshness_context[:status] = "stale" if any_ignored?
 
-    "fresh"
+    freshness_context
   end
 
   def self.persist_all
@@ -54,11 +56,14 @@ class JobFreshnessService
   end
 
   def job_created(event)
-    freshness_context[:hidden] = event.data.fetch("hide_job")
+    freshness_context[:job_id] = event.aggregate_id
+    freshness_context[:hidden] = event.data["hide_job"]
+    freshness_context[:employment_title] = event.data["employment_title"]
   end
 
   def job_updated(event)
-    freshness_context[:hidden] = event.data.fetch("hide_job")
+    freshness_context[:hidden] = event.data["hide_job"]
+    freshness_context[:employment_title] = event.data["employment_title"]
   end
 
   def job_events
@@ -66,10 +71,13 @@ class JobFreshnessService
   end
 
   def freshness_context
-    @freshness_context ||= {
-      hidden: {},
+    @freshness_context ||= FreshnessContext.new(
+      job_id: nil,
+      status: "fresh",
+      employment_title: nil,
+      hidden: nil,
       applicants: {}
-    }
+    )
   end
 
   attr_reader :job_events, :now

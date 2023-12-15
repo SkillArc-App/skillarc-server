@@ -50,7 +50,13 @@ RSpec.describe JobFreshnessService do
     let(:job_events) { base_job_events }
 
     it "returns 'fresh'" do
-      expect(subject).to eq("fresh")
+      expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
+        job_id: job_id,
+        status: "fresh",
+        applicants: {},
+        employment_title: "Welder",
+        hidden: false,
+      ))
     end
 
     context "when the job is hidden" do
@@ -68,7 +74,12 @@ RSpec.describe JobFreshnessService do
       end
 
       it "returns 'stale'" do
-        expect(subject).to eq("stale")
+        expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
+          job_id: job_id,
+          status: "stale",
+          applicants: {},
+          hidden: true,
+        ))
       end
     end
 
@@ -95,7 +106,17 @@ RSpec.describe JobFreshnessService do
         let(:applicant_created_at) { now - 2.weeks }
 
         it "returns 'stale'" do
-          expect(subject).to eq("stale")
+          expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
+            job_id: job_id,
+            status: "stale",
+            applicants: {
+              applicant_created_at_event.data.fetch("applicant_id") => {
+                last_updated_at: applicant_created_at
+              }
+            },
+            employment_title: "Welder",
+            hidden: false,
+          ))
         end
       end
     end

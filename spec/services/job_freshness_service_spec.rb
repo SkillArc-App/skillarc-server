@@ -41,6 +41,11 @@ RSpec.describe JobFreshnessService do
 
     it "persists the freshness" do
       expect { subject }.to change { JobFreshness.count }.by(1)
+      expect(JobFreshness.last).to have_attributes(
+        job_id: job_id,
+        status: "fresh",
+        employment_title: "Welder",
+      )
     end
   end
 

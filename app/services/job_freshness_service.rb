@@ -18,8 +18,8 @@ class JobFreshnessService
       end
     end
 
-    freshness_context[:status] = "stale" if hidden?
-    freshness_context[:status] = "stale" if any_ignored?
+    freshness_context.status = "stale" if hidden?
+    freshness_context.status = "stale" if any_ignored?
 
     freshness_context
   end
@@ -28,11 +28,12 @@ class JobFreshnessService
     Job.pluck(:id).each do |job_id|
       events = Event.where(aggregate_id: job_id)
 
-      status = new(events).get
+      context = new(events).get
 
       JobFreshness.create!(
         job_id: job_id,
-        status: status
+        status: context.status,
+        employment_title: context.employment_title,
       )
     end
   end
@@ -40,30 +41,30 @@ class JobFreshnessService
   private
 
   def any_ignored?
-    freshness_context[:applicants].any? do |_, applicant|
+    freshness_context.applicants.any? do |_, applicant|
       now - applicant[:last_updated_at] > 1.week
     end
   end
 
   def hidden?
-    freshness_context[:hidden]
+    freshness_context.hidden
   end
 
   def applicant_status_updated(event)
-    freshness_context[:applicants][event.data.fetch("applicant_id")] = {
+    freshness_context.applicants[event.data.fetch("applicant_id")] = {
       last_updated_at: event.occurred_at,
     }
   end
 
   def job_created(event)
-    freshness_context[:job_id] = event.aggregate_id
-    freshness_context[:hidden] = event.data["hide_job"]
-    freshness_context[:employment_title] = event.data["employment_title"]
+    freshness_context.job_id = event.aggregate_id
+    freshness_context.hidden = event.data["hide_job"]
+    freshness_context.employment_title = event.data["employment_title"]
   end
 
   def job_updated(event)
-    freshness_context[:hidden] = event.data["hide_job"]
-    freshness_context[:employment_title] = event.data["employment_title"]
+    freshness_context.hidden = event.data["hide_job"]
+    freshness_context.employment_title = event.data["employment_title"]
   end
 
   def job_events

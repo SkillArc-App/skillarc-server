@@ -1,44 +1,69 @@
-class JobFreshnessService
-  FreshnessContext = Struct.new(:job_id, :status, :employment_title, :hidden, :applicants, keyword_init: true)
+class JobFreshnessService < EventConsumer
+  FreshnessContext = Struct.new(
+    :applicants,
+    :employment_title,
+    :hidden,
+    :job_id,
+    :recruiter_exists,
+    :status,
+    keyword_init:true
+  )
 
-  def initialize(job_events=nil, now: Time.now)
+  def self.handle_event(event, with_side_effects: false, now: Time.now)
+    job_id = event.aggregate_id
+
+    freshnesses[job_id] ||= new
+
+    freshness = freshnesses[job_id]
+
+    freshness.handle_event(event, with_side_effects: with_side_effects, now: now)
+
+    freshnesses
+  end
+
+  def initialize(job_events=[], now: Time.now)
     @job_events = job_events
     @now = now
+
+    job_events.each do |event|
+      handle_event(event, now: now)
+    end
   end
 
   def get
-    job_events.each do |event|
-      case event.event_type
-      when Event::EventTypes::APPLICANT_STATUS_UPDATED
-        applicant_status_updated(event)
-      when Event::EventTypes::JOB_CREATED
-        job_created(event)
-      when Event::EventTypes::JOB_UPDATED
-        job_updated(event)
-      end
-    end
-
-    freshness_context.status = "stale" if hidden?
-    freshness_context.status = "stale" if any_ignored?
-
     freshness_context
   end
 
-  def self.persist_all
-    Job.pluck(:id).each do |job_id|
-      events = Event.where(aggregate_id: job_id)
+  def handle_event(event, with_side_effects: false, now: Time.now)
+    @now = now
+    
+    case event.event_type
+    when Event::EventTypes::APPLICANT_STATUS_UPDATED
+      applicant_status_updated(event)
+    when Event::EventTypes::EMPLOYER_INVITE_ACCEPTED
+      employer_invite_accepted(event)
+    when Event::EventTypes::JOB_CREATED
+      job_create_update(event)
+    when Event::EventTypes::JOB_UPDATED
+      job_create_update(event)
+    else
+      return
+    end
 
-      context = new(events).get
-
+    if with_side_effects
       JobFreshness.create!(
-        job_id: job_id,
-        status: context.status,
-        employment_title: context.employment_title,
+        job_id: freshness_context.job_id,
+        status: freshness_context.status,
+        employment_title: freshness_context.employment_title,
       )
     end
   end
 
   private
+
+  def self.freshnesses
+    @freshnesses ||= {}
+  end
 
   def any_ignored?
     freshness_context.applicants.any? do |_, applicant|
@@ -50,21 +75,41 @@ class JobFreshnessService
     freshness_context.hidden
   end
 
+  def recruiter_exists?
+    freshness_context.recruiter_exists
+  end
+
   def applicant_status_updated(event)
     freshness_context.applicants[event.data.fetch("applicant_id")] = {
       last_updated_at: event.occurred_at,
     }
+
+    freshness_context.status = "stale" if any_ignored?
   end
 
-  def job_created(event)
+  def employer_invite_accepted(event)
+    eid = event.aggregate_id
+
+    employers_with_recruiters << eid
+
+    if employer_id == eid
+      freshness_context.recruiter_exists = true
+
+      freshness_context.status = !hidden? && recruiter_exists? && !any_ignored? ? "fresh" : "stale"
+    end
+  end
+
+  def job_create_update(event)
+    @employer_id = event.data["employer_id"]
+
     freshness_context.job_id = event.aggregate_id
     freshness_context.hidden = event.data["hide_job"]
     freshness_context.employment_title = event.data["employment_title"]
-  end
 
-  def job_updated(event)
-    freshness_context.hidden = event.data["hide_job"]
-    freshness_context.employment_title = event.data["employment_title"]
+    freshness_context.recruiter_exists = employers_with_recruiters.include?(employer_id)
+
+    freshness_context.status = "stale" if hidden?
+    freshness_context.status = "stale" if !freshness_context.recruiter_exists
   end
 
   def job_events
@@ -73,13 +118,18 @@ class JobFreshnessService
 
   def freshness_context
     @freshness_context ||= FreshnessContext.new(
-      job_id: nil,
-      status: "fresh",
+      applicants: {},
       employment_title: nil,
       hidden: nil,
-      applicants: {}
+      job_id: nil,
+      recruiter_exists: false,
+      status: "fresh"
     )
   end
 
-  attr_reader :job_events, :now
+  def employers_with_recruiters
+    @@employers_with_recruiters ||= Set.new
+  end
+
+  attr_reader :employer_id, :job_events, :now
 end

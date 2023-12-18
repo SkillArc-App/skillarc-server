@@ -1,7 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe JobFreshnessService do
-  let(:base_job_events) { [job_created_at_event] }
+  before(:each) do
+    JobFreshnessService.class_variable_set(:@@employers_with_recruiters, nil)
+  end
+
+  let(:base_job_events) { [job_created_at_event, employer_invite_accepted] }
+  let(:employer_invite_accepted) do
+    build(
+      :event,
+      :employer_invite_accepted,
+      aggregate_id: employer_id,
+      data: {}
+    )
+  end
+
   let(:now) { Time.new(2024, 1, 1) }
   let(:job_created_at_event) do
     build(
@@ -10,7 +23,7 @@ RSpec.describe JobFreshnessService do
       aggregate_id: job_id,
       data: {
         employment_title: "Welder",
-        employer_id: SecureRandom.uuid,
+        employer_id: employer_id,
         benefits_description: "Benefits",
         responsibilities_description: "Responsibilities",
         location: "Columbus, OH",
@@ -25,27 +38,37 @@ RSpec.describe JobFreshnessService do
     )
   end
   let(:job_created_at) { now - 4.weeks }
-  let(:job_id) { "1" }
+  let(:job_id) { "0cff79c1-fb70-4e02-9407-1572c25d8717" }
+  let(:employer_id) { "dbd969af-df4f-4ec0-9c23-8549235354c4" }
 
-  describe ".persist_all" do
-    subject { described_class.persist_all }
+  describe ".handle_event" do
+    subject { described_class.handle_event(event, with_side_effects: with_side_effects, now: now) }
 
-    let(:job_events) { base_job_events }
-    let(:job_id) { create(:job).id }
+    let(:event) { job_created_at_event }
+    let(:with_side_effects) { false }
 
-    before do
-      job_events.each do |event|
-        event.save!
+    it "returns a hash of FreshnessContexts" do
+      expect(subject[job_id].get).to be_a(JobFreshnessService::FreshnessContext)
+    end
+
+    context "when with side effects is false" do
+      it "does not update the database" do
+        expect { subject }.not_to change { JobFreshness.count }
       end
     end
 
-    it "persists the freshness" do
-      expect { subject }.to change { JobFreshness.count }.by(1)
-      expect(JobFreshness.last).to have_attributes(
-        job_id: job_id,
-        status: "fresh",
-        employment_title: "Welder",
-      )
+    context "when with side effects is true" do
+      let(:with_side_effects) { true }
+
+      it "creates a JobFreshness" do
+        expect { subject }.to change { JobFreshness.count }.by(1)
+
+        expect(JobFreshness.last_created).to have_attributes(
+          job_id: job_id,
+          status: "stale",
+          employment_title: "Welder",
+        )
+      end
     end
   end
 
@@ -56,11 +79,12 @@ RSpec.describe JobFreshnessService do
 
     it "returns 'fresh'" do
       expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
-        job_id: job_id,
-        status: "fresh",
         applicants: {},
         employment_title: "Welder",
+        job_id: job_id,
         hidden: false,
+        recruiter_exists: true,
+        status: "fresh",
       ))
     end
 
@@ -72,6 +96,7 @@ RSpec.describe JobFreshnessService do
           :job_updated,
           aggregate_id: job_id,
           data: {
+            employer_id: employer_id,
             hide_job: true,
           },
           occurred_at: job_created_at + 1.day
@@ -80,10 +105,11 @@ RSpec.describe JobFreshnessService do
 
       it "returns 'stale'" do
         expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
-          job_id: job_id,
-          status: "stale",
           applicants: {},
+          job_id: job_id,
           hidden: true,
+          recruiter_exists: true,
+          status: "stale"
         ))
       end
     end
@@ -121,8 +147,24 @@ RSpec.describe JobFreshnessService do
             },
             employment_title: "Welder",
             hidden: false,
+            recruiter_exists: true,
           ))
         end
+      end
+    end
+    
+    context "when the employer has no recruiters" do
+      let(:base_job_events) { [job_created_at_event] }
+
+      it "returns 'stale'" do
+        expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
+          job_id: job_id,
+          status: "stale",
+          applicants: {},
+          employment_title: "Welder",
+          hidden: false,
+          recruiter_exists: false,
+        ))
       end
     end
   end

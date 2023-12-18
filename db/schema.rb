@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_14_192613) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_18_184629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -262,6 +262,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_14_192613) do
     t.text "job_id", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
+  end
+
+  create_table "listener_bookmarks", force: :cascade do |t|
+    t.string "consumer_name", null: false
+    t.uuid "event_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "master_certifications", id: :text, force: :cascade do |t|

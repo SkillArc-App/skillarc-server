@@ -1,6 +1,7 @@
 class JobFreshnessService < EventConsumer
   FreshnessContext = Struct.new(
     :applicants,
+    :employer_name,
     :employment_title,
     :hidden,
     :job_id,
@@ -24,6 +25,11 @@ class JobFreshnessService < EventConsumer
       freshness = freshnesses[job_id]
 
       freshness.handle_event(event, with_side_effects: with_side_effects, now: now)
+    elsif [Event::EventTypes::EMPLOYER_CREATED, Event::EventTypes::EMPLOYER_UPDATED].include?(event.event_type)
+      eid = event.aggregate_id
+      @@employer_jobs ||= {}
+      @@employer_jobs[eid] ||= {recruiter_exists: false, jobs: Set.new}
+      @@employer_jobs[eid][:name] = event.data["name"]
     elsif event.event_type == Event::EventTypes::EMPLOYER_INVITE_ACCEPTED
       eid = event.aggregate_id
       @@employer_jobs ||= {}
@@ -74,6 +80,7 @@ class JobFreshnessService < EventConsumer
       JobFreshness.create!(
         job_id: freshness_context.job_id,
         status: freshness_context.status,
+        employer_name: freshness_context.employer_name,
         employment_title: freshness_context.employment_title,
         occurred_at: event.occurred_at
       )
@@ -119,6 +126,7 @@ class JobFreshnessService < EventConsumer
     freshness_context.employment_title = event.data["employment_title"]
 
     freshness_context.recruiter_exists = employer_jobs[employer_id][:recruiter_exists]
+    freshness_context.employer_name = employer_jobs[employer_id][:name]
 
     freshness_context.status = "stale" if hidden?
     freshness_context.status = "stale" if !freshness_context.recruiter_exists
@@ -136,6 +144,7 @@ class JobFreshnessService < EventConsumer
   def freshness_context
     @freshness_context ||= FreshnessContext.new(
       applicants: {},
+      employer_name: nil,
       employment_title: nil,
       hidden: nil,
       job_id: nil,

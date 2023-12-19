@@ -38,6 +38,20 @@ FactoryBot.define do
       occurred_at { Time.new(2020, 1, 1) }
     end
 
+    trait :employer_created do
+      event_type { Event::EventTypes::EMPLOYER_CREATED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
+    trait :employer_updated do
+      event_type { Event::EventTypes::EMPLOYER_UPDATED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
     trait :employer_invite_accepted do
       event_type { Event::EventTypes::EMPLOYER_INVITE_ACCEPTED }
       data {{}}

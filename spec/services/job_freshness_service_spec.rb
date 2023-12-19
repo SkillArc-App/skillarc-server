@@ -77,11 +77,23 @@ RSpec.describe JobFreshnessService do
       let(:with_side_effects) { true }
 
       it "creates a JobFreshness" do
+        described_class.handle_event(
+          build(
+            :event,
+            :employer_created,
+            aggregate_id: employer_id,
+            data: {
+              name: "Blocktrain",
+            }
+          )
+        )
+
         expect { subject }.to change { JobFreshness.count }.by(1)
 
         expect(JobFreshness.last_created).to have_attributes(
           job_id: job_id,
           status: "stale",
+          employer_name: "Blocktrain",
           employment_title: "Welder",
         )
       end

@@ -5,6 +5,7 @@ class Event < ApplicationRecord
       CHAT_CREATED = 'chat_created',
       CHAT_MESSAGE_SENT = 'chat_message_sent',
       EDUCATION_EXPERIENCE_CREATED = 'education_experience_created',
+      EMPLOYER_CREATED = 'employer_created',
       EMPLOYER_INVITE_ACCEPTED = 'employer_invite_accepted',
       EXPERIENCE_CREATED = 'experience_created',
       MET_CAREER_COACH_UPDATED = 'met_career_coach_updated',

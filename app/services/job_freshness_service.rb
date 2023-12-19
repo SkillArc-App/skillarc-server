@@ -75,6 +75,7 @@ class JobFreshnessService < EventConsumer
         job_id: freshness_context.job_id,
         status: freshness_context.status,
         employment_title: freshness_context.employment_title,
+        occurred_at: event.occurred_at
       )
     end
   end

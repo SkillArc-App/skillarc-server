@@ -6,7 +6,7 @@ class EmployersController < ApplicationController
   before_action :admin_authorize
 
   def create
-    employer = Employer.create!(**params.require(:employer).permit(:name, :bio, :logo_url, :location), id: SecureRandom.uuid)
+    employer = EmployerService.new.create(**params.require(:employer).permit(:name, :bio, :logo_url, :location), id: SecureRandom.uuid)
 
     render json: employer
   end

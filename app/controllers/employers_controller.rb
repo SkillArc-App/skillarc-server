@@ -12,9 +12,7 @@ class EmployersController < ApplicationController
   end
 
   def update
-    employer = Employer.find(params[:id])
-
-    employer.update!(**params.require(:employer).permit(:name, :bio, :logo_url, :location))
+    employer = EmployerService.new.update(employer_id: params[:id], params: params.require(:employer).permit(:name, :bio, :logo_url, :location))
 
     render json: employer
   end

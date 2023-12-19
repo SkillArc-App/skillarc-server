@@ -41,6 +41,59 @@ RSpec.describe EmployerService do
 
       subject
     end
+  end
 
+  describe "#update" do
+    subject { described_class.new.update(employer_id: employer.id, params: params) }
+    
+    let!(:employer) do
+      create(
+        :employer,
+        name: "Blocktrain",
+        location: "Columbus, OH",
+        bio: "We are a welding company",
+        logo_url: "https://www.blocktrain.com/logo.png"
+      )
+    end
+
+    let(:params) do
+      {
+        name: "Portiko",
+        location: "Columbus, O-H-I-O",
+        bio: "We are a really good welding company",
+        logo_url: "https://www.blocktrain.com/logo.jpeg"
+      }
+    end
+
+    it "updates an employer" do
+      subject
+
+      expect(employer.reload).to(
+        have_attributes(
+          name: "Portiko",
+          location: "Columbus, O-H-I-O",
+          bio: "We are a really good welding company",
+          logo_url: "https://www.blocktrain.com/logo.jpeg"
+        )
+      )
+    end
+
+    it "publishes an event" do
+      expect(Resque).to receive(:enqueue).with(
+        CreateEventJob,
+        event_type: Event::EventTypes::EMPLOYER_UPDATED,
+        aggregate_id: employer.id,
+        data: {
+          name: "Portiko",
+          location: "Columbus, O-H-I-O",
+          bio: "We are a really good welding company",
+          logo_url: "https://www.blocktrain.com/logo.jpeg"
+        },
+        occurred_at: be_present,
+        metadata: {}
+      )
+
+      subject
+    end
   end
 end

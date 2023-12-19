@@ -2,10 +2,17 @@ require 'rails_helper'
 
 RSpec.describe JobFreshnessService do
   before(:each) do
-    JobFreshnessService.class_variable_set(:@@employers_with_recruiters, nil)
+    JobFreshnessService.class_variable_set(:@@employer_jobs, nil)
+    JobFreshnessService.class_variable_set(:@@freshnesses, nil)
   end
 
-  let(:base_job_events) { [job_created_at_event, employer_invite_accepted] }
+  shared_context "with recruiter" do
+    before do
+      described_class.handle_event(employer_invite_accepted)
+    end
+  end
+
+  let(:base_job_events) { [job_created_at_event] }
   let(:employer_invite_accepted) do
     build(
       :event,
@@ -47,6 +54,15 @@ RSpec.describe JobFreshnessService do
     let(:event) { job_created_at_event }
     let(:with_side_effects) { false }
 
+    context "when the event is not subscribed" do
+      let(:event) { build(:event, :user_created) }
+
+      it "does nothing" do
+        expect { subject }.not_to change { JobFreshness.count }
+        expect(subject).to eq({})
+      end
+    end
+
     it "returns a hash of FreshnessContexts" do
       expect(subject[job_id].get).to be_a(JobFreshnessService::FreshnessContext)
     end
@@ -77,78 +93,101 @@ RSpec.describe JobFreshnessService do
 
     let(:job_events) { base_job_events }
 
-    it "returns 'fresh'" do
-      expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
-        applicants: {},
-        employment_title: "Welder",
-        job_id: job_id,
-        hidden: false,
-        recruiter_exists: true,
-        status: "fresh",
-      ))
-    end
+    context "when an employer has a recruiter" do
+      context "after the other events" do
+        it "returns 'fresh'" do
+          described_class.handle_event(job_created_at_event)
 
-    context "when the job is hidden" do
-      let(:job_events) { base_job_events + [job_hidden_event] }
-      let(:job_hidden_event) do
-        build(
-          :event,
-          :job_updated,
-          aggregate_id: job_id,
-          data: {
-            employer_id: employer_id,
-            hide_job: true,
-          },
-          occurred_at: job_created_at + 1.day
-        )
-      end
+          described_class.handle_event(employer_invite_accepted)
 
-      it "returns 'stale'" do
-        expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
-          applicants: {},
-          job_id: job_id,
-          hidden: true,
-          recruiter_exists: true,
-          status: "stale"
-        ))
-      end
-    end
-
-    context "when there are applicants with 'new' status" do
-      let(:job_events) { base_job_events + [applicant_created_at_event] }
-      let(:applicant_created_at_event) do
-        build(
-          :event,
-          :applicant_status_updated,
-          aggregate_id: SecureRandom.uuid,
-          data: {
-            applicant_id: SecureRandom.uuid,
-            job_id: job_id,
-            profile_id: SecureRandom.uuid,
-            user_id: SecureRandom.uuid,
+          expect(described_class.freshnesses[job_id].get).to eq(JobFreshnessService::FreshnessContext.new(
+            applicants: {},
             employment_title: "Welder",
-            status: "new"
-          },
-          occurred_at: applicant_created_at
-        )
-      end
-
-      context "when the applicant was created more than 1 week ago" do
-        let(:applicant_created_at) { now - 2.weeks }
-
-        it "returns 'stale'" do
-          expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
             job_id: job_id,
-            status: "stale",
-            applicants: {
-              applicant_created_at_event.data.fetch("applicant_id") => {
-                last_updated_at: applicant_created_at
-              }
-            },
-            employment_title: "Welder",
             hidden: false,
             recruiter_exists: true,
+            status: "fresh",
           ))
+        end
+      end
+
+      context "from the beginning" do
+        include_context "with recruiter"
+
+        it "returns 'fresh'" do
+          expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
+            applicants: {},
+            employment_title: "Welder",
+            job_id: job_id,
+            hidden: false,
+            recruiter_exists: true,
+            status: "fresh",
+          ))
+        end
+
+        context "when the job is hidden" do
+          let(:job_events) { base_job_events + [job_hidden_event] }
+          let(:job_hidden_event) do
+            build(
+              :event,
+              :job_updated,
+              aggregate_id: job_id,
+              data: {
+                employer_id: employer_id,
+                hide_job: true,
+              },
+              occurred_at: job_created_at + 1.day
+            )
+          end
+
+          it "returns 'stale'" do
+            expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
+              applicants: {},
+              job_id: job_id,
+              hidden: true,
+              recruiter_exists: true,
+              status: "stale"
+            ))
+          end
+        end
+
+        context "when there are applicants with 'new' status" do
+          let(:job_events) { base_job_events + [applicant_created_at_event] }
+          let(:applicant_created_at_event) do
+            build(
+              :event,
+              :applicant_status_updated,
+              aggregate_id: SecureRandom.uuid,
+              data: {
+                applicant_id: SecureRandom.uuid,
+                job_id: job_id,
+                profile_id: SecureRandom.uuid,
+                user_id: SecureRandom.uuid,
+                employment_title: "Welder",
+                status: "new"
+              },
+              occurred_at: applicant_created_at
+            )
+          end
+
+          context "when the applicant was created more than 1 week ago" do
+            let(:applicant_created_at) { now - 2.weeks }
+
+            it "returns 'stale'" do
+              expect(subject).to eq(JobFreshnessService::FreshnessContext.new(
+                job_id: job_id,
+                status: "stale",
+                applicants: {
+                  applicant_created_at_event.data.fetch("applicant_id") => {
+                    last_updated_at: applicant_created_at
+                  }
+                },
+                employment_title: "Welder",
+                hidden: false,
+                recruiter_exists: true,
+              ))
+            end
+          end
         end
       end
     end

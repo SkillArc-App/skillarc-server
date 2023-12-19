@@ -6,17 +6,37 @@ class JobFreshnessService < EventConsumer
     :job_id,
     :recruiter_exists,
     :status,
-    keyword_init:true
+    keyword_init: true
   )
 
+  JOB_EVENTS = [
+    Event::EventTypes::APPLICANT_STATUS_UPDATED,
+    Event::EventTypes::JOB_CREATED,
+    Event::EventTypes::JOB_UPDATED,
+  ]
+
   def self.handle_event(event, with_side_effects: false, now: Time.now)
-    job_id = event.aggregate_id
+    if JOB_EVENTS.include?(event.event_type)
+      job_id = event.aggregate_id
 
-    freshnesses[job_id] ||= new
+      freshnesses[job_id] ||= new
 
-    freshness = freshnesses[job_id]
+      freshness = freshnesses[job_id]
 
-    freshness.handle_event(event, with_side_effects: with_side_effects, now: now)
+      freshness.handle_event(event, with_side_effects: with_side_effects, now: now)
+    elsif event.event_type == Event::EventTypes::EMPLOYER_INVITE_ACCEPTED
+      eid = event.aggregate_id
+      @@employer_jobs ||= {}
+      @@employer_jobs[eid] ||= {recruiter_exists: true, jobs: Set.new}
+
+      @@employer_jobs[eid][:jobs].each do |job_id|
+        freshnesses[job_id] ||= new
+
+        freshness = freshnesses[job_id]
+
+        freshness.handle_event(event, with_side_effects: with_side_effects, now: now)
+      end
+    end
 
     freshnesses
   end
@@ -25,7 +45,7 @@ class JobFreshnessService < EventConsumer
     @job_events = job_events
     @now = now
 
-    job_events.each do |event|
+    job_events.sort_by(&:occurred_at).each do |event|
       handle_event(event, now: now)
     end
   end
@@ -59,11 +79,11 @@ class JobFreshnessService < EventConsumer
     end
   end
 
-  private
-
   def self.freshnesses
-    @freshnesses ||= {}
+    @@freshnesses ||= {}
   end
+
+  private
 
   def any_ignored?
     freshness_context.applicants.any? do |_, applicant|
@@ -87,29 +107,25 @@ class JobFreshnessService < EventConsumer
     freshness_context.status = "stale" if any_ignored?
   end
 
-  def employer_invite_accepted(event)
-    eid = event.aggregate_id
-
-    employers_with_recruiters << eid
-
-    if employer_id == eid
-      freshness_context.recruiter_exists = true
-
-      freshness_context.status = !hidden? && recruiter_exists? && !any_ignored? ? "fresh" : "stale"
-    end
-  end
-
   def job_create_update(event)
     @employer_id = event.data["employer_id"]
+    employer_jobs[employer_id] ||= {recruiter_exists: false}
+    employer_jobs[employer_id][:jobs] ||= Set.new
+    employer_jobs[employer_id][:jobs] << event.aggregate_id
 
     freshness_context.job_id = event.aggregate_id
     freshness_context.hidden = event.data["hide_job"]
     freshness_context.employment_title = event.data["employment_title"]
 
-    freshness_context.recruiter_exists = employers_with_recruiters.include?(employer_id)
+    freshness_context.recruiter_exists = employer_jobs[employer_id][:recruiter_exists]
 
     freshness_context.status = "stale" if hidden?
     freshness_context.status = "stale" if !freshness_context.recruiter_exists
+  end
+
+  def employer_invite_accepted(event)
+    freshness_context.recruiter_exists = true
+    freshness_context.status = recruiter_exists? && !hidden? && !any_ignored? ? "fresh" : "stale"
   end
 
   def job_events
@@ -127,8 +143,8 @@ class JobFreshnessService < EventConsumer
     )
   end
 
-  def employers_with_recruiters
-    @@employers_with_recruiters ||= Set.new
+  def employer_jobs
+    @@employer_jobs ||= {}
   end
 
   attr_reader :employer_id, :job_events, :now

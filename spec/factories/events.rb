@@ -3,13 +3,6 @@ FactoryBot.define do
     id { SecureRandom.uuid }
     aggregate_id { SecureRandom.uuid }
 
-    trait :user_created do
-      event_type { Event::EventTypes::USER_CREATED }
-      data { { email: "tom@blocktrainapp.com" } }
-      metadata {{}}
-      occurred_at { Time.new(2020, 1, 1) }
-    end
-
     trait :chat_message_sent do
       event_type { Event::EventTypes::CHAT_MESSAGE_SENT }
       occurred_at { Time.new(2020, 1, 1) }
@@ -17,18 +10,11 @@ FactoryBot.define do
       metadata { {} }
     end
 
-    trait :user_updated do
-      event_type { Event::EventTypes::USER_UPDATED }
-      data do
-        {
-          email: "tom@blocktrainapp.com",
-          first_name: "Tom",
-          last_name: "Block",
-          zip: "43210"
-        }
-      end
-      metadata {{}}
+    trait :day_elapsed do
+      event_type { Event::EventTypes::DAY_ELAPSED }
       occurred_at { Time.new(2020, 1, 1) }
+      data { {} }
+      metadata { {} }
     end
 
     trait :education_experience_created do
@@ -118,6 +104,27 @@ FactoryBot.define do
     trait :job_unsaved do
       event_type { Event::EventTypes::JOB_UNSAVED }
       data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
+    trait :user_created do
+      event_type { Event::EventTypes::USER_CREATED }
+      data { { email: "tom@blocktrainapp.com" } }
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
+    trait :user_updated do
+      event_type { Event::EventTypes::USER_UPDATED }
+      data do
+        {
+          email: "tom@blocktrainapp.com",
+          first_name: "Tom",
+          last_name: "Block",
+          zip: "43210"
+        }
+      end
       metadata {{}}
       occurred_at { Time.new(2020, 1, 1) }
     end

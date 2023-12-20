@@ -4,6 +4,7 @@ class Event < ApplicationRecord
       APPLICANT_STATUS_UPDATED = 'applicant_status_updated',
       CHAT_CREATED = 'chat_created',
       CHAT_MESSAGE_SENT = 'chat_message_sent',
+      DAY_ELAPSED = 'day_elapsed',
       EDUCATION_EXPERIENCE_CREATED = 'education_experience_created',
       EMPLOYER_CREATED = 'employer_created',
       EMPLOYER_INVITE_ACCEPTED = 'employer_invite_accepted',

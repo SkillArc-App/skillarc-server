@@ -13,7 +13,8 @@ RSpec.describe JobFreshnessService do
       :event,
       :employer_invite_accepted,
       aggregate_id: employer_id,
-      data: {}
+      data: {},
+      occurred_at: now - 1.week
     )
   end
 
@@ -99,6 +100,10 @@ RSpec.describe JobFreshnessService do
           employer_name: "Blocktrain",
           employment_title: "Welder",
         )
+
+        expect do
+          described_class.handle_event(build(:event, :day_elapsed), now: now, with_side_effects: true)
+        end.not_to change { JobFreshness.count }
       end
     end
   end
@@ -211,16 +216,82 @@ RSpec.describe JobFreshnessService do
             )
           end
 
+          context "when the applicant was created less than 1 week ago" do
+            let(:applicant_created_at) { now - 1.day }
+
+            it "returns 'fresh'" do
+              expect(subject).to have_attributes(
+                job_id: job_id,
+                status: "fresh",
+                applicants: {
+                  applicant_created_at_event.data.fetch("applicant_id") => {
+                    last_updated_at: applicant_created_at,
+                    status: "new"
+                  }.stringify_keys
+                },
+                employer_name: "Blocktrain",
+                employment_title: "Welder",
+                hidden: false,
+                recruiter_exists: true,
+              )
+            end
+          end
+
           context "when the applicant was created more than 1 week ago" do
             let(:applicant_created_at) { now - 2.weeks }
 
+            context "when the applicant status was updated" do
+              let(:job_events) { [] }
+              let(:applicant_status_updated_event) do
+                build(
+                  :event,
+                  :applicant_status_updated,
+                  aggregate_id: job_id,
+                  data: {
+                    applicant_id: applicant_created_at_event.data.fetch("applicant_id"),
+                    job_id: job_id,
+                    profile_id: SecureRandom.uuid,
+                    user_id: SecureRandom.uuid,
+                    employment_title: "Welder",
+                    status: "pending intro"
+                  },
+                  occurred_at: applicant_status_updated_at
+                )
+              end
+              let(:applicant_status_updated_at) { now - 1.week - 1.day }
+
+              it "returns 'fresh'" do
+                described_class.handle_event(job_created_at_event)
+                described_class.handle_event(applicant_created_at_event)
+                described_class.handle_event(applicant_status_updated_event)
+
+                expect(described_class.new(job_id, now: now).get).to have_attributes(
+                  job_id: job_id,
+                  status: "fresh",
+                  applicants: {
+                    applicant_created_at_event.data.fetch("applicant_id") => {
+                      last_updated_at: applicant_status_updated_at,
+                      status: "pending intro"
+                    }.stringify_keys
+                  },
+                  employer_name: "Blocktrain",
+                  employment_title: "Welder",
+                  hidden: false,
+                  recruiter_exists: true,
+                )
+              end
+            end
+
             it "returns 'stale'" do
+              described_class.handle_event(build(:event, :day_elapsed, occurred_at: now, data: {})) # Have to wait for the day to elapse
+
               expect(subject).to have_attributes(
                 job_id: job_id,
                 status: "stale",
                 applicants: {
                   applicant_created_at_event.data.fetch("applicant_id") => {
-                    last_updated_at: applicant_created_at
+                    last_updated_at: applicant_created_at,
+                    status: "new"
                   }.stringify_keys
                 },
                 employer_name: "Blocktrain",

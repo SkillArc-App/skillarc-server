@@ -40,6 +40,10 @@ class JobFreshnessService < EventConsumer
       ej.jobs.each do |job_id|
         new(job_id).handle_event(event, with_side_effects: with_side_effects, now: now)
       end
+    elsif event.event_type == Event::EventTypes::DAY_ELAPSED
+      JobFreshnessContext.pluck(:job_id).each do |job_id|
+        new(job_id).handle_event(event, with_side_effects: with_side_effects, now: now)
+      end
     end
 
     true
@@ -60,6 +64,8 @@ class JobFreshnessService < EventConsumer
     case event.event_type
     when Event::EventTypes::APPLICANT_STATUS_UPDATED
       applicant_status_updated(event)
+    when Event::EventTypes::DAY_ELAPSED
+      day_elapsed(event)
     when Event::EventTypes::EMPLOYER_INVITE_ACCEPTED
       employer_invite_accepted(event)
     when Event::EventTypes::JOB_CREATED
@@ -70,7 +76,14 @@ class JobFreshnessService < EventConsumer
       return
     end
 
+    freshness_context.status = recruiter_exists? && !hidden? && !any_ignored?(event.occurred_at) ? "fresh" : "stale"
+    freshness_context.save!
+
     if with_side_effects
+      last_freshness = JobFreshness.where(job_id: freshness_context.job_id).last_created
+
+      return if last_freshness && last_freshness.status == freshness_context.status
+
       JobFreshness.create!(
         job_id: freshness_context.job_id,
         status: freshness_context.status,
@@ -83,10 +96,13 @@ class JobFreshnessService < EventConsumer
 
   private
 
-  def any_ignored?
+  def any_ignored?(reference_time)
     freshness_context.applicants.any? do |_, applicant|
-      now - Time.parse(applicant["last_updated_at"]) > 1.week
+      reference_time - Time.parse(applicant["last_updated_at"]) > 1.week && applicant["status"] == "new"
     end
+  end
+
+  def day_elapsed(event)
   end
 
   def hidden?
@@ -100,11 +116,8 @@ class JobFreshnessService < EventConsumer
   def applicant_status_updated(event)
     freshness_context.applicants[event.data.fetch("applicant_id")] = {
       "last_updated_at" => event.occurred_at.to_s,
+      "status" => event.data.fetch("status"),
     }
-
-    freshness_context.status = "stale" if any_ignored?
-
-    freshness_context.save!
   end
 
   def job_create_update(event)
@@ -123,18 +136,10 @@ class JobFreshnessService < EventConsumer
 
     freshness_context.recruiter_exists = employer_job(employer_id)[:recruiter_exists]
     freshness_context.employer_name = employer_job(employer_id)[:name]
-
-    freshness_context.status = "stale" if hidden?
-    freshness_context.status = "stale" if !freshness_context.recruiter_exists
-
-    freshness_context.save!
   end
 
   def employer_invite_accepted(event)
     freshness_context.recruiter_exists = true
-    freshness_context.status = recruiter_exists? && !hidden? && !any_ignored? ? "fresh" : "stale"
-
-    freshness_context.save!
   end
 
   def job_events

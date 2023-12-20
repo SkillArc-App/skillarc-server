@@ -1,0 +1,2 @@
+class JobFreshnessContext < ApplicationRecord
+end

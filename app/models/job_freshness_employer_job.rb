@@ -1,0 +1,2 @@
+class JobFreshnessEmployerJob < ApplicationRecord
+end

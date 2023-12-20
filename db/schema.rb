@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_19_144242) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_19_195136) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -206,6 +206,27 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_19_144242) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+  end
+
+  create_table "job_freshness_contexts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.jsonb "applicants", default: {}, null: false
+    t.string "employer_name", null: false
+    t.string "employment_title", null: false
+    t.boolean "hidden", default: false, null: false
+    t.uuid "job_id", null: false
+    t.boolean "recruiter_exists", default: false, null: false
+    t.string "status", default: "fresh", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "job_freshness_employer_jobs", force: :cascade do |t|
+    t.string "employer_id", null: false
+    t.boolean "recruiter_exists", default: false, null: false
+    t.string "jobs", default: [], null: false, array: true
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "job_freshnesses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

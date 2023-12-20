@@ -17,7 +17,7 @@ Employer.create!(
    }]
 )
 
-Job.create!(
+mechanic = Job.create!(
   id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
   employer_id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
   benefits_description: 'Dental insurance Vision insurance Disability insurance 401(k)',
@@ -34,7 +34,7 @@ Job.create!(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
 )
 
-Job.create!(
+journeyman = Job.create!(
   id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
   employer_id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
   benefits_description: 'Dental insurance Vision insurance Disability insurance 401(k)',
@@ -51,7 +51,7 @@ Job.create!(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
 )
 
-Job.create!(
+contractor = Job.create!(
   id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
   employer_id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
   benefits_description: 'Dental insurance, Vision insurance, Disability insurance 401(k)',

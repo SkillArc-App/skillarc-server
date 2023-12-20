@@ -121,8 +121,8 @@ class JobFreshnessService < EventConsumer
     freshness_context.hidden = event.data["hide_job"]
     freshness_context.employment_title = event.data["employment_title"]
 
-    freshness_context.recruiter_exists = employer_jobs[employer_id][:recruiter_exists]
-    freshness_context.employer_name = employer_jobs[employer_id][:name]
+    freshness_context.recruiter_exists = employer_job(employer_id)[:recruiter_exists]
+    freshness_context.employer_name = employer_job(employer_id)[:name]
 
     freshness_context.status = "stale" if hidden?
     freshness_context.status = "stale" if !freshness_context.recruiter_exists
@@ -155,16 +155,6 @@ class JobFreshnessService < EventConsumer
       hidden: false,
       recruiter_exists: false
     )
-  end
-
-  def employer_jobs
-    JobFreshnessEmployerJob.all.each_with_object({}) do |employer_job, hash|
-      hash[employer_job.employer_id] = {
-        name: employer_job.name,
-        recruiter_exists: employer_job.recruiter_exists,
-        jobs: Set.new(employer_job.jobs)
-      }
-    end
   end
 
   def employer_job(employer_id)

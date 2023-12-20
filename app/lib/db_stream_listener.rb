@@ -3,18 +3,17 @@ class DbStreamListener < StreamListener
     @consumer = consumer
     @listener_name = listener_name
 
-    Event.where("occurred_at <= ?", bookmark_timestamp).order(:occurred_at).each do |event|
-      consumer.handle_event(event, with_side_effects: false)
-    end
-
     after_events = Event.where("occurred_at > ?", bookmark_timestamp).order(:occurred_at)
-    after_events.each do |event|
-      consumer.handle_event(event, with_side_effects: true)
-    end
 
-    ListenerBookmark
-      .find_or_initialize_by(consumer_name: listener_name)
-      .update!(event_id: after_events.last.id)
+    return if after_events.empty?
+
+    after_events.each do |event|
+      handle_event(event, with_side_effects: true)
+    end
+  end
+
+  def call(event)
+    handle_event(event, with_side_effects: true)
   end
 
   private
@@ -25,6 +24,14 @@ class DbStreamListener < StreamListener
     return Time.at(0) unless bookmark
 
     Event.find(bookmark.event_id).occurred_at
+  end
+
+  def handle_event(event, with_side_effects: false)
+    consumer.handle_event(event, with_side_effects: with_side_effects)
+
+    ListenerBookmark
+      .find_or_initialize_by(consumer_name: listener_name)
+      .update!(event_id: event.id)
   end
 
   attr_reader :consumer, :listener_name

@@ -77,11 +77,11 @@ RSpec.describe DbStreamListener do
         with_side_effects: true,
       )
 
-      subject.call(event)
+      subject.call(event: event)
     end
 
     it "updates the bookmark" do
-      expect { subject.call(event) }.to change {
+      expect { subject.call(event: event) }.to change {
         ListenerBookmark.find_by(consumer_name: "listener_name")&.event_id
       }.from(nil).to(event.id)
     end

@@ -36,6 +36,18 @@ class Onboarding
           user_id: user.id
         )
         user.reload
+
+        Resque.enqueue(
+          CreateEventJob,
+          aggregate_id: user.id,
+          event_type: Event::EventTypes::PROFILE_CREATED,
+          data: {
+            id: user.profile.id,
+            user_id: user.id
+          },
+          metadata: {},
+          occurred_at: user.profile.created_at
+        )
       end
     end
 
@@ -62,7 +74,7 @@ class Onboarding
           Resque.enqueue(
             CreateEventJob,
             aggregate_id: user.id,
-            event_type: "experience_created",
+            event_type: Event::EventTypes::EXPERIENCE_CREATED,
             data: {
               id: oe.id,
               organization_name: oe.organization_name,
@@ -102,7 +114,7 @@ class Onboarding
           Resque.enqueue(
             CreateEventJob,
             aggregate_id: user.id,
-            event_type: "education_experience_created",
+            event_type: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
             data: {
               id: ee.id,
               organization_name: ee.organization_name,
@@ -131,7 +143,7 @@ class Onboarding
           Resque.enqueue(
             CreateEventJob,
             aggregate_id: user.id,
-            event_type: "seeker_training_provider_created",
+            event_type: Event::EventTypes::SEEKER_TRAINING_PROVIDER_CREATED,
             data: {
               id: stp.id,
               user_id: stp.user_id,
@@ -165,7 +177,7 @@ class Onboarding
         Resque.enqueue(
           CreateEventJob,
           aggregate_id: user.id,
-          event_type: "personal_experience_created",
+          event_type: Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
           data: {
             id: pe.id,
             activity: pe.activity,
@@ -208,7 +220,7 @@ class Onboarding
     Resque.enqueue(
       CreateEventJob,
       aggregate_id: user.id,
-      event_type: "onboarding_completed",
+      event_type: Event::EventTypes::ONBOARDING_COMPLETED,
       data: {
         responses:
       },

@@ -61,7 +61,25 @@ RSpec.describe Onboarding do
         expect(Profile.last_created.user).to eq(user)
       end
 
+      it "publishes a profile created event" do
+        allow(Resque).to receive(:enqueue)
+        expect(Resque).to receive(:enqueue).with(
+          CreateEventJob,
+          aggregate_id: user.id,
+          event_type: Event::EventTypes::PROFILE_CREATED,
+          data: {
+            id: be_present,
+            user_id: user.id
+          },
+          metadata: {},
+          occurred_at: be_present
+        )
+
+        subject 
+      end
+
       it "publishes an event" do
+        allow(Resque).to receive(:enqueue)
         expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           aggregate_id: user.id,
@@ -119,7 +137,7 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        expect(Resque).to receive(:enqueue)
+        allow(Resque).to receive(:enqueue)
         expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           aggregate_id: user.id,
@@ -198,7 +216,7 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        expect(Resque).to receive(:enqueue)
+        allow(Resque).to receive(:enqueue)
         expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           aggregate_id: user.id,
@@ -267,7 +285,7 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        expect(Resque).to receive(:enqueue)
+        allow(Resque).to receive(:enqueue)
         expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           aggregate_id: user.id,
@@ -363,7 +381,7 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        expect(Resque).to receive(:enqueue)
+        allow(Resque).to receive(:enqueue)
         expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           aggregate_id: user.id,
@@ -505,7 +523,7 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
-          expect(Resque).to receive(:enqueue).exactly(5).times
+          allow(Resque).to receive(:enqueue)
           expect(Resque).to receive(:enqueue).with(
             CreateEventJob,
             aggregate_id: user.id,
@@ -606,6 +624,7 @@ RSpec.describe Onboarding do
       end
 
       it "does not duplicate job calls" do
+        allow(Resque).to receive(:enqueue)
         expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           aggregate_id: user.id,

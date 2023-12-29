@@ -6,6 +6,19 @@ class ProfileService
   def update(params)
     profile.update!(params)
 
+    Resque.enqueue(
+      CreateEventJob,
+      event_type: Event::EventTypes::PROFILE_UPDATED,
+      aggregate_id: profile.user.id,
+      data: {
+        bio: profile.bio,
+        met_career_coach: profile.met_career_coach,
+        image: profile.image,
+      },
+      occurred_at: Time.now.utc,
+      metadata: {}
+    )
+
     if profile.saved_change_to_met_career_coach?
       Resque.enqueue(
         CreateEventJob,

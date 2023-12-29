@@ -20,6 +20,7 @@ class Event < ApplicationRecord
       ONBOARDING_COMPLETED = 'onboarding_completed',
       PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created',
       PROFILE_CREATED = 'profile_created',
+      PROFILE_UPDATED = 'profile_updated',
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created',
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted',
       USER_CREATED = 'user_created',

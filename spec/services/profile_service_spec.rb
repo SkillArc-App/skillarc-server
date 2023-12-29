@@ -17,11 +17,38 @@ RSpec.describe ProfileService do
     it "updates the profile" do
       expect { subject }
         .to change { profile.reload.bio }.to("New Bio")
+
+    end
+
+    it "publishes a profile updated event" do
+      expect(Resque).to receive(:enqueue).with(
+        CreateEventJob,
+        event_type: Event::EventTypes::PROFILE_UPDATED,
+        aggregate_id: profile.user.id,
+        data: {
+          bio: "New Bio",
+          met_career_coach: profile.met_career_coach,
+          image: profile.image,
+        },
+        occurred_at: be_present,
+        metadata: {}
+      )
+
+      subject
     end
 
     context "when met_career_coach does not change" do
-      it "does not publish" do
-        expect(Resque).not_to receive(:enqueue)
+      it "does not publish a met career coach event" do
+        expect(Resque).not_to receive(:enqueue).with(
+          CreateEventJob,
+          event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
+          aggregate_id: profile.user.id,
+          data: {
+            met_career_coach: met_career_coach,
+          },
+          occurred_at: be_present,
+          metadata: {}
+        )
 
         subject
       end
@@ -31,7 +58,8 @@ RSpec.describe ProfileService do
       let(:met_career_coach) { !profile.met_career_coach }
 
       it "creates an event" do
-        expect_any_instance_of(Resque).to receive(:enqueue).with(
+        allow(Resque).to receive(:enqueue)
+        expect(Resque).to receive(:enqueue).with(
           CreateEventJob,
           event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
           aggregate_id: profile.user.id,

@@ -1,0 +1,2 @@
+class CoachSeekerContext < ApplicationRecord
+end

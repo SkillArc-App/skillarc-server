@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe CreateEventJob do
+  before do
+    allow(Pubsub).to receive(:publish)
+  end
+
   it "creates an event" do
     occurred_at = Date.new(2020, 1, 1)
 

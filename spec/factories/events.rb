@@ -10,6 +10,13 @@ FactoryBot.define do
       metadata { {} }
     end
 
+    trait :coach_assigned do
+      event_type { Event::EventTypes::COACH_ASSIGNED }
+      occurred_at { Time.new(2020, 1, 1) }
+      data { {} }
+      metadata { {} }
+    end
+
     trait :day_elapsed do
       event_type { Event::EventTypes::DAY_ELAPSED }
       occurred_at { Time.new(2020, 1, 1) }
@@ -103,6 +110,34 @@ FactoryBot.define do
 
     trait :job_unsaved do
       event_type { Event::EventTypes::JOB_UNSAVED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
+    trait :note_added do
+      event_type { Event::EventTypes::NOTE_ADDED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
+    trait :profile_created do
+      event_type { Event::EventTypes::PROFILE_CREATED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
+    trait :role_added do
+      event_type { Event::EventTypes::ROLE_ADDED }
+      data {{}}
+      metadata {{}}
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
+    trait :skill_level_updated do
+      event_type { Event::EventTypes::SKILL_LEVEL_UPDATED }
       data {{}}
       metadata {{}}
       occurred_at { Time.new(2020, 1, 1) }

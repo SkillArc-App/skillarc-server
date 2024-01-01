@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_19_195136) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_01_173754) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -114,6 +114,30 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_19_195136) do
     t.datetime "updated_at", null: false
     t.index ["applicant_chat_id"], name: "index_chat_messages_on_applicant_chat_id"
     t.index ["user_id"], name: "index_chat_messages_on_user_id"
+  end
+
+  create_table "coach_seeker_contexts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "profile_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "phone_number"
+    t.string "assigned_coach"
+    t.string "skill_level"
+    t.string "stage"
+    t.string "barriers", default: [], array: true
+    t.jsonb "notes", default: []
+    t.datetime "last_contacted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "coaches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "user_id", null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "credentials", id: :text, force: :cascade do |t|

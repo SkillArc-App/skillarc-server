@@ -4,6 +4,15 @@ Rails.application.routes.draw do
   get 'employers/jobs' => 'employers/jobs#index'
   put 'employers/applicants/:id' => 'employers/applicants#update', as: 'employers_applicant'
 
+  scope module: 'coaches', path: 'coaches' do
+    resources :seekers do
+      post 'notes' => 'seekers#create_note'
+      post 'skill-levels' => 'seekers#update_skill_level'
+      post 'assign_coach' => 'seekers#assign'
+    end
+  end
+  resources :coaches
+
   scope module: 'employers', path: 'employers' do
     resources :chats do
       post 'send_message' => 'chats#send_message', on: :collection

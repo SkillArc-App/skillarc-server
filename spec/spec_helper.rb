@@ -18,6 +18,7 @@ require 'pry'
 require 'shared_examples/secure_endpoint'
 require 'shared_examples/admin_secure_endpoint'
 require 'shared_examples/training_provider_secure_endpoint'
+require "shared_examples/coach_secure_endpoint"
 require "shared_examples/employer_secure_endpoint"
 require "shared_examples/default_headers_context"
 

@@ -66,11 +66,24 @@ Rails.application.config.after_initialize do
 
   if Rails.env.production?
     job_freshness = DbStreamListener.new(JobFreshnessService, "job_freshness_service")
+    coach_seeker = DbStreamListener.new(CoachSeekers, "coach_seekers")
+    coaches = DbStreamListener.new(CoachesService, "coaches")
+
 
     Event::EventTypes::ALL.each do |event_type|
       Pubsub.subscribe(
         event: event_type,
         subscriber: job_freshness
+      )
+
+      Pubsub.subscribe(
+        event: event_type,
+        subscriber: coach_seeker
+      )
+
+      Pubsub.subscribe(
+        event: event_type,
+        subscriber: coaches
       )
     end
   end

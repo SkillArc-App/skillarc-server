@@ -17,7 +17,7 @@ class CoachSeekers
   end
 
   def self.all
-    CoachSeekerContext.all.map do |csc|
+    CoachSeekerContext.where.not(profile_id: nil).map do |csc|
       serialize_coach_seeker_context(csc)
     end
   end

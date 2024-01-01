@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CoachSeekers do
+  let(:non_seeker_user_created) { build(:event, :user_created, aggregate_id: "123", data: { email: "f@f.f" }) }
   let(:user_created) { build(:event, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com"}) }
   let(:user_updated) { build(:event, :user_updated, aggregate_id: user_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890" }) }
   let(:profile_created) { build(:event, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
@@ -12,6 +13,7 @@ RSpec.describe CoachSeekers do
   let(:profile_id) { "75372772-49dc-4884-b4ae-1d408e030aa4" }
 
   before do
+    described_class.handle_event(non_seeker_user_created)
     described_class.handle_event(user_created)
     described_class.handle_event(user_updated)
     described_class.handle_event(profile_created)
@@ -43,7 +45,7 @@ RSpec.describe CoachSeekers do
         stage: 'profile_created',
       }        
 
-      expect(subject).to eq([expected_profile])
+      expect(subject).to contain_exactly(expected_profile)
     end
   end
 

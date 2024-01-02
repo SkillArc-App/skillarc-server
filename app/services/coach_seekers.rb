@@ -92,10 +92,12 @@ class CoachSeekers
   def self.handle_user_created(event)
     user_id = event.aggregate_id
 
-    CoachSeekerContext.find_or_create_by(
+    csc = CoachSeekerContext.find_or_create_by(
       user_id: user_id,
       email: event.data["email"]
     )
+    csc.last_active_on = event.occurred_at
+    csc.save!
   end
 
   def self.handle_user_updated(event)
@@ -104,6 +106,7 @@ class CoachSeekers
     csc.update!(
       first_name: event.data["first_name"],
       last_name: event.data["last_name"],
+      last_active_on: event.occurred_at,
       phone_number: event.data["phone_number"]
     )
   end
@@ -112,6 +115,7 @@ class CoachSeekers
     csc = CoachSeekerContext.find_by!(user_id: event.aggregate_id)
 
     csc.update!(
+      last_active_on: event.occurred_at,
       profile_id: event.data["id"]
     )
   end
@@ -132,6 +136,7 @@ class CoachSeekers
       email: csc.email,
       phoneNumber: csc.phone_number,
       skillLevel: csc.skill_level || 'beginner',
+      lastActiveOn: csc.last_active_on,
       lastContacted: csc.last_contacted_at || "Never",
       assignedCoach: csc.assigned_coach || 'none',
       barriers: csc.barriers,

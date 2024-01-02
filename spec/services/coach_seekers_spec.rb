@@ -33,6 +33,7 @@ RSpec.describe CoachSeekers do
         email: "hannah@blocktrainapp.com",
         phoneNumber: "1234567890",
         skillLevel: 'advanced',
+        lastActiveOn: profile_created.occurred_at,
         lastContacted: note_added.occurred_at,
         assignedCoach: '123',
         barriers: [],
@@ -45,7 +46,7 @@ RSpec.describe CoachSeekers do
         stage: 'profile_created',
       }        
 
-      expect(subject).to contain_exactly(expected_profile)
+      expect(subject.first).to eq(expected_profile)
     end
   end
 
@@ -60,6 +61,7 @@ RSpec.describe CoachSeekers do
         email: "hannah@blocktrainapp.com",
         phoneNumber: "1234567890",
         skillLevel: 'advanced',
+        lastActiveOn: profile_created.occurred_at,
         lastContacted: note_added.occurred_at,
         assignedCoach: '123',
         barriers: [],

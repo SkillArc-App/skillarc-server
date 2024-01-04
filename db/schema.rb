@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_02_135518) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_04_141246) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -544,22 +544,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_02_135518) do
     t.text "name", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-  end
-
-  create_table "temp_users", id: :text, force: :cascade do |t|
-    t.text "name"
-    t.text "email"
-    t.datetime "email_verified", precision: 3
-    t.text "image"
-    t.text "first_name"
-    t.text "last_name"
-    t.text "zip_code"
-    t.text "phone_number"
-    t.text "onboarding_session_id"
-    t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 3, null: false
-    t.index ["email"], name: "TempUser_email_key", unique: true
-    t.index ["onboarding_session_id"], name: "TempUser_onboarding_session_id_key", unique: true
   end
 
   create_table "testimonials", id: :text, force: :cascade do |t|

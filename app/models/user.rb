@@ -21,15 +21,13 @@ class User < ApplicationRecord
 
   def saved_jobs
     job_ids = Event
-      .where(aggregate_id: id, event_type: [Event::EventTypes::JOB_SAVED, Event::EventTypes::JOB_UNSAVED])
-      .group_by { |e| e.data["job_id"] }
-      .map do |job_id, events|
-        last_event = events.sort_by { |e| e.occurred_at }.last
+              .where(aggregate_id: id, event_type: [Event::EventTypes::JOB_SAVED, Event::EventTypes::JOB_UNSAVED])
+              .group_by { |e| e.data["job_id"] }
+              .map do |job_id, events|
+      last_event = events.sort_by { |e| e.occurred_at }.last
 
-        if last_event.event_type == Event::EventTypes::JOB_SAVED
-          job_id
-        end
-      end
+      job_id if last_event.event_type == Event::EventTypes::JOB_SAVED
+    end
 
     Job.where(id: job_ids.compact.uniq)
   end

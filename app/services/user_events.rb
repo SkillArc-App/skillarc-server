@@ -16,7 +16,7 @@ class UserEvents
 
       {
         datetime: event.occurred_at.in_time_zone('Eastern Time (US & Canada)').strftime("%Y-%m-%d %l:%M%p"),
-        event_message:,
+        event_message:
       }
     end.compact
   end
@@ -26,13 +26,13 @@ class UserEvents
   def event_message(event)
     case event.event_type
     when Event::EventTypes::APPLICANT_STATUS_UPDATED
-      "Applicant Status Updated: #{event.data["employment_title"]} - #{event.data["status"]}"
+      "Applicant Status Updated: #{event.data['employment_title']} - #{event.data['status']}"
     when Event::EventTypes::EDUCATION_EXPERIENCE_CREATED
-      "Education Experience Created: #{event.data["organization_name"]}"
+      "Education Experience Created: #{event.data['organization_name']}"
     when Event::EventTypes::EXPERIENCE_CREATED
-      "Work Experience Created: #{event.data["organization_name"]}"
+      "Work Experience Created: #{event.data['organization_name']}"
     when Event::EventTypes::JOB_SAVED
-      "Job Saved: #{event.data["employment_title"]}"
+      "Job Saved: #{event.data['employment_title']}"
     when Event::EventTypes::ONBOARDING_COMPLETED
       "Onboarding Complete"
     when Event::EventTypes::USER_CREATED

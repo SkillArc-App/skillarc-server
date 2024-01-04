@@ -39,9 +39,9 @@ class Employers::ChatsController < ApplicationController
 
   def set_r
     @r = if current_user.employer_admin?
-      EmployerChats::Recruiter.new(current_user, Employer.all.pluck(:id))
-    else
-      EmployerChats::Recruiter.new(recruiter.user, recruiter.employer_id)
-    end
+           EmployerChats::Recruiter.new(current_user, Employer.all.pluck(:id))
+         else
+           EmployerChats::Recruiter.new(recruiter.user, recruiter.employer_id)
+         end
   end
 end

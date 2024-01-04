@@ -9,7 +9,7 @@ RSpec.shared_context "admin authenticated" do
       email: 'jake@statefarm.com',
       sub: 'jakesub'
     )
-    UserRole.create!(id: SecureRandom.uuid, user: u, role: role)
+    UserRole.create!(id: SecureRandom.uuid, user: u, role:)
     u
   end
   let(:role) { Role.create!(id: SecureRandom.uuid, name: "admin") }
@@ -17,7 +17,7 @@ RSpec.shared_context "admin authenticated" do
   around do |example|
     original = ENV["MOCK_AUTH"]
     ENV["MOCK_AUTH"] = "true"
-    
+
     example.run
 
     ENV["MOCK_AUTH"] = original

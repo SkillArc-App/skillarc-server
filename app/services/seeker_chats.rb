@@ -4,9 +4,9 @@ class SeekerChats
   end
 
   def send_message(applicant_id:, message:)
-    applicant_chat = ApplicantChat.find_or_create_by!(applicant_id: applicant_id)
+    applicant_chat = ApplicantChat.find_or_create_by!(applicant_id:)
 
-    applicant_chat.messages.create!(user: user, message: message)
+    applicant_chat.messages.create!(user:, message:)
 
     Resque.enqueue(
       CreateEventJob,
@@ -18,13 +18,12 @@ class SeekerChats
         from_user_id: applicant_chat.applicant.profile.user.id,
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
-        message: message
+        message:
       },
       metadata: {},
       occurred_at: Time.now
     )
   end
-
 
   def get
     ApplicantChat
@@ -56,7 +55,7 @@ class SeekerChats
       .where(applicants: { id: applicant_id })
       .each do |applicant_chat|
         applicant_chat.messages.each do |message|
-          message.read_receipts.find_or_create_by!(user: user)
+          message.read_receipts.find_or_create_by!(user:)
         end
       end
   end

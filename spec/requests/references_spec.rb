@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe "References", type: :request do
   describe "GET /show" do
-    subject { get reference_path(reference), headers: headers }
+    subject { get reference_path(reference), headers: }
 
-    let(:reference) { create(:reference, author_profile: training_provider_profile) }  
+    let(:reference) { create(:reference, author_profile: training_provider_profile) }
     let!(:training_provider_profile) do
       tpp = TrainingProviderProfile.create!(
         id: SecureRandom.uuid,
-        user: user,
-        training_provider: create(:training_provider),
+        user:,
+        training_provider: create(:training_provider)
       )
     end
     let!(:user) do
@@ -27,14 +27,14 @@ RSpec.describe "References", type: :request do
   end
 
   describe "POST /create" do
-    subject { post references_path, params: params, headers: headers }
+    subject { post references_path, params:, headers: }
 
     include_context "training provider authenticated"
 
     let(:params) do
       {
         reference: "This is a reference",
-        seeker_profile_id: seeker_profile.id,
+        seeker_profile_id: seeker_profile.id
       }
     end
 
@@ -52,14 +52,14 @@ RSpec.describe "References", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put reference_path(reference), params: params, headers: headers }
+    subject { put reference_path(reference), params:, headers: }
 
     include_context "training provider authenticated"
 
     let(:params) do
       {
         reference: {
-          reference_text: "This is a new reference",
+          reference_text: "This is a new reference"
         }
       }
     end

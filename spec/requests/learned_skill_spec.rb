@@ -6,11 +6,11 @@ RSpec.describe "LearnedSkills", type: :request do
   let(:job) { create(:job) }
 
   describe "POST /create" do
-    subject { post job_learned_skills_path(job), params: params, headers: headers }
+    subject { post job_learned_skills_path(job), params:, headers: }
 
     let(:params) do
       {
-        master_skill_id: master_skill.id,
+        master_skill_id: master_skill.id
       }
     end
     let(:master_skill) { create(:master_skill) }

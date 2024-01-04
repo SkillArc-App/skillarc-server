@@ -2,7 +2,7 @@ RSpec.shared_context "authenticated" do
   around do |example|
     original = ENV["MOCK_AUTH"]
     ENV["MOCK_AUTH"] = "true"
-    
+
     example.run
 
     ENV["MOCK_AUTH"] = original

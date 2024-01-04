@@ -44,8 +44,8 @@ RSpec.describe EmployerService do
   end
 
   describe "#update" do
-    subject { described_class.new.update(employer_id: employer.id, params: params) }
-    
+    subject { described_class.new.update(employer_id: employer.id, params:) }
+
     let!(:employer) do
       create(
         :employer,

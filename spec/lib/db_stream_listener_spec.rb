@@ -21,11 +21,11 @@ RSpec.describe DbStreamListener do
       it "consumes the events from the beginning with side effects" do
         expect(consumer).to receive(:handle_event).with(
           event,
-          with_side_effects: true,
+          with_side_effects: true
         )
         expect(consumer).to receive(:handle_event).with(
           event2,
-          with_side_effects: true,
+          with_side_effects: true
         )
 
         subject
@@ -45,12 +45,12 @@ RSpec.describe DbStreamListener do
       it "consumes the events after the bookmark" do
         expect(consumer).to receive(:handle_event).with(
           event2,
-          with_side_effects: true,
+          with_side_effects: true
         )
 
         expect(consumer).not_to receive(:handle_event).with(
           event,
-          with_side_effects: false,
+          with_side_effects: false
         )
 
         subject
@@ -60,7 +60,7 @@ RSpec.describe DbStreamListener do
         let(:bookmark_event) { event2 }
 
         it "does not update the bookmark" do
-          expect { subject }.not_to change { ListenerBookmark.find_by(consumer_name: "listener_name").event_id }
+          expect { subject }.not_to(change { ListenerBookmark.find_by(consumer_name: "listener_name").event_id })
         end
       end
     end
@@ -74,14 +74,14 @@ RSpec.describe DbStreamListener do
 
       expect(consumer).to receive(:handle_event).with(
         event,
-        with_side_effects: true,
+        with_side_effects: true
       )
 
-      subject.call(event: event)
+      subject.call(event:)
     end
 
     it "updates the bookmark" do
-      expect { subject.call(event: event) }.to change {
+      expect { subject.call(event:) }.to change {
         ListenerBookmark.find_by(consumer_name: "listener_name")&.event_id
       }.from(nil).to(event.id)
     end

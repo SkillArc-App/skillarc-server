@@ -27,7 +27,7 @@ class DbStreamListener < StreamListener
   end
 
   def handle_event(event, with_side_effects: false)
-    consumer.handle_event(event, with_side_effects: with_side_effects)
+    consumer.handle_event(event, with_side_effects:)
 
     ListenerBookmark
       .find_or_initialize_by(consumer_name: listener_name)

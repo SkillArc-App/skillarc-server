@@ -2,15 +2,15 @@ require 'rails_helper'
 
 RSpec.describe "Notifications", type: :request do
   describe "POST /mark_read" do
-    subject { post notifications_mark_read_path, headers: headers }
+    subject { post notifications_mark_read_path, headers: }
 
     it_behaves_like "a secured endpoint"
 
     context "when authenticated" do
       include_context "authenticated"
 
-      let!(:notification1) { create(:notification, user: user) }
-      let!(:notification2) { create(:notification, user: user) }
+      let!(:notification1) { create(:notification, user:) }
+      let!(:notification2) { create(:notification, user:) }
 
       it "marks all notifications as read" do
         expect { subject }
@@ -27,7 +27,7 @@ RSpec.describe "Notifications", type: :request do
             notification_id: notification1.id
           },
           metadata: {},
-          occurred_at: be_present,
+          occurred_at: be_present
         )
 
         expect(Resque).to receive(:enqueue).with(
@@ -38,11 +38,11 @@ RSpec.describe "Notifications", type: :request do
             notification_id: notification2.id
           },
           metadata: {},
-          occurred_at: be_present,
+          occurred_at: be_present
         )
 
         subject
       end
     end
-  end  
+  end
 end

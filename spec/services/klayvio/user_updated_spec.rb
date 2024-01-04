@@ -25,14 +25,14 @@ RSpec.describe Klayvio::UserUpdated do
         profile_attributes: {
           first_name: "Tom",
           last_name: "Hanks",
-          phone_number: "+18155201035",
+          phone_number: "+18155201035"
         },
         profile_properties: {
           date_of_birth: Date.new(1980, 1, 1)
         }
       )
 
-      subject.call(event: event)
+      subject.call(event:)
     end
   end
 end

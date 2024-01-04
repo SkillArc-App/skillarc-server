@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe CoachSeekers do
   let(:non_seeker_user_created) { build(:event, :user_created, aggregate_id: "123", data: { email: "f@f.f" }) }
-  let(:user_created) { build(:event, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com"}) }
+  let(:user_created) { build(:event, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com" }) }
   let(:user_updated) { build(:event, :user_updated, aggregate_id: user_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890" }) }
   let(:profile_created) { build(:event, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
   let(:note_added) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note" }, occurred_at: Time.utc(2020, 1, 1)) }
@@ -43,8 +43,8 @@ RSpec.describe CoachSeekers do
             date: Time.utc(2020, 1, 1)
           }
         ].as_json,
-        stage: 'profile_created',
-      }        
+        stage: 'profile_created'
+      }
 
       expect(subject.first).to eq(expected_profile)
     end
@@ -71,15 +71,15 @@ RSpec.describe CoachSeekers do
             date: Time.utc(2020, 1, 1)
           }
         ].as_json,
-        stage: 'profile_created',
-      }        
+        stage: 'profile_created'
+      }
 
       expect(subject).to eq(expected_profile)
     end
   end
 
   describe ".add_note" do
-    subject { described_class.add_note(profile_id, "This is a new note", now: now) }
+    subject { described_class.add_note(profile_id, "This is a new note", now:) }
     let(:now) { Time.new(2020, 1, 1) }
 
     it "creates an event" do
@@ -99,7 +99,7 @@ RSpec.describe CoachSeekers do
   end
 
   describe ".assign_coach" do
-    subject { described_class.assign_coach(profile_id, "123", "coach@blocktrainapp.com", now: now) }
+    subject { described_class.assign_coach(profile_id, "123", "coach@blocktrainapp.com", now:) }
     let(:now) { Time.new(2020, 1, 1) }
 
     it "creates an event" do
@@ -120,7 +120,7 @@ RSpec.describe CoachSeekers do
   end
 
   describe ".update_skill_level" do
-    subject { described_class.update_skill_level(profile_id, "advanced", now: now) }
+    subject { described_class.update_skill_level(profile_id, "advanced", now:) }
 
     let(:now) { Time.new(2020, 1, 1) }
 

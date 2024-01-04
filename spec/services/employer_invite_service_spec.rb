@@ -14,9 +14,9 @@ RSpec.describe EmployerInviteService do
         aggregate_id: employer_invite.employer_id,
         data: {
           employer_invite_id: employer_invite.id,
-          invite_email: employer_invite.email, 
+          invite_email: employer_invite.email,
           employer_id: employer_invite.employer_id,
-          employer_name: employer_invite.employer.name,
+          employer_name: employer_invite.employer.name
         },
         occurred_at: be_present,
         metadata: {}

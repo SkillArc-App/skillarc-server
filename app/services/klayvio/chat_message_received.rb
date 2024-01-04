@@ -14,7 +14,7 @@ module Klayvio
         employment_title: applicant.job.employment_title,
         employer_name: applicant.job.employer.name,
         event_id: event.id,
-        occurred_at: event.occurred_at,
+        occurred_at: event.occurred_at
       )
     end
   end

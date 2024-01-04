@@ -7,9 +7,9 @@ module Klayvio
         profile_properties: {
           is_recruiter: true,
           employer_name: event.data["employer_name"],
-          employer_id: event.data["employer_id"],
+          employer_id: event.data["employer_id"]
         },
-        occurred_at: event.occurred_at,
+        occurred_at: event.occurred_at
       )
     end
   end

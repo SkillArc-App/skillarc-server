@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe "Program::Students", type: :request do
   describe "PUT /update" do
-    subject { put program_student_path(program, student), params:, headers: headers }
+    subject { put program_student_path(program, student), params:, headers: }
 
     include_context "training provider authenticated"
 
     let(:params) do
       {
         status: "accepted",
-        program_id: program.id,
+        program_id: program.id
       }
     end
     let!(:training_provider) { create(:training_provider) }
@@ -21,7 +21,6 @@ RSpec.describe "Program::Students", type: :request do
         training_provider:
       )
     end
-
 
     let!(:user) do
       User.create!(
@@ -39,9 +38,9 @@ RSpec.describe "Program::Students", type: :request do
     let!(:seeker_training_provider) do
       create(
         :seeker_training_provider,
-        training_provider: training_provider,
-        program: program,
-        user: student_user,
+        training_provider:,
+        program:,
+        user: student_user
       )
     end
 

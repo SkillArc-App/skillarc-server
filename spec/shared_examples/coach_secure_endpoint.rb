@@ -14,7 +14,7 @@ RSpec.shared_context "coach authenticated" do
       sub: 'jakesub'
     )
 
-    UserRole.create!( 
+    UserRole.create!(
       id: SecureRandom.uuid,
       user_id: u.id,
       role_id: role.id
@@ -28,7 +28,7 @@ RSpec.shared_context "coach authenticated" do
   around do |example|
     original = ENV["MOCK_AUTH"]
     ENV["MOCK_AUTH"] = "true"
-    
+
     example.run
 
     ENV["MOCK_AUTH"] = original

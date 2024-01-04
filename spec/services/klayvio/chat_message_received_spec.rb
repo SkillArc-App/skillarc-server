@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Klayvio::ChatMessageReceived do
   describe "#call" do
-    subject { described_class.new.call(event: event) }
+    subject { described_class.new.call(event:) }
 
     let(:event) do
       create(
@@ -15,16 +15,15 @@ RSpec.describe Klayvio::ChatMessageReceived do
           from_user_id: sender_id,
           profile_id: applicant.profile.id
         },
-        occurred_at: occurred_at
-
+        occurred_at:
       )
     end
     let(:email) { "chabot@blocktrain.com" }
-    let(:user) { create(:user, email: email) }
+    let(:user) { create(:user, email:) }
     let(:occurred_at) { Date.new(2020, 1, 1) }
     let(:job) { create(:job) }
-    let(:applicant) { create(:applicant, profile: profile) }
-    let(:profile) { create(:profile, user: user) }
+    let(:applicant) { create(:applicant, profile:) }
+    let(:profile) { create(:profile, user:) }
 
     context "when the sender is the applicant" do
       let(:sender_id) { applicant.profile.user.id }
@@ -42,12 +41,12 @@ RSpec.describe Klayvio::ChatMessageReceived do
 
       it "calls the Klayvio API" do
         expect_any_instance_of(Klayvio::Klayvio).to receive(:chat_message_received).with(
-          email: email,
+          email:,
           event_id: event.id,
-          occurred_at: occurred_at,
+          occurred_at:,
           applicant_id: applicant.id,
           employment_title: job.employment_title,
-          employer_name: job.employer.name,
+          employer_name: job.employer.name
         )
 
         subject

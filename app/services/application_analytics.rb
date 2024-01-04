@@ -14,8 +14,8 @@ class ApplicationAnalytics
         {
           status: status.status,
           time: {
-            days: days,
-            hours: hours
+            days:,
+            hours:
           }
         }
       end
@@ -29,10 +29,10 @@ class ApplicationAnalytics
       hours = (total_days * 24 + total_hours) % 24
 
       {
-        status: status,
+        status:,
         time: {
-          days: days,
-          hours: hours
+          days:,
+          hours:
         }
       }
     end
@@ -54,8 +54,8 @@ class ApplicationAnalytics
         employer_name: applicant.job.employer.name,
         status: status.status,
         time: {
-          days: days,
-          hours: hours
+          days:,
+          hours:
         }
       }
     end

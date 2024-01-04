@@ -19,7 +19,6 @@ RSpec.describe ApplicationAnalytics do
   let!(:hidden_applicant) { create(:applicant, job: hidden_job) }
   let!(:hidden_applicant_status) { create(:applicant_status, status: ApplicantStatus::StatusTypes::NEW, applicant: hidden_applicant) }
 
-
   describe "#average_status_times" do
     it "returns the status times" do
       Timecop.freeze(Date.new(2020, 7, 1)) do

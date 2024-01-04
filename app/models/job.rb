@@ -17,7 +17,7 @@ class Job < ApplicationRecord
       :employer,
       applicants: [
         :applicant_statuses,
-        profile: :user
+        { profile: :user }
       ]
     )
   end

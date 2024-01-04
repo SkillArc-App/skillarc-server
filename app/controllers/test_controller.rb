@@ -3,7 +3,7 @@ class TestController < ApplicationController
     user = User.create(
       id: SecureRandom.uuid,
       email: Faker::Internet.email,
-      sub: Faker::Internet.uuid,
+      sub: Faker::Internet.uuid
     )
 
     render json: user
@@ -12,17 +12,17 @@ class TestController < ApplicationController
   def create_test_recruiter_with_applicant
     user = FactoryBot.create(:user, email: Faker::Internet.email, sub: Faker::Internet.uuid)
 
-    profile = FactoryBot.create(:profile, user: user)
+    profile = FactoryBot.create(:profile, user:)
 
     employer = FactoryBot.create(:employer)
 
-    recruiter = FactoryBot.create(:recruiter, user: user, employer: employer)
+    recruiter = FactoryBot.create(:recruiter, user:, employer:)
 
-    job = FactoryBot.create(:job, employer: employer)
+    job = FactoryBot.create(:job, employer:)
 
-    applicant = FactoryBot.create(:applicant, job: job, profile: profile)
+    applicant = FactoryBot.create(:applicant, job:, profile:)
 
-    FactoryBot.create(:applicant_status, :new, applicant: applicant)
+    FactoryBot.create(:applicant_status, :new, applicant:)
 
     render json: user
   end

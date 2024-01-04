@@ -28,8 +28,8 @@ class FastTrackTasks
 
     if user.profile.nil?
       return [
-        {name: "Make your resume strong", is_complete: false, route: "/"},
-        {name: "Meet your career coach", is_complete: false, route: "/"}
+        { name: "Make your resume strong", is_complete: false, route: "/" },
+        { name: "Meet your career coach", is_complete: false, route: "/" }
       ]
     end
 
@@ -41,7 +41,7 @@ class FastTrackTasks
     meet_you_career_coach = {
       name: "Meet your career coach",
       is_complete: user.profile.met_career_coach,
-      route: "https://meetings.hubspot.com/hannah-wexner" 
+      route: "https://meetings.hubspot.com/hannah-wexner"
     }
 
     [make_your_resume_strong, meet_you_career_coach]

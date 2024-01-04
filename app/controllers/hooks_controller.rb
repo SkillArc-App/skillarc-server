@@ -12,12 +12,12 @@ class HooksController < ApplicationController
       email: params[:email],
       title: params[:title],
       body: params[:body],
-      url: params[:url],
+      url: params[:url]
     )
 
     render json: { success: true }
   end
-  
+
   private
 
   attr_reader :webhook

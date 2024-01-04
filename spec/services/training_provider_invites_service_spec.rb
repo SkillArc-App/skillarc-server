@@ -14,9 +14,9 @@ RSpec.describe TrainingProviderInviteService do
         aggregate_id: training_provider_invite.training_provider_id,
         data: {
           training_provider_invite_id: training_provider_invite.id,
-          invite_email: training_provider_invite.email, 
+          invite_email: training_provider_invite.email,
           training_provider_id: training_provider_invite.training_provider_id,
-          training_provider_name: training_provider_invite.training_provider.name,
+          training_provider_name: training_provider_invite.training_provider.name
         },
         occurred_at: be_present,
         metadata: {}

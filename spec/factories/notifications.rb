@@ -3,6 +3,6 @@ FactoryBot.define do
     user
     title { Faker::Lorem.sentence }
     body { Faker::Lorem.paragraph }
-    url { "/"}
+    url { "/" }
   end
 end

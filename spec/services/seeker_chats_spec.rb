@@ -4,15 +4,15 @@ RSpec.describe SeekerChats do
   let(:user) { create(:user, first_name: "Jake", last_name: "Not-Onboard") }
 
   describe "#send_message" do
-    subject { described_class.new(user).send_message(applicant_id: applicant.id, message: message) }
+    subject { described_class.new(user).send_message(applicant_id: applicant.id, message:) }
 
     let(:message) { "This is a message" }
-    let!(:applicant) { create(:applicant, job: job, profile: profile) }
-    let!(:profile) { create(:profile, user: user) }
+    let!(:applicant) { create(:applicant, job:, profile:) }
+    let!(:profile) { create(:profile, user:) }
 
-    let!(:applicant_chat) { create(:applicant_chat, applicant: applicant) }
+    let!(:applicant_chat) { create(:applicant_chat, applicant:) }
 
-    let(:job) { create(:job, employment_title: "Welder", employer: employer) }
+    let(:job) { create(:job, employment_title: "Welder", employer:) }
 
     let(:employer) { create(:employer, name: "Acme, Inc") }
 
@@ -20,9 +20,9 @@ RSpec.describe SeekerChats do
       expect { subject }.to change { ChatMessage.count }.by(1)
 
       expect(ChatMessage.last).to have_attributes(
-        applicant_chat: applicant_chat,
-        message: message,
-        user: user
+        applicant_chat:,
+        message:,
+        user:
       )
     end
 
@@ -37,7 +37,7 @@ RSpec.describe SeekerChats do
           from_user_id: user.id,
           employer_name: employer.name,
           employment_title: job.employment_title,
-          message: message
+          message:
         },
         metadata: {},
         occurred_at: anything
@@ -50,19 +50,19 @@ RSpec.describe SeekerChats do
   describe "#get" do
     subject { described_class.new(user).get }
 
-    let!(:applicant) { create(:applicant, profile: profile, job: job) }
-    let(:job) { create(:job, employment_title: "Welder", employer: employer) }
+    let!(:applicant) { create(:applicant, profile:, job:) }
+    let(:job) { create(:job, employment_title: "Welder", employer:) }
     let(:employer) { create(:employer, name: "Acme, Inc") }
-    let!(:profile) { create(:profile, user: user) }
+    let!(:profile) { create(:profile, user:) }
 
-    let!(:applicant_chat) { create(:applicant_chat, applicant: applicant) }
+    let!(:applicant_chat) { create(:applicant_chat, applicant:) }
 
-    let!(:chat_message) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the applicant", user: user) }
-    let!(:chat_message_2) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the employer", user: employer_user, created_at: chat_message.created_at + 1.minute) }
+    let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }
+    let!(:chat_message_2) { create(:chat_message, applicant_chat:, message: "This is a message from the employer", user: employer_user, created_at: chat_message.created_at + 1.minute) }
 
     let(:employer_user) { create(:user, first_name: "John", last_name: "Doe") }
 
-    let!(:read_receipt) { create(:read_receipt, chat_message: chat_message, user: user) }
+    let!(:read_receipt) { create(:read_receipt, chat_message:, user:) }
 
     it "returns the applicant chat" do
       expect(subject.first).to match(
@@ -94,24 +94,23 @@ RSpec.describe SeekerChats do
   describe "#mark_read" do
     subject { described_class.new(user).mark_read(applicant_id: applicant.id) }
 
-    let!(:applicant_chat) { create(:applicant_chat, applicant: applicant) }
-    let!(:chat_message) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the applicant", user: user) }
-    let!(:chat_message_2) { create(:chat_message, applicant_chat: applicant_chat, message: "This is a message from the applicant") }
+    let!(:applicant_chat) { create(:applicant_chat, applicant:) }
+    let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }
+    let!(:chat_message_2) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant") }
 
-    let!(:applicant) { create(:applicant, profile: profile) }
-    let(:profile) { create(:profile, user: user) }
+    let!(:applicant) { create(:applicant, profile:) }
+    let(:profile) { create(:profile, user:) }
 
-    
     it "creates a read receipt for each message" do
       expect { subject }.to change { ReadReceipt.count }.by(2)
 
       expect(ReadReceipt.last(2)).to include(
         have_attributes(
-          user: user,
-          chat_message: chat_message
+          user:,
+          chat_message:
         ),
         have_attributes(
-          user: user,
+          user:,
           chat_message: chat_message_2
         )
       )

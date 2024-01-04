@@ -4,7 +4,7 @@ RSpec.describe "Testimonials", type: :request do
   describe "POST /create" do
     include_context "admin authenticated"
 
-    subject { post job_testimonials_path(job_id: job.id), params: params, headers: headers }
+    subject { post job_testimonials_path(job_id: job.id), params:, headers: }
 
     let(:params) do
       {
@@ -31,9 +31,9 @@ RSpec.describe "Testimonials", type: :request do
     include_context "admin authenticated"
 
     let(:job) { create(:job) }
-    let!(:testimonial) { create(:testimonial, job: job) }
+    let!(:testimonial) { create(:testimonial, job:) }
 
-    subject { delete job_testimonial_path(job_id: job.id, id: testimonial.id), headers: headers }
+    subject { delete job_testimonial_path(job_id: job.id, id: testimonial.id), headers: }
 
     it "returns a 200" do
       subject

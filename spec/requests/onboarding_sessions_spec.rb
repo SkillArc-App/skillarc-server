@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe "OnboardingSessions", type: :request do
   describe "GET /index" do
-    subject { get onboarding_sessions_path, headers: headers }
+    subject { get onboarding_sessions_path, headers: }
 
     it_behaves_like "admin secured endpoint"
   end
 
   describe "PUT /update" do
-    subject { put onboarding_session_path(onboarding_session), params: params, headers: headers }
+    subject { put onboarding_session_path(onboarding_session), params:, headers: }
 
     include_context "authenticated"
 
@@ -24,7 +24,7 @@ RSpec.describe "OnboardingSessions", type: :request do
                 phoneNumber: "1234567890",
                 dateOfBirth: "01/01/2000"
               }
-            },
+            }
           }
         }
       }

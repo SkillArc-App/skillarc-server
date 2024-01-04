@@ -12,7 +12,7 @@ class OneUserController < ApplicationController
       records: [current_user],
       associations: {
         profile: {
-          profile_skills: [ :master_skill ]
+          profile_skills: [:master_skill]
         }
       }
     ).call
@@ -42,14 +42,13 @@ class OneUserController < ApplicationController
       }
     end || []
 
-
     render json: {
       **user_ret,
       onboardingSession: os_ret,
       userRoles: roles,
       fastTrackTasks: {
         profile: fast_track_tasks.profile,
-        career: fast_track_tasks.career,
+        career: fast_track_tasks.career
       },
       notifications:,
       profile: {

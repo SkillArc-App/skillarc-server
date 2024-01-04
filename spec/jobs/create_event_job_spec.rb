@@ -38,6 +38,6 @@ RSpec.describe CreateEventJob do
       data: {},
       metadata: {},
       occurred_at: Date.new(2020, 1, 1)
-    )    
+    )
   end
 end

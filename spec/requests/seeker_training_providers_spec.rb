@@ -4,12 +4,12 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
   include_context "admin authenticated"
 
   let!(:training_provider) { create(:training_provider) }
-  let!(:program) { create(:program, training_provider: training_provider) }
+  let!(:program) { create(:program, training_provider:) }
 
   let(:profile) { create(:profile, user: build(:user)) }
 
   describe "POST /create" do
-    subject { post seeker_training_providers_path(seeker_id: profile.id), params: params, headers: headers }
+    subject { post seeker_training_providers_path(seeker_id: profile.id), params:, headers: }
 
     let(:params) do
       {
@@ -30,11 +30,11 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put seeker_training_provider_path(seeker_id: profile.id, id: stp.id), params: params, headers: headers }
+    subject { put seeker_training_provider_path(seeker_id: profile.id, id: stp.id), params:, headers: }
 
     let(:stp) { create(:seeker_training_provider, user: profile.user, training_provider:, program:) }
     let!(:new_training_provider) { create(:training_provider) }
-    let!(:new_program) { create(:program, training_provider: training_provider) }
+    let!(:new_program) { create(:program, training_provider:) }
 
     let(:params) do
       {

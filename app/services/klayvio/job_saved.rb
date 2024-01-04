@@ -9,9 +9,9 @@ module Klayvio
         event_properties: {
           job_id: event.data["job_id"],
           employment_title: event.data["employment_title"],
-          employer_name: event.data["employer_name"],
+          employer_name: event.data["employer_name"]
         },
-        occurred_at: event.occurred_at,
+        occurred_at: event.occurred_at
       )
     end
   end

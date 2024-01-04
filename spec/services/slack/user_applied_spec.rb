@@ -14,9 +14,9 @@ RSpec.describe Slack::UserApplied do
       )
     end
     let(:job) { create(:job) }
-    let(:applicant) { create(:applicant, job: job, profile: profile ) }
-    let(:profile) { create(:profile, user: user) }
-    let(:user) { create(:user, email: "hannah@blocktrainapp.com" ) }
+    let(:applicant) { create(:applicant, job:, profile:) }
+    let(:profile) { create(:profile, user:) }
+    let(:user) { create(:user, email: "hannah@blocktrainapp.com") }
 
     context "status is new" do
       let(:status) { ApplicantStatus::StatusTypes::NEW }

@@ -2,8 +2,8 @@ RSpec.shared_context "training provider authenticated" do
   let!(:training_provider_profile) do
     tpp = TrainingProviderProfile.create!(
       id: SecureRandom.uuid,
-      user: user,
-      training_provider: create(:training_provider),
+      user:,
+      training_provider: create(:training_provider)
     )
   end
   let!(:user) do
@@ -21,7 +21,7 @@ RSpec.shared_context "training provider authenticated" do
   around do |example|
     original = ENV["MOCK_AUTH"]
     ENV["MOCK_AUTH"] = "true"
-    
+
     example.run
 
     ENV["MOCK_AUTH"] = original

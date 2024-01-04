@@ -23,7 +23,7 @@ class Onboarding
             first_name: user.first_name,
             last_name: user.last_name,
             phone_number: user.phone_number,
-            date_of_birth: Date.strptime(name_response["dateOfBirth"], "%m/%d/%Y"),
+            date_of_birth: Date.strptime(name_response["dateOfBirth"], "%m/%d/%Y")
           },
           metadata: {},
           occurred_at: user.updated_at

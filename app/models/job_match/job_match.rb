@@ -23,7 +23,7 @@ module JobMatch
         application = applicants.find { |a| a.job_id == job.id }
 
         application_status =
-        case application&.status&.status
+          case application&.status&.status
           when ApplicantStatus::StatusTypes::NEW
             "Application Sent"
           when ApplicantStatus::StatusTypes::PENDING_INTRO

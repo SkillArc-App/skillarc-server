@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Employers::Chats", type: :request do
   describe "GET /index" do
-    subject { get chats_path, headers: headers }
+    subject { get chats_path, headers: }
 
     it_behaves_like "employer secured endpoint"
 
@@ -11,10 +11,9 @@ RSpec.describe "Employers::Chats", type: :request do
 
       it "calls the EmployerChats service" do
         expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
-          user: user,
-          employer_id: employer.id
-        )).and_call_original
-        
+                                                      user:,
+                                                      employer_id: employer.id
+                                                    )).and_call_original
 
         expect_any_instance_of(EmployerChats).to receive(:get)
 
@@ -28,13 +27,13 @@ RSpec.describe "Employers::Chats", type: :request do
       let(:recruiter) { nil }
 
       before do
-        create(:user_role, user: user, role: Role.create!(id: SecureRandom.uuid, name: "employer_admin"))
+        create(:user_role, user:, role: Role.create!(id: SecureRandom.uuid, name: "employer_admin"))
       end
 
       it "calls the EmployerChats service" do
         expect(EmployerChats).to receive(:new).with(
           EmployerChats::Recruiter.new(
-            user: user,
+            user:,
             employer_id: [employer.id]
           )
         ).and_call_original
@@ -47,7 +46,7 @@ RSpec.describe "Employers::Chats", type: :request do
   end
 
   describe "POST /mark_read" do
-    subject { post mark_read_chats_path, params: params, headers: headers }
+    subject { post mark_read_chats_path, params:, headers: }
 
     let(:params) do
       {
@@ -63,9 +62,9 @@ RSpec.describe "Employers::Chats", type: :request do
 
       it "calls the EmployerChats service" do
         expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
-          user: user,
-          employer_id: employer.id
-        )).and_call_original
+                                                      user:,
+                                                      employer_id: employer.id
+                                                    )).and_call_original
 
         expect_any_instance_of(EmployerChats).to receive(:mark_read).with(
           applicant_id: applicant.id
@@ -77,7 +76,7 @@ RSpec.describe "Employers::Chats", type: :request do
   end
 
   describe "POST /send_message" do
-    subject { post send_message_chats_path, params: params, headers: headers }
+    subject { post send_message_chats_path, params:, headers: }
 
     let(:params) do
       {
@@ -94,9 +93,9 @@ RSpec.describe "Employers::Chats", type: :request do
 
       it "calls the EmployerChats service" do
         expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
-          user: user,
-          employer_id: employer.id
-        )).and_call_original
+                                                      user:,
+                                                      employer_id: employer.id
+                                                    )).and_call_original
 
         expect_any_instance_of(EmployerChats)
           .to receive(:send_message)
@@ -111,11 +110,11 @@ RSpec.describe "Employers::Chats", type: :request do
   end
 
   describe "POST /create" do
-    subject { post chats_path, params: params, headers: headers }
+    subject { post chats_path, params:, headers: }
 
     let(:params) do
       {
-        applicant_id: applicant.id,
+        applicant_id: applicant.id
       }
     end
     let(:applicant) { create(:applicant) }
@@ -127,14 +126,14 @@ RSpec.describe "Employers::Chats", type: :request do
 
       it "calls the EmployerChats service" do
         expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
-          user: user,
-          employer_id: employer.id
-        )).and_call_original
+                                                      user:,
+                                                      employer_id: employer.id
+                                                    )).and_call_original
 
         expect_any_instance_of(EmployerChats)
           .to receive(:create)
           .with(
-            applicant_id: applicant.id,
+            applicant_id: applicant.id
           )
 
         subject

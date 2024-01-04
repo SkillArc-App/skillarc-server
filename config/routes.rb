@@ -77,7 +77,6 @@ Rails.application.routes.draw do
     end
   end
 
-
   scope module: 'seekers', path: 'seekers' do
     resources :jobs do
       post 'save' => 'jobs#save'
@@ -90,7 +89,6 @@ Rails.application.routes.draw do
     end
   end
 
-
   scope module: 'seekers', path: 'seekers' do
     resources :jobs do
       post 'save' => 'jobs#save'
@@ -98,14 +96,12 @@ Rails.application.routes.draw do
     end
   end
 
-
   scope module: 'seekers', path: 'seekers' do
     resources :jobs do
       post 'save' => 'jobs#save'
       post 'unsave' => 'jobs#unsave'
     end
   end
-
 
   scope module: 'seekers', path: 'seekers' do
     resources :jobs do
@@ -118,7 +114,6 @@ Rails.application.routes.draw do
     resources :users
     resources :application_analytics
   end
-
 
   resources :seekers do
     resources :training_providers, controller: 'seeker_training_providers'

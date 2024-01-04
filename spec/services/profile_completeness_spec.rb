@@ -28,7 +28,7 @@ RSpec.describe ProfileCompleteness do
         before do
           create(:other_experience, profile:)
         end
-        
+
         it "doesn't include MISSING_WORK_EXPERIENCE" do
           expect(subject.status.missing).not_to include("work")
         end

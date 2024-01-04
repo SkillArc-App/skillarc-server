@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Seekers", type: :request do
   describe "GET /index" do
-    subject { get seekers_path, headers: headers }
+    subject { get seekers_path, headers: }
 
     it_behaves_like "coach secured endpoint"
 
@@ -18,7 +18,7 @@ RSpec.describe "Seekers", type: :request do
   end
 
   describe "GET /show" do
-    subject { get seeker_path(seeker_id), headers: headers }
+    subject { get seeker_path(seeker_id), headers: }
 
     let(:seeker_id) { create(:coach_seeker_context).profile_id }
 
@@ -36,7 +36,7 @@ RSpec.describe "Seekers", type: :request do
   end
 
   describe "POST /:seeker_id/notes" do
-    subject { post seeker_notes_path(seeker_id), params: params, headers: headers }
+    subject { post seeker_notes_path(seeker_id), params:, headers: }
 
     let(:seeker_id) { create(:profile).id }
     let(:params) do
@@ -59,7 +59,7 @@ RSpec.describe "Seekers", type: :request do
   end
 
   describe "POST /:seeker_id/skill-levels" do
-    subject { post seeker_skill_levels_path(seeker_id), params: params, headers: headers }
+    subject { post seeker_skill_levels_path(seeker_id), params:, headers: }
 
     let(:seeker_id) { create(:profile).id }
     let(:params) do
@@ -82,7 +82,7 @@ RSpec.describe "Seekers", type: :request do
   end
 
   describe "POST /:seeker_id/assign_coach" do
-    subject { post seeker_assign_coach_path(seeker_id), params: params, headers: headers }
+    subject { post seeker_assign_coach_path(seeker_id), params:, headers: }
 
     let(:seeker_id) { "123" }
     let(:params) do

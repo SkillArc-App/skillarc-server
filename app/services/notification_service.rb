@@ -6,7 +6,7 @@ class NotificationService
       user:,
       title: event.data["title"],
       body: event.data["body"],
-      url: event.data["url"],
+      url: event.data["url"]
     )
   end
 end

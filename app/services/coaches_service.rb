@@ -15,8 +15,6 @@ class CoachesService
     end
   end
 
-  private
-
   def self.handle_role_added(event)
     return unless event.data["role"] == "coach"
 

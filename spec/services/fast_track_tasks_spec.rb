@@ -11,7 +11,7 @@ RSpec.describe FastTrackTasks do
   shared_examples "base exits" do
     context "when the user is a training provider" do
       before do
-        create(:training_provider_profile, user: user)
+        create(:training_provider_profile, user:)
       end
 
       it "returns an empty array" do
@@ -21,7 +21,7 @@ RSpec.describe FastTrackTasks do
 
     context "when the user is a recruiter" do
       before do
-        create(:recruiter, user: user)
+        create(:recruiter, user:)
       end
 
       it "returns an empty array" do
@@ -92,7 +92,7 @@ RSpec.describe FastTrackTasks do
 
     context "when the user is a recruiter" do
       before do
-        create(:recruiter, user: user)
+        create(:recruiter, user:)
       end
 
       it "returns an empty array" do

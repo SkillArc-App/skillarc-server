@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Klayvio::JobSaved do
   describe "#call" do
-    subject { described_class.new.call(event: event) }
+    subject { described_class.new.call(event:) }
 
     let(:event) do
       build(
@@ -12,7 +12,7 @@ RSpec.describe Klayvio::JobSaved do
         data: {
           job_id: "A",
           employment_title: "Welder",
-          employer_name: "Acme Inc.",
+          employer_name: "Acme Inc."
         }
       )
     end
@@ -26,9 +26,9 @@ RSpec.describe Klayvio::JobSaved do
         event_properties: {
           job_id: "A",
           employment_title: "Welder",
-          employer_name: "Acme Inc.",
+          employer_name: "Acme Inc."
         },
-        occurred_at: event.occurred_at,
+        occurred_at: event.occurred_at
       )
 
       subject

@@ -13,16 +13,16 @@ class JobFreshnessService < EventConsumer
   JOB_EVENTS = [
     Event::EventTypes::APPLICANT_STATUS_UPDATED,
     Event::EventTypes::JOB_CREATED,
-    Event::EventTypes::JOB_UPDATED,
+    Event::EventTypes::JOB_UPDATED
   ]
 
   def self.handle_event(event, with_side_effects: false, now: Time.now)
     if JOB_EVENTS.include?(event.event_type)
       job_id = event.aggregate_id
 
-      freshness = new(event.aggregate_id, now: now)
+      freshness = new(event.aggregate_id, now:)
 
-      freshness.handle_event(event, with_side_effects: with_side_effects, now: now)
+      freshness.handle_event(event, with_side_effects:, now:)
     elsif [Event::EventTypes::EMPLOYER_CREATED, Event::EventTypes::EMPLOYER_UPDATED].include?(event.event_type)
       eid = event.aggregate_id
 
@@ -38,11 +38,11 @@ class JobFreshnessService < EventConsumer
       ej = JobFreshnessEmployerJob.find_by!(employer_id: eid)
       ej.update!(recruiter_exists: true)
       ej.jobs.each do |job_id|
-        new(job_id).handle_event(event, with_side_effects: with_side_effects, now: now)
+        new(job_id).handle_event(event, with_side_effects:, now:)
       end
     elsif event.event_type == Event::EventTypes::DAY_ELAPSED
       JobFreshnessContext.pluck(:job_id).each do |job_id|
-        new(job_id).handle_event(event, with_side_effects: with_side_effects, now: now)
+        new(job_id).handle_event(event, with_side_effects:, now:)
       end
     end
 
@@ -60,7 +60,7 @@ class JobFreshnessService < EventConsumer
 
   def handle_event(event, with_side_effects: false, now: Time.now)
     @now = now
-    
+
     case event.event_type
     when Event::EventTypes::APPLICANT_STATUS_UPDATED
       applicant_status_updated(event)
@@ -79,19 +79,19 @@ class JobFreshnessService < EventConsumer
     freshness_context.status = recruiter_exists? && !hidden? && !any_ignored?(event.occurred_at) ? "fresh" : "stale"
     freshness_context.save!
 
-    if with_side_effects
-      last_freshness = JobFreshness.where(job_id: freshness_context.job_id).last_created
+    return unless with_side_effects
 
-      return if last_freshness && last_freshness.status == freshness_context.status
+    last_freshness = JobFreshness.where(job_id: freshness_context.job_id).last_created
 
-      JobFreshness.create!(
-        job_id: freshness_context.job_id,
-        status: freshness_context.status,
-        employer_name: freshness_context.employer_name,
-        employment_title: freshness_context.employment_title,
-        occurred_at: event.occurred_at
-      )
-    end
+    return if last_freshness && last_freshness.status == freshness_context.status
+
+    JobFreshness.create!(
+      job_id: freshness_context.job_id,
+      status: freshness_context.status,
+      employer_name: freshness_context.employer_name,
+      employment_title: freshness_context.employment_title,
+      occurred_at: event.occurred_at
+    )
   end
 
   private
@@ -102,8 +102,7 @@ class JobFreshnessService < EventConsumer
     end
   end
 
-  def day_elapsed(event)
-  end
+  def day_elapsed(event); end
 
   def hidden?
     freshness_context.hidden
@@ -116,7 +115,7 @@ class JobFreshnessService < EventConsumer
   def applicant_status_updated(event)
     freshness_context.applicants[event.data.fetch("applicant_id")] = {
       "last_updated_at" => event.occurred_at.to_s,
-      "status" => event.data.fetch("status"),
+      "status" => event.data.fetch("status")
     }
   end
 
@@ -138,7 +137,7 @@ class JobFreshnessService < EventConsumer
     freshness_context.employer_name = employer_job(employer_id)[:name]
   end
 
-  def employer_invite_accepted(event)
+  def employer_invite_accepted(_event)
     freshness_context.recruiter_exists = true
   end
 
@@ -147,12 +146,12 @@ class JobFreshnessService < EventConsumer
   end
 
   def freshness_context
-    @freshness_context ||= JobFreshnessContext.find_by(job_id: job_id)
+    @freshness_context ||= JobFreshnessContext.find_by(job_id:)
 
     return @freshness_context if @freshness_context
 
     @freshness_context = JobFreshnessContext.create!(
-      job_id: job_id,
+      job_id:,
       status: "fresh",
       applicants: {},
       employer_name: "",
@@ -163,7 +162,7 @@ class JobFreshnessService < EventConsumer
   end
 
   def employer_job(employer_id)
-    JobFreshnessEmployerJob.find_by!(employer_id: employer_id)
+    JobFreshnessEmployerJob.find_by!(employer_id:)
   end
 
   attr_reader :employer_id, :job_events, :job_id, :now

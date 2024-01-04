@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Hooks", type: :request do
   describe "POST /event" do
-    subject { post hooks_event_path(hook), params: params, headers: headers }
+    subject { post hooks_event_path(hook), params:, headers: }
 
     let(:hook) { create(:webhook) }
 
@@ -11,7 +11,7 @@ RSpec.describe "Hooks", type: :request do
         email: user.email,
         title:,
         body:,
-        url:,
+        url:
       }
     end
     let(:user) { create(:user) }
@@ -30,7 +30,7 @@ RSpec.describe "Hooks", type: :request do
         email: user.email,
         title:,
         body:,
-        url:,
+        url:
       )
 
       subject

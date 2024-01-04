@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe "OtherExperiences", type: :request do
   include_context "authenticated"
 
-  let(:profile) { create(:profile, user: user) }
+  let(:profile) { create(:profile, user:) }
 
   describe "POST /create" do
-    subject { post profile_other_experiences_path(profile_id: profile.id), params: params, headers: headers }
+    subject { post profile_other_experiences_path(profile_id: profile.id), params:, headers: }
 
     let(:params) do
       {
@@ -33,14 +33,14 @@ RSpec.describe "OtherExperiences", type: :request do
   end
 
   describe "UPDATE /update" do
-    subject { put profile_other_experience_path(profile_id: profile.id, id: other_experience.id), params: params, headers: headers }
+    subject { put profile_other_experience_path(profile_id: profile.id, id: other_experience.id), params:, headers: }
 
-    let(:other_experience) { create(:other_experience, profile: profile) }
+    let(:other_experience) { create(:other_experience, profile:) }
 
     let(:params) do
       {
         other_experience: {
-          organization_name: "Dunder Mifflin 2.0",
+          organization_name: "Dunder Mifflin 2.0"
         }
       }
     end
@@ -57,9 +57,9 @@ RSpec.describe "OtherExperiences", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete profile_other_experience_path(profile_id: profile.id, id: other_experience.id), headers: headers }
+    subject { delete profile_other_experience_path(profile_id: profile.id, id: other_experience.id), headers: }
 
-    let!(:other_experience) { create(:other_experience, profile: profile) }
+    let!(:other_experience) { create(:other_experience, profile:) }
 
     it "returns a 200" do
       subject

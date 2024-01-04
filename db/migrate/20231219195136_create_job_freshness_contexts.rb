@@ -10,7 +10,6 @@ class CreateJobFreshnessContexts < ActiveRecord::Migration[7.0]
 
       t.string :status, null: false, default: "fresh"
 
-
       t.timestamps
     end
   end

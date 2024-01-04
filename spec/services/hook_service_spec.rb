@@ -7,7 +7,7 @@ RSpec.describe HookService do
         email:,
         title:,
         body:,
-        url:,
+        url:
       )
     end
 
@@ -26,7 +26,7 @@ RSpec.describe HookService do
         data: {
           title:,
           body:,
-          url:,
+          url:
         },
         occurred_at: be_present,
         metadata: {}

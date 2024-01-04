@@ -69,7 +69,6 @@ Rails.application.config.after_initialize do
     coach_seeker = DbStreamListener.new(CoachSeekers, "coach_seekers")
     coaches = DbStreamListener.new(CoachesService, "coaches")
 
-
     Event::EventTypes::ALL.each do |event_type|
       Pubsub.subscribe(
         event: event_type,

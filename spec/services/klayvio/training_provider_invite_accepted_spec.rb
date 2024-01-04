@@ -4,11 +4,11 @@ RSpec.describe Klayvio::TrainingProviderInviteAccepted do
   describe "#call" do
     let(:event) do
       build(:event, :training_provider_invite_accepted, data: {
-        training_provider_invite_id: "A",
-        invite_email: "sfb@crook.com",
-        training_provider_id: "1",
-        training_provider_name: "FTX",
-      })
+              training_provider_invite_id: "A",
+              invite_email: "sfb@crook.com",
+              training_provider_id: "1",
+              training_provider_name: "FTX"
+            })
     end
 
     it "calls the Klayvio API" do
@@ -20,10 +20,10 @@ RSpec.describe Klayvio::TrainingProviderInviteAccepted do
           training_provider_name: "FTX",
           training_provider_id: "1"
         },
-        occurred_at: event.occurred_at,
+        occurred_at: event.occurred_at
       )
 
-      subject.call(event: event)
+      subject.call(event:)
     end
   end
 end

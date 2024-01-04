@@ -1,5 +1,5 @@
 RSpec.shared_context "employer authenticated" do
-  let!(:recruiter) { create(:recruiter, user: user, employer: employer) }
+  let!(:recruiter) { create(:recruiter, user:, employer:) }
   let!(:employer) { create(:employer) }
   let!(:user) do
     User.create!(
@@ -16,7 +16,7 @@ RSpec.shared_context "employer authenticated" do
   around do |example|
     original = ENV["MOCK_AUTH"]
     ENV["MOCK_AUTH"] = "true"
-    
+
     example.run
 
     ENV["MOCK_AUTH"] = original

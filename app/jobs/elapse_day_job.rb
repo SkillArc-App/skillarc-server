@@ -1,5 +1,5 @@
 class ElapseDayJob
-  def self.perform(now=Time.now)
+  def self.perform(now = Time.now)
     Resque.enqueue(
       CreateEventJob,
       aggregate_id: "day",

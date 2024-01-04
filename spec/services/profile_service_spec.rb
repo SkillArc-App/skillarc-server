@@ -9,7 +9,7 @@ RSpec.describe ProfileService do
     let(:params) do
       {
         bio: "New Bio",
-        met_career_coach:,
+        met_career_coach:
       }
     end
     let(:met_career_coach) { profile.met_career_coach }
@@ -17,7 +17,6 @@ RSpec.describe ProfileService do
     it "updates the profile" do
       expect { subject }
         .to change { profile.reload.bio }.to("New Bio")
-
     end
 
     it "publishes a profile updated event" do
@@ -28,7 +27,7 @@ RSpec.describe ProfileService do
         data: {
           bio: "New Bio",
           met_career_coach: profile.met_career_coach,
-          image: profile.image,
+          image: profile.image
         },
         occurred_at: be_present,
         metadata: {}
@@ -44,7 +43,7 @@ RSpec.describe ProfileService do
           event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
           aggregate_id: profile.user.id,
           data: {
-            met_career_coach: met_career_coach,
+            met_career_coach:
           },
           occurred_at: be_present,
           metadata: {}
@@ -64,7 +63,7 @@ RSpec.describe ProfileService do
           event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
           aggregate_id: profile.user.id,
           data: {
-            met_career_coach: met_career_coach,
+            met_career_coach:
           },
           occurred_at: be_present,
           metadata: {}

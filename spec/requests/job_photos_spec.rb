@@ -6,13 +6,13 @@ RSpec.describe "JobPhotos", type: :request do
   let(:job) { create(:job) }
 
   describe "POST /create" do
-    subject { post job_job_photos_path(job), params: params, headers: headers }
+    subject { post job_job_photos_path(job), params:, headers: }
 
     let(:params) do
       {
         job_photo: {
-          photo_url: "https://www.google.com",
-        },
+          photo_url: "https://www.google.com"
+        }
       }
     end
 
@@ -28,9 +28,9 @@ RSpec.describe "JobPhotos", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete job_job_photo_path(job, job_photo), headers: headers }
+    subject { delete job_job_photo_path(job, job_photo), headers: }
 
-    let!(:job_photo) { create(:job_photo, job: job) }
+    let!(:job_photo) { create(:job_photo, job:) }
 
     it "returns 200" do
       subject

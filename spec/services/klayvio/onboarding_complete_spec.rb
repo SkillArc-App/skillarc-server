@@ -6,7 +6,7 @@ RSpec.describe Klayvio::OnboardingComplete do
       build(
         :event,
         :onboarding_complete,
-        aggregate_id: user.id,
+        aggregate_id: user.id
       )
     end
     let(:user) { create(:user, email:) }

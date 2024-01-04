@@ -75,7 +75,7 @@ RSpec.describe Onboarding do
           occurred_at: be_present
         )
 
-        subject 
+        subject
       end
 
       it "publishes an event" do
@@ -607,7 +607,7 @@ RSpec.describe Onboarding do
               "phoneNumber" => "1234567890",
               "dateOfBirth" => "01/01/2000"
             }
-          },
+          }
         }
       end
       let(:responses2) do
@@ -619,7 +619,7 @@ RSpec.describe Onboarding do
               "phoneNumber" => "1234567890",
               "dateOfBirth" => "01/01/2000"
             }
-          },
+          }
         }
       end
 

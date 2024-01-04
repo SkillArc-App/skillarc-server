@@ -4,11 +4,11 @@ RSpec.describe Klayvio::EmployerInviteAccepted do
   describe "#call" do
     let(:event) do
       build(:event, :employer_invite_accepted, data: {
-        employer_invite_id: "A",
-        invite_email: "sbf@crook.com",
-        employer_id: "1",
-        employer_name: "FTX",
-      })
+              employer_invite_id: "A",
+              invite_email: "sbf@crook.com",
+              employer_id: "1",
+              employer_name: "FTX"
+            })
     end
 
     it "calls the Klayvio API" do
@@ -20,10 +20,10 @@ RSpec.describe Klayvio::EmployerInviteAccepted do
           employer_name: "FTX",
           employer_id: "1"
         },
-        occurred_at: event.occurred_at,
+        occurred_at: event.occurred_at
       )
 
-      subject.call(event: event)
+      subject.call(event:)
     end
   end
 end

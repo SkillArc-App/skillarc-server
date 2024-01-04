@@ -8,12 +8,12 @@ RSpec.describe Slack::ChatMessage do
         :chat_message_sent,
         data: {
           applicant_id: applicant.id,
-          from_user_id: from_user_id,
+          from_user_id:
         }
       )
     end
-    let(:applicant) { create(:applicant, profile: profile) }
-    let(:profile) { create(:profile, user: user) }
+    let(:applicant) { create(:applicant, profile:) }
+    let(:profile) { create(:profile, user:) }
     let(:user) { create(:user, email: "hannah@blocktrainapp.com") }
 
     context "when the applicant is not the sender" do

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe JobFreshnessService do
   shared_context "with recruiter" do
     before do
-      described_class.handle_event(employer_invite_accepted, now: now)
+      described_class.handle_event(employer_invite_accepted, now:)
     end
   end
 
@@ -26,7 +26,7 @@ RSpec.describe JobFreshnessService do
       aggregate_id: job_id,
       data: {
         employment_title: "Welder",
-        employer_id: employer_id,
+        employer_id:,
         benefits_description: "Benefits",
         responsibilities_description: "Responsibilities",
         location: "Columbus, OH",
@@ -45,12 +45,12 @@ RSpec.describe JobFreshnessService do
   let(:employer_id) { "dbd969af-df4f-4ec0-9c23-8549235354c4" }
 
   describe ".handle_event" do
-    subject { described_class.handle_event(event, with_side_effects: with_side_effects, now: now) }
+    subject { described_class.handle_event(event, with_side_effects:, now:) }
 
     before do
       JobFreshnessEmployerJob.create!(
-        employer_id: employer_id,
-        name: "Blocktrain",
+        employer_id:,
+        name: "Blocktrain"
       )
     end
 
@@ -61,7 +61,7 @@ RSpec.describe JobFreshnessService do
       let(:event) { build(:event, :user_created) }
 
       it "does nothing" do
-        expect { subject }.not_to change { JobFreshness.count }
+        expect { subject }.not_to(change { JobFreshness.count })
 
         expect(subject).to eq(true)
       end
@@ -73,7 +73,7 @@ RSpec.describe JobFreshnessService do
 
     context "when with side effects is false" do
       it "does not update the database" do
-        expect { subject }.not_to change { JobFreshness.count }
+        expect { subject }.not_to(change { JobFreshness.count })
       end
     end
 
@@ -87,7 +87,7 @@ RSpec.describe JobFreshnessService do
             :employer_created,
             aggregate_id: employer_id,
             data: {
-              name: "Blocktrain",
+              name: "Blocktrain"
             }
           )
         )
@@ -95,32 +95,32 @@ RSpec.describe JobFreshnessService do
         expect { subject }.to change { JobFreshness.count }.by(1)
 
         expect(JobFreshness.last_created).to have_attributes(
-          job_id: job_id,
+          job_id:,
           status: "stale",
           employer_name: "Blocktrain",
-          employment_title: "Welder",
+          employment_title: "Welder"
         )
 
         expect do
-          described_class.handle_event(build(:event, :day_elapsed), now: now, with_side_effects: true)
-        end.not_to change { JobFreshness.count }
+          described_class.handle_event(build(:event, :day_elapsed), now:, with_side_effects: true)
+        end.not_to(change { JobFreshness.count })
       end
     end
   end
 
   describe "#get" do
-    subject { described_class.new(job_id, now: now).get }
+    subject { described_class.new(job_id, now:).get }
 
     before do
       JobFreshnessEmployerJob.create!(
-        employer_id: employer_id,
-        name: "Blocktrain",
+        employer_id:,
+        name: "Blocktrain"
       )
     end
 
     before do
       job_events.each do |event|
-        described_class.handle_event(event, now: now)
+        described_class.handle_event(event, now:)
       end
     end
 
@@ -137,10 +137,10 @@ RSpec.describe JobFreshnessService do
             applicants: {},
             employer_name: "Blocktrain",
             employment_title: "Welder",
-            job_id: job_id,
+            job_id:,
             hidden: false,
             recruiter_exists: true,
-            status: "fresh",
+            status: "fresh"
           )
         end
       end
@@ -153,10 +153,10 @@ RSpec.describe JobFreshnessService do
             applicants: {},
             employer_name: "Blocktrain",
             employment_title: "Welder",
-            job_id: job_id,
+            job_id:,
             hidden: false,
             recruiter_exists: true,
-            status: "fresh",
+            status: "fresh"
           )
         end
 
@@ -168,7 +168,7 @@ RSpec.describe JobFreshnessService do
               :job_updated,
               aggregate_id: job_id,
               data: {
-                employer_id: employer_id,
+                employer_id:,
                 hide_job: true,
                 employment_title: "Welder",
                 benefits_description: "Benefits",
@@ -184,11 +184,10 @@ RSpec.describe JobFreshnessService do
             )
           end
 
-
           it "returns 'stale'" do
             expect(subject).to have_attributes(
               applicants: {},
-              job_id: job_id,
+              job_id:,
               employer_name: "Blocktrain",
               hidden: true,
               recruiter_exists: true,
@@ -206,7 +205,7 @@ RSpec.describe JobFreshnessService do
               aggregate_id: job_id,
               data: {
                 applicant_id: SecureRandom.uuid,
-                job_id: job_id,
+                job_id:,
                 profile_id: SecureRandom.uuid,
                 user_id: SecureRandom.uuid,
                 employment_title: "Welder",
@@ -221,7 +220,7 @@ RSpec.describe JobFreshnessService do
 
             it "returns 'fresh'" do
               expect(subject).to have_attributes(
-                job_id: job_id,
+                job_id:,
                 status: "fresh",
                 applicants: {
                   applicant_created_at_event.data.fetch("applicant_id") => {
@@ -232,7 +231,7 @@ RSpec.describe JobFreshnessService do
                 employer_name: "Blocktrain",
                 employment_title: "Welder",
                 hidden: false,
-                recruiter_exists: true,
+                recruiter_exists: true
               )
             end
           end
@@ -249,7 +248,7 @@ RSpec.describe JobFreshnessService do
                   aggregate_id: job_id,
                   data: {
                     applicant_id: applicant_created_at_event.data.fetch("applicant_id"),
-                    job_id: job_id,
+                    job_id:,
                     profile_id: SecureRandom.uuid,
                     user_id: SecureRandom.uuid,
                     employment_title: "Welder",
@@ -265,8 +264,8 @@ RSpec.describe JobFreshnessService do
                 described_class.handle_event(applicant_created_at_event)
                 described_class.handle_event(applicant_status_updated_event)
 
-                expect(described_class.new(job_id, now: now).get).to have_attributes(
-                  job_id: job_id,
+                expect(described_class.new(job_id, now:).get).to have_attributes(
+                  job_id:,
                   status: "fresh",
                   applicants: {
                     applicant_created_at_event.data.fetch("applicant_id") => {
@@ -277,7 +276,7 @@ RSpec.describe JobFreshnessService do
                   employer_name: "Blocktrain",
                   employment_title: "Welder",
                   hidden: false,
-                  recruiter_exists: true,
+                  recruiter_exists: true
                 )
               end
             end
@@ -286,7 +285,7 @@ RSpec.describe JobFreshnessService do
               described_class.handle_event(build(:event, :day_elapsed, occurred_at: now, data: {})) # Have to wait for the day to elapse
 
               expect(subject).to have_attributes(
-                job_id: job_id,
+                job_id:,
                 status: "stale",
                 applicants: {
                   applicant_created_at_event.data.fetch("applicant_id") => {
@@ -297,26 +296,26 @@ RSpec.describe JobFreshnessService do
                 employer_name: "Blocktrain",
                 employment_title: "Welder",
                 hidden: false,
-                recruiter_exists: true,
+                recruiter_exists: true
               )
             end
           end
         end
       end
     end
-    
+
     context "when the employer has no recruiters" do
       let(:base_job_events) { [job_created_at_event] }
 
       it "returns 'stale'" do
         expect(subject).to have_attributes(
-          job_id: job_id,
+          job_id:,
           status: "stale",
           applicants: {},
           employer_name: "Blocktrain",
           employment_title: "Welder",
           hidden: false,
-          recruiter_exists: false,
+          recruiter_exists: false
         )
       end
     end

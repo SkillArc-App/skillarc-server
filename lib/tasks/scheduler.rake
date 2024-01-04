@@ -1,3 +1,3 @@
-task :elapse_day => :environment do
+task elapse_day: :environment do
   ElapseDayJob.perform
 end

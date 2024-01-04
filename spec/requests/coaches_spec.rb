@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Coaches", type: :request do
   describe "GET /index" do
-    subject { get coaches_path, headers: headers }
+    subject { get coaches_path, headers: }
 
     it_behaves_like "coach secured endpoint"
 

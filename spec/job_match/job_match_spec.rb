@@ -16,7 +16,7 @@ RSpec.describe JobMatch::JobMatch do
   let!(:applied_job) do
     job = create(:job)
 
-    create(:applicant, profile: profile, job: job)
+    create(:applicant, profile:, job:)
 
     job
   end

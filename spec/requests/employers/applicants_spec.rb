@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Employers::Applicants", type: :request do
   describe "PUT /update" do
-    subject { put employers_applicant_path(applicant), params: params, headers: headers }
+    subject { put employers_applicant_path(applicant), params:, headers: }
 
     include_context "employer authenticated"
 
@@ -30,7 +30,7 @@ RSpec.describe "Employers::Applicants", type: :request do
     context "when there are no reasons" do
       let(:params) do
         {
-          status: ApplicantStatus::StatusTypes::PENDING_INTRO,
+          status: ApplicantStatus::StatusTypes::PENDING_INTRO
         }
       end
 

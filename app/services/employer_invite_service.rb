@@ -25,7 +25,7 @@ class EmployerInviteService
       Recruiter.create!(
         id: SecureRandom.uuid,
         employer_id: employer_invite.employer_id,
-        user: user
+        user:
       )
     end
   end

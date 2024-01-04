@@ -6,7 +6,7 @@ RSpec.describe Klayvio::EducationExperienceEntered do
       build(
         :event,
         :education_experience_created,
-        aggregate_id: user.id,
+        aggregate_id: user.id
       )
     end
     let(:user) { create(:user, email:) }

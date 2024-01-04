@@ -10,10 +10,10 @@ RSpec.describe NotificationService do
       {
         "title" => title,
         "body" => body,
-        "url" => url,
+        "url" => url
       }
     end
-    
+
     let(:email) { user.email }
     let(:title) { Faker::Lorem.sentence }
     let(:body) { Faker::Lorem.paragraph }
@@ -27,7 +27,7 @@ RSpec.describe NotificationService do
         user:,
         title:,
         body:,
-        url:,
+        url:
       )
     end
   end

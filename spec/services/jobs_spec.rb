@@ -6,17 +6,17 @@ RSpec.describe Jobs do
 
     let(:params) do
       {
-        employment_title: employment_title,
-        employer_id: employer_id,
-        benefits_description: benefits_description,
-        responsibilities_description: responsibilities_description,
-        location: location,
-        employment_type: employment_type,
-        hide_job: hide_job,
-        schedule: schedule,
-        work_days: work_days,
-        requirements_description: requirements_description,
-        industry: industry
+        employment_title:,
+        employer_id:,
+        benefits_description:,
+        responsibilities_description:,
+        location:,
+        employment_type:,
+        hide_job:,
+        schedule:,
+        work_days:,
+        requirements_description:,
+        industry:
       }
     end
     let(:employment_title) { "Laborer" }
@@ -57,21 +57,21 @@ RSpec.describe Jobs do
         event_type: Event::EventTypes::JOB_CREATED,
         aggregate_id: be_present,
         data: {
-          employment_title: employment_title,
-          employer_id: employer_id,
-          benefits_description: benefits_description,
-          responsibilities_description: responsibilities_description,
-          employment_title: employment_title,
-          location: location,
-          employment_type: employment_type,
-          hide_job: hide_job,
-          schedule: schedule,
-          work_days: work_days,
-          requirements_description: requirements_description,
-          industry: industry
+          employment_title:,
+          employer_id:,
+          benefits_description:,
+          responsibilities_description:,
+          employment_title:,
+          location:,
+          employment_type:,
+          hide_job:,
+          schedule:,
+          work_days:,
+          requirements_description:,
+          industry:
         },
         metadata: {},
-        occurred_at: be_present,
+        occurred_at: be_present
       )
 
       subject

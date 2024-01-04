@@ -4,7 +4,7 @@ RSpec.describe ApplicantService do
   let(:applicant) { create(:applicant) }
 
   describe "#update_status" do
-    subject { described_class.new(applicant).update_status(status: status, reasons: reasons) }
+    subject { described_class.new(applicant).update_status(status:, reasons:) }
 
     let(:status) { ApplicantStatus::StatusTypes::PENDING_INTRO }
     let(:reasons) { [reason.id] }

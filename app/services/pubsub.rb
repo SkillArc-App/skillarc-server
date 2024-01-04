@@ -1,7 +1,7 @@
 class Pubsub
   def self.publish(event:)
     subscribers[event.event_type]&.each do |subscriber|
-      subscriber.call(event: event)
+      subscriber.call(event:)
     end
   end
 
@@ -9,8 +9,6 @@ class Pubsub
     subscribers[event] ||= []
     subscribers[event] << subscriber
   end
-
-  private
 
   def self.subscribers
     @subscribers ||= {}

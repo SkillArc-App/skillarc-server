@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "UserEvents", type: :request do
   describe "GET /show" do
-    subject { get user_event_path(user), headers: headers }
+    subject { get user_event_path(user), headers: }
 
     let(:user) { create(:user) }
 

@@ -3,7 +3,7 @@ FactoryBot.define do
     id { SecureRandom.uuid }
 
     trait :new do
-      status { ApplicantStatus::StatusTypes::NEW}
+      status { ApplicantStatus::StatusTypes::NEW }
     end
 
     trait :pending_intro do

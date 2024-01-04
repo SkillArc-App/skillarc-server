@@ -15,7 +15,7 @@ RSpec.describe Klayvio::UserSignup do
         occurred_at: event.occurred_at
       )
 
-      subject.call(event: event)
+      subject.call(event:)
     end
   end
 end

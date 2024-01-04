@@ -6,15 +6,15 @@ RSpec.describe UserEvents do
 
     let(:user) { create(:user) }
 
-    let!(:event) { create(:event, :user_created, occurred_at: occurred_at, aggregate_id: user.id) }
+    let!(:event) { create(:event, :user_created, occurred_at:, aggregate_id: user.id) }
     let!(:education_experience_created_event) do
       create(
         :event,
         :education_experience_created,
-        occurred_at: occurred_at,
+        occurred_at:,
         aggregate_id: user.id,
         data: {
-          organization_name: "Test University",
+          organization_name: "Test University"
         }
       )
     end
@@ -22,10 +22,10 @@ RSpec.describe UserEvents do
       create(
         :event,
         :experience_created,
-        occurred_at: occurred_at,
+        occurred_at:,
         aggregate_id: user.id,
         data: {
-          organization_name: "Test Company",
+          organization_name: "Test Company"
         }
       )
     end
@@ -33,18 +33,18 @@ RSpec.describe UserEvents do
       create(
         :event,
         :onboarding_complete,
-        occurred_at: occurred_at,
-        aggregate_id: user.id,
+        occurred_at:,
+        aggregate_id: user.id
       )
     end
     let!(:job_saved_event) do
       create(
         :event,
         :job_saved,
-        occurred_at: occurred_at,
+        occurred_at:,
         aggregate_id: user.id,
         data: {
-          employment_title: "Test Job",
+          employment_title: "Test Job"
         }
       )
     end
@@ -53,7 +53,7 @@ RSpec.describe UserEvents do
       create(
         :event,
         :applicant_status_updated,
-        occurred_at: occurred_at,
+        occurred_at:,
         aggregate_id: job.id,
         data: {
           user_id: user.id,
@@ -74,7 +74,7 @@ RSpec.describe UserEvents do
         { datetime: '2023-11-30  7:00PM', event_message: "Work Experience Created: Test Company" },
         { datetime: '2023-11-30  7:00PM', event_message: "Onboarding Complete" },
         { datetime: '2023-11-30  7:00PM', event_message: "Job Saved: Test Job" },
-        { datetime: '2023-11-30  7:00PM', event_message: "Applicant Status Updated: Test Job - new" },
+        { datetime: '2023-11-30  7:00PM', event_message: "Applicant Status Updated: Test Job - new" }
       )
     end
   end

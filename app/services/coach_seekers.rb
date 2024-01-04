@@ -34,7 +34,7 @@ class CoachSeekers
       event_type: Event::EventTypes::NOTE_ADDED,
       aggregate_id: id,
       data: {
-        note: note
+        note:
       },
       metadata: {},
       occurred_at: now
@@ -47,7 +47,7 @@ class CoachSeekers
       event_type: Event::EventTypes::COACH_ASSIGNED,
       aggregate_id: id,
       data: {
-        coach_id: coach_id,
+        coach_id:,
         email: coach_email
       },
       metadata: {},
@@ -61,14 +61,12 @@ class CoachSeekers
       event_type: Event::EventTypes::SKILL_LEVEL_UPDATED,
       aggregate_id: id,
       data: {
-        skill_level: skill_level
+        skill_level:
       },
       metadata: {},
       occurred_at: now
     )
   end
-
-  private
 
   def self.handle_coach_assigned(event)
     csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
@@ -93,7 +91,7 @@ class CoachSeekers
     user_id = event.aggregate_id
 
     csc = CoachSeekerContext.find_or_create_by(
-      user_id: user_id,
+      user_id:,
       email: event.data["email"]
     )
     csc.last_active_on = event.occurred_at

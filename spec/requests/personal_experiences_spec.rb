@@ -6,7 +6,7 @@ RSpec.describe "PersonalExperiences", type: :request do
   let!(:profile) { create(:profile, user:) }
 
   describe "POST /create" do
-    subject { post profile_personal_experiences_path(profile), params: params, headers: headers }
+    subject { post profile_personal_experiences_path(profile), params:, headers: }
 
     let(:params) do
       {
@@ -14,8 +14,8 @@ RSpec.describe "PersonalExperiences", type: :request do
           title: "My Title",
           description: "My Description",
           start_date: "2020-01-01",
-          end_date: "2020-01-01",
-        },
+          end_date: "2020-01-01"
+        }
       }
     end
 
@@ -31,16 +31,16 @@ RSpec.describe "PersonalExperiences", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put profile_personal_experience_path(profile, personal_experience), params: params, headers: headers }
+    subject { put profile_personal_experience_path(profile, personal_experience), params:, headers: }
 
     let(:params) do
       {
         personal_experience: {
-          activity: "new activity",
-        },
+          activity: "new activity"
+        }
       }
     end
-    let!(:personal_experience) { create(:personal_experience, profile: profile) }
+    let!(:personal_experience) { create(:personal_experience, profile:) }
 
     it "returns 200" do
       subject
@@ -56,17 +56,16 @@ RSpec.describe "PersonalExperiences", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete profile_personal_experience_path(profile, personal_experience), headers: headers }
+    subject { delete profile_personal_experience_path(profile, personal_experience), headers: }
 
     let(:params) do
       {
         personal_experience: {
-          activity: "new activity",
-        },
+          activity: "new activity"
+        }
       }
     end
-    let!(:personal_experience) { create(:personal_experience, profile: profile) }
-
+    let!(:personal_experience) { create(:personal_experience, profile:) }
 
     it "returns 200" do
       subject

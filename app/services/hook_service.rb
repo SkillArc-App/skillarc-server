@@ -9,7 +9,7 @@ class HookService
       data: {
         title:,
         body:,
-        url:,
+        url:
       },
       occurred_at: Time.now.utc.iso8601,
       metadata: {}

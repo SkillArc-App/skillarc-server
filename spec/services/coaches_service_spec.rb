@@ -16,7 +16,7 @@ RSpec.describe CoachesService do
     it "returns all coaches" do
       expected_coach = {
         id: Coach.last_created.id,
-        email: "coach@blocktrainapp.com",
+        email: "coach@blocktrainapp.com"
       }
 
       expect(subject).to contain_exactly(expected_coach)

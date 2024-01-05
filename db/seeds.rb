@@ -597,7 +597,8 @@ LearnedSkill.create!([
                        },
                      ])
 
-trained_seeker = Profile.create!(
+
+trained_seeker_with_reference = Profile.create!(
   id: SecureRandom.uuid,
   bio: "I learn stuff",
   status: "I'm a high school student.",
@@ -611,7 +612,7 @@ trained_seeker = Profile.create!(
   )
 )
 
-tim_allen = Profile.create!(
+trained_seeker = Profile.create!(
   id: SecureRandom.uuid,
   bio: 'I learn stuff',
   status: "I'm a high school student.",
@@ -625,7 +626,7 @@ tim_allen = Profile.create!(
   )
 )
 
-Profile.create!(
+seeker_with_profile = Profile.create!(
   id: SecureRandom.uuid,
   bio: 'I learn stuff',
   status: "I'm an adult with some work experience. Looking to switch to trades.",
@@ -639,9 +640,16 @@ Profile.create!(
   )
 )
 
+OnboardingSession.create!(
+  id: SecureRandom.uuid,
+  user_id: seeker_with_profile.user.id,
+  started_at: seeker_with_profile.created_at,
+  completed_at: seeker_with_profile.created_at + 1.day
+)
+
 megans_recruits = TrainingProvider.create!(
   id: SecureRandom.uuid,
-  name: "Megan's Recruits",
+  name: "'s Recruits",
   description: "We train people to help them get jobs"
 )
 
@@ -652,7 +660,7 @@ cul = TrainingProvider.create!(
     'We are super good at doing the thing we do which is to help the people we work with get jobs'
 )
 
-megan = User.create!(
+trainer = User.create!(
   id: 'cll0yrt8e0004aor228lvcp8w',
   name: 'Meghan Trainer',
   first_name: 'Meghan',
@@ -662,7 +670,13 @@ megan = User.create!(
   sub: 'megsub'
 )
 
-bill = User.create!(
+TrainingProviderProfile.create!(
+  id: SecureRandom.uuid,
+  training_provider_id: cul.id,
+  user_id: trainer.id
+)
+
+trainer_with_reference = User.create!(
   id: 'cll1766cz0000aons61fkc558',
   name: 'Bill Traynor',
   first_name: 'Bill',
@@ -672,7 +686,7 @@ bill = User.create!(
   sub: 'billsub'
 )
 
-User.create!(
+user_without_profile = User.create!(
   id: 'clem7u5uc0007mi0rne4h3be0',
   name: 'Jake Not-Onboard',
   first_name: 'Jake',
@@ -689,16 +703,17 @@ UserRole.create!(
   user_id: 'clem7u5uc0007mi0rne4h3be0'
 )
 
-TrainingProviderProfile.create!(
-  id: SecureRandom.uuid,
-  training_provider_id: cul.id,
-  user_id: megan.id
-)
-
 bill_trainer_profile = TrainingProviderProfile.create!(
   id: SecureRandom.uuid,
   training_provider_id: megans_recruits.id,
-  user_id: bill.id
+  user_id: trainer_with_reference.id
+)
+
+cool_program = Program.create!(
+  id: SecureRandom.uuid,
+  name: 'Cool Program',
+  description: 'You learn stuff',
+  training_provider_id: megans_recruits.id
 )
 
 welding = Program.create!(
@@ -737,28 +752,28 @@ ProgramSkill.create!([
 
 SeekerTrainingProvider.create!(
   id: SecureRandom.uuid,
-  user_id: trained_seeker.user_id,
+  user_id: trained_seeker_with_reference.user_id,
   program_id: welding.id,
   training_provider_id: cul.id
 )
 
 SeekerTrainingProvider.create!(
   id: SecureRandom.uuid,
-  user_id: tim_allen.user.id,
+  user_id: trained_seeker.user.id,
   program_id: plumbing.id,
   training_provider_id: cul.id
 )
 
 SeekerTrainingProvider.create!(
   id: SecureRandom.uuid,
-  user_id: tim_allen.user.id,
+  user_id: trained_seeker.user.id,
   program_id: welding.id,
   training_provider_id: cul.id
 )
 
 SeekerTrainingProvider.create!(
   id: SecureRandom.uuid,
-  user_id: trained_seeker.user_id,
+  user_id: trained_seeker_with_reference.user_id,
   program_id: carpentry.id,
   training_provider_id: cul.id
 )
@@ -766,7 +781,7 @@ SeekerTrainingProvider.create!(
 Reference.create!(
   id: SecureRandom.uuid,
   training_provider_id: cul.id,
-  seeker_profile_id: trained_seeker.id,
+  seeker_profile_id: trained_seeker_with_reference.id,
   author_profile_id: bill_trainer_profile.id,
   reference_text: 'This person is good at carpentry'
 )
@@ -775,18 +790,30 @@ coach_user = User.create!(
   id: SecureRandom.uuid,
   first_name: 'Coach',
   last_name: 'User',
-  email: 'coach@blocktrainapp.com'
+  email: 'coach@blocktrainapp.com',
+  sub: 'coachsub'
 )
 
-coach = Role.create!(id: SecureRandom.uuid, name: "coach")
+coach = Role.create!(id: SecureRandom.uuid, name: Role::Types::COACH)
 
 UserRole.create!(
   id: SecureRandom.uuid,
   role_id: coach.id,
-  user_id: coach_user.id
+  user_id: coach_user.id,
 )
 
-Coach.create!(
+coach = Coach.create!(
   user_id: coach_user.id,
   email: coach_user.email,
 ) 
+
+CoachSeekerContext.create!(
+  profile_id: seeker_with_profile.id,
+  user_id: seeker_with_profile.user.id,
+  first_name: seeker_with_profile.user.first_name,
+  last_name: seeker_with_profile.user.last_name,
+  email: seeker_with_profile.user.email,
+  phone_number: seeker_with_profile.user.phone_number,
+  stage: 'profile_created',
+  assigned_coach: coach.id
+)

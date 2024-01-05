@@ -606,7 +606,7 @@ trained_seeker = Profile.create!(
     name: 'Tom Hanks',
     first_name: 'Tom',
     last_name: 'Hanks',
-    email: 'tom@blocktrainapp.com',
+    email: 'trained-seeker-with-reference@blocktrainapp.com',
     sub: 'tomsub'
   )
 )
@@ -620,7 +620,7 @@ tim_allen = Profile.create!(
     name: 'Tim Allen',
     first_name: 'Tim',
     last_name: 'Allen',
-    email: 'tim@blocktrainapp.com',
+    email: 'trained-seeker@blocktrainapp.com',
     sub: 'timsub'
   )
 )
@@ -634,7 +634,7 @@ Profile.create!(
     name: 'Rita Wilson',
     first_name: 'Rita',
     last_name: 'Wilson',
-    email: 'rita@blocktrainapp.com',
+    email: 'user-with-profile@blocktrainapp.com',
     sub: 'ritasub'
   )
 )
@@ -657,7 +657,7 @@ megan = User.create!(
   name: 'Meghan Trainer',
   first_name: 'Meghan',
   last_name: 'Trainer',
-  email: 'meg@blocktrainapp.com',
+  email: 'trainer@blocktrainapp.com',
   user_type: 'TRAINING_PROVIDER',
   sub: 'megsub'
 )
@@ -667,7 +667,7 @@ bill = User.create!(
   name: 'Bill Traynor',
   first_name: 'Bill',
   last_name: 'Traynor',
-  email: 'bill@blocktrainapp.com',
+  email: 'trainer-with-reference@blocktrainapp.com',
   user_type: 'TRAINING_PROVIDER',
   sub: 'billsub'
 )
@@ -677,7 +677,7 @@ User.create!(
   name: 'Jake Not-Onboard',
   first_name: 'Jake',
   last_name: 'Not-Onboard',
-  email: 'jake@statefarm.com',
+  email: 'user-without-profile@blocktrainapp.com',
   sub: 'jakesub'
 )
 

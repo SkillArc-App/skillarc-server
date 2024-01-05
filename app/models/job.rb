@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: jobs
+#
+#  id                           :text             not null, primary key
+#  employer_id                  :text             not null
+#  benefits_description         :text             not null
+#  responsibilities_description :text
+#  employment_title             :text             not null
+#  location                     :text             not null
+#  employment_type              :enum             not null
+#  hide_job                     :boolean          default(FALSE), not null
+#  schedule                     :text
+#  work_days                    :text
+#  requirements_description     :text
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  industry                     :text             is an Array
+#
 class Job < ApplicationRecord
   belongs_to :employer
 

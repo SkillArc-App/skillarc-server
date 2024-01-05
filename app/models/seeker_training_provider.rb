@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: seeker_training_providers
+#
+#  id                   :text             not null, primary key
+#  training_provider_id :text             not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  program_id           :text
+#  user_id              :text             not null
+#
 class SeekerTrainingProvider < ApplicationRecord
   belongs_to :user
   belongs_to :training_provider

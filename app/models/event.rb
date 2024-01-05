@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: events
+#
+#  id           :uuid             not null, primary key
+#  aggregate_id :string           not null
+#  event_type   :string           not null
+#  data         :jsonb            not null
+#  metadata     :jsonb            not null
+#  version      :integer          default(0), not null
+#  occurred_at  :datetime         not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
 class Event < ApplicationRecord
   module EventTypes
     ALL = [

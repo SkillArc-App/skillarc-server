@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: profiles
+#
+#  id               :text             not null, primary key
+#  user_id          :text             not null
+#  bio              :text
+#  image            :text
+#  status           :text
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  met_career_coach :boolean          default(FALSE)
+#
 class Profile < ApplicationRecord
   belongs_to :user
 

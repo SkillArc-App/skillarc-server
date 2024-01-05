@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                    :text             not null, primary key
+#  name                  :text
+#  email                 :text
+#  email_verified        :datetime
+#  image                 :text
+#  first_name            :text
+#  last_name             :text
+#  zip_code              :text
+#  phone_number          :text
+#  onboarding_session_id :text
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  user_type             :enum             default("SEEKER"), not null
+#  sub                   :string
+#
 class User < ApplicationRecord
   has_one :recruiter
   has_one :profile

@@ -770,3 +770,23 @@ Reference.create!(
   author_profile_id: bill_trainer_profile.id,
   reference_text: 'This person is good at carpentry'
 )
+
+coach_user = User.create!(
+  id: SecureRandom.uuid,
+  first_name: 'Coach',
+  last_name: 'User',
+  email: 'coach@blocktrainapp.com'
+)
+
+coach = Role.create!(id: SecureRandom.uuid, name: "coach")
+
+UserRole.create!(
+  id: SecureRandom.uuid,
+  role_id: coach.id,
+  user_id: coach_user.id
+)
+
+Coach.create!(
+  user_id: coach_user.id,
+  email: coach_user.email,
+) 

@@ -649,7 +649,7 @@ OnboardingSession.create!(
 
 megans_recruits = TrainingProvider.create!(
   id: SecureRandom.uuid,
-  name: "'s Recruits",
+  name: "Megan's Recruits",
   description: "We train people to help them get jobs"
 )
 

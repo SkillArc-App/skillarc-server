@@ -5,6 +5,8 @@ class CoachSeekers
       handle_coach_assigned(event)
     when Event::EventTypes::NOTE_ADDED
       handle_note_added(event)
+    when Event::EventTypes::NOTE_DELETED
+      handle_note_deleted(event)
     when Event::EventTypes::PROFILE_CREATED
       handle_profile_created(event)
     when Event::EventTypes::SKILL_LEVEL_UPDATED
@@ -34,6 +36,18 @@ class CoachSeekers
       aggregate_id: id,
       data: {
         note:,
+        note_id:
+      },
+      metadata: {},
+      occurred_at: now
+    )
+  end
+
+  def self.delete_note(id, note_id, now: Time.now)
+    CreateEventJob.perform_later(
+      event_type: Event::EventTypes::NOTE_DELETED,
+      aggregate_id: id,
+      data: {
         note_id:
       },
       metadata: {},
@@ -71,6 +85,10 @@ class CoachSeekers
 
     csc.assigned_coach = event.data["coach_id"]
     csc.save!
+  end
+
+  def self.handle_note_deleted(event)
+    SeekerNote.find_by!(note_id: event.data["note_id"]).destroy
   end
 
   def self.handle_note_added(event)

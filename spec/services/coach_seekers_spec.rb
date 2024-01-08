@@ -12,6 +12,7 @@ RSpec.describe CoachSeekers do
   let(:note_added) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note" }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:note_with_id_added1) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1 }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:note_with_id_added2) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2 }, occurred_at: Time.utc(2020, 1, 1)) }
+  let(:note_deleted) { build(:event, :note_deleted, aggregate_id: profile_id, data: { note: "This is a note with an id", note_id: note_id1 }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:skill_level_updated) { build(:event, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:coach_assigned) { build(:event, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: Time.utc(2020, 1, 1)) }
 
@@ -37,6 +38,7 @@ RSpec.describe CoachSeekers do
     described_class.handle_event(note_added)
     described_class.handle_event(note_with_id_added1)
     described_class.handle_event(note_with_id_added2)
+    described_class.handle_event(note_deleted)
     described_class.handle_event(skill_level_updated)
     described_class.handle_event(coach_assigned)
   end
@@ -87,6 +89,7 @@ RSpec.describe CoachSeekers do
         stage: 'profile_created'
       }
 
+      # Note we'll see note with id 1 remove once we backfill these events
       expect(subject).to contain_exactly(expected_profile, expected_other_profile)
     end
   end
@@ -137,6 +140,25 @@ RSpec.describe CoachSeekers do
         aggregate_id: profile_id,
         data: {
           note: "This is a new note",
+          note_id: note_id1
+        },
+        metadata: {},
+        occurred_at: now
+      )
+
+      subject
+    end
+  end
+
+  describe ".delete_note" do
+    subject { described_class.delete_note(profile_id, note_id1, now:) }
+    let(:now) { Time.new(2020, 1, 1) }
+
+    it "creates an event" do
+      expect(CreateEventJob).to receive(:perform_later).with(
+        event_type: Event::EventTypes::NOTE_DELETED,
+        aggregate_id: profile_id,
+        data: {
           note_id: note_id1
         },
         metadata: {},

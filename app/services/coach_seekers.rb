@@ -83,6 +83,15 @@ class CoachSeekers
       date: event.occurred_at
     }
     csc.save!
+
+    return unless event.data["note_id"].present?
+
+    csc.seeker_notes << SeekerNote.create!(
+      coach_seeker_context: csc,
+      note_taken_at: event.occurred_at,
+      note_id: event.data["note_id"],
+      note: event.data["note"]
+    )
   end
 
   def self.handle_user_created(event)

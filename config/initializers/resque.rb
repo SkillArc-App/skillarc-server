@@ -48,7 +48,7 @@ class BasicJsonFormatter
   end
 
   def _parse_payload(payload)
-    JSON.parse(payload.gsub("=\u003e", ":").gsub('\\"', '"'))
+    payload
   end
 end
 

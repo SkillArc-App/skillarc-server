@@ -4,19 +4,25 @@ RSpec.describe CoachSeekers do
   let(:non_seeker_user_created) { build(:event, :user_created, aggregate_id: "123", data: { email: "f@f.f" }) }
   let(:user_created) { build(:event, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com" }) }
   let(:user_updated) { build(:event, :user_updated, aggregate_id: user_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890" }) }
+  let(:other_user_created) { build(:event, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
   let(:profile_created) { build(:event, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
+  let(:other_profile_created) { build(:event, :profile_created, aggregate_id: other_user_id, data: { id: other_profile_id}) }
   let(:note_added) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note" }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:skill_level_updated) { build(:event, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:coach_assigned) { build(:event, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: Time.utc(2020, 1, 1)) }
 
   let(:user_id) { "9f769972-c41c-4b58-a056-bffb714ea24d" }
+  let(:other_user_id) { "7a381c1e-6f1c-41e7-b045-6f989acc2cf8" }
   let(:profile_id) { "75372772-49dc-4884-b4ae-1d408e030aa4" }
+  let(:other_profile_id) { "2dc66599-1116-4d7a-bdbb-38652fbed6cd" }
 
   before do
     described_class.handle_event(non_seeker_user_created)
     described_class.handle_event(user_created)
     described_class.handle_event(user_updated)
+    described_class.handle_event(other_user_created)
     described_class.handle_event(profile_created)
+    described_class.handle_event(other_profile_created)
     described_class.handle_event(note_added)
     described_class.handle_event(skill_level_updated)
     described_class.handle_event(coach_assigned)
@@ -45,8 +51,22 @@ RSpec.describe CoachSeekers do
         ].as_json,
         stage: 'profile_created'
       }
+      expected_other_profile = {
+        seekerId: other_profile_id,
+        firstName: "Katina",
+        lastName: "Hall",
+        email: "katina@gmail.com",
+        phoneNumber: nil,
+        skillLevel: 'beginner',
+        lastActiveOn: other_profile_created.occurred_at,
+        lastContacted: "Never",
+        assignedCoach: 'none',
+        barriers: [],
+        notes: [],
+        stage: 'profile_created'
+      }
 
-      expect(subject.first).to eq(expected_profile)
+      expect(subject).to contain_exactly(expected_profile, expected_other_profile)
     end
   end
 

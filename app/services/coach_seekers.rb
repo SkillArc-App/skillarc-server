@@ -92,7 +92,10 @@ class CoachSeekers
 
     csc = CoachSeekerContext.find_or_create_by(
       user_id:,
-      email: event.data["email"]
+      email: event.data["email"],
+      first_name: event.data["first_name"],
+      last_name: event.data["last_name"],
+      phone_number: event.data["phone_number"]
     )
     csc.last_active_on = event.occurred_at
     csc.save!

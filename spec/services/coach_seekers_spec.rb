@@ -13,6 +13,7 @@ RSpec.describe CoachSeekers do
   let(:note_with_id_added1) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1 }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:note_with_id_added2) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2 }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:note_deleted) { build(:event, :note_deleted, aggregate_id: profile_id, data: { note: "This is a note with an id", note_id: note_id1 }, occurred_at: Time.utc(2020, 1, 1)) }
+  let(:note_modified) { build(:event, :note_modified, aggregate_id: profile_id, data: { note: updated_note, note_id: note_id2 }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:skill_level_updated) { build(:event, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:coach_assigned) { build(:event, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: Time.utc(2020, 1, 1)) }
 
@@ -25,6 +26,7 @@ RSpec.describe CoachSeekers do
   let(:other_profile_id) { "2dc66599-1116-4d7a-bdbb-38652fbed6cd" }
   let(:note_id1) { "78f22f6c-a770-46fc-a83c-1ad6cda4b8f9" }
   let(:note_id2) { "a0c1894f-df0d-40d3-bb1d-d68efea4772d" }
+  let(:updated_note) { "This note was updated" }
 
   before do
     described_class.handle_event(non_seeker_user_created)
@@ -39,6 +41,7 @@ RSpec.describe CoachSeekers do
     described_class.handle_event(note_with_id_added1)
     described_class.handle_event(note_with_id_added2)
     described_class.handle_event(note_deleted)
+    described_class.handle_event(note_modified)
     described_class.handle_event(skill_level_updated)
     described_class.handle_event(coach_assigned)
   end
@@ -89,7 +92,8 @@ RSpec.describe CoachSeekers do
         stage: 'profile_created'
       }
 
-      # Note we'll see note with id 1 remove once we backfill these events
+      # Note some changes once this is cut over post backfill these events
+      # We'll see note 1 removed and note 2 updated
       expect(subject).to contain_exactly(expected_profile, expected_other_profile)
     end
   end
@@ -160,6 +164,26 @@ RSpec.describe CoachSeekers do
         aggregate_id: profile_id,
         data: {
           note_id: note_id1
+        },
+        metadata: {},
+        occurred_at: now
+      )
+
+      subject
+    end
+  end
+
+  describe ".modify_note" do
+    subject { described_class.modify_note(profile_id, note_id2, updated_note, now:) }
+    let(:now) { Time.new(2020, 1, 1) }
+
+    it "creates an event" do
+      expect(CreateEventJob).to receive(:perform_later).with(
+        event_type: Event::EventTypes::NOTE_MODIFIED,
+        aggregate_id: profile_id,
+        data: {
+          note_id: note_id2,
+          note: updated_note
         },
         metadata: {},
         occurred_at: now

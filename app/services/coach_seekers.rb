@@ -28,12 +28,13 @@ class CoachSeekers
     serialize_coach_seeker_context(csc)
   end
 
-  def self.add_note(id, note, now: Time.now)
+  def self.add_note(id, note, note_id: SecureRandom.uuid, now: Time.now)
     CreateEventJob.perform_later(
       event_type: Event::EventTypes::NOTE_ADDED,
       aggregate_id: id,
       data: {
-        note:
+        note:,
+        note_id:
       },
       metadata: {},
       occurred_at: now

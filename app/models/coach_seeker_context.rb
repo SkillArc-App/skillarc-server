@@ -20,4 +20,5 @@
 #  last_active_on    :datetime
 #
 class CoachSeekerContext < ApplicationRecord
+  has_many :seeker_notes, dependent: :destroy
 end

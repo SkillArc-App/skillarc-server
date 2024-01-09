@@ -119,7 +119,7 @@ RSpec.describe CoachSeekers do
   end
 
   describe ".add_note" do
-    subject { described_class.add_note(profile_id, "This is a new note", note_id: note_id1, now:) }
+    subject { described_class.add_note(profile_id, "This is a new note", note_id1, now:) }
     let(:now) { Time.new(2020, 1, 1) }
 
     it "creates an event" do

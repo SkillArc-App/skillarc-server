@@ -5,8 +5,7 @@ class Jobs
       id: SecureRandom.uuid
     )
 
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::JOB_CREATED,
       aggregate_id: job.id,
       data: {

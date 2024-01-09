@@ -14,8 +14,7 @@ class Onboarding
           phone_number: name_response["phoneNumber"]
         )
 
-        Resque.enqueue(
-          CreateEventJob,
+        CreateEventJob.perform_later(
           aggregate_id: user.id,
           event_type: Event::EventTypes::USER_UPDATED,
           data: {
@@ -37,8 +36,7 @@ class Onboarding
         )
         user.reload
 
-        Resque.enqueue(
-          CreateEventJob,
+        CreateEventJob.perform_later(
           aggregate_id: user.id,
           event_type: Event::EventTypes::PROFILE_CREATED,
           data: {
@@ -71,8 +69,7 @@ class Onboarding
           oe.id = SecureRandom.uuid
           oe.save!
 
-          Resque.enqueue(
-            CreateEventJob,
+          CreateEventJob.perform_later(
             aggregate_id: user.id,
             event_type: Event::EventTypes::EXPERIENCE_CREATED,
             data: {
@@ -111,8 +108,7 @@ class Onboarding
           ee.id = SecureRandom.uuid
           ee.save!
 
-          Resque.enqueue(
-            CreateEventJob,
+          CreateEventJob.perform_later(
             aggregate_id: user.id,
             event_type: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
             data: {
@@ -140,8 +136,7 @@ class Onboarding
           stp.id = SecureRandom.uuid
           stp.save!
 
-          Resque.enqueue(
-            CreateEventJob,
+          CreateEventJob.perform_later(
             aggregate_id: user.id,
             event_type: Event::EventTypes::SEEKER_TRAINING_PROVIDER_CREATED,
             data: {
@@ -174,8 +169,7 @@ class Onboarding
         pe.id = SecureRandom.uuid
         pe.save!
 
-        Resque.enqueue(
-          CreateEventJob,
+        CreateEventJob.perform_later(
           aggregate_id: user.id,
           event_type: Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
           data: {
@@ -217,8 +211,7 @@ class Onboarding
 
     onboarding_session.update!(completed_at:)
 
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       aggregate_id: user.id,
       event_type: Event::EventTypes::ONBOARDING_COMPLETED,
       data: {

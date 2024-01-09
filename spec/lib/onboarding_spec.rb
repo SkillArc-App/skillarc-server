@@ -62,38 +62,40 @@ RSpec.describe Onboarding do
       end
 
       it "publishes a profile created event" do
-        allow(Resque).to receive(:enqueue)
-        expect(Resque).to receive(:enqueue).with(
-          CreateEventJob,
-          aggregate_id: user.id,
-          event_type: Event::EventTypes::PROFILE_CREATED,
-          data: {
-            id: be_present,
-            user_id: user.id
-          },
-          metadata: {},
-          occurred_at: be_present
-        )
+        allow(CreateEventJob).to receive(:perform_later)
+        expect(CreateEventJob)
+          .to receive(:perform_later)
+          .with(
+            aggregate_id: user.id,
+            event_type: Event::EventTypes::PROFILE_CREATED,
+            data: {
+              id: be_present,
+              user_id: user.id
+            },
+            metadata: {},
+            occurred_at: be_present
+          )
 
         subject
       end
 
       it "publishes an event" do
-        allow(Resque).to receive(:enqueue)
-        expect(Resque).to receive(:enqueue).with(
-          CreateEventJob,
-          aggregate_id: user.id,
-          event_type: Event::EventTypes::USER_UPDATED,
-          data: {
-            email: user.email,
-            first_name: "John",
-            last_name: "Doe",
-            phone_number: "1234567890",
-            date_of_birth: Date.new(2000, 1, 1)
-          },
-          metadata: {},
-          occurred_at: be_present
-        )
+        allow(CreateEventJob).to receive(:perform_later)
+        expect(CreateEventJob)
+          .to receive(:perform_later)
+          .with(
+            aggregate_id: user.id,
+            event_type: Event::EventTypes::USER_UPDATED,
+            data: {
+              email: user.email,
+              first_name: "John",
+              last_name: "Doe",
+              phone_number: "1234567890",
+              date_of_birth: Date.new(2000, 1, 1)
+            },
+            metadata: {},
+            occurred_at: be_present
+          )
 
         subject
       end
@@ -137,24 +139,25 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(Resque).to receive(:enqueue)
-        expect(Resque).to receive(:enqueue).with(
-          CreateEventJob,
-          aggregate_id: user.id,
-          event_type: "experience_created",
-          data: {
-            id: be_present,
-            organization_name: "Company",
-            position: "Position",
-            start_date: "01/01/2000",
-            is_current: true,
-            end_date: nil,
-            description: "Description",
-            profile_id: be_present # TODO: Come up with a way to check the profile id as well
-          },
-          metadata: {},
-          occurred_at: be_present
-        )
+        allow(CreateEventJob).to receive(:perform_later)
+        expect(CreateEventJob)
+          .to receive(:perform_later)
+          .with(
+            aggregate_id: user.id,
+            event_type: "experience_created",
+            data: {
+              id: be_present,
+              organization_name: "Company",
+              position: "Position",
+              start_date: "01/01/2000",
+              is_current: true,
+              end_date: nil,
+              description: "Description",
+              profile_id: be_present # TODO: Come up with a way to check the profile id as well
+            },
+            metadata: {},
+            occurred_at: be_present
+          )
 
         subject
       end
@@ -216,23 +219,24 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(Resque).to receive(:enqueue)
-        expect(Resque).to receive(:enqueue).with(
-          CreateEventJob,
-          aggregate_id: user.id,
-          event_type: "education_experience_created",
-          data: {
-            id: be_present,
-            activities: "Football",
-            organization_name: "School",
-            title: "Title",
-            graduation_date: "2000",
-            gpa: "4.0",
-            profile_id: be_present # TODO: Come up with a way to check the profile id as well
-          },
-          metadata: {},
-          occurred_at: be_present
-        )
+        allow(CreateEventJob).to receive(:perform_later)
+        expect(CreateEventJob)
+          .to receive(:perform_later)
+          .with(
+            aggregate_id: user.id,
+            event_type: "education_experience_created",
+            data: {
+              id: be_present,
+              activities: "Football",
+              organization_name: "School",
+              title: "Title",
+              graduation_date: "2000",
+              gpa: "4.0",
+              profile_id: be_present # TODO: Come up with a way to check the profile id as well
+            },
+            metadata: {},
+            occurred_at: be_present
+          )
 
         subject
       end
@@ -285,19 +289,20 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(Resque).to receive(:enqueue)
-        expect(Resque).to receive(:enqueue).with(
-          CreateEventJob,
-          aggregate_id: user.id,
-          event_type: "seeker_training_provider_created",
-          data: {
-            id: be_present,
-            user_id: user.id,
-            training_provider_id: training_provider.id
-          },
-          metadata: {},
-          occurred_at: be_present
-        )
+        allow(CreateEventJob).to receive(:perform_later)
+        expect(CreateEventJob)
+          .to receive(:perform_later)
+          .with(
+            aggregate_id: user.id,
+            event_type: "seeker_training_provider_created",
+            data: {
+              id: be_present,
+              user_id: user.id,
+              training_provider_id: training_provider.id
+            },
+            metadata: {},
+            occurred_at: be_present
+          )
 
         subject
       end
@@ -381,22 +386,23 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(Resque).to receive(:enqueue)
-        expect(Resque).to receive(:enqueue).with(
-          CreateEventJob,
-          aggregate_id: user.id,
-          event_type: "personal_experience_created",
-          data: {
-            id: be_present,
-            activity: "Activity",
-            start_date: "01/01/2000",
-            end_date: "01/01/2001",
-            description: "Learning",
-            profile_id: be_present # TODO: Come up with a way to check the profile id as well
-          },
-          metadata: {},
-          occurred_at: be_present
-        )
+        allow(CreateEventJob).to receive(:perform_later)
+        expect(CreateEventJob)
+          .to receive(:perform_later)
+          .with(
+            aggregate_id: user.id,
+            event_type: "personal_experience_created",
+            data: {
+              id: be_present,
+              activity: "Activity",
+              start_date: "01/01/2000",
+              end_date: "01/01/2001",
+              description: "Learning",
+              profile_id: be_present # TODO: Come up with a way to check the profile id as well
+            },
+            metadata: {},
+            occurred_at: be_present
+          )
 
         subject
       end
@@ -523,17 +529,18 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
-          allow(Resque).to receive(:enqueue)
-          expect(Resque).to receive(:enqueue).with(
-            CreateEventJob,
-            aggregate_id: user.id,
-            event_type: Event::EventTypes::ONBOARDING_COMPLETED,
-            data: {
-              responses:
-            },
-            metadata: {},
-            occurred_at: be_present
-          )
+          allow(CreateEventJob).to receive(:perform_later)
+          expect(CreateEventJob)
+            .to receive(:perform_later)
+            .with(
+              aggregate_id: user.id,
+              event_type: Event::EventTypes::ONBOARDING_COMPLETED,
+              data: {
+                responses:
+              },
+              metadata: {},
+              occurred_at: be_present
+            )
 
           subject
         end
@@ -624,21 +631,22 @@ RSpec.describe Onboarding do
       end
 
       it "does not duplicate job calls" do
-        allow(Resque).to receive(:enqueue)
-        expect(Resque).to receive(:enqueue).with(
-          CreateEventJob,
-          aggregate_id: user.id,
-          event_type: Event::EventTypes::USER_UPDATED,
-          data: {
-            email: user.email,
-            first_name: "John",
-            last_name: "Doe",
-            phone_number: "1234567890",
-            date_of_birth: Date.new(2000, 1, 1)
-          },
-          metadata: {},
-          occurred_at: be_present
-        ).once
+        allow(CreateEventJob).to receive(:perform_later)
+        expect(CreateEventJob)
+          .to receive(:perform_later)
+          .with(
+            aggregate_id: user.id,
+            event_type: Event::EventTypes::USER_UPDATED,
+            data: {
+              email: user.email,
+              first_name: "John",
+              last_name: "Doe",
+              phone_number: "1234567890",
+              date_of_birth: Date.new(2000, 1, 1)
+            },
+            metadata: {},
+            occurred_at: be_present
+          ).once
 
         subject.update(responses: responses1)
         subject.update(responses: responses2)

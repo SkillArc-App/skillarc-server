@@ -20,8 +20,7 @@ RSpec.describe ProfileService do
     end
 
     it "publishes a profile updated event" do
-      expect(Resque).to receive(:enqueue).with(
-        CreateEventJob,
+      expect(CreateEventJob).to receive(:perform_later).with(
         event_type: Event::EventTypes::PROFILE_UPDATED,
         aggregate_id: profile.user.id,
         data: {
@@ -38,8 +37,7 @@ RSpec.describe ProfileService do
 
     context "when met_career_coach does not change" do
       it "does not publish a met career coach event" do
-        expect(Resque).not_to receive(:enqueue).with(
-          CreateEventJob,
+        expect(CreateEventJob).not_to receive(:perform_later).with(
           event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
           aggregate_id: profile.user.id,
           data: {
@@ -57,9 +55,8 @@ RSpec.describe ProfileService do
       let(:met_career_coach) { !profile.met_career_coach }
 
       it "creates an event" do
-        allow(Resque).to receive(:enqueue)
-        expect(Resque).to receive(:enqueue).with(
-          CreateEventJob,
+        allow(CreateEventJob).to receive(:perform_later)
+        expect(CreateEventJob).to receive(:perform_later).with(
           event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
           aggregate_id: profile.user.id,
           data: {

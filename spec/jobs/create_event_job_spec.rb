@@ -8,7 +8,7 @@ RSpec.describe CreateEventJob do
   it "creates an event" do
     occurred_at = Date.new(2020, 1, 1)
 
-    CreateEventJob.perform(
+    CreateEventJob.new.perform(
       aggregate_id: "123",
       event_type: "user_created",
       data: {},
@@ -32,7 +32,7 @@ RSpec.describe CreateEventJob do
       event: instance_of(Event)
     )
 
-    CreateEventJob.perform(
+    CreateEventJob.new.perform(
       aggregate_id: "123",
       event_type: "user_created",
       data: {},

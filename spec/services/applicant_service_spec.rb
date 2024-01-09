@@ -19,8 +19,7 @@ RSpec.describe ApplicantService do
     end
 
     it "creates an event" do
-      expect(Resque).to receive(:enqueue).with(
-        CreateEventJob,
+      expect(CreateEventJob).to receive(:perform_later).with(
         event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
         aggregate_id: applicant.job.id,
         data: {

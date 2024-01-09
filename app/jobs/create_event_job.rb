@@ -1,7 +1,7 @@
-class CreateEventJob
-  @queue = :default
+class CreateEventJob < ApplicationJob
+  queue_as :default
 
-  def self.perform(event)
+  def perform(event)
     e = Event.create!(**event)
 
     Pubsub.publish(event: e)

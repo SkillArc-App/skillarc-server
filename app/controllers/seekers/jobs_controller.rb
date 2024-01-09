@@ -5,8 +5,7 @@ module Seekers
     before_action :authorize
 
     def save
-      Resque.enqueue(
-        CreateEventJob,
+      CreateEventJob.perform_later(
         event_type: Event::EventTypes::JOB_SAVED,
         aggregate_id: current_user.id,
         data: {
@@ -21,8 +20,7 @@ module Seekers
     end
 
     def unsave
-      Resque.enqueue(
-        CreateEventJob,
+      CreateEventJob.perform_later(
         event_type: Event::EventTypes::JOB_UNSAVED,
         aggregate_id: current_user.id,
         data: {

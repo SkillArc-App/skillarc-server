@@ -1,17 +1,17 @@
 class StreamListener
   def initialize(consumer, listener_name)
-    raise NotImplementedError
+    # raise NotImplementedError
   end
 
   def call(event)
-    raise NotImplementedError
+    # raise NotImplementedError
   end
 
   def play
-    raise NotImplementedError
+    # raise NotImplementedError
   end
 
   def replay
-    raise NotImplementedError
+    # raise NotImplementedError
   end
 end

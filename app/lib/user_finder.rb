@@ -17,8 +17,7 @@ class UserFinder
       sub:
     )
 
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       aggregate_id: new_user.id,
       event_type: "user_created",
       data: {

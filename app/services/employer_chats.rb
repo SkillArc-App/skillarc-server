@@ -46,8 +46,7 @@ class EmployerChats
 
     applicant_chat.messages.create!(user: recruiter.user, message:)
 
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::CHAT_MESSAGE_SENT,
       aggregate_id: applicant_chat.applicant.job.id,
       data: {
@@ -66,8 +65,7 @@ class EmployerChats
   def create(applicant_id:)
     applicant_chat = ApplicantChat.find_or_create_by!(applicant_id:)
 
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::CHAT_CREATED,
       aggregate_id: applicant_chat.applicant.job.id,
       data: {

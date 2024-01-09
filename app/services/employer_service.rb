@@ -2,8 +2,7 @@ class EmployerService
   def create(params)
     e = Employer.create!(**params, id: SecureRandom.uuid)
 
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::EMPLOYER_CREATED,
       aggregate_id: e.id,
       data: {
@@ -24,8 +23,7 @@ class EmployerService
 
     e.update!(**params)
 
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::EMPLOYER_UPDATED,
       aggregate_id: e.id,
       data: {

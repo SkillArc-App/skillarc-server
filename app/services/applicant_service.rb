@@ -17,8 +17,7 @@ class ApplicantService
       )
     end
 
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
       aggregate_id: applicant.job.id,
       data: {

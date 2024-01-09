@@ -8,8 +8,7 @@ class SeekerChats
 
     applicant_chat.messages.create!(user:, message:)
 
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::CHAT_MESSAGE_SENT,
       aggregate_id: applicant_chat.applicant.job.id,
       data: {

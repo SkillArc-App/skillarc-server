@@ -1,7 +1,8 @@
-class ElapseDayJob
-  def self.perform(now = Time.now)
-    Resque.enqueue(
-      CreateEventJob,
+class ElapseDayJob < ApplicationJob
+  queue_as :default
+
+  def perform(now = Time.now)
+    CreateEventJob.perform_later(
       aggregate_id: "day",
       event_type: Event::EventTypes::DAY_ELAPSED,
       data: {},

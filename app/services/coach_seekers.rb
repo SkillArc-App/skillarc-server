@@ -29,8 +29,7 @@ class CoachSeekers
   end
 
   def self.add_note(id, note, now: Time.now)
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::NOTE_ADDED,
       aggregate_id: id,
       data: {
@@ -42,8 +41,7 @@ class CoachSeekers
   end
 
   def self.assign_coach(id, coach_id, coach_email, now: Time.now)
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::COACH_ASSIGNED,
       aggregate_id: id,
       data: {
@@ -56,8 +54,7 @@ class CoachSeekers
   end
 
   def self.update_skill_level(id, skill_level, now: Time.now)
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::SKILL_LEVEL_UPDATED,
       aggregate_id: id,
       data: {

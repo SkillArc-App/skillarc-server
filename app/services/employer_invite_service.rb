@@ -4,8 +4,7 @@ class EmployerInviteService
   end
 
   def accept
-    Resque.enqueue(
-      CreateEventJob,
+    CreateEventJob.perform_later(
       event_type: Event::EventTypes::EMPLOYER_INVITE_ACCEPTED,
       aggregate_id: employer_invite.employer_id,
       data: {

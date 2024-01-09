@@ -35,29 +35,6 @@ RSpec.describe "Seekers", type: :request do
     end
   end
 
-  describe "POST /:seeker_id/notes" do
-    subject { post seeker_notes_path(seeker_id), params:, headers: }
-
-    let(:seeker_id) { create(:profile).id }
-    let(:params) do
-      {
-        note: "This is a note"
-      }
-    end
-
-    it_behaves_like "coach secured endpoint"
-
-    context "authenticated" do
-      include_context "coach authenticated"
-
-      it "calls CoachSeekers.create_note" do
-        expect(CoachSeekers).to receive(:add_note).with(seeker_id, params[:note])
-
-        subject
-      end
-    end
-  end
-
   describe "POST /:seeker_id/skill-levels" do
     subject { post seeker_skill_levels_path(seeker_id), params:, headers: }
 

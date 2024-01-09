@@ -117,16 +117,7 @@ class CoachSeekers
   def self.handle_note_added(event)
     csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
 
-    csc.last_contacted_at = event.occurred_at
-
-    csc.notes << {
-      note: event.data["note"],
-      date: event.occurred_at
-    }
-    csc.save!
-
-    return unless event.data["note_id"].present?
-
+    csc.update!(last_contacted_at: [csc.last_contacted_at, event.occurred_at].compact.max)
     csc.seeker_notes << SeekerNote.create!(
       coach_seeker_context: csc,
       note_taken_at: event.occurred_at,
@@ -190,7 +181,13 @@ class CoachSeekers
       assignedCoach: csc.assigned_coach || 'none',
       barriers: csc.barriers,
       stage: 'profile_created',
-      notes: csc.notes
+      notes: csc.seeker_notes.map do |note|
+        {
+          note: note.note,
+          id: note.note_id,
+          date: note.note_taken_at
+        }
+      end
     }
   end
 end

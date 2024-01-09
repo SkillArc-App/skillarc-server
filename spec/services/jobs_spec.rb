@@ -52,8 +52,7 @@ RSpec.describe Jobs do
     end
 
     it "publishes an event" do
-      expect(Resque).to receive(:enqueue).with(
-        CreateEventJob,
+      expect(CreateEventJob).to receive(:perform_later).with(
         event_type: Event::EventTypes::JOB_CREATED,
         aggregate_id: be_present,
         data: {

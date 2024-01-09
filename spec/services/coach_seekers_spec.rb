@@ -110,8 +110,7 @@ RSpec.describe CoachSeekers do
     let(:now) { Time.new(2020, 1, 1) }
 
     it "creates an event" do
-      expect(Resque).to receive(:enqueue).with(
-        CreateEventJob,
+      expect(CreateEventJob).to receive(:perform_later).with(
         event_type: Event::EventTypes::NOTE_ADDED,
         aggregate_id: profile_id,
         data: {
@@ -130,8 +129,7 @@ RSpec.describe CoachSeekers do
     let(:now) { Time.new(2020, 1, 1) }
 
     it "creates an event" do
-      expect(Resque).to receive(:enqueue).with(
-        CreateEventJob,
+      expect(CreateEventJob).to receive(:perform_later).with(
         event_type: Event::EventTypes::COACH_ASSIGNED,
         aggregate_id: profile_id,
         data: {
@@ -152,8 +150,7 @@ RSpec.describe CoachSeekers do
     let(:now) { Time.new(2020, 1, 1) }
 
     it "creates an event" do
-      expect(Resque).to receive(:enqueue).with(
-        CreateEventJob,
+      expect(CreateEventJob).to receive(:perform_later).with(
         event_type: Event::EventTypes::SKILL_LEVEL_UPDATED,
         aggregate_id: profile_id,
         data: {

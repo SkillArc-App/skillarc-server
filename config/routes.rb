@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   scope module: 'coaches', path: 'coaches' do
     resources :seekers do
-      resources :notes, only: [:create]
+      resources :notes, only: [:create, :update]
       post 'skill-levels' => 'seekers#update_skill_level'
       post 'assign_coach' => 'seekers#assign'
     end

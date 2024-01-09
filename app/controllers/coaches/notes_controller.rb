@@ -15,5 +15,15 @@ module Coaches
 
       render json: {}
     end
+
+    def update
+      CoachSeekers.modify_note(
+        params[:seeker_id],
+        params[:id],
+        params[:note]
+      )
+
+      head :accepted
+    end
   end
 end

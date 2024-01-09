@@ -324,6 +324,7 @@ GEM
     tzinfo-data (1.2023.3)
       tzinfo (>= 1.0.0)
     unicode-display_width (2.5.0)
+    value_semantics (3.6.1)
     version_gem (1.1.3)
     web-console (4.2.1)
       actionview (>= 6.0.0)
@@ -375,6 +376,7 @@ DEPENDENCIES
   timecop
   turbo-rails
   tzinfo-data
+  value_semantics
   web-console
 
 RUBY VERSION

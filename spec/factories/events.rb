@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :event do
     id { SecureRandom.uuid }
     aggregate_id { SecureRandom.uuid }
+    chat_message_sent
 
     trait :chat_message_sent do
       event_type { Event::EventTypes::CHAT_MESSAGE_SENT }

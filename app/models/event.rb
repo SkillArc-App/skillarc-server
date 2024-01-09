@@ -48,5 +48,29 @@ class Event < ApplicationRecord
     ]
   end
 
+  def message
+    EventMessage.new(
+      id:,
+      aggregate_id:,
+      event_type:,
+      version:,
+      data: data.deep_symbolize_keys,
+      metadata: data.deep_symbolize_keys,
+      occurred_at:
+    )
+  end
+
+  def self.from_message(message)
+    create!(
+      id: message.id,
+      aggregate_id: message.aggregate_id,
+      event_type: message.event_type,
+      data: message.data,
+      metadata: message.metadata,
+      version: message.version,
+      occurred_at: message.occurred_at
+    )
+  end
+
   validates :event_type, presence: true, inclusion: { in: EventTypes::ALL }
 end

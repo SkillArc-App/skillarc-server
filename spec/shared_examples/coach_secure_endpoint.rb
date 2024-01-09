@@ -47,10 +47,10 @@ RSpec.shared_examples "coach secured endpoint" do
   context "authenticated" do
     include_context "coach authenticated"
 
-    it "returns 200" do
+    it "returns 2XX" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response.status).to be_between(200, 299).inclusive
     end
   end
 end

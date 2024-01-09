@@ -25,5 +25,14 @@ module Coaches
 
       head :accepted
     end
+
+    def destroy
+      CoachSeekers.delete_note(
+        params[:seeker_id],
+        params[:id]
+      )
+
+      head :accepted
+    end
   end
 end

@@ -74,4 +74,26 @@ RSpec.describe "Notes", type: :request do
       end
     end
   end
+
+  describe "DELETE /:seeker_id/notes/:note_id" do
+    subject { delete seeker_note_path(seeker_id, note_id), headers: }
+
+    let(:seeker_id) { SecureRandom.uuid }
+    let(:note_id) { SecureRandom.uuid }
+
+    it_behaves_like "coach secured endpoint"
+
+    context "authenticated" do
+      include_context "coach authenticated"
+
+      it "calls CoachSeekers.delete_note" do
+        expect(CoachSeekers)
+          .to receive(:delete_note)
+          .with(seeker_id, note_id)
+          .and_call_original
+
+        subject
+      end
+    end
+  end
 end

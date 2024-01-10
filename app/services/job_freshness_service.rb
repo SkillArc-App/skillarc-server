@@ -16,6 +16,10 @@ class JobFreshnessService < EventConsumer
     Event::EventTypes::JOB_UPDATED
   ]
 
+  def self.call(event:)
+    handle_event(event)
+  end
+
   def self.handle_event(event, with_side_effects: false, now: Time.now)
     if JOB_EVENTS.include?(event.event_type)
       job_id = event.aggregate_id

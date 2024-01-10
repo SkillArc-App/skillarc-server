@@ -1,4 +1,8 @@
 class CoachesService
+  def self.call(event:)
+    handle_event(event)
+  end
+
   def self.handle_event(event, with_side_effects: false, now: Time.now)
     case event.event_type
     when Event::EventTypes::ROLE_ADDED

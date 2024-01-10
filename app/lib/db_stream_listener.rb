@@ -1,5 +1,5 @@
 class DbStreamListener < StreamListener
-  def initialize(consumer, listener_name)
+  def initialize(consumer, listener_name) # rubocop:disable Lint/MissingSuper
     @consumer = consumer
     @listener_name = listener_name
 

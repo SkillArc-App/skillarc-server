@@ -184,7 +184,7 @@ class CoachSeekers
       notes: csc.seeker_notes.map do |note|
         {
           note: note.note,
-          id: note.note_id,
+          noteId: note.note_id,
           date: note.note_taken_at
         }
       end

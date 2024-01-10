@@ -63,7 +63,7 @@ RSpec.describe CoachSeekers do
           {
             note: "This note was updated",
             date: Time.utc(2020, 1, 1),
-            id: note_id2
+            noteId: note_id2
           }
         ],
         stage: 'profile_created'
@@ -108,7 +108,7 @@ RSpec.describe CoachSeekers do
           {
             note: "This note was updated",
             date: Time.utc(2020, 1, 1),
-            id: note_id2
+            noteId: note_id2
           }
         ],
         stage: 'profile_created'

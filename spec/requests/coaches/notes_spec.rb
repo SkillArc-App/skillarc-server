@@ -20,14 +20,14 @@ RSpec.describe "Notes", type: :request do
         let(:params) do
           {
             note: "This is a note",
-            id: "123"
+            note_id: "123"
           }
         end
 
         it "calls CoachSeekers.create_note" do
           expect(CoachSeekers)
             .to receive(:add_note)
-            .with(seeker_id, params[:note], params[:id])
+            .with(seeker_id, params[:note], params[:note_id])
             .and_call_original
 
           subject

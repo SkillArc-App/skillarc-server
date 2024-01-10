@@ -10,7 +10,7 @@ module Coaches
       CoachSeekers.add_note(
         params[:seeker_id],
         params[:note],
-        params[:id] || SecureRandom.uuid
+        params[:note_id] || SecureRandom.uuid
       )
 
       render json: {}

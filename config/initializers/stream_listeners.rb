@@ -85,5 +85,22 @@ Rails.application.config.after_initialize do
         subscriber: coaches
       )
     end
+  else
+    Event::EventTypes::ALL.each do |event_type|
+      Pubsub.subscribe(
+        event: event_type,
+        subscriber: JobFreshnessService
+      )
+
+      Pubsub.subscribe(
+        event: event_type,
+        subscriber: CoachSeekers
+      )
+
+      Pubsub.subscribe(
+        event: event_type,
+        subscriber: CoachesService
+      )
+    end
   end
 end

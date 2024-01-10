@@ -31,6 +31,8 @@ class Event < ApplicationRecord
       JOB_SAVED = 'job_saved',
       JOB_UNSAVED = 'job_unsaved',
       NOTE_ADDED = 'note_added',
+      NOTE_MODIFIED = 'note_modified',
+      NOTE_DELETED = 'note_deleted',
       NOTIFICATION_CREATED = 'notification_created',
       NOTIFICATIONS_MARKED_READ = 'notifications_marked_read',
       ONBOARDING_COMPLETED = 'onboarding_completed',

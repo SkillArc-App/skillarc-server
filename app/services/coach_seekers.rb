@@ -5,6 +5,10 @@ class CoachSeekers
       handle_coach_assigned(event)
     when Event::EventTypes::NOTE_ADDED
       handle_note_added(event)
+    when Event::EventTypes::NOTE_DELETED
+      handle_note_deleted(event)
+    when Event::EventTypes::NOTE_MODIFIED
+      handle_note_modified(event)
     when Event::EventTypes::PROFILE_CREATED
       handle_profile_created(event)
     when Event::EventTypes::SKILL_LEVEL_UPDATED
@@ -28,11 +32,37 @@ class CoachSeekers
     serialize_coach_seeker_context(csc)
   end
 
-  def self.add_note(id, note, now: Time.now)
+  def self.add_note(id, note, note_id: SecureRandom.uuid, now: Time.now)
     CreateEventJob.perform_later(
       event_type: Event::EventTypes::NOTE_ADDED,
       aggregate_id: id,
       data: {
+        note:,
+        note_id:
+      },
+      metadata: {},
+      occurred_at: now
+    )
+  end
+
+  def self.delete_note(id, note_id, now: Time.now)
+    CreateEventJob.perform_later(
+      event_type: Event::EventTypes::NOTE_DELETED,
+      aggregate_id: id,
+      data: {
+        note_id:
+      },
+      metadata: {},
+      occurred_at: now
+    )
+  end
+
+  def self.modify_note(id, note_id, note, now: Time.now)
+    CreateEventJob.perform_later(
+      event_type: Event::EventTypes::NOTE_MODIFIED,
+      aggregate_id: id,
+      data: {
+        note_id:,
         note:
       },
       metadata: {},
@@ -72,6 +102,14 @@ class CoachSeekers
     csc.save!
   end
 
+  def self.handle_note_deleted(event)
+    SeekerNote.find_by!(note_id: event.data["note_id"]).destroy
+  end
+
+  def self.handle_note_modified(event)
+    SeekerNote.find_by!(note_id: event.data["note_id"]).update!(note: event.data["note"])
+  end
+
   def self.handle_note_added(event)
     csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
 
@@ -82,6 +120,15 @@ class CoachSeekers
       date: event.occurred_at
     }
     csc.save!
+
+    return unless event.data["note_id"].present?
+
+    csc.seeker_notes << SeekerNote.create!(
+      coach_seeker_context: csc,
+      note_taken_at: event.occurred_at,
+      note_id: event.data["note_id"],
+      note: event.data["note"]
+    )
   end
 
   def self.handle_user_created(event)

@@ -122,6 +122,20 @@ FactoryBot.define do
       occurred_at { Time.new(2020, 1, 1) }
     end
 
+    trait :note_deleted do
+      event_type { Event::EventTypes::NOTE_DELETED }
+      data { {} }
+      metadata { {} }
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
+    trait :note_modified do
+      event_type { Event::EventTypes::NOTE_MODIFIED }
+      data { {} }
+      metadata { {} }
+      occurred_at { Time.new(2020, 1, 1) }
+    end
+
     trait :profile_created do
       event_type { Event::EventTypes::PROFILE_CREATED }
       data { {} }

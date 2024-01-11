@@ -13,7 +13,6 @@
 #  skill_level       :string
 #  stage             :string
 #  barriers          :string           default([]), is an Array
-#  notes             :jsonb
 #  last_contacted_at :datetime
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null

@@ -9,7 +9,6 @@ RSpec.describe CoachSeekers do
   let(:other_user_created) { build(:event, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
   let(:profile_created) { build(:event, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
   let(:other_profile_created) { build(:event, :profile_created, aggregate_id: other_user_id, data: { id: other_profile_id}) }
-  let(:note_added) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note" }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:note_with_id_added1) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1 }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:note_with_id_added2) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2 }, occurred_at: Time.utc(2020, 1, 1)) }
   let(:note_deleted) { build(:event, :note_deleted, aggregate_id: profile_id, data: { note: "This is a note with an id", note_id: note_id1 }, occurred_at: Time.utc(2020, 1, 1)) }
@@ -37,7 +36,6 @@ RSpec.describe CoachSeekers do
     described_class.handle_event(other_user_created)
     described_class.handle_event(profile_created)
     described_class.handle_event(other_profile_created)
-    described_class.handle_event(note_added)
     described_class.handle_event(note_with_id_added1)
     described_class.handle_event(note_with_id_added2)
     described_class.handle_event(note_deleted)
@@ -58,23 +56,16 @@ RSpec.describe CoachSeekers do
         phoneNumber: "1234567890",
         skillLevel: 'advanced',
         lastActiveOn: profile_created.occurred_at,
-        lastContacted: note_added.occurred_at,
+        lastContacted: note_with_id_added1.occurred_at,
         assignedCoach: '123',
         barriers: [],
         notes: [
           {
-            note: "This is a note",
-            date: Time.utc(2020, 1, 1)
-          },
-          {
-            note: "This is a note with an id 1",
-            date: Time.utc(2020, 1, 1)
-          },
-          {
-            note: "This is a note with an id 2",
-            date: Time.utc(2020, 1, 1)
+            note: "This note was updated",
+            date: Time.utc(2020, 1, 1),
+            noteId: note_id2
           }
-        ].as_json,
+        ],
         stage: 'profile_created'
       }
       expected_other_profile = {
@@ -110,23 +101,16 @@ RSpec.describe CoachSeekers do
         phoneNumber: "1234567890",
         skillLevel: 'advanced',
         lastActiveOn: profile_created.occurred_at,
-        lastContacted: note_added.occurred_at,
+        lastContacted: note_with_id_added1.occurred_at,
         assignedCoach: '123',
         barriers: [],
         notes: [
           {
-            note: "This is a note",
-            date: Time.utc(2020, 1, 1)
-          },
-          {
-            note: "This is a note with an id 1",
-            date: Time.utc(2020, 1, 1)
-          },
-          {
-            note: "This is a note with an id 2",
-            date: Time.utc(2020, 1, 1)
+            note: "This note was updated",
+            date: Time.utc(2020, 1, 1),
+            noteId: note_id2
           }
-        ].as_json,
+        ],
         stage: 'profile_created'
       }
 
@@ -135,7 +119,7 @@ RSpec.describe CoachSeekers do
   end
 
   describe ".add_note" do
-    subject { described_class.add_note(profile_id, "This is a new note", note_id: note_id1, now:) }
+    subject { described_class.add_note(profile_id, "This is a new note", note_id1, now:) }
     let(:now) { Time.new(2020, 1, 1) }
 
     it "creates an event" do

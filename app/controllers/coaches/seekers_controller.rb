@@ -1,45 +1,38 @@
-class Coaches::SeekersController < ApplicationController
-  include Secured
-  include CoachAuth
+module Coaches
+  class SeekersController < ApplicationController
+    include Secured
+    include CoachAuth
 
-  before_action :authorize
-  before_action :coach_authorize
+    before_action :authorize
+    before_action :coach_authorize
 
-  def index
-    render json: CoachSeekers.all
-  end
+    def index
+      render json: CoachSeekers.all
+    end
 
-  def show
-    render json: CoachSeekers.find(params[:id])
-  end
+    def show
+      render json: CoachSeekers.find(params[:id])
+    end
 
-  def assign
-    coach = Coach.find_by(id: params[:coach_id])
+    def assign
+      coach = Coach.find_by(id: params[:coach_id])
 
-    CoachSeekers.assign_coach(
-      params[:seeker_id],
-      coach.id,
-      coach.email
-    )
+      CoachSeekers.assign_coach(
+        params[:seeker_id],
+        coach.id,
+        coach.email
+      )
 
-    render json: {}
-  end
+      render json: {}
+    end
 
-  def create_note
-    CoachSeekers.add_note(
-      params[:seeker_id],
-      params[:note]
-    )
+    def update_skill_level
+      CoachSeekers.update_skill_level(
+        params[:seeker_id],
+        params[:level]
+      )
 
-    render json: {}
-  end
-
-  def update_skill_level
-    CoachSeekers.update_skill_level(
-      params[:seeker_id],
-      params[:level]
-    )
-
-    render json: {}
+      render json: {}
+    end
   end
 end

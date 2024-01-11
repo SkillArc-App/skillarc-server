@@ -1,6 +1,6 @@
 class CoachSeekers
   def self.call(event:)
-    self.handle_event(event)
+    handle_event(event)
   end
 
   def self.handle_event(event, with_side_effects: false, now: Time.now)
@@ -25,7 +25,7 @@ class CoachSeekers
   end
 
   def self.all
-    CoachSeekerContext.where.not(profile_id: nil).where.not(email: nil).map do |csc|
+    CoachSeekerContext.includes(:seeker_notes).where.not(profile_id: nil).where.not(email: nil).map do |csc|
       serialize_coach_seeker_context(csc)
     end
   end

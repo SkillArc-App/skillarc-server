@@ -3,19 +3,23 @@
 # Table name: jobs
 #
 #  id                           :text             not null, primary key
-#  employer_id                  :text             not null
 #  benefits_description         :text             not null
-#  responsibilities_description :text
 #  employment_title             :text             not null
-#  location                     :text             not null
 #  employment_type              :enum             not null
 #  hide_job                     :boolean          default(FALSE), not null
+#  industry                     :text             is an Array
+#  location                     :text             not null
+#  requirements_description     :text
+#  responsibilities_description :text
 #  schedule                     :text
 #  work_days                    :text
-#  requirements_description     :text
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
-#  industry                     :text             is an Array
+#  employer_id                  :text             not null
+#
+# Foreign Keys
+#
+#  Job_employer_id_fkey  (employer_id => employers.id) ON DELETE => restrict ON UPDATE => cascade
 #
 class Job < ApplicationRecord
   belongs_to :employer

@@ -3,19 +3,25 @@
 # Table name: users
 #
 #  id                    :text             not null, primary key
-#  name                  :text
 #  email                 :text
 #  email_verified        :datetime
-#  image                 :text
 #  first_name            :text
+#  image                 :text
 #  last_name             :text
-#  zip_code              :text
+#  name                  :text
 #  phone_number          :text
-#  onboarding_session_id :text
+#  sub                   :string
+#  user_type             :enum             default("SEEKER"), not null
+#  zip_code              :text
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  user_type             :enum             default("SEEKER"), not null
-#  sub                   :string
+#  onboarding_session_id :text
+#
+# Indexes
+#
+#  User_email_key                  (email) UNIQUE
+#  User_onboarding_session_id_key  (onboarding_session_id) UNIQUE
+#  index_users_on_sub              (sub) UNIQUE
 #
 class User < ApplicationRecord
   has_one :recruiter

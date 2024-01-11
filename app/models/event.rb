@@ -3,14 +3,19 @@
 # Table name: events
 #
 #  id           :uuid             not null, primary key
-#  aggregate_id :string           not null
-#  event_type   :string           not null
 #  data         :jsonb            not null
+#  event_type   :string           not null
 #  metadata     :jsonb            not null
-#  version      :integer          default(0), not null
 #  occurred_at  :datetime         not null
+#  version      :integer          default(0), not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  aggregate_id :string           not null
+#
+# Indexes
+#
+#  index_events_on_aggregate_id_and_version  (aggregate_id,version)
+#  index_events_on_event_type                (event_type)
 #
 class Event < ApplicationRecord
   module EventTypes

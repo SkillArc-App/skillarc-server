@@ -3,13 +3,21 @@
 # Table name: profiles
 #
 #  id               :text             not null, primary key
-#  user_id          :text             not null
 #  bio              :text
 #  image            :text
+#  met_career_coach :boolean          default(FALSE)
 #  status           :text
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
-#  met_career_coach :boolean          default(FALSE)
+#  user_id          :text             not null
+#
+# Indexes
+#
+#  Profile_user_id_key  (user_id) UNIQUE
+#
+# Foreign Keys
+#
+#  Profile_user_id_fkey  (user_id => users.id) ON DELETE => restrict ON UPDATE => cascade
 #
 class Profile < ApplicationRecord
   belongs_to :user

@@ -5,22 +5,40 @@ class CoachSeekers
 
   def self.handle_event(event, with_side_effects: false, now: Time.now)
     case event.event_type
+
+      # Coach Originated
     when Event::EventTypes::COACH_ASSIGNED
       handle_coach_assigned(event)
+
     when Event::EventTypes::NOTE_ADDED
       handle_note_added(event)
+
     when Event::EventTypes::NOTE_DELETED
       handle_note_deleted(event)
+
     when Event::EventTypes::NOTE_MODIFIED
       handle_note_modified(event)
-    when Event::EventTypes::PROFILE_CREATED
-      handle_profile_created(event)
+
     when Event::EventTypes::SKILL_LEVEL_UPDATED
       handle_skill_level_updated(event)
+
+    # Seeker Originated
+    when Event::EventTypes::PROFILE_CREATED
+      handle_profile_created(event)
+
     when Event::EventTypes::USER_CREATED
       handle_user_created(event)
+
     when Event::EventTypes::USER_UPDATED
       handle_user_updated(event)
+
+    when Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
+      Event::EventTypes::JOB_SAVED,
+      Event::EventTypes::JOB_UNSAVED,
+      Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
+      Event::EventTypes::PROFILE_UPDATED,
+      Event::EventTypes::ONBOARDING_COMPLETED
+      handle_last_active_updated(event)
     end
   end
 
@@ -144,9 +162,9 @@ class CoachSeekers
     csc = CoachSeekerContext.find_by!(user_id: event.aggregate_id)
 
     csc.update!(
+      last_active_on: event.occurred_at,
       first_name: event.data["first_name"],
       last_name: event.data["last_name"],
-      last_active_on: event.occurred_at,
       phone_number: event.data["phone_number"]
     )
   end
@@ -165,6 +183,14 @@ class CoachSeekers
 
     csc.update!(
       skill_level: event.data["skill_level"]
+    )
+  end
+
+  def self.handle_last_active_updated(event)
+    csc = CoachSeekerContext.find_by!(user_id: event.aggregate_id)
+
+    csc.update!(
+      last_active_on: event.occurred_at
     )
   end
 

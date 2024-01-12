@@ -54,6 +54,7 @@ class JobFreshnessService < EventConsumer
   end
 
   def initialize(job_id, now: Time.now)
+    super()
     @job_id = job_id
     @now = now
   end
@@ -169,5 +170,5 @@ class JobFreshnessService < EventConsumer
     JobFreshnessEmployerJob.find_by!(employer_id:)
   end
 
-  attr_reader :employer_id, :job_events, :job_id, :now
+  attr_reader :employer_id, :job_id, :now
 end

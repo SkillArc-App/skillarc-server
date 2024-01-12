@@ -57,7 +57,7 @@ RSpec.describe SeekerChats do
     let!(:applicant_chat) { create(:applicant_chat, applicant:) }
 
     let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }
-    let!(:chat_message_2) { create(:chat_message, applicant_chat:, message: "This is a message from the employer", user: employer_user, created_at: chat_message.created_at + 1.minute) }
+    let!(:chat_message2) { create(:chat_message, applicant_chat:, message: "This is a message from the employer", user: employer_user, created_at: chat_message.created_at + 1.minute) }
 
     let(:employer_user) { create(:user, first_name: "John", last_name: "Doe") }
 
@@ -68,7 +68,7 @@ RSpec.describe SeekerChats do
         {
           id: applicant_chat.applicant.id,
           name: "Acme, Inc - Welder",
-          updatedAt: chat_message_2.created_at,
+          updatedAt: chat_message2.created_at,
           messages: [
             {
               id: chat_message.id,
@@ -78,7 +78,7 @@ RSpec.describe SeekerChats do
               sender: "Jake Not-Onboard"
             },
             {
-              id: chat_message_2.id,
+              id: chat_message2.id,
               text: "This is a message from the employer",
               isUser: false,
               isRead: false,
@@ -95,7 +95,7 @@ RSpec.describe SeekerChats do
 
     let!(:applicant_chat) { create(:applicant_chat, applicant:) }
     let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }
-    let!(:chat_message_2) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant") }
+    let!(:chat_message2) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant") }
 
     let!(:applicant) { create(:applicant, profile:) }
     let(:profile) { create(:profile, user:) }
@@ -110,7 +110,7 @@ RSpec.describe SeekerChats do
         ),
         have_attributes(
           user:,
-          chat_message: chat_message_2
+          chat_message: chat_message2
         )
       )
     end

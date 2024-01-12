@@ -21,9 +21,9 @@ class ApplicationAnalytics
       end
     end.flatten
 
-    times.group_by { |time| time[:status] }.map do |status, times|
-      total_days = times.map { |time| time[:time][:days] }.sum / times.count.to_f
-      total_hours = times.map { |time| time[:time][:hours] }.sum / times.count.to_f
+    times.group_by { |time| time[:status] }.map do |status, times_for_status|
+      total_days = times_for_status.map { |time| time[:time][:days] }.sum / times_for_status.count.to_f
+      total_hours = times_for_status.map { |time| time[:time][:hours] }.sum / times_for_status.count.to_f
 
       days = total_days.floor
       hours = (total_days * 24 + total_hours) % 24

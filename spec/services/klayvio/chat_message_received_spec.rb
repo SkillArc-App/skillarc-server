@@ -12,8 +12,7 @@ RSpec.describe Klayvio::ChatMessageReceived do
         data: {
           applicant_id: applicant.id,
           profile_id: applicant.profile.id,
-          from_user_id: sender_id,
-          profile_id: applicant.profile.id
+          from_user_id: sender_id
         },
         occurred_at:
       )

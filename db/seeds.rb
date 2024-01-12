@@ -603,7 +603,6 @@ trained_seeker_with_reference = Profile.create!(
   status: "I'm a high school student.",
   user: User.new(
     id: SecureRandom.uuid,
-    name: 'Tom Hanks',
     first_name: 'Tom',
     last_name: 'Hanks',
     email: 'trained-seeker-with-reference@blocktrainapp.com',
@@ -617,7 +616,6 @@ trained_seeker = Profile.create!(
   status: "I'm a high school student.",
   user: User.new(
     id: 'cll2k67ub0000ao24lvmbzcqs',
-    name: 'Tim Allen',
     first_name: 'Tim',
     last_name: 'Allen',
     email: 'trained-seeker@blocktrainapp.com',
@@ -631,7 +629,6 @@ seeker_with_profile = Profile.create!(
   status: "I'm an adult with some work experience. Looking to switch to trades.",
   user: User.new(
     id: 'cll0yrt890002aor2v4pwo4ia',
-    name: 'Rita Wilson',
     first_name: 'Rita',
     last_name: 'Wilson',
     email: 'user-with-profile@blocktrainapp.com',
@@ -661,7 +658,6 @@ cul = TrainingProvider.create!(
 
 trainer = User.create!(
   id: 'cll0yrt8e0004aor228lvcp8w',
-  name: 'Meghan Trainer',
   first_name: 'Meghan',
   last_name: 'Trainer',
   email: 'trainer@blocktrainapp.com',
@@ -677,7 +673,6 @@ TrainingProviderProfile.create!(
 
 trainer_with_reference = User.create!(
   id: 'cll1766cz0000aons61fkc558',
-  name: 'Bill Traynor',
   first_name: 'Bill',
   last_name: 'Traynor',
   email: 'trainer-with-reference@blocktrainapp.com',
@@ -687,7 +682,6 @@ trainer_with_reference = User.create!(
 
 User.create!(
   id: 'clem7u5uc0007mi0rne4h3be0',
-  name: 'Jake Not-Onboard',
   first_name: 'Jake',
   last_name: 'Not-Onboard',
   email: 'user-without-profile@blocktrainapp.com',

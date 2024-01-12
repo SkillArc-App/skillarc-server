@@ -16,6 +16,8 @@ Metrics/AbcSize:
 # AllowedMethods: refine
 Metrics/BlockLength:
   Max: 459
+  Exclude:
+    - "db/schema.rb"
 
 # Offense count: 2
 # Configuration parameters: CountComments, CountAsOne.

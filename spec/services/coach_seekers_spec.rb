@@ -8,14 +8,16 @@ RSpec.describe CoachSeekers do
   let(:user_updated) { build(:event, :user_updated, aggregate_id: user_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890" }) }
   let(:other_user_created) { build(:event, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
   let(:profile_created) { build(:event, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
-  let(:other_profile_created) { build(:event, :profile_created, aggregate_id: other_user_id, data: { id: other_profile_id}) }
-  let(:note_with_id_added1) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1 }, occurred_at: Time.utc(2020, 1, 1)) }
-  let(:note_with_id_added2) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2 }, occurred_at: Time.utc(2020, 1, 1)) }
-  let(:note_deleted) { build(:event, :note_deleted, aggregate_id: profile_id, data: { note: "This is a note with an id", note_id: note_id1 }, occurred_at: Time.utc(2020, 1, 1)) }
-  let(:note_modified) { build(:event, :note_modified, aggregate_id: profile_id, data: { note: updated_note, note_id: note_id2 }, occurred_at: Time.utc(2020, 1, 1)) }
-  let(:skill_level_updated) { build(:event, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: Time.utc(2020, 1, 1)) }
-  let(:coach_assigned) { build(:event, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: Time.utc(2020, 1, 1)) }
+  let(:other_profile_created) { build(:event, :profile_created, aggregate_id: other_user_id, data: { id: other_profile_id }) }
+  let(:note_with_id_added1) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1 }, occurred_at: time1) }
+  let(:note_with_id_added2) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2 }, occurred_at: time1) }
+  let(:note_deleted) { build(:event, :note_deleted, aggregate_id: profile_id, data: { note: "This is a note with an id", note_id: note_id1 }, occurred_at: time1) }
+  let(:note_modified) { build(:event, :note_modified, aggregate_id: profile_id, data: { note: updated_note, note_id: note_id2 }, occurred_at: time1) }
+  let(:skill_level_updated) { build(:event, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: time1) }
+  let(:coach_assigned) { build(:event, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: time1) }
 
+  let(:time1) { Time.utc(2020, 1, 1) }
+  let(:time2) { Time.utc(2022, 1, 1) }
   let(:user_without_email_id) { "4f878ed9-5cb9-429b-ab22-969b46305ea2" }
   let(:profile_without_email_id) { "b09195f7-a15e-461f-bec2-1e4744122fdf" }
 
@@ -113,6 +115,25 @@ RSpec.describe CoachSeekers do
       }
 
       expect(subject).to eq(expected_profile)
+    end
+
+    context "when another events occur which update last active on" do
+      [
+        Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
+        Event::EventTypes::JOB_SAVED,
+        Event::EventTypes::JOB_UNSAVED,
+        Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
+        Event::EventTypes::PROFILE_UPDATED,
+        Event::EventTypes::ONBOARDING_COMPLETED
+      ].each do |event_type|
+        context "when a #{event_type} occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            described_class.handle_event(build(:event, event_type:, aggregate_id: user_id, occurred_at: time2))
+
+            expect(subject[:lastActiveOn]).to eq(time2)
+          end
+        end
+      end
     end
   end
 

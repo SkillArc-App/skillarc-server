@@ -83,8 +83,6 @@ RSpec.describe CoachSeekers do
         stage: 'profile_created'
       }
 
-      # Note some changes once this is cut over post backfill these events
-      # We'll see note 1 removed and note 2 updated
       expect(subject).to contain_exactly(expected_profile, expected_other_profile)
     end
   end

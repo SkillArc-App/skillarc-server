@@ -17,7 +17,7 @@ RSpec.describe EmployerChats do
 
     let!(:applicant_chat) { create(:applicant_chat, applicant:) }
     let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }
-    let!(:chat_message_2) { create(:chat_message, applicant_chat:, message: "This is a message from the recruiter", user: recruiter.user, created_at: chat_message.created_at + 1.minute) }
+    let!(:chat_message2) { create(:chat_message, applicant_chat:, message: "This is a message from the recruiter", user: recruiter.user, created_at: chat_message.created_at + 1.minute) }
 
     let!(:read_receipt) { create(:read_receipt, chat_message:, user: recruiter_user) }
 
@@ -26,7 +26,7 @@ RSpec.describe EmployerChats do
         {
           id: applicant_chat.applicant.id,
           name: "Hannah Block - Welder",
-          updatedAt: chat_message_2.created_at,
+          updatedAt: chat_message2.created_at,
           messages: [
             {
               id: chat_message.id,
@@ -36,7 +36,7 @@ RSpec.describe EmployerChats do
               sender: "Hannah Block"
             },
             {
-              id: chat_message_2.id,
+              id: chat_message2.id,
               text: "This is a message from the recruiter",
               isUser: true,
               isRead: false,
@@ -53,7 +53,7 @@ RSpec.describe EmployerChats do
 
     let!(:applicant_chat) { create(:applicant_chat, applicant:) }
     let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }
-    let!(:chat_message_2) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant") }
+    let!(:chat_message2) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant") }
 
     let!(:applicant) { create(:applicant, profile:) }
 

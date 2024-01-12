@@ -1,6 +1,6 @@
 module Klayvio
   class Klayvio
-    def application_status_updated(application_id:, email:, event_id:, employment_title:, employer_name:, occurred_at:, status:)
+    def application_status_updated(application_id:, email:, event_id:, employment_title:, employer_name:, occurred_at:, status:) # rubocop:disable Metrics/ParameterLists
       data = event_data(
         event_type: 'Application Status Updated',
         email:,
@@ -19,7 +19,7 @@ module Klayvio
       post(url, data)
     end
 
-    def chat_message_received(email:, event_id:, occurred_at:, applicant_id:, employment_title:, employer_name:)
+    def chat_message_received(email:, event_id:, occurred_at:, applicant_id:, employment_title:, employer_name:) # rubocop:disable Metrics/ParameterLists
       data = event_data(
         event_type: 'Chat Message Received',
         email:,
@@ -144,7 +144,7 @@ module Klayvio
 
     attr_reader :base_url
 
-    def event_data(event_type:, email:, time:, event_id:, event_properties: {}, profile_properties: {}, profile_attributes: {})
+    def event_data(event_type:, email:, time:, event_id:, event_properties: {}, profile_properties: {}, profile_attributes: {}) # rubocop:disable Metrics/ParameterLists
       {
         "data": {
           "type": "event",

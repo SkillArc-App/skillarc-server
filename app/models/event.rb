@@ -50,7 +50,7 @@ class Event < ApplicationRecord
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted'.freeze,
       USER_CREATED = 'user_created'.freeze,
       USER_UPDATED = 'user_updated'.freeze
-  ].freeze
+    ].freeze
   end
 
   def message

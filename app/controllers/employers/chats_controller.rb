@@ -1,47 +1,49 @@
-class Employers::ChatsController < ApplicationController
-  include Secured
-  include EmployerAuth
+module Employers
+  class ChatsController < ApplicationController
+    include Secured
+    include EmployerAuth
 
-  before_action :authorize
-  before_action :employer_authorize
-  before_action :set_r
+    before_action :authorize
+    before_action :employer_authorize
+    before_action :set_r
 
-  def index
-    render json: EmployerChats.new(r).get
-  end
+    def index
+      render json: EmployerChats.new(r).get
+    end
 
-  def mark_read
-    EmployerChats.new(r).mark_read(
-      applicant_id: params[:applicant_id]
-    )
+    def mark_read
+      EmployerChats.new(r).mark_read(
+        applicant_id: params[:applicant_id]
+      )
 
-    render json: { success: true }
-  end
+      render json: { success: true }
+    end
 
-  def send_message
-    EmployerChats.new(r).send_message(
-      applicant_id: params[:applicant_id],
-      message: params[:message]
-    )
+    def send_message
+      EmployerChats.new(r).send_message(
+        applicant_id: params[:applicant_id],
+        message: params[:message]
+      )
 
-    render json: { message: "Message sent" }
-  end
+      render json: { message: "Message sent" }
+    end
 
-  def create
-    EmployerChats.new(r).create(applicant_id: params[:applicant_id])
+    def create
+      EmployerChats.new(r).create(applicant_id: params[:applicant_id])
 
-    render json: { message: "Chat created" }
-  end
+      render json: { message: "Chat created" }
+    end
 
-  private
+    private
 
-  attr_reader :r
+    attr_reader :r
 
-  def set_r
-    @r = if current_user.employer_admin?
-           EmployerChats::Recruiter.new(current_user, Employer.all.pluck(:id))
-         else
-           EmployerChats::Recruiter.new(recruiter.user, recruiter.employer_id)
-         end
+    def set_r
+      @r = if current_user.employer_admin?
+             EmployerChats::Recruiter.new(current_user, Employer.all.pluck(:id))
+           else
+             EmployerChats::Recruiter.new(recruiter.user, recruiter.employer_id)
+           end
+    end
   end
 end

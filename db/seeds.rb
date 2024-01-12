@@ -17,7 +17,7 @@ Employer.create!(
    }]
 )
 
-mechanic = Job.create!(
+Job.create!(
   id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
   employer_id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
   benefits_description: 'Dental insurance Vision insurance Disability insurance 401(k)',
@@ -34,7 +34,7 @@ mechanic = Job.create!(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
 )
 
-journeyman = Job.create!(
+Job.create!(
   id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
   employer_id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
   benefits_description: 'Dental insurance Vision insurance Disability insurance 401(k)',
@@ -51,7 +51,7 @@ journeyman = Job.create!(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
 )
 
-contractor = Job.create!(
+Job.create!(
   id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
   employer_id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
   benefits_description: 'Dental insurance, Vision insurance, Disability insurance 401(k)',
@@ -597,7 +597,6 @@ LearnedSkill.create!([
                        },
                      ])
 
-
 trained_seeker_with_reference = Profile.create!(
   id: SecureRandom.uuid,
   bio: "I learn stuff",
@@ -686,7 +685,7 @@ trainer_with_reference = User.create!(
   sub: 'billsub'
 )
 
-user_without_profile = User.create!(
+User.create!(
   id: 'clem7u5uc0007mi0rne4h3be0',
   name: 'Jake Not-Onboard',
   first_name: 'Jake',
@@ -709,7 +708,7 @@ bill_trainer_profile = TrainingProviderProfile.create!(
   user_id: trainer_with_reference.id
 )
 
-cool_program = Program.create!(
+Program.create!(
   id: SecureRandom.uuid,
   name: 'Cool Program',
   description: 'You learn stuff',
@@ -799,13 +798,13 @@ coach = Role.create!(id: SecureRandom.uuid, name: Role::Types::COACH)
 UserRole.create!(
   id: SecureRandom.uuid,
   role_id: coach.id,
-  user_id: coach_user.id,
+  user_id: coach_user.id
 )
 
 coach = Coach.create!(
   user_id: coach_user.id,
-  email: coach_user.email,
-) 
+  email: coach_user.email
+)
 
 CoachSeekerContext.create!(
   profile_id: seeker_with_profile.id,

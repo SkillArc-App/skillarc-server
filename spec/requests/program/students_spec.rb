@@ -15,7 +15,7 @@ RSpec.describe "Program::Students", type: :request do
     let!(:training_provider) { create(:training_provider) }
     let!(:program) { create(:program, training_provider:) }
     let!(:training_provider_profile) do
-      tpp = TrainingProviderProfile.create!(
+      TrainingProviderProfile.create!(
         id: SecureRandom.uuid,
         user:,
         training_provider:

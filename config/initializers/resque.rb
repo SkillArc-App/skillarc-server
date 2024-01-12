@@ -53,5 +53,5 @@ class BasicJsonFormatter
 end
 
 Resque.logger.level = Logger::INFO
-Resque.logger = Logger.new(STDOUT)
+Resque.logger = Logger.new($stdout)
 Resque.logger.formatter = BasicJsonFormatter.new

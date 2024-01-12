@@ -1,9 +1,9 @@
-class CoachSeekers
+class CoachSeekers # rubocop:disable Metrics/ClassLength
   def self.call(event:)
     handle_event(event)
   end
 
-  def self.handle_event(event, with_side_effects: false, now: Time.now)
+  def self.handle_event(event, with_side_effects: false, now: Time.now) # rubocop:disable Lint/UnusedMethodArgument
     case event.event_type
 
       # Coach Originated

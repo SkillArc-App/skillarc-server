@@ -55,7 +55,6 @@ gem "rack-cors"
 
 gem "redis"
 gem "resque"
-gem "rubocop", require: false
 gem 'scout_apm'
 gem "sentry-rails"
 gem "sentry-ruby"
@@ -73,6 +72,11 @@ group :development, :test do
   gem "pry"
   gem 'pry-byebug'
   gem "rspec-rails"
+
+  gem "rubocop"
+  gem 'rubocop-factory_bot'
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
 end
 
 group :development do

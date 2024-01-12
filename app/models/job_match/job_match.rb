@@ -49,7 +49,7 @@ module JobMatch
           workDays: job.work_days,
           requirementsDescription: job.requirements_description,
           percent_match: match_score(job),
-          saved: save_events[job.id]&.sort_by { |e| e.occurred_at }&.last&.event_type == Event::EventTypes::JOB_SAVED,
+          saved: save_events[job.id]&.sort_by(&:occurred_at)&.last&.event_type == Event::EventTypes::JOB_SAVED,
           applied: application.present?,
           applicationStatus: application_status
         }

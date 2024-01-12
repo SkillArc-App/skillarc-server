@@ -32,7 +32,7 @@ class Employers::JobsController < ApplicationController
           phoneNumber: a.profile.user.phone_number,
           profileLink: "/profiles/#{a.profile.id}",
           programs: [],
-          status: a.applicant_statuses.sort_by(&:created_at).last&.status
+          status: a.applicant_statuses.max_by(&:created_at)&.status
         }
       end
     end.flatten

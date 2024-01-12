@@ -6,7 +6,7 @@ RSpec.describe "References", type: :request do
 
     let(:reference) { create(:reference, author_profile: training_provider_profile) }
     let!(:training_provider_profile) do
-      tpp = TrainingProviderProfile.create!(
+      TrainingProviderProfile.create!(
         id: SecureRandom.uuid,
         user:,
         training_provider: create(:training_provider)

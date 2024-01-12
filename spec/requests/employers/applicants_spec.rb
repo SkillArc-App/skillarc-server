@@ -22,7 +22,7 @@ RSpec.describe "Employers::Applicants", type: :request do
     end
 
     it "calls ApplicantService" do
-      expect_any_instance_of(ApplicantService).to receive(:update_status).with(status: ApplicantStatus::StatusTypes::PENDING_INTRO, reasons: ["#{reason.id}"])
+      expect_any_instance_of(ApplicantService).to receive(:update_status).with(status: ApplicantStatus::StatusTypes::PENDING_INTRO, reasons: [reason.id.to_s])
 
       subject
     end

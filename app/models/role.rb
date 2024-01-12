@@ -14,8 +14,8 @@
 class Role < ApplicationRecord
   module Types
     ALL = [
-      COACH = 'coach',
-      EMPLOYER_ADMIN = 'employer_admin'
-    ]
+      COACH = 'coach'.freeze,
+      EMPLOYER_ADMIN = 'employer_admin'.freeze
+    ].freeze
   end
 end

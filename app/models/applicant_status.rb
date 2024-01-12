@@ -18,13 +18,13 @@ class ApplicantStatus < ApplicationRecord
 
   module StatusTypes
     ALL = [
-      NEW = "new",
-      PENDING_INTRO = "pending intro",
-      INTRO_MADE = "intro made",
-      INTERVIEWING = "interviewing",
-      HIRE = "hire",
-      PASS = "pass"
-    ]
+      NEW = "new".freeze,
+      PENDING_INTRO = "pending intro".freeze,
+      INTRO_MADE = "intro made".freeze,
+      INTERVIEWING = "interviewing".freeze,
+      HIRE = "hire".freeze,
+      PASS = "pass".freeze
+    ].freeze
   end
 
   validates :status, inclusion: { in: StatusTypes::ALL }

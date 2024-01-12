@@ -16,7 +16,7 @@ class TestController < ApplicationController
 
     employer = FactoryBot.create(:employer)
 
-    recruiter = FactoryBot.create(:recruiter, user:, employer:)
+    FactoryBot.create(:recruiter, user:, employer:)
 
     job = FactoryBot.create(:job, employer:)
 

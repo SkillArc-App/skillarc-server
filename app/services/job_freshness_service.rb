@@ -14,7 +14,7 @@ class JobFreshnessService < EventConsumer
     Event::EventTypes::APPLICANT_STATUS_UPDATED,
     Event::EventTypes::JOB_CREATED,
     Event::EventTypes::JOB_UPDATED
-  ]
+  ].freeze
 
   def self.call(event:)
     handle_event(event)
@@ -22,7 +22,7 @@ class JobFreshnessService < EventConsumer
 
   def self.handle_event(event, with_side_effects: false, now: Time.now)
     if JOB_EVENTS.include?(event.event_type)
-      job_id = event.aggregate_id
+      event.aggregate_id
 
       freshness = new(event.aggregate_id, now:)
 

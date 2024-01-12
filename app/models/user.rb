@@ -49,7 +49,7 @@ class User < ApplicationRecord
               .where(aggregate_id: id, event_type: [Event::EventTypes::JOB_SAVED, Event::EventTypes::JOB_UNSAVED])
               .group_by { |e| e.data["job_id"] }
               .map do |job_id, events|
-      last_event = events.sort_by { |e| e.occurred_at }.last
+      last_event = events.max_by(&:occurred_at)
 
       job_id if last_event.event_type == Event::EventTypes::JOB_SAVED
     end

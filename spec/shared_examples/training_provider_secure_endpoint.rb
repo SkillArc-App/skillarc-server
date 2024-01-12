@@ -1,6 +1,6 @@
 RSpec.shared_context "training provider authenticated" do
   let!(:training_provider_profile) do
-    tpp = TrainingProviderProfile.create!(
+    TrainingProviderProfile.create!(
       id: SecureRandom.uuid,
       user:,
       training_provider: create(:training_provider)

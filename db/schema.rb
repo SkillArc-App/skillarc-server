@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_11_192505) do # rubocop:disable Metrics/BlockLength
+ActiveRecord::Schema[7.0].define(version: 2024_01_12_212500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -599,7 +599,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_11_192505) do # rubocop:disabl
   end
 
   create_table "users", id: :text, force: :cascade do |t|
-    t.text "name"
     t.text "email"
     t.datetime "email_verified", precision: 3
     t.text "image"

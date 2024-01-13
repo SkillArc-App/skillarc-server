@@ -3,7 +3,6 @@ RSpec.shared_context "admin authenticated" do
   let!(:user) do
     u = User.find_or_create_by!(
       id: 'clem7u5uc0007mi0rne4h3be0',
-      name: 'Jake Not-Onboard',
       first_name: 'Jake',
       last_name: 'Not-Onboard',
       email: 'jake@statefarm.com',

@@ -24,8 +24,8 @@ RSpec.describe "Notes", type: :request do
           }
         end
 
-        it "calls CoachSeekers.create_note" do
-          expect(CoachSeekers)
+        it "calls SeekerService.create_note" do
+          expect(Coaches::SeekerService)
             .to receive(:add_note)
             .with(seeker_id, params[:note], params[:note_id])
             .and_call_original
@@ -35,8 +35,8 @@ RSpec.describe "Notes", type: :request do
       end
 
       context "when a note id is not included in the body" do
-        it "calls CoachSeekers.create_note" do
-          expect(CoachSeekers)
+        it "calls SeekerService.create_note" do
+          expect(Coaches::SeekerService)
             .to receive(:add_note)
             .with(seeker_id, params[:note], be_a(String))
             .and_call_original
@@ -64,8 +64,8 @@ RSpec.describe "Notes", type: :request do
     context "authenticated" do
       include_context "coach authenticated"
 
-      it "calls CoachSeekers.modify_note" do
-        expect(CoachSeekers)
+      it "calls SeekerService.modify_note" do
+        expect(Coaches::SeekerService)
           .to receive(:modify_note)
           .with(seeker_id, note_id, params[:note])
           .and_call_original
@@ -86,8 +86,8 @@ RSpec.describe "Notes", type: :request do
     context "authenticated" do
       include_context "coach authenticated"
 
-      it "calls CoachSeekers.delete_note" do
-        expect(CoachSeekers)
+      it "calls SeekerService.delete_note" do
+        expect(Coaches::SeekerService)
           .to receive(:delete_note)
           .with(seeker_id, note_id)
           .and_call_original

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CoachesService do
+RSpec.describe Coaches::CoachService do
   let(:role_added) { create(:event, :role_added, aggregate_id: user_id, data: { role: "coach", email: "coach@blocktrainapp.com" }) }
   let(:other_role_added) { create(:event, :role_added, aggregate_id: user_id, data: { role: "admin", email: "not_coach@blocktrainapp.com" }) }
   let(:user_id) { SecureRandom.uuid }
@@ -15,7 +15,7 @@ RSpec.describe CoachesService do
 
     it "returns all coaches" do
       expected_coach = {
-        id: Coach.last_created.id,
+        id: Coaches::Coach.last_created.id,
         email: "coach@blocktrainapp.com"
       }
 

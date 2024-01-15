@@ -1,25 +1,38 @@
-Employer.create!(
-  [{
-    id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
-    name: 'Turner Construction Company',
-    bio: 'Turner is a North America-based, international construction services company and is a leading builder in diverse and numerous market segments. The company has earned recognition for undertaking large, complex projects, fostering',
-    location: 'Global',
-    logo_url:
-      'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
-  },
-   {
-     id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
-     name: 'The Superior Group',
-     bio: 'The Superior Group is a ​national leader in electrical construction, engineering, and technology services.',
-     location: 'Ohio',
-     logo_url:
-       'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
-   }]
+turner_employer = Employer.create!(
+  id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
+  name: 'Turner Construction Company',
+  bio: 'Turner is a North America-based, international construction services company and is a leading builder in diverse and numerous market segments. The company has earned recognition for undertaking large, complex projects, fostering',
+  location: 'Global',
+  logo_url:
+    'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
 )
 
-Job.create!(
+sg_employer = Employer.create!(
+  id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
+  name: 'The Superior Group',
+  bio: 'The Superior Group is a ​national leader in electrical construction, engineering, and technology services.',
+  location: 'Ohio',
+  logo_url:
+    'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
+)
+
+recruiter_user = User.create!(
+  id: SecureRandom.uuid,
+  first_name: 'Recruiter',
+  last_name: 'User',
+  email: 'recruiter@blocktrianapp.com',
+  sub: 'recruitersub'
+)
+
+Recruiter.create!(
+  id: SecureRandom.uuid,
+  employer: turner_employer,
+  user: recruiter_user
+)
+
+mechanic_job = Job.create!(
   id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
-  employer_id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
+  employer: turner_employer,
   benefits_description: 'Dental insurance Vision insurance Disability insurance 401(k)',
   responsibilities_description:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
@@ -36,7 +49,7 @@ Job.create!(
 
 Job.create!(
   id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
-  employer_id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
+  employer: sg_employer,
   benefits_description: 'Dental insurance Vision insurance Disability insurance 401(k)',
   responsibilities_description:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
@@ -53,7 +66,7 @@ Job.create!(
 
 Job.create!(
   id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
-  employer_id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
+  employer: sg_employer,
   benefits_description: 'Dental insurance, Vision insurance, Disability insurance 401(k)',
   responsibilities_description:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
@@ -631,9 +644,21 @@ seeker_with_profile = Profile.create!(
     id: 'cll0yrt890002aor2v4pwo4ia',
     first_name: 'Rita',
     last_name: 'Wilson',
-    email: 'user-with-profile@blocktrainapp.com',
+    email: 'seeker-with-profile@blocktrainapp.com',
     sub: 'ritasub'
   )
+)
+
+Applicant.create!(
+  id: SecureRandom.uuid,
+  profile: seeker_with_profile,
+  job: mechanic_job,
+  applicant_statuses: [
+    ApplicantStatus.new(
+      id: SecureRandom.uuid,
+      status: 'new'
+    )
+  ]
 )
 
 OnboardingSession.create!(
@@ -684,7 +709,7 @@ User.create!(
   id: 'clem7u5uc0007mi0rne4h3be0',
   first_name: 'Jake',
   last_name: 'Not-Onboard',
-  email: 'user-without-profile@blocktrainapp.com',
+  email: 'seeker-without-profile@blocktrainapp.com',
   sub: 'jakesub'
 )
 
@@ -702,7 +727,7 @@ bill_trainer_profile = TrainingProviderProfile.create!(
   user_id: trainer_with_reference.id
 )
 
-Program.create!(
+cool_program = Program.create!(
   id: SecureRandom.uuid,
   name: 'Cool Program',
   description: 'You learn stuff',
@@ -746,8 +771,8 @@ ProgramSkill.create!([
 SeekerTrainingProvider.create!(
   id: SecureRandom.uuid,
   user_id: trained_seeker_with_reference.user_id,
-  program_id: welding.id,
-  training_provider_id: cul.id
+  program_id: cool_program.id,
+  training_provider_id: megans_recruits.id
 )
 
 SeekerTrainingProvider.create!(

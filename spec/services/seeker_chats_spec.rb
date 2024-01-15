@@ -17,7 +17,7 @@ RSpec.describe SeekerChats do
     let(:employer) { create(:employer, name: "Acme, Inc") }
 
     it "creates a chat message" do
-      expect { subject }.to change { ChatMessage.count }.by(1)
+      expect { subject }.to change(ChatMessage, :count).by(1)
 
       expect(ChatMessage.last).to have_attributes(
         applicant_chat:,
@@ -101,7 +101,7 @@ RSpec.describe SeekerChats do
     let(:profile) { create(:profile, user:) }
 
     it "creates a read receipt for each message" do
-      expect { subject }.to change { ReadReceipt.count }.by(2)
+      expect { subject }.to change(ReadReceipt, :count).by(2)
 
       expect(ReadReceipt.last(2)).to include(
         have_attributes(

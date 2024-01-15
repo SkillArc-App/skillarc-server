@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe "TrainingProviders::Invites", type: :request do
   describe "POST /create" do
-    include_context "training provider authenticated"
-
     subject { post training_providers_invites_path, params:, headers: }
+
+    include_context "training provider authenticated"
 
     let(:params) do
       {
@@ -21,11 +21,11 @@ RSpec.describe "TrainingProviders::Invites", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates an invite" do
-      expect { subject }.to change { SeekerInvite.count }.by(1)
+      expect { subject }.to change(SeekerInvite, :count).by(1)
     end
   end
 end

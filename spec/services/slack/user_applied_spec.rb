@@ -34,7 +34,7 @@ RSpec.describe Slack::UserApplied do
       let(:status) { "not_new" }
 
       it "does not call the Slack API" do
-        expect_any_instance_of(Slack::FakeSlackGateway).to_not receive(:ping)
+        expect_any_instance_of(Slack::FakeSlackGateway).not_to receive(:ping)
 
         subject.call(event:)
       end

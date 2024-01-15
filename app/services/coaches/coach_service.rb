@@ -4,7 +4,7 @@ module Coaches
       handle_event(event)
     end
 
-    def self.handle_event(event, with_side_effects: false, now: Time.now) # rubocop:disable Lint/UnusedMethodArgument
+    def self.handle_event(event, with_side_effects: false, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
       case event.event_type
       when Event::EventTypes::ROLE_ADDED
         handle_role_added(event)

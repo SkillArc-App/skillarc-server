@@ -22,7 +22,7 @@ RSpec.describe NotificationService do
     let(:user) { create(:user) }
 
     it "creates a notification" do
-      expect { subject }.to change { Notification.count }.by(1)
+      expect { subject }.to change(Notification, :count).by(1)
       expect(Notification.last_created).to have_attributes(
         user:,
         title:,

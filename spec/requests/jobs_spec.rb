@@ -15,14 +15,14 @@ RSpec.describe "Jobs", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 
   describe "POST /apply" do
-    include_context "authenticated"
-
     subject { post job_apply_path(job), headers: }
+
+    include_context "authenticated"
 
     let(:job) { create(:job) }
     let!(:profile) { create(:profile, user:) }
@@ -30,11 +30,11 @@ RSpec.describe "Jobs", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates an applicant" do
-      expect { subject }.to change { Applicant.count }.by(1)
+      expect { subject }.to change(Applicant, :count).by(1)
     end
   end
 
@@ -64,11 +64,11 @@ RSpec.describe "Jobs", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates a job" do
-      expect { subject }.to change { Job.count }.by(1)
+      expect { subject }.to change(Job, :count).by(1)
     end
   end
 
@@ -90,7 +90,7 @@ RSpec.describe "Jobs", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "updates the job" do

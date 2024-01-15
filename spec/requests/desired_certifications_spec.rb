@@ -17,11 +17,11 @@ RSpec.describe "DesiredCertifications", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates a desired certification" do
-      expect { subject }.to change { DesiredCertification.count }.by(1)
+      expect { subject }.to change(DesiredCertification, :count).by(1)
     end
   end
 
@@ -36,11 +36,11 @@ RSpec.describe "DesiredCertifications", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "deletes the desired certification" do
-      expect { subject }.to change { DesiredCertification.count }.by(-1)
+      expect { subject }.to change(DesiredCertification, :count).by(-1)
     end
   end
 end

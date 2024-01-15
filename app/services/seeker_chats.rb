@@ -20,7 +20,7 @@ class SeekerChats
         message:
       },
       metadata: {},
-      occurred_at: Time.now
+      occurred_at: Time.zone.now
     )
   end
 
@@ -52,7 +52,7 @@ class SeekerChats
       .includes(messages: :user, applicant: { profile: :user, job: :employer })
       .references(:messages, applicant: { profile: :user, job: :employer })
       .where(applicants: { id: applicant_id })
-      .each do |applicant_chat|
+      .find_each do |applicant_chat|
         applicant_chat.messages.each do |message|
           message.read_receipts.find_or_create_by!(user:)
         end

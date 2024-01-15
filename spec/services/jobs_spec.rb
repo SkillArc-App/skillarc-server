@@ -33,7 +33,7 @@ RSpec.describe Jobs do
     let(:industry) { ["manufacturing"] }
 
     it "creates a job" do
-      expect { subject }.to change { Job.count }.by(1)
+      expect { subject }.to change(Job, :count).by(1)
 
       job = Job.last
 

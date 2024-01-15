@@ -15,7 +15,7 @@ RSpec.describe "Profiles", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 

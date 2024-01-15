@@ -46,11 +46,11 @@ RSpec.describe "Program::Students", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates a program status" do
-      expect { subject }.to change { SeekerTrainingProviderProgramStatus.count }.by(1)
+      expect { subject }.to change(SeekerTrainingProviderProgramStatus, :count).by(1)
     end
   end
 end

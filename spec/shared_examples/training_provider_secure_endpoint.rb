@@ -28,21 +28,21 @@ RSpec.shared_context "training provider authenticated" do
 end
 
 RSpec.shared_examples "training provider secured endpoint" do
-  context "unauthenticated" do
+  context "when unauthenticated" do
     it "returns 401" do
       subject
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
-  context "authenticated" do
+  context "when authenticated" do
     include_context "training provider authenticated"
 
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 end

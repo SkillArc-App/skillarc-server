@@ -23,7 +23,7 @@ RSpec.describe "OneUsers", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "updates the user" do

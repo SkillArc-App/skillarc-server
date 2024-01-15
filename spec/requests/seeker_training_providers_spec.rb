@@ -21,11 +21,11 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates a seeker training provider" do
-      expect { subject }.to change { SeekerTrainingProvider.count }.by(1)
+      expect { subject }.to change(SeekerTrainingProvider, :count).by(1)
     end
   end
 
@@ -46,7 +46,7 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "updates the seeker training provider" do

@@ -1,7 +1,7 @@
 module TrainingProviderAuth
   def training_provider_authorize
     unless (@training_provider_profile = current_user.training_provider_profile)
-      render json: { error: 'Not authorized' }, status: 401
+      render json: { error: 'Not authorized' }, status: :unauthorized
       return
     end
   end

@@ -22,7 +22,7 @@ RSpec.describe "Hooks", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "calls the hook service" do

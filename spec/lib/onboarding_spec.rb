@@ -57,7 +57,7 @@ RSpec.describe Onboarding do
       end
 
       it "creates a profile" do
-        expect { subject }.to change { Profile.count }.by(1)
+        expect { subject }.to change(Profile, :count).by(1)
         expect(Profile.last_created.user).to eq(user)
       end
 
@@ -126,7 +126,7 @@ RSpec.describe Onboarding do
       end
 
       it "creates an experience" do
-        expect { subject }.to change { OtherExperience.count }.by(1)
+        expect { subject }.to change(OtherExperience, :count).by(1)
 
         expect(OtherExperience.last_created).to have_attributes(
           organization_name: "Company",
@@ -206,7 +206,7 @@ RSpec.describe Onboarding do
       end
 
       it "creates an education experience" do
-        expect { subject }.to change { EducationExperience.count }.by(1)
+        expect { subject }.to change(EducationExperience, :count).by(1)
 
         expect(EducationExperience.last_created).to have_attributes(
           activities: "Football",
@@ -280,7 +280,7 @@ RSpec.describe Onboarding do
       end
 
       it "creates a seeker training provider" do
-        expect { subject }.to change { SeekerTrainingProvider.count }.by(1)
+        expect { subject }.to change(SeekerTrainingProvider, :count).by(1)
 
         expect(SeekerTrainingProvider.last_created).to have_attributes(
           user:,
@@ -338,6 +338,7 @@ RSpec.describe Onboarding do
           }
         }
       end
+
       it "updates the onboarding session responses" do
         subject
 
@@ -374,7 +375,7 @@ RSpec.describe Onboarding do
       end
 
       it "creates a personal experience" do
-        expect { subject }.to change { PersonalExperience.count }.by(1)
+        expect { subject }.to change(PersonalExperience, :count).by(1)
 
         expect(PersonalExperience.last_created).to have_attributes(
           activity: "Activity",
@@ -443,7 +444,7 @@ RSpec.describe Onboarding do
       end
 
       it "creates a Professsional Interest" do
-        expect { subject }.to change { ProfessionalInterest.count }.by(1)
+        expect { subject }.to change(ProfessionalInterest, :count).by(1)
 
         expect(ProfessionalInterest.last_created).to have_attributes(
           response: "construction",

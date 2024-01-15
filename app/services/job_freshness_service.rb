@@ -20,7 +20,7 @@ class JobFreshnessService < EventConsumer
     handle_event(event)
   end
 
-  def self.handle_event(event, with_side_effects: false, now: Time.now)
+  def self.handle_event(event, with_side_effects: false, now: Time.zone.now)
     if JOB_EVENTS.include?(event.event_type)
       event.aggregate_id
 
@@ -53,7 +53,7 @@ class JobFreshnessService < EventConsumer
     true
   end
 
-  def initialize(job_id, now: Time.now)
+  def initialize(job_id, now: Time.zone.now)
     super()
     @job_id = job_id
     @now = now
@@ -63,7 +63,7 @@ class JobFreshnessService < EventConsumer
     freshness_context
   end
 
-  def handle_event(event, with_side_effects: false, now: Time.now)
+  def handle_event(event, with_side_effects: false, now: Time.zone.now)
     @now = now
 
     case event.event_type
@@ -103,7 +103,7 @@ class JobFreshnessService < EventConsumer
 
   def any_ignored?(reference_time)
     freshness_context.applicants.any? do |_, applicant|
-      reference_time - Time.parse(applicant["last_updated_at"]) > 1.week && applicant["status"] == "new"
+      reference_time - Time.zone.parse(applicant["last_updated_at"]) > 1.week && applicant["status"] == "new"
     end
   end
 

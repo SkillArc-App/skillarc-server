@@ -19,11 +19,11 @@ RSpec.describe "JobPhotos", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates a job photo" do
-      expect { subject }.to change { JobPhoto.count }.by(1)
+      expect { subject }.to change(JobPhoto, :count).by(1)
     end
   end
 
@@ -35,11 +35,11 @@ RSpec.describe "JobPhotos", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "deletes the job photo" do
-      expect { subject }.to change { JobPhoto.count }.by(-1)
+      expect { subject }.to change(JobPhoto, :count).by(-1)
     end
   end
 end

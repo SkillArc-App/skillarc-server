@@ -5,8 +5,8 @@ class Auth0Controller < ApplicationController
     # Refer to https://github.com/auth0/omniauth-auth0/blob/master/EXAMPLES.md#example-of-the-resulting-authentication-hash for complete information on 'omniauth.auth' contents.
     auth_info = request.env['omniauth.auth']
 
-    puts "AUTH_INFO"
-    puts auth_info
+    Rails.logger.debug "AUTH_INFO"
+    Rails.logger.debug auth_info
 
     session[:userinfo] = auth_info['extra']['raw_info']
 

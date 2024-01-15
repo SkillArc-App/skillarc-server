@@ -76,7 +76,7 @@ RSpec.describe ApplicationAnalytics do
   describe "#persist_current_status_times" do
     it "persists the current status times" do
       Timecop.freeze(Date.new(2020, 7, 1)) do
-        expect { subject.persist_current_status_times }.to change { ApplicantAnalytic.count }.by(2)
+        expect { subject.persist_current_status_times }.to change(ApplicantAnalytic, :count).by(2)
 
         expect(ApplicantAnalytic.all).to contain_exactly(
           have_attributes(

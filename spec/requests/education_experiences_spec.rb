@@ -23,11 +23,11 @@ RSpec.describe "EducationExperiences", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates an education experience" do
-      expect { subject }.to change { EducationExperience.count }.by(1)
+      expect { subject }.to change(EducationExperience, :count).by(1)
     end
   end
 
@@ -46,7 +46,7 @@ RSpec.describe "EducationExperiences", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "updates the education experience" do
@@ -62,11 +62,11 @@ RSpec.describe "EducationExperiences", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "deletes the education experience" do
-      expect { subject }.to change { EducationExperience.count }.by(-1)
+      expect { subject }.to change(EducationExperience, :count).by(-1)
     end
   end
 end

@@ -7,6 +7,7 @@ RSpec.shared_context "authenticated" do
 
     ENV["MOCK_AUTH"] = original
   end
+
   let(:headers) { { "Authorization" => "Bearer #{user.sub}" } }
 
   let!(:user) do
@@ -25,7 +26,7 @@ RSpec.shared_examples "a secured endpoint" do
     it "returns 401" do
       subject
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
@@ -35,7 +36,7 @@ RSpec.shared_examples "a secured endpoint" do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 end

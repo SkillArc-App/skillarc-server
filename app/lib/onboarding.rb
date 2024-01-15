@@ -17,7 +17,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
     return unless onboarding_complete?(retrieve_response_for(responses, "reliability"), responses) && !onboarding_session.completed_at
 
-    completed_at = Time.now
+    completed_at = Time.zone.now
 
     onboarding_session.update!(completed_at:)
 

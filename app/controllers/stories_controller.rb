@@ -11,7 +11,7 @@ class StoriesController < ApplicationController
 
       render json: story
     rescue => e
-      render json: { error: e.message }, status: 400
+      render json: { error: e.message }, status: :bad_request
     end
   end
 
@@ -25,7 +25,7 @@ class StoriesController < ApplicationController
 
       render json: story
     rescue => e
-      render json: { error: e.message }, status: 400
+      render json: { error: e.message }, status: :bad_request
     end
   end
 
@@ -37,7 +37,7 @@ class StoriesController < ApplicationController
 
       render json: story
     rescue => e
-      render json: { error: e.message }, status: 400
+      render json: { error: e.message }, status: :bad_request
     end
   end
 end

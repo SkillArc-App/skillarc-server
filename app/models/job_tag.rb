@@ -14,6 +14,6 @@
 #  JobTag_tag_id_fkey  (tag_id => tags.id) ON DELETE => restrict ON UPDATE => cascade
 #
 class JobTag < ApplicationRecord
-  belongs_to :job, foreign_key: "job_id"
-  belongs_to :tag, foreign_key: "tag_id"
+  belongs_to :job
+  belongs_to :tag
 end

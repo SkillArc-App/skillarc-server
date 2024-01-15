@@ -1,4 +1,4 @@
-FROM ruby:3.2.2 as rails-toolbox
+FROM ruby:3.2.2
 
 ENV INSTALL_PATH /app
 RUN mkdir -p $INSTALL_PATH
@@ -11,5 +11,6 @@ COPY . .
 
 RUN bundle install
 
-# Run the rails server
-CMD ["rails", "server"]
+EXPOSE 3001
+
+CMD ["rails", "server", "-p", "3001", "-b", "0.0.0.0"]

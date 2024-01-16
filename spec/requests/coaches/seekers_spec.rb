@@ -67,7 +67,7 @@ RSpec.describe "Seekers", type: :request do
         coach_id: coach.id
       }
     end
-    let(:coach) { create(:coach) }
+    let(:coach) { create(:coaches__coach) }
 
     it_behaves_like "coach secured endpoint"
 

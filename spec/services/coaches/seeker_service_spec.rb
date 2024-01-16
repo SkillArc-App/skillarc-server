@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CoachSeekers do
+RSpec.describe Coaches::SeekerService do
   let(:non_seeker_user_created) { build(:event, :user_created, aggregate_id: "123", data: { email: "f@f.f" }) }
   let(:user_without_email) { build(:event, :user_created, aggregate_id: user_without_email_id, data: { first_name: "Hannah", last_name: "Block" }) }
   let(:profile_without_email) { build(:event, :profile_created, aggregate_id: user_without_email_id, data: { id: profile_without_email_id }) }

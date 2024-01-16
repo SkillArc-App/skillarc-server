@@ -7,7 +7,7 @@ module Coaches
     before_action :coach_authorize
 
     def create
-      CoachSeekers.add_note(
+      SeekerService.add_note(
         params[:seeker_id],
         params[:note],
         params[:note_id] || SecureRandom.uuid
@@ -17,7 +17,7 @@ module Coaches
     end
 
     def update
-      CoachSeekers.modify_note(
+      SeekerService.modify_note(
         params[:seeker_id],
         params[:id],
         params[:note]
@@ -27,7 +27,7 @@ module Coaches
     end
 
     def destroy
-      CoachSeekers.delete_note(
+      SeekerService.delete_note(
         params[:seeker_id],
         params[:id]
       )

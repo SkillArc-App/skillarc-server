@@ -18,6 +18,8 @@
 #  updated_at        :datetime         not null
 #  last_active_on    :datetime
 #
-class CoachSeekerContext < ApplicationRecord
-  has_many :seeker_notes, dependent: :destroy
+module Coaches
+  class CoachSeekerContext < ApplicationRecord
+    has_many :seeker_notes, dependent: :destroy, class_name: "Coaches::SeekerNote"
+  end
 end

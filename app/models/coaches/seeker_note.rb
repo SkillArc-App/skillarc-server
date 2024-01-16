@@ -18,10 +18,12 @@
 #
 #  fk_rails_...  (coach_seeker_context_id => coach_seeker_contexts.id)
 #
-class SeekerNote < ApplicationRecord
-  belongs_to :coach_seeker_context
+module Coaches
+  class SeekerNote < ApplicationRecord
+    belongs_to :coach_seeker_context, class_name: "Coaches::CoachSeekerContext"
 
-  validates :note, presence: true
-  validates :note_id, presence: true
-  validates :note_taken_at, presence: true
+    validates :note, presence: true
+    validates :note_id, presence: true
+    validates :note_taken_at, presence: true
+  end
 end

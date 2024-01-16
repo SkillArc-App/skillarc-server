@@ -9,8 +9,8 @@ RSpec.describe "Seekers", type: :request do
     context "authenticated" do
       include_context "coach authenticated"
 
-      it "calls CoachSeekers.all" do
-        expect(CoachSeekers).to receive(:all)
+      it "calls SeekerService.all" do
+        expect(Coaches::SeekerService).to receive(:all)
 
         subject
       end
@@ -20,15 +20,15 @@ RSpec.describe "Seekers", type: :request do
   describe "GET /show" do
     subject { get seeker_path(seeker_id), headers: }
 
-    let(:seeker_id) { create(:coach_seeker_context).profile_id }
+    let(:seeker_id) { create(:coaches__coach_seeker_context).profile_id }
 
     it_behaves_like "coach secured endpoint"
 
     context "authenticated" do
       include_context "coach authenticated"
 
-      it "calls CoachSeekers.find" do
-        expect(CoachSeekers).to receive(:find).with(seeker_id)
+      it "calls SeekerService.find" do
+        expect(Coaches::SeekerService).to receive(:find).with(seeker_id)
 
         subject
       end
@@ -50,8 +50,8 @@ RSpec.describe "Seekers", type: :request do
     context "authenticated" do
       include_context "coach authenticated"
 
-      it "calls CoachSeekers.update_skill_level" do
-        expect(CoachSeekers).to receive(:update_skill_level).with(seeker_id, params[:level])
+      it "calls SeekerService.update_skill_level" do
+        expect(Coaches::SeekerService).to receive(:update_skill_level).with(seeker_id, params[:level])
 
         subject
       end
@@ -74,8 +74,8 @@ RSpec.describe "Seekers", type: :request do
     context "authenticated" do
       include_context "coach authenticated"
 
-      it "calls CoachSeekers.assign_coach" do
-        expect(CoachSeekers).to receive(:assign_coach).with(seeker_id, params[:coach_id], coach.email)
+      it "calls SeekerService.assign_coach" do
+        expect(Coaches::SeekerService).to receive(:assign_coach).with(seeker_id, params[:coach_id], coach.email)
 
         subject
       end

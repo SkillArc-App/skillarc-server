@@ -820,12 +820,12 @@ UserRole.create!(
   user_id: coach_user.id
 )
 
-coach = Coach.create!(
+coach = Coaches::Coach.create!(
   user_id: coach_user.id,
   email: coach_user.email
 )
 
-CoachSeekerContext.create!(
+Coaches::CoachSeekerContext.create!(
   profile_id: seeker_with_profile.id,
   user_id: seeker_with_profile.user.id,
   first_name: seeker_with_profile.user.first_name,

@@ -8,5 +8,7 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
-class Coach < ApplicationRecord
+module Coaches
+  class Coach < ApplicationRecord
+  end
 end

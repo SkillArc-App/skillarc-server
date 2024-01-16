@@ -1,6 +1,6 @@
 module AuthClient
   class Fake
-    def initalize(email:, sub:)
+    def initialize(email:, sub:)
       @email = email
       @sub = sub
     end

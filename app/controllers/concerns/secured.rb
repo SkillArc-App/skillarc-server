@@ -23,7 +23,11 @@ module Secured
     auth_client = AuthClient::Factory.build
 
     validation_response = auth_client.validate_token(token)
-    user = user_finder.find_or_create(validation_response.decoded_token, token, auth_client:)
+    user = user_finder.find_or_create(
+      decoded_token: validation_response.decoded_token,
+      token:,
+      auth_client:
+    )
 
     @current_user = user
 

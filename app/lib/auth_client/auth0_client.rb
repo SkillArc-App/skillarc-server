@@ -10,11 +10,11 @@ module AuthClient
     Response = Struct.new(:decoded_token, :error)
 
     # Helper Functions
-    def self.domain_url
+    def domain_url
       "https://blocktrain.us.auth0.com/"
     end
 
-    def self.decode_token(token, jwks_hash)
+    def decode_token(token, jwks_hash)
       JWT.decode(token, nil, true, {
                    algorithm: 'RS256',
                    iss: domain_url,
@@ -26,7 +26,7 @@ module AuthClient
     end
 
     # Token Validation
-    def self.validate_token(token)
+    def validate_token(token)
       decoded_token = decode_token(token, jwks_hash)
 
       Response.new(decoded_token, nil)
@@ -35,7 +35,7 @@ module AuthClient
       Response.new(nil, error)
     end
 
-    def self.get_user_info(token)
+    def get_user_info(token)
       uri = URI("https://#{ENV['AUTH0_DOMAIN']}/userinfo")
       req = Net::HTTP::Get.new(uri)
       req['Authorization'] = "Bearer #{token}"
@@ -47,26 +47,24 @@ module AuthClient
       JSON.parse(res.body)
     end
 
-    class << self
-      private
+    private
 
-      def jwks_hash
-        return @jwks_hash if @jwks_hash
+    def jwks_hash
+      return @jwks_hash if @jwks_hash
 
-        jwks_response = jwks
+      jwks_response = jwks
 
-        unless jwks_response.is_a? Net::HTTPSuccess
-          error = Error.new(message: 'Unable to verify credentials', status: :internal_server_error)
-          return Response.new(nil, error)
-        end
-
-        @jwks_hash = JSON.parse(jwks_response.body).deep_symbolize_keys
+      unless jwks_response.is_a? Net::HTTPSuccess
+        error = Error.new(message: 'Unable to verify credentials', status: :internal_server_error)
+        return Response.new(nil, error)
       end
 
-      def jwks
-        jwks_uri = URI("#{domain_url}.well-known/jwks.json")
-        Net::HTTP.get_response jwks_uri
-      end
+      @jwks_hash = JSON.parse(jwks_response.body).deep_symbolize_keys
+    end
+
+    def jwks
+      jwks_uri = URI("#{domain_url}.well-known/jwks.json")
+      Net::HTTP.get_response jwks_uri
     end
   end
 end

@@ -2,9 +2,9 @@ module AuthClient
   class Factory
     def self.build
       if ENV['MOCK_AUTH'] == 'true'
-        AuthClient::Fake
+        AuthClient::Fake.new
       else
-        AuthClient::Auth0Client
+        AuthClient::Auth0Client.new
       end
     end
   end

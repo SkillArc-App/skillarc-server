@@ -5,20 +5,26 @@ require 'net/http'
 
 module AuthClient
   class Auth0Client
+    def initialize(auth0_domain:)
+      @auth0_domain = auth0_domain
+    end
+
     # Token Validation
     def validate_token(token)
-      decoded_token = decode_token(token, jwks_hash)
+      result = jwks_hash
+      return result if result.is_a?(ValidationResponse)
+
+      decoded_token = decode_token(token, result)
 
       _, sub = decoded_token[0]['sub'].split('|')
 
-
       ValidationResponse.ok(sub:)
     rescue JWT::VerificationError, JWT::DecodeError => _e
-      ValidationResponse.err(error: Error.new('Bad credentials', :unauthorized))
+      ValidationResponse.err(message: 'Bad credentials', status: :unauthorized)
     end
 
     def get_user_info(token)
-      uri = URI("https://#{ENV['AUTH0_DOMAIN']}/userinfo")
+      uri = URI("https://#{@auth0_domain}/userinfo")
       req = Net::HTTP::Get.new(uri)
       req['Authorization'] = "Bearer #{token}"
 
@@ -33,7 +39,7 @@ module AuthClient
 
     # Helper Functions
     def domain_url
-      "https://blocktrain.us.auth0.com/"
+      "https://#{@auth0_domain}"
     end
 
     def decode_token(token, jwks_hash)
@@ -52,16 +58,14 @@ module AuthClient
 
       jwks_response = jwks
 
-      unless jwks_response.is_a? Net::HTTPSuccess
-        error = Error.new(message: 'Unable to verify credentials', status: :internal_server_error)
-        return Response.new(nil, error)
-      end
+      return ValidationResponse.err(message: 'Unable to verify credentials', status: :internal_server_error) unless jwks_response.is_a? Net::HTTPSuccess
 
       @jwks_hash = JSON.parse(jwks_response.body).deep_symbolize_keys
     end
 
     def jwks
       jwks_uri = URI("#{domain_url}.well-known/jwks.json")
+
       Net::HTTP.get_response jwks_uri
     end
   end

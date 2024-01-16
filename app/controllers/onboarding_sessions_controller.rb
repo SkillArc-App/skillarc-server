@@ -13,7 +13,7 @@ class OnboardingSessionsController < ApplicationController
   def create
     onboarding_session = OnboardingSession.find_or_create_by!(user_id: current_user.id) do |os|
       os.id = SecureRandom.uuid
-      os.started_at = Time.now
+      os.started_at = Time.zone.now
     end
 
     render json: deep_transform_keys(onboarding_session.as_json) { |key| to_camel_case(key) }

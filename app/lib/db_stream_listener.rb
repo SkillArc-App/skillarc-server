@@ -21,7 +21,7 @@ class DbStreamListener < StreamListener
   def bookmark_timestamp
     bookmark = ListenerBookmark.find_by(consumer_name: listener_name)
 
-    return Time.at(0) unless bookmark
+    return Time.zone.at(0) unless bookmark
 
     Event.find(bookmark.event_id).occurred_at
   end

@@ -17,11 +17,11 @@ RSpec.describe "JobTags", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates a job tag" do
-      expect { subject }.to change { JobTag.count }.by(1)
+      expect { subject }.to change(JobTag, :count).by(1)
     end
   end
 
@@ -36,13 +36,13 @@ RSpec.describe "JobTags", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "deletes the job tag" do
       job_tag
 
-      expect { subject }.to change { JobTag.count }.by(-1)
+      expect { subject }.to change(JobTag, :count).by(-1)
     end
   end
 end

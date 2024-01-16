@@ -21,11 +21,11 @@ RSpec.describe "Skills", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates a skill" do
-      expect { subject }.to change { ProfileSkill.count }.by(1)
+      expect { subject }.to change(ProfileSkill, :count).by(1)
     end
   end
 
@@ -45,7 +45,7 @@ RSpec.describe "Skills", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "updates the skill" do
@@ -63,11 +63,11 @@ RSpec.describe "Skills", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "deletes the skill" do
-      expect { subject }.to change { ProfileSkill.count }.by(-1)
+      expect { subject }.to change(ProfileSkill, :count).by(-1)
     end
   end
 end

@@ -4,7 +4,7 @@ module Coaches
       handle_event(event)
     end
 
-    def self.handle_event(event, with_side_effects: false, now: Time.now) # rubocop:disable Lint/UnusedMethodArgument
+    def self.handle_event(event, with_side_effects: false, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
       case event.event_type
 
         # Coach Originated
@@ -55,7 +55,7 @@ module Coaches
       serialize_coach_seeker_context(csc)
     end
 
-    def self.add_note(id, note, note_id, now: Time.now)
+    def self.add_note(id, note, note_id, now: Time.zone.now)
       CreateEventJob.perform_later(
         event_type: Event::EventTypes::NOTE_ADDED,
         aggregate_id: id,
@@ -68,7 +68,7 @@ module Coaches
       )
     end
 
-    def self.delete_note(id, note_id, now: Time.now)
+    def self.delete_note(id, note_id, now: Time.zone.now)
       CreateEventJob.perform_later(
         event_type: Event::EventTypes::NOTE_DELETED,
         aggregate_id: id,
@@ -80,7 +80,7 @@ module Coaches
       )
     end
 
-    def self.modify_note(id, note_id, note, now: Time.now)
+    def self.modify_note(id, note_id, note, now: Time.zone.now)
       CreateEventJob.perform_later(
         event_type: Event::EventTypes::NOTE_MODIFIED,
         aggregate_id: id,
@@ -93,7 +93,7 @@ module Coaches
       )
     end
 
-    def self.assign_coach(id, coach_id, coach_email, now: Time.now)
+    def self.assign_coach(id, coach_id, coach_email, now: Time.zone.now)
       CreateEventJob.perform_later(
         event_type: Event::EventTypes::COACH_ASSIGNED,
         aggregate_id: id,
@@ -106,7 +106,7 @@ module Coaches
       )
     end
 
-    def self.update_skill_level(id, skill_level, now: Time.now)
+    def self.update_skill_level(id, skill_level, now: Time.zone.now)
       CreateEventJob.perform_later(
         event_type: Event::EventTypes::SKILL_LEVEL_UPDATED,
         aggregate_id: id,

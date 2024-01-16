@@ -140,7 +140,8 @@ RSpec.describe Coaches::SeekerService do
 
   describe ".add_note" do
     subject { described_class.add_note(profile_id, "This is a new note", note_id1, now:) }
-    let(:now) { Time.new(2020, 1, 1) }
+
+    let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
       expect(CreateEventJob).to receive(:perform_later).with(
@@ -160,7 +161,8 @@ RSpec.describe Coaches::SeekerService do
 
   describe ".delete_note" do
     subject { described_class.delete_note(profile_id, note_id1, now:) }
-    let(:now) { Time.new(2020, 1, 1) }
+
+    let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
       expect(CreateEventJob).to receive(:perform_later).with(
@@ -179,7 +181,8 @@ RSpec.describe Coaches::SeekerService do
 
   describe ".modify_note" do
     subject { described_class.modify_note(profile_id, note_id2, updated_note, now:) }
-    let(:now) { Time.new(2020, 1, 1) }
+
+    let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
       expect(CreateEventJob).to receive(:perform_later).with(
@@ -199,7 +202,8 @@ RSpec.describe Coaches::SeekerService do
 
   describe ".assign_coach" do
     subject { described_class.assign_coach(profile_id, "123", "coach@blocktrainapp.com", now:) }
-    let(:now) { Time.new(2020, 1, 1) }
+
+    let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
       expect(CreateEventJob).to receive(:perform_later).with(
@@ -220,7 +224,7 @@ RSpec.describe Coaches::SeekerService do
   describe ".update_skill_level" do
     subject { described_class.update_skill_level(profile_id, "advanced", now:) }
 
-    let(:now) { Time.new(2020, 1, 1) }
+    let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
       expect(CreateEventJob).to receive(:perform_later).with(

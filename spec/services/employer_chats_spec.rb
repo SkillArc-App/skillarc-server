@@ -61,7 +61,7 @@ RSpec.describe EmployerChats do
     let(:user) { create(:user, first_name: "Hannah", last_name: "Block") }
 
     it "creates a read receipt for each message" do
-      expect { subject }.to change { ReadReceipt.count }.by(2)
+      expect { subject }.to change(ReadReceipt, :count).by(2)
     end
   end
 
@@ -78,7 +78,7 @@ RSpec.describe EmployerChats do
     let(:job) { create(:job, employer:, employment_title: "Welder") }
 
     it "creates a chat message" do
-      expect { subject }.to change { ChatMessage.count }.by(1)
+      expect { subject }.to change(ChatMessage, :count).by(1)
 
       expect(ChatMessage.last_created).to have_attributes(
         applicant_chat:,
@@ -113,7 +113,7 @@ RSpec.describe EmployerChats do
     let!(:applicant) { create(:applicant) }
 
     it "creates an applicant chat" do
-      expect { subject }.to change { ApplicantChat.count }.by(1)
+      expect { subject }.to change(ApplicantChat, :count).by(1)
 
       expect(ApplicantChat.last_created).to have_attributes(
         applicant:

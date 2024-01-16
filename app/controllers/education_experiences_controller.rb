@@ -19,7 +19,7 @@ class EducationExperiencesController < ApplicationController
 
       render json: ee
     rescue => e
-      render json: { error: e.message }, status: 400
+      render json: { error: e.message }, status: :bad_request
     end
   end
 
@@ -37,7 +37,7 @@ class EducationExperiencesController < ApplicationController
 
       render json: ee
     rescue => e
-      render json: { error: e.message }, status: 400
+      render json: { error: e.message }, status: :bad_request
     end
   end
 
@@ -49,7 +49,7 @@ class EducationExperiencesController < ApplicationController
 
       render json: ee
     rescue => e
-      render json: { error: e.message }, status: 400
+      render json: { error: e.message }, status: :bad_request
     end
   end
 end

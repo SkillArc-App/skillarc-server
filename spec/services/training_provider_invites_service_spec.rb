@@ -27,7 +27,7 @@ RSpec.describe TrainingProviderInviteService do
     it "creates a new training provider profile" do
       expect do
         subject.accept
-      end.to change { TrainingProviderProfile.count }.by(1)
+      end.to change(TrainingProviderProfile, :count).by(1)
     end
 
     it "updates the training provider invite status" do

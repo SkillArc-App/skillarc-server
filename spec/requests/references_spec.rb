@@ -42,11 +42,11 @@ RSpec.describe "References", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates a reference" do
-      expect { subject }.to change { Reference.count }.by(1)
+      expect { subject }.to change(Reference, :count).by(1)
     end
   end
 
@@ -68,7 +68,7 @@ RSpec.describe "References", type: :request do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "updates the reference" do

@@ -18,7 +18,7 @@ RSpec.describe JobFreshnessService do
     )
   end
 
-  let(:now) { Time.new(2024, 1, 1) }
+  let(:now) { Time.zone.local(2024, 1, 1) }
   let(:job_created_at_event) do
     build(
       :event,
@@ -61,7 +61,7 @@ RSpec.describe JobFreshnessService do
       let(:event) { build(:event, :user_created) }
 
       it "does nothing" do
-        expect { subject }.not_to(change { JobFreshness.count })
+        expect { subject }.not_to(change(JobFreshness, :count))
 
         expect(subject).to eq(true)
       end
@@ -73,7 +73,7 @@ RSpec.describe JobFreshnessService do
 
     context "when with side effects is false" do
       it "does not update the database" do
-        expect { subject }.not_to(change { JobFreshness.count })
+        expect { subject }.not_to(change(JobFreshness, :count))
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.describe JobFreshnessService do
           )
         )
 
-        expect { subject }.to change { JobFreshness.count }.by(1)
+        expect { subject }.to change(JobFreshness, :count).by(1)
 
         expect(JobFreshness.last_created).to have_attributes(
           job_id:,
@@ -103,7 +103,7 @@ RSpec.describe JobFreshnessService do
 
         expect do
           described_class.handle_event(build(:event, :day_elapsed), now:, with_side_effects: true)
-        end.not_to(change { JobFreshness.count })
+        end.not_to(change(JobFreshness, :count))
       end
     end
   end
@@ -116,9 +116,6 @@ RSpec.describe JobFreshnessService do
         employer_id:,
         name: "Blocktrain"
       )
-    end
-
-    before do
       job_events.each do |event|
         described_class.handle_event(event, now:)
       end

@@ -39,7 +39,7 @@ RSpec.shared_examples "coach secured endpoint" do
     it "returns 401" do
       subject
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 

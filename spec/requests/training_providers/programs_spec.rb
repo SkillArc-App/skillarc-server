@@ -8,9 +8,9 @@ RSpec.describe "TrainingProviders::Programs", type: :request do
   end
 
   describe "POST /create" do
-    include_context "admin authenticated"
-
     subject { post training_provider_programs_path(training_provider_id: training_provider.id), params:, headers: }
+
+    include_context "admin authenticated"
 
     let(:params) do
       {
@@ -25,18 +25,18 @@ RSpec.describe "TrainingProviders::Programs", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "creates a program" do
-      expect { subject }.to change { Program.count }.by(1)
+      expect { subject }.to change(Program, :count).by(1)
     end
   end
 
   describe "PUT /update" do
-    include_context "admin authenticated"
-
     subject { put training_provider_program_path(training_provider_id: training_provider.id, id: program.id), params:, headers: }
+
+    include_context "admin authenticated"
 
     let(:params) do
       {
@@ -52,7 +52,7 @@ RSpec.describe "TrainingProviders::Programs", type: :request do
     it "returns a 200" do
       subject
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "updates the program" do

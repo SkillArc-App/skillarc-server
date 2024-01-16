@@ -13,7 +13,7 @@ class PersonalExperiencesController < ApplicationController
 
       render json: personal_experience
     rescue => e
-      render json: { error: e.message }, status: 400
+      render json: { error: e.message }, status: :bad_request
     end
   end
 
@@ -25,7 +25,7 @@ class PersonalExperiencesController < ApplicationController
 
       render json: personal_experience
     rescue => e
-      render json: { error: e.message }, status: 400
+      render json: { error: e.message }, status: :bad_request
     end
   end
 
@@ -37,7 +37,7 @@ class PersonalExperiencesController < ApplicationController
 
       render json: personal_experience
     rescue => e
-      render json: { error: e.message }, status: 400
+      render json: { error: e.message }, status: :bad_request
     end
   end
 end

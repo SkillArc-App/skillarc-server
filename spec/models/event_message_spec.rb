@@ -5,7 +5,7 @@ RSpec.describe EventMessage do
     context "when missing a required key" do
       it "raises a ValueSemantics::MissingAttributes error" do
         expect do
-          EventMessage.new(
+          described_class.new(
             id: SecureRandom.uuid,
             aggregate_id: SecureRandom.uuid,
             event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
@@ -20,7 +20,7 @@ RSpec.describe EventMessage do
     context "when a key is of the wrong type" do
       it "raises a ValueSemantics::InvalidValue error" do
         expect do
-          EventMessage.new(
+          described_class.new(
             id: SecureRandom.uuid,
             aggregate_id: 10,
             event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
@@ -33,7 +33,7 @@ RSpec.describe EventMessage do
       end
     end
 
-    context "#occurred_at" do
+    describe "#occurred_at" do
       context "when passed a Time for occurred_at" do
         it "converts it to ActiveSupport::TimeWithZone" do
           message = build(:event_message, occurred_at: Time.new(2000, 1, 1, 0, 0, 0, "+00:00"))

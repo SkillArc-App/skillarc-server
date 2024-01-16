@@ -5,10 +5,10 @@ RSpec.describe Pubsub do
 
     subscriber = double("subscriber")
     allow(subscriber).to receive(:call)
-    Pubsub.subscribe(event: event.event_type, subscriber:)
+    described_class.subscribe(event: event.event_type, subscriber:)
 
     # Act
-    Pubsub.publish(event:)
+    described_class.publish(event:)
 
     # Assert
     expect(subscriber).to have_received(:call).with(event:)

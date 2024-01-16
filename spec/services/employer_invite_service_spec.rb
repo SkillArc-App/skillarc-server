@@ -27,7 +27,7 @@ RSpec.describe EmployerInviteService do
     it "creates a new recruiter" do
       expect do
         subject.accept
-      end.to change { Recruiter.count }.by(1)
+      end.to change(Recruiter, :count).by(1)
     end
 
     it "updates the employer invite status" do

@@ -14,7 +14,7 @@ RSpec.describe EmployerService do
     end
 
     it "creates an employer" do
-      expect { subject }.to change { Employer.count }.by(1)
+      expect { subject }.to change(Employer, :count).by(1)
 
       expect(Employer.last).to have_attributes(
         name: "Blocktrain",

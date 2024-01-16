@@ -38,7 +38,7 @@ class JobsController < ApplicationController
       )
       render json: serialize_job(job)
     rescue => e
-      render json: { error: e.message }, status: 500
+      render json: { error: e.message }, status: :internal_server_error
     end
   end
 
@@ -65,7 +65,7 @@ class JobsController < ApplicationController
 
       render json: serialize_job(job)
     rescue => e
-      render json: { error: e.message }, status: 500
+      render json: { error: e.message }, status: :internal_server_error
     end
   end
 

@@ -6,7 +6,7 @@ class ApplicationAnalytics
         status = statuses[i]
         next_status = statuses[i + 1]
 
-        next_time = next_status ? next_status.created_at : Time.now
+        next_time = next_status ? next_status.created_at : Time.zone.now
 
         days = (next_time - status.created_at).to_i / 1.day
         hours = ((next_time - status.created_at) - days.days).to_i / 1.hour
@@ -42,8 +42,8 @@ class ApplicationAnalytics
     filtered_applicants.map do |applicant|
       status = applicant.applicant_statuses.last_created
 
-      days = (Time.now - status.created_at).to_i / 1.day
-      hours = ((Time.now - status.created_at) - days.days).to_i / 1.hour
+      days = (Time.zone.now - status.created_at).to_i / 1.day
+      hours = ((Time.zone.now - status.created_at) - days.days).to_i / 1.hour
 
       user = applicant.profile.user
 

@@ -40,6 +40,7 @@ RSpec.describe DbStreamListener do
           event_id: bookmark_event.id
         )
       end
+
       let(:bookmark_event) { event }
 
       it "consumes the events after the bookmark" do

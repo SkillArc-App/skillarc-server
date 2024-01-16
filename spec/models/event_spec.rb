@@ -25,7 +25,7 @@ RSpec.describe Event do
     let(:event_message) { build(:event_message) }
 
     it "creates an EventMessage with the same data" do
-      expect(subject).to be_a(Event)
+      expect(subject).to be_a(described_class)
 
       expect(subject.id).to eq(event_message.id)
       expect(subject.aggregate_id).to eq(event_message.aggregate_id)

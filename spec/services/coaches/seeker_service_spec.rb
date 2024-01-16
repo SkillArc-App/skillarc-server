@@ -9,25 +9,71 @@ RSpec.describe Coaches::SeekerService do
   let(:other_user_created) { build(:event, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
   let(:profile_created) { build(:event, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
   let(:other_profile_created) { build(:event, :profile_created, aggregate_id: other_user_id, data: { id: other_profile_id }) }
-
   let(:note_with_id_added1) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1 }, occurred_at: time1) }
   let(:note_with_id_added2) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2 }, occurred_at: time1) }
+  let(:applicant_status_updated1) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
+  let(:applicant_status_updated2) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
+  let(:applicant_status_updated3) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
+  let(:applicant_status_updated4) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
   let(:note_deleted) { build(:event, :note_deleted, aggregate_id: profile_id, data: { note: "This is a note with an id", note_id: note_id1 }, occurred_at: time1) }
   let(:note_modified) { build(:event, :note_modified, aggregate_id: profile_id, data: { note: updated_note, note_id: note_id2 }, occurred_at: time1) }
   let(:skill_level_updated) { build(:event, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: time1) }
   let(:coach_assigned) { build(:event, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:status_updated1) do
+    {
+      profile_id: other_profile_id,
+      user_id: other_user_id,
+      applicant_id: applicant_id1,
+      employment_title: employment_title1,
+      status: status1
+    }
+  end
+  let(:status_updated2) do
+    {
+      profile_id: other_profile_id,
+      user_id: other_user_id,
+      applicant_id: applicant_id1,
+      employment_title: employment_title1,
+      status: status2
+    }
+  end
+  let(:status_updated3) do
+    {
+      profile_id:,
+      user_id:,
+      applicant_id: applicant_id2,
+      employment_title: employment_title2,
+      status: status1
+    }
+  end
+  let(:status_updated4) do
+    {
+      profile_id: other_profile_id,
+      user_id: other_user_id,
+      applicant_id: applicant_id3,
+      employment_title: employment_title2,
+      status: status1
+    }
+  end
 
   let(:time1) { Time.utc(2020, 1, 1) }
   let(:time2) { Time.utc(2022, 1, 1) }
+  let(:employment_title1) { "A place of employment" }
+  let(:employment_title2) { "Another place of employment" }
+  let(:status1) { "Phone screening" }
+  let(:status2) { "Hired" }
   let(:user_without_email_id) { "4f878ed9-5cb9-429b-ab22-969b46305ea2" }
   let(:profile_without_email_id) { "b09195f7-a15e-461f-bec2-1e4744122fdf" }
-
   let(:user_id) { "9f769972-c41c-4b58-a056-bffb714ea24d" }
   let(:other_user_id) { "7a381c1e-6f1c-41e7-b045-6f989acc2cf8" }
   let(:profile_id) { "75372772-49dc-4884-b4ae-1d408e030aa4" }
   let(:other_profile_id) { "2dc66599-1116-4d7a-bdbb-38652fbed6cd" }
   let(:note_id1) { "78f22f6c-a770-46fc-a83c-1ad6cda4b8f9" }
   let(:note_id2) { "a0c1894f-df0d-40d3-bb1d-d68efea4772d" }
+  let(:applicant_id1) { "8aac8c6d-5c13-418d-b8e7-fd468fa291de" }
+  let(:applicant_id2) { "749d43ba-08b5-40cb-977c-4e8ebd2da04a" }
+  let(:applicant_id3) { "71f36a32-9c83-47e7-a22a-3d15b03c2dc0" }
+  let(:job_id) { "e43b2338-50bb-467f-85c4-ee26181052e2" }
   let(:updated_note) { "This note was updated" }
 
   before do
@@ -45,6 +91,10 @@ RSpec.describe Coaches::SeekerService do
     described_class.handle_event(note_modified)
     described_class.handle_event(skill_level_updated)
     described_class.handle_event(coach_assigned)
+    described_class.handle_event(applicant_status_updated1)
+    described_class.handle_event(applicant_status_updated2)
+    described_class.handle_event(applicant_status_updated3)
+    described_class.handle_event(applicant_status_updated4)
   end
 
   describe ".all" do
@@ -58,7 +108,7 @@ RSpec.describe Coaches::SeekerService do
         email: "hannah@blocktrainapp.com",
         phoneNumber: "1234567890",
         skillLevel: 'advanced',
-        lastActiveOn: profile_created.occurred_at,
+        lastActiveOn: applicant_status_updated3.occurred_at,
         lastContacted: note_with_id_added1.occurred_at,
         assignedCoach: '123',
         barriers: [],
@@ -67,6 +117,12 @@ RSpec.describe Coaches::SeekerService do
             note: "This note was updated",
             date: Time.utc(2020, 1, 1),
             noteId: note_id2
+          }
+        ],
+        applications: [
+          {
+            status: status1,
+            employment_title: employment_title2
           }
         ],
         stage: 'profile_created'
@@ -78,11 +134,21 @@ RSpec.describe Coaches::SeekerService do
         email: "katina@gmail.com",
         phoneNumber: nil,
         skillLevel: 'beginner',
-        lastActiveOn: other_profile_created.occurred_at,
+        lastActiveOn: applicant_status_updated4.occurred_at,
         lastContacted: "Never",
         assignedCoach: 'none',
         barriers: [],
         notes: [],
+        applications: [
+          {
+            status: status2,
+            employment_title: employment_title1
+          },
+          {
+            status: status1,
+            employment_title: employment_title2
+          }
+        ],
         stage: 'profile_created'
       }
 
@@ -101,7 +167,7 @@ RSpec.describe Coaches::SeekerService do
         email: "hannah@blocktrainapp.com",
         phoneNumber: "1234567890",
         skillLevel: 'advanced',
-        lastActiveOn: profile_created.occurred_at,
+        lastActiveOn: applicant_status_updated3.occurred_at,
         lastContacted: note_with_id_added1.occurred_at,
         assignedCoach: '123',
         barriers: [],
@@ -110,6 +176,12 @@ RSpec.describe Coaches::SeekerService do
             note: "This note was updated",
             date: Time.utc(2020, 1, 1),
             noteId: note_id2
+          }
+        ],
+        applications: [
+          {
+            status: status1,
+            employment_title: employment_title2
           }
         ],
         stage: 'profile_created'

@@ -23,8 +23,10 @@ module Secured
     auth_client = AuthClient::Factory.build
 
     validation_response = auth_client.validate_token(token)
+    _, sub = validation_response.decoded_token[0]['sub'].split('|')
+
     user = user_finder.find_or_create(
-      decoded_token: validation_response.decoded_token,
+      sub:,
       token:,
       auth_client:
     )

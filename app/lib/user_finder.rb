@@ -1,7 +1,5 @@
 class UserFinder
-  def find_or_create(decoded_token:, token:, auth_client:)
-    _, sub = decoded_token[0]['sub'].split('|')
-
+  def find_or_create(sub:, token:, auth_client:)
     u = User.find_by(sub:)
 
     return u if u

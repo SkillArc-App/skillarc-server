@@ -13,7 +13,6 @@ class UserFinder
       email: info['email'],
       email_verified: info['email_verified'],
       image: info['picture'],
-      name: info['nickname'],
       sub:
     )
 

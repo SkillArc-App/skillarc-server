@@ -136,7 +136,7 @@ module Coaches
     def self.handle_note_added(event)
       csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
 
-      csc.update!(last_contacted_at: [csc.last_contacted_at, event.occurred_at].compact.max)
+      csc.update!(last_contacted_at: event.occurred_at)
       csc.seeker_notes << SeekerNote.create!(
         coach_seeker_context: csc,
         note_taken_at: event.occurred_at,

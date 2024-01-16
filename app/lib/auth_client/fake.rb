@@ -1,21 +1,21 @@
 module AuthClient
   class Fake
+    def initalize(email:, sub:)
+      @email = email
+      @sub = sub
+    end
+
     def validate_token(token)
-      Response.new(
-        [{
-          'sub' => "email|#{token}"
-        }],
-        nil
-      )
+      ValidationResponse.ok(sub: token)
     end
 
     def get_user_info(_token)
       {
-        'email' => ENV['MOCK_USER_EMAIL'],
+        'email' => @email,
         'email_verified' => nil,
         'picture' => nil,
         'nickname' => nil,
-        'sub' => ENV['MOCK_USER_SUB']
+        'sub' => @sub
       }
     end
   end

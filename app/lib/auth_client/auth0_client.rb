@@ -5,30 +5,16 @@ require 'net/http'
 
 module AuthClient
   class Auth0Client
-    # Helper Functions
-    def domain_url
-      "https://blocktrain.us.auth0.com/"
-    end
-
-    def decode_token(token, jwks_hash)
-      JWT.decode(token, nil, true, {
-                   algorithm: 'RS256',
-                   iss: domain_url,
-                   verify_iss: true,
-                   aud: 'https://hello-world.example.com',
-                   verify_aud: true,
-                   jwks: { keys: jwks_hash[:keys] }
-                 })
-    end
-
     # Token Validation
     def validate_token(token)
       decoded_token = decode_token(token, jwks_hash)
 
-      Response.new(decoded_token, nil)
+      _, sub = decoded_token[0]['sub'].split('|')
+
+
+      ValidationResponse.ok(sub:)
     rescue JWT::VerificationError, JWT::DecodeError => _e
-      error = Error.new('Bad credentials', :unauthorized)
-      Response.new(nil, error)
+      ValidationResponse.err(error: Error.new('Bad credentials', :unauthorized))
     end
 
     def get_user_info(token)
@@ -44,6 +30,22 @@ module AuthClient
     end
 
     private
+
+    # Helper Functions
+    def domain_url
+      "https://blocktrain.us.auth0.com/"
+    end
+
+    def decode_token(token, jwks_hash)
+      JWT.decode(token, nil, true, {
+                   algorithm: 'RS256',
+                   iss: domain_url,
+                   verify_iss: true,
+                   aud: 'https://hello-world.example.com',
+                   verify_aud: true,
+                   jwks: { keys: jwks_hash[:keys] }
+                 })
+    end
 
     def jwks_hash
       return @jwks_hash if @jwks_hash

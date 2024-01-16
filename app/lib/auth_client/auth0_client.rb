@@ -5,10 +5,6 @@ require 'net/http'
 
 module AuthClient
   class Auth0Client
-    # Auth0 Client Objects
-    Error = Struct.new(:message, :status)
-    Response = Struct.new(:decoded_token, :error)
-
     # Helper Functions
     def domain_url
       "https://blocktrain.us.auth0.com/"

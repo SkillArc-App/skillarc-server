@@ -1,8 +1,5 @@
 module AuthClient
   class Fake
-    Error = Struct.new(:message, :status)
-    Response = Struct.new(:decoded_token, :error)
-
     def validate_token(token)
       Response.new(
         [{

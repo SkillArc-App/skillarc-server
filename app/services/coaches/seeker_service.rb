@@ -48,7 +48,7 @@ module Coaches
     end
 
     def self.all
-      CoachSeekerContext.includes(:seeker_notes).where.not(profile_id: nil).where.not(email: nil).map do |csc|
+      CoachSeekerContext.includes(:seeker_notes, :seeker_applications).where.not(profile_id: nil).where.not(email: nil).map do |csc|
         serialize_coach_seeker_context(csc)
       end
     end

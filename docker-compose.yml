@@ -7,19 +7,29 @@ services:
       - "127.0.0.1:6379:6379"
   postgres:
     image: "postgres:15.3"
-    container_name: "blocktrain_postgres_1"
+    container_name: "blocktrain_postgres"
     ports:
       - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
   rails:
-    build: .
-    container_name: "blocktrain"
+    build:
+      dockerfile: server.Dockerfile
+    container_name: "blocktrain_server"
     volumes:
       - .:/app
     ports:
       - "3001:3001"
+    depends_on:
+      - postgres
+      - redis
+  resque:
+    build:
+      dockerfile: resque.Dockerfile
+    container_name: "blocktrain_resque"
+    volumes:
+      - .:/app
     depends_on:
       - postgres
       - redis

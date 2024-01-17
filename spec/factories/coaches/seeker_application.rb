@@ -3,7 +3,9 @@ FactoryBot.define do
     association :coach_seeker_context, factory: :coaches__coach_seeker_context
 
     application_id { SecureRandom.uuid }
+    job_id { SecureRandom.uuid }
     status { "This is a note" }
+    employer_name { "Cool " }
     employment_title { "An application status" }
   end
 end

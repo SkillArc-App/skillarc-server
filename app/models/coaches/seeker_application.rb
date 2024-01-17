@@ -30,5 +30,8 @@ module Coaches
     validates :application_id, presence: true
     validates :status, presence: true
     validates :employment_title, presence: true
+
+    validates :job_id, presence: true, on: :create
+    validates :employer_name, presence: true, on: :create
   end
 end

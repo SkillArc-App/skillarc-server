@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_16_151342) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_17_190611) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -147,6 +147,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_151342) do
     t.string "status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "employer_name"
+    t.uuid "job_id"
     t.index ["application_id"], name: "index_coaches_seeker_applications_on_application_id"
     t.index ["coach_seeker_context_id"], name: "index_coaches_seeker_applications_on_coach_seeker_context_id"
   end

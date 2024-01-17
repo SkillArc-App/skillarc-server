@@ -3,12 +3,14 @@
 # Table name: coaches_seeker_applications
 #
 #  id                      :uuid             not null, primary key
+#  employer_name           :string
 #  employment_title        :string           not null
 #  status                  :string           not null
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #  application_id          :uuid             not null
 #  coach_seeker_context_id :uuid             not null
+#  job_id                  :uuid
 #
 # Indexes
 #

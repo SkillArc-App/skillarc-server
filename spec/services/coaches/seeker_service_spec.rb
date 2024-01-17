@@ -230,7 +230,9 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".add_note" do
-    subject { described_class.add_note(profile_id, "This is a new note", note_id1, now:) }
+    subject { described_class.add_note(id: profile_id, coach:, note: "This is a new note", note_id: note_id1, now:) }
+
+    let(:coach) { create(:coaches__coach) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
 
@@ -239,6 +241,8 @@ RSpec.describe Coaches::SeekerService do
         event_type: Event::EventTypes::NOTE_ADDED,
         aggregate_id: profile_id,
         data: {
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
           note: "This is a new note",
           note_id: note_id1
         },
@@ -251,7 +255,9 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".delete_note" do
-    subject { described_class.delete_note(profile_id, note_id1, now:) }
+    subject { described_class.delete_note(coach:, id: profile_id, note_id: note_id1, now:) }
+
+    let(:coach) { create(:coaches__coach) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
 
@@ -260,6 +266,8 @@ RSpec.describe Coaches::SeekerService do
         event_type: Event::EventTypes::NOTE_DELETED,
         aggregate_id: profile_id,
         data: {
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
           note_id: note_id1
         },
         metadata: {},
@@ -271,7 +279,9 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".modify_note" do
-    subject { described_class.modify_note(profile_id, note_id2, updated_note, now:) }
+    subject { described_class.modify_note(id: profile_id, coach:, note_id: note_id2, note: updated_note, now:) }
+
+    let(:coach) { create(:coaches__coach) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
 
@@ -280,6 +290,8 @@ RSpec.describe Coaches::SeekerService do
         event_type: Event::EventTypes::NOTE_MODIFIED,
         aggregate_id: profile_id,
         data: {
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
           note_id: note_id2,
           note: updated_note
         },

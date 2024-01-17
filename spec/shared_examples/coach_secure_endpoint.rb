@@ -21,6 +21,7 @@ RSpec.shared_context "coach authenticated" do
 
     u
   end
+  let!(:coach) { create(:coaches__coach, user_id: user.id) }
 
   let(:headers) { { "Authorization" => "Bearer #{user.sub}" } }
 

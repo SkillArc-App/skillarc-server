@@ -59,11 +59,13 @@ module Coaches
       serialize_coach_seeker_context(csc)
     end
 
-    def self.add_note(id, note, note_id, now: Time.zone.now)
+    def self.add_note(id:, coach:, note:, note_id:, now: Time.zone.now)
       CreateEventJob.perform_later(
         event_type: Event::EventTypes::NOTE_ADDED,
         aggregate_id: id,
         data: {
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
           note:,
           note_id:
         },
@@ -72,11 +74,13 @@ module Coaches
       )
     end
 
-    def self.delete_note(id, note_id, now: Time.zone.now)
+    def self.delete_note(id:, coach:, note_id:, now: Time.zone.now)
       CreateEventJob.perform_later(
         event_type: Event::EventTypes::NOTE_DELETED,
         aggregate_id: id,
         data: {
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
           note_id:
         },
         metadata: {},
@@ -84,11 +88,13 @@ module Coaches
       )
     end
 
-    def self.modify_note(id, note_id, note, now: Time.zone.now)
+    def self.modify_note(id:, coach:, note_id:, note:, now: Time.zone.now)
       CreateEventJob.perform_later(
         event_type: Event::EventTypes::NOTE_MODIFIED,
         aggregate_id: id,
         data: {
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
           note_id:,
           note:
         },

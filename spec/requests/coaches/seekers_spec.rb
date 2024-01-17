@@ -64,7 +64,7 @@ RSpec.describe "Seekers", type: :request do
     let(:seeker_id) { "123" }
     let(:params) do
       {
-        coach_id: coach.id
+        coach_id: coach.coach_id
       }
     end
     let(:coach) { create(:coaches__coach) }

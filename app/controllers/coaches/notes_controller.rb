@@ -5,12 +5,16 @@ module Coaches
 
     before_action :authorize
     before_action :coach_authorize
+    before_action :set_coach
 
     def create
+      coach = Coach.find_by(user_id: current_user.id)
+
       SeekerService.add_note(
-        params[:seeker_id],
-        params[:note],
-        params[:note_id] || SecureRandom.uuid
+        coach:,
+        id: params[:seeker_id],
+        note: params[:note],
+        note_id: params[:note_id] || SecureRandom.uuid
       )
 
       render json: {}
@@ -18,9 +22,10 @@ module Coaches
 
     def update
       SeekerService.modify_note(
-        params[:seeker_id],
-        params[:id],
-        params[:note]
+        id: params[:seeker_id],
+        coach:,
+        note_id: params[:id],
+        note: params[:note]
       )
 
       head :accepted
@@ -28,11 +33,20 @@ module Coaches
 
     def destroy
       SeekerService.delete_note(
-        params[:seeker_id],
-        params[:id]
+        coach:,
+        id: params[:seeker_id],
+        note_id: params[:id]
       )
 
       head :accepted
+    end
+
+    private
+
+    attr_reader :coach
+
+    def set_coach
+      @coach = Coach.find_by(user_id: current_user.id)
     end
   end
 end

@@ -28,5 +28,17 @@ RSpec.describe Coaches::SeekerApplication do
         expect(build(:coaches__seeker_application, application_id: nil)).not_to be_valid
       end
     end
+
+    context "when job_id is missing" do
+      it "does not validate" do
+        expect(build(:coaches__seeker_application, job_id: nil)).not_to be_valid
+      end
+    end
+
+    context "when employer_name is missing" do
+      it "does not validate" do
+        expect(build(:coaches__seeker_application, employer_name: nil)).not_to be_valid
+      end
+    end
   end
 end

@@ -133,6 +133,8 @@ module Coaches
 
       application.update!(
         status: event.data["status"],
+        employer_name: event.data["employer_name"],
+        job_id: event.data["job_id"],
         employment_title: event.data["employment_title"]
       )
     end
@@ -237,6 +239,8 @@ module Coaches
         applications: csc.seeker_applications.map do |application|
           {
             status: application.status,
+            employer_name: application.employer_name,
+            job_id: application.job_id,
             employment_title: application.employment_title
           }
         end

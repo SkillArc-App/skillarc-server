@@ -21,6 +21,8 @@ RSpec.describe Coaches::SeekerService do
   let(:coach_assigned) { build(:event, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: time1) }
   let(:status_updated1) do
     {
+      job_id:,
+      employer_name: employer_name1,
       profile_id: other_profile_id,
       user_id: other_user_id,
       applicant_id: applicant_id1,
@@ -30,6 +32,8 @@ RSpec.describe Coaches::SeekerService do
   end
   let(:status_updated2) do
     {
+      job_id:,
+      employer_name: employer_name1,
       profile_id: other_profile_id,
       user_id: other_user_id,
       applicant_id: applicant_id1,
@@ -39,8 +43,11 @@ RSpec.describe Coaches::SeekerService do
   end
   let(:status_updated3) do
     {
+      job_id:,
       profile_id:,
       user_id:,
+      employer_name: employer_name2,
+
       applicant_id: applicant_id2,
       employment_title: employment_title2,
       status: status1
@@ -48,6 +55,8 @@ RSpec.describe Coaches::SeekerService do
   end
   let(:status_updated4) do
     {
+      job_id:,
+      employer_name: employer_name2,
       profile_id: other_profile_id,
       user_id: other_user_id,
       applicant_id: applicant_id3,
@@ -75,6 +84,8 @@ RSpec.describe Coaches::SeekerService do
   let(:applicant_id3) { "71f36a32-9c83-47e7-a22a-3d15b03c2dc0" }
   let(:job_id) { "e43b2338-50bb-467f-85c4-ee26181052e2" }
   let(:updated_note) { "This note was updated" }
+  let(:employer_name1) { "Cool company" }
+  let(:employer_name2) { "Fun company" }
 
   before do
     described_class.handle_event(non_seeker_user_created)
@@ -121,6 +132,8 @@ RSpec.describe Coaches::SeekerService do
         ],
         applications: [
           {
+            job_id:,
+            employer_name: employer_name2,
             status: status1,
             employment_title: employment_title2
           }
@@ -141,10 +154,14 @@ RSpec.describe Coaches::SeekerService do
         notes: [],
         applications: [
           {
+            job_id:,
+            employer_name: employer_name1,
             status: status2,
             employment_title: employment_title1
           },
           {
+            job_id:,
+            employer_name: employer_name2,
             status: status1,
             employment_title: employment_title2
           }
@@ -181,7 +198,9 @@ RSpec.describe Coaches::SeekerService do
         applications: [
           {
             status: status1,
-            employment_title: employment_title2
+            job_id:,
+            employment_title: employment_title2,
+            employer_name: employer_name2
           }
         ],
         stage: 'profile_created'

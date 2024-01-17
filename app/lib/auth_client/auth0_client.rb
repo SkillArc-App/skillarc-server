@@ -37,15 +37,10 @@ module AuthClient
 
     private
 
-    # Helper Functions
-    def domain_url
-      "https://#{@auth0_domain}"
-    end
-
     def decode_token(token, jwks_hash)
       JWT.decode(token, nil, true, {
                    algorithm: 'RS256',
-                   iss: domain_url,
+                   iss: "https://#{@auth0_domain}/",
                    verify_iss: true,
                    aud: 'https://hello-world.example.com',
                    verify_aud: true,
@@ -64,7 +59,7 @@ module AuthClient
     end
 
     def jwks
-      jwks_uri = URI("#{domain_url}.well-known/jwks.json")
+      jwks_uri = URI("https://#{@auth0_domain}/.well-known/jwks.json")
 
       Net::HTTP.get_response jwks_uri
     end

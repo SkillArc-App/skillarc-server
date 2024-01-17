@@ -132,6 +132,8 @@ RSpec.describe Coaches::SeekerService do
         ],
         applications: [
           {
+            job_id:,
+            employer_name: employer_name2,
             status: status1,
             employment_title: employment_title2
           }
@@ -152,10 +154,14 @@ RSpec.describe Coaches::SeekerService do
         notes: [],
         applications: [
           {
+            job_id:,
+            employer_name: employer_name1,
             status: status2,
             employment_title: employment_title1
           },
           {
+            job_id:,
+            employer_name: employer_name2,
             status: status1,
             employment_title: employment_title2
           }
@@ -192,7 +198,9 @@ RSpec.describe Coaches::SeekerService do
         applications: [
           {
             status: status1,
-            employment_title: employment_title2
+            job_id:,
+            employment_title: employment_title2,
+            employer_name: employer_name2
           }
         ],
         stage: 'profile_created'

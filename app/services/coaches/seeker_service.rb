@@ -239,6 +239,8 @@ module Coaches
         applications: csc.seeker_applications.map do |application|
           {
             status: application.status,
+            employer_name: application.employer_name,
+            job_id: application.job_id,
             employment_title: application.employment_title
           }
         end

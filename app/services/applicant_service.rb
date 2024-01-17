@@ -24,6 +24,8 @@ class ApplicantService
         applicant_id: applicant.id,
         profile_id: applicant.profile.id,
         user_id: applicant.profile.user.id,
+        job_id: applicant.job.id,
+        employer_name: applicant.job.employer.name,
         employment_title: applicant.job.employment_title,
         status: applicant.status.status
       },

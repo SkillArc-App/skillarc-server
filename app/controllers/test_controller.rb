@@ -22,7 +22,7 @@ class TestController < ApplicationController
 
     UserRole.create!(
       id: SecureRandom.uuid,
-      role: role,
+      role:,
       user_id:
     )
 
@@ -49,7 +49,7 @@ class TestController < ApplicationController
       )
     )
 
-    csc = Coaches::CoachSeekerContext.create!(
+    Coaches::CoachSeekerContext.create!(
       user_id: profile.user.id,
       profile_id: profile.id,
       first_name: profile.user.first_name,

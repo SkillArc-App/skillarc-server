@@ -5,6 +5,7 @@
 #  id                      :uuid             not null, primary key
 #  note                    :string           not null
 #  note_taken_at           :datetime         not null
+#  note_taken_by           :text             not null
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #  coach_seeker_context_id :uuid             not null
@@ -25,5 +26,6 @@ module Coaches
     validates :note, presence: true
     validates :note_id, presence: true
     validates :note_taken_at, presence: true
+    validates :note_taken_by, presence: true
   end
 end

@@ -5,5 +5,6 @@ FactoryBot.define do
     note { "This is a note" }
     note_id { SecureRandom.uuid }
     note_taken_at { Time.zone.local(2020, 1, 1) }
+    note_taken_by { "coach@blocktrainapp.com" }
   end
 end

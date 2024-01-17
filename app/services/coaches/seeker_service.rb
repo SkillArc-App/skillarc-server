@@ -167,6 +167,7 @@ module Coaches
       csc.seeker_notes << SeekerNote.create!(
         coach_seeker_context: csc,
         note_taken_at: event.occurred_at,
+        note_taken_by: event.data["coach_email"],
         note_id: event.data["note_id"],
         note: event.data["note"]
       )
@@ -239,6 +240,7 @@ module Coaches
           {
             note: note.note,
             noteId: note.note_id,
+            noteTakenBy: note.note_taken_by,
             date: note.note_taken_at
           }
         end,

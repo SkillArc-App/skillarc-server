@@ -133,6 +133,8 @@ module Coaches
 
       application.update!(
         status: event.data["status"],
+        employer_name: event.data["employer_name"],
+        job_id: event.data["job_id"],
         employment_title: event.data["employment_title"]
       )
     end

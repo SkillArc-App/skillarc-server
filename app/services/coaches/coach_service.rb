@@ -24,6 +24,7 @@ module Coaches
       return unless event.data["role"] == "coach"
 
       Coach.create!(
+        coach_id: event.data["coach_id"],
         user_id: event.aggregate_id,
         email: event.data["email"]
       )

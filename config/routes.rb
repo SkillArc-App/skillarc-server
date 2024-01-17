@@ -128,9 +128,13 @@ Rails.application.routes.draw do
   end
 
   if Rails.env.test? || Rails.env.development?
-    post '/reset_test_database' => 'test#reset_test_database'
-    post '/create_test_user' => 'test#create_test_user'
-    post '/create_test_recruiter_with_applicant' => 'test#create_test_recruiter_with_applicant'
+    resource :test do
+      post '/reset_database' => 'test#reset_test_database'
+      post '/create_user' => 'test#create_test_user'
+      post '/create_coach' => 'test#create_coach'
+      post '/create_seeker' => 'test#create_seeker'
+      post '/create_recruiter_with_applicant' => 'test#create_test_recruiter_with_applicant'
+    end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

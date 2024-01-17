@@ -20,10 +20,17 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build and Push Docker image
+      - name: Build and Push Server Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Dockerfile
+          file: ./server.Dockerfile
           push: true
-          tags: ghcr.io/blocktrain-app/blocktrain-rails:latest
+          tags: ghcr.io/blocktrain-app/server:latest
+      - name: Build and Push Resque Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./resque.Dockerfile
+          push: true
+          tags: ghcr.io/blocktrain-app/resque:latest

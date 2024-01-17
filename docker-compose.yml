@@ -14,6 +14,8 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
   rails:
+    tty: true
+    stdin_open: true
     build:
       dockerfile: server.Dockerfile
     container_name: "blocktrain_server"

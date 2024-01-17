@@ -21,5 +21,6 @@
 module Coaches
   class CoachSeekerContext < ApplicationRecord
     has_many :seeker_notes, dependent: :destroy, class_name: "Coaches::SeekerNote"
+    has_many :seeker_applications, dependent: :destroy, class_name: "Coaches::SeekerApplication"
   end
 end

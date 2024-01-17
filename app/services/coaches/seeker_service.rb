@@ -23,6 +23,10 @@ module Coaches
       when Event::EventTypes::SKILL_LEVEL_UPDATED
         handle_skill_level_updated(event)
 
+      # Multi Origin
+      when Event::EventTypes::APPLICANT_STATUS_UPDATED
+        handle_applicant_status_updated(event)
+
       # Seeker Originated
       when Event::EventTypes::PROFILE_CREATED
         handle_profile_created(event)
@@ -44,7 +48,7 @@ module Coaches
     end
 
     def self.all
-      CoachSeekerContext.includes(:seeker_notes).where.not(profile_id: nil).where.not(email: nil).map do |csc|
+      CoachSeekerContext.includes(:seeker_notes, :seeker_applications).where.not(profile_id: nil).where.not(email: nil).map do |csc|
         serialize_coach_seeker_context(csc)
       end
     end
@@ -118,6 +122,21 @@ module Coaches
       )
     end
 
+    def self.handle_applicant_status_updated(event)
+      csc = CoachSeekerContext.find_by!(user_id: event.data["user_id"])
+      csc.update!(last_active_on: event.occurred_at)
+
+      application = SeekerApplication.find_or_create_by(
+        coach_seeker_context: csc,
+        application_id: event.data["application_id"] || event.data["applicant_id"]
+      )
+
+      application.update!(
+        status: event.data["status"],
+        employment_title: event.data["employment_title"]
+      )
+    end
+
     def self.handle_coach_assigned(event)
       csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
 
@@ -136,7 +155,7 @@ module Coaches
     def self.handle_note_added(event)
       csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
 
-      csc.update!(last_contacted_at: [csc.last_contacted_at, event.occurred_at].compact.max)
+      csc.update!(last_contacted_at: event.occurred_at)
       csc.seeker_notes << SeekerNote.create!(
         coach_seeker_context: csc,
         note_taken_at: event.occurred_at,
@@ -213,6 +232,12 @@ module Coaches
             note: note.note,
             noteId: note.note_id,
             date: note.note_taken_at
+          }
+        end,
+        applications: csc.seeker_applications.map do |application|
+          {
+            status: application.status,
+            employment_title: application.employment_title
           }
         end
       }

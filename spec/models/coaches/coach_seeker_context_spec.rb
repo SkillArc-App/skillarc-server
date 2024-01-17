@@ -11,4 +11,14 @@ RSpec.describe Coaches::CoachSeekerContext do
       expect(coach_seeker_context.seeker_notes).to contain_exactly(seeker_note1, seeker_note2)
     end
   end
+
+  describe "#seeker_application" do
+    let(:seeker_application1) { create(:coaches__seeker_application, coach_seeker_context:) }
+    let(:seeker_application2) { create(:coaches__seeker_application) }
+    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+
+    it "returns the seeker notes associated with this context" do
+      expect(coach_seeker_context.seeker_applications).to contain_exactly(seeker_application1)
+    end
+  end
 end

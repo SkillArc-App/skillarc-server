@@ -47,7 +47,7 @@ mechanic_job = Job.create!(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
 )
 
-Job.create!(
+earthwork_job = Job.create!(
   id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
   employer: sg_employer,
   benefits_description: 'Dental insurance Vision insurance Disability insurance 401(k)',
@@ -825,7 +825,7 @@ coach = Coaches::Coach.create!(
   email: coach_user.email
 )
 
-Coaches::CoachSeekerContext.create!(
+coach_seeker_context = Coaches::CoachSeekerContext.create!(
   profile_id: seeker_with_profile.id,
   user_id: seeker_with_profile.user.id,
   first_name: seeker_with_profile.user.first_name,
@@ -834,4 +834,22 @@ Coaches::CoachSeekerContext.create!(
   phone_number: seeker_with_profile.user.phone_number,
   stage: 'profile_created',
   assigned_coach: coach.id
+)
+
+Coaches::SeekerApplication.create!(
+  employer_name: mechanic_job.employer.name,
+  employment_title: mechanic_job.employment_title,
+  application_id: SecureRandom.uuid,
+  status: "pending intro",
+  job_id: mechanic_job.id,
+  coach_seeker_context:
+)
+
+Coaches::SeekerApplication.create!(
+  employer_name: earthwork_job.employer.name,
+  employment_title: earthwork_job.employment_title,
+  application_id: SecureRandom.uuid,
+  status: "pass",
+  job_id: earthwork_job.id,
+  coach_seeker_context:
 )

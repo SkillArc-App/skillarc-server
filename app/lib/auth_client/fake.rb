@@ -1,24 +1,21 @@
 module AuthClient
   class Fake
-    Error = Struct.new(:message, :status)
-    Response = Struct.new(:decoded_token, :error)
-
-    def self.validate_token(token)
-      Response.new(
-        [{
-          'sub' => "email|#{token}"
-        }],
-        nil
-      )
+    def initialize(email:, sub:)
+      @email = email
+      @sub = sub
     end
 
-    def self.get_user_info(_token)
+    def validate_token(token)
+      ValidationResponse.ok(sub: token)
+    end
+
+    def get_user_info(_token)
       {
-        'email' => ENV['MOCK_USER_EMAIL'],
+        'email' => @email,
         'email_verified' => nil,
         'picture' => nil,
         'nickname' => nil,
-        'sub' => ENV['MOCK_USER_SUB']
+        'sub' => @sub
       }
     end
   end

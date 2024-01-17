@@ -23,13 +23,15 @@ module Secured
     auth_client = AuthClient::Factory.build
 
     validation_response = auth_client.validate_token(token)
-    user = user_finder.find_or_create(validation_response.decoded_token, token, auth_client:)
-
-    @current_user = user
-
-    return unless (error = validation_response.error)
-
-    render json: { message: error.message }, status: error.status
+    if validation_response.success?
+      @current_user = user_finder.find_or_create(
+        sub: validation_response.sub,
+        token:,
+        auth_client:
+      )
+    else
+      render json: { message: validation_response.message }, status: validation_response.status
+    end
   end
 
   private

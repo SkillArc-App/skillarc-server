@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   resources :pass_reasons
 
   resources :onboarding_sessions
+
   resources :profiles do
     resources :stories
     resources :skills
@@ -86,27 +87,6 @@ Rails.application.routes.draw do
     resources :chats do
       post 'send_message' => 'chats#send_message', on: :collection
       post 'mark_read' => 'chats#mark_read', on: :collection
-    end
-  end
-
-  scope module: 'seekers', path: 'seekers' do
-    resources :jobs do
-      post 'save' => 'jobs#save'
-      post 'unsave' => 'jobs#unsave'
-    end
-  end
-
-  scope module: 'seekers', path: 'seekers' do
-    resources :jobs do
-      post 'save' => 'jobs#save'
-      post 'unsave' => 'jobs#unsave'
-    end
-  end
-
-  scope module: 'seekers', path: 'seekers' do
-    resources :jobs do
-      post 'save' => 'jobs#save'
-      post 'unsave' => 'jobs#unsave'
     end
   end
 

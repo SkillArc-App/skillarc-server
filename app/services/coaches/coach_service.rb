@@ -21,12 +21,12 @@ module Coaches
     end
 
     def self.handle_role_added(event)
-      return unless event.data["role"] == "coach"
+      return unless event.data[:role] == "coach"
 
       Coach.create!(
-        coach_id: event.data["coach_id"],
+        coach_id: event.data[:coach_id],
         user_id: event.aggregate_id,
-        email: event.data["email"]
+        email: event.data[:email]
       )
     end
   end

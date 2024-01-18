@@ -4,7 +4,7 @@ RSpec.describe Slack::UserApplied do
   describe "#call" do
     let(:event) do
       build(
-        :event,
+        :event_message,
         :applicant_status_updated,
         aggregate_id: job.id,
         data: {

@@ -4,7 +4,7 @@ RSpec.describe Klayvio::UserUpdated do
   describe "#call" do
     let(:event) do
       build(
-        :event,
+        :event_message,
         :user_updated,
         data: {
           first_name: "Tom",
@@ -19,7 +19,7 @@ RSpec.describe Klayvio::UserUpdated do
 
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:user_updated).with(
-        email: event.data["email"],
+        email: event.data[:email],
         event_id: event.id,
         occurred_at: event.occurred_at,
         profile_attributes: {

@@ -19,7 +19,7 @@ RSpec.describe ApplicantService do
     end
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
         aggregate_id: applicant.job.id,
         data: {
@@ -31,9 +31,8 @@ RSpec.describe ApplicantService do
           employment_title: applicant.job.employment_title,
           status: ApplicantStatus::StatusTypes::PENDING_INTRO
         },
-        metadata: {},
         occurred_at: anything
-      )
+      ).and_call_original
 
       subject
     end

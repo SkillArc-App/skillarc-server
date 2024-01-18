@@ -21,13 +21,12 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
     onboarding_session.update!(completed_at:)
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       aggregate_id: user.id,
       event_type: Event::EventTypes::ONBOARDING_COMPLETED,
       data: {
         responses:
       },
-      metadata: {},
       occurred_at: completed_at
     )
   end
@@ -44,7 +43,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         phone_number: name_response["phoneNumber"]
       )
 
-      CreateEventJob.perform_later(
+      EventService.create!(
         aggregate_id: user.id,
         event_type: Event::EventTypes::USER_UPDATED,
         data: {
@@ -54,7 +53,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
           phone_number: user.phone_number,
           date_of_birth: Date.strptime(name_response["dateOfBirth"], "%m/%d/%Y")
         },
-        metadata: {},
         occurred_at: user.updated_at
       )
     end
@@ -66,14 +64,13 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       user:
     )
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       aggregate_id: user.id,
       event_type: Event::EventTypes::PROFILE_CREATED,
       data: {
         id: profile.id,
         user_id: user.id
       },
-      metadata: {},
       occurred_at: profile.created_at
     )
   end
@@ -98,7 +95,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         other_experience.id = SecureRandom.uuid
         other_experience.save!
 
-        CreateEventJob.perform_later(
+        EventService.create!(
           aggregate_id: user.id,
           event_type: Event::EventTypes::EXPERIENCE_CREATED,
           data: {
@@ -111,7 +108,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             is_current: other_experience.is_current,
             profile_id: other_experience.profile_id
           },
-          metadata: {},
           occurred_at: other_experience.created_at
         )
       end
@@ -137,7 +133,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         ee.id = SecureRandom.uuid
         ee.save!
 
-        CreateEventJob.perform_later(
+        EventService.create!(
           aggregate_id: user.id,
           event_type: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
           data: {
@@ -149,7 +145,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             gpa: ee.gpa,
             profile_id: ee.profile_id
           },
-          metadata: {},
           occurred_at: ee.created_at
         )
       end
@@ -165,7 +160,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         stp.id = SecureRandom.uuid
         stp.save!
 
-        CreateEventJob.perform_later(
+        EventService.create!(
           aggregate_id: user.id,
           event_type: Event::EventTypes::SEEKER_TRAINING_PROVIDER_CREATED,
           data: {
@@ -173,7 +168,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             user_id: stp.user_id,
             training_provider_id: stp.training_provider_id
           },
-          metadata: {},
           occurred_at: stp.created_at
         )
       end
@@ -198,7 +192,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       pe.id = SecureRandom.uuid
       pe.save!
 
-      CreateEventJob.perform_later(
+      EventService.create!(
         aggregate_id: user.id,
         event_type: Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
         data: {
@@ -209,7 +203,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
           end_date: pe.end_date,
           profile_id: pe.profile_id
         },
-        metadata: {},
         occurred_at: pe.created_at
       )
     end

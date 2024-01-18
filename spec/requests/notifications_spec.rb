@@ -19,25 +19,21 @@ RSpec.describe "Notifications", type: :request do
       end
 
       it "publishes an event" do
-        expect(CreateEventJob).to receive(:perform_later).with(
+        expect(EventService).to receive(:create!).with(
           event_type: Event::EventTypes::NOTIFICATIONS_MARKED_READ,
           aggregate_id: user.id,
           data: {
             notification_id: notification1.id
-          },
-          metadata: {},
-          occurred_at: be_present
-        )
+          }
+        ).and_call_original
 
-        expect(CreateEventJob).to receive(:perform_later).with(
+        expect(EventService).to receive(:create!).with(
           event_type: Event::EventTypes::NOTIFICATIONS_MARKED_READ,
           aggregate_id: user.id,
           data: {
             notification_id: notification2.id
-          },
-          metadata: {},
-          occurred_at: be_present
-        )
+          }
+        ).and_call_original
 
         subject
       end

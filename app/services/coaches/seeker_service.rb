@@ -60,7 +60,7 @@ module Coaches
     end
 
     def self.add_note(id:, coach:, note:, note_id:, now: Time.zone.now)
-      CreateEventJob.perform_later(
+      EventService.create!(
         event_type: Event::EventTypes::NOTE_ADDED,
         aggregate_id: id,
         data: {
@@ -69,13 +69,12 @@ module Coaches
           note:,
           note_id:
         },
-        metadata: {},
         occurred_at: now
       )
     end
 
     def self.delete_note(id:, coach:, note_id:, now: Time.zone.now)
-      CreateEventJob.perform_later(
+      EventService.create!(
         event_type: Event::EventTypes::NOTE_DELETED,
         aggregate_id: id,
         data: {
@@ -83,13 +82,12 @@ module Coaches
           coach_email: coach.email,
           note_id:
         },
-        metadata: {},
         occurred_at: now
       )
     end
 
     def self.modify_note(id:, coach:, note_id:, note:, now: Time.zone.now)
-      CreateEventJob.perform_later(
+      EventService.create!(
         event_type: Event::EventTypes::NOTE_MODIFIED,
         aggregate_id: id,
         data: {
@@ -98,66 +96,63 @@ module Coaches
           note_id:,
           note:
         },
-        metadata: {},
         occurred_at: now
       )
     end
 
     def self.assign_coach(id, coach_id, coach_email, now: Time.zone.now)
-      CreateEventJob.perform_later(
+      EventService.create!(
         event_type: Event::EventTypes::COACH_ASSIGNED,
         aggregate_id: id,
         data: {
           coach_id:,
           email: coach_email
         },
-        metadata: {},
         occurred_at: now
       )
     end
 
     def self.update_skill_level(id, skill_level, now: Time.zone.now)
-      CreateEventJob.perform_later(
+      EventService.create!(
         event_type: Event::EventTypes::SKILL_LEVEL_UPDATED,
         aggregate_id: id,
         data: {
           skill_level:
         },
-        metadata: {},
         occurred_at: now
       )
     end
 
     def self.handle_applicant_status_updated(event)
-      csc = CoachSeekerContext.find_by!(user_id: event.data["user_id"])
+      csc = CoachSeekerContext.find_by!(user_id: event.data[:user_id])
       csc.update!(last_active_on: event.occurred_at)
 
       application = SeekerApplication.find_or_create_by(
         coach_seeker_context: csc,
-        application_id: event.data["application_id"] || event.data["applicant_id"]
+        application_id: event.data[:application_id] || event.data[:applicant_id]
       )
 
       application.update!(
-        status: event.data["status"],
-        employer_name: event.data["employer_name"],
-        job_id: event.data["job_id"],
-        employment_title: event.data["employment_title"]
+        status: event.data[:status],
+        employer_name: event.data[:employer_name],
+        job_id: event.data[:job_id],
+        employment_title: event.data[:employment_title]
       )
     end
 
     def self.handle_coach_assigned(event)
       csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
 
-      csc.assigned_coach = event.data["coach_id"]
+      csc.assigned_coach = event.data[:coach_id]
       csc.save!
     end
 
     def self.handle_note_deleted(event)
-      SeekerNote.find_by!(note_id: event.data["note_id"]).destroy
+      SeekerNote.find_by!(note_id: event.data[:note_id]).destroy
     end
 
     def self.handle_note_modified(event)
-      SeekerNote.find_by!(note_id: event.data["note_id"]).update!(note: event.data["note"])
+      SeekerNote.find_by!(note_id: event.data[:note_id]).update!(note: event.data[:note])
     end
 
     def self.handle_note_added(event)
@@ -167,9 +162,9 @@ module Coaches
       csc.seeker_notes << SeekerNote.create!(
         coach_seeker_context: csc,
         note_taken_at: event.occurred_at,
-        note_taken_by: event.data["coach_email"],
-        note_id: event.data["note_id"],
-        note: event.data["note"]
+        note_taken_by: event.data[:coach_email],
+        note_id: event.data[:note_id],
+        note: event.data[:note]
       )
     end
 
@@ -178,10 +173,10 @@ module Coaches
 
       csc = CoachSeekerContext.find_or_create_by(
         user_id:,
-        email: event.data["email"],
-        first_name: event.data["first_name"],
-        last_name: event.data["last_name"],
-        phone_number: event.data["phone_number"]
+        email: event.data[:email],
+        first_name: event.data[:first_name],
+        last_name: event.data[:last_name],
+        phone_number: event.data[:phone_number]
       )
       csc.last_active_on = event.occurred_at
       csc.save!
@@ -192,9 +187,9 @@ module Coaches
 
       csc.update!(
         last_active_on: event.occurred_at,
-        first_name: event.data["first_name"],
-        last_name: event.data["last_name"],
-        phone_number: event.data["phone_number"]
+        first_name: event.data[:first_name],
+        last_name: event.data[:last_name],
+        phone_number: event.data[:phone_number]
       )
     end
 
@@ -203,7 +198,7 @@ module Coaches
 
       csc.update!(
         last_active_on: event.occurred_at,
-        profile_id: event.data["id"]
+        profile_id: event.data[:id]
       )
     end
 
@@ -211,7 +206,7 @@ module Coaches
       csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
 
       csc.update!(
-        skill_level: event.data["skill_level"]
+        skill_level: event.data[:skill_level]
       )
     end
 

@@ -5,30 +5,28 @@ module Seekers
     before_action :authorize
 
     def save
-      CreateEventJob.perform_later(
+      EventService.create!(
         event_type: Event::EventTypes::JOB_SAVED,
         aggregate_id: current_user.id,
         data: {
           job_id: job.id,
           employment_title: job.employment_title,
           employer_name: job.employer.name
-        },
-        occurred_at: Time.now.utc.iso8601
+        }
       )
 
       render json: { success: true }
     end
 
     def unsave
-      CreateEventJob.perform_later(
+      EventService.create!(
         event_type: Event::EventTypes::JOB_UNSAVED,
         aggregate_id: current_user.id,
         data: {
           job_id: job.id,
           employment_title: job.employment_title,
           employer_name: job.employer.name
-        },
-        occurred_at: Time.now.utc.iso8601
+        }
       )
 
       render json: { success: true }

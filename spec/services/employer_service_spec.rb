@@ -25,7 +25,7 @@ RSpec.describe EmployerService do
     end
 
     it "publishes an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::EMPLOYER_CREATED,
         aggregate_id: be_present,
         data: {
@@ -33,10 +33,8 @@ RSpec.describe EmployerService do
           location: "Columbus, OH",
           bio: "We are a welding company",
           logo_url: "https://www.blocktrain.com/logo.png"
-        },
-        occurred_at: be_present,
-        metadata: {}
-      )
+        }
+      ).and_call_original
 
       subject
     end
@@ -78,7 +76,7 @@ RSpec.describe EmployerService do
     end
 
     it "publishes an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::EMPLOYER_UPDATED,
         aggregate_id: employer.id,
         data: {
@@ -87,9 +85,8 @@ RSpec.describe EmployerService do
           bio: "We are a really good welding company",
           logo_url: "https://www.blocktrain.com/logo.jpeg"
         },
-        occurred_at: be_present,
-        metadata: {}
-      )
+        occurred_at: be_present
+      ).and_call_original
 
       subject
     end

@@ -8,7 +8,7 @@ class SeekerChats
 
     applicant_chat.messages.create!(user:, message:)
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::CHAT_MESSAGE_SENT,
       aggregate_id: applicant_chat.applicant.job.id,
       data: {
@@ -18,9 +18,7 @@ class SeekerChats
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
-      },
-      metadata: {},
-      occurred_at: Time.zone.now
+      }
     )
   end
 

@@ -4,7 +4,7 @@ class EmployerInviteService
   end
 
   def accept
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::EMPLOYER_INVITE_ACCEPTED,
       aggregate_id: employer_invite.employer_id,
       data: {
@@ -12,9 +12,7 @@ class EmployerInviteService
         invite_email: employer_invite.email,
         employer_id: employer_invite.employer_id,
         employer_name: employer_invite.employer.name
-      },
-      occurred_at: Time.now.utc.iso8601,
-      metadata: {}
+      }
     )
 
     user = User.find_by(email: employer_invite.email)

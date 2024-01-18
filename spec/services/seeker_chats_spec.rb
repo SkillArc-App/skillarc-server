@@ -27,7 +27,7 @@ RSpec.describe SeekerChats do
     end
 
     it "creates a chat message event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::CHAT_MESSAGE_SENT,
         aggregate_id: job.id,
         data: {
@@ -37,10 +37,8 @@ RSpec.describe SeekerChats do
           employer_name: employer.name,
           employment_title: job.employment_title,
           message:
-        },
-        metadata: {},
-        occurred_at: anything
-      )
+        }
+      ).and_call_original
 
       subject
     end

@@ -8,7 +8,7 @@ RSpec.describe EmployerInviteService do
 
   describe "#accept" do
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::EMPLOYER_INVITE_ACCEPTED,
         aggregate_id: employer_invite.employer_id,
         data: {
@@ -16,10 +16,8 @@ RSpec.describe EmployerInviteService do
           invite_email: employer_invite.email,
           employer_id: employer_invite.employer_id,
           employer_name: employer_invite.employer.name
-        },
-        occurred_at: be_present,
-        metadata: {}
-      )
+        }
+      ).and_call_original
 
       subject.accept
     end

@@ -5,7 +5,7 @@ class Jobs
       id: SecureRandom.uuid
     )
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::JOB_CREATED,
       aggregate_id: job.id,
       data: {
@@ -21,8 +21,7 @@ class Jobs
         requirements_description: job.requirements_description,
         industry: job.industry
       },
-      occurred_at: job.created_at,
-      metadata: {}
+      occurred_at: job.created_at
     )
   end
 end

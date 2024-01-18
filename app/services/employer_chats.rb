@@ -46,7 +46,7 @@ class EmployerChats
 
     applicant_chat.messages.create!(user: recruiter.user, message:)
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::CHAT_MESSAGE_SENT,
       aggregate_id: applicant_chat.applicant.job.id,
       data: {
@@ -56,16 +56,14 @@ class EmployerChats
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
-      },
-      metadata: {},
-      occurred_at: Time.zone.now
+      }
     )
   end
 
   def create(applicant_id:)
     applicant_chat = ApplicantChat.find_or_create_by!(applicant_id:)
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::CHAT_CREATED,
       aggregate_id: applicant_chat.applicant.job.id,
       data: {
@@ -73,9 +71,7 @@ class EmployerChats
         profile_id: applicant_chat.applicant.profile.id,
         user_id: applicant_chat.applicant.profile.user.id,
         employment_title: applicant_chat.applicant.job.employment_title
-      },
-      metadata: {},
-      occurred_at: Time.zone.now
+      }
     )
   end
 

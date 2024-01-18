@@ -1,24 +1,24 @@
 require 'rails_helper'
 
 RSpec.describe Coaches::SeekerService do
-  let(:non_seeker_user_created) { build(:event, :user_created, aggregate_id: "123", data: { email: "f@f.f" }) }
-  let(:user_without_email) { build(:event, :user_created, aggregate_id: user_without_email_id, data: { first_name: "Hannah", last_name: "Block" }) }
-  let(:profile_without_email) { build(:event, :profile_created, aggregate_id: user_without_email_id, data: { id: profile_without_email_id }) }
-  let(:user_created) { build(:event, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com" }) }
-  let(:user_updated) { build(:event, :user_updated, aggregate_id: user_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890" }) }
-  let(:other_user_created) { build(:event, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
-  let(:profile_created) { build(:event, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
-  let(:other_profile_created) { build(:event, :profile_created, aggregate_id: other_user_id, data: { id: other_profile_id }) }
-  let(:note_with_id_added1) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com" }, occurred_at: time1) }
-  let(:note_with_id_added2) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com" }, occurred_at: time1) }
-  let(:applicant_status_updated1) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
-  let(:applicant_status_updated2) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
-  let(:applicant_status_updated3) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
-  let(:applicant_status_updated4) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
-  let(:note_deleted) { build(:event, :note_deleted, aggregate_id: profile_id, data: { note: "This is a note with an id", note_id: note_id1 }, occurred_at: time1) }
-  let(:note_modified) { build(:event, :note_modified, aggregate_id: profile_id, data: { note: updated_note, note_id: note_id2 }, occurred_at: time1) }
-  let(:skill_level_updated) { build(:event, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: time1) }
-  let(:coach_assigned) { build(:event, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:non_seeker_user_created) { build(:event_message, :user_created, aggregate_id: "123", data: { email: "f@f.f" }) }
+  let(:user_without_email) { build(:event_message, :user_created, aggregate_id: user_without_email_id, data: { first_name: "Hannah", last_name: "Block" }) }
+  let(:profile_without_email) { build(:event_message, :profile_created, aggregate_id: user_without_email_id, data: { id: profile_without_email_id }) }
+  let(:user_created) { build(:event_message, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com" }) }
+  let(:user_updated) { build(:event_message, :user_updated, aggregate_id: user_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890" }) }
+  let(:other_user_created) { build(:event_message, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
+  let(:profile_created) { build(:event_message, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
+  let(:other_profile_created) { build(:event_message, :profile_created, aggregate_id: other_user_id, data: { id: other_profile_id }) }
+  let(:note_with_id_added1) { build(:event_message, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:note_with_id_added2) { build(:event_message, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:applicant_status_updated1) { build(:event_message, :applicant_status_updated, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
+  let(:applicant_status_updated2) { build(:event_message, :applicant_status_updated, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
+  let(:applicant_status_updated3) { build(:event_message, :applicant_status_updated, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
+  let(:applicant_status_updated4) { build(:event_message, :applicant_status_updated, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
+  let(:note_deleted) { build(:event_message, :note_deleted, aggregate_id: profile_id, data: { note: "This is a note with an id", note_id: note_id1 }, occurred_at: time1) }
+  let(:note_modified) { build(:event_message, :note_modified, aggregate_id: profile_id, data: { note: updated_note, note_id: note_id2 }, occurred_at: time1) }
+  let(:skill_level_updated) { build(:event_message, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: time1) }
+  let(:coach_assigned) { build(:event_message, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: time1) }
   let(:status_updated1) do
     {
       job_id:,
@@ -222,7 +222,7 @@ RSpec.describe Coaches::SeekerService do
       ].each do |event_type|
         context "when a #{event_type} occurs for a seeker" do
           it "updates the last active to when the event occured" do
-            described_class.handle_event(build(:event, event_type:, aggregate_id: user_id, occurred_at: time2))
+            described_class.handle_event(build(:event_message, event_type:, aggregate_id: user_id, occurred_at: time2))
 
             expect(subject[:lastActiveOn]).to eq(time2)
           end
@@ -239,7 +239,7 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::NOTE_ADDED,
         aggregate_id: profile_id,
         data: {
@@ -248,9 +248,8 @@ RSpec.describe Coaches::SeekerService do
           note: "This is a new note",
           note_id: note_id1
         },
-        metadata: {},
         occurred_at: now
-      )
+      ).and_call_original
 
       subject
     end
@@ -264,7 +263,7 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::NOTE_DELETED,
         aggregate_id: profile_id,
         data: {
@@ -272,9 +271,8 @@ RSpec.describe Coaches::SeekerService do
           coach_email: coach.email,
           note_id: note_id1
         },
-        metadata: {},
         occurred_at: now
-      )
+      ).and_call_original
 
       subject
     end
@@ -288,7 +286,7 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::NOTE_MODIFIED,
         aggregate_id: profile_id,
         data: {
@@ -297,9 +295,8 @@ RSpec.describe Coaches::SeekerService do
           note_id: note_id2,
           note: updated_note
         },
-        metadata: {},
         occurred_at: now
-      )
+      ).and_call_original
 
       subject
     end
@@ -311,16 +308,15 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::COACH_ASSIGNED,
         aggregate_id: profile_id,
         data: {
           coach_id: "123",
           email: "coach@blocktrainapp.com"
         },
-        metadata: {},
         occurred_at: now
-      )
+      ).and_call_original
 
       subject
     end
@@ -332,15 +328,14 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::SKILL_LEVEL_UPDATED,
         aggregate_id: profile_id,
         data: {
           skill_level: "advanced"
         },
-        metadata: {},
         occurred_at: now
-      )
+      ).and_call_original
 
       subject
     end

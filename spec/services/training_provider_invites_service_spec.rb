@@ -8,7 +8,7 @@ RSpec.describe TrainingProviderInviteService do
 
   describe "#accept" do
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::TRAINING_PROVIDER_INVITE_ACCEPTED,
         aggregate_id: training_provider_invite.training_provider_id,
         data: {
@@ -16,10 +16,8 @@ RSpec.describe TrainingProviderInviteService do
           invite_email: training_provider_invite.email,
           training_provider_id: training_provider_invite.training_provider_id,
           training_provider_name: training_provider_invite.training_provider.name
-        },
-        occurred_at: be_present,
-        metadata: {}
-      )
+        }
+      ).and_call_original
 
       subject.accept
     end

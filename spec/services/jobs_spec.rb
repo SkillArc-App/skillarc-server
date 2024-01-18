@@ -52,7 +52,7 @@ RSpec.describe Jobs do
     end
 
     it "publishes an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::JOB_CREATED,
         aggregate_id: be_present,
         data: {
@@ -68,9 +68,8 @@ RSpec.describe Jobs do
           requirements_description:,
           industry:
         },
-        metadata: {},
         occurred_at: be_present
-      )
+      ).and_call_original
 
       subject
     end

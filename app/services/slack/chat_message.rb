@@ -1,10 +1,10 @@
 module Slack
   class ChatMessage < SlackNotifier
     def call(event:)
-      applicant = Applicant.find(event.data["applicant_id"])
+      applicant = Applicant.find(event.data[:applicant_id])
       profile = applicant.profile
 
-      from_user_id = event.data["from_user_id"]
+      from_user_id = event.data[:from_user_id]
 
       job = applicant.job
 

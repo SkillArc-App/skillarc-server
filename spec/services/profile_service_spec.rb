@@ -20,31 +20,28 @@ RSpec.describe ProfileService do
     end
 
     it "publishes a profile updated event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::PROFILE_UPDATED,
         aggregate_id: profile.user.id,
         data: {
           bio: "New Bio",
           met_career_coach: profile.met_career_coach,
           image: profile.image
-        },
-        occurred_at: be_present,
-        metadata: {}
-      )
+        }
+      ).and_call_original
 
       subject
     end
 
     context "when met_career_coach does not change" do
       it "does not publish a met career coach event" do
-        expect(CreateEventJob).not_to receive(:perform_later).with(
+        expect(EventService).not_to receive(:create!).with(
           event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
           aggregate_id: profile.user.id,
           data: {
             met_career_coach:
           },
-          occurred_at: be_present,
-          metadata: {}
+          occurred_at: be_present
         )
 
         subject
@@ -55,16 +52,14 @@ RSpec.describe ProfileService do
       let(:met_career_coach) { !profile.met_career_coach }
 
       it "creates an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob).to receive(:perform_later).with(
+        allow(EventService).to receive(:create!)
+        expect(EventService).to receive(:create!).with(
           event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
           aggregate_id: profile.user.id,
           data: {
             met_career_coach:
-          },
-          occurred_at: be_present,
-          metadata: {}
-        )
+          }
+        ).and_call_original
 
         subject
       end

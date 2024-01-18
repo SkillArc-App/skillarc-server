@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Coaches::CoachService do
   let(:role_added) do
-    create(
-      :event,
+    build(
+      :event_message,
       :role_added,
       aggregate_id: user_id,
       data: {
@@ -13,7 +13,7 @@ RSpec.describe Coaches::CoachService do
       }
     )
   end
-  let(:other_role_added) { create(:event, :role_added, aggregate_id: user_id, data: { role: "admin", email: "not_coach@blocktrainapp.com" }) }
+  let(:other_role_added) { build(:event_message, :role_added, aggregate_id: user_id, data: { role: "admin", email: "not_coach@blocktrainapp.com" }) }
   let(:user_id) { SecureRandom.uuid }
   let(:coach_id) { SecureRandom.uuid }
 

@@ -88,7 +88,7 @@ RSpec.describe EmployerChats do
     end
 
     it "enqueues an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::CHAT_MESSAGE_SENT,
         aggregate_id: job.id,
         data: {
@@ -98,10 +98,8 @@ RSpec.describe EmployerChats do
           employer_name: employer.name,
           employment_title: job.employment_title,
           message:
-        },
-        metadata: {},
-        occurred_at: anything
-      )
+        }
+      ).and_call_original
 
       subject
     end
@@ -121,7 +119,7 @@ RSpec.describe EmployerChats do
     end
 
     it "enqueues an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::CHAT_CREATED,
         aggregate_id: applicant.job.id,
         data: {
@@ -129,10 +127,8 @@ RSpec.describe EmployerChats do
           profile_id: applicant.profile.id,
           user_id: applicant.profile.user.id,
           employment_title: applicant.job.employment_title
-        },
-        metadata: {},
-        occurred_at: anything
-      )
+        }
+      ).and_call_original
 
       subject
     end

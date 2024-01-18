@@ -8,7 +8,7 @@ class DbStreamListener < StreamListener
     return if after_events.empty?
 
     after_events.each do |event|
-      handle_event(event, with_side_effects: true)
+      handle_event(event.message, with_side_effects: true)
     end
   end
 
@@ -23,7 +23,7 @@ class DbStreamListener < StreamListener
 
     return Time.zone.at(0) unless bookmark
 
-    Event.find(bookmark.event_id).occurred_at
+    Event.find(bookmark.event_id).message.occurred_at
   end
 
   def handle_event(event, with_side_effects: false)

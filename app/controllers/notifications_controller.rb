@@ -9,14 +9,12 @@ class NotificationsController < ApplicationController
     all_notifications.update!(read_at: Time.now.utc.iso8601)
 
     all_notifications.each do |n|
-      CreateEventJob.perform_later(
+      EventService.create!(
         event_type: Event::EventTypes::NOTIFICATIONS_MARKED_READ,
         aggregate_id: current_user.id,
         data: {
           notification_id: n.id
-        },
-        metadata: {},
-        occurred_at: Time.now.utc.iso8601
+        }
       )
     end
 

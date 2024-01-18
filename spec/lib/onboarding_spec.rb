@@ -62,9 +62,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes a profile created event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: Event::EventTypes::PROFILE_CREATED,
@@ -72,17 +72,16 @@ RSpec.describe Onboarding do
               id: be_present,
               user_id: user.id
             },
-            metadata: {},
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
 
       it "publishes an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: Event::EventTypes::USER_UPDATED,
@@ -93,9 +92,8 @@ RSpec.describe Onboarding do
               phone_number: "1234567890",
               date_of_birth: Date.new(2000, 1, 1)
             },
-            metadata: {},
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -139,9 +137,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: "experience_created",
@@ -155,9 +153,8 @@ RSpec.describe Onboarding do
               description: "Description",
               profile_id: be_present # TODO: Come up with a way to check the profile id as well
             },
-            metadata: {},
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -219,9 +216,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: "education_experience_created",
@@ -234,9 +231,8 @@ RSpec.describe Onboarding do
               gpa: "4.0",
               profile_id: be_present # TODO: Come up with a way to check the profile id as well
             },
-            metadata: {},
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -289,9 +285,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: "seeker_training_provider_created",
@@ -300,9 +296,8 @@ RSpec.describe Onboarding do
               user_id: user.id,
               training_provider_id: training_provider.id
             },
-            metadata: {},
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -387,9 +382,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: "personal_experience_created",
@@ -401,9 +396,8 @@ RSpec.describe Onboarding do
               description: "Learning",
               profile_id: be_present # TODO: Come up with a way to check the profile id as well
             },
-            metadata: {},
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -530,18 +524,17 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
-          allow(CreateEventJob).to receive(:perform_later)
-          expect(CreateEventJob)
-            .to receive(:perform_later)
+          allow(EventService).to receive(:create!)
+          expect(EventService)
+            .to receive(:create!)
             .with(
               aggregate_id: user.id,
               event_type: Event::EventTypes::ONBOARDING_COMPLETED,
               data: {
                 responses:
               },
-              metadata: {},
               occurred_at: be_present
-            )
+            ).and_call_original
 
           subject
         end
@@ -632,9 +625,9 @@ RSpec.describe Onboarding do
       end
 
       it "does not duplicate job calls" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: Event::EventTypes::USER_UPDATED,
@@ -645,9 +638,8 @@ RSpec.describe Onboarding do
               phone_number: "1234567890",
               date_of_birth: Date.new(2000, 1, 1)
             },
-            metadata: {},
             occurred_at: be_present
-          ).once
+          ).and_call_original
 
         subject.update(responses: responses1)
         subject.update(responses: responses2)

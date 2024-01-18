@@ -2,7 +2,7 @@ class EmployerService
   def create(params)
     e = Employer.create!(**params, id: SecureRandom.uuid)
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::EMPLOYER_CREATED,
       aggregate_id: e.id,
       data: {
@@ -10,9 +10,7 @@ class EmployerService
         location: e.location,
         bio: e.bio,
         logo_url: e.logo_url
-      },
-      occurred_at: e.created_at,
-      metadata: {}
+      }
     )
 
     e
@@ -23,7 +21,7 @@ class EmployerService
 
     e.update!(**params)
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::EMPLOYER_UPDATED,
       aggregate_id: e.id,
       data: {
@@ -32,8 +30,7 @@ class EmployerService
         bio: e.bio,
         logo_url: e.logo_url
       },
-      occurred_at: e.updated_at,
-      metadata: {}
+      occurred_at: e.updated_at
     )
 
     e

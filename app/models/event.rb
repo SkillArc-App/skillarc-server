@@ -65,7 +65,7 @@ class Event < ApplicationRecord
     )
   end
 
-  def self.from_message(message)
+  def self.from_message!(message)
     create!(
       id: message.id,
       aggregate_id: message.aggregate_id,

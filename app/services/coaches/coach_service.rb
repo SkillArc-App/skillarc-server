@@ -14,7 +14,7 @@ module Coaches
     def self.all
       Coach.all.map do |coach|
         {
-          coach_id: coach.coach_id,
+          id: coach.coach_id,
           email: coach.email
         }
       end

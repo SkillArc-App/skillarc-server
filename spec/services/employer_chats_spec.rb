@@ -98,8 +98,7 @@ RSpec.describe EmployerChats do
           employer_name: employer.name,
           employment_title: job.employment_title,
           message:
-        },
-        occurred_at: anything
+        }
       )
 
       subject
@@ -128,8 +127,7 @@ RSpec.describe EmployerChats do
           profile_id: applicant.profile.id,
           user_id: applicant.profile.user.id,
           employment_title: applicant.job.employment_title
-        },
-        occurred_at: anything
+        }
       )
 
       subject

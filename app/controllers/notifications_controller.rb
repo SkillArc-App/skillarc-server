@@ -14,8 +14,7 @@ class NotificationsController < ApplicationController
         aggregate_id: current_user.id,
         data: {
           notification_id: n.id
-        },
-        occurred_at: Time.now.utc.iso8601
+        }
       )
     end
 

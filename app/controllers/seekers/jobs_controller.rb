@@ -12,8 +12,7 @@ module Seekers
           job_id: job.id,
           employment_title: job.employment_title,
           employer_name: job.employer.name
-        },
-        occurred_at: Time.now.utc.iso8601
+        }
       )
 
       render json: { success: true }
@@ -27,8 +26,7 @@ module Seekers
           job_id: job.id,
           employment_title: job.employment_title,
           employer_name: job.employer.name
-        },
-        occurred_at: Time.now.utc.iso8601
+        }
       )
 
       render json: { success: true }

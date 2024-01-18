@@ -33,8 +33,7 @@ RSpec.describe EmployerService do
           location: "Columbus, OH",
           bio: "We are a welding company",
           logo_url: "https://www.blocktrain.com/logo.png"
-        },
-        occurred_at: be_present
+        }
       )
 
       subject

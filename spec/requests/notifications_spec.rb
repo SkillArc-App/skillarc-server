@@ -24,8 +24,7 @@ RSpec.describe "Notifications", type: :request do
           aggregate_id: user.id,
           data: {
             notification_id: notification1.id
-          },
-          occurred_at: be_present
+          }
         )
 
         expect(EventService).to receive(:create!).with(
@@ -33,8 +32,7 @@ RSpec.describe "Notifications", type: :request do
           aggregate_id: user.id,
           data: {
             notification_id: notification2.id
-          },
-          occurred_at: be_present
+          }
         )
 
         subject

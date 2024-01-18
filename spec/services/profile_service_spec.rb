@@ -27,8 +27,7 @@ RSpec.describe ProfileService do
           bio: "New Bio",
           met_career_coach: profile.met_career_coach,
           image: profile.image
-        },
-        occurred_at: be_present
+        }
       )
 
       subject
@@ -59,8 +58,7 @@ RSpec.describe ProfileService do
           aggregate_id: profile.user.id,
           data: {
             met_career_coach:
-          },
-          occurred_at: be_present
+          }
         )
 
         subject

@@ -9,8 +9,7 @@ class HookService
         title:,
         body:,
         url:
-      },
-      occurred_at: Time.now.utc.iso8601
+      }
     )
   end
 end

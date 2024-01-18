@@ -16,8 +16,7 @@ RSpec.describe EmployerInviteService do
           invite_email: employer_invite.email,
           employer_id: employer_invite.employer_id,
           employer_name: employer_invite.employer.name
-        },
-        occurred_at: be_present
+        }
       )
 
       subject.accept

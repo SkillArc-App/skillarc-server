@@ -74,7 +74,7 @@ module Coaches
     end
 
     def self.delete_note(id:, coach:, note_id:, now: Time.zone.now)
-      EventService.create(
+      EventService.create!(
         event_type: Event::EventTypes::NOTE_DELETED,
         aggregate_id: id,
         data: {
@@ -87,7 +87,7 @@ module Coaches
     end
 
     def self.modify_note(id:, coach:, note_id:, note:, now: Time.zone.now)
-      EventService.create(
+      EventService.create!(
         event_type: Event::EventTypes::NOTE_MODIFIED,
         aggregate_id: id,
         data: {

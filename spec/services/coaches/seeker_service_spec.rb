@@ -9,8 +9,8 @@ RSpec.describe Coaches::SeekerService do
   let(:other_user_created) { build(:event_message, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
   let(:profile_created) { build(:event_message, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
   let(:other_profile_created) { build(:event_message, :profile_created, aggregate_id: other_user_id, data: { id: other_profile_id }) }
-  let(:note_with_id_added1) { build(:event_message, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1 }, occurred_at: time1) }
-  let(:note_with_id_added2) { build(:event_message, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2 }, occurred_at: time1) }
+  let(:note_with_id_added1) { build(:event_message, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:note_with_id_added2) { build(:event_message, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com" }, occurred_at: time1) }
   let(:applicant_status_updated1) { build(:event_message, :applicant_status_updated, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
   let(:applicant_status_updated2) { build(:event_message, :applicant_status_updated, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
   let(:applicant_status_updated3) { build(:event_message, :applicant_status_updated, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }

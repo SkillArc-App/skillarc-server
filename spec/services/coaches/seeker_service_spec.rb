@@ -248,7 +248,6 @@ RSpec.describe Coaches::SeekerService do
           note: "This is a new note",
           note_id: note_id1
         },
-        metadata: {},
         occurred_at: now
       )
 
@@ -272,7 +271,6 @@ RSpec.describe Coaches::SeekerService do
           coach_email: coach.email,
           note_id: note_id1
         },
-        metadata: {},
         occurred_at: now
       )
 
@@ -297,7 +295,6 @@ RSpec.describe Coaches::SeekerService do
           note_id: note_id2,
           note: updated_note
         },
-        metadata: {},
         occurred_at: now
       )
 
@@ -318,7 +315,6 @@ RSpec.describe Coaches::SeekerService do
           coach_id: "123",
           email: "coach@blocktrainapp.com"
         },
-        metadata: {},
         occurred_at: now
       )
 
@@ -338,7 +334,6 @@ RSpec.describe Coaches::SeekerService do
         data: {
           skill_level: "advanced"
         },
-        metadata: {},
         occurred_at: now
       )
 

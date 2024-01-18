@@ -13,8 +13,7 @@ class TrainingProviderInviteService
         training_provider_id: invite.training_provider_id,
         training_provider_name: invite.training_provider.name
       },
-      occurred_at: Time.now.utc.iso8601,
-      metadata: {}
+      occurred_at: Time.now.utc.iso8601
     )
 
     user = User.find_by(email: invite.email)

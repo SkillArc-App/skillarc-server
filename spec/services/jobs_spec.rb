@@ -68,7 +68,6 @@ RSpec.describe Jobs do
           requirements_description:,
           industry:
         },
-        metadata: {},
         occurred_at: be_present
       )
 

@@ -17,8 +17,7 @@ RSpec.describe TrainingProviderInviteService do
           training_provider_id: training_provider_invite.training_provider_id,
           training_provider_name: training_provider_invite.training_provider.name
         },
-        occurred_at: be_present,
-        metadata: {}
+        occurred_at: be_present
       )
 
       subject.accept

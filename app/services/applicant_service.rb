@@ -29,7 +29,6 @@ class ApplicantService
         employment_title: applicant.job.employment_title,
         status: applicant.status.status
       },
-      metadata: {},
       occurred_at: applicant_status.created_at
     )
   end

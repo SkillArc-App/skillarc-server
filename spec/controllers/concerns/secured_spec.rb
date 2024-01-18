@@ -42,7 +42,6 @@ RSpec.describe ApplicationController, type: :controller do
             email:,
             sub: token
           },
-          metadata: {},
           occurred_at: anything
         )
 

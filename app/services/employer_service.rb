@@ -11,8 +11,7 @@ class EmployerService
         bio: e.bio,
         logo_url: e.logo_url
       },
-      occurred_at: e.created_at,
-      metadata: {}
+      occurred_at: e.created_at
     )
 
     e
@@ -32,8 +31,7 @@ class EmployerService
         bio: e.bio,
         logo_url: e.logo_url
       },
-      occurred_at: e.updated_at,
-      metadata: {}
+      occurred_at: e.updated_at
     )
 
     e

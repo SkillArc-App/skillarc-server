@@ -38,7 +38,6 @@ RSpec.describe SeekerChats do
           employment_title: job.employment_title,
           message:
         },
-        metadata: {},
         occurred_at: anything
       )
 

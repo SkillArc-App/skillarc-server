@@ -19,7 +19,6 @@ class SeekerChats
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
       },
-      metadata: {},
       occurred_at: Time.zone.now
     )
   end

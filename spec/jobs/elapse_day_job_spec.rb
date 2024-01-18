@@ -8,7 +8,6 @@ RSpec.describe ElapseDayJob do
         aggregate_id: "day",
         event_type: Event::EventTypes::DAY_ELAPSED,
         data: {},
-        metadata: {},
         occurred_at: Date.new(2020, 1, 1)
       )
 

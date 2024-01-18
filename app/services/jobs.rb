@@ -21,8 +21,7 @@ class Jobs
         requirements_description: job.requirements_description,
         industry: job.industry
       },
-      occurred_at: job.created_at,
-      metadata: {}
+      occurred_at: job.created_at
     )
   end
 end

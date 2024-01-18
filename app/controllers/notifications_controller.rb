@@ -15,7 +15,6 @@ class NotificationsController < ApplicationController
         data: {
           notification_id: n.id
         },
-        metadata: {},
         occurred_at: Time.now.utc.iso8601
       )
     end

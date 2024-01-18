@@ -99,7 +99,6 @@ RSpec.describe EmployerChats do
           employment_title: job.employment_title,
           message:
         },
-        metadata: {},
         occurred_at: anything
       )
 
@@ -130,7 +129,6 @@ RSpec.describe EmployerChats do
           user_id: applicant.profile.user.id,
           employment_title: applicant.job.employment_title
         },
-        metadata: {},
         occurred_at: anything
       )
 

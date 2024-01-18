@@ -34,8 +34,7 @@ RSpec.describe EmployerService do
           bio: "We are a welding company",
           logo_url: "https://www.blocktrain.com/logo.png"
         },
-        occurred_at: be_present,
-        metadata: {}
+        occurred_at: be_present
       )
 
       subject
@@ -87,8 +86,7 @@ RSpec.describe EmployerService do
           bio: "We are a really good welding company",
           logo_url: "https://www.blocktrain.com/logo.jpeg"
         },
-        occurred_at: be_present,
-        metadata: {}
+        occurred_at: be_present
       )
 
       subject

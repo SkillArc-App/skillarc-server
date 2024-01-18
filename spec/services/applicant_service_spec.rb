@@ -31,7 +31,6 @@ RSpec.describe ApplicantService do
           employment_title: applicant.job.employment_title,
           status: ApplicantStatus::StatusTypes::PENDING_INTRO
         },
-        metadata: {},
         occurred_at: anything
       )
 

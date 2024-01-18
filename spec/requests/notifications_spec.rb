@@ -25,7 +25,6 @@ RSpec.describe "Notifications", type: :request do
           data: {
             notification_id: notification1.id
           },
-          metadata: {},
           occurred_at: be_present
         )
 
@@ -35,7 +34,6 @@ RSpec.describe "Notifications", type: :request do
           data: {
             notification_id: notification2.id
           },
-          metadata: {},
           occurred_at: be_present
         )
 

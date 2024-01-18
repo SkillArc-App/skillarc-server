@@ -69,7 +69,6 @@ module Coaches
           note:,
           note_id:
         },
-        metadata: {},
         occurred_at: now
       )
     end
@@ -83,7 +82,6 @@ module Coaches
           coach_email: coach.email,
           note_id:
         },
-        metadata: {},
         occurred_at: now
       )
     end
@@ -98,7 +96,6 @@ module Coaches
           note_id:,
           note:
         },
-        metadata: {},
         occurred_at: now
       )
     end
@@ -111,7 +108,6 @@ module Coaches
           coach_id:,
           email: coach_email
         },
-        metadata: {},
         occurred_at: now
       )
     end
@@ -123,7 +119,6 @@ module Coaches
         data: {
           skill_level:
         },
-        metadata: {},
         occurred_at: now
       )
     end

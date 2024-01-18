@@ -17,8 +17,7 @@ RSpec.describe EmployerInviteService do
           employer_id: employer_invite.employer_id,
           employer_name: employer_invite.employer.name
         },
-        occurred_at: be_present,
-        metadata: {}
+        occurred_at: be_present
       )
 
       subject.accept

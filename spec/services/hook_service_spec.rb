@@ -27,8 +27,7 @@ RSpec.describe HookService do
           body:,
           url:
         },
-        occurred_at: be_present,
-        metadata: {}
+        occurred_at: be_present
       )
 
       subject

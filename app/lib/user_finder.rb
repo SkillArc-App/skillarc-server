@@ -23,7 +23,6 @@ class UserFinder
         email: new_user.email,
         sub: new_user.sub
       },
-      metadata: {},
       occurred_at: new_user.created_at
     )
 

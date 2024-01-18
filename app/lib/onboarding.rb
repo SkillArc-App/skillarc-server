@@ -27,7 +27,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       data: {
         responses:
       },
-      metadata: {},
       occurred_at: completed_at
     )
   end
@@ -54,7 +53,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
           phone_number: user.phone_number,
           date_of_birth: Date.strptime(name_response["dateOfBirth"], "%m/%d/%Y")
         },
-        metadata: {},
         occurred_at: user.updated_at
       )
     end
@@ -73,7 +71,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         id: profile.id,
         user_id: user.id
       },
-      metadata: {},
       occurred_at: profile.created_at
     )
   end
@@ -111,7 +108,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             is_current: other_experience.is_current,
             profile_id: other_experience.profile_id
           },
-          metadata: {},
           occurred_at: other_experience.created_at
         )
       end
@@ -149,7 +145,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             gpa: ee.gpa,
             profile_id: ee.profile_id
           },
-          metadata: {},
           occurred_at: ee.created_at
         )
       end
@@ -173,7 +168,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             user_id: stp.user_id,
             training_provider_id: stp.training_provider_id
           },
-          metadata: {},
           occurred_at: stp.created_at
         )
       end
@@ -209,7 +203,6 @@ class Onboarding # rubocop:disable Metrics/ClassLength
           end_date: pe.end_date,
           profile_id: pe.profile_id
         },
-        metadata: {},
         occurred_at: pe.created_at
       )
     end

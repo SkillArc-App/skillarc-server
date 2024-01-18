@@ -14,7 +14,6 @@ class EmployerInviteService
         employer_name: employer_invite.employer.name
       },
       occurred_at: Time.now.utc.iso8601,
-      metadata: {}
     )
 
     user = User.find_by(email: employer_invite.email)

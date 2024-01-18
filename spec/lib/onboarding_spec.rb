@@ -72,7 +72,6 @@ RSpec.describe Onboarding do
               id: be_present,
               user_id: user.id
             },
-            metadata: {},
             occurred_at: be_present
           )
 
@@ -93,7 +92,6 @@ RSpec.describe Onboarding do
               phone_number: "1234567890",
               date_of_birth: Date.new(2000, 1, 1)
             },
-            metadata: {},
             occurred_at: be_present
           )
 
@@ -155,7 +153,6 @@ RSpec.describe Onboarding do
               description: "Description",
               profile_id: be_present # TODO: Come up with a way to check the profile id as well
             },
-            metadata: {},
             occurred_at: be_present
           )
 
@@ -234,7 +231,6 @@ RSpec.describe Onboarding do
               gpa: "4.0",
               profile_id: be_present # TODO: Come up with a way to check the profile id as well
             },
-            metadata: {},
             occurred_at: be_present
           )
 
@@ -300,7 +296,6 @@ RSpec.describe Onboarding do
               user_id: user.id,
               training_provider_id: training_provider.id
             },
-            metadata: {},
             occurred_at: be_present
           )
 
@@ -401,7 +396,6 @@ RSpec.describe Onboarding do
               description: "Learning",
               profile_id: be_present # TODO: Come up with a way to check the profile id as well
             },
-            metadata: {},
             occurred_at: be_present
           )
 
@@ -539,7 +533,6 @@ RSpec.describe Onboarding do
               data: {
                 responses:
               },
-              metadata: {},
               occurred_at: be_present
             )
 
@@ -645,7 +638,6 @@ RSpec.describe Onboarding do
               phone_number: "1234567890",
               date_of_birth: Date.new(2000, 1, 1)
             },
-            metadata: {},
             occurred_at: be_present
           ).once
 

@@ -57,7 +57,6 @@ class EmployerChats
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
       },
-      metadata: {},
       occurred_at: Time.zone.now
     )
   end
@@ -74,7 +73,6 @@ class EmployerChats
         user_id: applicant_chat.applicant.profile.user.id,
         employment_title: applicant_chat.applicant.job.employment_title
       },
-      metadata: {},
       occurred_at: Time.zone.now
     )
   end

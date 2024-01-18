@@ -28,8 +28,7 @@ RSpec.describe ProfileService do
           met_career_coach: profile.met_career_coach,
           image: profile.image
         },
-        occurred_at: be_present,
-        metadata: {}
+        occurred_at: be_present
       )
 
       subject
@@ -43,8 +42,7 @@ RSpec.describe ProfileService do
           data: {
             met_career_coach:
           },
-          occurred_at: be_present,
-          metadata: {}
+          occurred_at: be_present
         )
 
         subject
@@ -62,8 +60,7 @@ RSpec.describe ProfileService do
           data: {
             met_career_coach:
           },
-          occurred_at: be_present,
-          metadata: {}
+          occurred_at: be_present
         )
 
         subject

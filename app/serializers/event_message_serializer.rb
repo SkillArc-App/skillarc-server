@@ -20,8 +20,8 @@ class EventMessageSerializer < ActiveJob::Serializers::ObjectSerializer
       id: hash["id"],
       aggregate_id: hash["aggregate_id"],
       event_type: hash["event_type"],
-      data: hash["data"],
-      metadata: hash["metadata"],
+      data: hash["data"].deep_symbolize_keys,
+      metadata: hash["metadata"].deep_symbolize_keys,
       version: hash["version"],
       occurred_at: Time.zone.parse(hash["occurred_at"])
     )

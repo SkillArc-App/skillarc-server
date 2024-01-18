@@ -8,8 +8,6 @@ module Coaches
     before_action :set_coach
 
     def create
-      coach = Coach.find_by(user_id: current_user.id)
-
       SeekerService.add_note(
         coach:,
         id: params[:seeker_id],

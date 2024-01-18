@@ -15,11 +15,11 @@ module Coaches
     end
 
     def assign
-      coach = Coach.find_by(id: params[:coach_id])
+      coach = Coach.find_by(coach_id: params[:coach_id])
 
       SeekerService.assign_coach(
         params[:seeker_id],
-        coach.id,
+        coach.coach_id,
         coach.email
       )
 

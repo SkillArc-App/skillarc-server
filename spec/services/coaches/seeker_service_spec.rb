@@ -9,8 +9,8 @@ RSpec.describe Coaches::SeekerService do
   let(:other_user_created) { build(:event, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
   let(:profile_created) { build(:event, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
   let(:other_profile_created) { build(:event, :profile_created, aggregate_id: other_user_id, data: { id: other_profile_id }) }
-  let(:note_with_id_added1) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1 }, occurred_at: time1) }
-  let(:note_with_id_added2) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2 }, occurred_at: time1) }
+  let(:note_with_id_added1) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:note_with_id_added2) { build(:event, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com" }, occurred_at: time1) }
   let(:applicant_status_updated1) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
   let(:applicant_status_updated2) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
   let(:applicant_status_updated3) { build(:event, :applicant_status_updated, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
@@ -126,8 +126,9 @@ RSpec.describe Coaches::SeekerService do
         notes: [
           {
             note: "This note was updated",
-            date: Time.utc(2020, 1, 1),
-            noteId: note_id2
+            noteId: note_id2,
+            noteTakenBy: "coach@blocktrainapp.com",
+            date: Time.utc(2020, 1, 1)
           }
         ],
         applications: [
@@ -191,6 +192,7 @@ RSpec.describe Coaches::SeekerService do
         notes: [
           {
             note: "This note was updated",
+            noteTakenBy: "coach@blocktrainapp.com",
             date: Time.utc(2020, 1, 1),
             noteId: note_id2
           }
@@ -230,7 +232,9 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".add_note" do
-    subject { described_class.add_note(profile_id, "This is a new note", note_id1, now:) }
+    subject { described_class.add_note(id: profile_id, coach:, note: "This is a new note", note_id: note_id1, now:) }
+
+    let(:coach) { create(:coaches__coach) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
 
@@ -239,6 +243,8 @@ RSpec.describe Coaches::SeekerService do
         event_type: Event::EventTypes::NOTE_ADDED,
         aggregate_id: profile_id,
         data: {
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
           note: "This is a new note",
           note_id: note_id1
         },
@@ -251,7 +257,9 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".delete_note" do
-    subject { described_class.delete_note(profile_id, note_id1, now:) }
+    subject { described_class.delete_note(coach:, id: profile_id, note_id: note_id1, now:) }
+
+    let(:coach) { create(:coaches__coach) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
 
@@ -260,6 +268,8 @@ RSpec.describe Coaches::SeekerService do
         event_type: Event::EventTypes::NOTE_DELETED,
         aggregate_id: profile_id,
         data: {
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
           note_id: note_id1
         },
         metadata: {},
@@ -271,7 +281,9 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".modify_note" do
-    subject { described_class.modify_note(profile_id, note_id2, updated_note, now:) }
+    subject { described_class.modify_note(id: profile_id, coach:, note_id: note_id2, note: updated_note, now:) }
+
+    let(:coach) { create(:coaches__coach) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
 
@@ -280,6 +292,8 @@ RSpec.describe Coaches::SeekerService do
         event_type: Event::EventTypes::NOTE_MODIFIED,
         aggregate_id: profile_id,
         data: {
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
           note_id: note_id2,
           note: updated_note
         },

@@ -821,6 +821,7 @@ UserRole.create!(
 )
 
 coach = Coaches::Coach.create!(
+  coach_id: SecureRandom.uuid,
   user_id: coach_user.id,
   email: coach_user.email
 )

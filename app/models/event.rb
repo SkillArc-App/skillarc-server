@@ -53,14 +53,22 @@ class Event < ApplicationRecord
     ].freeze
   end
 
+  def data
+    self[:data].deep_symbolize_keys
+  end
+
+  def metadata
+    self[:metadata].deep_symbolize_keys
+  end
+
   def message
     EventMessage.new(
       id:,
       aggregate_id:,
       event_type:,
       version:,
-      data: data.deep_symbolize_keys,
-      metadata: data.deep_symbolize_keys,
+      data:,
+      metadata:,
       occurred_at:
     )
   end

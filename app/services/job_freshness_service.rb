@@ -33,7 +33,7 @@ class JobFreshnessService < EventConsumer
       JobFreshnessEmployerJob
         .find_or_initialize_by(employer_id: eid)
         .update!(
-          name: event.data["name"],
+          name: event.data[:name],
           recruiter_exists: false
         )
     elsif event.event_type == Event::EventTypes::EMPLOYER_INVITE_ACCEPTED
@@ -118,14 +118,14 @@ class JobFreshnessService < EventConsumer
   end
 
   def applicant_status_updated(event)
-    freshness_context.applicants[event.data.fetch("applicant_id")] = {
+    freshness_context.applicants[event.data.fetch(:applicant_id)] = {
       "last_updated_at" => event.occurred_at.to_s,
-      "status" => event.data.fetch("status")
+      "status" => event.data.fetch(:status)
     }
   end
 
   def job_create_update(event)
-    @employer_id = event.data["employer_id"]
+    @employer_id = event.data[:employer_id]
 
     ej = employer_job(employer_id)
 
@@ -135,8 +135,8 @@ class JobFreshnessService < EventConsumer
     end
 
     freshness_context.job_id = event.aggregate_id
-    freshness_context.hidden = event.data["hide_job"]
-    freshness_context.employment_title = event.data["employment_title"]
+    freshness_context.hidden = event.data[:hide_job]
+    freshness_context.employment_title = event.data[:employment_title]
 
     freshness_context.recruiter_exists = employer_job(employer_id)[:recruiter_exists]
     freshness_context.employer_name = employer_job(employer_id)[:name]

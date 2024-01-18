@@ -239,7 +239,7 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::NOTE_ADDED,
         aggregate_id: profile_id,
         data: {
@@ -264,7 +264,7 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::NOTE_DELETED,
         aggregate_id: profile_id,
         data: {
@@ -288,7 +288,7 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::NOTE_MODIFIED,
         aggregate_id: profile_id,
         data: {
@@ -311,7 +311,7 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::COACH_ASSIGNED,
         aggregate_id: profile_id,
         data: {
@@ -332,7 +332,7 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::SKILL_LEVEL_UPDATED,
         aggregate_id: profile_id,
         data: {

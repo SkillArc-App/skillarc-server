@@ -220,7 +220,7 @@ RSpec.describe JobFreshnessService do
                 job_id:,
                 status: "fresh",
                 applicants: {
-                  applicant_created_at_event.data.fetch("applicant_id") => {
+                  applicant_created_at_event.data.fetch(:applicant_id) => {
                     last_updated_at: applicant_created_at,
                     status: "new"
                   }.stringify_keys
@@ -244,7 +244,7 @@ RSpec.describe JobFreshnessService do
                   :applicant_status_updated,
                   aggregate_id: job_id,
                   data: {
-                    applicant_id: applicant_created_at_event.data.fetch("applicant_id"),
+                    applicant_id: applicant_created_at_event.data.fetch(:applicant_id),
                     job_id:,
                     profile_id: SecureRandom.uuid,
                     user_id: SecureRandom.uuid,
@@ -265,7 +265,7 @@ RSpec.describe JobFreshnessService do
                   job_id:,
                   status: "fresh",
                   applicants: {
-                    applicant_created_at_event.data.fetch("applicant_id") => {
+                    applicant_created_at_event.data.fetch(:applicant_id) => {
                       last_updated_at: applicant_status_updated_at,
                       status: "pending intro"
                     }.stringify_keys
@@ -285,7 +285,7 @@ RSpec.describe JobFreshnessService do
                 job_id:,
                 status: "stale",
                 applicants: {
-                  applicant_created_at_event.data.fetch("applicant_id") => {
+                  applicant_created_at_event.data.fetch(:applicant_id) => {
                     last_updated_at: applicant_created_at,
                     status: "new"
                   }.stringify_keys

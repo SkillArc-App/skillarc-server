@@ -10,7 +10,7 @@ RSpec.describe Klayvio::UserSignup do
 
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:user_signup).with(
-        email: event.data["email"],
+        email: event.data[:email],
         event_id: event.id,
         occurred_at: event.occurred_at
       )

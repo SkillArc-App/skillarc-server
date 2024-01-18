@@ -17,7 +17,7 @@ class ApplicantService
       )
     end
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
       aggregate_id: applicant.job.id,
       data: {

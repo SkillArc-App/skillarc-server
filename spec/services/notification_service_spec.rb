@@ -8,9 +8,9 @@ RSpec.describe NotificationService do
 
     let(:data) do
       {
-        "title" => title,
-        "body" => body,
-        "url" => url
+        title:,
+        body:,
+        url:
       }
     end
 

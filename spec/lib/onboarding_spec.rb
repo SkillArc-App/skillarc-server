@@ -62,9 +62,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes a profile created event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: Event::EventTypes::PROFILE_CREATED,
@@ -80,9 +80,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: Event::EventTypes::USER_UPDATED,
@@ -139,9 +139,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: "experience_created",
@@ -219,9 +219,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: "education_experience_created",
@@ -289,9 +289,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: "seeker_training_provider_created",
@@ -387,9 +387,9 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: "personal_experience_created",
@@ -530,9 +530,9 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
-          allow(CreateEventJob).to receive(:perform_later)
-          expect(CreateEventJob)
-            .to receive(:perform_later)
+          allow(EventService).to receive(:create!)
+          expect(EventService)
+            .to receive(:create!)
             .with(
               aggregate_id: user.id,
               event_type: Event::EventTypes::ONBOARDING_COMPLETED,
@@ -632,9 +632,9 @@ RSpec.describe Onboarding do
       end
 
       it "does not duplicate job calls" do
-        allow(CreateEventJob).to receive(:perform_later)
-        expect(CreateEventJob)
-          .to receive(:perform_later)
+        allow(EventService).to receive(:create!)
+        expect(EventService)
+          .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_type: Event::EventTypes::USER_UPDATED,

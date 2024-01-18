@@ -14,7 +14,7 @@ class UserFinder
       sub:
     )
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       aggregate_id: new_user.id,
       event_type: "user_created",
       data: {

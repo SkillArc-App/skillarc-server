@@ -6,7 +6,7 @@ class ProfileService
   def update(params)
     profile.update!(params)
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::PROFILE_UPDATED,
       aggregate_id: profile.user.id,
       data: {
@@ -20,7 +20,7 @@ class ProfileService
 
     return unless profile.saved_change_to_met_career_coach?
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
       aggregate_id: profile.user.id,
       data: {

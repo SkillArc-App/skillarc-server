@@ -31,8 +31,8 @@ RSpec.describe ApplicationController, type: :controller do
         .to receive(:build)
         .and_return(auth_client)
 
-      expect(CreateEventJob)
-        .to receive(:perform_later)
+      expect(EventService)
+        .to receive(:create!)
         .with(
           aggregate_id: be_a(String),
           event_type: "user_created",

@@ -4,9 +4,9 @@ class NotificationService
 
     Notification.create!(
       user:,
-      title: event.data["title"],
-      body: event.data["body"],
-      url: event.data["url"]
+      title: event.data[:title],
+      body: event.data[:body],
+      url: event.data[:url]
     )
   end
 end

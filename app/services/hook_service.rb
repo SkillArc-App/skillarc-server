@@ -2,7 +2,7 @@ class HookService
   def create_notification(email:, title:, body:, url:)
     user = User.find_by(email:)
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::NOTIFICATION_CREATED,
       aggregate_id: user.id,
       data: {

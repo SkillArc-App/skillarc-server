@@ -8,7 +8,7 @@ module JobMatch
       save_events = Event.where(
         aggregate_id: profile.user.id,
         event_type: [Event::EventTypes::JOB_SAVED, Event::EventTypes::JOB_UNSAVED]
-      ).group_by { |e| e.data["job_id"] }
+      ).group_by { |e| e.data[:job_id] }
 
       applicants = Applicant.where(profile_id: profile.id)
 

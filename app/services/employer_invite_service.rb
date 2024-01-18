@@ -4,7 +4,7 @@ class EmployerInviteService
   end
 
   def accept
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::EMPLOYER_INVITE_ACCEPTED,
       aggregate_id: employer_invite.employer_id,
       data: {

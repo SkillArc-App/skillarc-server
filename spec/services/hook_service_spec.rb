@@ -19,7 +19,7 @@ RSpec.describe HookService do
     let(:user) { create(:user) }
 
     it "enqueues a notification created event job" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::NOTIFICATION_CREATED,
         aggregate_id: user.id,
         data: {

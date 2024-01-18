@@ -27,7 +27,7 @@ RSpec.describe SeekerChats do
     end
 
     it "creates a chat message event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::CHAT_MESSAGE_SENT,
         aggregate_id: job.id,
         data: {

@@ -21,7 +21,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
     onboarding_session.update!(completed_at:)
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       aggregate_id: user.id,
       event_type: Event::EventTypes::ONBOARDING_COMPLETED,
       data: {
@@ -44,7 +44,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         phone_number: name_response["phoneNumber"]
       )
 
-      CreateEventJob.perform_later(
+      EventService.create!(
         aggregate_id: user.id,
         event_type: Event::EventTypes::USER_UPDATED,
         data: {
@@ -66,7 +66,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       user:
     )
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       aggregate_id: user.id,
       event_type: Event::EventTypes::PROFILE_CREATED,
       data: {
@@ -98,7 +98,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         other_experience.id = SecureRandom.uuid
         other_experience.save!
 
-        CreateEventJob.perform_later(
+        EventService.create!(
           aggregate_id: user.id,
           event_type: Event::EventTypes::EXPERIENCE_CREATED,
           data: {
@@ -137,7 +137,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         ee.id = SecureRandom.uuid
         ee.save!
 
-        CreateEventJob.perform_later(
+        EventService.create!(
           aggregate_id: user.id,
           event_type: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
           data: {
@@ -165,7 +165,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         stp.id = SecureRandom.uuid
         stp.save!
 
-        CreateEventJob.perform_later(
+        EventService.create!(
           aggregate_id: user.id,
           event_type: Event::EventTypes::SEEKER_TRAINING_PROVIDER_CREATED,
           data: {
@@ -198,7 +198,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       pe.id = SecureRandom.uuid
       pe.save!
 
-      CreateEventJob.perform_later(
+      EventService.create!(
         aggregate_id: user.id,
         event_type: Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
         data: {

@@ -9,13 +9,13 @@ RSpec.describe Event do
     it "creates an EventMessage with the same data" do
       expect(subject).to be_a(EventMessage)
 
-      expect(subject.id).to eq(event.id)
-      expect(subject.aggregate_id).to eq(event.aggregate_id)
-      expect(subject.event_type).to eq(event.event_type)
-      expect(subject.data).to eq(event.data)
-      expect(subject.metadata).to eq(event.metadata)
-      expect(subject.version).to eq(event.version)
-      expect(subject.occurred_at).to eq(event.occurred_at)
+      expect(subject.id).to eq(event[:id])
+      expect(subject.aggregate_id).to eq(event[:aggregate_id])
+      expect(subject.event_type).to eq(event[:event_type])
+      expect(subject.data).to eq(event[:data].deep_symbolize_keys)
+      expect(subject.metadata).to eq(event[:metadata].deep_symbolize_keys)
+      expect(subject.version).to eq(event[:version])
+      expect(subject.occurred_at).to eq(event[:occurred_at])
     end
   end
 
@@ -27,13 +27,13 @@ RSpec.describe Event do
     it "creates an EventMessage with the same data" do
       expect(subject).to be_a(described_class)
 
-      expect(subject.id).to eq(event_message.id)
-      expect(subject.aggregate_id).to eq(event_message.aggregate_id)
-      expect(subject.event_type).to eq(event_message.event_type)
-      expect(subject.data).to eq(event_message.data)
-      expect(subject.metadata).to eq(event_message.metadata)
-      expect(subject.version).to eq(event_message.version)
-      expect(subject.occurred_at).to eq(event_message.occurred_at)
+      expect(subject[:id]).to eq(event_message.id)
+      expect(subject[:aggregate_id]).to eq(event_message.aggregate_id)
+      expect(subject[:event_type]).to eq(event_message.event_type)
+      expect(subject[:data].deep_symbolize_keys).to eq(event_message.data)
+      expect(subject[:metadata].deep_symbolize_keys).to eq(event_message.metadata)
+      expect(subject[:version]).to eq(event_message.version)
+      expect(subject[:occurred_at]).to eq(event_message.occurred_at)
     end
   end
 end

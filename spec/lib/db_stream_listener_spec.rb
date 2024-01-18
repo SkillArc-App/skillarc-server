@@ -20,11 +20,11 @@ RSpec.describe DbStreamListener do
     context "when there is no bookmark" do
       it "consumes the events from the beginning with side effects" do
         expect(consumer).to receive(:handle_event).with(
-          event,
+          event.message,
           with_side_effects: true
         )
         expect(consumer).to receive(:handle_event).with(
-          event2,
+          event2.message,
           with_side_effects: true
         )
 
@@ -45,12 +45,12 @@ RSpec.describe DbStreamListener do
 
       it "consumes the events after the bookmark" do
         expect(consumer).to receive(:handle_event).with(
-          event2,
+          event2.message,
           with_side_effects: true
         )
 
         expect(consumer).not_to receive(:handle_event).with(
-          event,
+          event.message,
           with_side_effects: false
         )
 
@@ -71,7 +71,7 @@ RSpec.describe DbStreamListener do
     subject { described_class.new(consumer, "listener_name") }
 
     it "calls the consumer with the event and with_side_effects: true" do
-      event = create(:event, :user_created)
+      event = build(:event_message, :user_created)
 
       expect(consumer).to receive(:handle_event).with(
         event,

@@ -83,7 +83,7 @@ RSpec.describe JobFreshnessService do
       it "creates a JobFreshness" do
         described_class.handle_event(
           build(
-            :event,
+            :event_message,
             :employer_created,
             aggregate_id: employer_id,
             data: {
@@ -161,7 +161,7 @@ RSpec.describe JobFreshnessService do
           let(:job_events) { base_job_events + [job_hidden_event] }
           let(:job_hidden_event) do
             build(
-              :event,
+              :event_message,
               :job_updated,
               aggregate_id: job_id,
               data: {
@@ -197,7 +197,7 @@ RSpec.describe JobFreshnessService do
           let(:job_events) { base_job_events + [applicant_created_at_event] }
           let(:applicant_created_at_event) do
             build(
-              :event,
+              :event_message,
               :applicant_status_updated,
               aggregate_id: job_id,
               data: {
@@ -240,7 +240,7 @@ RSpec.describe JobFreshnessService do
               let(:job_events) { [] }
               let(:applicant_status_updated_event) do
                 build(
-                  :event,
+                  :event_message,
                   :applicant_status_updated,
                   aggregate_id: job_id,
                   data: {

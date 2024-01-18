@@ -43,7 +43,7 @@ RSpec.describe User do
             :job_unsaved,
             aggregate_id: subject.id,
             data: { job_id: job.id },
-            occurred_at: event.occurred_at + 1.second
+            occurred_at: event.message.occurred_at + 1.second
           )
         end
 

@@ -4,7 +4,7 @@ RSpec.describe Klayvio::UserUpdated do
   describe "#call" do
     let(:event) do
       build(
-        :event,
+        :event_message,
         :user_updated,
         data: {
           first_name: "Tom",

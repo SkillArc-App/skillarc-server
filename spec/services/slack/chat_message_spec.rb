@@ -4,7 +4,7 @@ RSpec.describe Slack::ChatMessage do
   describe "#call" do
     let(:event) do
       build(
-        :event,
+        :event_message,
         :chat_message_sent,
         data: {
           applicant_id: applicant.id,

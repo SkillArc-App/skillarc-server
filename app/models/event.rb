@@ -53,14 +53,6 @@ class Event < ApplicationRecord
     ].freeze
   end
 
-  def data
-    self[:data].deep_symbolize_keys
-  end
-
-  def metadata
-    self[:metadata].deep_symbolize_keys
-  end
-
   def message
     EventMessage.new(
       id:,
@@ -86,4 +78,30 @@ class Event < ApplicationRecord
   end
 
   validates :event_type, presence: true, inclusion: { in: EventTypes::ALL }
+
+  private
+
+  def aggregate_id
+    self[:aggregate_id]
+  end
+
+  def event_type
+    self[:event_type]
+  end
+
+  def data
+    self[:data].deep_symbolize_keys
+  end
+
+  def metadata
+    self[:metadata].deep_symbolize_keys
+  end
+
+  def version
+    self[:version]
+  end
+
+  def occurred_at
+    self[:occurred_at]
+  end
 end

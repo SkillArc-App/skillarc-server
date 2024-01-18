@@ -4,7 +4,7 @@ RSpec.describe Klayvio::EducationExperienceEntered do
   describe "#call" do
     let(:event) do
       build(
-        :event,
+        :event_message,
         :education_experience_created,
         aggregate_id: user.id
       )

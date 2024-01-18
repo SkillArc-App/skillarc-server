@@ -4,10 +4,11 @@ class UserEvents
   end
 
   def all
-    events = Event.where(aggregate_id: user.id).order(occurred_at: :desc)
+    events = Event.where(aggregate_id: user.id).order(occurred_at: :desc).map(&:message)
 
     applicant_events = Event.where(event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED)
                             .where("data->>'user_id' = ?", user.id)
+                            .map(&:message)
 
     (events + applicant_events).sort_by(&:occurred_at).reverse.map do |event|
       event_message = event_message(event)

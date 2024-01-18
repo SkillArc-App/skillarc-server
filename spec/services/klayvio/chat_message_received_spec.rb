@@ -5,8 +5,8 @@ RSpec.describe Klayvio::ChatMessageReceived do
     subject { described_class.new.call(event:) }
 
     let(:event) do
-      create(
-        :event,
+      build(
+        :event_message,
         :chat_message_sent,
         aggregate_id: job.id,
         data: {
@@ -19,7 +19,7 @@ RSpec.describe Klayvio::ChatMessageReceived do
     end
     let(:email) { "chabot@blocktrain.com" }
     let(:user) { create(:user, email:) }
-    let(:occurred_at) { Date.new(2020, 1, 1) }
+    let(:occurred_at) { Time.zone.local(2020, 1, 1) }
     let(:job) { create(:job) }
     let(:applicant) { create(:applicant, profile:) }
     let(:profile) { create(:profile, user:) }

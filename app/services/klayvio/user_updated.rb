@@ -1,6 +1,9 @@
 module Klayvio
   class UserUpdated
     def call(event:)
+      dob = event.data[:date_of_birth]
+      dob = Date.parse(dob) if dob.is_a?(String)
+
       Klayvio.new.user_updated(
         email: event.data[:email],
         event_id: event.id,
@@ -11,7 +14,7 @@ module Klayvio
           phone_number: E164.normalize(event.data[:phone_number])
         },
         profile_properties: {
-          date_of_birth: Date.parse(event.data[:date_of_birth])
+          date_of_birth: dob
         }
       )
     end

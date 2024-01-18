@@ -38,7 +38,7 @@ RSpec.describe SeekerChats do
           employment_title: job.employment_title,
           message:
         }
-      )
+      ).and_call_original
 
       subject
     end

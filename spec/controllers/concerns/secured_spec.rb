@@ -43,7 +43,7 @@ RSpec.describe ApplicationController, type: :controller do
             sub: token
           },
           occurred_at: anything
-        )
+        ).and_call_original
 
       routes.draw { get 'example' => 'anonymous#example' }
       get :example

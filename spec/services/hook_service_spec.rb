@@ -27,7 +27,7 @@ RSpec.describe HookService do
           body:,
           url:
         }
-      )
+      ).and_call_original
 
       subject
     end

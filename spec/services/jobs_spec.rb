@@ -69,7 +69,7 @@ RSpec.describe Jobs do
           industry:
         },
         occurred_at: be_present
-      )
+      ).and_call_original
 
       subject
     end

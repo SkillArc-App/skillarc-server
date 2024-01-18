@@ -249,7 +249,7 @@ RSpec.describe Coaches::SeekerService do
           note_id: note_id1
         },
         occurred_at: now
-      )
+      ).and_call_original
 
       subject
     end
@@ -272,7 +272,7 @@ RSpec.describe Coaches::SeekerService do
           note_id: note_id1
         },
         occurred_at: now
-      )
+      ).and_call_original
 
       subject
     end
@@ -296,7 +296,7 @@ RSpec.describe Coaches::SeekerService do
           note: updated_note
         },
         occurred_at: now
-      )
+      ).and_call_original
 
       subject
     end
@@ -316,7 +316,7 @@ RSpec.describe Coaches::SeekerService do
           email: "coach@blocktrainapp.com"
         },
         occurred_at: now
-      )
+      ).and_call_original
 
       subject
     end
@@ -335,7 +335,7 @@ RSpec.describe Coaches::SeekerService do
           skill_level: "advanced"
         },
         occurred_at: now
-      )
+      ).and_call_original
 
       subject
     end

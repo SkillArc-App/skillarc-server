@@ -17,7 +17,7 @@ RSpec.describe EmployerInviteService do
           employer_id: employer_invite.employer_id,
           employer_name: employer_invite.employer.name
         }
-      )
+      ).and_call_original
 
       subject.accept
     end

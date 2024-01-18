@@ -73,7 +73,7 @@ RSpec.describe Onboarding do
               user_id: user.id
             },
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -93,7 +93,7 @@ RSpec.describe Onboarding do
               date_of_birth: Date.new(2000, 1, 1)
             },
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -154,7 +154,7 @@ RSpec.describe Onboarding do
               profile_id: be_present # TODO: Come up with a way to check the profile id as well
             },
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -232,7 +232,7 @@ RSpec.describe Onboarding do
               profile_id: be_present # TODO: Come up with a way to check the profile id as well
             },
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -297,7 +297,7 @@ RSpec.describe Onboarding do
               training_provider_id: training_provider.id
             },
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -397,7 +397,7 @@ RSpec.describe Onboarding do
               profile_id: be_present # TODO: Come up with a way to check the profile id as well
             },
             occurred_at: be_present
-          )
+          ).and_call_original
 
         subject
       end
@@ -534,7 +534,7 @@ RSpec.describe Onboarding do
                 responses:
               },
               occurred_at: be_present
-            )
+            ).and_call_original
 
           subject
         end
@@ -639,7 +639,7 @@ RSpec.describe Onboarding do
               date_of_birth: Date.new(2000, 1, 1)
             },
             occurred_at: be_present
-          ).once
+          ).and_call_original
 
         subject.update(responses: responses1)
         subject.update(responses: responses2)

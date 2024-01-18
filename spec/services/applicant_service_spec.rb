@@ -32,7 +32,7 @@ RSpec.describe ApplicantService do
           status: ApplicantStatus::StatusTypes::PENDING_INTRO
         },
         occurred_at: anything
-      )
+      ).and_call_original
 
       subject
     end

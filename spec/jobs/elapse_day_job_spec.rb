@@ -9,7 +9,8 @@ RSpec.describe ElapseDayJob do
         event_type: Event::EventTypes::DAY_ELAPSED,
         data: {},
         occurred_at: Date.new(2020, 1, 1)
-      )
+      ).and_call_original
+
 
     described_class.new.perform(Date.new(2020, 1, 1))
   end

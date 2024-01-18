@@ -25,7 +25,7 @@ RSpec.describe "Notifications", type: :request do
           data: {
             notification_id: notification1.id
           }
-        )
+        ).and_call_original
 
         expect(EventService).to receive(:create!).with(
           event_type: Event::EventTypes::NOTIFICATIONS_MARKED_READ,
@@ -33,7 +33,7 @@ RSpec.describe "Notifications", type: :request do
           data: {
             notification_id: notification2.id
           }
-        )
+        ).and_call_original
 
         subject
       end

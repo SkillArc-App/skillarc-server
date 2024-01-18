@@ -28,7 +28,7 @@ RSpec.describe ProfileService do
           met_career_coach: profile.met_career_coach,
           image: profile.image
         }
-      )
+      ).and_call_original
 
       subject
     end
@@ -59,7 +59,7 @@ RSpec.describe ProfileService do
           data: {
             met_career_coach:
           }
-        )
+        ).and_call_original
 
         subject
       end

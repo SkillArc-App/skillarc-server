@@ -17,7 +17,7 @@ RSpec.describe TrainingProviderInviteService do
           training_provider_id: training_provider_invite.training_provider_id,
           training_provider_name: training_provider_invite.training_provider.name
         }
-      )
+      ).and_call_original
 
       subject.accept
     end

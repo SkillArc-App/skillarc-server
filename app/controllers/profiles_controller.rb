@@ -54,7 +54,7 @@ class ProfilesController < ApplicationController
       stories: profile.stories,
       missingProfileItems: ProfileCompleteness.new(profile).status.missing,
       user: {
-        **profile.user.as_json,
+        **deep_transform_keys(profile.user.as_json) { |key| to_camel_case(key) },
         SeekerTrainingProvider: profile.user.seeker_training_providers.map do |stp|
           {
             **stp.as_json,

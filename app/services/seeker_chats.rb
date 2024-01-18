@@ -49,7 +49,7 @@ class SeekerChats
 
   def mark_read(applicant_id:)
     ApplicantChat
-      .includes(messages: :user, applicant: { profile: :user, job: :employer })
+      .includes(messages: [:user, :read_receipts], applicant: { profile: :user, job: :employer })
       .references(:messages, applicant: { profile: :user, job: :employer })
       .where(applicants: { id: applicant_id })
       .find_each do |applicant_chat|

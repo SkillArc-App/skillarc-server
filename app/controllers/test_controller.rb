@@ -28,6 +28,7 @@ class TestController < ApplicationController
 
     coach = Coaches::Coach.create!(
       id: SecureRandom.uuid,
+      coach_id: SecureRandom.uuid,
       user_id:,
       email:
     )

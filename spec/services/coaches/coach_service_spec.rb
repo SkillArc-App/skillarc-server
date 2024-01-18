@@ -27,7 +27,7 @@ RSpec.describe Coaches::CoachService do
 
     it "returns all coaches" do
       expected_coach = {
-        coach_id:,
+        id: coach_id,
         email: "coach@blocktrainapp.com"
       }
 

@@ -57,6 +57,19 @@ RSpec.describe "Test", type: :request do
     end
   end
 
+  describe "POST /create_active_seeker" do
+    subject { post create_active_seeker_test_path, params:, headers: }
+
+    let(:headers) { {} }
+    let(:params) { {} }
+
+    it "returns a 200" do
+      subject
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "POST /reset_database" do
     # Not tested as it is sort of weird reseting the db in a test
   end

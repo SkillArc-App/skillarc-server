@@ -133,6 +133,7 @@ Rails.application.routes.draw do
       post '/create_user' => 'test#create_test_user'
       post '/create_coach' => 'test#create_coach'
       post '/create_seeker' => 'test#create_seeker'
+      post '/create_active_seeker' => 'test#create_active_seeker'
       post '/create_recruiter_with_applicant' => 'test#create_test_recruiter_with_applicant'
     end
   end

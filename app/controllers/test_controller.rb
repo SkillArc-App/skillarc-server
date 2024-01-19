@@ -85,6 +85,37 @@ class TestController < ApplicationController
     render json: user
   end
 
+  def create_active_seeker
+    profile = FactoryBot.create(:profile)
+
+    csc = Coaches::CoachSeekerContext.create!(
+      user_id: profile.user.id,
+      profile_id: profile.id,
+      first_name: profile.user.first_name,
+      last_name: profile.user.last_name,
+      email: profile.user.email,
+      phone_number: profile.user.phone_number,
+      skill_level: "beginner",
+      stage: "Profile Created",
+      barriers: [],
+      last_contacted_at: Time.now,
+      last_active_on: Time.now
+    )
+
+    job = FactoryBot.create(:job)
+    FactoryBot.create(:desired_skill, job:)
+
+    csc.seeker_applications.create!(
+      application_id: SecureRandom.uuid,
+      job_id: job.id,
+      employer_name: job.employer.name,
+      employment_title: job.employment_title,
+      status: ApplicantStatus::StatusTypes::PASS
+    )
+
+    render json: profile.user
+  end
+
   def reset_test_database
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean

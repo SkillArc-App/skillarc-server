@@ -56,7 +56,7 @@ class ProfileService
           {
             **stp.slice(:id, :program).as_json,
             trainingProvider: stp.training_provider.slice(:id, :name).as_json,
-            program: stp.program.slice(:id, :name).as_json
+            program: stp&.program&.slice(:id, :name)&.as_json
           }
         end.as_json
       }

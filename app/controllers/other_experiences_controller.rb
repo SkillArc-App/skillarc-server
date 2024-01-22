@@ -1,7 +1,10 @@
 class OtherExperiencesController < ApplicationController
   include Secured
+  include ProfileAuth
 
   before_action :authorize
+  before_action :set_profile
+  before_action :profile_editor_authorize
 
   def create
     other_experience = OtherExperience.create!(
@@ -14,7 +17,7 @@ class OtherExperiencesController < ApplicationController
         :description
       ),
       id: SecureRandom.uuid,
-      profile: current_user.profile
+      profile:
     )
 
     render json: other_experience
@@ -41,5 +44,13 @@ class OtherExperiencesController < ApplicationController
     other_experience.destroy!
 
     render json: other_experience
+  end
+
+  private
+
+  attr_reader :profile
+
+  def set_profile
+    @profile = Profile.find(params[:profile_id])
   end
 end

@@ -1,11 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "EducationExperiences", type: :request do
-  include_context "authenticated"
+  let(:profile) { create(:profile, user: profile_user) }
+  let(:profile_user) { create(:user) }
 
-  let(:profile) { create(:profile, user:) }
-
-  describe "GET /create" do
+  describe "POST /create" do
     subject { post profile_education_experiences_path(profile), params:, headers: }
 
     let(:params) do
@@ -20,14 +19,24 @@ RSpec.describe "EducationExperiences", type: :request do
       }
     end
 
-    it "returns 200" do
-      subject
+    it_behaves_like "a profile secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "authenticated" do
+      include_context "profile owner"
 
-    it "creates an education experience" do
-      expect { subject }.to change(EducationExperience, :count).by(1)
+      it "calls EducationExperienceService.create" do
+        expect_any_instance_of(EducationExperienceService)
+          .to receive(:create)
+          .with(
+            organization_name: "Linden High School",
+            title: "Student",
+            graduation_date: "2014-01-01",
+            gpa: "3.5",
+            activities: "Football, Basketball"
+          ).and_call_original
+
+        subject
+      end
     end
   end
 
@@ -43,14 +52,21 @@ RSpec.describe "EducationExperiences", type: :request do
       }
     end
 
-    it "returns 200" do
-      subject
+    it_behaves_like "a profile secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "authenticated" do
+      include_context "profile owner"
 
-    it "updates the education experience" do
-      expect { subject }.to change { education_experience.reload.organization_name }.to("Linden High School 2.0")
+      it "calls EducationExperienceService.update" do
+        expect_any_instance_of(EducationExperienceService)
+          .to receive(:update)
+          .with(
+            id: education_experience.id,
+            organization_name: "Linden High School 2.0"
+          ).and_call_original
+
+        subject
+      end
     end
   end
 
@@ -59,14 +75,20 @@ RSpec.describe "EducationExperiences", type: :request do
 
     let!(:education_experience) { create(:education_experience, profile:) }
 
-    it "returns 200" do
-      subject
+    it_behaves_like "a profile secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "authenticated" do
+      include_context "profile owner"
 
-    it "deletes the education experience" do
-      expect { subject }.to change(EducationExperience, :count).by(-1)
+      it "calls EducationExperienceService.destroy" do
+        expect_any_instance_of(EducationExperienceService)
+          .to receive(:destroy)
+          .with(
+            id: education_experience.id
+          ).and_call_original
+
+        subject
+      end
     end
   end
 end

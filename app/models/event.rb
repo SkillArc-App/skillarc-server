@@ -26,6 +26,8 @@ class Event < ApplicationRecord
       COACH_ASSIGNED = 'coach_assigned'.freeze,
       DAY_ELAPSED = 'day_elapsed'.freeze,
       EDUCATION_EXPERIENCE_CREATED = 'education_experience_created'.freeze,
+      EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated'.freeze,
+      EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted'.freeze,
       EMPLOYER_CREATED = 'employer_created'.freeze,
       EMPLOYER_INVITE_ACCEPTED = 'employer_invite_accepted'.freeze,
       EMPLOYER_UPDATED = 'employer_updated'.freeze,

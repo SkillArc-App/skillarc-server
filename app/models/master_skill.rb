@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: master_skills
@@ -9,5 +11,12 @@
 #  updated_at :datetime         not null
 #
 class MasterSkill < ApplicationRecord
+  module SkillTypes
+    ALL = [
+      TECHNICAL = 'TECHNICAL',
+      PERSONAL = 'PERSONAL'
+    ].freeze
+  end
+
   self.inheritance_column = nil
 end

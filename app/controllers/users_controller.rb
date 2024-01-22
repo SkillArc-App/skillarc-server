@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   attr_reader :user
 
   def authorize_is_user_or_coach
-    render json: {}, status: :unauthorized unless current_user.id == params[:id] || is_coach?
+    render json: {}, status: :unauthorized unless current_user.id == params[:id] || coach?
   end
 
   def user_params

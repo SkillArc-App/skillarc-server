@@ -66,7 +66,7 @@ RSpec.describe ProfileService do
         :profile_skill,
         profile:,
         description: "I'm good at welding.",
-        master_skill: create(:master_skill, skill: "Welding", type: MasterSkill::SkillTypes::TECHNICAL),
+        master_skill: create(:master_skill, skill: "Welding", type: MasterSkill::SkillTypes::TECHNICAL)
       )
 
       create(
@@ -75,10 +75,10 @@ RSpec.describe ProfileService do
         prompt: "Prompt",
         response: "Response"
       )
-    
+
       tp = create(:training_provider, name: "Training Provider")
       create(
-        :seeker_training_provider, 
+        :seeker_training_provider,
         user:,
         training_provider: tp,
         program: create(:program, name: "Program", training_provider: tp)
@@ -87,33 +87,32 @@ RSpec.describe ProfileService do
 
     it "returns the expanded profile" do
       expect(subject[:educationExperiences]).to contain_exactly({
-          "id" => be_a(String),
-          "organization_name" => "University of Cincinnati",
-          "title" => "Student",
-          "graduation_date" => "2019-05-01",
-          "gpa" => "3.5",
-          "activities" => "Activities"
-        },
-      )
+                                                                  "id" => be_a(String),
+                                                                  "organization_name" => "University of Cincinnati",
+                                                                  "title" => "Student",
+                                                                  "graduation_date" => "2019-05-01",
+                                                                  "gpa" => "3.5",
+                                                                  "activities" => "Activities"
+                                                                })
       expect(subject[:industryInterests]).to contain_exactly("Manufacturing", "Healthcare")
 
       expect(subject[:otherExperiences]).to contain_exactly({
-        id: anything,
-        organizationName: "Turner Construction",
-        position: "Laborer",
-        startDate: "2015-01-01",
-        endDate: "2019-01-01",
-        isCurrent: false,
-        description: "Description"
-      })
+                                                              id: anything,
+                                                              organizationName: "Turner Construction",
+                                                              position: "Laborer",
+                                                              startDate: "2015-01-01",
+                                                              endDate: "2019-01-01",
+                                                              isCurrent: false,
+                                                              description: "Description"
+                                                            })
 
       expect(subject[:personalExperience]).to contain_exactly({
-        id: anything,
-        activity: "Babysitting",
-        startDate: "2019-01-01",
-        endDate: "2020-01-01",
-        description: "I babysat for my neighbor's kids."
-      })
+                                                                id: anything,
+                                                                activity: "Babysitting",
+                                                                startDate: "2019-01-01",
+                                                                endDate: "2020-01-01",
+                                                                description: "I babysat for my neighbor's kids."
+                                                              })
 
       expect(subject[:profileSkills]).to contain_exactly(
         {
@@ -123,7 +122,7 @@ RSpec.describe ProfileService do
             "id" => be_a(String),
             "skill" => "Welding",
             "type" => MasterSkill::SkillTypes::TECHNICAL
-          },
+          }
         }
       )
 

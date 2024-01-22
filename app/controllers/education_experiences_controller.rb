@@ -2,7 +2,6 @@ class EducationExperiencesController < ApplicationController
   include Secured
   include ProfileAuth
 
-
   before_action :authorize
   before_action :set_profile
   before_action :profile_editor_authorize

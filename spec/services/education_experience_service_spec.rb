@@ -42,7 +42,7 @@ RSpec.describe EducationExperienceService do
     let!(:education_experience) do
       create(
         :education_experience,
-        profile: profile,
+        profile:,
         organization_name: "The Ohio State University",
         title: "party animal",
         graduation_date: "2013-03-01",
@@ -88,7 +88,7 @@ RSpec.describe EducationExperienceService do
   describe "#destroy" do
     subject { described_class.new(profile).destroy(id:) }
 
-    let!(:education_experience) { create(:education_experience, profile: profile) }
+    let!(:education_experience) { create(:education_experience, profile:) }
 
     let(:id) { education_experience.id }
 

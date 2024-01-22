@@ -16,7 +16,7 @@ module Secured
   }.freeze
 
   def authorize(user_finder: UserFinder.new)
-    set_current_user(require_auth: true, user_finder: user_finder)
+    set_current_user(require_auth: true, user_finder:)
   end
 
   def set_current_user(require_auth: false, user_finder: UserFinder.new)

@@ -24,10 +24,10 @@ RSpec.describe Seekers::UserService do
         event_type: Event::EventTypes::USER_UPDATED,
         aggregate_id: id,
         data: {
-          first_name: first_name,
-          last_name: last_name,
-          phone_number: phone_number,
-          zip_code: zip_code
+          first_name:,
+          last_name:,
+          phone_number:,
+          zip_code:
         },
         metadata: {},
         occurred_at: be_a(Time)

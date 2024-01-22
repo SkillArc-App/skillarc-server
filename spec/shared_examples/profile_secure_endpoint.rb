@@ -1,7 +1,7 @@
 RSpec.shared_context "profile owner" do
   include_context "authenticated"
 
-  let(:profile) { create(:profile, user: user) }
+  let(:profile) { create(:profile, user:) }
 end
 
 RSpec.shared_examples "a profile secured endpoint" do

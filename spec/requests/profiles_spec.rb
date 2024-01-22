@@ -46,13 +46,13 @@ RSpec.describe "Profiles", type: :request do
           include_context "authenticated"
 
           context "user is profile owner" do
-            let(:profile) { create(:profile, user: user) }
+            let(:profile) { create(:profile, user:) }
 
             it "calls the profile service with profile editor true" do
               expect_any_instance_of(ProfileService)
                 .to receive(:get).with(profile_editor: true)
                 .and_call_original
-  
+
               subject
             end
           end
@@ -62,13 +62,12 @@ RSpec.describe "Profiles", type: :request do
               expect_any_instance_of(ProfileService)
                 .to receive(:get).with(profile_editor: false)
                 .and_call_original
-  
+
               subject
             end
           end
         end
       end
-
     end
   end
 

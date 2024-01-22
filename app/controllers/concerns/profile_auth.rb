@@ -12,6 +12,6 @@ module ProfileAuth
     return false unless current_user
     return false unless profile
 
-    profile.user_id == current_user.id || is_coach?
+    profile.user_id == current_user.id || coach?
   end
 end

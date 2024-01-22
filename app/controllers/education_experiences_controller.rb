@@ -9,7 +9,7 @@ class EducationExperiencesController < ApplicationController
   def create
     begin
       ee = EducationExperienceService.new(profile).create(
-        **education_experience_params.to_h.symbolize_keys
+        **education_experience_params
       )
 
       render json: ee

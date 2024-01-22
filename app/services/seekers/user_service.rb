@@ -12,7 +12,7 @@ module Seekers
         zip_code:
       )
 
-      CreateEventJob.perform_later(
+      EventService.create!(
         event_type: Event::EventTypes::USER_UPDATED,
         aggregate_id: user.id,
         data: {

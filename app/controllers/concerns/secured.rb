@@ -16,11 +16,13 @@ module Secured
   }.freeze
 
   def authorize(user_finder: UserFinder.new)
-    set_current_user(require_auth: true, user_finder:)
+    set_current_user(user_finder:)
+
+    render json: REQUIRES_AUTHENTICATION, status: :unauthorized unless current_user
   end
 
-  def set_current_user(require_auth: false, user_finder: UserFinder.new)
-    token = token_from_request(require_auth:)
+  def set_current_user(user_finder: UserFinder.new)
+    token = token_from_request
 
     return unless token
 
@@ -41,30 +43,17 @@ module Secured
 
   private
 
-  def token_from_request(require_auth: true)
+  def token_from_request
     return request.headers['Authorization']&.split&.second if ENV['MOCK_AUTH'] == 'true'
 
     authorization_header_elements = request.headers['Authorization']&.split
 
-    unless authorization_header_elements || !require_auth
-      render json: REQUIRES_AUTHENTICATION, status: :unauthorized
-
-      return
-    end
-
-    unless authorization_header_elements&.length == 2 || !require_auth
-      render json: MALFORMED_AUTHORIZATION_HEADER, status: :unauthorized
-
-      return
-    end
+    return unless authorization_header_elements
+    return unless authorization_header_elements&.length == 2
 
     scheme, token = authorization_header_elements
 
-    unless scheme&.downcase == 'bearer' || !require_auth
-      render json: BAD_CREDENTIALS, status: :unauthorized
-
-      return
-    end
+    return unless scheme&.downcase == 'bearer'
 
     token
   end

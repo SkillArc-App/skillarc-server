@@ -20,7 +20,7 @@ RSpec.describe Seekers::UserService do
     end
 
     it "publishes a user_updated event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::USER_UPDATED,
         aggregate_id: id,
         data: {

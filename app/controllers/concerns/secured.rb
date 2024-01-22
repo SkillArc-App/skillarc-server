@@ -22,6 +22,8 @@ module Secured
   def set_current_user(require_auth: false, user_finder: UserFinder.new)
     token = token_from_request(require_auth:)
 
+    return unless token
+
     auth_client = AuthClient::Factory.build
 
     validation_response = auth_client.validate_token(token)

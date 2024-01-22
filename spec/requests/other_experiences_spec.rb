@@ -1,9 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "OtherExperiences", type: :request do
-  include_context "authenticated"
-
-  let(:profile) { create(:profile, user:) }
+  let(:profile) { create(:profile, user: profile_user) }
+  let(:profile_user) { create(:user) }
 
   describe "POST /create" do
     subject { post profile_other_experiences_path(profile_id: profile.id), params:, headers: }
@@ -21,14 +20,14 @@ RSpec.describe "OtherExperiences", type: :request do
       }
     end
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "a profile secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "authenticated" do
+      include_context "profile owner"
 
-    it "creates an other experience" do
-      expect { subject }.to change(OtherExperience, :count).by(1)
+      it "creates an other experience" do
+        expect { subject }.to change(OtherExperience, :count).by(1)
+      end
     end
   end
 
@@ -45,14 +44,14 @@ RSpec.describe "OtherExperiences", type: :request do
       }
     end
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "a profile secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "authenticated" do
+      include_context "profile owner"
 
-    it "updates the other experience" do
-      expect { subject }.to change { other_experience.reload.organization_name }.to("Dunder Mifflin 2.0")
+      it "updates the other experience" do
+        expect { subject }.to change { other_experience.reload.organization_name }.to("Dunder Mifflin 2.0")
+      end
     end
   end
 
@@ -61,14 +60,14 @@ RSpec.describe "OtherExperiences", type: :request do
 
     let!(:other_experience) { create(:other_experience, profile:) }
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "a profile secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "authenticated" do
+      include_context "profile owner"
 
-    it "deletes the other experience" do
-      expect { subject }.to change(OtherExperience, :count).by(-1)
+      it "deletes the other experience" do
+        expect { subject }.to change(OtherExperience, :count).by(-1)
+      end
     end
   end
 end

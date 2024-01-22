@@ -83,6 +83,15 @@ RSpec.describe ProfileService do
         training_provider: tp,
         program: create(:program, name: "Program", training_provider: tp)
       )
+
+      second_tp = create(:training_provider, name: "Second Training Provider")
+
+      create(
+        :seeker_training_provider,
+        user:,
+        training_provider: second_tp,
+        program: nil
+      )
     end
 
     it "returns the expanded profile" do
@@ -144,13 +153,20 @@ RSpec.describe ProfileService do
       expect(user["sub"]).to eq("sub")
       expect(user["zipCode"]).to eq("43210")
 
-      stp = user["SeekerTrainingProvider"].first
+      stp = user["SeekerTrainingProvider"].select { |s| s["program"] }.first
 
       expect(stp["id"]).to be_a(String)
       expect(stp["trainingProvider"]["id"]).to be_a(String)
       expect(stp["trainingProvider"]["name"]).to eq("Training Provider")
       expect(stp["program"]["id"]).to be_a(String)
       expect(stp["program"]["name"]).to eq("Program")
+
+      second_stp = user["SeekerTrainingProvider"].select { |s| s["program"].nil? }.first
+
+      expect(second_stp["id"]).to be_a(String)
+      expect(second_stp["trainingProvider"]["id"]).to be_a(String)
+      expect(second_stp["trainingProvider"]["name"]).to eq("Second Training Provider")
+      expect(second_stp["program"]).to be_nil
 
       expect(subject[:isProfileEditor]).to eq(true)
     end

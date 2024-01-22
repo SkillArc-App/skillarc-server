@@ -16,40 +16,53 @@ module Secured
   }.freeze
 
   def authorize(user_finder: UserFinder.new)
-    token = token_from_request
+    set_current_user(require_auth: true, user_finder: user_finder)
+  end
 
-    return if performed?
+  def set_current_user(require_auth: false, user_finder: UserFinder.new)
+    token = token_from_request(require_auth:)
 
     auth_client = AuthClient::Factory.build
 
     validation_response = auth_client.validate_token(token)
+
     if validation_response.success?
       @current_user = user_finder.find_or_create(
         sub: validation_response.sub,
         token:,
         auth_client:
       )
-    else
-      render json: { message: validation_response.message }, status: validation_response.status
     end
+
+    validation_response
   end
 
   private
 
-  def token_from_request
+  def token_from_request(require_auth: true)
     return request.headers['Authorization']&.split&.second if ENV['MOCK_AUTH'] == 'true'
 
     authorization_header_elements = request.headers['Authorization']&.split
 
-    render json: REQUIRES_AUTHENTICATION, status: :unauthorized and return unless authorization_header_elements
+    unless authorization_header_elements || !require_auth
+      render json: REQUIRES_AUTHENTICATION, status: :unauthorized
 
-    unless authorization_header_elements.length == 2
-      render json: MALFORMED_AUTHORIZATION_HEADER, status: :unauthorized and return
+      return
+    end
+
+    unless authorization_header_elements&.length == 2 || !require_auth
+      render json: MALFORMED_AUTHORIZATION_HEADER, status: :unauthorized
+
+      return
     end
 
     scheme, token = authorization_header_elements
 
-    render json: BAD_CREDENTIALS, status: :unauthorized and return unless scheme.downcase == 'bearer'
+    unless scheme&.downcase == 'bearer' || !require_auth
+      render json: BAD_CREDENTIALS, status: :unauthorized
+
+      return
+    end
 
     token
   end

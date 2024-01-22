@@ -17,6 +17,59 @@ RSpec.describe "Profiles", type: :request do
 
       expect(response).to have_http_status(:ok)
     end
+
+    context "unauthenticated" do
+      it "calls the profile service with profile editor false" do
+        expect_any_instance_of(ProfileService)
+          .to receive(:get).with(profile_editor: false)
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "authenticated" do
+      context "user is not the profile owner" do
+        context "the user is a coach" do
+          include_context "coach authenticated"
+
+          it "calls the profile service with profile editor true" do
+            expect_any_instance_of(ProfileService)
+              .to receive(:get).with(profile_editor: true)
+              .and_call_original
+
+            subject
+          end
+        end
+
+        context "the user is not a coach" do
+          include_context "authenticated"
+
+          context "user is profile owner" do
+            let(:profile) { create(:profile, user: user) }
+
+            it "calls the profile service with profile editor true" do
+              expect_any_instance_of(ProfileService)
+                .to receive(:get).with(profile_editor: true)
+                .and_call_original
+  
+              subject
+            end
+          end
+
+          context "user is not profile owner" do
+            it "calls the profile service with profile editor false" do
+              expect_any_instance_of(ProfileService)
+                .to receive(:get).with(profile_editor: false)
+                .and_call_original
+  
+              subject
+            end
+          end
+        end
+      end
+
+    end
   end
 
   describe "PUT /update" do

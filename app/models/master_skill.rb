@@ -9,5 +9,12 @@
 #  updated_at :datetime         not null
 #
 class MasterSkill < ApplicationRecord
+  module SkillTypes
+    ALL = [
+      TECHNICAL = 'TECHNICAL'.freeze,
+      PERSONAL = 'PERSONAL'.freeze
+    ]
+  end
+
   self.inheritance_column = nil
 end

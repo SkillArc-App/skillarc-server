@@ -17,7 +17,7 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         hash_including(
           event_type: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
           aggregate_id: profile.id,
@@ -67,7 +67,7 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::EDUCATION_EXPERIENCE_UPDATED,
         aggregate_id: profile.id,
         data: {
@@ -97,7 +97,7 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
-      expect(CreateEventJob).to receive(:perform_later).with(
+      expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::EDUCATION_EXPERIENCE_DELETED,
         aggregate_id: profile.id,
         data: {

@@ -14,7 +14,7 @@ class EducationExperienceService
       profile_id: profile.id
     )
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
       aggregate_id: profile.id,
       data: {
@@ -33,7 +33,7 @@ class EducationExperienceService
 
     education_experience.update!(**params)
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::EDUCATION_EXPERIENCE_UPDATED,
       aggregate_id: profile.id,
       data: params.merge(id:),
@@ -46,7 +46,7 @@ class EducationExperienceService
 
     education_experience.destroy!
 
-    CreateEventJob.perform_later(
+    EventService.create!(
       event_type: Event::EventTypes::EDUCATION_EXPERIENCE_DELETED,
       aggregate_id: profile.id,
       data: { id: education_experience.id },

@@ -216,6 +216,10 @@ module Coaches
       )
       csc.last_active_on = event.occurred_at
       csc.save!
+
+      SeekerLead.where(email: event.data[:email])
+                .or(SeekerLead.where(phone_number: event.data[:phone_number]))
+                .update!(status: SeekerLead::StatusTypes::CONVERTED)
     end
 
     def self.handle_user_updated(event)

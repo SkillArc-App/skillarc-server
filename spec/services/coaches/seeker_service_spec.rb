@@ -23,10 +23,10 @@ RSpec.describe Coaches::SeekerService do
 
   let(:lead) do
     {
-      email: "john.chabot@blocktrainapp.com",
-      phone_number: "333-333-3333",
-      first_name: "John",
-      last_name: "Chabot",
+      email: nil,
+      phone_number: "1234567890",
+      first_name: "Hannah",
+      last_name: "Block",
       lead_captured_by: "khall@blocktrainapp.com"
     }
   end
@@ -191,13 +191,13 @@ RSpec.describe Coaches::SeekerService do
 
     it "returns all profiles" do
       expected_lead = {
-        email: "john.chabot@blocktrainapp.com",
-        phone_number: "333-333-3333",
-        first_name: "John",
-        last_name: "Chabot",
+        phone_number: "1234567890",
+        first_name: "Hannah",
+        last_name: "Block",
         lead_captured_at: time1,
+        email: nil,
         lead_captured_by: "khall@blocktrainapp.com",
-        status: Coaches::SeekerLead::StatusTypes::NEW
+        status: Coaches::SeekerLead::StatusTypes::CONVERTED
       }
 
       expect(subject).to contain_exactly(expected_lead)

@@ -854,3 +854,9 @@ Coaches::SeekerApplication.create!(
   job_id: earthwork_job.id,
   coach_seeker_context:
 )
+
+Reason.create!(description: "This candidate does not meet the role requirements")
+Reason.create!(description: "The role is filled, no longer accepting applications")
+Reason.create!(description: "The role is seasonal or pausing accepting candidates")
+Reason.create!(description: "This candidate is a better for another role")
+Reason.create!(description: "The candidate did not show up for the interview")

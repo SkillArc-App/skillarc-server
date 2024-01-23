@@ -21,6 +21,7 @@ class Event < ApplicationRecord
   module EventTypes
     COACHES = [
       COACH_ASSIGNED = 'coach_assigned'.freeze,
+      LEAD_ADDED = 'lead_added'.freeze,
       NOTE_ADDED = 'note_added'.freeze,
       NOTE_MODIFIED = 'note_modified'.freeze,
       NOTE_DELETED = 'note_deleted'.freeze,

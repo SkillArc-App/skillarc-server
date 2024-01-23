@@ -32,7 +32,7 @@ RSpec.describe UserEvents do
     let!(:onboarding_complete_event) do
       create(
         :event,
-        :onboarding_complete,
+        :onboarding_completed,
         occurred_at:,
         aggregate_id: user.id
       )

@@ -2,12 +2,12 @@ version: "3.8"
 services:
   redis:
     image: "redis:7.2.1"
-    container_name: "blocktrain_redis"
+    container_name: "skillarc_redis"
     ports:
       - "127.0.0.1:6379:6379"
   postgres:
     image: "postgres:15.3"
-    container_name: "blocktrain_postgres"
+    container_name: "skillarc_postgres"
     ports:
       - "127.0.0.1:5432:5432"
     environment:
@@ -18,7 +18,7 @@ services:
     stdin_open: true
     build:
       dockerfile: server.Dockerfile
-    container_name: "blocktrain_server"
+    container_name: "skillarc_server"
     volumes:
       - .:/app
     ports:
@@ -29,7 +29,7 @@ services:
   resque:
     build:
       dockerfile: resque.Dockerfile
-    container_name: "blocktrain_resque"
+    container_name: "skillarc_resque"
     volumes:
       - .:/app
     depends_on:

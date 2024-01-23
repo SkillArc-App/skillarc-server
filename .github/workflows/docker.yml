@@ -33,4 +33,4 @@ jobs:
           context: .
           file: ./resque.Dockerfile
           push: true
-          tags: ghcr.io/blocktrain-app/resque:latest
+          tags: ghcr.io/skillarc-app/resque:latest

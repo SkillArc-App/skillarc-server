@@ -26,7 +26,7 @@ jobs:
           context: .
           file: ./server.Dockerfile
           push: true
-          tags: ghcr.io/blocktrain-app/server:latest
+          tags: ghcr.io/skillarc-app/server:latest
       - name: Build and Push Resque Docker image
         uses: docker/build-push-action@v2
         with:

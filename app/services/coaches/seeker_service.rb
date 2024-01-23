@@ -47,13 +47,13 @@ module Coaches
       end
     end
 
-    def self.all
+    def self.all_contexts
       CoachSeekerContext.includes(:seeker_notes, :seeker_applications).where.not(profile_id: nil).where.not(email: nil).map do |csc|
         serialize_coach_seeker_context(csc)
       end
     end
 
-    def self.find(id)
+    def self.find_context(id)
       csc = CoachSeekerContext.find_by!(profile_id: id)
 
       serialize_coach_seeker_context(csc)

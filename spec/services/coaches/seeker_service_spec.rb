@@ -108,8 +108,8 @@ RSpec.describe Coaches::SeekerService do
     described_class.handle_event(applicant_status_updated4)
   end
 
-  describe ".all" do
-    subject { described_class.all }
+  describe ".all_contexts" do
+    subject { described_class.all_contexts }
 
     it "returns all profiles" do
       expected_profile = {
@@ -174,8 +174,8 @@ RSpec.describe Coaches::SeekerService do
     end
   end
 
-  describe ".find" do
-    subject { described_class.find(profile_id) }
+  describe ".find_context" do
+    subject { described_class.find_context(profile_id) }
 
     it "returns the profile" do
       expected_profile = {

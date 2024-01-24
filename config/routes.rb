@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       post 'skill-levels' => 'seekers#update_skill_level'
       post 'assign_coach' => 'seekers#assign'
     end
+    resources :leads, only: [:create, :index]
   end
   resources :coaches
 

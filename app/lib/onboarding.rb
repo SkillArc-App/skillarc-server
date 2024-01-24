@@ -63,6 +63,10 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       id: SecureRandom.uuid,
       user:
     )
+    Seeker.create!(
+      id: profile.id,
+      user:
+    )
 
     EventService.create!(
       aggregate_id: user.id,

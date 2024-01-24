@@ -33,18 +33,18 @@ class ProfilesController < ApplicationController
   end
 
   def show
-    render json: ProfileService.new(profile).get(profile_editor: profile_editor?)
+    render json: ProfileService.new(profile, seeker).get(profile_editor: profile_editor?)
   end
 
   def update
-    ProfileService.new(profile).update(profile_params)
+    ProfileService.new(profile, seeker).update(profile_params)
 
     render json: profile
   end
 
   private
 
-  attr_reader :profile
+  attr_reader :profile, :seeker
 
   def profile_params
     params.require(:profile).permit(
@@ -57,5 +57,6 @@ class ProfilesController < ApplicationController
 
   def set_profile
     @profile = Profile.includes(profile_skills: :master_skill).find(params[:id])
+    @seeker = Seeker.find(params[:id])
   end
 end

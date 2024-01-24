@@ -1,8 +1,9 @@
 class ProfileService
   include Cereal
 
-  def initialize(profile)
+  def initialize(profile, seeker)
     @profile = profile
+    @seeker = seeker
   end
 
   def get(profile_editor: false)
@@ -65,6 +66,7 @@ class ProfileService
 
   def update(params)
     profile.update!(params)
+    seeker&.update!(params.except(:met_career_coach))
 
     EventService.create!(
       event_type: Event::EventTypes::SEEKER_UPDATED,
@@ -89,5 +91,5 @@ class ProfileService
 
   private
 
-  attr_reader :profile
+  attr_reader :profile, :seeker
 end

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ProfileService do
   describe "#get" do
-    subject { described_class.new(profile).get(profile_editor: true) }
+    subject { described_class.new(profile, nil).get(profile_editor: true) }
 
     let(:profile) { create(:profile, user:) }
     let(:user) do
@@ -173,9 +173,11 @@ RSpec.describe ProfileService do
   end
 
   describe "#update" do
-    subject { described_class.new(profile).update(params) }
+    subject { described_class.new(profile, seeker).update(params) }
 
-    let(:profile) { create(:profile) }
+    let(:profile) { create(:profile, user:) }
+    let(:seeker) { create(:seeker, user:) }
+    let(:user) { create(:user) }
 
     let(:params) do
       {

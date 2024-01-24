@@ -24,4 +24,5 @@ class Seeker < ApplicationRecord
   has_many :education_experiences
   has_many :other_experiences
   has_many :personal_experiences
+  has_many :profile_skills
 end

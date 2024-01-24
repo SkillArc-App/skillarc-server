@@ -26,4 +26,5 @@ class Seeker < ApplicationRecord
   has_many :personal_experiences
   has_many :profile_skills
   has_many :references, class_name: "Reference"
+  has_many :stories
 end

@@ -67,7 +67,7 @@ RSpec.describe Onboarding do
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
-            event_type: Event::EventTypes::PROFILE_CREATED,
+            event_type: Event::EventTypes::SEEKER_CREATED,
             data: {
               id: be_present,
               user_id: user.id

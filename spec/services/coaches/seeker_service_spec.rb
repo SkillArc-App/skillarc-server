@@ -247,7 +247,7 @@ RSpec.describe Coaches::SeekerService do
         Event::EventTypes::JOB_SAVED,
         Event::EventTypes::JOB_UNSAVED,
         Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
-        Event::EventTypes::PROFILE_UPDATED,
+        Event::EventTypes::SEEKER_UPDATED,
         Event::EventTypes::ONBOARDING_COMPLETED
       ].each do |event_type|
         context "when a #{event_type} occurs for a seeker" do

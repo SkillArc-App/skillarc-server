@@ -192,7 +192,7 @@ RSpec.describe ProfileService do
 
     it "publishes a profile updated event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::PROFILE_UPDATED,
+        event_type: Event::EventTypes::SEEKER_UPDATED,
         aggregate_id: profile.user.id,
         data: {
           bio: "New Bio",

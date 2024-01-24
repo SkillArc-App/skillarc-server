@@ -67,7 +67,7 @@ class ProfileService
     profile.update!(params)
 
     EventService.create!(
-      event_type: Event::EventTypes::PROFILE_UPDATED,
+      event_type: Event::EventTypes::SEEKER_UPDATED,
       aggregate_id: profile.user.id,
       data: {
         bio: profile.bio,

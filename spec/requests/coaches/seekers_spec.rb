@@ -10,7 +10,7 @@ RSpec.describe "Seekers", type: :request do
       include_context "coach authenticated"
 
       it "calls SeekerService.all" do
-        expect(Coaches::SeekerService).to receive(:all)
+        expect(Coaches::SeekerService).to receive(:all_contexts)
 
         subject
       end
@@ -28,7 +28,7 @@ RSpec.describe "Seekers", type: :request do
       include_context "coach authenticated"
 
       it "calls SeekerService.find" do
-        expect(Coaches::SeekerService).to receive(:find).with(seeker_id)
+        expect(Coaches::SeekerService).to receive(:find_context).with(seeker_id)
 
         subject
       end

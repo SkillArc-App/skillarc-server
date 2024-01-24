@@ -7,11 +7,11 @@ module Coaches
     before_action :coach_authorize
 
     def index
-      render json: SeekerService.all
+      render json: SeekerService.all_contexts
     end
 
     def show
-      render json: SeekerService.find(params[:id])
+      render json: SeekerService.find_context(params[:id])
     end
 
     def assign

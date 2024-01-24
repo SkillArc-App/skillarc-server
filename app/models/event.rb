@@ -19,11 +19,19 @@
 #
 class Event < ApplicationRecord
   module EventTypes
+    COACHES = [
+      COACH_ASSIGNED = 'coach_assigned'.freeze,
+      LEAD_ADDED = 'lead_added'.freeze,
+      NOTE_ADDED = 'note_added'.freeze,
+      NOTE_MODIFIED = 'note_modified'.freeze,
+      NOTE_DELETED = 'note_deleted'.freeze,
+      SKILL_LEVEL_UPDATED = 'skill_level_updated'.freeze
+    ].freeze
+
     ALL = [
       APPLICANT_STATUS_UPDATED = 'applicant_status_updated'.freeze,
       CHAT_CREATED = 'chat_created'.freeze,
       CHAT_MESSAGE_SENT = 'chat_message_sent'.freeze,
-      COACH_ASSIGNED = 'coach_assigned'.freeze,
       DAY_ELAPSED = 'day_elapsed'.freeze,
       EDUCATION_EXPERIENCE_CREATED = 'education_experience_created'.freeze,
       EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated'.freeze,
@@ -37,9 +45,6 @@ class Event < ApplicationRecord
       JOB_UPDATED = 'job_updated'.freeze,
       JOB_SAVED = 'job_saved'.freeze,
       JOB_UNSAVED = 'job_unsaved'.freeze,
-      NOTE_ADDED = 'note_added'.freeze,
-      NOTE_MODIFIED = 'note_modified'.freeze,
-      NOTE_DELETED = 'note_deleted'.freeze,
       NOTIFICATION_CREATED = 'notification_created'.freeze,
       NOTIFICATIONS_MARKED_READ = 'notifications_marked_read'.freeze,
       ONBOARDING_COMPLETED = 'onboarding_completed'.freeze,
@@ -48,10 +53,10 @@ class Event < ApplicationRecord
       PROFILE_UPDATED = 'profile_updated'.freeze,
       ROLE_ADDED = 'role_added'.freeze,
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created'.freeze,
-      SKILL_LEVEL_UPDATED = 'skill_level_updated'.freeze,
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted'.freeze,
       USER_CREATED = 'user_created'.freeze,
-      USER_UPDATED = 'user_updated'.freeze
+      USER_UPDATED = 'user_updated'.freeze,
+      *COACHES
     ].freeze
   end
 

@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Coaches::SeekerService do
+  let(:lead_added) { build(:event_message, :lead_added, aggregate_id: '123', data: lead, occurred_at: time1) }
   let(:non_seeker_user_created) { build(:event_message, :user_created, aggregate_id: "123", data: { email: "f@f.f" }) }
   let(:user_without_email) { build(:event_message, :user_created, aggregate_id: user_without_email_id, data: { first_name: "Hannah", last_name: "Block" }) }
   let(:profile_without_email) { build(:event_message, :profile_created, aggregate_id: user_without_email_id, data: { id: profile_without_email_id }) }
@@ -19,6 +20,16 @@ RSpec.describe Coaches::SeekerService do
   let(:note_modified) { build(:event_message, :note_modified, aggregate_id: profile_id, data: { note: updated_note, note_id: note_id2 }, occurred_at: time1) }
   let(:skill_level_updated) { build(:event_message, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: time1) }
   let(:coach_assigned) { build(:event_message, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+
+  let(:lead) do
+    {
+      email: nil,
+      phone_number: "1234567890",
+      first_name: "Hannah",
+      last_name: "Block",
+      lead_captured_by: "khall@blocktrainapp.com"
+    }
+  end
   let(:status_updated1) do
     {
       job_id:,
@@ -88,6 +99,7 @@ RSpec.describe Coaches::SeekerService do
   let(:employer_name2) { "Fun company" }
 
   before do
+    described_class.handle_event(lead_added)
     described_class.handle_event(non_seeker_user_created)
     described_class.handle_event(user_without_email)
     described_class.handle_event(profile_without_email)
@@ -108,8 +120,8 @@ RSpec.describe Coaches::SeekerService do
     described_class.handle_event(applicant_status_updated4)
   end
 
-  describe ".all" do
-    subject { described_class.all }
+  describe ".all_contexts" do
+    subject { described_class.all_contexts }
 
     it "returns all profiles" do
       expected_profile = {
@@ -174,8 +186,26 @@ RSpec.describe Coaches::SeekerService do
     end
   end
 
-  describe ".find" do
-    subject { described_class.find(profile_id) }
+  describe ".all_leads" do
+    subject { described_class.all_leads }
+
+    it "returns all profiles" do
+      expected_lead = {
+        phone_number: "1234567890",
+        first_name: "Hannah",
+        last_name: "Block",
+        lead_captured_at: time1,
+        email: nil,
+        lead_captured_by: "khall@blocktrainapp.com",
+        status: Coaches::SeekerLead::StatusTypes::CONVERTED
+      }
+
+      expect(subject).to contain_exactly(expected_lead)
+    end
+  end
+
+  describe ".find_context" do
+    subject { described_class.find_context(profile_id) }
 
     it "returns the profile" do
       expected_profile = {
@@ -228,6 +258,34 @@ RSpec.describe Coaches::SeekerService do
           end
         end
       end
+    end
+  end
+
+  describe ".add_lead" do
+    subject { described_class.add_lead(coach:, first_name:, last_name:, phone_number:, now:) }
+
+    let(:coach) { create(:coaches__coach) }
+    let(:first_name) { "John" }
+    let(:last_name) { "Chabot" }
+    let(:phone_number) { "333-333-3333" }
+
+    let(:now) { Time.zone.local(2020, 1, 1) }
+
+    it "creates an event" do
+      expect(EventService).to receive(:create!).with(
+        event_type: Event::EventTypes::LEAD_ADDED,
+        aggregate_id: coach.id,
+        data: {
+          first_name:,
+          last_name:,
+          phone_number:,
+          email: nil,
+          lead_captured_by: coach.email
+        },
+        occurred_at: now
+      ).and_call_original
+
+      subject
     end
   end
 

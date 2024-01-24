@@ -5,7 +5,7 @@ RSpec.describe Klayvio::OnboardingComplete do
     let(:event) do
       build(
         :event_message,
-        :onboarding_complete,
+        :onboarding_completed,
         aggregate_id: user.id
       )
     end

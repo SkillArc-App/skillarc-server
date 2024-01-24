@@ -11,6 +11,9 @@ module Coaches
       when Event::EventTypes::COACH_ASSIGNED
         handle_coach_assigned(event)
 
+      when Event::EventTypes::LEAD_ADDED
+        handle_lead_added(event)
+
       when Event::EventTypes::NOTE_ADDED
         handle_note_added(event)
 
@@ -47,16 +50,37 @@ module Coaches
       end
     end
 
-    def self.all
+    def self.all_leads
+      SeekerLead.all.map do |seeker_lead|
+        serialize_seeker_lead(seeker_lead)
+      end
+    end
+
+    def self.all_contexts
       CoachSeekerContext.includes(:seeker_notes, :seeker_applications).where.not(profile_id: nil).where.not(email: nil).map do |csc|
         serialize_coach_seeker_context(csc)
       end
     end
 
-    def self.find(id)
+    def self.find_context(id)
       csc = CoachSeekerContext.find_by!(profile_id: id)
 
       serialize_coach_seeker_context(csc)
+    end
+
+    def self.add_lead(coach:, phone_number:, first_name:, last_name:, email: nil, now: Time.zone.now) # rubocop:disable Metrics/ParameterLists
+      EventService.create!(
+        event_type: Event::EventTypes::LEAD_ADDED,
+        aggregate_id: coach.id,
+        data: {
+          email:,
+          phone_number:,
+          first_name:,
+          last_name:,
+          lead_captured_by: coach.email
+        },
+        occurred_at: now
+      )
     end
 
     def self.add_note(id:, coach:, note:, note_id:, now: Time.zone.now)
@@ -147,6 +171,18 @@ module Coaches
       csc.save!
     end
 
+    def self.handle_lead_added(event)
+      SeekerLead.create!(
+        email: event.data[:email],
+        phone_number: event.data[:phone_number],
+        first_name: event.data[:first_name],
+        last_name: event.data[:last_name],
+        lead_captured_at: event.occurred_at,
+        lead_captured_by: event.data[:lead_captured_by],
+        status: SeekerLead::StatusTypes::NEW
+      )
+    end
+
     def self.handle_note_deleted(event)
       SeekerNote.find_by!(note_id: event.data[:note_id]).destroy
     end
@@ -180,6 +216,10 @@ module Coaches
       )
       csc.last_active_on = event.occurred_at
       csc.save!
+
+      SeekerLead.where(email: event.data[:email])
+                .or(SeekerLead.where(phone_number: event.data[:phone_number]))
+                .update!(status: SeekerLead::StatusTypes::CONVERTED)
     end
 
     def self.handle_user_updated(event)
@@ -247,6 +287,18 @@ module Coaches
             employmentTitle: application.employment_title
           }
         end
+      }
+    end
+
+    def self.serialize_seeker_lead(seeker_lead)
+      {
+        email: seeker_lead.email,
+        phone_number: seeker_lead.phone_number,
+        first_name: seeker_lead.first_name,
+        last_name: seeker_lead.last_name,
+        lead_captured_at: seeker_lead.lead_captured_at,
+        lead_captured_by: seeker_lead.lead_captured_by,
+        status: seeker_lead.status
       }
     end
   end

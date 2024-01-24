@@ -25,6 +25,7 @@
 class User < ApplicationRecord
   has_one :recruiter
   has_one :profile
+  has_one :seeker
   has_many :onboarding_sessions
   has_and_belongs_to_many :roles, join_table: :user_roles
   has_many :user_roles

@@ -24,6 +24,7 @@ RSpec.describe Coaches::SeekerService do
   let(:lead) do
     {
       email: nil,
+      lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5",
       phone_number: "1234567890",
       first_name: "Hannah",
       last_name: "Block",

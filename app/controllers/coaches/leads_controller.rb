@@ -9,7 +9,9 @@ module Coaches
 
     def create
       SeekerService.add_lead(
+        lead_id: SecureRandom.uuid,
         **params.require(:lead).permit(
+          :lead_id,
           :email,
           :phone_number,
           :first_name,

@@ -19,4 +19,6 @@
 #
 class Seeker < ApplicationRecord
   belongs_to :user
+
+  has_many :applicants
 end

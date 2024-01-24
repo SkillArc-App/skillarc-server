@@ -2,11 +2,11 @@ class ProfilesController < ApplicationController
   include Secured
   include Admin
   include Cereal
-  include ProfileAuth
+  include SeekerAuth
 
   before_action :authorize, only: [:index, :update]
   before_action :admin_authorize, only: [:index, :update]
-  before_action :set_profile, only: [:show, :update]
+  before_action :set_seeker, only: [:show, :update]
 
   before_action :set_current_user, only: [:show]
 
@@ -33,11 +33,11 @@ class ProfilesController < ApplicationController
   end
 
   def show
-    render json: ProfileService.new(profile, seeker).get(profile_editor: profile_editor?)
+    render json: SeekerService.new(profile, seeker).get(seeker_editor: seeker_editor?)
   end
 
   def update
-    ProfileService.new(profile, seeker).update(profile_params)
+    SeekerService.new(profile, seeker).update(profile_params)
 
     render json: profile
   end
@@ -55,8 +55,8 @@ class ProfilesController < ApplicationController
     )
   end
 
-  def set_profile
+  def set_seeker
     @profile = Profile.includes(profile_skills: :master_skill).find(params[:id])
-    @seeker = Seeker.find(params[:id])
+    @seeker = Seeker.find_by(id: params[:id])
   end
 end

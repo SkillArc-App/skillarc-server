@@ -1,10 +1,10 @@
 class OtherExperiencesController < ApplicationController
   include Secured
-  include ProfileAuth
+  include SeekerAuth
 
   before_action :authorize
-  before_action :set_profile
-  before_action :profile_editor_authorize
+  before_action :set_seeker
+  before_action :seeker_editor_authorize
 
   def create
     other_experience = OtherExperience.create!(
@@ -50,7 +50,8 @@ class OtherExperiencesController < ApplicationController
 
   attr_reader :profile
 
-  def set_profile
+  def set_seeker
     @profile = Profile.find(params[:profile_id])
+    @seeker = Seeker.find_by(id: params[:profile_id])
   end
 end

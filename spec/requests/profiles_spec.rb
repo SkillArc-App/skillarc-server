@@ -19,9 +19,9 @@ RSpec.describe "Profiles", type: :request do
     end
 
     context "unauthenticated" do
-      it "calls the profile service with profile editor false" do
-        expect_any_instance_of(ProfileService)
-          .to receive(:get).with(profile_editor: false)
+      it "calls the seeker service with seeker editor false" do
+        expect_any_instance_of(SeekerService)
+          .to receive(:get).with(seeker_editor: false)
           .and_call_original
 
         subject
@@ -29,13 +29,13 @@ RSpec.describe "Profiles", type: :request do
     end
 
     context "authenticated" do
-      context "user is not the profile owner" do
+      context "user is not the seeker owner" do
         context "the user is a coach" do
           include_context "coach authenticated"
 
-          it "calls the profile service with profile editor true" do
-            expect_any_instance_of(ProfileService)
-              .to receive(:get).with(profile_editor: true)
+          it "calls the seeker service with seeker editor true" do
+            expect_any_instance_of(SeekerService)
+              .to receive(:get).with(seeker_editor: true)
               .and_call_original
 
             subject
@@ -45,22 +45,22 @@ RSpec.describe "Profiles", type: :request do
         context "the user is not a coach" do
           include_context "authenticated"
 
-          context "user is profile owner" do
+          context "user is seeker owner" do
             let(:profile) { create(:profile, user:) }
 
-            it "calls the profile service with profile editor true" do
-              expect_any_instance_of(ProfileService)
-                .to receive(:get).with(profile_editor: true)
+            it "calls the seeker service with seeker editor true" do
+              expect_any_instance_of(SeekerService)
+                .to receive(:get).with(seeker_editor: true)
                 .and_call_original
 
               subject
             end
           end
 
-          context "user is not profile owner" do
-            it "calls the profile service with profile editor false" do
-              expect_any_instance_of(ProfileService)
-                .to receive(:get).with(profile_editor: false)
+          context "user is not seeker owner" do
+            it "calls the seeker service with seeker editor false" do
+              expect_any_instance_of(SeekerService)
+                .to receive(:get).with(seeker_editor: false)
                 .and_call_original
 
               subject

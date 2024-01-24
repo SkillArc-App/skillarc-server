@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe ProfileService do
+RSpec.describe SeekerService do
   describe "#get" do
-    subject { described_class.new(profile, nil).get(profile_editor: true) }
+    subject { described_class.new(profile, nil).get(seeker_editor: true) }
 
     let(:profile) { create(:profile, user:) }
     let(:user) do

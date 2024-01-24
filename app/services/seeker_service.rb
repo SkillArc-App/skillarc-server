@@ -1,4 +1,4 @@
-class ProfileService
+class SeekerService
   include Cereal
 
   def initialize(profile, seeker)
@@ -6,7 +6,7 @@ class ProfileService
     @seeker = seeker
   end
 
-  def get(profile_editor: false)
+  def get(seeker_editor: false)
     industry_interests = profile.user.onboarding_session&.responses&.dig("opportunityInterests", "response") || []
 
     {
@@ -17,7 +17,7 @@ class ProfileService
       end,
       hiringStatus: profile.hiring_status,
       industryInterests: industry_interests,
-      isProfileEditor: profile_editor,
+      isProfileEditor: seeker_editor,
       otherExperiences: profile.other_experiences.map do |oe|
         {
           id: oe.id,

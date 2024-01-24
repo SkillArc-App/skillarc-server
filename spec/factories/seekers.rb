@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :seekers do
+  factory :seeker do
     user
 
     id { SecureRandom.uuid }

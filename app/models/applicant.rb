@@ -22,6 +22,8 @@
 class Applicant < ApplicationRecord
   belongs_to :job
   belongs_to :profile
+  belongs_to :seeker, optional: true
+
   has_many :applicant_statuses
 
   def status

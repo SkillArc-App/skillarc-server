@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_24_182553) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_24_212026) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -156,7 +156,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_24_182553) do
     t.index ["coach_seeker_context_id"], name: "index_coaches_seeker_applications_on_coach_seeker_context_id"
   end
 
-  create_table "coaches_seeker_leads", force: :cascade do |t|
+  create_table "coaches_seeker_leads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "lead_id", null: false
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.string "phone_number", null: false

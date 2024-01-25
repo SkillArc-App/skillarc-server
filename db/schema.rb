@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_24_212026) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_25_222945) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -133,6 +133,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_24_212026) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "last_active_on"
+    t.uuid "seeker_id"
   end
 
   create_table "coaches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -441,6 +442,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_24_212026) do
     t.text "response", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
+    t.uuid "seeker_id"
+    t.index ["seeker_id"], name: "index_professional_interests_on_seeker_id"
   end
 
   create_table "profile_certifications", id: :text, force: :cascade do |t|
@@ -729,6 +732,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_24_212026) do
   add_foreign_key "personal_experiences", "seekers"
   add_foreign_key "preferences", "profiles", name: "Preference_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "professional_interests", "profiles", name: "ProfessionalInterests_profile_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "professional_interests", "seekers"
   add_foreign_key "profile_certifications", "master_certifications", name: "ProfileCertification_master_certification_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "profile_certifications", "profiles", name: "ProfileCertification_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "profile_skills", "master_skills", name: "ProfileSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict

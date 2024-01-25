@@ -866,3 +866,6 @@ Reason.create!(description: "The role is filled, no longer accepting application
 Reason.create!(description: "The role is seasonal or pausing accepting candidates")
 Reason.create!(description: "This candidate is a better for another role")
 Reason.create!(description: "The candidate did not show up for the interview")
+
+FactoryBot.create(:barrier, name: "Background")
+FactoryBot.create(:barrier, name: "Unable to Drive")

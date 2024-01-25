@@ -98,6 +98,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_25_222945) do
     t.index ["seeker_id"], name: "index_applicants_on_seeker_id"
   end
 
+  create_table "barriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.uuid "barrier_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["barrier_id"], name: "index_barriers_on_barrier_id", unique: true
+  end
+
   create_table "career_paths", id: :text, force: :cascade do |t|
     t.text "title", null: false
     t.text "upper_limit", null: false

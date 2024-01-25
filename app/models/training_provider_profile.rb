@@ -20,5 +20,5 @@
 class TrainingProviderProfile < ApplicationRecord
   belongs_to :training_provider
   belongs_to :user
-  has_many :references, class_name: "Reference", foreign_key: "author_profile_id"
+  has_many :references, inverse_of: :author_profile, class_name: "Reference", foreign_key: "author_profile_id", dependent: :destroy
 end

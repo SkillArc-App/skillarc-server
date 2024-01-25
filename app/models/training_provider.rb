@@ -9,6 +9,6 @@
 #  updated_at  :datetime         not null
 #
 class TrainingProvider < ApplicationRecord
-  has_many :programs
-  has_many :seeker_invites
+  has_many :programs, dependent: :destroy
+  has_many :seeker_invites, dependent: :destroy
 end

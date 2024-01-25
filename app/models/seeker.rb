@@ -20,11 +20,11 @@
 class Seeker < ApplicationRecord
   belongs_to :user
 
-  has_many :applicants
-  has_many :education_experiences
-  has_many :other_experiences
-  has_many :personal_experiences
-  has_many :profile_skills
-  has_many :references, class_name: "Reference"
-  has_many :stories
+  has_many :applicants, dependent: :destroy
+  has_many :education_experiences, dependent: :destroy
+  has_many :other_experiences, dependent: :destroy
+  has_many :personal_experiences, dependent: :destroy
+  has_many :profile_skills, dependent: :destroy
+  has_many :references, class_name: "Reference", dependent: :destroy
+  has_many :stories, dependent: :destroy
 end

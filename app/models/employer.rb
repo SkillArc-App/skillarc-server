@@ -12,5 +12,5 @@
 #  chat_enabled :boolean          default(FALSE), not null
 #
 class Employer < ApplicationRecord
-  has_many :jobs
+  has_many :jobs, dependent: :destroy
 end

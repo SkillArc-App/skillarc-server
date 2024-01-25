@@ -22,13 +22,13 @@
 class Profile < ApplicationRecord
   belongs_to :user
 
-  has_many :applicants
-  has_many :education_experiences
-  has_many :other_experiences
-  has_many :personal_experiences
-  has_many :profile_skills
-  has_many :references, class_name: "Reference", foreign_key: "seeker_profile_id"
-  has_many :stories
+  has_many :applicants, dependent: :destroy
+  has_many :education_experiences, dependent: :destroy
+  has_many :other_experiences, dependent: :destroy
+  has_many :personal_experiences, dependent: :destroy
+  has_many :profile_skills, dependent: :destroy
+  has_many :references, inverse_of: :seeker_profile, class_name: "Reference", foreign_key: "seeker_profile_id", dependent: :destroy
+  has_many :stories, dependent: :destroy
 
   def onboarding_session
     OnboardingSession.where(user_id:).first

@@ -528,6 +528,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_25_222945) do
     t.index ["name"], name: "Role_name_key", unique: true
   end
 
+  create_table "seeker_barriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "coach_seeker_context_id", null: false
+    t.uuid "barrier_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["barrier_id"], name: "index_seeker_barriers_on_barrier_id"
+    t.index ["coach_seeker_context_id"], name: "index_seeker_barriers_on_coach_seeker_context_id"
+  end
+
   create_table "seeker_invites", id: :text, force: :cascade do |t|
     t.text "email", null: false
     t.text "first_name", null: false
@@ -754,6 +763,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_25_222945) do
   add_foreign_key "read_receipts", "users"
   add_foreign_key "recruiters", "employers", name: "Recruiter_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "recruiters", "users", name: "Recruiter_user_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "seeker_barriers", "barriers"
+  add_foreign_key "seeker_barriers", "coach_seeker_contexts"
   add_foreign_key "seeker_invites", "programs", name: "SeekerInvite_program_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_invites", "training_providers", name: "SeekerInvite_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_notes", "coach_seeker_contexts"

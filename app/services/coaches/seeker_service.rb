@@ -31,7 +31,7 @@ module Coaches
         handle_applicant_status_updated(event)
 
       # Seeker Originated
-      when Event::EventTypes::PROFILE_CREATED
+      when Event::EventTypes::SEEKER_CREATED
         handle_profile_created(event)
 
       when Event::EventTypes::USER_CREATED
@@ -44,7 +44,7 @@ module Coaches
         Event::EventTypes::JOB_SAVED,
         Event::EventTypes::JOB_UNSAVED,
         Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
-        Event::EventTypes::PROFILE_UPDATED,
+        Event::EventTypes::SEEKER_UPDATED,
         Event::EventTypes::ONBOARDING_COMPLETED
         handle_last_active_updated(event)
       end

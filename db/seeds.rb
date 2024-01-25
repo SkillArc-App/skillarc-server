@@ -623,6 +623,8 @@ trained_seeker_with_reference = Profile.create!(
   )
 )
 
+Seeker.create!(**trained_seeker_with_reference.attributes.to_h.except("status", "met_career_coach"))
+
 trained_seeker = Profile.create!(
   id: SecureRandom.uuid,
   bio: 'I learn stuff',
@@ -636,6 +638,8 @@ trained_seeker = Profile.create!(
   )
 )
 
+Seeker.create!(**trained_seeker.attributes.to_h.except("status", "met_career_coach"))
+
 seeker_with_profile = Profile.create!(
   id: SecureRandom.uuid,
   bio: 'I learn stuff',
@@ -648,6 +652,8 @@ seeker_with_profile = Profile.create!(
     sub: 'ritasub'
   )
 )
+
+Seeker.create!(**seeker_with_profile.attributes.to_h.except("status", "met_career_coach"))
 
 Applicant.create!(
   id: SecureRandom.uuid,

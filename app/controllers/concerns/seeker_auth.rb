@@ -1,14 +1,14 @@
-module ProfileAuth
+module SeekerAuth
   include CoachAuth
 
-  def profile_editor_authorize
-    return if profile_editor?
+  def seeker_editor_authorize
+    return if seeker_editor?
 
     render json: { error: 'Not authorized' }, status: :unauthorized
     nil
   end
 
-  def profile_editor?
+  def seeker_editor?
     return false unless current_user
     return false unless profile
 

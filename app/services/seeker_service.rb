@@ -1,11 +1,12 @@
-class ProfileService
+class SeekerService
   include Cereal
 
-  def initialize(profile)
+  def initialize(profile, seeker)
     @profile = profile
+    @seeker = seeker
   end
 
-  def get(profile_editor: false)
+  def get(seeker_editor: false)
     industry_interests = profile.user.onboarding_session&.responses&.dig("opportunityInterests", "response") || []
 
     {
@@ -16,7 +17,7 @@ class ProfileService
       end,
       hiringStatus: profile.hiring_status,
       industryInterests: industry_interests,
-      isProfileEditor: profile_editor,
+      isProfileEditor: seeker_editor,
       otherExperiences: profile.other_experiences.map do |oe|
         {
           id: oe.id,
@@ -65,9 +66,10 @@ class ProfileService
 
   def update(params)
     profile.update!(params)
+    seeker&.update!(params.except(:met_career_coach))
 
     EventService.create!(
-      event_type: Event::EventTypes::PROFILE_UPDATED,
+      event_type: Event::EventTypes::SEEKER_UPDATED,
       aggregate_id: profile.user.id,
       data: {
         bio: profile.bio,
@@ -89,5 +91,5 @@ class ProfileService
 
   private
 
-  attr_reader :profile
+  attr_reader :profile, :seeker
 end

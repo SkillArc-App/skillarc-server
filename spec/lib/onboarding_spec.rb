@@ -61,13 +61,18 @@ RSpec.describe Onboarding do
         expect(Profile.last_created.user).to eq(user)
       end
 
-      it "publishes a profile created event" do
+      it "creates a seeker" do
+        expect { subject }.to change(Seeker, :count).by(1)
+        expect(Seeker.last_created.user).to eq(user)
+      end
+
+      it "publishes a seeker created event" do
         allow(EventService).to receive(:create!)
         expect(EventService)
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
-            event_type: Event::EventTypes::PROFILE_CREATED,
+            event_type: Event::EventTypes::SEEKER_CREATED,
             data: {
               id: be_present,
               user_id: user.id

@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :other_experience do
     id { SecureRandom.uuid }
+    seeker
 
     organization_name { Faker::Company.name }
     position { "Welder" }

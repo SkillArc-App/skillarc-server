@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe ProfileService do
+RSpec.describe SeekerService do
   describe "#get" do
-    subject { described_class.new(profile).get(profile_editor: true) }
+    subject { described_class.new(profile, nil).get(seeker_editor: true) }
 
     let(:profile) { create(:profile, user:) }
     let(:user) do
@@ -173,9 +173,11 @@ RSpec.describe ProfileService do
   end
 
   describe "#update" do
-    subject { described_class.new(profile).update(params) }
+    subject { described_class.new(profile, seeker).update(params) }
 
-    let(:profile) { create(:profile) }
+    let(:profile) { create(:profile, user:) }
+    let(:seeker) { create(:seeker, user:) }
+    let(:user) { create(:user) }
 
     let(:params) do
       {
@@ -192,7 +194,7 @@ RSpec.describe ProfileService do
 
     it "publishes a profile updated event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::PROFILE_UPDATED,
+        event_type: Event::EventTypes::SEEKER_UPDATED,
         aggregate_id: profile.user.id,
         data: {
           bio: "New Bio",

@@ -33,11 +33,12 @@ RSpec.describe "References", type: :request do
     let(:params) do
       {
         reference: "This is a reference",
-        seeker_profile_id: seeker_profile.id
+        seeker_profile_id: seeker.id
       }
     end
 
     let(:seeker_profile) { create(:profile) }
+    let(:seeker) { create(:seeker, id: seeker_profile.id) }
 
     it "returns 200" do
       subject

@@ -363,6 +363,25 @@ RSpec.describe Coaches::SeekerService do
     end
   end
 
+  describe ".update_barriers" do
+    subject { described_class.update_barriers(id: profile_id, barriers: [SecureRandom.uuid], now:) }
+
+    let(:now) { Time.zone.local(2020, 1, 1) }
+
+    it "creates an event" do
+      expect(EventService).to receive(:create!).with(
+        event_type: Event::EventTypes::BARRIERS_UPDATED,
+        aggregate_id: profile_id,
+        data: {
+          barriers: [be_a(String)]
+        },
+        occurred_at: now
+      ).and_call_original
+
+      subject
+    end
+  end
+
   describe ".assign_coach" do
     subject { described_class.assign_coach(profile_id, "123", "coach@blocktrainapp.com", now:) }
 

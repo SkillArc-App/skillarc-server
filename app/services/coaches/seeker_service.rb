@@ -125,6 +125,17 @@ module Coaches
       )
     end
 
+    def self.update_barriers(id:, barriers:, now: Time.zone.now)
+      EventService.create!(
+        event_type: Event::EventTypes::BARRIERS_UPDATED,
+        aggregate_id: id,
+        data: {
+          barriers:
+        },
+        occurred_at: now
+      )
+    end
+
     def self.assign_coach(id, coach_id, coach_email, now: Time.zone.now)
       EventService.create!(
         event_type: Event::EventTypes::COACH_ASSIGNED,

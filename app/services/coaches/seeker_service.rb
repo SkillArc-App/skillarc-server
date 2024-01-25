@@ -7,7 +7,9 @@ module Coaches
     def self.handle_event(event, with_side_effects: false, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
       case event.event_type
 
-        # Coach Originated
+      # Coach Originated
+      when Event::EventTypes::BARRIERS_UPDATED
+        handle_barriers_updated(event)
       when Event::EventTypes::COACH_ASSIGNED
         handle_coach_assigned(event)
 
@@ -57,13 +59,13 @@ module Coaches
     end
 
     def self.all_contexts
-      CoachSeekerContext.includes(:seeker_notes, :seeker_applications).where.not(profile_id: nil).where.not(email: nil).map do |csc|
+      CoachSeekerContext.includes(:seeker_notes, :seeker_applications, :seeker_barriers).where.not(profile_id: nil).where.not(email: nil).map do |csc|
         serialize_coach_seeker_context(csc)
       end
     end
 
     def self.find_context(id)
-      csc = CoachSeekerContext.find_by!(profile_id: id)
+      csc = CoachSeekerContext.includes(:seeker_notes, :seeker_applications, :seeker_barriers).find_by!(profile_id: id)
 
       serialize_coach_seeker_context(csc)
     end
@@ -176,6 +178,20 @@ module Coaches
       )
     end
 
+    def self.handle_barriers_updated(event)
+      csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
+
+      csc.seeker_barriers.destroy_all
+      event.data[:barriers].each do |barrier|
+        b = Barrier.find_by!(barrier_id: barrier)
+
+        csc.seeker_barriers << SeekerBarrier.create!(
+          coach_seeker_context: csc,
+          barrier: b
+        )
+      end
+    end
+
     def self.handle_coach_assigned(event)
       csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
 
@@ -282,7 +298,7 @@ module Coaches
         lastActiveOn: csc.last_active_on,
         lastContacted: csc.last_contacted_at || "Never",
         assignedCoach: csc.assigned_coach || 'none',
-        barriers: [],
+        barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } },
         stage: 'profile_created',
         notes: csc.seeker_notes.map do |note|
           {

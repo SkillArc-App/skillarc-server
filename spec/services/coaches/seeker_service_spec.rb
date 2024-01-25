@@ -20,6 +20,8 @@ RSpec.describe Coaches::SeekerService do
   let(:note_modified) { build(:event_message, :note_modified, aggregate_id: profile_id, data: { note: updated_note, note_id: note_id2 }, occurred_at: time1) }
   let(:skill_level_updated) { build(:event_message, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: time1) }
   let(:coach_assigned) { build(:event_message, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:barriers_updated1) { build(:event_message, :barriers_updated, aggregate_id: profile_id, data: { barriers: [barrier1.barrier_id] }, occurred_at: time1) }
+  let(:barriers_updated2) { build(:event_message, :barriers_updated, aggregate_id: profile_id, data: { barriers: [barrier2.barrier_id] }, occurred_at: time1) }
 
   let(:lead) do
     {
@@ -77,6 +79,9 @@ RSpec.describe Coaches::SeekerService do
     }
   end
 
+  let(:barrier1) { create(:barrier, name: "barrier1") }
+  let(:barrier2) { create(:barrier, name: "barrier2") }
+
   let(:time1) { Time.utc(2020, 1, 1) }
   let(:time2) { Time.utc(2022, 1, 1) }
   let(:employment_title1) { "A place of employment" }
@@ -119,6 +124,8 @@ RSpec.describe Coaches::SeekerService do
     described_class.handle_event(applicant_status_updated2)
     described_class.handle_event(applicant_status_updated3)
     described_class.handle_event(applicant_status_updated4)
+    described_class.handle_event(barriers_updated1)
+    described_class.handle_event(barriers_updated2)
   end
 
   describe ".all_contexts" do
@@ -135,7 +142,10 @@ RSpec.describe Coaches::SeekerService do
         lastActiveOn: applicant_status_updated3.occurred_at,
         lastContacted: note_with_id_added1.occurred_at,
         assignedCoach: '123',
-        barriers: [],
+        barriers: [{
+          id: barrier2.barrier_id,
+          name: "barrier2"
+        }],
         notes: [
           {
             note: "This note was updated",
@@ -183,6 +193,7 @@ RSpec.describe Coaches::SeekerService do
         stage: 'profile_created'
       }
 
+      # binding.pry
       expect(subject).to contain_exactly(expected_profile, expected_other_profile)
     end
   end
@@ -219,7 +230,10 @@ RSpec.describe Coaches::SeekerService do
         lastActiveOn: applicant_status_updated3.occurred_at,
         lastContacted: note_with_id_added1.occurred_at,
         assignedCoach: '123',
-        barriers: [],
+        barriers: [{
+          id: barrier2.barrier_id,
+          name: "barrier2"
+        }],
         notes: [
           {
             note: "This note was updated",

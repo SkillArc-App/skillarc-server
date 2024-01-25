@@ -18,7 +18,10 @@
 #  fk_rails_...  (barrier_id => barriers.id)
 #  fk_rails_...  (coach_seeker_context_id => coach_seeker_contexts.id)
 #
-class SeekerBarrier < ApplicationRecord
-  validates :barrier_id, presence: true
-  validates :coach_seeker_context_id, presence: true
+
+module Coaches
+  class SeekerBarrier < ApplicationRecord
+    belongs_to :barrier
+    belongs_to :coach_seeker_context
+  end
 end

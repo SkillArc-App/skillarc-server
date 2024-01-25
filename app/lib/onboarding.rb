@@ -185,6 +185,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     data = other_responses.map do |oth_r|
       {
         profile_id: user.profile.id,
+        seeker_id: user.seeker.id,
         activity: oth_r["activity"],
         description: oth_r["learning"],
         start_date: oth_r["startDate"],
@@ -208,7 +209,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
           description: pe.description,
           start_date: pe.start_date,
           end_date: pe.end_date,
-          profile_id: pe.profile_id
+          profile_id: pe.profile_id,
+          seeker_id: pe.seeker_id
         },
         occurred_at: pe.created_at
       )

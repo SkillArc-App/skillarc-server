@@ -3,10 +3,11 @@ require 'rails_helper'
 RSpec.describe "PersonalExperiences", type: :request do
   include_context "authenticated"
 
-  let!(:profile) { create(:profile, user:) }
+  let(:profile) { create(:profile, user:) }
+  let(:seeker) { create(:seeker, id: profile.id, user:) }
 
   describe "POST /create" do
-    subject { post profile_personal_experiences_path(profile), params:, headers: }
+    subject { post profile_personal_experiences_path(seeker), params:, headers: }
 
     let(:params) do
       {
@@ -31,7 +32,7 @@ RSpec.describe "PersonalExperiences", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put profile_personal_experience_path(profile, personal_experience), params:, headers: }
+    subject { put profile_personal_experience_path(seeker, personal_experience), params:, headers: }
 
     let(:params) do
       {
@@ -40,7 +41,7 @@ RSpec.describe "PersonalExperiences", type: :request do
         }
       }
     end
-    let!(:personal_experience) { create(:personal_experience, profile:) }
+    let!(:personal_experience) { create(:personal_experience, profile:, seeker:) }
 
     it "returns 200" do
       subject
@@ -56,7 +57,7 @@ RSpec.describe "PersonalExperiences", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete profile_personal_experience_path(profile, personal_experience), headers: }
+    subject { delete profile_personal_experience_path(seeker, personal_experience), headers: }
 
     let(:params) do
       {
@@ -65,7 +66,7 @@ RSpec.describe "PersonalExperiences", type: :request do
         }
       }
     end
-    let!(:personal_experience) { create(:personal_experience, profile:) }
+    let!(:personal_experience) { create(:personal_experience, profile:, seeker:) }
 
     it "returns 200" do
       subject

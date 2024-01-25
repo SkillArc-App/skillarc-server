@@ -401,7 +401,8 @@ RSpec.describe Onboarding do
               start_date: "01/01/2000",
               end_date: "01/01/2001",
               description: "Learning",
-              profile_id: be_present # TODO: Come up with a way to check the profile id as well
+              profile_id: be_present, # TODO: Come up with a way to check the profile id as well
+              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
             },
             occurred_at: be_present
           ).and_call_original

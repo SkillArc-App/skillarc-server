@@ -87,13 +87,14 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         start_date: wr["startDate"],
         end_date: wr["endDate"],
         description: wr["description"],
-        is_current: wr["current"]
+        is_current: wr["current"],
+        profile_id: user.profile.id,
+        seeker_id: user.seeker.id
       }
     end
 
     work_responses.each do |d|
       OtherExperience.find_or_initialize_by(
-        profile_id: user.profile.id,
         **d
       ) do |other_experience|
         other_experience.id = SecureRandom.uuid

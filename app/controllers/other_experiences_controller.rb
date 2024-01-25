@@ -17,7 +17,8 @@ class OtherExperiencesController < ApplicationController
         :description
       ),
       id: SecureRandom.uuid,
-      profile:
+      profile:,
+      seeker: @seeker
     )
 
     render json: other_experience

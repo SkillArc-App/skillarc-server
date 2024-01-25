@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :coaches__seeker_lead, class: "Coaches::SeekerLead" do
+    lead_id { SecureRandom.uuid }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     email { nil }

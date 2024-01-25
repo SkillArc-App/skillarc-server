@@ -2,7 +2,7 @@
 #
 # Table name: coaches_seeker_leads
 #
-#  id               :bigint           not null, primary key
+#  id               :uuid             not null, primary key
 #  email            :string
 #  first_name       :string           not null
 #  last_name        :string           not null
@@ -12,6 +12,7 @@
 #  status           :string           not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  lead_id          :uuid             not null
 #
 # Indexes
 #
@@ -29,6 +30,7 @@ module Coaches
       ].freeze
     end
 
+    validates :lead_id, presence: true
     validates :first_name, presence: true
     validates :last_name, presence: true
     validates :phone_number, presence: true

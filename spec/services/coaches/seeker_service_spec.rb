@@ -24,6 +24,7 @@ RSpec.describe Coaches::SeekerService do
   let(:lead) do
     {
       email: nil,
+      lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5",
       phone_number: "1234567890",
       first_name: "Hannah",
       last_name: "Block",
@@ -262,12 +263,13 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".add_lead" do
-    subject { described_class.add_lead(coach:, first_name:, last_name:, phone_number:, now:) }
+    subject { described_class.add_lead(coach:, first_name:, last_name:, lead_id:, phone_number:, now:) }
 
     let(:coach) { create(:coaches__coach) }
     let(:first_name) { "John" }
     let(:last_name) { "Chabot" }
     let(:phone_number) { "333-333-3333" }
+    let(:lead_id) { "ffc354f5-e1c3-4859-b9f0-1e94106ddc96" }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
 
@@ -279,6 +281,7 @@ RSpec.describe Coaches::SeekerService do
           first_name:,
           last_name:,
           phone_number:,
+          lead_id:,
           email: nil,
           lead_captured_by: coach.email
         },

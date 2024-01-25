@@ -68,12 +68,13 @@ module Coaches
       serialize_coach_seeker_context(csc)
     end
 
-    def self.add_lead(coach:, phone_number:, first_name:, last_name:, email: nil, now: Time.zone.now) # rubocop:disable Metrics/ParameterLists
+    def self.add_lead(coach:, lead_id:, phone_number:, first_name:, last_name:, email: nil, now: Time.zone.now) # rubocop:disable Metrics/ParameterLists
       EventService.create!(
         event_type: Event::EventTypes::LEAD_ADDED,
         aggregate_id: coach.id,
         data: {
           email:,
+          lead_id:,
           phone_number:,
           first_name:,
           last_name:,
@@ -173,6 +174,7 @@ module Coaches
 
     def self.handle_lead_added(event)
       SeekerLead.create!(
+        lead_id: event.data[:lead_id],
         email: event.data[:email],
         phone_number: event.data[:phone_number],
         first_name: event.data[:first_name],

@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   put 'employers/applicants/:id' => 'employers/applicants#update', as: 'employers_applicant'
 
   scope module: 'coaches', path: 'coaches' do
+    resources :barriers
     resources :seekers do
       resources :notes, only: [:create, :update, :destroy]
       post 'skill-levels' => 'seekers#update_skill_level'

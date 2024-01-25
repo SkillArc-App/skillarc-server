@@ -282,7 +282,7 @@ module Coaches
         lastActiveOn: csc.last_active_on,
         lastContacted: csc.last_contacted_at || "Never",
         assignedCoach: csc.assigned_coach || 'none',
-        barriers: csc.barriers,
+        barriers: [],
         stage: 'profile_created',
         notes: csc.seeker_notes.map do |note|
           {

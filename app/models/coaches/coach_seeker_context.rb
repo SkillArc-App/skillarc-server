@@ -4,7 +4,6 @@
 #
 #  id                :uuid             not null, primary key
 #  assigned_coach    :string
-#  barriers          :string           default([]), is an Array
 #  email             :string
 #  first_name        :string
 #  last_active_on    :datetime

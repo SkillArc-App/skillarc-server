@@ -42,7 +42,6 @@ class TestController < ApplicationController
       phone_number: user.phone_number,
       skill_level: "beginner",
       stage: "Profile Created",
-      barriers: [],
       last_contacted_at: Time.zone.now,
       last_active_on: Time.zone.now
     )
@@ -82,7 +81,6 @@ class TestController < ApplicationController
       phone_number: user.phone_number,
       skill_level: "beginner",
       stage: "Profile Created",
-      barriers: [],
       last_contacted_at: Time.zone.now,
       last_active_on: Time.zone.now
     )

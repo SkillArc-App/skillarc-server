@@ -136,7 +136,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_25_222945) do
     t.string "assigned_coach"
     t.string "skill_level"
     t.string "stage"
-    t.string "barriers", default: [], array: true
     t.datetime "last_contacted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

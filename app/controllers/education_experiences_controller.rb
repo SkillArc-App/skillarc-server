@@ -8,7 +8,7 @@ class EducationExperiencesController < ApplicationController
 
   def create
     begin
-      ee = EducationExperienceService.new(profile).create(
+      ee = EducationExperienceService.new(profile, @seeker).create(
         **education_experience_params
       )
 
@@ -20,7 +20,7 @@ class EducationExperiencesController < ApplicationController
 
   def update
     begin
-      ee = EducationExperienceService.new(profile).update(
+      ee = EducationExperienceService.new(profile, @seeker).update(
         **education_experience_params.merge(id: params[:id])
       )
 
@@ -32,7 +32,7 @@ class EducationExperiencesController < ApplicationController
 
   def destroy
     begin
-      ee = EducationExperienceService.new(profile).destroy(
+      ee = EducationExperienceService.new(profile, @seeker).destroy(
         id: params[:id]
       )
 

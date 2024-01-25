@@ -1,11 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe "EducationExperiences", type: :request do
-  let(:profile) { create(:profile, user: profile_user) }
-  let(:profile_user) { create(:user) }
+  let(:profile) { create(:profile, user:) }
+  let(:seeker) { create(:seeker, id: profile.id, user:) }
+  let(:user) { create(:user) }
 
   describe "POST /create" do
-    subject { post profile_education_experiences_path(profile), params:, headers: }
+    subject { post profile_education_experiences_path(seeker), params:, headers: }
 
     let(:params) do
       {
@@ -41,9 +42,9 @@ RSpec.describe "EducationExperiences", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put profile_education_experience_path(profile, education_experience), params:, headers: }
+    subject { put profile_education_experience_path(seeker, education_experience), params:, headers: }
 
-    let(:education_experience) { create(:education_experience, profile:) }
+    let(:education_experience) { create(:education_experience, profile:, seeker:) }
     let(:params) do
       {
         education_experience: {
@@ -71,9 +72,9 @@ RSpec.describe "EducationExperiences", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete profile_education_experience_path(profile, education_experience), headers: }
+    subject { delete profile_education_experience_path(seeker, education_experience), headers: }
 
-    let!(:education_experience) { create(:education_experience, profile:) }
+    let!(:education_experience) { create(:education_experience, profile:, seeker:) }
 
     it_behaves_like "a profile secured endpoint"
 

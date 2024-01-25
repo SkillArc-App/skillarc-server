@@ -29,4 +29,5 @@ class EducationExperience < ApplicationRecord
   belongs_to :seeker, optional: true
 
   validates :profile_id, presence: true
+  validates :seeker, presence: true, on: :create
 end

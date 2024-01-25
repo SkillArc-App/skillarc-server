@@ -216,7 +216,8 @@ RSpec.describe Onboarding do
           title: "Title",
           graduation_date: "2000",
           gpa: "4.0",
-          profile: user.profile
+          profile: user.profile,
+          seeker: user.seeker
         )
       end
 
@@ -234,7 +235,8 @@ RSpec.describe Onboarding do
               title: "Title",
               graduation_date: "2000",
               gpa: "4.0",
-              profile_id: be_present # TODO: Come up with a way to check the profile id as well
+              profile_id: be_present, # TODO: Come up with a way to check the profile id as well
+              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
             },
             occurred_at: be_present
           ).and_call_original

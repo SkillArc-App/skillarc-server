@@ -126,7 +126,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         activities: er["activities"],
         graduation_date: er["gradYear"],
         gpa: er["gpa"],
-        profile_id: user.profile.id
+        profile_id: user.profile.id,
+        seeker_id: user.seeker.id
       }
     end
 
@@ -147,7 +148,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             activities: ee.activities,
             graduation_date: ee.graduation_date,
             gpa: ee.gpa,
-            profile_id: ee.profile_id
+            profile_id: ee.profile_id,
+            seeker_id: ee.seeker_id
           },
           occurred_at: ee.created_at
         )

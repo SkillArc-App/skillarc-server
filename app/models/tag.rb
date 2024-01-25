@@ -8,5 +8,5 @@
 #  updated_at :datetime         not null
 #
 class Tag < ApplicationRecord
-  has_many :job_tags, foreign_key: "tagId"
+  has_many :job_tags, dependent: :destroy
 end

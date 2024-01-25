@@ -40,8 +40,8 @@ class TestController < ApplicationController
       skill_level: "beginner",
       stage: "Profile Created",
       barriers: [],
-      last_contacted_at: Time.now,
-      last_active_on: Time.now
+      last_contacted_at: Time.zone.now,
+      last_active_on: Time.zone.now
     )
 
     render json: profile.user
@@ -77,8 +77,8 @@ class TestController < ApplicationController
       skill_level: "beginner",
       stage: "Profile Created",
       barriers: [],
-      last_contacted_at: Time.now,
-      last_active_on: Time.now
+      last_contacted_at: Time.zone.now,
+      last_active_on: Time.zone.now
     )
 
     job = FactoryBot.create(:job)

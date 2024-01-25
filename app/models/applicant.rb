@@ -24,7 +24,7 @@ class Applicant < ApplicationRecord
   belongs_to :profile
   belongs_to :seeker, optional: true
 
-  has_many :applicant_statuses
+  has_many :applicant_statuses, dependent: :destroy
 
   def status
     applicant_statuses.last_created

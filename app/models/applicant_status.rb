@@ -14,7 +14,7 @@
 #
 class ApplicantStatus < ApplicationRecord
   belongs_to :applicant
-  has_many :applicant_status_reasons
+  has_many :applicant_status_reasons, dependent: :destroy
 
   module StatusTypes
     ALL = [

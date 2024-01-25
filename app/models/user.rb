@@ -23,14 +23,14 @@
 #  index_users_on_sub              (sub) UNIQUE
 #
 class User < ApplicationRecord
-  has_one :recruiter
-  has_one :profile
-  has_one :seeker
-  has_many :onboarding_sessions
-  has_and_belongs_to_many :roles, join_table: :user_roles
-  has_many :user_roles
-  has_many :seeker_training_providers
-  has_many :training_provider_profiles
+  has_one :recruiter, dependent: :destroy
+  has_one :profile, dependent: :destroy
+  has_one :seeker, dependent: :destroy
+  has_many :onboarding_sessions, dependent: :destroy
+  has_many :user_roles, dependent: :destroy
+  has_many :roles, through: :user_roles
+  has_many :seeker_training_providers, dependent: :destroy
+  has_many :training_provider_profiles, dependent: :destroy
 
   def applied_jobs
     (profile&.applicants || []).map(&:job)

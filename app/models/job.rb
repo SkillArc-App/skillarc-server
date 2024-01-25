@@ -24,14 +24,14 @@
 class Job < ApplicationRecord
   belongs_to :employer
 
-  has_many :applicants
-  has_many :career_paths
-  has_many :learned_skills
-  has_many :desired_skills
-  has_many :desired_certifications
-  has_many :job_photos
-  has_many :testimonials
-  has_many :job_tags
+  has_many :applicants, dependent: :destroy
+  has_many :career_paths, dependent: :destroy
+  has_many :learned_skills, dependent: :destroy
+  has_many :desired_skills, dependent: :destroy
+  has_many :desired_certifications, dependent: :destroy
+  has_many :job_photos, dependent: :destroy
+  has_many :testimonials, dependent: :destroy
+  has_many :job_tags, dependent: :destroy
 
   scope :shown, -> { where(hide_job: false) }
 

@@ -8,7 +8,7 @@ class JobsController < ApplicationController
   def apply
     job = Job.find(params[:job_id])
 
-    applicant = Applicant.find_or_initialize_by(profile_id: current_user.profile.id, job_id: job.id) do |a|
+    applicant = Applicant.find_or_initialize_by(profile_id: current_user.profile.id, seeker_id: current_user.seeker.id, job_id: job.id) do |a|
       a.id = SecureRandom.uuid
       a.save!
       ApplicantService.new(a).update_status(status: ApplicantStatus::StatusTypes::NEW)

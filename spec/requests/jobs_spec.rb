@@ -26,6 +26,7 @@ RSpec.describe "Jobs", type: :request do
 
     let(:job) { create(:job) }
     let!(:profile) { create(:profile, user:) }
+    let!(:seeker) { create(:seeker, user:) }
 
     it "returns a 200" do
       subject

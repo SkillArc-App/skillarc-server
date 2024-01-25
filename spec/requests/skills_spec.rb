@@ -5,9 +5,10 @@ RSpec.describe "Skills", type: :request do
 
   let(:master_skill) { create(:master_skill) }
   let(:profile) { create(:profile, user:) }
+  let(:seeker) { create(:seeker, id: profile.id, user:) }
 
   describe "POST /create" do
-    subject { post profile_skills_path(profile_id: profile.id), params:, headers: }
+    subject { post profile_skills_path(seeker), params:, headers: }
 
     let(:params) do
       {
@@ -30,9 +31,9 @@ RSpec.describe "Skills", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put profile_skill_path(profile_id: profile.id, id: skill.id), params:, headers: }
+    subject { put profile_skill_path(seeker, skill), params:, headers: }
 
-    let(:skill) { create(:profile_skill, profile:) }
+    let(:skill) { create(:profile_skill, profile:, seeker:) }
 
     let(:params) do
       {
@@ -56,9 +57,9 @@ RSpec.describe "Skills", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete profile_skill_path(profile_id: profile.id, id: skill.id), headers: }
+    subject { delete profile_skill_path(seeker, skill), headers: }
 
-    let!(:skill) { create(:profile_skill, profile:) }
+    let!(:skill) { create(:profile_skill, profile:, seeker:) }
 
     it "returns a 200" do
       subject

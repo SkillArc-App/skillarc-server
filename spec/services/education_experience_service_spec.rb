@@ -2,9 +2,10 @@ require 'rails_helper'
 
 RSpec.describe EducationExperienceService do
   let(:profile) { create(:profile) }
+  let(:seeker) { create(:seeker) }
 
   describe "#create" do
-    subject { described_class.new(profile).create(organization_name:, title:, graduation_date:, gpa:, activities:) }
+    subject { described_class.new(profile, seeker).create(organization_name:, title:, graduation_date:, gpa:, activities:) }
 
     let(:organization_name) { "University of Cincinnati" }
     let(:title) { "Student" }
@@ -20,7 +21,7 @@ RSpec.describe EducationExperienceService do
       expect(EventService).to receive(:create!).with(
         hash_including(
           event_type: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
-          aggregate_id: profile.id,
+          aggregate_id: seeker.id,
           data: {
             organization_name: "University of Cincinnati",
             title: "Student",
@@ -37,12 +38,13 @@ RSpec.describe EducationExperienceService do
   end
 
   describe "#update" do
-    subject { described_class.new(profile).update(id:, organization_name:, title:, graduation_date:, gpa:, activities:) }
+    subject { described_class.new(profile, seeker).update(id:, organization_name:, title:, graduation_date:, gpa:, activities:) }
 
     let!(:education_experience) do
       create(
         :education_experience,
         profile:,
+        seeker:,
         organization_name: "The Ohio State University",
         title: "party animal",
         graduation_date: "2013-03-01",
@@ -69,7 +71,7 @@ RSpec.describe EducationExperienceService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::EDUCATION_EXPERIENCE_UPDATED,
-        aggregate_id: profile.id,
+        aggregate_id: seeker.id,
         data: {
           id: education_experience.id,
           organization_name: "University of Cincinnati",
@@ -86,9 +88,9 @@ RSpec.describe EducationExperienceService do
   end
 
   describe "#destroy" do
-    subject { described_class.new(profile).destroy(id:) }
+    subject { described_class.new(profile, seeker).destroy(id:) }
 
-    let!(:education_experience) { create(:education_experience, profile:) }
+    let!(:education_experience) { create(:education_experience, profile:, seeker:) }
 
     let(:id) { education_experience.id }
 
@@ -99,7 +101,7 @@ RSpec.describe EducationExperienceService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_type: Event::EventTypes::EDUCATION_EXPERIENCE_DELETED,
-        aggregate_id: profile.id,
+        aggregate_id: seeker.id,
         data: {
           id: education_experience.id
         },

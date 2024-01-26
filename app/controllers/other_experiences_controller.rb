@@ -17,7 +17,8 @@ class OtherExperiencesController < ApplicationController
         :description
       ),
       id: SecureRandom.uuid,
-      profile:
+      profile:,
+      seeker:
     )
 
     render json: other_experience
@@ -48,10 +49,10 @@ class OtherExperiencesController < ApplicationController
 
   private
 
-  attr_reader :profile
+  attr_reader :profile, :seeker
 
   def set_seeker
     @profile = Profile.find(params[:profile_id])
-    @seeker = Seeker.find_by(id: params[:profile_id])
+    @seeker = Seeker.find(params[:profile_id])
   end
 end

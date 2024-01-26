@@ -156,7 +156,8 @@ RSpec.describe Onboarding do
               is_current: true,
               end_date: nil,
               description: "Description",
-              profile_id: be_present # TODO: Come up with a way to check the profile id as well
+              profile_id: be_present, # TODO: Come up with a way to check the profile id as well
+              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
             },
             occurred_at: be_present
           ).and_call_original
@@ -216,7 +217,8 @@ RSpec.describe Onboarding do
           title: "Title",
           graduation_date: "2000",
           gpa: "4.0",
-          profile: user.profile
+          profile: user.profile,
+          seeker: user.seeker
         )
       end
 
@@ -234,7 +236,8 @@ RSpec.describe Onboarding do
               title: "Title",
               graduation_date: "2000",
               gpa: "4.0",
-              profile_id: be_present # TODO: Come up with a way to check the profile id as well
+              profile_id: be_present, # TODO: Come up with a way to check the profile id as well
+              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
             },
             occurred_at: be_present
           ).and_call_original
@@ -399,7 +402,8 @@ RSpec.describe Onboarding do
               start_date: "01/01/2000",
               end_date: "01/01/2001",
               description: "Learning",
-              profile_id: be_present # TODO: Come up with a way to check the profile id as well
+              profile_id: be_present, # TODO: Come up with a way to check the profile id as well
+              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
             },
             occurred_at: be_present
           ).and_call_original

@@ -7,7 +7,8 @@ class SkillsController < ApplicationController
     skill = ProfileSkill.create!(
       **params.require(:skill).permit(:name, :description, :master_skill_id, :type),
       id: SecureRandom.uuid,
-      profile_id: current_user.profile.id
+      profile: current_user.profile,
+      seeker: current_user.seeker
     )
 
     render json: skill

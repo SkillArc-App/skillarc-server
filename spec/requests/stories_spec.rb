@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Stories", type: :request do
   describe "POST /create" do
-    subject { post profile_stories_path(profile_id: profile.id), params:, headers: }
+    subject { post profile_stories_path(seeker), params:, headers: }
 
     include_context "authenticated"
 
@@ -14,7 +14,9 @@ RSpec.describe "Stories", type: :request do
         }
       }
     end
-    let(:profile) { create(:profile, user: User.find("clem7u5uc0007mi0rne4h3be0")) }
+    let(:user) { create(:user) }
+    let(:profile) { create(:profile, user:) }
+    let(:seeker) { create(:seeker, id: profile.id, user:) }
 
     it "returns a 200" do
       subject
@@ -28,11 +30,14 @@ RSpec.describe "Stories", type: :request do
   end
 
   describe "UPDATE /update" do
-    subject { patch profile_story_path(profile_id: profile.id, id: story.id), params:, headers: }
+    subject { patch profile_story_path(seeker, story), params:, headers: }
 
     include_context "authenticated"
 
-    let(:profile) { create(:profile, user: User.find("clem7u5uc0007mi0rne4h3be0")) }
+    let(:user) { create(:user) }
+    let(:profile) { create(:profile, user:) }
+    let(:seeker) { create(:seeker, id: profile.id, user:) }
+
     let(:params) do
       {
         story: {

@@ -22,7 +22,9 @@
 class Applicant < ApplicationRecord
   belongs_to :job
   belongs_to :profile
-  belongs_to :seeker, optional: true
+  belongs_to :seeker
+
+  validates :seeker, presence: true, on: :create
 
   has_many :applicant_statuses, dependent: :destroy
 

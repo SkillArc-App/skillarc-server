@@ -20,7 +20,8 @@ class StoriesController < ApplicationController
       story = Story.create!(
         **params.require(:story).permit(:prompt, :response),
         id: SecureRandom.uuid,
-        profile_id: current_user.profile.id
+        profile: current_user.profile,
+        seeker: current_user.seeker
       )
 
       render json: story

@@ -1,6 +1,7 @@
 class EducationExperienceService
-  def initialize(profile)
+  def initialize(profile, seeker)
     @profile = profile
+    @seeker = seeker
   end
 
   def create(organization_name:, title: nil, graduation_date: nil, gpa: nil, activities: nil)
@@ -11,12 +12,13 @@ class EducationExperienceService
       gpa:,
       activities:,
       id: SecureRandom.uuid,
-      profile_id: profile.id
+      profile_id: profile.id,
+      seeker_id: seeker.id
     )
 
     EventService.create!(
       event_type: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
-      aggregate_id: profile.id,
+      aggregate_id: seeker.id,
       data: {
         organization_name:,
         title:,
@@ -35,7 +37,7 @@ class EducationExperienceService
 
     EventService.create!(
       event_type: Event::EventTypes::EDUCATION_EXPERIENCE_UPDATED,
-      aggregate_id: profile.id,
+      aggregate_id: seeker.id,
       data: params.merge(id:),
       occurred_at: Time.zone.now
     )
@@ -48,7 +50,7 @@ class EducationExperienceService
 
     EventService.create!(
       event_type: Event::EventTypes::EDUCATION_EXPERIENCE_DELETED,
-      aggregate_id: profile.id,
+      aggregate_id: seeker.id,
       data: { id: education_experience.id },
       occurred_at: Time.zone.now
     )
@@ -56,5 +58,5 @@ class EducationExperienceService
 
   private
 
-  attr_reader :profile
+  attr_reader :profile, :seeker
 end

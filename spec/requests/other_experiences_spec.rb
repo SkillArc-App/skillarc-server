@@ -1,11 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe "OtherExperiences", type: :request do
-  let(:profile) { create(:profile, user: profile_user) }
-  let(:profile_user) { create(:user) }
+  let(:profile) { create(:profile, user:) }
+  let(:seeker) { create(:seeker, id: profile.id, user:) }
+  let(:user) { create(:user) }
 
   describe "POST /create" do
-    subject { post profile_other_experiences_path(profile_id: profile.id), params:, headers: }
+    subject { post profile_other_experiences_path(seeker), params:, headers: }
 
     let(:params) do
       {
@@ -32,7 +33,7 @@ RSpec.describe "OtherExperiences", type: :request do
   end
 
   describe "UPDATE /update" do
-    subject { put profile_other_experience_path(profile_id: profile.id, id: other_experience.id), params:, headers: }
+    subject { put profile_other_experience_path(seeker, other_experience), params:, headers: }
 
     let(:other_experience) { create(:other_experience, profile:) }
 
@@ -56,7 +57,7 @@ RSpec.describe "OtherExperiences", type: :request do
   end
 
   describe "DELETE /destroy" do
-    subject { delete profile_other_experience_path(profile_id: profile.id, id: other_experience.id), headers: }
+    subject { delete profile_other_experience_path(seeker, other_experience), headers: }
 
     let!(:other_experience) { create(:other_experience, profile:) }
 

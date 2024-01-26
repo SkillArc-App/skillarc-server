@@ -1,24 +1,22 @@
 require "rails_helper"
 
 RSpec.describe JobMatch::JobMatch do
-  subject { described_class.new(profile_id: profile.id) }
+  subject { described_class.new(profile:, seeker:) }
 
-  let!(:profile) { create(:profile) }
-  let!(:saved_job) do
-    job = create(:job)
-    create(:event, :job_saved, aggregate_id: profile.user.id, data: { job_id: job.id })
-    create(:event, :job_unsaved, aggregate_id: profile.user.id, data: { job_id: job.id })
-    create(:event, :job_saved, aggregate_id: profile.user.id, data: { job_id: job.id })
+  let(:user) { create(:user) }
+  let(:profile) { create(:profile, user:) }
+  let(:seeker) { create(:seeker, id: profile.id, user:) }
 
-    job
-  end
+  let(:saved_job) { create(:job) }
   let!(:unsaved_job) { create(:job) }
-  let!(:applied_job) do
-    job = create(:job)
+  let(:applied_job) { create(:job) }
 
-    create(:applicant, profile:, job:)
+  before do
+    create(:event, :job_saved, aggregate_id: user.id, data: { job_id: saved_job.id })
+    create(:event, :job_unsaved, aggregate_id: user.id, data: { job_id: saved_job.id })
+    create(:event, :job_saved, aggregate_id: user.id, data: { job_id: saved_job.id })
 
-    job
+    create(:applicant, profile:, seeker:, job: applied_job)
   end
 
   it "initializes with a list of jobs" do

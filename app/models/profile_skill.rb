@@ -24,4 +24,6 @@ class ProfileSkill < ApplicationRecord
   belongs_to :master_skill
   belongs_to :profile
   belongs_to :seeker, optional: true
+
+  validates :seeker, presence: true
 end

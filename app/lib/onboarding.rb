@@ -87,13 +87,14 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         start_date: wr["startDate"],
         end_date: wr["endDate"],
         description: wr["description"],
-        is_current: wr["current"]
+        is_current: wr["current"],
+        profile_id: user.profile.id,
+        seeker_id: user.seeker.id
       }
     end
 
     work_responses.each do |d|
       OtherExperience.find_or_initialize_by(
-        profile_id: user.profile.id,
         **d
       ) do |other_experience|
         other_experience.id = SecureRandom.uuid
@@ -110,7 +111,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             end_date: other_experience.end_date,
             description: other_experience.description,
             is_current: other_experience.is_current,
-            profile_id: other_experience.profile_id
+            profile_id: other_experience.profile_id,
+            seeker_id: other_experience.seeker_id
           },
           occurred_at: other_experience.created_at
         )
@@ -126,7 +128,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         activities: er["activities"],
         graduation_date: er["gradYear"],
         gpa: er["gpa"],
-        profile_id: user.profile.id
+        profile_id: user.profile.id,
+        seeker_id: user.seeker.id
       }
     end
 
@@ -147,7 +150,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             activities: ee.activities,
             graduation_date: ee.graduation_date,
             gpa: ee.gpa,
-            profile_id: ee.profile_id
+            profile_id: ee.profile_id,
+            seeker_id: ee.seeker_id
           },
           occurred_at: ee.created_at
         )
@@ -182,6 +186,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     data = other_responses.map do |oth_r|
       {
         profile_id: user.profile.id,
+        seeker_id: user.seeker.id,
         activity: oth_r["activity"],
         description: oth_r["learning"],
         start_date: oth_r["startDate"],
@@ -205,7 +210,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
           description: pe.description,
           start_date: pe.start_date,
           end_date: pe.end_date,
-          profile_id: pe.profile_id
+          profile_id: pe.profile_id,
+          seeker_id: pe.seeker_id
         },
         occurred_at: pe.created_at
       )
@@ -216,6 +222,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     data = opportunity_interests_response.map do |oi|
       {
         profile_id: user.profile.id,
+        seeker_id: user.seeker.id,
         response: oi
       }
     end

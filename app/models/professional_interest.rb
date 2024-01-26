@@ -22,4 +22,6 @@ class ProfessionalInterest < ApplicationRecord
   belongs_to :profile
   belongs_to :seeker, optional: true
   validates :profile_id, presence: true
+
+  validates :seeker, presence: true
 end

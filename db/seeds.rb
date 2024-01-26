@@ -658,6 +658,7 @@ Seeker.create!(**seeker_with_profile.attributes.to_h.except("status", "met_caree
 Applicant.create!(
   id: SecureRandom.uuid,
   profile: seeker_with_profile,
+  seeker: FactoryBot.create(:seeker),
   job: mechanic_job,
   applicant_statuses: [
     ApplicantStatus.new(
@@ -807,6 +808,7 @@ Reference.create!(
   training_provider_id: cul.id,
   seeker_profile_id: trained_seeker_with_reference.id,
   author_profile_id: bill_trainer_profile.id,
+  seeker: FactoryBot.create(:seeker),
   reference_text: 'This person is good at carpentry'
 )
 

@@ -20,6 +20,8 @@
 class Event < ApplicationRecord
   module EventTypes
     COACHES = [
+      BARRIER_ADDED = 'barrier_added'.freeze,
+      BARRIERS_UPDATED = 'barriers_updated'.freeze,
       COACH_ASSIGNED = 'coach_assigned'.freeze,
       LEAD_ADDED = 'lead_added'.freeze,
       NOTE_ADDED = 'note_added'.freeze,

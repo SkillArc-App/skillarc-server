@@ -4,7 +4,6 @@
 #
 #  id                :uuid             not null, primary key
 #  assigned_coach    :string
-#  barriers          :string           default([]), is an Array
 #  email             :string
 #  first_name        :string
 #  last_active_on    :datetime
@@ -23,5 +22,6 @@ module Coaches
   class CoachSeekerContext < ApplicationRecord
     has_many :seeker_notes, dependent: :destroy, class_name: "Coaches::SeekerNote"
     has_many :seeker_applications, dependent: :destroy, class_name: "Coaches::SeekerApplication"
+    has_many :seeker_barriers, dependent: :destroy, class_name: "Coaches::SeekerBarrier"
   end
 end

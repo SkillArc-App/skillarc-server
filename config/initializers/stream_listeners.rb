@@ -68,6 +68,7 @@ Rails.application.config.after_initialize do
     job_freshness = DbStreamListener.new(JobFreshnessService, "job_freshness_service")
     coach_seeker = DbStreamListener.new(Coaches::SeekerService, "coach_seekers")
     coaches = DbStreamListener.new(Coaches::CoachService, "coaches")
+    barriers = DbStreamListener.new(Coaches::BarrierService, "barriers")
 
     Event::EventTypes::ALL.each do |event_type|
       Pubsub.subscribe(
@@ -83,6 +84,11 @@ Rails.application.config.after_initialize do
       Pubsub.subscribe(
         event: event_type,
         subscriber: coaches
+      )
+
+      Pubsub.subscribe(
+        event: event_type,
+        subscriber: barriers
       )
     end
   else
@@ -100,6 +106,11 @@ Rails.application.config.after_initialize do
       Pubsub.subscribe(
         event: event_type,
         subscriber: Coaches::CoachService
+      )
+
+      Pubsub.subscribe(
+        event: event_type,
+        subscriber: Coaches::BarrierService
       )
     end
   end

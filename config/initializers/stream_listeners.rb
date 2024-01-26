@@ -86,10 +86,10 @@ Rails.application.config.after_initialize do
         subscriber: coaches
       )
 
-      Pubsub.subscribe(
-        event: event_type,
-        subscriber: barriers
-      )
+      # Pubsub.subscribe(
+      #   event: event_type,
+      #   subscriber: barriers
+      # )
     end
   else
     Event::EventTypes::ALL.each do |event_type|

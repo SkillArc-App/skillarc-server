@@ -3,20 +3,21 @@
 # Table name: coach_seeker_contexts
 #
 #  id                :uuid             not null, primary key
-#  user_id           :string           not null
-#  profile_id        :uuid
-#  first_name        :string
-#  last_name         :string
-#  email             :string
-#  phone_number      :string
 #  assigned_coach    :string
+#  barriers          :string           default([]), is an Array
+#  email             :string
+#  first_name        :string
+#  last_active_on    :datetime
+#  last_contacted_at :datetime
+#  last_name         :string
+#  phone_number      :string
 #  skill_level       :string
 #  stage             :string
-#  barriers          :string           default([]), is an Array
-#  last_contacted_at :datetime
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  last_active_on    :datetime
+#  profile_id        :uuid
+#  seeker_id         :uuid
+#  user_id           :string           not null
 #
 module Coaches
   class CoachSeekerContext < ApplicationRecord

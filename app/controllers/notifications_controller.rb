@@ -10,11 +10,11 @@ class NotificationsController < ApplicationController
 
     all_notifications.each do |n|
       EventService.create!(
-        event_type: Event::EventTypes::NOTIFICATIONS_MARKED_READ,
+        event_schema: Events::NotificationMarkedRead::V1,
         aggregate_id: current_user.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           notification_id: n.id
-        }
+        )
       )
     end
 

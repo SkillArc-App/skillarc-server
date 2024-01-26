@@ -26,14 +26,14 @@ RSpec.describe EmployerService do
 
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::EMPLOYER_CREATED,
+        event_schema: Events::EmployerCreated::V1,
         aggregate_id: be_present,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           name: "Blocktrain",
           location: "Columbus, OH",
           bio: "We are a welding company",
           logo_url: "https://www.blocktrain.com/logo.png"
-        }
+        )
       ).and_call_original
 
       subject
@@ -77,14 +77,14 @@ RSpec.describe EmployerService do
 
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::EMPLOYER_UPDATED,
+        event_schema: Events::EmployerUpdated::V1,
         aggregate_id: employer.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           name: "Portiko",
           location: "Columbus, O-H-I-O",
           bio: "We are a really good welding company",
           logo_url: "https://www.blocktrain.com/logo.jpeg"
-        },
+        ),
         occurred_at: be_present
       ).and_call_original
 

@@ -23,10 +23,15 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
     EventService.create!(
       aggregate_id: user.id,
-      event_type: Event::EventTypes::ONBOARDING_COMPLETED,
-      data: {
-        responses:
-      },
+      event_schema: Events::OnboardingCompleted::V1,
+      data: Events::Common::UntypedHashWrapper.new(
+        name: responses["name"],
+        experience: responses["experience"],
+        education: responses["education"],
+        trainingProvider: responses["trainingProvider"],
+        other: responses["other"],
+        opportunityInterests: responses["opportunityInterests"]
+      ),
       occurred_at: completed_at
     )
   end
@@ -45,14 +50,14 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
       EventService.create!(
         aggregate_id: user.id,
-        event_type: Event::EventTypes::USER_UPDATED,
-        data: {
+        event_schema: Events::UserUpdated::V1,
+        data: Events::Common::UntypedHashWrapper.new(
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
           phone_number: user.phone_number,
           date_of_birth: Date.strptime(name_response["dateOfBirth"], "%m/%d/%Y")
-        },
+        ),
         occurred_at: user.updated_at
       )
     end
@@ -70,11 +75,11 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
     EventService.create!(
       aggregate_id: user.id,
-      event_type: Event::EventTypes::SEEKER_CREATED,
-      data: {
+      event_schema: Events::SeekerCreated::V1,
+      data: Events::Common::UntypedHashWrapper.new(
         id: profile.id,
         user_id: user.id
-      },
+      ),
       occurred_at: profile.created_at
     )
   end
@@ -102,8 +107,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
         EventService.create!(
           aggregate_id: user.id,
-          event_type: Event::EventTypes::EXPERIENCE_CREATED,
-          data: {
+          event_schema: Events::ExperienceCreated::V1,
+          data: Events::Common::UntypedHashWrapper.new(
             id: other_experience.id,
             organization_name: other_experience.organization_name,
             position: other_experience.position,
@@ -113,7 +118,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             is_current: other_experience.is_current,
             profile_id: other_experience.profile_id,
             seeker_id: other_experience.seeker_id
-          },
+          ),
           occurred_at: other_experience.created_at
         )
       end
@@ -142,8 +147,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
         EventService.create!(
           aggregate_id: user.id,
-          event_type: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
-          data: {
+          event_schema: Events::EducationExperienceCreated::V1,
+          data: Events::Common::UntypedHashWrapper.new(
             id: ee.id,
             organization_name: ee.organization_name,
             title: ee.title,
@@ -152,7 +157,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             gpa: ee.gpa,
             profile_id: ee.profile_id,
             seeker_id: ee.seeker_id
-          },
+          ),
           occurred_at: ee.created_at
         )
       end
@@ -170,12 +175,12 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
         EventService.create!(
           aggregate_id: user.id,
-          event_type: Event::EventTypes::SEEKER_TRAINING_PROVIDER_CREATED,
-          data: {
+          event_schema: Events::SeekerTrainingProviderCreated::V1,
+          data: Events::Common::UntypedHashWrapper.new(
             id: stp.id,
             user_id: stp.user_id,
             training_provider_id: stp.training_provider_id
-          },
+          ),
           occurred_at: stp.created_at
         )
       end
@@ -203,8 +208,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
       EventService.create!(
         aggregate_id: user.id,
-        event_type: Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
-        data: {
+        event_schema: Events::PersonalExperienceCreated::V1,
+        data: Events::Common::UntypedHashWrapper.new(
           id: pe.id,
           activity: pe.activity,
           description: pe.description,
@@ -212,7 +217,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
           end_date: pe.end_date,
           profile_id: pe.profile_id,
           seeker_id: pe.seeker_id
-        },
+        ),
         occurred_at: pe.created_at
       )
     end

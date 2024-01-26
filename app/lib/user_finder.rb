@@ -16,13 +16,13 @@ class UserFinder
 
     EventService.create!(
       aggregate_id: new_user.id,
-      event_type: "user_created",
-      data: {
+      event_schema: Events::UserCreated::V1,
+      data: Events::Common::UntypedHashWrapper.new(
         first_name: new_user.first_name,
         last_name: new_user.last_name,
         email: new_user.email,
         sub: new_user.sub
-      },
+      ),
       occurred_at: new_user.created_at
     )
 

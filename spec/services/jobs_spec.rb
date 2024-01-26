@@ -53,9 +53,9 @@ RSpec.describe Jobs do
 
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::JOB_CREATED,
+        event_schema: Events::JobCreated::V1,
         aggregate_id: be_present,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           employment_title:,
           employer_id:,
           benefits_description:,
@@ -67,7 +67,7 @@ RSpec.describe Jobs do
           work_days:,
           requirements_description:,
           industry:
-        },
+        ),
         occurred_at: be_present
       ).and_call_original
 

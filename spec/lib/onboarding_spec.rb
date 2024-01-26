@@ -68,16 +68,20 @@ RSpec.describe Onboarding do
 
       it "publishes a seeker created event" do
         allow(EventService).to receive(:create!)
+        allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
-            event_type: Event::EventTypes::SEEKER_CREATED,
-            data: {
-              id: be_present,
-              user_id: user.id
-            },
+            event_schema: Events::SeekerCreated::V1,
+            data: be_a(Events::Common::UntypedHashWrapper),
             occurred_at: be_present
+          ).and_call_original
+        expect(Events::Common::UntypedHashWrapper)
+          .to receive(:new)
+          .with(
+            id: be_present,
+            user_id: user.id
           ).and_call_original
 
         subject
@@ -89,14 +93,14 @@ RSpec.describe Onboarding do
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
-            event_type: Event::EventTypes::USER_UPDATED,
-            data: {
+            event_schema: Events::UserUpdated::V1,
+            data: Events::Common::UntypedHashWrapper.new(
               email: user.email,
               first_name: "John",
               last_name: "Doe",
               phone_number: "1234567890",
               date_of_birth: Date.new(2000, 1, 1)
-            },
+            ),
             occurred_at: be_present
           ).and_call_original
 
@@ -143,23 +147,27 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
+        allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
-            event_type: "experience_created",
-            data: {
-              id: be_present,
-              organization_name: "Company",
-              position: "Position",
-              start_date: "01/01/2000",
-              is_current: true,
-              end_date: nil,
-              description: "Description",
-              profile_id: be_present, # TODO: Come up with a way to check the profile id as well
-              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
-            },
+            event_schema: Events::SeekerCreated::V1,
+            data: be_a(Events::Common::UntypedHashWrapper),
             occurred_at: be_present
+          ).and_call_original
+        expect(Events::Common::UntypedHashWrapper)
+          .to receive(:new)
+          .with(
+            id: be_present,
+            organization_name: "Company",
+            position: "Position",
+            start_date: "01/01/2000",
+            is_current: true,
+            end_date: nil,
+            description: "Description",
+            profile_id: be_present, # TODO: Come up with a way to check the profile id as well
+            seeker_id: be_present # TODO: Come up with a way to check the profile id as well
           ).and_call_original
 
         subject
@@ -224,21 +232,25 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
+        allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
+        expect(Events::Common::UntypedHashWrapper)
+          .to receive(:new)
+          .with(
+            id: be_present,
+            activities: "Football",
+            organization_name: "School",
+            title: "Title",
+            graduation_date: "2000",
+            gpa: "4.0",
+            profile_id: be_present, # TODO: Come up with a way to check the profile id as well
+            seeker_id: be_present # TODO: Come up with a way to check the profile id as well
+          ).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
-            event_type: "education_experience_created",
-            data: {
-              id: be_present,
-              activities: "Football",
-              organization_name: "School",
-              title: "Title",
-              graduation_date: "2000",
-              gpa: "4.0",
-              profile_id: be_present, # TODO: Come up with a way to check the profile id as well
-              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
-            },
+            event_schema: Events::EducationExperienceCreated::V1,
+            data: be_a(Events::Common::UntypedHashWrapper),
             occurred_at: be_present
           ).and_call_original
 
@@ -294,17 +306,21 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
+        allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
-            event_type: "seeker_training_provider_created",
-            data: {
-              id: be_present,
-              user_id: user.id,
-              training_provider_id: training_provider.id
-            },
+            event_schema: Events::SeekerTrainingProviderCreated::V1,
+            data: be_a(Events::Common::UntypedHashWrapper),
             occurred_at: be_present
+          ).and_call_original
+        allow(Events::Common::UntypedHashWrapper)
+          .to receive(:new)
+          .with(
+            id: be_present,
+            user_id: user.id,
+            training_provider_id: training_provider.id
           ).and_call_original
 
         subject
@@ -391,22 +407,27 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
+        allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
-            event_type: "personal_experience_created",
-            data: {
-              id: be_present,
-              activity: "Activity",
-              start_date: "01/01/2000",
-              end_date: "01/01/2001",
-              description: "Learning",
-              profile_id: be_present, # TODO: Come up with a way to check the profile id as well
-              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
-            },
+            event_schema: Events::PersonalExperienceCreated::V1,
+            data: be_a(Events::Common::UntypedHashWrapper),
             occurred_at: be_present
           ).and_call_original
+        expect(Events::Common::UntypedHashWrapper)
+          .to receive(:new)
+          .with(
+            id: be_present,
+            activity: "Activity",
+            start_date: "01/01/2000",
+            end_date: "01/01/2001",
+            description: "Learning",
+            profile_id: be_present, # TODO: Come up with a way to check the profile id as well
+            seeker_id: be_present # TODO: Come up with a way to check the profile id as well
+          )
+          .and_call_original
 
         subject
       end
@@ -533,16 +554,25 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
+          allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
           allow(EventService).to receive(:create!)
           expect(EventService)
             .to receive(:create!)
             .with(
               aggregate_id: user.id,
-              event_type: Event::EventTypes::ONBOARDING_COMPLETED,
-              data: {
-                responses:
-              },
+              event_schema: Events::OnboardingCompleted::V1,
+              data: be_a(Events::Common::UntypedHashWrapper),
               occurred_at: be_present
+            ).and_call_original
+          expect(Events::Common::UntypedHashWrapper)
+            .to receive(:new)
+            .with(
+              name: responses["name"],
+              experience: responses["experience"],
+              education: responses["education"],
+              trainingProvider: responses["trainingProvider"],
+              other: responses["other"],
+              opportunityInterests: responses["opportunityInterests"]
             ).and_call_original
 
           subject
@@ -639,14 +669,14 @@ RSpec.describe Onboarding do
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
-            event_type: Event::EventTypes::USER_UPDATED,
-            data: {
+            event_schema: Events::UserUpdated::V1,
+            data: Events::Common::UntypedHashWrapper.new(
               email: user.email,
               first_name: "John",
               last_name: "Doe",
               phone_number: "1234567890",
               date_of_birth: Date.new(2000, 1, 1)
-            },
+            ),
             occurred_at: be_present
           ).and_call_original
 

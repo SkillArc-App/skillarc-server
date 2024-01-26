@@ -20,15 +20,15 @@ RSpec.describe EducationExperienceService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         hash_including(
-          event_type: Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
+          event_schema: Events::EducationExperienceCreated::V1,
           aggregate_id: seeker.id,
-          data: {
+          data: Events::Common::UntypedHashWrapper.new(
             organization_name: "University of Cincinnati",
             title: "Student",
             graduation_date: Date.new(2019, 5, 1),
             gpa: 3.5,
             activities: "Activities"
-          },
+          ),
           occurred_at: be_a(Time)
         )
       )
@@ -70,16 +70,16 @@ RSpec.describe EducationExperienceService do
 
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::EDUCATION_EXPERIENCE_UPDATED,
+        event_schema: Events::EducationExperienceUpdated::V1,
         aggregate_id: seeker.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           id: education_experience.id,
           organization_name: "University of Cincinnati",
           title: "Student",
           graduation_date: "2019-05-01",
           gpa: "3.5",
           activities: "Activities"
-        },
+        ),
         occurred_at: be_a(Time)
       )
 
@@ -100,11 +100,11 @@ RSpec.describe EducationExperienceService do
 
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::EDUCATION_EXPERIENCE_DELETED,
+        event_schema: Events::EducationExperienceDeleted::V1,
         aggregate_id: seeker.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           id: education_experience.id
-        },
+        ),
         occurred_at: be_a(Time)
       )
 

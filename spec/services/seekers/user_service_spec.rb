@@ -21,15 +21,14 @@ RSpec.describe Seekers::UserService do
 
     it "publishes a user_updated event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::USER_UPDATED,
+        event_schema: Events::UserUpdated::V1,
         aggregate_id: id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           first_name:,
           last_name:,
           phone_number:,
           zip_code:
-        },
-        metadata: {},
+        ),
         occurred_at: be_a(Time)
       ).and_call_original
 

@@ -3,14 +3,14 @@ class EmployerService
     e = Employer.create!(**params, id: SecureRandom.uuid)
 
     EventService.create!(
-      event_type: Event::EventTypes::EMPLOYER_CREATED,
+      event_schema: Events::EmployerCreated::V1,
       aggregate_id: e.id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.new(
         name: e.name,
         location: e.location,
         bio: e.bio,
         logo_url: e.logo_url
-      }
+      )
     )
 
     e
@@ -22,14 +22,14 @@ class EmployerService
     e.update!(**params)
 
     EventService.create!(
-      event_type: Event::EventTypes::EMPLOYER_UPDATED,
+      event_schema: Events::EmployerUpdated::V1,
       aggregate_id: e.id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.new(
         name: e.name,
         location: e.location,
         bio: e.bio,
         logo_url: e.logo_url
-      },
+      ),
       occurred_at: e.updated_at
     )
 

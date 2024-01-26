@@ -6,13 +6,13 @@ module Seekers
 
     def save
       EventService.create!(
-        event_type: Event::EventTypes::JOB_SAVED,
+        event_schema: Events::JobSaved::V1,
         aggregate_id: current_user.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           job_id: job.id,
           employment_title: job.employment_title,
           employer_name: job.employer.name
-        }
+        )
       )
 
       render json: { success: true }
@@ -20,13 +20,13 @@ module Seekers
 
     def unsave
       EventService.create!(
-        event_type: Event::EventTypes::JOB_UNSAVED,
+        event_schema: Events::JobUnsaved::V1,
         aggregate_id: current_user.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           job_id: job.id,
           employment_title: job.employment_title,
           employer_name: job.employer.name
-        }
+        )
       )
 
       render json: { success: true }

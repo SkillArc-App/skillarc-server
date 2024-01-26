@@ -9,14 +9,14 @@ RSpec.describe TrainingProviderInviteService do
   describe "#accept" do
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::TRAINING_PROVIDER_INVITE_ACCEPTED,
+        event_schema: Events::TrainingProviderInviteAccepted::V1,
         aggregate_id: training_provider_invite.training_provider_id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           training_provider_invite_id: training_provider_invite.id,
           invite_email: training_provider_invite.email,
           training_provider_id: training_provider_invite.training_provider_id,
           training_provider_name: training_provider_invite.training_provider.name
-        }
+        )
       ).and_call_original
 
       subject.accept

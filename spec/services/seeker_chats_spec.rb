@@ -28,16 +28,16 @@ RSpec.describe SeekerChats do
 
     it "creates a chat message event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::CHAT_MESSAGE_SENT,
+        event_schema: Events::ChatMessageSent::V1,
         aggregate_id: job.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           applicant_id: applicant.id,
           profile_id: profile.id,
           from_user_id: user.id,
           employer_name: employer.name,
           employment_title: job.employment_title,
           message:
-        }
+        )
       ).and_call_original
 
       subject

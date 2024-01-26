@@ -289,16 +289,16 @@ RSpec.describe Coaches::SeekerService do
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::LEAD_ADDED,
+        event_schema: Events::LeadAdded::V1,
         aggregate_id: coach.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           first_name:,
           last_name:,
           phone_number:,
           lead_id:,
           email: nil,
           lead_captured_by: coach.email
-        },
+        ),
         occurred_at: now
       ).and_call_original
 
@@ -315,14 +315,14 @@ RSpec.describe Coaches::SeekerService do
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::NOTE_ADDED,
+        event_schema: Events::NoteAdded::V1,
         aggregate_id: profile_id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note: "This is a new note",
           note_id: note_id1
-        },
+        ),
         occurred_at: now
       ).and_call_original
 
@@ -339,13 +339,13 @@ RSpec.describe Coaches::SeekerService do
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::NOTE_DELETED,
+        event_schema: Events::NoteDeleted::V1,
         aggregate_id: profile_id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note_id: note_id1
-        },
+        ),
         occurred_at: now
       ).and_call_original
 
@@ -362,14 +362,14 @@ RSpec.describe Coaches::SeekerService do
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::NOTE_MODIFIED,
+        event_schema: Events::NoteModified::V1,
         aggregate_id: profile_id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note_id: note_id2,
           note: updated_note
-        },
+        ),
         occurred_at: now
       ).and_call_original
 
@@ -403,12 +403,12 @@ RSpec.describe Coaches::SeekerService do
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::COACH_ASSIGNED,
+        event_schema: Events::CoachAssigned::V1,
         aggregate_id: profile_id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           coach_id: "123",
           email: "coach@blocktrainapp.com"
-        },
+        ),
         occurred_at: now
       ).and_call_original
 
@@ -423,11 +423,11 @@ RSpec.describe Coaches::SeekerService do
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::SKILL_LEVEL_UPDATED,
+        event_schema: Events::SkillLevelUpdated::V1,
         aggregate_id: profile_id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           skill_level: "advanced"
-        },
+        ),
         occurred_at: now
       ).and_call_original
 

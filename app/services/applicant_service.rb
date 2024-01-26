@@ -18,9 +18,9 @@ class ApplicantService
     end
 
     EventService.create!(
-      event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+      event_schema: Events::ApplicantStatusUpdated::V1,
       aggregate_id: applicant.job.id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.new(
         applicant_id: applicant.id,
         profile_id: applicant.profile.id,
         user_id: applicant.profile.user.id,
@@ -28,7 +28,7 @@ class ApplicantService
         employer_name: applicant.job.employer.name,
         employment_title: applicant.job.employment_title,
         status: applicant.status.status
-      },
+      ),
       occurred_at: applicant_status.created_at
     )
   end

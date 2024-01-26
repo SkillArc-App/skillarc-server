@@ -3,13 +3,13 @@ class HookService
     user = User.find_by(email:)
 
     EventService.create!(
-      event_type: Event::EventTypes::NOTIFICATION_CREATED,
+      event_schema: Events::NotificationCreated::V1,
       aggregate_id: user.id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.new(
         title:,
         body:,
         url:
-      }
+      )
     )
   end
 end

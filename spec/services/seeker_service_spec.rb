@@ -194,13 +194,13 @@ RSpec.describe SeekerService do
 
     it "publishes a profile updated event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::SEEKER_UPDATED,
+        event_schema: Events::SeekerUpdated::V1,
         aggregate_id: profile.user.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           bio: "New Bio",
           met_career_coach: profile.met_career_coach,
           image: profile.image
-        }
+        )
       ).and_call_original
 
       subject
@@ -209,11 +209,11 @@ RSpec.describe SeekerService do
     context "when met_career_coach does not change" do
       it "does not publish a met career coach event" do
         expect(EventService).not_to receive(:create!).with(
-          event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
+          event_schema: Events::MetCareerCoachUpdated::V1,
           aggregate_id: profile.user.id,
-          data: {
+          data: Events::Common::UntypedHashWrapper.new(
             met_career_coach:
-          },
+          ),
           occurred_at: be_present
         )
 
@@ -227,11 +227,11 @@ RSpec.describe SeekerService do
       it "creates an event" do
         allow(EventService).to receive(:create!)
         expect(EventService).to receive(:create!).with(
-          event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
+          event_schema: Events::MetCareerCoachUpdated::V1,
           aggregate_id: profile.user.id,
-          data: {
+          data: Events::Common::UntypedHashWrapper.new(
             met_career_coach:
-          }
+          )
         ).and_call_original
 
         subject

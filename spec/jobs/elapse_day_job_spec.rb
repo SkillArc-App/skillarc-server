@@ -6,8 +6,8 @@ RSpec.describe ElapseDayJob do
       .to receive(:create!)
       .with(
         aggregate_id: "day",
-        event_type: Event::EventTypes::DAY_ELAPSED,
-        data: {},
+        event_schema: Events::DayElapsed::V1,
+        data: Events::Common::Nothing,
         occurred_at: Time.zone.local(2020, 1, 1)
       ).and_call_original
 

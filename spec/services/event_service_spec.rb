@@ -26,7 +26,7 @@ RSpec.describe EventService do
       expect(BroadcastEventJob)
         .to receive(:perform_later)
         .with(
-          EventMessage.new(
+          Events::Message.new(
             id:,
             event_type:,
             aggregate_id:,

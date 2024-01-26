@@ -1,6 +1,6 @@
 class EventService
   def self.create!(event_type:, aggregate_id:, data:, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: {}, version: 1) # rubocop:disable Metrics/ParameterLists
-    message = EventMessage.new(
+    message = Events::Message.new(
       id:,
       event_type:,
       aggregate_id:,

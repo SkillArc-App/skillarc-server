@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Klayvio::TrainingProviderInviteAccepted do
   describe "#call" do
     let(:event) do
-      build(:event_message, :training_provider_invite_accepted, data: {
+      build(:events__message, :training_provider_invite_accepted, data: {
               training_provider_invite_id: "A",
               invite_email: "sfb@crook.com",
               training_provider_id: "1",

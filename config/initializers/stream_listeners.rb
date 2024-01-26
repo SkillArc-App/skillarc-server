@@ -68,7 +68,7 @@ Rails.application.config.after_initialize do
     job_freshness = DbStreamListener.new(JobFreshnessService, "job_freshness_service")
     coach_seeker = DbStreamListener.new(Coaches::SeekerService, "coach_seekers")
     coaches = DbStreamListener.new(Coaches::CoachService, "coaches")
-    barriers = DbStreamListener.new(Coaches::BarrierService, "barriers")
+    # barriers = DbStreamListener.new(Coaches::BarrierService, "barriers")
 
     Event::EventTypes::ALL.each do |event_type|
       Pubsub.subscribe(

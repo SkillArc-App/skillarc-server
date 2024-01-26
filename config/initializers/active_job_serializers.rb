@@ -1,3 +1,3 @@
-require 'event_message_serializer'
+require 'events/message_serializer'
 
-Rails.application.config.active_job.custom_serializers << EventMessageSerializer
+Rails.application.config.active_job.custom_serializers << Events::MessageSerializer

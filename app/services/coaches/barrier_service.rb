@@ -1,5 +1,9 @@
 module Coaches
   class BarrierService
+    def self.call(event:)
+      handle_event(event)
+    end
+
     def self.handle_event(event)
       case event.event_type
       when Event::EventTypes::BARRIER_ADDED

@@ -221,6 +221,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     data = opportunity_interests_response.map do |oi|
       {
         profile_id: user.profile.id,
+        seeker_id: user.seeker.id,
         response: oi
       }
     end

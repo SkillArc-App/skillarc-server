@@ -8,7 +8,7 @@ class EducationExperiencesController < ApplicationController
 
   def create
     begin
-      ee = EducationExperienceService.new(profile, @seeker).create(
+      ee = EducationExperienceService.new(profile, seeker).create(
         **education_experience_params
       )
 
@@ -20,7 +20,7 @@ class EducationExperiencesController < ApplicationController
 
   def update
     begin
-      ee = EducationExperienceService.new(profile, @seeker).update(
+      ee = EducationExperienceService.new(profile, seeker).update(
         **education_experience_params.merge(id: params[:id])
       )
 
@@ -32,7 +32,7 @@ class EducationExperiencesController < ApplicationController
 
   def destroy
     begin
-      ee = EducationExperienceService.new(profile, @seeker).destroy(
+      ee = EducationExperienceService.new(profile, seeker).destroy(
         id: params[:id]
       )
 
@@ -44,7 +44,7 @@ class EducationExperiencesController < ApplicationController
 
   private
 
-  attr_reader :profile
+  attr_reader :profile, :seeker
 
   def education_experience_params
     params.require(:education_experience).permit(
@@ -58,6 +58,6 @@ class EducationExperiencesController < ApplicationController
 
   def set_seeker
     @profile = Profile.find(params[:profile_id])
-    @seeker = Seeker.find_by(id: params[:profile_id])
+    @seeker = Seeker.find(params[:profile_id])
   end
 end

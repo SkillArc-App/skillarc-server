@@ -1,19 +1,20 @@
 module JobMatch
   class JobMatch
-    def initialize(profile_id:)
-      @profile = Profile.find(profile_id)
+    def initialize(profile:, seeker:)
+      @profile = profile
+      @seeker = seeker
     end
 
     def jobs
       save_events = Event
                     .where(
-                      aggregate_id: profile.user.id,
+                      aggregate_id: seeker.user.id,
                       event_type: [Event::EventTypes::JOB_SAVED, Event::EventTypes::JOB_UNSAVED]
                     )
                     .map(&:message)
                     .group_by { |e| e.data[:job_id] }
 
-      applicants = Applicant.where(profile_id: profile.id)
+      applicants = Applicant.where(seeker_id: seeker.id)
 
       @jobs ||= Job.shown.with_everything.map do |job|
         job_tags = job.job_tags.map do |job_tag|
@@ -61,10 +62,10 @@ module JobMatch
 
     private
 
-    attr_reader :profile
+    attr_reader :profile, :seeker
 
     def match_score(job)
-      industry_interests = profile.onboarding_session.industry_interests
+      industry_interests = seeker.onboarding_session.industry_interests
 
       return 1 if industry_interests.include?(job[:industry]&.first)
 

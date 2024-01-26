@@ -156,7 +156,8 @@ RSpec.describe Onboarding do
               is_current: true,
               end_date: nil,
               description: "Description",
-              profile_id: be_present # TODO: Come up with a way to check the profile id as well
+              profile_id: be_present, # TODO: Come up with a way to check the profile id as well
+              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
             },
             occurred_at: be_present
           ).and_call_original

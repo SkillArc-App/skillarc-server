@@ -27,4 +27,8 @@ class Seeker < ApplicationRecord
   has_many :profile_skills, dependent: :destroy
   has_many :references, class_name: "Reference", dependent: :destroy
   has_many :stories, dependent: :destroy
+
+  def onboarding_session
+    OnboardingSession.where(user_id:).first
+  end
 end

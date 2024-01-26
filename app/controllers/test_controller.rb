@@ -28,15 +28,18 @@ class TestController < ApplicationController
   end
 
   def create_seeker
-    profile = FactoryBot.create(:profile)
+    user = FactoryBot.create(:user)
+    profile = FactoryBot.create(:profile, user:)
+    seeker = FactoryBot.create(:seeker, id: profile.id, user:)
 
     Coaches::CoachSeekerContext.create!(
-      user_id: profile.user.id,
+      user_id: user.id,
       profile_id: profile.id,
-      first_name: profile.user.first_name,
-      last_name: profile.user.last_name,
-      email: profile.user.email,
-      phone_number: profile.user.phone_number,
+      seeker_id: seeker.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      phone_number: user.phone_number,
       skill_level: "beginner",
       stage: "Profile Created",
       barriers: [],
@@ -65,15 +68,18 @@ class TestController < ApplicationController
   end
 
   def create_active_seeker
-    profile = FactoryBot.create(:profile)
+    user = FactoryBot.create(:user)
+    profile = FactoryBot.create(:profile, user:)
+    seeker = FactoryBot.create(:seeker, id: profile.id, user:)
 
     csc = Coaches::CoachSeekerContext.create!(
-      user_id: profile.user.id,
+      user_id: user.id,
       profile_id: profile.id,
-      first_name: profile.user.first_name,
-      last_name: profile.user.last_name,
-      email: profile.user.email,
-      phone_number: profile.user.phone_number,
+      seeker_id: seeker.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      phone_number: user.phone_number,
       skill_level: "beginner",
       stage: "Profile Created",
       barriers: [],

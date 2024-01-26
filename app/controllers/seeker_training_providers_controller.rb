@@ -6,14 +6,14 @@ class SeekerTrainingProvidersController < ApplicationController
   before_action :admin_authorize
 
   def create
-    profile_id = params["seeker_id"]
+    seeker_id = params["seeker_id"]
     program_id = params["programId"]
     training_provider_id = params["trainingProviderId"]
 
     stp = SeekerTrainingProvider.create!(
       id: SecureRandom.uuid,
       program_id:,
-      user_id: Profile.find(profile_id).user_id,
+      user_id: Seeker.find(seeker_id).user_id,
       training_provider_id:
     )
 
@@ -21,12 +21,12 @@ class SeekerTrainingProvidersController < ApplicationController
   end
 
   def update
-    profile_id = params["seeker_id"]
+    seeker_id = params["seeker_id"]
     program_id = params["programId"]
     training_provider_id = params["trainingProviderId"]
 
     stp = SeekerTrainingProvider.find_by(
-      user_id: Profile.find(profile_id).user_id
+      user_id: Seeker.find(seeker_id).user_id
     )
 
     stp.program_id = program_id if program_id

@@ -6,8 +6,9 @@ class JobMatchesController < ApplicationController
   def index
     begin
       profile = current_user.profile
+      seeker = current_user.seeker
 
-      jm = JobMatch::JobMatch.new(profile_id: profile.id)
+      jm = JobMatch::JobMatch.new(profile:, seeker:)
 
       matched_jobs = jm.jobs
 

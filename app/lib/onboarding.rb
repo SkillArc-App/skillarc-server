@@ -111,7 +111,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             end_date: other_experience.end_date,
             description: other_experience.description,
             is_current: other_experience.is_current,
-            profile_id: other_experience.profile_id
+            profile_id: other_experience.profile_id,
+            seeker_id: other_experience.seeker_id
           },
           occurred_at: other_experience.created_at
         )

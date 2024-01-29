@@ -4,7 +4,6 @@
 #
 #  id           :text             not null, primary key
 #  completed_at :datetime
-#  current_step :text
 #  responses    :jsonb            not null
 #  started_at   :datetime         not null
 #  created_at   :datetime         not null

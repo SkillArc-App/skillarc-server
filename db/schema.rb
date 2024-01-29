@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_25_222945) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_29_145220) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -394,7 +394,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_25_222945) do
     t.text "user_id", null: false
     t.datetime "started_at", precision: 3, null: false
     t.datetime "completed_at", precision: 3
-    t.text "current_step"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.jsonb "responses", default: {}, null: false

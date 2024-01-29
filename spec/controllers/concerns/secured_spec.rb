@@ -35,13 +35,13 @@ RSpec.describe ApplicationController, type: :controller do
         .to receive(:create!)
         .with(
           aggregate_id: be_a(String),
-          event_type: "user_created",
-          data: {
+          event_schema: Events::UserCreated::V1,
+          data: Events::Common::UntypedHashWrapper.build(
             first_name: nil,
             last_name: nil,
             email:,
             sub: token
-          },
+          ),
           occurred_at: anything
         ).and_call_original
 

@@ -10,7 +10,7 @@ RSpec.describe JobFreshnessService do
   let(:base_job_events) { [job_created_at_event] }
   let(:employer_invite_accepted) do
     build(
-      :event_message,
+      :events__message,
       :employer_invite_accepted,
       aggregate_id: employer_id,
       data: {},
@@ -21,7 +21,7 @@ RSpec.describe JobFreshnessService do
   let(:now) { Time.zone.local(2024, 1, 1) }
   let(:job_created_at_event) do
     build(
-      :event_message,
+      :events__message,
       :job_created,
       aggregate_id: job_id,
       data: {
@@ -58,7 +58,7 @@ RSpec.describe JobFreshnessService do
     let(:with_side_effects) { false }
 
     context "when the event is not subscribed" do
-      let(:event) { build(:event_message, :user_created) }
+      let(:event) { build(:events__message, :user_created) }
 
       it "does nothing" do
         expect { subject }.not_to(change(JobFreshness, :count))
@@ -83,7 +83,7 @@ RSpec.describe JobFreshnessService do
       it "creates a JobFreshness" do
         described_class.handle_event(
           build(
-            :event_message,
+            :events__message,
             :employer_created,
             aggregate_id: employer_id,
             data: {
@@ -102,7 +102,7 @@ RSpec.describe JobFreshnessService do
         )
 
         expect do
-          described_class.handle_event(build(:event_message, :day_elapsed), now:, with_side_effects: true)
+          described_class.handle_event(build(:events__message, :day_elapsed), now:, with_side_effects: true)
         end.not_to(change(JobFreshness, :count))
       end
     end
@@ -161,7 +161,7 @@ RSpec.describe JobFreshnessService do
           let(:job_events) { base_job_events + [job_hidden_event] }
           let(:job_hidden_event) do
             build(
-              :event_message,
+              :events__message,
               :job_updated,
               aggregate_id: job_id,
               data: {
@@ -197,7 +197,7 @@ RSpec.describe JobFreshnessService do
           let(:job_events) { base_job_events + [applicant_created_at_event] }
           let(:applicant_created_at_event) do
             build(
-              :event_message,
+              :events__message,
               :applicant_status_updated,
               aggregate_id: job_id,
               data: {
@@ -240,7 +240,7 @@ RSpec.describe JobFreshnessService do
               let(:job_events) { [] }
               let(:applicant_status_updated_event) do
                 build(
-                  :event_message,
+                  :events__message,
                   :applicant_status_updated,
                   aggregate_id: job_id,
                   data: {
@@ -279,7 +279,7 @@ RSpec.describe JobFreshnessService do
             end
 
             it "returns 'stale'" do
-              described_class.handle_event(build(:event_message, :day_elapsed, occurred_at: now, data: {})) # Have to wait for the day to elapse
+              described_class.handle_event(build(:events__message, :day_elapsed, occurred_at: now, data: {})) # Have to wait for the day to elapse
 
               expect(subject).to have_attributes(
                 job_id:,

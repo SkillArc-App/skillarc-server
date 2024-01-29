@@ -6,7 +6,7 @@ RSpec.describe Klayvio::MetCareerCoachUpdated do
 
     let(:event) do
       build(
-        :event_message,
+        :events__message,
         :met_career_coach_updated,
         aggregate_id: user.id,
         data: {

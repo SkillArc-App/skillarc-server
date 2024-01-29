@@ -6,9 +6,9 @@ class Jobs
     )
 
     EventService.create!(
-      event_type: Event::EventTypes::JOB_CREATED,
+      event_schema: Events::JobCreated::V1,
       aggregate_id: job.id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.build(
         employment_title: job.employment_title,
         employer_id: job.employer_id,
         benefits_description: job.benefits_description,
@@ -20,7 +20,7 @@ class Jobs
         work_days: job.work_days,
         requirements_description: job.requirements_description,
         industry: job.industry
-      },
+      ),
       occurred_at: job.created_at
     )
   end

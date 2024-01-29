@@ -69,23 +69,23 @@ class SeekerService
     seeker&.update!(params.except(:met_career_coach))
 
     EventService.create!(
-      event_type: Event::EventTypes::SEEKER_UPDATED,
+      event_schema: Events::SeekerUpdated::V1,
       aggregate_id: profile.user.id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.build(
         bio: profile.bio,
         met_career_coach: profile.met_career_coach,
         image: profile.image
-      }
+      )
     )
 
     return unless profile.saved_change_to_met_career_coach?
 
     EventService.create!(
-      event_type: Event::EventTypes::MET_CAREER_COACH_UPDATED,
+      event_schema: Events::MetCareerCoachUpdated::V1,
       aggregate_id: profile.user.id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.build(
         met_career_coach: profile.met_career_coach
-      }
+      )
     )
   end
 

@@ -72,91 +72,91 @@ module Coaches
 
     def self.add_lead(coach:, lead_id:, phone_number:, first_name:, last_name:, email: nil, now: Time.zone.now) # rubocop:disable Metrics/ParameterLists
       EventService.create!(
-        event_type: Event::EventTypes::LEAD_ADDED,
+        event_schema: Events::LeadAdded::V1,
         aggregate_id: coach.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.build(
           email:,
           lead_id:,
           phone_number:,
           first_name:,
           last_name:,
           lead_captured_by: coach.email
-        },
+        ),
         occurred_at: now
       )
     end
 
     def self.add_note(id:, coach:, note:, note_id:, now: Time.zone.now)
       EventService.create!(
-        event_type: Event::EventTypes::NOTE_ADDED,
+        event_schema: Events::NoteAdded::V1,
         aggregate_id: id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.build(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note:,
           note_id:
-        },
+        ),
         occurred_at: now
       )
     end
 
     def self.delete_note(id:, coach:, note_id:, now: Time.zone.now)
       EventService.create!(
-        event_type: Event::EventTypes::NOTE_DELETED,
+        event_schema: Events::NoteDeleted::V1,
         aggregate_id: id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.build(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note_id:
-        },
+        ),
         occurred_at: now
       )
     end
 
     def self.modify_note(id:, coach:, note_id:, note:, now: Time.zone.now)
       EventService.create!(
-        event_type: Event::EventTypes::NOTE_MODIFIED,
+        event_schema: Events::NoteModified::V1,
         aggregate_id: id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.build(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note_id:,
           note:
-        },
+        ),
         occurred_at: now
       )
     end
 
     def self.update_barriers(id:, barriers:, now: Time.zone.now)
       EventService.create!(
-        event_type: Event::EventTypes::BARRIERS_UPDATED,
+        event_schema: Events::BarrierUpdated::V1,
         aggregate_id: id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.build(
           barriers:
-        },
+        ),
         occurred_at: now
       )
     end
 
     def self.assign_coach(id, coach_id, coach_email, now: Time.zone.now)
       EventService.create!(
-        event_type: Event::EventTypes::COACH_ASSIGNED,
+        event_schema: Events::CoachAssigned::V1,
         aggregate_id: id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.build(
           coach_id:,
           email: coach_email
-        },
+        ),
         occurred_at: now
       )
     end
 
     def self.update_skill_level(id, skill_level, now: Time.zone.now)
       EventService.create!(
-        event_type: Event::EventTypes::SKILL_LEVEL_UPDATED,
+        event_schema: Events::SkillLevelUpdated::V1,
         aggregate_id: id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.build(
           skill_level:
-        },
+        ),
         occurred_at: now
       )
     end

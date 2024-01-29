@@ -6,8 +6,8 @@ RSpec.describe Event do
 
     let(:event) { build(:event, data: { cat: 1 }, metadata: { dog: 2 }) }
 
-    it "creates an EventMessage with the same data" do
-      expect(subject).to be_a(EventMessage)
+    it "creates an Events::Message with the same data" do
+      expect(subject).to be_a(Events::Message)
 
       expect(subject.id).to eq(event[:id])
       expect(subject.aggregate_id).to eq(event[:aggregate_id])
@@ -20,20 +20,20 @@ RSpec.describe Event do
   end
 
   describe ".from_message!" do
-    subject { described_class.from_message!(event_message) }
+    subject { described_class.from_message!(events__message) }
 
-    let(:event_message) { build(:event_message, data: { cat: 1 }, metadata: { dog: 2 }) }
+    let(:events__message) { build(:events__message, data: { cat: 1 }, metadata: { dog: 2 }) }
 
-    it "creates an EventMessage with the same data" do
+    it "creates an Events::Message with the same data" do
       expect(subject).to be_a(described_class)
 
-      expect(subject[:id]).to eq(event_message.id)
-      expect(subject[:aggregate_id]).to eq(event_message.aggregate_id)
-      expect(subject[:event_type]).to eq(event_message.event_type)
-      expect(subject[:data].deep_symbolize_keys).to eq(event_message.data)
-      expect(subject[:metadata].deep_symbolize_keys).to eq(event_message.metadata)
-      expect(subject[:version]).to eq(event_message.version)
-      expect(subject[:occurred_at]).to eq(event_message.occurred_at)
+      expect(subject[:id]).to eq(events__message.id)
+      expect(subject[:aggregate_id]).to eq(events__message.aggregate_id)
+      expect(subject[:event_type]).to eq(events__message.event_type)
+      expect(subject[:data].deep_symbolize_keys).to eq(events__message.data)
+      expect(subject[:metadata].deep_symbolize_keys).to eq(events__message.metadata)
+      expect(subject[:version]).to eq(events__message.version)
+      expect(subject[:occurred_at]).to eq(events__message.occurred_at)
     end
   end
 end

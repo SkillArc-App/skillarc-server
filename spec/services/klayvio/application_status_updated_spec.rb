@@ -4,7 +4,7 @@ RSpec.describe Klayvio::ApplicationStatusUpdated do
   describe "#call" do
     let(:event) do
       build(
-        :event_message,
+        :events__message,
         :applicant_status_updated,
         aggregate_id: job.id,
         data: {

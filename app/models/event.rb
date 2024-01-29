@@ -63,7 +63,7 @@ class Event < ApplicationRecord
   end
 
   def message
-    EventMessage.new(
+    Events::Message.new(
       id:,
       aggregate_id:,
       event_type:,

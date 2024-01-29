@@ -6,7 +6,7 @@ RSpec.describe Klayvio::JobSaved do
 
     let(:event) do
       build(
-        :event_message,
+        :events__message,
         :job_saved,
         aggregate_id: user.id,
         data: {

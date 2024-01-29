@@ -13,15 +13,14 @@ module Seekers
       )
 
       EventService.create!(
-        event_type: Event::EventTypes::USER_UPDATED,
+        event_schema: Events::UserUpdated::V1,
         aggregate_id: user.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.build(
           first_name:,
           last_name:,
           phone_number:,
           zip_code:
-        },
-        metadata: {},
+        ),
         occurred_at: Time.zone.now
       )
     end

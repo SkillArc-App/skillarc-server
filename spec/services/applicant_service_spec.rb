@@ -20,9 +20,9 @@ RSpec.describe ApplicantService do
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+        event_schema: Events::ApplicantStatusUpdated::V1,
         aggregate_id: applicant.job.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.build(
           applicant_id: applicant.id,
           profile_id: applicant.profile.id,
           job_id: applicant.job.id,
@@ -30,7 +30,7 @@ RSpec.describe ApplicantService do
           user_id: applicant.profile.user.id,
           employment_title: applicant.job.employment_title,
           status: ApplicantStatus::StatusTypes::PENDING_INTRO
-        },
+        ),
         occurred_at: anything
       ).and_call_original
 

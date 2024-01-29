@@ -47,16 +47,16 @@ class EmployerChats
     applicant_chat.messages.create!(user: recruiter.user, message:)
 
     EventService.create!(
-      event_type: Event::EventTypes::CHAT_MESSAGE_SENT,
+      event_schema: Events::ChatMessageSent::V1,
       aggregate_id: applicant_chat.applicant.job.id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.build(
         applicant_id: applicant_chat.applicant.id,
         profile_id: applicant_chat.applicant.profile.id,
         from_user_id: recruiter.user.id,
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
-      }
+      )
     )
   end
 
@@ -64,14 +64,14 @@ class EmployerChats
     applicant_chat = ApplicantChat.find_or_create_by!(applicant_id:)
 
     EventService.create!(
-      event_type: Event::EventTypes::CHAT_CREATED,
+      event_schema: Events::ChatCreated::V1,
       aggregate_id: applicant_chat.applicant.job.id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.build(
         applicant_id: applicant_chat.applicant.id,
         profile_id: applicant_chat.applicant.profile.id,
         user_id: applicant_chat.applicant.profile.user.id,
         employment_title: applicant_chat.applicant.job.employment_title
-      }
+      )
     )
   end
 

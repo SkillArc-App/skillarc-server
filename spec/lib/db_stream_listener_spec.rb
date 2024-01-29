@@ -71,7 +71,7 @@ RSpec.describe DbStreamListener do
     subject { described_class.new(consumer, "listener_name") }
 
     it "calls the consumer with the event and with_side_effects: true" do
-      event = build(:event_message, :user_created)
+      event = build(:events__message, :user_created)
 
       expect(consumer).to receive(:handle_event).with(
         event,

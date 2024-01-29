@@ -9,16 +9,16 @@ class SeekerChats
     applicant_chat.messages.create!(user:, message:)
 
     EventService.create!(
-      event_type: Event::EventTypes::CHAT_MESSAGE_SENT,
+      event_schema: Events::ChatMessageSent::V1,
       aggregate_id: applicant_chat.applicant.job.id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.build(
         applicant_id: applicant_chat.applicant.id,
         profile_id: applicant_chat.applicant.profile.id,
         from_user_id: applicant_chat.applicant.profile.user.id,
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
-      }
+      )
     )
   end
 

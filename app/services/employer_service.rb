@@ -5,7 +5,7 @@ class EmployerService
     EventService.create!(
       event_schema: Events::EmployerCreated::V1,
       aggregate_id: e.id,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         name: e.name,
         location: e.location,
         bio: e.bio,
@@ -24,7 +24,7 @@ class EmployerService
     EventService.create!(
       event_schema: Events::EmployerUpdated::V1,
       aggregate_id: e.id,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         name: e.name,
         location: e.location,
         bio: e.bio,

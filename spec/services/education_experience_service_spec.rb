@@ -22,7 +22,7 @@ RSpec.describe EducationExperienceService do
         hash_including(
           event_schema: Events::EducationExperienceCreated::V1,
           aggregate_id: seeker.id,
-          data: Events::Common::UntypedHashWrapper.new(
+          data: Events::Common::UntypedHashWrapper.build(
             organization_name: "University of Cincinnati",
             title: "Student",
             graduation_date: Date.new(2019, 5, 1),
@@ -72,7 +72,7 @@ RSpec.describe EducationExperienceService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EducationExperienceUpdated::V1,
         aggregate_id: seeker.id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           id: education_experience.id,
           organization_name: "University of Cincinnati",
           title: "Student",
@@ -102,7 +102,7 @@ RSpec.describe EducationExperienceService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EducationExperienceDeleted::V1,
         aggregate_id: seeker.id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           id: education_experience.id
         ),
         occurred_at: be_a(Time)

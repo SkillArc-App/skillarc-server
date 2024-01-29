@@ -20,7 +20,7 @@ class ApplicantService
     EventService.create!(
       event_schema: Events::ApplicantStatusUpdated::V1,
       aggregate_id: applicant.job.id,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         applicant_id: applicant.id,
         profile_id: applicant.profile.id,
         user_id: applicant.profile.user.id,

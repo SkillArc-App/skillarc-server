@@ -196,7 +196,7 @@ RSpec.describe SeekerService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::SeekerUpdated::V1,
         aggregate_id: profile.user.id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           bio: "New Bio",
           met_career_coach: profile.met_career_coach,
           image: profile.image
@@ -211,7 +211,7 @@ RSpec.describe SeekerService do
         expect(EventService).not_to receive(:create!).with(
           event_schema: Events::MetCareerCoachUpdated::V1,
           aggregate_id: profile.user.id,
-          data: Events::Common::UntypedHashWrapper.new(
+          data: Events::Common::UntypedHashWrapper.build(
             met_career_coach:
           ),
           occurred_at: be_present
@@ -229,7 +229,7 @@ RSpec.describe SeekerService do
         expect(EventService).to receive(:create!).with(
           event_schema: Events::MetCareerCoachUpdated::V1,
           aggregate_id: profile.user.id,
-          data: Events::Common::UntypedHashWrapper.new(
+          data: Events::Common::UntypedHashWrapper.build(
             met_career_coach:
           )
         ).and_call_original

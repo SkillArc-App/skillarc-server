@@ -19,7 +19,7 @@ class EducationExperienceService
     EventService.create!(
       event_schema: Events::EducationExperienceCreated::V1,
       aggregate_id: seeker.id,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         organization_name:,
         title:,
         graduation_date:,
@@ -38,7 +38,7 @@ class EducationExperienceService
     EventService.create!(
       event_schema: Events::EducationExperienceUpdated::V1,
       aggregate_id: seeker.id,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         **params.merge(id:)
       ),
       occurred_at: Time.zone.now
@@ -53,7 +53,7 @@ class EducationExperienceService
     EventService.create!(
       event_schema: Events::EducationExperienceDeleted::V1,
       aggregate_id: seeker.id,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         id: education_experience.id
       ),
       occurred_at: Time.zone.now

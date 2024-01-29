@@ -55,7 +55,7 @@ RSpec.describe Jobs do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::JobCreated::V1,
         aggregate_id: be_present,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           employment_title:,
           employer_id:,
           benefits_description:,

@@ -91,7 +91,7 @@ RSpec.describe EmployerChats do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::ChatMessageSent::V1,
         aggregate_id: job.id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           applicant_id: applicant.id,
           profile_id: profile.id,
           from_user_id: recruiter.user.id,
@@ -122,7 +122,7 @@ RSpec.describe EmployerChats do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::ChatCreated::V1,
         aggregate_id: applicant.job.id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           applicant_id: applicant.id,
           profile_id: applicant.profile.id,
           user_id: applicant.profile.user.id,

@@ -68,7 +68,7 @@ RSpec.describe Onboarding do
 
       it "publishes a seeker created event" do
         allow(EventService).to receive(:create!)
-        allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
+        allow(Events::Common::UntypedHashWrapper).to receive(:build).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
@@ -78,7 +78,7 @@ RSpec.describe Onboarding do
             occurred_at: be_present
           ).and_call_original
         expect(Events::Common::UntypedHashWrapper)
-          .to receive(:new)
+          .to receive(:build)
           .with(
             id: be_present,
             user_id: user.id
@@ -94,7 +94,7 @@ RSpec.describe Onboarding do
           .with(
             aggregate_id: user.id,
             event_schema: Events::UserUpdated::V1,
-            data: Events::Common::UntypedHashWrapper.new(
+            data: Events::Common::UntypedHashWrapper.build(
               email: user.email,
               first_name: "John",
               last_name: "Doe",
@@ -147,7 +147,7 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
-        allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
+        allow(Events::Common::UntypedHashWrapper).to receive(:build).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
@@ -157,7 +157,7 @@ RSpec.describe Onboarding do
             occurred_at: be_present
           ).and_call_original
         expect(Events::Common::UntypedHashWrapper)
-          .to receive(:new)
+          .to receive(:build)
           .with(
             id: be_present,
             organization_name: "Company",
@@ -232,9 +232,9 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
-        allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
+        allow(Events::Common::UntypedHashWrapper).to receive(:build).and_call_original
         expect(Events::Common::UntypedHashWrapper)
-          .to receive(:new)
+          .to receive(:build)
           .with(
             id: be_present,
             activities: "Football",
@@ -407,7 +407,7 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
-        allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
+        allow(Events::Common::UntypedHashWrapper).to receive(:build).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
@@ -417,7 +417,7 @@ RSpec.describe Onboarding do
             occurred_at: be_present
           ).and_call_original
         expect(Events::Common::UntypedHashWrapper)
-          .to receive(:new)
+          .to receive(:build)
           .with(
             id: be_present,
             activity: "Activity",
@@ -554,7 +554,7 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
-          allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
+          allow(Events::Common::UntypedHashWrapper).to receive(:build).and_call_original
           allow(EventService).to receive(:create!)
           expect(EventService)
             .to receive(:create!)
@@ -565,7 +565,7 @@ RSpec.describe Onboarding do
               occurred_at: be_present
             ).and_call_original
           expect(Events::Common::UntypedHashWrapper)
-            .to receive(:new)
+            .to receive(:build)
             .with(
               name: responses["name"],
               experience: responses["experience"],
@@ -670,7 +670,7 @@ RSpec.describe Onboarding do
           .with(
             aggregate_id: user.id,
             event_schema: Events::UserUpdated::V1,
-            data: Events::Common::UntypedHashWrapper.new(
+            data: Events::Common::UntypedHashWrapper.build(
               email: user.email,
               first_name: "John",
               last_name: "Doe",

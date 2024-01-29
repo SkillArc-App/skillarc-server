@@ -8,6 +8,10 @@ module Events
       def self.to_h
         {}
       end
+
+      def self.from_hash(_hash)
+        self
+      end
     end
   end
 end

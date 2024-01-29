@@ -22,7 +22,7 @@ RSpec.describe ApplicantService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::ApplicantStatusUpdated::V1,
         aggregate_id: applicant.job.id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           applicant_id: applicant.id,
           profile_id: applicant.profile.id,
           job_id: applicant.job.id,

@@ -74,7 +74,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::LeadAdded::V1,
         aggregate_id: coach.id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           email:,
           lead_id:,
           phone_number:,
@@ -90,7 +90,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::NoteAdded::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note:,
@@ -104,7 +104,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::NoteDeleted::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note_id:
@@ -117,7 +117,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::NoteModified::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note_id:,
@@ -131,7 +131,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::BarrierUpdated::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           barriers:
         ),
         occurred_at: now
@@ -142,7 +142,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::CoachAssigned::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           coach_id:,
           email: coach_email
         ),
@@ -154,7 +154,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::SkillLevelUpdated::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           skill_level:
         ),
         occurred_at: now

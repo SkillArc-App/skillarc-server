@@ -71,7 +71,7 @@ class SeekerService
     EventService.create!(
       event_schema: Events::SeekerUpdated::V1,
       aggregate_id: profile.user.id,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         bio: profile.bio,
         met_career_coach: profile.met_career_coach,
         image: profile.image
@@ -83,7 +83,7 @@ class SeekerService
     EventService.create!(
       event_schema: Events::MetCareerCoachUpdated::V1,
       aggregate_id: profile.user.id,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         met_career_coach: profile.met_career_coach
       )
     )

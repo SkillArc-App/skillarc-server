@@ -9,20 +9,22 @@ module Events
         "id" => message.id,
         "aggregate_id" => message.aggregate_id,
         "event_type" => message.event_type,
-        "data" => message.data,
-        "metadata" => message.metadata,
+        "data" => message.data.to_h,
+        "metadata" => message.metadata.to_h,
         "version" => message.version,
         "occurred_at" => message.occurred_at,
       )
     end
 
     def deserialize(hash)
+      schema = EventService.get_schema(event_type: hash["event_type"], version: hash["version"])
+
       klass.new(
         id: hash["id"],
         aggregate_id: hash["aggregate_id"],
         event_type: hash["event_type"],
-        data: hash["data"].deep_symbolize_keys,
-        metadata: hash["metadata"].deep_symbolize_keys,
+        data: schema.data.from_hash(hash["data"]),
+        metadata: schema.metadata.from_hash(hash["metadata"]),
         version: hash["version"],
         occurred_at: Time.zone.parse(hash["occurred_at"])
       )

@@ -23,7 +23,7 @@ RSpec.describe Seekers::UserService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::UserUpdated::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           first_name:,
           last_name:,
           phone_number:,

@@ -8,7 +8,7 @@ class Jobs
     EventService.create!(
       event_schema: Events::JobCreated::V1,
       aggregate_id: job.id,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         employment_title: job.employment_title,
         employer_id: job.employer_id,
         benefits_description: job.benefits_description,

@@ -24,7 +24,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     EventService.create!(
       aggregate_id: user.id,
       event_schema: Events::OnboardingCompleted::V1,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         name: responses["name"],
         experience: responses["experience"],
         education: responses["education"],
@@ -51,7 +51,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       EventService.create!(
         aggregate_id: user.id,
         event_schema: Events::UserUpdated::V1,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
@@ -76,7 +76,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     EventService.create!(
       aggregate_id: user.id,
       event_schema: Events::SeekerCreated::V1,
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Events::Common::UntypedHashWrapper.build(
         id: profile.id,
         user_id: user.id
       ),
@@ -108,7 +108,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         EventService.create!(
           aggregate_id: user.id,
           event_schema: Events::ExperienceCreated::V1,
-          data: Events::Common::UntypedHashWrapper.new(
+          data: Events::Common::UntypedHashWrapper.build(
             id: other_experience.id,
             organization_name: other_experience.organization_name,
             position: other_experience.position,
@@ -148,7 +148,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         EventService.create!(
           aggregate_id: user.id,
           event_schema: Events::EducationExperienceCreated::V1,
-          data: Events::Common::UntypedHashWrapper.new(
+          data: Events::Common::UntypedHashWrapper.build(
             id: ee.id,
             organization_name: ee.organization_name,
             title: ee.title,
@@ -176,7 +176,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         EventService.create!(
           aggregate_id: user.id,
           event_schema: Events::SeekerTrainingProviderCreated::V1,
-          data: Events::Common::UntypedHashWrapper.new(
+          data: Events::Common::UntypedHashWrapper.build(
             id: stp.id,
             user_id: stp.user_id,
             training_provider_id: stp.training_provider_id
@@ -209,7 +209,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       EventService.create!(
         aggregate_id: user.id,
         event_schema: Events::PersonalExperienceCreated::V1,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           id: pe.id,
           activity: pe.activity,
           description: pe.description,

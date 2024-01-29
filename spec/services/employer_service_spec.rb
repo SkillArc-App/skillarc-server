@@ -28,7 +28,7 @@ RSpec.describe EmployerService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EmployerCreated::V1,
         aggregate_id: be_present,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           name: "Blocktrain",
           location: "Columbus, OH",
           bio: "We are a welding company",
@@ -79,7 +79,7 @@ RSpec.describe EmployerService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EmployerUpdated::V1,
         aggregate_id: employer.id,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::Common::UntypedHashWrapper.build(
           name: "Portiko",
           location: "Columbus, O-H-I-O",
           bio: "We are a really good welding company",

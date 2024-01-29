@@ -3,17 +3,29 @@ module Events
     class UntypedHashWrapper
       attr_reader :hash
 
-      def initialize(**kwarg)
-        @hash = kwarg
+      def initialize(hash)
+        @hash = hash.deep_symbolize_keys
+      end
+
+      def [](index)
+        @hash[index]
       end
 
       def to_h
-        hash.deep_symbolize_keys
+        hash.clone
       end
 
       def ==(other)
         self.class == other.class &&
           hash == other.hash
+      end
+
+      def self.from_hash(hash)
+        new(hash)
+      end
+
+      def self.build(**kwarg)
+        new(kwarg)
       end
     end
   end

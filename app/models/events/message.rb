@@ -4,8 +4,8 @@ module Events
       id String
       aggregate_id String
       event_type Either(*Event::EventTypes::ALL)
-      data Hash
-      metadata Hash
+      data
+      metadata
       version Integer
       occurred_at ActiveSupport::TimeWithZone, coerce: true
     end)

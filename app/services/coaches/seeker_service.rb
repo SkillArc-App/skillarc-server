@@ -129,11 +129,11 @@ module Coaches
 
     def self.update_barriers(id:, barriers:, now: Time.zone.now)
       EventService.create!(
-        event_type: Event::EventTypes::BARRIERS_UPDATED,
+        event_schema: Events::BarrierUpdated::V1,
         aggregate_id: id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           barriers:
-        },
+        ),
         occurred_at: now
       )
     end

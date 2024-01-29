@@ -383,12 +383,16 @@ RSpec.describe Coaches::SeekerService do
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
-      expect(EventService).to receive(:create!).with(
-        event_type: Event::EventTypes::BARRIERS_UPDATED,
-        aggregate_id: profile_id,
-        data: {
+      expect(Events::Common::UntypedHashWrapper)
+        .to receive(:new)
+        .with(
           barriers: [be_a(String)]
-        },
+        ).and_call_original
+
+      expect(EventService).to receive(:create!).with(
+        event_schema: Events::BarrierUpdated::V1,
+        aggregate_id: profile_id,
+        data: be_a(Events::Common::UntypedHashWrapper),
         occurred_at: now
       ).and_call_original
 

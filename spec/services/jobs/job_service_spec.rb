@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Jobs do
+RSpec.describe Jobs::JobService do
   describe "#create" do
     subject { described_class.new.create(params) }
 

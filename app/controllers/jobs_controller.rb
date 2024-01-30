@@ -18,36 +18,33 @@ class JobsController < ApplicationController
   end
 
   def create
-    begin
-      job = Job.create!(
-        **params.require(:job).permit(
-          :employment_title,
-          :employer_id,
-          :benefits_description,
-          :responsibilities_description,
-          :employment_title,
-          :location,
-          :employment_type,
-          :hide_job,
-          :schedule,
-          :work_days,
-          :requirements_description,
-          :industry
-        ),
-        id: SecureRandom.uuid
-      )
-      render json: serialize_job(job)
-    rescue => e
-      render json: { error: e.message }, status: :internal_server_error
-    end
+    job = Jobs::JobService.new.create(
+      **params.require(:job).permit(
+        :employment_title,
+        :employer_id,
+        :benefits_description,
+        :responsibilities_description,
+        :employment_title,
+        :location,
+        :employment_type,
+        :hide_job,
+        :schedule,
+        :work_days,
+        :requirements_description,
+        industry: []
+      ).to_h.symbolize_keys
+    )
+
+    render json: serialize_job(job)
   end
 
   def update
-    begin
-      job = Job.find(params[:id])
+    job = Job.find(params[:id])
 
-      job.update!(
-        params.require(:job).permit(
+    render json: serialize_job(
+      Jobs::JobService.new.update(
+        job,
+        **params.require(:job).permit(
           :employment_title,
           :employer_id,
           :benefits_description,
@@ -60,13 +57,9 @@ class JobsController < ApplicationController
           :work_day,
           :requirements_description,
           industry: []
-        )
+        ).to_h.symbolize_keys
       )
-
-      render json: serialize_job(job)
-    rescue => e
-      render json: { error: e.message }, status: :internal_server_error
-    end
+    )
   end
 
   def index

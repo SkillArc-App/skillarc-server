@@ -1,27 +1,25 @@
 module Events
   module Common
     class UntypedHashWrapper
-      attr_reader :hash
+      attr_reader :instance_hash
 
-      def initialize(hash)
-        @hash = hash.deep_symbolize_keys
+      def initialize(instance_hash)
+        @instance_hash = instance_hash.deep_symbolize_keys
       end
 
-      def [](index)
-        @hash[index]
-      end
+      delegate :[], to: :instance_hash
 
       def to_h
-        hash.clone
+        instance_hash.clone
       end
 
       def ==(other)
         self.class == other.class &&
-          hash == other.hash
+          instance_hash == other.instance_hash
       end
 
-      def self.from_hash(hash)
-        new(hash)
+      def self.from_hash(instance_hash)
+        new(instance_hash)
       end
 
       def self.build(**kwarg)

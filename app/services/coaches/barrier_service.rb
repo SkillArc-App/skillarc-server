@@ -11,8 +11,8 @@ module Coaches
     end
 
     def self.handle_event(event, *_params)
-      case event.event_type
-      when Event::EventTypes::BARRIER_ADDED
+      case event.event_schema
+      when Events::BarrierAdded::V1
         handle_barrier_added(event)
       end
     end

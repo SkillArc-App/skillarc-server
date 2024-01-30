@@ -33,14 +33,14 @@ class JobFreshnessService < EventConsumer
   end
 
   def self.handle_event(event, with_side_effects: false, now: Time.zone.now)
-    case event.event_type
-    when Event::EventTypes::APPLICANT_STATUS_UPDATED, Event::EventTypes::JOB_CREATED, Event::EventTypes::JOB_UPDATED
+    case event.event_schema
+    when Events::ApplicantStatusUpdated::V1, Events::JobCreated::V1, Events::JobUpdated::V1
       event.aggregate_id
 
       freshness = new(event.aggregate_id, now:)
 
       freshness.handle_event(event, with_side_effects:, now:)
-    when Event::EventTypes::EMPLOYER_CREATED, Event::EventTypes::EMPLOYER_UPDATED
+    when Events::EmployerCreated::V1, Events::EmployerUpdated::V1
       eid = event.aggregate_id
 
       JobFreshnessEmployerJob
@@ -49,7 +49,7 @@ class JobFreshnessService < EventConsumer
           name: event.data[:name],
           recruiter_exists: false
         )
-    when Event::EventTypes::EMPLOYER_INVITE_ACCEPTED
+    when Events::EmployerInviteAccepted::V1
       eid = event.aggregate_id
 
       ej = JobFreshnessEmployerJob.find_by!(employer_id: eid)
@@ -57,7 +57,7 @@ class JobFreshnessService < EventConsumer
       ej.jobs.each do |job_id|
         new(job_id).handle_event(event, with_side_effects:, now:)
       end
-    when Event::EventTypes::DAY_ELAPSED
+    when Events::DayElapsed::V1
       JobFreshnessContext.pluck(:job_id).each do |job_id|
         new(job_id).handle_event(event, with_side_effects:, now:)
       end

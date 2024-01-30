@@ -13,4 +13,8 @@ class Pubsub
   def self.subscribers
     @subscribers ||= {}
   end
+
+  def self.reset
+    @subscribers = {}
+  end
 end

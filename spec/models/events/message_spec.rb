@@ -62,4 +62,38 @@ RSpec.describe Events::Message do
       end
     end
   end
+
+  describe "#event_schema" do
+    context "when the schema doesn't exist" do
+      it "raises a EventService::SchemaNotFoundError error" do
+        expect do
+          described_class.new(
+            id: SecureRandom.uuid,
+            aggregate_id: SecureRandom.uuid,
+            event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+            metadata: {},
+            data: {},
+            version: -10,
+            occurred_at: Time.zone.now
+          ).event_schema
+        end.to raise_error(EventService::SchemaNotFoundError)
+      end
+    end
+
+    context "when the schema does exist" do
+      it "returns the schema" do
+        message = described_class.new(
+          id: SecureRandom.uuid,
+          aggregate_id: SecureRandom.uuid,
+          event_type: Events::ApplicantStatusUpdated::V1.event_type,
+          metadata: {},
+          data: {},
+          version: Events::ApplicantStatusUpdated::V1.version,
+          occurred_at: Time.zone.now
+        )
+
+        expect(message.event_schema).to eq(Events::ApplicantStatusUpdated::V1)
+      end
+    end
+  end
 end

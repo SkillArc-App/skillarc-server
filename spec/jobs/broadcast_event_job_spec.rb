@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe BroadcastEventJob do
   it "calls PubSub publish" do
     message = Events::Message.new(
-      id: "456",
+      id: SecureRandom.uuid,
       aggregate_id: "123",
       event_type: "user_created",
       data: {},

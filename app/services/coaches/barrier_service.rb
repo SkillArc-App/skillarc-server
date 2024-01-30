@@ -1,9 +1,11 @@
 module Coaches
   class BarrierService
+    def self.handled_events_sync
+      [Events::BarrierAdded::V1].freeze
+    end
+
     def self.handled_events
-      [
-        Events::BarrierAdded::V1
-      ]
+      [].freeze
     end
 
     def self.call(event:)

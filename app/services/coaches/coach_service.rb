@@ -1,9 +1,11 @@
 module Coaches
   class CoachService
+    def self.handled_events_sync
+      [Events::RoleAdded::V1].freeze
+    end
+
     def self.handled_events
-      [
-        Events::RoleAdded::V1
-      ]
+      [].freeze
     end
 
     def self.call(event:)

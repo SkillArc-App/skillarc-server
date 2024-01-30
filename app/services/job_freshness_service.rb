@@ -16,6 +16,10 @@ class JobFreshnessService < EventConsumer
     Event::EventTypes::JOB_UPDATED
   ].freeze
 
+  def self.handled_events_sync
+    [].freeze
+  end
+
   def self.handled_events
     [
       Events::ApplicantStatusUpdated::V1,

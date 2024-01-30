@@ -1,68 +1,69 @@
 module PubSubInitializer
   def self.run
-    Pubsub.reset
+    PUBSUB.reset
+    PUBSUB_SYNC.reset
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::UserCreated::V1,
       subscriber: Klayvio::UserSignup.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::UserCreated::V1,
       subscriber: Slack::UserSignup.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::UserUpdated::V1,
       subscriber: Klayvio::UserUpdated.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::MetCareerCoachUpdated::V1,
       subscriber: Klayvio::MetCareerCoachUpdated.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::NotificationCreated::V1,
       subscriber: NotificationService.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::EducationExperienceCreated::V1,
       subscriber: Klayvio::EducationExperienceEntered.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::EmployerInviteAccepted::V1,
       subscriber: Klayvio::EmployerInviteAccepted.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::ExperienceCreated::V1,
       subscriber: Klayvio::ExperienceEntered.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::OnboardingCompleted::V1,
       subscriber: Klayvio::OnboardingComplete.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::ApplicantStatusUpdated::V1,
       subscriber: Klayvio::ApplicationStatusUpdated.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::ApplicantStatusUpdated::V1,
       subscriber: Slack::UserApplied.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::ChatMessageSent::V1,
       subscriber: Klayvio::ChatMessageReceived.new
     )
 
-    Pubsub.subscribe(
+    PUBSUB.subscribe(
       event_schema: Events::ChatMessageSent::V1,
       subscriber: Slack::ChatMessage.new
     )
@@ -79,32 +80,25 @@ module PubSubInitializer
       barriers_subscriber = Coaches::BarrierService
     end
 
-    job_freshness_subscriber.handled_events.each do |event_schema|
-      Pubsub.subscribe(
-        event_schema:,
-        subscriber: job_freshness_subscriber
-      )
-    end
+    [
+      job_freshness_subscriber,
+      coach_seeker_subscriber,
+      coaches_subscriber,
+      barriers_subscriber
+    ].each do |subscriber|
+      subscriber.handled_events.each do |event_schema|
+        PUBSUB.subscribe(
+          event_schema:,
+          subscriber:
+        )
+      end
 
-    coach_seeker_subscriber.handled_events.each do |event_schema|
-      Pubsub.subscribe(
-        event_schema:,
-        subscriber: coach_seeker_subscriber
-      )
-    end
-
-    coaches_subscriber.handled_events.each do |event_schema|
-      Pubsub.subscribe(
-        event_schema:,
-        subscriber: coaches_subscriber
-      )
-    end
-
-    barriers_subscriber.handled_events.each do |event_schema|
-      Pubsub.subscribe(
-        event_schema:,
-        subscriber: barriers_subscriber
-      )
+      subscriber.handled_events_sync.each do |event_schema|
+        PUBSUB_SYNC.subscribe(
+          event_schema:,
+          subscriber:
+        )
+      end
     end
   end
 end

@@ -12,7 +12,7 @@ RSpec.describe BroadcastEventJob do
       occurred_at: DateTime.new(2020, 1, 1)
     )
 
-    expect(Pubsub)
+    expect(PUBSUB)
       .to receive(:publish)
       .with(event: message)
       .and_call_original

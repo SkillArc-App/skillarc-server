@@ -13,6 +13,7 @@ class DbStreamListener < StreamListener
   end
 
   delegate :handled_events, to: :consumer
+  delegate :handled_events_sync, to: :consumer
 
   def call(event:)
     handle_event(event, with_side_effects: true)

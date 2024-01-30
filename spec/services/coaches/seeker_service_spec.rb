@@ -340,10 +340,10 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".delete_note" do
-    subject { described_class.delete_note(coach:, id: profile_id, note_id: note_id1, now:) }
+    subject { described_class.delete_note(coach:, id: profile_id, note_id: note.note_id, now:) }
 
+    let(:note) { create(:coaches__seeker_note, note_id: note_id1) }
     let(:coach) { create(:coaches__coach) }
-
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
@@ -387,9 +387,10 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".update_barriers" do
-    subject { described_class.update_barriers(id: profile_id, barriers: [SecureRandom.uuid], now:) }
+    subject { described_class.update_barriers(id: profile_id, barriers: [barrier.barrier_id], now:) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
+    let(:barrier) { create(:barrier) }
 
     it "creates an event" do
       expect(Events::Common::UntypedHashWrapper)

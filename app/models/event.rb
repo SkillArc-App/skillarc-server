@@ -31,6 +31,8 @@ class Event < ApplicationRecord
     ].freeze
 
     JOBS = [
+      DESIRED_CERTIFICATION_CREATED = 'desired_certification_created'.freeze,
+      DESIRED_CERTIFICATION_DESTROYED = 'desired_certification_destroyed'.freeze,
       JOB_CREATED = 'job_created'.freeze,
       JOB_UPDATED = 'job_updated'.freeze,
       JOB_PHOTO_CREATED = 'job_photo_created'.freeze,

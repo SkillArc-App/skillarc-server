@@ -39,6 +39,8 @@ class Event < ApplicationRecord
       JOB_UPDATED = 'job_updated'.freeze,
       JOB_PHOTO_CREATED = 'job_photo_created'.freeze,
       JOB_PHOTO_DESTROYED = 'job_photo_destroyed'.freeze,
+      LEARNED_SKILL_CREATED = 'learned_skill_created'.freeze,
+      LEARNED_SKILL_DESTROYED = 'learned_skill_destroyed'.freeze,
       JOB_TAG_CREATED = 'job_tag_created'.freeze,
       JOB_TAG_DELETED = 'job_tag_deleted'.freeze,
       TESTIMONIAL_CREATED = 'testimonial_created'.freeze,

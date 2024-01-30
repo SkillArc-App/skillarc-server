@@ -14,5 +14,6 @@
 #  LearnedSkill_master_skill_id_fkey  (master_skill_id => master_skills.id) ON DELETE => restrict ON UPDATE => cascade
 #
 class LearnedSkill < ApplicationRecord
+  belongs_to :job
   belongs_to :master_skill
 end

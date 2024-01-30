@@ -72,10 +72,4 @@ class OneUserController < ApplicationController
       trainingProviderProfile: current_user.training_provider_profile&.as_json
     }
   end
-
-  def update
-    current_user.update!(params.require(:one_user).permit(:first_name, :last_name, :phone_number, :zip_code))
-
-    render json: current_user
-  end
 end

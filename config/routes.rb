@@ -35,8 +35,7 @@ Rails.application.routes.draw do
   resources :master_certifications
   resources :master_skills
 
-  put 'one_user' => 'one_user#update'
-  resources :one_user
+  resources :one_user, only: [:index]
 
   resources :pass_reasons
 

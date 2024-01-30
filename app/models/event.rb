@@ -30,6 +30,13 @@ class Event < ApplicationRecord
       SKILL_LEVEL_UPDATED = 'skill_level_updated'.freeze
     ].freeze
 
+    JOBS = [
+      JOB_CREATED = 'job_created'.freeze,
+      JOB_UPDATED = 'job_updated'.freeze,
+      JOB_TAG_CREATED = 'job_tag_created'.freeze,
+      JOB_TAG_DELETED = 'job_tag_deleted'.freeze
+    ].freeze
+
     ALL = [
       APPLICANT_STATUS_UPDATED = 'applicant_status_updated'.freeze,
       CHAT_CREATED = 'chat_created'.freeze,
@@ -43,8 +50,6 @@ class Event < ApplicationRecord
       EMPLOYER_UPDATED = 'employer_updated'.freeze,
       EXPERIENCE_CREATED = 'experience_created'.freeze,
       MET_CAREER_COACH_UPDATED = 'met_career_coach_updated'.freeze,
-      JOB_CREATED = 'job_created'.freeze,
-      JOB_UPDATED = 'job_updated'.freeze,
       JOB_SAVED = 'job_saved'.freeze,
       JOB_UNSAVED = 'job_unsaved'.freeze,
       NOTIFICATION_CREATED = 'notification_created'.freeze,
@@ -58,7 +63,8 @@ class Event < ApplicationRecord
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted'.freeze,
       USER_CREATED = 'user_created'.freeze,
       USER_UPDATED = 'user_updated'.freeze,
-      *COACHES
+      *COACHES,
+      *JOBS
     ].freeze
   end
 

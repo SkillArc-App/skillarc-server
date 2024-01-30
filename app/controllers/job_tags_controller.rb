@@ -9,18 +9,13 @@ class JobTagsController < ApplicationController
   def create
     tag = Tag.find_by!(name: params[:tag])
 
-    job_tag = job.job_tags.joins(:tag).find_or_initialize_by(tag:) do |jt|
-      jt.id = SecureRandom.uuid
-      jt.save!
-    end
-
-    render json: job_tag
+    render json: Jobs::JobTagService.create(job, tag)
   end
 
   def destroy
     tag = job.job_tags.find(params[:id])
 
-    tag.destroy!
+    Jobs::JobTagService.destroy(tag)
 
     render json: { success: true }
   end

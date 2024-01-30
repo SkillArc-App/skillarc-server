@@ -4,8 +4,6 @@ RSpec.describe "JobTags", type: :request do
   describe "POST /create" do
     subject { post job_job_tags_path(job), params:, headers: }
 
-    include_context "admin authenticated"
-
     let(:params) do
       {
         tag: tag.name
@@ -14,35 +12,35 @@ RSpec.describe "JobTags", type: :request do
     let(:tag) { create(:tag) }
     let(:job) { create(:job) }
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "creates a job tag" do
-      expect { subject }.to change(JobTag, :count).by(1)
+      it "calls Jobs::JobTagService.create" do
+        expect(Jobs::JobTagService).to receive(:create).with(job, tag)
+
+        subject
+      end
     end
   end
 
   describe "DELETE /destroy" do
     subject { delete job_job_tag_path(job, job_tag), headers: }
 
-    include_context "admin authenticated"
-
     let(:job_tag) { create(:job_tag, job:) }
     let(:job) { create(:job) }
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "deletes the job tag" do
-      job_tag
+      it "calls Jobs::JobTagService.create" do
+        expect(Jobs::JobTagService).to receive(:destroy).with(job_tag)
 
-      expect { subject }.to change(JobTag, :count).by(-1)
+        subject
+      end
     end
   end
 end

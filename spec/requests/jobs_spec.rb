@@ -42,8 +42,6 @@ RSpec.describe "Jobs", type: :request do
   describe "POST /create" do
     subject { post jobs_path, params:, headers: }
 
-    include_context "admin authenticated"
-
     let(:params) do
       {
         job: {
@@ -62,21 +60,32 @@ RSpec.describe "Jobs", type: :request do
     end
     let(:employer) { create(:employer) }
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "creates a job" do
-      expect { subject }.to change(Job, :count).by(1)
+      it "calls the job service" do
+        expect_any_instance_of(Jobs::JobService).to receive(:create).with(
+          employment_title: "Laborer",
+          employer_id: employer.id,
+          location: "Columbus, OH",
+          benefits_description: "Benefits",
+          responsibilities_description: "Responsibilities",
+          employment_type: "FULLTIME",
+          schedule: "9-5",
+          work_days: "M-F",
+          requirements_description: "Requirements",
+          industry: ["MANUFACTURING"]
+        ).and_call_original
+
+        subject
+      end
     end
   end
 
   describe "PUT /update" do
     subject { put job_path(job), params:, headers: }
-
-    include_context "admin authenticated"
 
     let(:job) { create(:job) }
 
@@ -88,16 +97,17 @@ RSpec.describe "Jobs", type: :request do
       }
     end
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "updates the job" do
-      subject
+      it "calls the job service" do
+        expect_any_instance_of(Jobs::JobService).to receive(:update)
+          .and_call_original
 
-      expect(job.reload.employment_title).to eq("New Laborer")
+        subject
+      end
     end
   end
 end

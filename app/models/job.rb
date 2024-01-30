@@ -22,6 +22,13 @@
 #  Job_employer_id_fkey  (employer_id => employers.id) ON DELETE => restrict ON UPDATE => cascade
 #
 class Job < ApplicationRecord
+  module EmploymentTypes
+    ALL = [
+      FULLTIME = 'FULLTIME'.freeze,
+      PARTTIME = 'PARTTIME'.freeze
+    ].freeze
+  end
+
   belongs_to :employer
 
   has_many :applicants, dependent: :destroy
@@ -34,6 +41,8 @@ class Job < ApplicationRecord
   has_many :job_tags, dependent: :destroy
 
   scope :shown, -> { where(hide_job: false) }
+
+  validates :employment_title, presence: { in: EmploymentTypes::ALL }
 
   def self.with_employer_info
     includes(

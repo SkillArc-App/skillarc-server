@@ -16,7 +16,7 @@
 #
 # Indexes
 #
-#  index_coaches_seeker_leads_on_email         (email) UNIQUE
+#  index_coaches_seeker_leads_on_email         (email) UNIQUE WHERE (email IS NOT NULL)
 #  index_coaches_seeker_leads_on_phone_number  (phone_number) UNIQUE
 #
 module Coaches

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_29_145220) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_30_210858) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -175,7 +175,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_29_145220) do
     t.datetime "lead_captured_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_coaches_seeker_leads_on_email", unique: true
+    t.index ["email"], name: "index_coaches_seeker_leads_on_email", unique: true, where: "(email IS NOT NULL)"
     t.index ["phone_number"], name: "index_coaches_seeker_leads_on_phone_number", unique: true
   end
 

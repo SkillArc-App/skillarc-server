@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :testimonial do
+    job
     id { SecureRandom.uuid }
     name { "Hannah" }
     title { "Software Engineer" }

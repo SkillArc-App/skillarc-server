@@ -34,7 +34,9 @@ class Event < ApplicationRecord
       JOB_CREATED = 'job_created'.freeze,
       JOB_UPDATED = 'job_updated'.freeze,
       JOB_TAG_CREATED = 'job_tag_created'.freeze,
-      JOB_TAG_DELETED = 'job_tag_deleted'.freeze
+      JOB_TAG_DELETED = 'job_tag_deleted'.freeze,
+      TESTIMONIAL_CREATED = 'testimonial_created'.freeze,
+      TESTIMONIAL_DESTROYED = 'testimonial_destroyed'.freeze
     ].freeze
 
     ALL = [

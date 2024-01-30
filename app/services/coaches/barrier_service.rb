@@ -1,5 +1,11 @@
 module Coaches
   class BarrierService
+    def self.handled_events
+      [
+        Events::BarrierAdded::V1
+      ]
+    end
+
     def self.call(event:)
       handle_event(event)
     end

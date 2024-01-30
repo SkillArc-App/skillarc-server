@@ -5,7 +5,7 @@ RSpec.describe Pubsub do
 
     subscriber = double("subscriber")
     allow(subscriber).to receive(:call)
-    described_class.subscribe(event: event.event_type, subscriber:)
+    described_class.subscribe(event_schema: event.event_schema, subscriber:)
 
     # Act
     described_class.publish(event:)

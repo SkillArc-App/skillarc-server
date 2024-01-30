@@ -16,18 +16,31 @@ class JobFreshnessService < EventConsumer
     Event::EventTypes::JOB_UPDATED
   ].freeze
 
+  def self.handled_events
+    [
+      Events::ApplicantStatusUpdated::V1,
+      Events::JobCreated::V1,
+      Events::JobUpdated::V1,
+      Events::EmployerCreated::V1,
+      Events::EmployerUpdated::V1,
+      Events::EmployerInviteAccepted::V1,
+      Events::DayElapsed::V1
+    ].freeze
+  end
+
   def self.call(event:)
     handle_event(event)
   end
 
   def self.handle_event(event, with_side_effects: false, now: Time.zone.now)
-    if JOB_EVENTS.include?(event.event_type)
+    case event.event_type
+    when Event::EventTypes::APPLICANT_STATUS_UPDATED, Event::EventTypes::JOB_CREATED, Event::EventTypes::JOB_UPDATED
       event.aggregate_id
 
       freshness = new(event.aggregate_id, now:)
 
       freshness.handle_event(event, with_side_effects:, now:)
-    elsif [Event::EventTypes::EMPLOYER_CREATED, Event::EventTypes::EMPLOYER_UPDATED].include?(event.event_type)
+    when Event::EventTypes::EMPLOYER_CREATED, Event::EventTypes::EMPLOYER_UPDATED
       eid = event.aggregate_id
 
       JobFreshnessEmployerJob
@@ -36,7 +49,7 @@ class JobFreshnessService < EventConsumer
           name: event.data[:name],
           recruiter_exists: false
         )
-    elsif event.event_type == Event::EventTypes::EMPLOYER_INVITE_ACCEPTED
+    when Event::EventTypes::EMPLOYER_INVITE_ACCEPTED
       eid = event.aggregate_id
 
       ej = JobFreshnessEmployerJob.find_by!(employer_id: eid)
@@ -44,7 +57,7 @@ class JobFreshnessService < EventConsumer
       ej.jobs.each do |job_id|
         new(job_id).handle_event(event, with_side_effects:, now:)
       end
-    elsif event.event_type == Event::EventTypes::DAY_ELAPSED
+    when Event::EventTypes::DAY_ELAPSED
       JobFreshnessContext.pluck(:job_id).each do |job_id|
         new(job_id).handle_event(event, with_side_effects:, now:)
       end

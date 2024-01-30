@@ -1,5 +1,26 @@
 module Coaches
   class SeekerService # rubocop:disable Metrics/ClassLength
+    def self.handled_events
+      [
+        Events::BarrierUpdated::V1,
+        Events::CoachAssigned::V1,
+        Events::LeadAdded::V1,
+        Events::NoteAdded::V1,
+        Events::NoteDeleted::V1,
+        Events::NoteModified::V1,
+        Events::SkillLevelUpdated::V1,
+        Events::ApplicantStatusUpdated::V1,
+        Events::SeekerCreated::V1,
+        Events::UserCreated::V1,
+        Events::UserUpdated::V1,
+        Events::EducationExperienceCreated::V1,
+        Events::JobSaved::V1,
+        Events::JobUnsaved::V1,
+        Events::SeekerUpdated::V1,
+        Events::OnboardingCompleted::V1
+      ].freeze
+    end
+
     def self.call(event:)
       handle_event(event)
     end

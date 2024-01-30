@@ -1,2 +1,0 @@
-module TrainingProviders::InvitesHelper
-end

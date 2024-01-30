@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Coaches::SeekerService do
-  let(:lead_added) { build(:events__message, :lead_added, aggregate_id: '123', data: lead, occurred_at: time1) }
-  let(:non_seeker_user_created) { build(:events__message, :user_created, aggregate_id: "123", data: { email: "f@f.f" }) }
+  let(:lead_added) { build(:events__message, :lead_added, aggregate_id: lead_id, data: lead, occurred_at: time1) }
+  let(:non_seeker_user_created) { build(:events__message, :user_created, aggregate_id: coach_user_id, data: { email: "f@f.f" }) }
   let(:user_without_email) { build(:events__message, :user_created, aggregate_id: user_without_email_id, data: { first_name: "Hannah", last_name: "Block" }) }
   let(:profile_without_email) { build(:events__message, :profile_created, aggregate_id: user_without_email_id, data: { id: profile_without_email_id }) }
   let(:user_created) { build(:events__message, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com" }) }
@@ -19,7 +19,7 @@ RSpec.describe Coaches::SeekerService do
   let(:note_deleted) { build(:events__message, :note_deleted, aggregate_id: profile_id, data: { note: "This is a note with an id", note_id: note_id1 }, occurred_at: time1) }
   let(:note_modified) { build(:events__message, :note_modified, aggregate_id: profile_id, data: { note: updated_note, note_id: note_id2 }, occurred_at: time1) }
   let(:skill_level_updated) { build(:events__message, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: time1) }
-  let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: profile_id, data: { coach_id: "123", email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: profile_id, data: { coach_id: coach_user_id, email: "coach@blocktrainapp.com" }, occurred_at: time1) }
   let(:barriers_updated1) { build(:events__message, :barriers_updated, aggregate_id: profile_id, data: { barriers: [barrier1.barrier_id] }, occurred_at: time1) }
   let(:barriers_updated2) { build(:events__message, :barriers_updated, aggregate_id: profile_id, data: { barriers: [barrier2.barrier_id] }, occurred_at: time1) }
 
@@ -88,6 +88,8 @@ RSpec.describe Coaches::SeekerService do
   let(:employment_title2) { "Another place of employment" }
   let(:status1) { "Phone screening" }
   let(:status2) { "Hired" }
+  let(:lead_id) { "91308d08-bd08-452b-a7de-74746a6c5f93" }
+  let(:coach_user_id) { "09534ac3-b46e-4646-99c5-c517deb00239" }
   let(:user_without_email_id) { "4f878ed9-5cb9-429b-ab22-969b46305ea2" }
   let(:profile_without_email_id) { "b09195f7-a15e-461f-bec2-1e4744122fdf" }
   let(:user_id) { "9f769972-c41c-4b58-a056-bffb714ea24d" }
@@ -141,7 +143,7 @@ RSpec.describe Coaches::SeekerService do
         skillLevel: 'advanced',
         lastActiveOn: applicant_status_updated3.occurred_at,
         lastContacted: note_with_id_added1.occurred_at,
-        assignedCoach: '123',
+        assignedCoach: coach_user_id,
         barriers: [{
           id: barrier2.barrier_id,
           name: "barrier2"
@@ -193,7 +195,6 @@ RSpec.describe Coaches::SeekerService do
         stage: 'profile_created'
       }
 
-      # binding.pry
       expect(subject).to contain_exactly(expected_profile, expected_other_profile)
     end
   end
@@ -229,7 +230,7 @@ RSpec.describe Coaches::SeekerService do
         skillLevel: 'advanced',
         lastActiveOn: applicant_status_updated3.occurred_at,
         lastContacted: note_with_id_added1.occurred_at,
-        assignedCoach: '123',
+        assignedCoach: coach_user_id,
         barriers: [{
           id: barrier2.barrier_id,
           name: "barrier2"
@@ -258,16 +259,24 @@ RSpec.describe Coaches::SeekerService do
 
     context "when another events occur which update last active on" do
       [
-        Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
-        Event::EventTypes::JOB_SAVED,
-        Event::EventTypes::JOB_UNSAVED,
-        Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
-        Event::EventTypes::SEEKER_UPDATED,
-        Event::EventTypes::ONBOARDING_COMPLETED
-      ].each do |event_type|
-        context "when a #{event_type} occurs for a seeker" do
+        Events::EducationExperienceCreated::V1,
+        Events::JobSaved::V1,
+        Events::JobUnsaved::V1,
+        Events::PersonalExperienceCreated::V1,
+        Events::SeekerUpdated::V1,
+        Events::OnboardingCompleted::V1
+      ].each do |event_schema|
+        context "when a #{event_schema.event_type} version #{event_schema.version} occurs for a seeker" do
           it "updates the last active to when the event occured" do
-            described_class.handle_event(build(:events__message, event_type:, aggregate_id: user_id, occurred_at: time2))
+            message = build(
+              :events__message,
+              event_type: event_schema.event_type,
+              version: event_schema.version,
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
+
+            described_class.handle_event(message)
 
             expect(subject[:lastActiveOn]).to eq(time2)
           end
@@ -331,10 +340,10 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".delete_note" do
-    subject { described_class.delete_note(coach:, id: profile_id, note_id: note_id1, now:) }
+    subject { described_class.delete_note(coach:, id: profile_id, note_id: note.note_id, now:) }
 
+    let(:note) { create(:coaches__seeker_note, note_id: note_id1) }
     let(:coach) { create(:coaches__coach) }
-
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
@@ -378,9 +387,10 @@ RSpec.describe Coaches::SeekerService do
   end
 
   describe ".update_barriers" do
-    subject { described_class.update_barriers(id: profile_id, barriers: [SecureRandom.uuid], now:) }
+    subject { described_class.update_barriers(id: profile_id, barriers: [barrier.barrier_id], now:) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
+    let(:barrier) { create(:barrier) }
 
     it "creates an event" do
       expect(Events::Common::UntypedHashWrapper)

@@ -6,5 +6,10 @@ FactoryBot.define do
     note_id { SecureRandom.uuid }
     note_taken_at { Time.zone.local(2020, 1, 1) }
     note_taken_by { "coach@blocktrainapp.com" }
+
+    after :build do |note, options|
+      note.note_id = options.note_id
+      note.note = options.note
+    end
   end
 end

@@ -61,13 +61,14 @@ RSpec.describe "Seekers", type: :request do
   describe "POST /:seeker_id/assign_coach" do
     subject { post seeker_assign_coach_path(seeker_id), params:, headers: }
 
-    let(:seeker_id) { "123" }
+    let(:seeker_id) { coach_seeker_context.profile_id }
     let(:params) do
       {
         coach_id: coach.coach_id
       }
     end
     let(:coach) { create(:coaches__coach) }
+    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
 
     it_behaves_like "coach secured endpoint"
 

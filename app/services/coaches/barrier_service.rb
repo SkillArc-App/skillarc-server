@@ -1,12 +1,20 @@
 module Coaches
   class BarrierService
+    def self.handled_events_sync
+      [Events::BarrierAdded::V1].freeze
+    end
+
+    def self.handled_events
+      [].freeze
+    end
+
     def self.call(event:)
       handle_event(event)
     end
 
     def self.handle_event(event, *_params)
-      case event.event_type
-      when Event::EventTypes::BARRIER_ADDED
+      case event.event_schema
+      when Events::BarrierAdded::V1
         handle_barrier_added(event)
       end
     end

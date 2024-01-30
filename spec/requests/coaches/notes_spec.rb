@@ -4,12 +4,13 @@ RSpec.describe "Notes", type: :request do
   describe "POST /:seeker_id/notes" do
     subject { post seeker_notes_path(seeker_id), params:, headers: }
 
-    let(:seeker_id) { SecureRandom.uuid }
+    let(:seeker_id) { coach_seeker_context.profile_id }
     let(:params) do
       {
         note: "This is a note"
       }
     end
+    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
 
     it_behaves_like "coach secured endpoint"
 
@@ -20,7 +21,7 @@ RSpec.describe "Notes", type: :request do
         let(:params) do
           {
             note: "This is a note",
-            note_id: "123"
+            note_id: SecureRandom.uuid
           }
         end
 
@@ -60,14 +61,16 @@ RSpec.describe "Notes", type: :request do
   describe "PUT /:seeker_id/notes/:note_id" do
     subject { put seeker_note_path(seeker_id, note_id), params:, headers: }
 
-    let(:seeker_id) { SecureRandom.uuid }
-    let(:note_id) { SecureRandom.uuid }
+    let(:seeker_id) { coach_seeker_context.profile_id }
+    let(:note_id) { seeker_note.note_id }
 
     let(:params) do
       {
         note: "This is a updated note"
       }
     end
+    let(:seeker_note) { create(:coaches__seeker_note, coach_seeker_context:) }
+    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
 
     it_behaves_like "coach secured endpoint"
 
@@ -93,8 +96,11 @@ RSpec.describe "Notes", type: :request do
   describe "DELETE /:seeker_id/notes/:note_id" do
     subject { delete seeker_note_path(seeker_id, note_id), headers: }
 
-    let(:seeker_id) { SecureRandom.uuid }
-    let(:note_id) { SecureRandom.uuid }
+    let(:seeker_id) { coach_seeker_context.profile_id }
+    let(:note_id) { seeker_note.note_id }
+
+    let(:seeker_note) { create(:coaches__seeker_note, coach_seeker_context:) }
+    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
 
     it_behaves_like "coach secured endpoint"
 

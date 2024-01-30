@@ -1,53 +1,79 @@
 module Coaches
   class SeekerService # rubocop:disable Metrics/ClassLength
+    def self.handled_events_sync
+      [
+        Events::BarrierUpdated::V1,
+        Events::CoachAssigned::V1,
+        Events::LeadAdded::V1,
+        Events::NoteAdded::V1,
+        Events::NoteDeleted::V1,
+        Events::NoteModified::V1
+      ].freeze
+    end
+
+    def self.handled_events
+      [
+        Events::SkillLevelUpdated::V1,
+        Events::ApplicantStatusUpdated::V1,
+        Events::SeekerCreated::V1,
+        Events::UserCreated::V1,
+        Events::UserUpdated::V1,
+        Events::EducationExperienceCreated::V1,
+        Events::JobSaved::V1,
+        Events::JobUnsaved::V1,
+        Events::SeekerUpdated::V1,
+        Events::OnboardingCompleted::V1
+      ].freeze
+    end
+
     def self.call(event:)
       handle_event(event)
     end
 
     def self.handle_event(event, with_side_effects: false, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
-      case event.event_type
+      case event.event_schema
 
       # Coach Originated
-      when Event::EventTypes::BARRIERS_UPDATED
+      when Events::BarrierUpdated::V1
         handle_barriers_updated(event)
-      when Event::EventTypes::COACH_ASSIGNED
+      when Events::CoachAssigned::V1
         handle_coach_assigned(event)
 
-      when Event::EventTypes::LEAD_ADDED
+      when Events::LeadAdded::V1
         handle_lead_added(event)
 
-      when Event::EventTypes::NOTE_ADDED
+      when Events::NoteAdded::V1
         handle_note_added(event)
 
-      when Event::EventTypes::NOTE_DELETED
+      when Events::NoteDeleted::V1
         handle_note_deleted(event)
 
-      when Event::EventTypes::NOTE_MODIFIED
+      when Events::NoteModified::V1
         handle_note_modified(event)
 
-      when Event::EventTypes::SKILL_LEVEL_UPDATED
+      when Events::SkillLevelUpdated::V1
         handle_skill_level_updated(event)
 
       # Multi Origin
-      when Event::EventTypes::APPLICANT_STATUS_UPDATED
+      when Events::ApplicantStatusUpdated::V1
         handle_applicant_status_updated(event)
 
       # Seeker Originated
-      when Event::EventTypes::SEEKER_CREATED
+      when Events::SeekerCreated::V1
         handle_profile_created(event)
 
-      when Event::EventTypes::USER_CREATED
+      when Events::UserCreated::V1
         handle_user_created(event)
 
-      when Event::EventTypes::USER_UPDATED
+      when Events::UserUpdated::V1
         handle_user_updated(event)
 
-      when Event::EventTypes::EDUCATION_EXPERIENCE_CREATED,
-        Event::EventTypes::JOB_SAVED,
-        Event::EventTypes::JOB_UNSAVED,
-        Event::EventTypes::PERSONAL_EXPERIENCE_CREATED,
-        Event::EventTypes::SEEKER_UPDATED,
-        Event::EventTypes::ONBOARDING_COMPLETED
+      when Events::EducationExperienceCreated::V1,
+        Events::JobSaved::V1,
+        Events::JobUnsaved::V1,
+        Events::PersonalExperienceCreated::V1,
+        Events::SeekerUpdated::V1,
+        Events::OnboardingCompleted::V1
         handle_last_active_updated(event)
       end
     end

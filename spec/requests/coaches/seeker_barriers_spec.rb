@@ -4,14 +4,15 @@ RSpec.describe "Coaches::SeekerBarriers", type: :request do
   describe "PUT /update_barriers" do
     subject { put seeker_update_barriers_path(seeker_id), params:, headers: }
 
-    let(:seeker_id) { SecureRandom.uuid }
+    let(:seeker_id) { coach_seeker_context.profile_id }
     let(:params) do
       {
         barriers: [
-          create(:barrier).id
+          create(:barrier).barrier_id
         ]
       }
     end
+    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
 
     it_behaves_like "coach secured endpoint"
 

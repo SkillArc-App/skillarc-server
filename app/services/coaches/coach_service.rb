@@ -1,12 +1,20 @@
 module Coaches
   class CoachService
+    def self.handled_events_sync
+      [Events::RoleAdded::V1].freeze
+    end
+
+    def self.handled_events
+      [].freeze
+    end
+
     def self.call(event:)
       handle_event(event)
     end
 
     def self.handle_event(event, with_side_effects: false, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
-      case event.event_type
-      when Event::EventTypes::ROLE_ADDED
+      case event.event_schema
+      when Events::RoleAdded::V1
         handle_role_added(event)
       end
     end

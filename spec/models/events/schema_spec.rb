@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Events::Schema do
   describe ".build" do
+    before(:each) do
+      stub_const("Event::EventTypes::LEAD_ADDED", "test_event_name-#{SecureRandom.uuid}")
+    end
+
     subject do
       described_class.build(
         data:,

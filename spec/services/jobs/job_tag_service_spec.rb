@@ -20,11 +20,10 @@ RSpec.describe Jobs::JobTagService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::JobTagCreated::V1,
         aggregate_id: be_present,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::JobTagCreated::Data::V1.new(
           job_id: job.id,
           tag_id: tag.id
-        ),
-        occurred_at: be_present
+        )
       ).and_call_original
 
       subject
@@ -44,11 +43,9 @@ RSpec.describe Jobs::JobTagService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::JobTagDestroyed::V1,
         aggregate_id: job_tag.job_id,
-        data: Events::Common::UntypedHashWrapper.build(
-          job_id: job_tag.job_id,
-          tag_id: job_tag.tag_id
-        ),
-        occurred_at: be_present
+        data: Events::JobTagDestroyed::Data::V1.new(
+          job_tag_id: job_tag.id
+        )
       ).and_call_original
 
       subject

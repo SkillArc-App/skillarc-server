@@ -31,6 +31,9 @@ class Event < ApplicationRecord
     ].freeze
 
     JOBS = [
+      CAREER_PATH_CREATED = 'career_path_created'.freeze,
+      CAREER_PATH_UPDATED = 'career_path_updated'.freeze,
+      CAREER_PATH_DESTROYED = 'career_path_destroyed'.freeze,
       DESIRED_CERTIFICATION_CREATED = 'desired_certification_created'.freeze,
       DESIRED_CERTIFICATION_DESTROYED = 'desired_certification_destroyed'.freeze,
       DESIRED_SKILL_CREATED = 'desired_skill_created'.freeze,

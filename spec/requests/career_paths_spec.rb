@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe "CareerPaths", type: :request do
-  include_context "admin authenticated"
-
   describe "POST /create" do
     subject { post job_career_paths_path(job), params:, headers: }
 
@@ -17,14 +15,16 @@ RSpec.describe "CareerPaths", type: :request do
       }
     end
 
-    it "returns 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "creates a career path" do
-      expect { subject }.to change { job.career_paths.count }.by(1)
+      it "calls Jobs::CareerPathService.create" do
+        expect(Jobs::CareerPathService).to receive(:create).with(job, title: "Level 1", lower_limit: "10", upper_limit: "15").and_call_original
+
+        subject
+      end
     end
   end
 
@@ -35,16 +35,16 @@ RSpec.describe "CareerPaths", type: :request do
     let!(:path) { create(:career_path, job:, order: 1) }
     let!(:path_above) { create(:career_path, job:, order: 0) }
 
-    it "returns 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "updates the order of the paths" do
-      expect { subject }
-        .to change { path.reload.order }.to(0)
-        .and change { path_above.reload.order }.to(1)
+      it "calls Jobs::CareerPathService.up" do
+        expect(Jobs::CareerPathService).to receive(:up).with(path).and_call_original
+
+        subject
+      end
     end
   end
 
@@ -55,16 +55,16 @@ RSpec.describe "CareerPaths", type: :request do
     let!(:path) { create(:career_path, job:, order: 0) }
     let!(:path_below) { create(:career_path, job:, order: 1) }
 
-    it "returns 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "updates the order of the paths" do
-      expect { subject }
-        .to change { path.reload.order }.to(1)
-        .and change { path_below.reload.order }.to(0)
+      it "calls Jobs::CareerPathService.down" do
+        expect(Jobs::CareerPathService).to receive(:down).with(path).and_call_original
+
+        subject
+      end
     end
   end
 
@@ -74,14 +74,16 @@ RSpec.describe "CareerPaths", type: :request do
     let(:job) { create(:job) }
     let!(:path) { create(:career_path, job:, order: 0) }
 
-    it "returns 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "deletes the path" do
-      expect { subject }.to change { job.career_paths.count }.by(-1)
+      it "calls Jobs::CareerPathService.destroy" do
+        expect(Jobs::CareerPathService).to receive(:destroy).with(path).and_call_original
+
+        subject
+      end
     end
   end
 end

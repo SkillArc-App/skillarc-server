@@ -8,51 +8,26 @@ class CareerPathsController < ApplicationController
   before_action :set_path, only: [:destroy, :up, :down]
 
   def up
-    return render json: { success: true } if path.order == 0
-
-    path_above = job.career_paths.find_by(order: path.order - 1)
-
-    ActiveRecord::Base.transaction do
-      path_above.update!(order: path.order)
-      path.update!(order: path.order - 1)
-    end
+    Jobs::CareerPathService.up(path)
 
     render json: { success: true }
   end
 
   def down
-    return render json: { success: true } if path.order == job.career_paths.count - 1
-
-    path_below = job.career_paths.find_by(order: path.order + 1)
-
-    ActiveRecord::Base.transaction do
-      path_below.update!(order: path.order)
-      path.update!(order: path.order + 1)
-    end
+    Jobs::CareerPathService.down(path)
 
     render json: { success: true }
   end
 
   def create
-    path = job.career_paths.new(**params.require(:career_path).permit(:title, :lower_limit, :upper_limit), id: SecureRandom.uuid)
-
-    path.order = job.career_paths.count
-
-    path.save!
-
-    render json: path
+    render json: Jobs::CareerPathService.create(
+      job,
+      **params.require(:career_path).permit(:title, :lower_limit, :upper_limit).to_h.symbolize_keys
+    )
   end
 
   def destroy
-    paths = job.career_paths.where('"order" > ?', path.order)
-
-    ActiveRecord::Base.transaction do
-      paths.each do |path|
-        path.update!(order: path.order - 1)
-      end
-
-      path.destroy!
-    end
+    Jobs::CareerPathService.destroy(path)
 
     render json: { success: true }
   end

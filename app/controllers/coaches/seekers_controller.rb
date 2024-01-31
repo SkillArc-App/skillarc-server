@@ -5,6 +5,7 @@ module Coaches
 
     before_action :authorize
     before_action :coach_authorize
+    before_action :set_coach, only: [:recommend_job]
 
     def index
       render json: SeekerService.all_contexts
@@ -26,6 +27,16 @@ module Coaches
       render json: {}
     end
 
+    def recommend_job
+      SeekerService.recommend_job(
+        profile_id: params[:seeker_id],
+        job_id: params[:job_id],
+        coach: @coach
+      )
+
+      render json: {}
+    end
+
     def update_skill_level
       SeekerService.update_skill_level(
         params[:seeker_id],
@@ -33,6 +44,12 @@ module Coaches
       )
 
       render json: {}
+    end
+
+    private
+
+    def set_coach
+      @coach = Coach.find_by(user_id: current_user.id)
     end
   end
 end

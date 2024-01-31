@@ -153,6 +153,18 @@ module Coaches
       )
     end
 
+    def self.recommend_job(profile_id:, job_id:, coach:, now: Time.zone.now)
+      EventService.create!(
+        event_schema: Events::JobRecommended::V1,
+        aggregate_id: profile_id,
+        data: Events::JobRecommended::Data::V1.new(
+          coach_id: coach.coach_id,
+          job_id:
+        ),
+        occurred_at: now
+      )
+    end
+
     def self.update_barriers(id:, barriers:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::BarrierUpdated::V1,

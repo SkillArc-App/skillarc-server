@@ -438,6 +438,28 @@ RSpec.describe Coaches::SeekerService do
     end
   end
 
+  describe ".recommend_job" do
+    subject { described_class.recommend_job(profile_id:, job_id:, coach:, now:) }
+
+    let(:now) { Time.zone.local(2020, 1, 1) }
+    let(:coach) { create(:coaches__coach) }
+    let(:job_id) { create(:job).id }
+
+    it "creates an event" do
+      expect(EventService).to receive(:create!).with(
+        event_schema: Events::JobRecommended::V1,
+        aggregate_id: profile_id,
+        data: Events::JobRecommended::Data::V1.new(
+          job_id:,
+          coach_id: coach.coach_id
+        ),
+        occurred_at: now
+      ).and_call_original
+
+      subject
+    end
+  end
+
   describe ".update_barriers" do
     subject { described_class.update_barriers(id: profile_id, barriers: [barrier.barrier_id], now:) }
 

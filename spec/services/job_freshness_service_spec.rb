@@ -23,7 +23,7 @@ RSpec.describe JobFreshnessService do
       :events__message,
       :job_created,
       aggregate_id: job_id,
-      data: Events::Common::UntypedHashWrapper.build(
+      data: Events::JobCreated::Data::V1.new(
         employment_title: "Welder",
         employer_id:,
         benefits_description: "Benefits",
@@ -34,7 +34,7 @@ RSpec.describe JobFreshnessService do
         schedule: "9-5",
         work_days: "M-F",
         requirements_description: "Requirements",
-        industry: "manufacturing"
+        industry: [Job::Industries::MANUFACTURING]
       ),
       occurred_at: job_created_at
     )

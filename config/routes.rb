@@ -14,7 +14,7 @@ Rails.application.routes.draw do
       put 'update_barriers' => 'seeker_barriers#update_all'
     end
     resources :leads, only: [:create, :index]
-    resources :jobs, only: [:index]
+    resources :jobs, only: [:index], as: 'coaches_jobs'
   end
   resources :coaches
 

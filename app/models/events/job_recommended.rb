@@ -2,13 +2,11 @@ module Events
   module JobRecommended
     module Data
       class V1
-        include(ValueSemantics.for_attributes do
+        extend Payload
+
+        schema do
           job_id Uuid
           coach_id Uuid
-        end)
-
-        def self.from_hash(hash)
-          new(**hash)
         end
       end
     end

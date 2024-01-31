@@ -7,7 +7,7 @@ class JobPhotosController < ApplicationController
   before_action :set_job
 
   def create
-    photo = job.job_photos.create!(**params.require(:job_photo).permit(:photo_url), id: SecureRandom.uuid)
+    photo = Jobs::JobPhotosService.create(job, params[:job_photo][:photo_url])
 
     render json: photo
   end
@@ -15,7 +15,7 @@ class JobPhotosController < ApplicationController
   def destroy
     photo = job.job_photos.find(params[:id])
 
-    photo.destroy!
+    Jobs::JobPhotosService.destroy(photo)
 
     render json: { success: true }
   end

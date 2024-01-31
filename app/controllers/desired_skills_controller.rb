@@ -7,15 +7,13 @@ class DesiredSkillsController < ApplicationController
   before_action :set_job
 
   def create
-    job.desired_skills.create!(id: SecureRandom.uuid, master_skill_id: params[:master_skill_id])
-
-    render json: { success: true }
+    render json: Jobs::DesiredSkillService.create(job, params[:master_skill_id])
   end
 
   def destroy
     desired_skill = job.desired_skills.find(params[:id])
 
-    desired_skill.destroy!
+    Jobs::DesiredSkillService.destroy(desired_skill)
 
     render json: { success: true }
   end

@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe "JobPhotos", type: :request do
-  include_context "admin authenticated"
-
   let(:job) { create(:job) }
 
   describe "POST /create" do
@@ -11,19 +9,22 @@ RSpec.describe "JobPhotos", type: :request do
     let(:params) do
       {
         job_photo: {
-          photo_url: "https://www.google.com"
+          photo_url:
         }
       }
     end
+    let(:photo_url) { "https://www.google.com" }
 
-    it "returns 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authorized" do
+      include_context "admin authenticated"
 
-    it "creates a job photo" do
-      expect { subject }.to change(JobPhoto, :count).by(1)
+      it "calls Jobs::JobPhotosService.create" do
+        expect(Jobs::JobPhotosService).to receive(:create).with(job, photo_url).and_call_original
+
+        subject
+      end
     end
   end
 
@@ -32,14 +33,16 @@ RSpec.describe "JobPhotos", type: :request do
 
     let!(:job_photo) { create(:job_photo, job:) }
 
-    it "returns 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authorized" do
+      include_context "admin authenticated"
 
-    it "deletes the job photo" do
-      expect { subject }.to change(JobPhoto, :count).by(-1)
+      it "calls Jobs::JobPhotosService.destroy" do
+        expect(Jobs::JobPhotosService).to receive(:destroy).with(job_photo).and_call_original
+
+        subject
+      end
     end
   end
 end

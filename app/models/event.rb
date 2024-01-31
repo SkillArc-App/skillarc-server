@@ -31,10 +31,23 @@ class Event < ApplicationRecord
     ].freeze
 
     JOBS = [
+      CAREER_PATH_CREATED = 'career_path_created'.freeze,
+      CAREER_PATH_UPDATED = 'career_path_updated'.freeze,
+      CAREER_PATH_DESTROYED = 'career_path_destroyed'.freeze,
+      DESIRED_CERTIFICATION_CREATED = 'desired_certification_created'.freeze,
+      DESIRED_CERTIFICATION_DESTROYED = 'desired_certification_destroyed'.freeze,
+      DESIRED_SKILL_CREATED = 'desired_skill_created'.freeze,
+      DESIRED_SKILL_DESTROYED = 'desired_skill_destroyed'.freeze,
       JOB_CREATED = 'job_created'.freeze,
       JOB_UPDATED = 'job_updated'.freeze,
+      JOB_PHOTO_CREATED = 'job_photo_created'.freeze,
+      JOB_PHOTO_DESTROYED = 'job_photo_destroyed'.freeze,
+      LEARNED_SKILL_CREATED = 'learned_skill_created'.freeze,
+      LEARNED_SKILL_DESTROYED = 'learned_skill_destroyed'.freeze,
       JOB_TAG_CREATED = 'job_tag_created'.freeze,
-      JOB_TAG_DELETED = 'job_tag_deleted'.freeze
+      JOB_TAG_DELETED = 'job_tag_deleted'.freeze,
+      TESTIMONIAL_CREATED = 'testimonial_created'.freeze,
+      TESTIMONIAL_DESTROYED = 'testimonial_destroyed'.freeze
     ].freeze
 
     ALL = [

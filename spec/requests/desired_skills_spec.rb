@@ -4,8 +4,6 @@ RSpec.describe "DesiredSkills", type: :request do
   describe "POST /create" do
     subject { post job_desired_skills_path(job), params:, headers: }
 
-    include_context "admin authenticated"
-
     let(:job) { create(:job) }
     let(:master_skill) { create(:master_skill) }
     let(:params) do
@@ -14,33 +12,35 @@ RSpec.describe "DesiredSkills", type: :request do
       }
     end
 
-    it "returns 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "creates a desired skill" do
-      expect { subject }.to change(DesiredSkill, :count).by(1)
+      it "calls Jobs::DesiredSkillService.create" do
+        expect(Jobs::DesiredSkillService).to receive(:create).with(job, master_skill.id).and_call_original
+
+        subject
+      end
     end
   end
 
   describe "DELETE /destroy" do
     subject { delete job_desired_skill_path(job, desired_skill), headers: }
 
-    include_context "admin authenticated"
-
     let!(:job) { create(:job) }
     let!(:desired_skill) { create(:desired_skill, job:) }
 
-    it "returns 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "destroys the desired skill" do
-      expect { subject }.to change(DesiredSkill, :count).by(-1)
+      it "calls Jobs::DesiredSkillService.destroy" do
+        expect(Jobs::DesiredSkillService).to receive(:destroy).with(desired_skill).and_call_original
+
+        subject
+      end
     end
   end
 end

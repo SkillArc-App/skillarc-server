@@ -7,18 +7,16 @@ class TestimonialsController < ApplicationController
   before_action :set_job
 
   def create
-    testimonial = job.testimonials.create!(
-      **params.permit(:name, :title, :testimonial, :photo_url),
-      id: SecureRandom.uuid
+    render json: Jobs::TestimonialService.create(
+      job_id: job.id,
+      **params.permit(:name, :title, :testimonial, :photo_url).to_h.symbolize_keys
     )
-
-    render json: testimonial
   end
 
   def destroy
     testimonial = job.testimonials.find(params[:id])
 
-    testimonial.destroy!
+    Jobs::TestimonialService.destroy(testimonial)
 
     render json: { success: true }
   end

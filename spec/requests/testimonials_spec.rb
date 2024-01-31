@@ -4,8 +4,6 @@ RSpec.describe "Testimonials", type: :request do
   describe "POST /create" do
     subject { post job_testimonials_path(job_id: job.id), params:, headers: }
 
-    include_context "admin authenticated"
-
     let(:params) do
       {
         name: "Tom",
@@ -16,33 +14,41 @@ RSpec.describe "Testimonials", type: :request do
     end
     let(:job) { create(:job) }
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "creates a testimonial" do
-      expect { subject }.to change(Testimonial, :count).by(1)
+      it "calls Jobs::TestimonialService.create" do
+        expect(Jobs::TestimonialService).to receive(:create).with(
+          job_id: job.id,
+          name: "Tom",
+          testimonial: "This is a testimonial",
+          title: "CEO",
+          photo_url: "image.png"
+        ).and_call_original
+
+        subject
+      end
     end
   end
 
   describe "DELETE /destroy" do
     subject { delete job_testimonial_path(job_id: job.id, id: testimonial.id), headers: }
 
-    include_context "admin authenticated"
-
     let(:job) { create(:job) }
     let!(:testimonial) { create(:testimonial, job:) }
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "admin secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "admin authenticated" do
+      include_context "admin authenticated"
 
-    it "deletes the testimonial" do
-      expect { subject }.to change(Testimonial, :count).by(-1)
+      it "calls Jobs::TestimonialService.destroy" do
+        expect(Jobs::TestimonialService).to receive(:destroy).with(testimonial).and_call_original
+
+        subject
+      end
     end
   end
 end

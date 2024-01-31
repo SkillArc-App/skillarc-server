@@ -5,6 +5,10 @@ module Events
         include(ValueSemantics.for_attributes do
           id Uuid
         end)
+
+        def self.from_hash(hash)
+          new(**hash)
+        end
       end
     end
 

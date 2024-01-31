@@ -7,6 +7,10 @@ module Events
           job_id Uuid
           master_skill_id Uuid
         end)
+
+        def self.from_hash(hash)
+          new(**hash)
+        end
       end
     end
 

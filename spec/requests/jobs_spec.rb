@@ -54,7 +54,7 @@ RSpec.describe "Jobs", type: :request do
           schedule: "9-5",
           work_days: "M-F",
           requirements_description: "Requirements",
-          industry: ["MANUFACTURING"]
+          industry: [Job::Industries::MANUFACTURING]
         }
       }
     end
@@ -76,7 +76,7 @@ RSpec.describe "Jobs", type: :request do
           schedule: "9-5",
           work_days: "M-F",
           requirements_description: "Requirements",
-          industry: ["MANUFACTURING"]
+          industry: [Job::Industries::MANUFACTURING]
         ).and_call_original
 
         subject

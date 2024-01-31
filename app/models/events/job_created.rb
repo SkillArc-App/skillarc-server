@@ -8,12 +8,12 @@ module Events
           benefits_description String
           responsibilities_description String
           location String
-          employment_type Either("FULLTIME", "PARTTIME")
+          employment_type Either(*Job::EmploymentTypes::ALL)
           hide_job Bool()
           schedule String
           work_days String
           requirements_description String
-          industry ArrayOf(String)
+          industry ArrayOf(Either(*Job::Industries::ALL))
         end)
 
         def self.from_hash(hash)

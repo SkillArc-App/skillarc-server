@@ -34,10 +34,6 @@ module Jobs
         aggregate_id: upper_career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: upper_career_path.id,
-          job_id: upper_career_path.job_id,
-          title: upper_career_path.title,
-          lower_limit: upper_career_path.lower_limit,
-          upper_limit: upper_career_path.upper_limit,
           order: upper_career_path.order
         )
       )
@@ -47,10 +43,6 @@ module Jobs
         aggregate_id: career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: career_path.id,
-          job_id: career_path.job_id,
-          title: career_path.title,
-          lower_limit: career_path.lower_limit,
-          upper_limit: career_path.upper_limit,
           order: career_path.order
         )
       )
@@ -69,10 +61,6 @@ module Jobs
         aggregate_id: lower_career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: lower_career_path.id,
-          job_id: lower_career_path.job_id,
-          title: lower_career_path.title,
-          lower_limit: lower_career_path.lower_limit,
-          upper_limit: lower_career_path.upper_limit,
           order: lower_career_path.order
         )
       )
@@ -82,10 +70,6 @@ module Jobs
         aggregate_id: career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: career_path.id,
-          job_id: career_path.job_id,
-          title: career_path.title,
-          lower_limit: career_path.lower_limit,
-          upper_limit: career_path.upper_limit,
           order: career_path.order
         )
       )

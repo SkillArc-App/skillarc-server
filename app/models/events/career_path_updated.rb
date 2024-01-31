@@ -4,11 +4,11 @@ module Events
       class V1
         include(ValueSemantics.for_attributes do
           id String
-          job_id Either(String, nil)
-          title Either(String, nil)
-          lower_limit Either(String, nil)
-          upper_limit Either(String, nil)
-          order Either(Integer, nil)
+          job_id Either(String, nil), default: nil
+          title Either(String, nil), default: nil
+          lower_limit Either(String, nil), default: nil
+          upper_limit Either(String, nil), default: nil
+          order Either(Integer, nil), default: nil
         end)
 
         def self.from_hash(hash)

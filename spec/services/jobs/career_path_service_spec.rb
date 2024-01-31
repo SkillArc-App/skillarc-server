@@ -74,10 +74,6 @@ RSpec.describe Jobs::CareerPathService do
     it "publishes events" do
       expect(Events::CareerPathUpdated::Data::V1).to receive(:new).with(
         id: upper_career_path.id,
-        job_id: upper_career_path.job_id,
-        title: upper_career_path.title,
-        lower_limit: upper_career_path.lower_limit,
-        upper_limit: upper_career_path.upper_limit,
         order: 1
       ).and_call_original
 
@@ -89,10 +85,6 @@ RSpec.describe Jobs::CareerPathService do
 
       expect(Events::CareerPathUpdated::Data::V1).to receive(:new).with(
         id: career_path.id,
-        job_id: career_path.job_id,
-        title: career_path.title,
-        lower_limit: career_path.lower_limit,
-        upper_limit: career_path.upper_limit,
         order: 0
       ).and_call_original
 
@@ -135,10 +127,6 @@ RSpec.describe Jobs::CareerPathService do
       it "publishes events" do
         expect(Events::CareerPathUpdated::Data::V1).to receive(:new).with(
           id: lower_career_path.id,
-          job_id: lower_career_path.job_id,
-          title: lower_career_path.title,
-          lower_limit: lower_career_path.lower_limit,
-          upper_limit: lower_career_path.upper_limit,
           order: 0
         ).and_call_original
 
@@ -150,10 +138,6 @@ RSpec.describe Jobs::CareerPathService do
 
         expect(Events::CareerPathUpdated::Data::V1).to receive(:new).with(
           id: career_path.id,
-          job_id: career_path.job_id,
-          title: career_path.title,
-          lower_limit: career_path.lower_limit,
-          upper_limit: career_path.upper_limit,
           order: 1
         ).and_call_original
 

@@ -8,6 +8,7 @@ module Events
       end
 
       delegate :[], to: :instance_hash
+      delegate :fetch, to: :instance_hash
 
       def to_h
         instance_hash.clone

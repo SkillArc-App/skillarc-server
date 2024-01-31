@@ -13,7 +13,7 @@ RSpec.describe JobFreshnessService do
       :events__message,
       :employer_invite_accepted,
       aggregate_id: employer_id,
-      data: {},
+      data: Events::Common::Nothing,
       occurred_at: now - 1.week
     )
   end
@@ -24,7 +24,7 @@ RSpec.describe JobFreshnessService do
       :events__message,
       :job_created,
       aggregate_id: job_id,
-      data: {
+      data: Events::Common::UntypedHashWrapper.build(
         employment_title: "Welder",
         employer_id:,
         benefits_description: "Benefits",
@@ -36,7 +36,7 @@ RSpec.describe JobFreshnessService do
         work_days: "M-F",
         requirements_description: "Requirements",
         industry: "manufacturing"
-      },
+      ),
       occurred_at: job_created_at
     )
   end
@@ -86,9 +86,9 @@ RSpec.describe JobFreshnessService do
             :events__message,
             :employer_created,
             aggregate_id: employer_id,
-            data: {
+            data: Events::Common::UntypedHashWrapper.build(
               name: "Blocktrain"
-            }
+            )
           )
         )
 
@@ -164,7 +164,7 @@ RSpec.describe JobFreshnessService do
               :events__message,
               :job_updated,
               aggregate_id: job_id,
-              data: {
+              data: Events::Common::UntypedHashWrapper.build(
                 employer_id:,
                 hide_job: true,
                 employment_title: "Welder",
@@ -176,7 +176,7 @@ RSpec.describe JobFreshnessService do
                 work_days: "M-F",
                 requirements_description: "Requirements",
                 industry: "manufacturing"
-              },
+              ),
               occurred_at: job_created_at + 1.day
             )
           end
@@ -200,14 +200,14 @@ RSpec.describe JobFreshnessService do
               :events__message,
               :applicant_status_updated,
               aggregate_id: job_id,
-              data: {
+              data: Events::Common::UntypedHashWrapper.build(
                 applicant_id: SecureRandom.uuid,
                 job_id:,
                 profile_id: SecureRandom.uuid,
                 user_id: SecureRandom.uuid,
                 employment_title: "Welder",
                 status: "new"
-              },
+              ),
               occurred_at: applicant_created_at
             )
           end
@@ -243,14 +243,14 @@ RSpec.describe JobFreshnessService do
                   :events__message,
                   :applicant_status_updated,
                   aggregate_id: job_id,
-                  data: {
+                  data: Events::Common::UntypedHashWrapper.build(
                     applicant_id: applicant_created_at_event.data.fetch(:applicant_id),
                     job_id:,
                     profile_id: SecureRandom.uuid,
                     user_id: SecureRandom.uuid,
                     employment_title: "Welder",
                     status: "pending intro"
-                  },
+                  ),
                   occurred_at: applicant_status_updated_at
                 )
               end
@@ -279,7 +279,7 @@ RSpec.describe JobFreshnessService do
             end
 
             it "returns 'stale'" do
-              described_class.handle_event(build(:events__message, :day_elapsed, occurred_at: now, data: {})) # Have to wait for the day to elapse
+              described_class.handle_event(build(:events__message, :day_elapsed, occurred_at: now, data: Events::Common::Nothing)) # Have to wait for the day to elapse
 
               expect(subject).to have_attributes(
                 job_id:,

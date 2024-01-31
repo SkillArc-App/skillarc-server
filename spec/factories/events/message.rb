@@ -8,8 +8,8 @@ FactoryBot.define do
       trait event_type.to_sym do
         event_type { event_type }
         occurred_at { Time.zone.local(2020, 1, 1) }
-        data { {} }
-        metadata { {} }
+        data { Events::Common::UntypedHashWrapper.build }
+        metadata { Events::Common::Nothing }
       end
     end
 

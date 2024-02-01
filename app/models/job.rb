@@ -55,6 +55,15 @@ class Job < ApplicationRecord
     )
   end
 
+  def self.for_search
+    shown.includes(
+      :applicants,
+      :career_paths,
+      :employer,
+      job_tags: :tag
+    )
+  end
+
   def self.with_everything
     includes(
       :applicants,

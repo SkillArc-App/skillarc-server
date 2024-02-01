@@ -7,7 +7,7 @@ module Jobs
     end
 
     def relevant_jobs
-      query = Job.shown.with_everything
+      query = Job.for_search
 
       query = query.where("employment_title LIKE ?", "%#{search_terms}%") if search_terms_usable?
       query = query.where("industry && ARRAY[?]::text[]", industries) if industries_usable?

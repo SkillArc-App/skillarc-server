@@ -2,16 +2,68 @@ require 'rails_helper'
 
 RSpec.describe Jobs::SearchService do
   describe "#relevant_jobs" do
-    subject { described_class.new(search_terms:, industries:, tags:).relevant_jobs }
+    subject { described_class.new(search_terms:, industries:, tags:).relevant_jobs(search_source:) }
 
     let(:search_terms) { nil }
     let(:industries) { nil }
     let(:tags) { nil }
+    let(:search_source) { nil }
 
     let!(:job1) { create(:job, employment_title: "Paid Friend", industry: ["Friendship"]) }
     let!(:job2) { create(:job, employment_title: "Bouncer", industry: ["Clubs", "Bodyguards"]) }
     let(:tag) { create(:tag, name: "Part Time") }
     let!(:job_tag) { create(:job_tag, job: job2, tag:) }
+
+    context "search source" do
+      let(:search_terms) { "oun" }
+      let(:industries) { ["Clubs"] }
+      let(:tags) { ["Part Time"] }
+
+      context "when search source is nil" do
+        it "emits a search event for a non-seeker" do
+          expect(EventService)
+            .to receive(:create!)
+            .with(
+              event_schema: Events::JobSearch::V1,
+              data: Events::JobSearch::Data::V1.new(
+                search_terms:,
+                industries:,
+                tags:
+              ),
+              aggregate_id: 'non-seeker',
+              metadata: Events::JobSearch::MetaData::V1.new(
+                source: "non-seeker"
+              )
+            )
+
+          subject
+        end
+      end
+
+      context "when search source is a Seeker" do
+        let(:search_source) { create(:seeker) }
+
+        it "emits a search event for a non-seeker" do
+          expect(EventService)
+            .to receive(:create!)
+            .with(
+              event_schema: Events::JobSearch::V1,
+              data: Events::JobSearch::Data::V1.new(
+                search_terms:,
+                industries:,
+                tags:
+              ),
+              aggregate_id: search_source.id,
+              metadata: Events::JobSearch::MetaData::V1.new(
+                source: "seeker",
+                id: search_source.id
+              )
+            )
+
+          subject
+        end
+      end
+    end
 
     context "when no constraints are provided" do
       it "returns all jobs" do

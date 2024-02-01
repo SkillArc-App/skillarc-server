@@ -10,7 +10,7 @@ module Seekers
         search_terms: params[:search_terms],
         industries: params[:industries],
         tags: params[:tags]
-      ).relevant_jobs
+      ).relevant_jobs(search_source: current_user&.seeker)
 
       render json: Jobs::JobBlueprint.render(jobs, view: :seeker, seeker: current_user&.seeker)
     end

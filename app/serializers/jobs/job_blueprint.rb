@@ -8,7 +8,7 @@ module Jobs
       field :location
       field :application_status
       field :starting_pay do |job|
-        starting_path = job.career_paths.find_by(order: 0)
+        starting_path = job.career_paths.detect { |p| p.order.zero? }
         next nil if starting_path.blank?
 
         {
@@ -18,12 +18,12 @@ module Jobs
         }
       end
       field :tags do |job, _options|
-        job.tags.map(&:name)
+        job.job_tags.map { |jt| jt.tag.name }
       end
       field :application_status do |job, options|
         next nil if options[:seeker].blank?
 
-        applicant = job.applicants.find_by(seeker_id: options[:seeker].id)
+        applicant = job.applicants.detect { |a| a.seeker_id == options[:seeker].id }
         applicant&.status&.status
       end
       field :saved do |job, options|

@@ -72,6 +72,7 @@ GEM
     ast (2.4.2)
     base64 (0.1.1)
     bindex (0.8.1)
+    blueprinter (1.0.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
     builder (3.2.4)
@@ -361,6 +362,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate
+  blueprinter
   bootsnap
   database_cleaner-active_record
   debug

@@ -8,8 +8,10 @@ RSpec.describe DbStreamListener do
 
   let(:event_occurred_at) { Date.new(2020, 1, 1) }
 
-  describe ".initialize" do
-    subject { described_class.new(consumer, "listener_name") }
+  describe "#play" do
+    subject { instance.play }
+
+    let(:instance) { described_class.new(consumer, "listener_name") }
 
     it "updates the bookmark" do
       expect { subject }.to change {
@@ -63,6 +65,35 @@ RSpec.describe DbStreamListener do
         it "does not update the bookmark" do
           expect { subject }.not_to(change { ListenerBookmark.find_by(consumer_name: "listener_name").event_id })
         end
+      end
+    end
+  end
+
+  describe "#replay" do
+    subject { instance.replay }
+
+    let(:instance) { described_class.new(consumer, "listener_name") }
+
+    it "calls play" do
+      expect(instance)
+        .to receive(:play)
+
+      subject
+    end
+
+    context "when a bookmark already exists" do
+      let!(:listener_bookmark) do
+        create(
+          :listener_bookmark,
+          consumer_name: "listener_name",
+          event_id: event.id
+        )
+      end
+
+      it "destroyes the original bookmark" do
+        subject
+
+        expect { listener_bookmark.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

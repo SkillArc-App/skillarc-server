@@ -19,6 +19,8 @@ services:
     build:
       dockerfile: server.Dockerfile
     container_name: "skillarc_server"
+    environment:
+      RUN_ENVIRONMENT: "server"
     volumes:
       - .:/app
     ports:
@@ -30,6 +32,8 @@ services:
     build:
       dockerfile: resque.Dockerfile
     container_name: "skillarc_resque"
+    environment:
+      RUN_ENVIRONMENT: "worker"
     volumes:
       - .:/app
     depends_on:

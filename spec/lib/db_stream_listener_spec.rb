@@ -11,7 +11,7 @@ RSpec.describe DbStreamListener do
   describe "#play" do
     subject { instance.play }
 
-    let(:instance) { described_class.new(consumer, "listener_name") }
+    let(:instance) { described_class.build(consumer, "listener_name") }
 
     it "updates the bookmark" do
       expect { subject }.to change {
@@ -72,7 +72,7 @@ RSpec.describe DbStreamListener do
   describe "#replay" do
     subject { instance.replay }
 
-    let(:instance) { described_class.new(consumer, "listener_name") }
+    let(:instance) { described_class.build(consumer, "listener_name") }
 
     it "calls play" do
       expect(instance)
@@ -99,7 +99,7 @@ RSpec.describe DbStreamListener do
   end
 
   describe "#call" do
-    subject { described_class.new(consumer, "listener_name") }
+    subject { described_class.build(consumer, "listener_name") }
 
     it "calls the consumer with the event and with_side_effects: true" do
       event = build(:events__message, :user_created)
@@ -116,6 +116,15 @@ RSpec.describe DbStreamListener do
       expect { subject.call(event:) }.to change {
         ListenerBookmark.find_by(consumer_name: "listener_name")&.event_id
       }.from(nil).to(event.id)
+    end
+  end
+
+  describe ".get_listener" do
+    it "retrieves a listener if created" do
+      described_class.build(consumer, "example")
+
+      expect(StreamListener.get_listener("example")).to be_a(described_class)
+      expect(StreamListener.get_listener(SecureRandom.uuid)).to eq(nil)
     end
   end
 end

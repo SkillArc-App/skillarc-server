@@ -69,24 +69,27 @@ module PubSubInitializer
     )
 
     [
-      DbStreamListener.new(JobFreshnessService, "job_freshness_service"),
-      DbStreamListener.new(Coaches::SeekerService, "coach_seekers"),
-      DbStreamListener.new(Coaches::CoachService, "coaches"),
-      DbStreamListener.new(Coaches::BarrierService, "barriers")
-    ].each do |subscriber|
-      subscriber.handled_events.each do |event_schema|
+      DbStreamListener.build(JobFreshnessService, "job_freshness_service"),
+      DbStreamListener.build(Coaches::SeekerService, "coach_seekers"),
+      DbStreamListener.build(Coaches::CoachService, "coaches"),
+      DbStreamListener.build(Coaches::BarrierService, "barriers")
+    ].each do |listener|
+      listener.handled_events.each do |event_schema|
         PUBSUB.subscribe(
           event_schema:,
-          subscriber:
+          subscriber: listener
         )
       end
 
-      subscriber.handled_events_sync.each do |event_schema|
+      listener.handled_events_sync.each do |event_schema|
         PUBSUB_SYNC.subscribe(
           event_schema:,
-          subscriber:
+          subscriber: listener
         )
       end
+
+      # Only kick off jobs from the server
+      PlayStreamJob.perform_later(listener_name: listener.listener_name) if ENV['RUN_ENVIRONMENT'] == 'server'
     end
   end
 end

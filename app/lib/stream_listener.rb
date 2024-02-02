@@ -14,4 +14,20 @@ class StreamListener
   def replay
     raise NoMethodError
   end
+
+  def self.register(listener_name, listener)
+    registry[listener_name] = listener
+  end
+
+  def self.get_listener(listener_name)
+    registry[listener_name]
+  end
+
+  class << self
+    private
+
+    def registry
+      @registry ||= {}
+    end
+  end
 end

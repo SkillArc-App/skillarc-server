@@ -1,11 +1,12 @@
 class DbStreamListener < StreamListener
-  def initialize(consumer, listener_name) # rubocop:disable Lint/MissingSuper
-    @consumer = consumer
-    @listener_name = listener_name
-  end
-
   delegate :handled_events, to: :consumer
   delegate :handled_events_sync, to: :consumer
+
+  def self.build(consumer, listener_name)
+    listener = new(consumer, listener_name)
+    StreamListener.register(listener_name, listener)
+    listener
+  end
 
   def replay
     ListenerBookmark.find_by(consumer_name: listener_name)&.destroy
@@ -27,6 +28,11 @@ class DbStreamListener < StreamListener
   end
 
   private
+
+  def initialize(consumer, listener_name) # rubocop:disable Lint/MissingSuper
+    @consumer = consumer
+    @listener_name = listener_name
+  end
 
   def bookmark_timestamp
     bookmark = ListenerBookmark.find_by(consumer_name: listener_name)

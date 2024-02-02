@@ -88,7 +88,8 @@ module PubSubInitializer
         )
       end
 
-      PlayStreamJob.perform_later(listener_name: listener.listener_name)
+      # Only kick off jobs from the server
+      PlayStreamJob.perform_later(listener_name: listener.listener_name) if ENV['RUN_ENVIRONMENT'] == 'server'
     end
   end
 end

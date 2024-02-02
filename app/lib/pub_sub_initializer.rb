@@ -68,23 +68,11 @@ module PubSubInitializer
       subscriber: Slack::ChatMessage.new
     )
 
-    if Rails.env.production?
-      job_freshness_subscriber = DbStreamListener.new(JobFreshnessService, "job_freshness_service")
-      coach_seeker_subscriber = DbStreamListener.new(Coaches::SeekerService, "coach_seekers")
-      coaches_subscriber = DbStreamListener.new(Coaches::CoachService, "coaches")
-      barriers_subscriber = DbStreamListener.new(Coaches::BarrierService, "barriers")
-    else
-      job_freshness_subscriber = JobFreshnessService
-      coach_seeker_subscriber = Coaches::SeekerService
-      coaches_subscriber = Coaches::CoachService
-      barriers_subscriber = Coaches::BarrierService
-    end
-
     [
-      job_freshness_subscriber,
-      coach_seeker_subscriber,
-      coaches_subscriber,
-      barriers_subscriber
+      DbStreamListener.new(JobFreshnessService, "job_freshness_service"),
+      DbStreamListener.new(Coaches::SeekerService, "coach_seekers"),
+      DbStreamListener.new(Coaches::CoachService, "coaches"),
+      DbStreamListener.new(Coaches::BarrierService, "barriers")
     ].each do |subscriber|
       subscriber.handled_events.each do |event_schema|
         PUBSUB.subscribe(

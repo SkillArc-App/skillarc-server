@@ -2,6 +2,8 @@ class DbStreamListener < StreamListener
   delegate :handled_events, to: :consumer
   delegate :handled_events_sync, to: :consumer
 
+  attr_reader :listener_name
+
   def self.build(consumer, listener_name)
     listener = new(consumer, listener_name)
     StreamListener.register(listener_name, listener)
@@ -50,5 +52,5 @@ class DbStreamListener < StreamListener
       .update!(event_id: event.id)
   end
 
-  attr_reader :consumer, :listener_name
+  attr_reader :consumer
 end

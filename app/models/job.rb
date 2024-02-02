@@ -39,6 +39,7 @@ class Job < ApplicationRecord
   has_many :job_photos, dependent: :destroy
   has_many :testimonials, dependent: :destroy
   has_many :job_tags, dependent: :destroy
+  has_many :tags, through: :job_tags
 
   scope :shown, -> { where(hide_job: false) }
 
@@ -51,6 +52,15 @@ class Job < ApplicationRecord
         :applicant_statuses,
         { profile: :user }
       ]
+    )
+  end
+
+  def self.for_search
+    shown.includes(
+      :applicants,
+      :career_paths,
+      :employer,
+      job_tags: :tag
     )
   end
 

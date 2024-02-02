@@ -2,7 +2,18 @@ module Seekers
   class JobsController < ApplicationController
     include Secured
 
-    before_action :authorize
+    before_action :set_current_user, only: [:index]
+    before_action :authorize, only: [:save, :unsave]
+
+    def index
+      jobs = Jobs::SearchService.new(
+        search_terms: params[:search_terms],
+        industries: params[:industries],
+        tags: params[:tags]
+      ).relevant_jobs(search_source: current_user&.seeker)
+
+      render json: Jobs::JobBlueprint.render(jobs, view: :seeker, seeker: current_user&.seeker)
+    end
 
     def save
       EventService.create!(

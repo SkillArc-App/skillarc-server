@@ -82,7 +82,7 @@ Rails.application.routes.draw do
   end
 
   scope module: 'seekers', path: 'seekers' do
-    resources :jobs do
+    resources :jobs, only: [:index] do
       post 'save' => 'jobs#save'
       post 'unsave' => 'jobs#unsave'
     end

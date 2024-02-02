@@ -2,7 +2,17 @@ class DbStreamListener < StreamListener
   def initialize(consumer, listener_name) # rubocop:disable Lint/MissingSuper
     @consumer = consumer
     @listener_name = listener_name
+  end
 
+  delegate :handled_events, to: :consumer
+  delegate :handled_events_sync, to: :consumer
+
+  def replay
+    ListenerBookmark.find_by(consumer_name: listener_name)&.destroy
+    play
+  end
+
+  def play
     after_events = Event.where("occurred_at > ?", bookmark_timestamp).order(:occurred_at)
 
     return if after_events.empty?
@@ -11,9 +21,6 @@ class DbStreamListener < StreamListener
       handle_event(event.message, with_side_effects: true)
     end
   end
-
-  delegate :handled_events, to: :consumer
-  delegate :handled_events_sync, to: :consumer
 
   def call(event:)
     handle_event(event, with_side_effects: true)

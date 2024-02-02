@@ -28,7 +28,7 @@ class TestController < ApplicationController
   end
 
   def create_seeker
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user, onboarding_sessions: [FactoryBot.build(:onboarding_session, completed_at: Time.zone.now)])
     profile = FactoryBot.create(:profile, user:)
     seeker = FactoryBot.create(:seeker, id: profile.id, user:)
 
@@ -46,7 +46,10 @@ class TestController < ApplicationController
       last_active_on: Time.zone.now
     )
 
-    render json: profile.user
+    render json: {
+      user:,
+      seeker:
+    }
   end
 
   def create_test_recruiter_with_applicant

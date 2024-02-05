@@ -9,7 +9,7 @@
 #  image                 :text
 #  last_name             :text
 #  phone_number          :text
-#  sub                   :string
+#  sub                   :string           not null
 #  user_type             :enum             default("SEEKER"), not null
 #  zip_code              :text
 #  created_at            :datetime         not null

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_05_165524) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_05_171740) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -192,13 +192,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_05_165524) do
   create_table "desired_certifications", id: :text, force: :cascade do |t|
     t.text "master_certification_id", null: false
     t.text "job_id", null: false
-    t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 3, null: false
-  end
-
-  create_table "desired_outcomes", id: :text, force: :cascade do |t|
-    t.text "profile_id", null: false
-    t.text "response", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
   end
@@ -715,7 +708,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_05_165524) do
   add_foreign_key "credentials", "profiles", name: "Credential_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_certifications", "jobs", name: "DesiredCertification_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_certifications", "master_certifications", name: "DesiredCertification_master_certification_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "desired_outcomes", "profiles", name: "DesiredOutcomes_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_skills", "jobs", name: "DesiredSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_skills", "master_skills", name: "DesiredSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "education_experiences", "organizations", name: "EducationExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify

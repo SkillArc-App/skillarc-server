@@ -4,17 +4,10 @@ class JobMatchesController < ApplicationController
   before_action :authorize
 
   def index
-    begin
-      profile = current_user.profile
-      seeker = current_user.seeker
+    jm = JobMatch::JobMatch.new(user: current_user)
 
-      jm = JobMatch::JobMatch.new(profile:, seeker:)
+    matched_jobs = jm.jobs
 
-      matched_jobs = jm.jobs
-
-      render json: { matchedJobs: matched_jobs }
-    rescue
-      render json: { error: "Profile not found" }
-    end
+    render json: { matchedJobs: matched_jobs }
   end
 end

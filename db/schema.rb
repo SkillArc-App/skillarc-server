@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_05_191117) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_05_193518) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -295,16 +295,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_05_191117) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "occurred_at", null: false
-  end
-
-  create_table "job_interactions", id: :text, force: :cascade do |t|
-    t.text "job_id", null: false
-    t.text "user_id", null: false
-    t.boolean "has_viewed", default: false
-    t.integer "percent_match"
-    t.boolean "intent_to_apply", default: false
-    t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 3, null: false
   end
 
   create_table "job_photos", id: :text, force: :cascade do |t|
@@ -696,8 +686,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_05_191117) do
   add_foreign_key "education_experiences", "profiles", name: "EducationExperience_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "education_experiences", "seekers"
   add_foreign_key "employer_invites", "employers", name: "EmployerInvite_employer_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "job_interactions", "jobs", name: "JobInteraction_job_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "job_interactions", "users", name: "JobInteraction_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "job_photos", "jobs", name: "JobPhoto_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "job_tags", "jobs", name: "JobTag_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "job_tags", "tags", name: "JobTag_tag_id_fkey", on_update: :cascade, on_delete: :restrict

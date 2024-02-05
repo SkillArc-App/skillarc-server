@@ -9,9 +9,9 @@ RSpec.describe Klayvio::MetCareerCoachUpdated do
         :events__message,
         :met_career_coach_updated,
         aggregate_id: user.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           met_career_coach: true
-        }
+        )
       )
     end
     let(:user) { create(:user, email:) }

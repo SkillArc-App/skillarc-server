@@ -2,81 +2,84 @@ require 'rails_helper'
 
 RSpec.describe Coaches::SeekerService do
   let(:lead_added) { build(:events__message, :lead_added, aggregate_id: lead_id, data: lead, occurred_at: time1) }
-  let(:non_seeker_user_created) { build(:events__message, :user_created, aggregate_id: coach_user_id, data: { email: "f@f.f" }) }
-  let(:user_without_email) { build(:events__message, :user_created, aggregate_id: user_without_email_id, data: { first_name: "Hannah", last_name: "Block" }) }
-  let(:profile_without_email) { build(:events__message, :profile_created, aggregate_id: user_without_email_id, data: { id: profile_without_email_id }) }
-  let(:user_created) { build(:events__message, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com" }) }
-  let(:user_updated) { build(:events__message, :user_updated, aggregate_id: user_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890" }) }
-  let(:other_user_created) { build(:events__message, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
-  let(:profile_created) { build(:events__message, :profile_created, aggregate_id: user_id, data: { id: profile_id }) }
-  let(:other_profile_created) { build(:events__message, :profile_created, aggregate_id: other_user_id, data: { id: other_profile_id }) }
-  let(:note_with_id_added1) { build(:events__message, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com" }, occurred_at: time1) }
-  let(:note_with_id_added2) { build(:events__message, :note_added, aggregate_id: profile_id, data: { note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:non_seeker_user_created) { build(:events__message, :user_created, aggregate_id: coach_user_id, data: Events::Common::UntypedHashWrapper.build(email: "f@f.f")) }
+  let(:user_without_email) { build(:events__message, :user_created, aggregate_id: user_without_email_id, data: Events::Common::UntypedHashWrapper.build(first_name: "Hannah", last_name: "Block")) }
+  let(:profile_without_email) { build(:events__message, :profile_created, aggregate_id: user_without_email_id, data: Events::SeekerCreated::Data::V1.new(id: profile_without_email_id, user_id: user_without_email_id)) }
+  let(:user_created) { build(:events__message, :user_created, aggregate_id: user_id, data: Events::Common::UntypedHashWrapper.new(email: "hannah@blocktrainapp.com")) }
+  let(:user_updated) { build(:events__message, :user_updated, aggregate_id: user_id, data: Events::Common::UntypedHashWrapper.new(first_name: "Hannah", last_name: "Block", phone_number: "1234567890")) }
+  let(:other_user_created) { build(:events__message, :user_created, aggregate_id: other_user_id, data: Events::Common::UntypedHashWrapper.new(email: "katina@gmail.com", first_name: "Katina", last_name: "Hall")) }
+  let(:profile_created) { build(:events__message, :profile_created, aggregate_id: user_id, data: Events::SeekerCreated::Data::V1.new(id: profile_id, user_id:)) }
+  let(:other_profile_created) { build(:events__message, :profile_created, aggregate_id: other_user_id, data: Events::SeekerCreated::Data::V1.new(id: other_profile_id, user_id: other_user_id)) }
+  let(:note_with_id_added1) { build(:events__message, :note_added, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
+  let(:note_with_id_added2) { build(:events__message, :note_added, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
   let(:applicant_status_updated1) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
   let(:applicant_status_updated2) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
   let(:applicant_status_updated3) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
   let(:applicant_status_updated4) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
-  let(:note_deleted) { build(:events__message, :note_deleted, aggregate_id: profile_id, data: { note: "This is a note with an id", note_id: note_id1 }, occurred_at: time1) }
-  let(:note_modified) { build(:events__message, :note_modified, aggregate_id: profile_id, data: { note: updated_note, note_id: note_id2 }, occurred_at: time1) }
-  let(:skill_level_updated) { build(:events__message, :skill_level_updated, aggregate_id: profile_id, data: { skill_level: "advanced" }, occurred_at: time1) }
-  let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: profile_id, data: { coach_id: coach_user_id, email: "coach@blocktrainapp.com" }, occurred_at: time1) }
-  let(:barriers_updated1) { build(:events__message, :barriers_updated, aggregate_id: profile_id, data: { barriers: [barrier1.barrier_id] }, occurred_at: time1) }
-  let(:barriers_updated2) { build(:events__message, :barriers_updated, aggregate_id: profile_id, data: { barriers: [barrier2.barrier_id] }, occurred_at: time1) }
+  let(:note_deleted) { build(:events__message, :note_deleted, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id", note_id: note_id1), occurred_at: time1) }
+  let(:note_modified) { build(:events__message, :note_modified, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(note: updated_note, note_id: note_id2), occurred_at: time1) }
+  let(:skill_level_updated) { build(:events__message, :skill_level_updated, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(skill_level: "advanced"), occurred_at: time1) }
+  let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(coach_id: coach_user_id, email: "coach@blocktrainapp.com"), occurred_at: time1) }
+  let(:barriers_updated1) { build(:events__message, :barriers_updated, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier1.barrier_id]), occurred_at: time1) }
+  let(:barriers_updated2) { build(:events__message, :barriers_updated, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier2.barrier_id]), occurred_at: time1) }
 
   let(:lead) do
-    {
+    Events::Common::UntypedHashWrapper.new(
       email: nil,
       lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5",
       phone_number: "1234567890",
       first_name: "Hannah",
       last_name: "Block",
       lead_captured_by: "khall@blocktrainapp.com"
-    }
+    )
   end
   let(:status_updated1) do
-    {
+    Events::ApplicantStatusUpdated::Data::V1.new(
       job_id:,
       employer_name: employer_name1,
       profile_id: other_profile_id,
+      seeker_id: other_profile_id,
       user_id: other_user_id,
       applicant_id: applicant_id1,
       employment_title: employment_title1,
       status: status1
-    }
+    )
   end
   let(:status_updated2) do
-    {
+    Events::ApplicantStatusUpdated::Data::V1.new(
       job_id:,
       employer_name: employer_name1,
       profile_id: other_profile_id,
+      seeker_id: other_profile_id,
       user_id: other_user_id,
       applicant_id: applicant_id1,
       employment_title: employment_title1,
       status: status2
-    }
+    )
   end
   let(:status_updated3) do
-    {
+    Events::ApplicantStatusUpdated::Data::V1.new(
       job_id:,
       profile_id:,
+      seeker_id: profile_id,
       user_id:,
       employer_name: employer_name2,
-
       applicant_id: applicant_id2,
       employment_title: employment_title2,
       status: status1
-    }
+    )
   end
   let(:status_updated4) do
-    {
+    Events::ApplicantStatusUpdated::Data::V1.new(
       job_id:,
       employer_name: employer_name2,
       profile_id: other_profile_id,
+      seeker_id: other_profile_id,
       user_id: other_user_id,
       applicant_id: applicant_id3,
       employment_title: employment_title2,
       status: status1
-    }
+    )
   end
 
   let(:barrier1) { create(:barrier, name: "barrier1") }
@@ -86,8 +89,8 @@ RSpec.describe Coaches::SeekerService do
   let(:time2) { Time.utc(2022, 1, 1) }
   let(:employment_title1) { "A place of employment" }
   let(:employment_title2) { "Another place of employment" }
-  let(:status1) { "Phone screening" }
-  let(:status2) { "Hired" }
+  let(:status1) { "pending intro" }
+  let(:status2) { "hire" }
   let(:lead_id) { "91308d08-bd08-452b-a7de-74746a6c5f93" }
   let(:coach_user_id) { "09534ac3-b46e-4646-99c5-c517deb00239" }
   let(:user_without_email_id) { "4f878ed9-5cb9-429b-ab22-969b46305ea2" }
@@ -259,10 +262,8 @@ RSpec.describe Coaches::SeekerService do
 
     context "when another events occur which update last active on" do
       [
-        Events::EducationExperienceCreated::V1,
         Events::JobSaved::V1,
         Events::JobUnsaved::V1,
-        Events::PersonalExperienceCreated::V1,
         Events::SeekerUpdated::V1,
         Events::OnboardingCompleted::V1
       ].each do |event_schema|
@@ -280,6 +281,57 @@ RSpec.describe Coaches::SeekerService do
 
             expect(subject[:lastActiveOn]).to eq(time2)
           end
+        end
+      end
+
+      context "when a personal_experience_created version 1 occurs for a seeker" do
+        it "updates the last active to when the event occured" do
+          message = build(
+            :events__message,
+            event_type: Events::PersonalExperienceCreated::V1.event_type,
+            version: Events::PersonalExperienceCreated::V1.version,
+            data: Events::PersonalExperienceCreated::Data::V1.new(
+              id: SecureRandom.uuid,
+              activity: "something",
+              description: "A description",
+              start_date: Time.zone.now.to_s,
+              end_date: Time.zone.now.to_s,
+              profile_id: SecureRandom.uuid,
+              seeker_id: SecureRandom.uuid
+            ),
+            aggregate_id: user_id,
+            occurred_at: time2
+          )
+
+          described_class.handle_event(message)
+
+          expect(subject[:lastActiveOn]).to eq(time2)
+        end
+      end
+
+      context "when a education_experience_created version 1 occurs for a seeker" do
+        it "updates the last active to when the event occured" do
+          message = build(
+            :events__message,
+            event_type: Events::EducationExperienceCreated::V1.event_type,
+            version: Events::EducationExperienceCreated::V1.version,
+            data: Events::EducationExperienceCreated::Data::V1.new(
+              id: SecureRandom.uuid,
+              organization_name: "Org",
+              title: "A title",
+              activities: nil,
+              graduation_date: Time.zone.now.to_s,
+              gpa: "1.9",
+              profile_id: SecureRandom.uuid,
+              seeker_id: SecureRandom.uuid
+            ),
+            aggregate_id: user_id,
+            occurred_at: time2
+          )
+
+          described_class.handle_event(message)
+
+          expect(subject[:lastActiveOn]).to eq(time2)
         end
       end
     end

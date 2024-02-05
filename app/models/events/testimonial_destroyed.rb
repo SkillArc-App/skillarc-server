@@ -2,12 +2,10 @@ module Events
   module TestimonialDestroyed
     module Data
       class V1
-        include(ValueSemantics.for_attributes do
-          id Uuid
-        end)
+        extend Payload
 
-        def self.from_hash(hash)
-          new(**hash)
+        schema do
+          id Uuid
         end
       end
     end

@@ -9,11 +9,15 @@ RSpec.describe Klayvio::ChatMessageReceived do
         :events__message,
         :chat_message_sent,
         aggregate_id: job.id,
-        data: {
+        data: Events::ChatMessageSent::Data::V1.new(
           applicant_id: applicant.id,
           profile_id: applicant.profile.id,
+          seeker_id: applicant.seeker.id,
+          employer_name: "Employer name",
+          employment_title: "Employment title",
+          message: "A message",
           from_user_id: sender_id
-        },
+        ),
         occurred_at:
       )
     end
@@ -21,8 +25,9 @@ RSpec.describe Klayvio::ChatMessageReceived do
     let(:user) { create(:user, email:) }
     let(:occurred_at) { Time.zone.local(2020, 1, 1) }
     let(:job) { create(:job) }
-    let(:applicant) { create(:applicant, profile:) }
+    let(:applicant) { create(:applicant, profile:, seeker:) }
     let(:profile) { create(:profile, user:) }
+    let(:seeker) { create(:seeker, user:) }
 
     context "when the sender is the applicant" do
       let(:sender_id) { applicant.profile.user.id }

@@ -2,12 +2,10 @@ module Events
   module JobTagDestroyed
     module Data
       class V1
-        include(ValueSemantics.for_attributes do
-          job_tag_id Uuid
-        end)
+        extend Payload
 
-        def self.from_hash(hash)
-          new(**hash)
+        schema do
+          job_tag_id Uuid
         end
       end
     end

@@ -2,17 +2,15 @@ module Events
   module TestimonialCreated
     module Data
       class V1
-        include(ValueSemantics.for_attributes do
+        extend Payload
+
+        schema do
           id Uuid
           job_id Uuid
           name String
           title String
           testimonial String
           photo_url String
-        end)
-
-        def self.from_hash(hash)
-          new(**hash)
         end
       end
     end

@@ -13,9 +13,16 @@ RSpec.describe UserEvents do
         :education_experience_created,
         occurred_at:,
         aggregate_id: user.id,
-        data: {
-          organization_name: "Test University"
-        }
+        data: Events::EducationExperienceCreated::Data::V1.new(
+          organization_name: "Test University",
+          id: SecureRandom.uuid,
+          title: "A title",
+          graduation_date: Time.zone.now.to_s,
+          activities: nil,
+          gpa: "1.8",
+          profile_id: SecureRandom.uuid,
+          seeker_id: SecureRandom.uuid
+        ).to_h
       )
     end
     let!(:work_experience) do
@@ -24,9 +31,17 @@ RSpec.describe UserEvents do
         :experience_created,
         occurred_at:,
         aggregate_id: user.id,
-        data: {
-          organization_name: "Test Company"
-        }
+        data: Events::ExperienceCreated::Data::V1.new(
+          id: SecureRandom.uuid,
+          organization_name: "Test Company",
+          position: "Test Position",
+          start_date: Time.zone.now.to_s,
+          end_date: nil,
+          description: "My job",
+          is_current: false,
+          profile_id: SecureRandom.uuid,
+          seeker_id: SecureRandom.uuid
+        ).to_h
       )
     end
     let!(:onboarding_complete_event) do
@@ -55,11 +70,16 @@ RSpec.describe UserEvents do
         :applicant_status_updated,
         occurred_at:,
         aggregate_id: job.id,
-        data: {
+        data: Events::ApplicantStatusUpdated::Data::V1.new(
+          applicant_id: SecureRandom.uuid,
+          profile_id: SecureRandom.uuid,
+          seeker_id: SecureRandom.uuid,
+          job_id: SecureRandom.uuid,
           user_id: user.id,
           employment_title: "Test Job",
+          employer_name: "Test Employer",
           status: "new"
-        }
+        ).to_h
       )
     end
 

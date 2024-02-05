@@ -68,7 +68,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       id: SecureRandom.uuid,
       user:
     )
-    Seeker.create!(
+    seeker = Seeker.create!(
       id: profile.id,
       user:
     )
@@ -76,11 +76,11 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     EventService.create!(
       aggregate_id: user.id,
       event_schema: Events::SeekerCreated::V1,
-      data: Events::Common::UntypedHashWrapper.build(
-        id: profile.id,
+      data: Events::SeekerCreated::Data::V1.new(
+        id: seeker.id,
         user_id: user.id
       ),
-      occurred_at: profile.created_at
+      occurred_at: seeker.created_at
     )
   end
 
@@ -108,7 +108,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         EventService.create!(
           aggregate_id: user.id,
           event_schema: Events::ExperienceCreated::V1,
-          data: Events::Common::UntypedHashWrapper.build(
+          data: Events::ExperienceCreated::Data::V1.new(
             id: other_experience.id,
             organization_name: other_experience.organization_name,
             position: other_experience.position,
@@ -148,7 +148,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         EventService.create!(
           aggregate_id: user.id,
           event_schema: Events::EducationExperienceCreated::V1,
-          data: Events::Common::UntypedHashWrapper.build(
+          data: Events::EducationExperienceCreated::Data::V1.new(
             id: ee.id,
             organization_name: ee.organization_name,
             title: ee.title,
@@ -209,7 +209,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       EventService.create!(
         aggregate_id: user.id,
         event_schema: Events::PersonalExperienceCreated::V1,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::PersonalExperienceCreated::Data::V1.new(
           id: pe.id,
           activity: pe.activity,
           description: pe.description,

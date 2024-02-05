@@ -2,9 +2,11 @@ module Events
   module DesiredSkillDestroyed
     module Data
       class V1
-        include(ValueSemantics.for_attributes do
+        extend Payload
+
+        schema do
           id Uuid
-        end)
+        end
       end
     end
 

@@ -6,18 +6,24 @@ RSpec.describe Slack::ChatMessage do
       build(
         :events__message,
         :chat_message_sent,
-        data: {
+        data: Events::ChatMessageSent::Data::V1.new(
           applicant_id: applicant.id,
+          profile_id: profile.id,
+          seeker_id: seeker.id,
+          employer_name: "A name",
+          employment_title: "A title",
+          message: "A message",
           from_user_id:
-        }
+        )
       )
     end
-    let(:applicant) { create(:applicant, profile:) }
+    let(:applicant) { create(:applicant, profile:, seeker:) }
     let(:profile) { create(:profile, user:) }
+    let(:seeker) { create(:seeker, user:) }
     let(:user) { create(:user, email: "john@blocktrainapp.com") }
 
     context "when the applicant is not the sender" do
-      let(:from_user_id) { "not_the_user_id" }
+      let(:from_user_id) { SecureRandom.uuid }
 
       it "calls the Slack API" do
         expect_any_instance_of(Slack::FakeSlackGateway).to receive(:ping).with(

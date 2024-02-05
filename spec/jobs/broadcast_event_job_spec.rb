@@ -6,8 +6,8 @@ RSpec.describe BroadcastEventJob do
       id: SecureRandom.uuid,
       aggregate_id: "123",
       event_type: "user_created",
-      data: {},
-      metadata: {},
+      data: Events::Common::UntypedHashWrapper.build,
+      metadata: Events::Common::Nothing,
       version: 1,
       occurred_at: DateTime.new(2020, 1, 1)
     )

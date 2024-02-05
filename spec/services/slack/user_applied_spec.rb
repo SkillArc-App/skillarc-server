@@ -7,15 +7,22 @@ RSpec.describe Slack::UserApplied do
         :events__message,
         :applicant_status_updated,
         aggregate_id: job.id,
-        data: {
+        data: Events::ApplicantStatusUpdated::Data::V1.new(
           applicant_id: applicant.id,
+          profile_id: profile.id,
+          seeker_id: seeker.id,
+          user_id: user.id,
+          job_id: job.id,
+          employer_name: "A employer",
+          employment_title: "A title",
           status:
-        }
+        )
       )
     end
     let(:job) { create(:job) }
     let(:applicant) { create(:applicant, job:, profile:) }
     let(:profile) { create(:profile, user:) }
+    let(:seeker) { create(:seeker, user:) }
     let(:user) { create(:user, email: "hannah@blocktrainapp.com") }
 
     context "status is new" do
@@ -31,7 +38,7 @@ RSpec.describe Slack::UserApplied do
     end
 
     context "status is not new" do
-      let(:status) { "not_new" }
+      let(:status) { ApplicantStatus::StatusTypes::PASS }
 
       it "does not call the Slack API" do
         expect_any_instance_of(Slack::FakeSlackGateway).not_to receive(:ping)

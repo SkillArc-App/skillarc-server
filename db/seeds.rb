@@ -689,7 +689,7 @@ cul = TrainingProvider.create!(
 )
 
 trainer = User.create!(
-  id: 'cll0yrt8e0004aor228lvcp8w',
+  id: SecureRandom.uuid,
   first_name: 'Meghan',
   last_name: 'Trainer',
   email: 'trainer@blocktrainapp.com',
@@ -704,7 +704,7 @@ TrainingProviderProfile.create!(
 )
 
 trainer_with_reference = User.create!(
-  id: 'cll1766cz0000aons61fkc558',
+  id: SecureRandom.uuid,
   first_name: 'Bill',
   last_name: 'Traynor',
   email: 'trainer-with-reference@blocktrainapp.com',
@@ -712,11 +712,11 @@ trainer_with_reference = User.create!(
   sub: 'billsub'
 )
 
-User.create!(
-  id: 'clem7u5uc0007mi0rne4h3be0',
+admin_user = User.create!(
+  id: SecureRandom.uuid,
   first_name: 'Jake',
   last_name: 'Not-Onboard',
-  email: 'seeker-without-profile@blocktrainapp.com',
+  email: 'admind@blocktrainapp.com',
   sub: 'jakesub'
 )
 
@@ -725,7 +725,7 @@ admin = Role.create!(id: SecureRandom.uuid, name: "admin")
 UserRole.create!(
   id: SecureRandom.uuid,
   role_id: admin.id,
-  user_id: 'clem7u5uc0007mi0rne4h3be0'
+  user_id: admin_user.id
 )
 
 bill_trainer_profile = TrainingProviderProfile.create!(

@@ -6,7 +6,17 @@ RSpec.describe Klayvio::EducationExperienceEntered do
       build(
         :events__message,
         :education_experience_created,
-        aggregate_id: user.id
+        aggregate_id: user.id,
+        data: Events::EducationExperienceCreated::Data::V1.new(
+          id: SecureRandom.uuid,
+          organization_name: "A organization",
+          title: "A title",
+          activities: nil,
+          graduation_date: Time.zone.now.to_s,
+          gpa: "1.89",
+          profile_id: SecureRandom.uuid,
+          seeker_id: SecureRandom.uuid
+        )
       )
     end
     let(:user) { create(:user, email:) }

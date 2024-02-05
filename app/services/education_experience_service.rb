@@ -5,7 +5,7 @@ class EducationExperienceService
   end
 
   def create(organization_name:, title: nil, graduation_date: nil, gpa: nil, activities: nil)
-    EducationExperience.create!(
+    ee = EducationExperience.create!(
       organization_name:,
       title:,
       graduation_date:,
@@ -19,12 +19,15 @@ class EducationExperienceService
     EventService.create!(
       event_schema: Events::EducationExperienceCreated::V1,
       aggregate_id: seeker.id,
-      data: Events::Common::UntypedHashWrapper.build(
+      data: Events::EducationExperienceCreated::Data::V1.new(
+        id: ee.id,
         organization_name:,
         title:,
         graduation_date:,
         gpa:,
-        activities:
+        activities:,
+        profile_id: profile.id,
+        seeker_id: seeker.id
       ),
       occurred_at: Time.zone.now
     )
@@ -38,7 +41,9 @@ class EducationExperienceService
     EventService.create!(
       event_schema: Events::EducationExperienceUpdated::V1,
       aggregate_id: seeker.id,
-      data: Events::Common::UntypedHashWrapper.build(
+      data: Events::EducationExperienceUpdated::Data::V1.new(
+        profile_id: profile.id,
+        seeker_id: seeker.id,
         **params.merge(id:)
       ),
       occurred_at: Time.zone.now

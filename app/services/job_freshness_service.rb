@@ -135,9 +135,9 @@ class JobFreshnessService < EventConsumer
   end
 
   def applicant_status_updated(event)
-    freshness_context.applicants[event.data.fetch(:applicant_id)] = {
+    freshness_context.applicants[event.data.applicant_id] = {
       "last_updated_at" => event.occurred_at.to_s,
-      "status" => event.data.fetch(:status)
+      "status" => event.data.status
     }
   end
 

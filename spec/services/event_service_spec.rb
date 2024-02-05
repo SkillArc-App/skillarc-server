@@ -15,9 +15,9 @@ RSpec.describe EventService do
 
     let(:event_type) { Event::EventTypes::CHAT_CREATED }
     let(:aggregate_id) { SecureRandom.uuid }
-    let(:data) { { data: "cool" } }
+    let(:data) { Events::Common::UntypedHashWrapper.new(data: "cool") }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
-    let(:metadata) { { metadata: "cooler" } }
+    let(:metadata) { Events::Common::UntypedHashWrapper.new(metadata: "cooler") }
     let(:version) { 4 }
     let(:id) { SecureRandom.uuid }
 
@@ -30,10 +30,10 @@ RSpec.describe EventService do
     end
 
     context "when event_schema is a Events::Schema" do
-      let(:event_schema) do
+      let!(:event_schema) do
         Events::Schema.build(
-          data: Hash,
-          metadata: Hash,
+          data: Events::Common::UntypedHashWrapper,
+          metadata: Events::Common::UntypedHashWrapper,
           event_type:,
           version:
         )
@@ -44,7 +44,7 @@ RSpec.describe EventService do
         let(:version) { 1 }
 
         it "raies a InvalidSchemaError" do
-          expect { subject }.to raise_error(described_class::InvalidSchemaError)
+          expect { subject }.to raise_error(Events::Message::InvalidSchemaError)
         end
       end
 
@@ -53,7 +53,7 @@ RSpec.describe EventService do
         let(:version) { 2 }
 
         it "raies a InvalidSchemaError" do
-          expect { subject }.to raise_error(described_class::InvalidSchemaError)
+          expect { subject }.to raise_error(Events::Message::InvalidSchemaError)
         end
       end
 
@@ -76,7 +76,13 @@ RSpec.describe EventService do
             )
 
           expect { subject }.to change(Event, :count).by(1)
-          expect(subject).to eq(Event.last_created.message)
+          expect(subject.id).to eq(Event.last_created.message.id)
+          expect(subject.aggregate_id).to eq(Event.last_created.message.aggregate_id)
+          expect(subject.event_type).to eq(Event.last_created.message.event_type)
+          expect(subject.data).to eq(Event.last_created.message.data)
+          expect(subject.metadata).to eq(Event.last_created.message.metadata)
+          expect(subject.version).to eq(Event.last_created.message.version)
+          expect(subject.occurred_at).to eq(Event.last_created.message.occurred_at)
         end
       end
     end

@@ -1,7 +1,25 @@
 module Events
   module ExperienceCreated
+    module Data
+      class V1
+        extend Payload
+
+        schema do
+          id Uuid
+          organization_name Either(String, nil), default: nil
+          position Either(String, nil), default: nil
+          start_date Either(String, nil), default: nil
+          end_date Either(String, nil), default: nil
+          description Either(String, nil), default: nil
+          is_current Either(Bool(), nil), default: nil
+          profile_id Uuid
+          seeker_id Uuid
+        end
+      end
+    end
+
     V1 = Schema.build(
-      data: Common::UntypedHashWrapper,
+      data: Data::V1,
       metadata: Common::Nothing,
       event_type: Event::EventTypes::EXPERIENCE_CREATED,
       version: 1

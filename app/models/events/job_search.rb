@@ -2,27 +2,23 @@ module Events
   module JobSearch
     module Data
       class V1
-        include(ValueSemantics.for_attributes do
+        extend Payload
+
+        schema do
           search_terms Either(String, nil)
           industries Either(ArrayOf(String), nil)
           tags Either(ArrayOf(String), nil)
-        end)
-
-        def self.from_hash(hash)
-          new(**hash)
         end
       end
     end
 
     module MetaData
       class V1
-        include(ValueSemantics.for_attributes do
+        extend Payload
+
+        schema do
           source Either("seeker", "non-seeker")
           id Either(Uuid, nil), default: nil
-        end)
-
-        def self.from_hash(hash)
-          new(**hash)
         end
       end
     end

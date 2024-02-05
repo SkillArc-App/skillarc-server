@@ -1,5 +1,7 @@
 module Events
   class Message
+    InvalidSchemaError = Class.new(StandardError)
+
     include(ValueSemantics.for_attributes do
       id Uuid
       aggregate_id String
@@ -9,6 +11,26 @@ module Events
       version Integer
       occurred_at ActiveSupport::TimeWithZone, coerce: true
     end)
+
+    def initialize(**kwarg)
+      super(**kwarg)
+
+      schema = event_schema
+
+      raise InvalidSchemaError unless schema.data === data # rubocop:disable Style/CaseEquality
+      raise InvalidSchemaError unless schema.metadata === metadata # rubocop:disable Style/CaseEquality
+    end
+
+    def ==(other)
+      self.class == other.class &&
+        event_type == other.event_type &&
+        version == other.version &&
+        aggregate_id == other.aggregate_id &&
+        id == other.id &&
+        occurred_at == other.occurred_at &&
+        data == other.data &&
+        metadata == other.metadata
+    end
 
     def event_schema
       EventService.get_schema(event_type:, version:)

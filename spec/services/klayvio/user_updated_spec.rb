@@ -6,12 +6,12 @@ RSpec.describe Klayvio::UserUpdated do
       build(
         :events__message,
         :user_updated,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           first_name: "Tom",
           last_name: "Hanks",
           phone_number: "8155201035",
           date_of_birth: Date.new(1980, 1, 1)
-        }
+        )
       )
     end
     let(:email) { "tom@blocktrainapp.com" }

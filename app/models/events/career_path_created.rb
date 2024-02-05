@@ -2,17 +2,15 @@ module Events
   module CareerPathCreated
     module Data
       class V1
-        include(ValueSemantics.for_attributes do
-          id String
-          job_id String
-          title String
-          lower_limit String
-          upper_limit String
-          order Integer
-        end)
+        extend Payload
 
-        def self.from_hash(hash)
-          new(**hash)
+        schema do
+          id Uuid
+          job_id Uuid
+          title Either(String, nil), default: nil
+          lower_limit Either(String, nil), default: nil
+          upper_limit Either(String, nil), default: nil
+          order Integer
         end
       end
     end

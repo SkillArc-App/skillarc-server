@@ -1,7 +1,21 @@
 module Events
   module ChatCreated
+    module Data
+      class V1
+        extend Payload
+
+        schema do
+          applicant_id Uuid
+          profile_id Uuid
+          seeker_id Uuid
+          user_id Uuid
+          employment_title String
+        end
+      end
+    end
+
     V1 = Schema.build(
-      data: Common::UntypedHashWrapper,
+      data: Data::V1,
       metadata: Common::Nothing,
       event_type: Event::EventTypes::CHAT_CREATED,
       version: 1

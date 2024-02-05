@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_05_171740) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_05_185455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -587,15 +587,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_05_171740) do
     t.index ["session_token"], name: "Session_session_token_key", unique: true
   end
 
-  create_table "skills", id: :text, force: :cascade do |t|
-    t.text "name"
-    t.text "type"
-    t.text "profile_id", null: false
-    t.text "description"
-    t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 3, null: false
-  end
-
   create_table "stories", id: :text, force: :cascade do |t|
     t.text "profile_id", null: false
     t.text "prompt", null: false
@@ -760,7 +751,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_05_171740) do
   add_foreign_key "seeker_training_providers", "users", name: "SeekerTrainingProvider_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seekers", "users"
   add_foreign_key "sessions", "users", name: "Session_user_id_fkey", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "skills", "profiles", name: "Skills_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "stories", "profiles", name: "Story_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "stories", "seekers"
   add_foreign_key "testimonials", "jobs", name: "Testimonial_job_id_fkey", on_update: :cascade, on_delete: :restrict

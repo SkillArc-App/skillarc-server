@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_05_185455) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_05_191117) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -420,15 +420,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_05_185455) do
     t.index ["seeker_id"], name: "index_personal_experiences_on_seeker_id"
   end
 
-  create_table "preferences", id: :text, force: :cascade do |t|
-    t.datetime "email_consent", precision: 3
-    t.datetime "information_consent", precision: 3
-    t.text "profile_id", null: false
-    t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 3, null: false
-    t.index ["profile_id"], name: "Preference_profile_id_key", unique: true
-  end
-
   create_table "professional_interests", id: :text, force: :cascade do |t|
     t.text "profile_id", null: false
     t.text "response", null: false
@@ -720,7 +711,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_05_185455) do
   add_foreign_key "other_experiences", "seekers"
   add_foreign_key "personal_experiences", "profiles", name: "PersonalExperience_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "personal_experiences", "seekers"
-  add_foreign_key "preferences", "profiles", name: "Preference_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "professional_interests", "profiles", name: "ProfessionalInterests_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "professional_interests", "seekers"
   add_foreign_key "profile_certifications", "master_certifications", name: "ProfileCertification_master_certification_id_fkey", on_update: :cascade, on_delete: :restrict

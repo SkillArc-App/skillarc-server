@@ -2,10 +2,10 @@ module Events
   module CareerPathDestroyed
     module Data
       class V1
-        expect Payload
+        extend Payload
 
         schema do
-          id String
+          id Uuid
         end
       end
     end

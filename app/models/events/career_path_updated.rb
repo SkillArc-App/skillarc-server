@@ -5,8 +5,8 @@ module Events
         extend Payload
 
         schema do
-          id String
-          job_id Either(String, nil), default: nil
+          id Uuid
+          job_id Either(Uuid, nil), default: nil
           title Either(String, nil), default: nil
           lower_limit Either(String, nil), default: nil
           upper_limit Either(String, nil), default: nil

@@ -2,12 +2,10 @@ module Events
   module CareerPathDestroyed
     module Data
       class V1
-        include(ValueSemantics.for_attributes do
-          id String
-        end)
+        expect Payload
 
-        def self.from_hash(hash)
-          new(**hash)
+        schema do
+          id String
         end
       end
     end

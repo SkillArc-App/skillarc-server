@@ -2,14 +2,12 @@ module Events
   module JobPhotoCreated
     module Data
       class V1
-        include(ValueSemantics.for_attributes do
+        extend Payload
+
+        schema do
           id Uuid
           job_id Uuid
           photo_url String
-        end)
-
-        def self.from_hash(hash)
-          new(**hash)
         end
       end
     end

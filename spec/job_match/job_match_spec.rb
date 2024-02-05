@@ -1,11 +1,11 @@
 require "rails_helper"
 
 RSpec.describe JobMatch::JobMatch do
-  subject { described_class.new(profile:, seeker:) }
+  subject { described_class.new(user:) }
 
   let(:user) { create(:user) }
-  let(:profile) { create(:profile, user:) }
-  let(:seeker) { create(:seeker, id: profile.id, user:) }
+  let!(:profile) { create(:profile, user:) }
+  let!(:seeker) { create(:seeker, id: profile.id, user:) }
 
   let(:saved_job) { create(:job) }
   let!(:unsaved_job) { create(:job) }

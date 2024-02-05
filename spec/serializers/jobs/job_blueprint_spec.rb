@@ -53,10 +53,10 @@ RSpec.describe Jobs::JobBlueprint do
       end
 
       context "when a seeker is provided" do
-        let(:options) { { seeker: } }
-        let(:seeker) { create(:seeker) }
+        let(:options) { { user: } }
+        let(:user) { create(:user) }
 
-        context "when the seeker hasn't do anything with the job" do
+        context "when the user hasn't do anything with the job" do
           it "shows it as unsaved with no application" do
             expect(JSON.parse(subject)).to eq(
               {
@@ -82,9 +82,10 @@ RSpec.describe Jobs::JobBlueprint do
           end
         end
 
-        context "when the seeker has saved and applied to the job" do
+        context "when the user has saved and applied to the job" do
           before do
-            create(:event, aggregate_id: seeker.user.id, event_type: Event::EventTypes::JOB_SAVED, data: { job_id: job.id })
+            create(:event, aggregate_id: user.id, event_type: Event::EventTypes::JOB_SAVED, data: { job_id: job.id })
+            seeker = create(:seeker, user:)
             create(:applicant, seeker:, job:)
           end
 

@@ -21,18 +21,19 @@ module Jobs
         job.job_tags.map { |jt| jt.tag.name }
       end
       field :application_status do |job, options|
-        next nil if options[:seeker].blank?
+        next nil if options[:user].blank?
+        next nil if options[:user].seeker.blank?
 
-        applicant = job.applicants.detect { |a| a.seeker_id == options[:seeker].id }
+        applicant = job.applicants.detect { |a| a.seeker_id == options[:user].seeker.id }
         applicant&.status&.status
       end
       field :saved do |job, options|
-        next false if options[:seeker].blank?
+        next false if options[:user].blank?
 
         # This will need to extrat into something sensible
         save_events = Event
                       .where(
-                        aggregate_id: options[:seeker].user.id,
+                        aggregate_id: options[:user].id,
                         event_type: [Event::EventTypes::JOB_SAVED, Event::EventTypes::JOB_UNSAVED]
                       )
                       .map(&:message)

@@ -12,7 +12,7 @@ module Seekers
         tags: params[:tags]
       ).relevant_jobs(search_source: current_user&.seeker)
 
-      render json: Jobs::JobBlueprint.render(jobs, view: :seeker, seeker: current_user&.seeker)
+      render json: Jobs::JobBlueprint.render(jobs, view: :seeker, user: current_user)
     end
 
     def save

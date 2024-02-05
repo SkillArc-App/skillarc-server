@@ -64,6 +64,7 @@ class Event < ApplicationRecord
       EXPERIENCE_CREATED = 'experience_created'.freeze,
       MET_CAREER_COACH_UPDATED = 'met_career_coach_updated'.freeze,
       JOB_SAVED = 'job_saved'.freeze,
+      JOB_SEARCH = 'job_search'.freeze,
       JOB_UNSAVED = 'job_unsaved'.freeze,
       NOTIFICATION_CREATED = 'notification_created'.freeze,
       NOTIFICATIONS_MARKED_READ = 'notifications_marked_read'.freeze,

@@ -1,6 +1,5 @@
 class EventService
   NotEventSchemaError = Class.new(StandardError)
-  InvalidSchemaError = Class.new(StandardError)
   NotSchemaError = Class.new(StandardError)
   SchemaAlreadyDefinedError = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
@@ -8,15 +7,12 @@ class EventService
   def self.create!(event_schema:, aggregate_id:, data:, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Events::Common::Nothing) # rubocop:disable Metrics/ParameterLists
     raise NotEventSchemaError unless event_schema.is_a?(Events::Schema)
 
-    raise InvalidSchemaError unless event_schema.data === data # rubocop:disable Style/CaseEquality
-    raise InvalidSchemaError unless event_schema.metadata === metadata # rubocop:disable Style/CaseEquality
-
     message = Events::Message.new(
       id:,
       aggregate_id:,
       occurred_at:,
-      data: data.to_h,
-      metadata: metadata.to_h,
+      data:,
+      metadata:,
       event_type: event_schema.event_type,
       version: event_schema.version
     )

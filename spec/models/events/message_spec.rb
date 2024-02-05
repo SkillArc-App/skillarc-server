@@ -34,23 +34,36 @@ RSpec.describe Events::Message do
     end
 
     describe "#occurred_at" do
+      let(:message) do
+        build(
+          :events__message,
+          version: Events::DayElapsed::V1.version,
+          event_type: Events::DayElapsed::V1.event_type,
+          data: Events::Common::Nothing,
+          occurred_at:
+        )
+      end
+
       context "when passed a Time for occurred_at" do
+        let(:occurred_at) { Time.new(2000, 1, 1, 0, 0, 0, "+00:00") }
+
         it "converts it to ActiveSupport::TimeWithZone" do
-          message = build(:events__message, occurred_at: Time.new(2000, 1, 1, 0, 0, 0, "+00:00"))
           expect(message.occurred_at).to eq(Time.zone.parse('2000-01-01 00:00:00 UTC'))
         end
       end
 
       context "when passed a DateTime for occurred_at" do
+        let(:occurred_at) { DateTime.new(2000, 1, 1, 0, 0, 0) }
+
         it "converts it to ActiveSupport::TimeWithZone" do
-          message = build(:events__message, occurred_at: DateTime.new(2000, 1, 1, 0, 0, 0))
           expect(message.occurred_at).to eq(Time.zone.parse('2000-01-01 00:00:00 UTC'))
         end
       end
 
       context "when passed a formatted string string for occurred_at" do
+        let(:occurred_at) { "2000-01-01 00:00:00 UTC" }
+
         it "converts it to ActiveSupport::TimeWithZone" do
-          message = build(:events__message, occurred_at: "2000-01-01 00:00:00 UTC")
           expect(message.occurred_at).to eq(Time.zone.parse('2000-01-01 00:00:00 UTC'))
         end
       end
@@ -86,8 +99,17 @@ RSpec.describe Events::Message do
           id: SecureRandom.uuid,
           aggregate_id: SecureRandom.uuid,
           event_type: Events::ApplicantStatusUpdated::V1.event_type,
-          metadata: {},
-          data: {},
+          metadata: Events::Common::Nothing,
+          data: Events::ApplicantStatusUpdated::Data::V1.new(
+            applicant_id: SecureRandom.uuid,
+            profile_id: SecureRandom.uuid,
+            seeker_id: SecureRandom.uuid,
+            user_id: SecureRandom.uuid,
+            job_id: SecureRandom.uuid,
+            employer_name: "example",
+            employment_title: "example",
+            status: "new"
+          ),
           version: Events::ApplicantStatusUpdated::V1.version,
           occurred_at: Time.zone.now
         )

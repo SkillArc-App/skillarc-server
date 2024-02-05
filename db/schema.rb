@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_05_193518) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_05_201206) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -639,7 +639,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_05_193518) do
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.enum "user_type", default: "SEEKER", null: false, enum_type: "user_type"
-    t.string "sub"
+    t.string "sub", null: false
     t.index ["email"], name: "User_email_key", unique: true
     t.index ["onboarding_session_id"], name: "User_onboarding_session_id_key", unique: true
     t.index ["sub"], name: "index_users_on_sub", unique: true

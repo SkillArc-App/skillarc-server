@@ -6,9 +6,9 @@ RSpec.describe Slack::UserSignup do
       build(
         :events__message,
         :user_created,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           email:
-        }
+        )
       )
     end
     let(:email) { Faker::Internet.email }

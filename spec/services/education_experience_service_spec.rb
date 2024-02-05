@@ -9,8 +9,8 @@ RSpec.describe EducationExperienceService do
 
     let(:organization_name) { "University of Cincinnati" }
     let(:title) { "Student" }
-    let(:graduation_date) { Date.new(2019, 5, 1) }
-    let(:gpa) { 3.5 }
+    let(:graduation_date) { Date.new(2019, 5, 1).to_s }
+    let(:gpa) { "3.5" }
     let(:activities) { "Activities" }
 
     it "creates an education experience" do
@@ -18,17 +18,24 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
+      expect(Events::EducationExperienceCreated::Data::V1)
+        .to receive(:new)
+        .with(
+          id: be_present,
+          organization_name: "University of Cincinnati",
+          title: "Student",
+          graduation_date: Date.new(2019, 5, 1).to_s,
+          gpa: "3.5",
+          activities: "Activities",
+          profile_id: profile.id,
+          seeker_id: seeker.id
+        ).and_call_original
+
       expect(EventService).to receive(:create!).with(
         hash_including(
           event_schema: Events::EducationExperienceCreated::V1,
           aggregate_id: seeker.id,
-          data: Events::Common::UntypedHashWrapper.build(
-            organization_name: "University of Cincinnati",
-            title: "Student",
-            graduation_date: Date.new(2019, 5, 1),
-            gpa: 3.5,
-            activities: "Activities"
-          ),
+          data: be_a(Events::EducationExperienceCreated::Data::V1),
           occurred_at: be_a(Time)
         )
       )
@@ -72,13 +79,15 @@ RSpec.describe EducationExperienceService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EducationExperienceUpdated::V1,
         aggregate_id: seeker.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::EducationExperienceUpdated::Data::V1.new(
           id: education_experience.id,
           organization_name: "University of Cincinnati",
           title: "Student",
           graduation_date: "2019-05-01",
           gpa: "3.5",
-          activities: "Activities"
+          activities: "Activities",
+          profile_id: profile.id,
+          seeker_id: seeker.id
         ),
         occurred_at: be_a(Time)
       )

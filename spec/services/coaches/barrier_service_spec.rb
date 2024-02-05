@@ -6,10 +6,10 @@ RSpec.describe Coaches::BarrierService do
       :events__message,
       :barrier_added,
       aggregate_id: "coaches",
-      data: {
+      data: Events::Common::UntypedHashWrapper.new(
         barrier_id:,
         name: "barrier name"
-      }
+      )
     )
   end
   let(:barrier_id) { SecureRandom.uuid }

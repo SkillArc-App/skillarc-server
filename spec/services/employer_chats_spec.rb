@@ -70,9 +70,10 @@ RSpec.describe EmployerChats do
 
     let(:message) { "This is a message" }
 
-    let!(:applicant) { create(:applicant, job:, profile:) }
+    let!(:applicant) { create(:applicant, job:, profile:, seeker:) }
     let!(:applicant_chat) { create(:applicant_chat, applicant:) }
-    let!(:profile) { create(:profile, user:) }
+    let(:profile) { create(:profile, user:) }
+    let(:seeker) { create(:seeker, user:) }
     let(:user) { create(:user, first_name: "Hannah", last_name: "Block") }
 
     let(:job) { create(:job, employer:, employment_title: "Welder") }
@@ -91,9 +92,10 @@ RSpec.describe EmployerChats do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::ChatMessageSent::V1,
         aggregate_id: job.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::ChatMessageSent::Data::V1.new(
           applicant_id: applicant.id,
           profile_id: profile.id,
+          seeker_id: seeker.id,
           from_user_id: recruiter.user.id,
           employer_name: employer.name,
           employment_title: job.employment_title,
@@ -122,9 +124,10 @@ RSpec.describe EmployerChats do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::ChatCreated::V1,
         aggregate_id: applicant.job.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::ChatCreated::Data::V1.new(
           applicant_id: applicant.id,
           profile_id: applicant.profile.id,
+          seeker_id: applicant.seeker.id,
           user_id: applicant.profile.user.id,
           employment_title: applicant.job.employment_title
         )

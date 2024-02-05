@@ -7,8 +7,9 @@ RSpec.describe SeekerChats do
     subject { described_class.new(user).send_message(applicant_id: applicant.id, message:) }
 
     let(:message) { "This is a message" }
-    let!(:applicant) { create(:applicant, job:, profile:) }
-    let!(:profile) { create(:profile, user:) }
+    let!(:applicant) { create(:applicant, job:, profile:, seeker:) }
+    let(:profile) { create(:profile, user:) }
+    let(:seeker) { create(:seeker, user:) }
 
     let!(:applicant_chat) { create(:applicant_chat, applicant:) }
 
@@ -30,9 +31,10 @@ RSpec.describe SeekerChats do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::ChatMessageSent::V1,
         aggregate_id: job.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::ChatMessageSent::Data::V1.new(
           applicant_id: applicant.id,
           profile_id: profile.id,
+          seeker_id: seeker.id,
           from_user_id: user.id,
           employer_name: employer.name,
           employment_title: job.employment_title,

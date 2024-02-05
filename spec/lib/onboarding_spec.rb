@@ -68,17 +68,16 @@ RSpec.describe Onboarding do
 
       it "publishes a seeker created event" do
         allow(EventService).to receive(:create!)
-        allow(Events::Common::UntypedHashWrapper).to receive(:build).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_schema: Events::SeekerCreated::V1,
-            data: be_a(Events::Common::UntypedHashWrapper),
+            data: be_a(Events::SeekerCreated::Data::V1),
             occurred_at: be_present
           ).and_call_original
-        expect(Events::Common::UntypedHashWrapper)
-          .to receive(:build)
+        expect(Events::SeekerCreated::Data::V1)
+          .to receive(:new)
           .with(
             id: be_present,
             user_id: user.id
@@ -147,17 +146,16 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
-        allow(Events::Common::UntypedHashWrapper).to receive(:build).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
-            event_schema: Events::SeekerCreated::V1,
-            data: be_a(Events::Common::UntypedHashWrapper),
+            event_schema: Events::ExperienceCreated::V1,
+            data: be_a(Events::ExperienceCreated::Data::V1),
             occurred_at: be_present
           ).and_call_original
-        expect(Events::Common::UntypedHashWrapper)
-          .to receive(:build)
+        expect(Events::ExperienceCreated::Data::V1)
+          .to receive(:new)
           .with(
             id: be_present,
             organization_name: "Company",
@@ -232,9 +230,8 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
-        allow(Events::Common::UntypedHashWrapper).to receive(:build).and_call_original
-        expect(Events::Common::UntypedHashWrapper)
-          .to receive(:build)
+        expect(Events::EducationExperienceCreated::Data::V1)
+          .to receive(:new)
           .with(
             id: be_present,
             activities: "Football",
@@ -250,7 +247,7 @@ RSpec.describe Onboarding do
           .with(
             aggregate_id: user.id,
             event_schema: Events::EducationExperienceCreated::V1,
-            data: be_a(Events::Common::UntypedHashWrapper),
+            data: be_a(Events::EducationExperienceCreated::Data::V1),
             occurred_at: be_present
           ).and_call_original
 
@@ -407,17 +404,16 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
-        allow(Events::Common::UntypedHashWrapper).to receive(:build).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_schema: Events::PersonalExperienceCreated::V1,
-            data: be_a(Events::Common::UntypedHashWrapper),
+            data: be_a(Events::PersonalExperienceCreated::Data::V1),
             occurred_at: be_present
           ).and_call_original
-        expect(Events::Common::UntypedHashWrapper)
-          .to receive(:build)
+        expect(Events::PersonalExperienceCreated::Data::V1)
+          .to receive(:new)
           .with(
             id: be_present,
             activity: "Activity",

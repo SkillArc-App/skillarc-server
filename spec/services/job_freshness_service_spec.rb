@@ -13,7 +13,6 @@ RSpec.describe JobFreshnessService do
       :events__message,
       :employer_invite_accepted,
       aggregate_id: employer_id,
-      data: Events::Common::Nothing,
       occurred_at: now - 1.week
     )
   end
@@ -102,7 +101,7 @@ RSpec.describe JobFreshnessService do
         )
 
         expect do
-          described_class.handle_event(build(:events__message, :day_elapsed), now:, with_side_effects: true)
+          described_class.handle_event(build(:events__message, :day_elapsed, data: Events::Common::Nothing), now:, with_side_effects: true)
         end.not_to(change(JobFreshness, :count))
       end
     end
@@ -200,12 +199,14 @@ RSpec.describe JobFreshnessService do
               :events__message,
               :applicant_status_updated,
               aggregate_id: job_id,
-              data: Events::Common::UntypedHashWrapper.build(
+              data: Events::ApplicantStatusUpdated::Data::V1.new(
                 applicant_id: SecureRandom.uuid,
                 job_id:,
                 profile_id: SecureRandom.uuid,
+                seeker_id: SecureRandom.uuid,
                 user_id: SecureRandom.uuid,
                 employment_title: "Welder",
+                employer_name: "Employer",
                 status: "new"
               ),
               occurred_at: applicant_created_at
@@ -220,7 +221,7 @@ RSpec.describe JobFreshnessService do
                 job_id:,
                 status: "fresh",
                 applicants: {
-                  applicant_created_at_event.data.fetch(:applicant_id) => {
+                  applicant_created_at_event.data.applicant_id => {
                     last_updated_at: applicant_created_at,
                     status: "new"
                   }.stringify_keys
@@ -243,13 +244,15 @@ RSpec.describe JobFreshnessService do
                   :events__message,
                   :applicant_status_updated,
                   aggregate_id: job_id,
-                  data: Events::Common::UntypedHashWrapper.build(
-                    applicant_id: applicant_created_at_event.data.fetch(:applicant_id),
+                  data: Events::ApplicantStatusUpdated::Data::V1.new(
+                    applicant_id: applicant_created_at_event.data.applicant_id,
                     job_id:,
                     profile_id: SecureRandom.uuid,
                     user_id: SecureRandom.uuid,
                     employment_title: "Welder",
-                    status: "pending intro"
+                    status: "pending intro",
+                    seeker_id: SecureRandom.uuid,
+                    employer_name: "Employer"
                   ),
                   occurred_at: applicant_status_updated_at
                 )
@@ -265,7 +268,7 @@ RSpec.describe JobFreshnessService do
                   job_id:,
                   status: "fresh",
                   applicants: {
-                    applicant_created_at_event.data.fetch(:applicant_id) => {
+                    applicant_created_at_event.data.applicant_id => {
                       last_updated_at: applicant_status_updated_at,
                       status: "pending intro"
                     }.stringify_keys
@@ -285,7 +288,7 @@ RSpec.describe JobFreshnessService do
                 job_id:,
                 status: "stale",
                 applicants: {
-                  applicant_created_at_event.data.fetch(:applicant_id) => {
+                  applicant_created_at_event.data.applicant_id => {
                     last_updated_at: applicant_created_at,
                     status: "new"
                   }.stringify_keys

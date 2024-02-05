@@ -193,14 +193,14 @@ module Coaches
 
       application = SeekerApplication.find_or_create_by(
         coach_seeker_context: csc,
-        application_id: event.data[:application_id] || event.data[:applicant_id]
+        application_id: event.data.applicant_id
       )
 
       application.update!(
-        status: event.data[:status],
-        employer_name: event.data[:employer_name],
-        job_id: event.data[:job_id],
-        employment_title: event.data[:employment_title]
+        status: event.data.status,
+        employer_name: event.data.employer_name,
+        job_id: event.data.job_id,
+        employment_title: event.data.employment_title
       )
     end
 

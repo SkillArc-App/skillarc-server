@@ -6,7 +6,18 @@ RSpec.describe Klayvio::ExperienceEntered do
       build(
         :events__message,
         :experience_created,
-        aggregate_id: user.id
+        aggregate_id: user.id,
+        data: Events::ExperienceCreated::Data::V1.new(
+          id: SecureRandom.uuid,
+          organization_name: "A name",
+          position: "A position",
+          start_date: Time.zone.now.to_s,
+          end_date: nil,
+          description: "A description",
+          is_current: false,
+          profile_id: SecureRandom.uuid,
+          seeker_id: SecureRandom.uuid
+        )
       )
     end
     let(:user) { create(:user, email:) }

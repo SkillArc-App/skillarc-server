@@ -9,11 +9,11 @@ RSpec.describe Klayvio::JobSaved do
         :events__message,
         :job_saved,
         aggregate_id: user.id,
-        data: {
+        data: Events::Common::UntypedHashWrapper.new(
           job_id: "A",
           employment_title: "Welder",
           employer_name: "Acme Inc."
-        }
+        )
       )
     end
 

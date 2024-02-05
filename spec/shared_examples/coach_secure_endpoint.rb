@@ -6,7 +6,7 @@ RSpec.shared_context "coach authenticated" do
     )
 
     u = User.create!(
-      id: 'clem7u5uc0007mi0rne4h3be0',
+      id: '1a7d78bd-ae41-4d09-95d5-0b417efbcb7f',
       first_name: 'Jake',
       last_name: 'Not-Onboard',
       email: 'jake@statefarm.com',

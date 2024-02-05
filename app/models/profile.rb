@@ -23,6 +23,7 @@ class Profile < ApplicationRecord
   belongs_to :user
 
   has_many :applicants, dependent: :destroy
+  has_many :credentials, dependent: :destroy
   has_many :education_experiences, dependent: :destroy
   has_many :other_experiences, dependent: :destroy
   has_many :personal_experiences, dependent: :destroy

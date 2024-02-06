@@ -53,7 +53,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
           .with(
             be_a(ActiveRecord::Relation),
             view: :seeker,
-            seeker: nil
+            user: nil
           )
           .and_call_original
 
@@ -72,7 +72,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
           .with(
             be_a(ActiveRecord::Relation),
             view: :seeker,
-            seeker:
+            user:
           )
           .and_call_original
 

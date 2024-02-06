@@ -9,7 +9,7 @@ module Jobs
     def relevant_jobs(search_source:)
       query = Job.for_search
 
-      query = query.where("employment_title LIKE ?", "%#{search_terms}%") if search_terms_usable?
+      query = query.where("lower(employment_title) LIKE ?", "%#{search_terms.downcase}%") if search_terms_usable?
       query = query.where("industry && ARRAY[?]::text[]", industries) if industries_usable?
       query = query.where(tags: { name: tags }) if tags_usable?
 

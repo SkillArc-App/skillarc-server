@@ -95,6 +95,14 @@ RSpec.describe Jobs::SearchService do
           expect(subject).to contain_exactly(job1)
         end
       end
+
+      context "when the search terms case insenstive match a job" do
+        let(:search_terms) { "friend" }
+
+        it "returns all no jobs" do
+          expect(subject).to contain_exactly(job1)
+        end
+      end
     end
 
     context "when industries are provided" do

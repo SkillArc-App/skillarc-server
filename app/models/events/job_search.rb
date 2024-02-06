@@ -21,6 +21,16 @@ module Events
           id Either(Uuid, nil), default: nil
         end
       end
+
+      class V2
+        extend Payload
+
+        schema do
+          source Either("seeker", "user", "unauthenticated")
+          id Either(Uuid, nil), default: nil
+          utm_source Either(String, nil), default: nil
+        end
+      end
     end
 
     V1 = Schema.build(
@@ -28,6 +38,12 @@ module Events
       metadata: MetaData::V1,
       event_type: Event::EventTypes::JOB_SEARCH,
       version: 1
+    )
+    V2 = Schema.build(
+      data: Data::V1,
+      metadata: MetaData::V2,
+      event_type: Event::EventTypes::JOB_SEARCH,
+      version: 2
     )
   end
 end

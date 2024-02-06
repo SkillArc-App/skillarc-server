@@ -7,10 +7,10 @@ module Seekers
 
     def index
       jobs = Jobs::SearchService.new(
-        search_terms: params[:search_terms],
+        search_terms: params[:search_terms] || params[:utm_term],
         industries: params[:industries],
         tags: params[:tags]
-      ).relevant_jobs(search_source: current_user&.seeker)
+      ).relevant_jobs(user: current_user, utm_source: params[:utm_source])
 
       render json: Jobs::JobBlueprint.render(jobs, view: :seeker, user: current_user)
     end

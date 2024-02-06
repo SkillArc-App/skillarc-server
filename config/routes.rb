@@ -116,6 +116,7 @@ Rails.application.routes.draw do
       post '/create_user' => 'test#create_test_user'
       post '/create_coach' => 'test#create_coach'
       post '/create_seeker' => 'test#create_seeker'
+      post '/create_job' => 'test#create_job'
       post '/create_seeker_lead' => 'test#create_seeker_lead'
       post '/create_active_seeker' => 'test#create_active_seeker'
       post '/create_recruiter_with_applicant' => 'test#create_test_recruiter_with_applicant'

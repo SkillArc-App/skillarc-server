@@ -8,7 +8,7 @@ module Events
           applicant_id Uuid
           profile_id Uuid
           seeker_id Uuid
-          user_id Uuid
+          user_id String
           employment_title String
         end
       end

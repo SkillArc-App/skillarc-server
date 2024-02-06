@@ -6,7 +6,7 @@ module Events
 
         schema do
           id Uuid
-          user_id Uuid
+          user_id String
         end
       end
     end

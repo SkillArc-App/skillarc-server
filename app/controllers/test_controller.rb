@@ -66,7 +66,7 @@ class TestController < ApplicationController
   end
 
   def create_job
-    render json: FactoryBot.create(:job, employment_title: Faker::Job.title)
+    render json: FactoryBot.create(:job, employment_title: SecureRandom.uuid)
   end
 
   def create_seeker_lead

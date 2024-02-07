@@ -4,6 +4,7 @@ module Coaches
       [
         Events::BarrierUpdated::V1,
         Events::CoachAssigned::V1,
+        Events::JobRecommended::V1,
         Events::LeadAdded::V1,
         Events::NoteAdded::V1,
         Events::NoteDeleted::V1,
@@ -38,6 +39,9 @@ module Coaches
         handle_barriers_updated(event)
       when Events::CoachAssigned::V1
         handle_coach_assigned(event)
+
+      when Events::JobRecommended::V1
+        handle_job_recommended(event)
 
       when Events::LeadAdded::V1
         handle_lead_added(event)
@@ -153,6 +157,18 @@ module Coaches
       )
     end
 
+    def self.recommend_job(profile_id:, job_id:, coach:, now: Time.zone.now)
+      EventService.create!(
+        event_schema: Events::JobRecommended::V1,
+        aggregate_id: profile_id,
+        data: Events::JobRecommended::Data::V1.new(
+          coach_id: coach.coach_id,
+          job_id:
+        ),
+        occurred_at: now
+      )
+    end
+
     def self.update_barriers(id:, barriers:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::BarrierUpdated::V1,
@@ -223,6 +239,16 @@ module Coaches
 
       csc.assigned_coach = event.data[:coach_id]
       csc.save!
+    end
+
+    def self.handle_job_recommended(event)
+      csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
+
+      csc.seeker_job_recommendations << SeekerJobRecommendation.create!(
+        coach_seeker_context: csc,
+        coach_id: Coach.find_by(coach_id: event.data[:coach_id]).id,
+        job_id: event.data[:job_id]
+      )
     end
 
     def self.handle_lead_added(event)
@@ -341,7 +367,8 @@ module Coaches
             jobId: application.job_id,
             employmentTitle: application.employment_title
           }
-        end
+        end,
+        job_recommendations: csc.seeker_job_recommendations.map(&:job_id)
       }
     end
 

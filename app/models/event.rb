@@ -23,6 +23,7 @@ class Event < ApplicationRecord
       BARRIER_ADDED = 'barrier_added'.freeze,
       BARRIERS_UPDATED = 'barriers_updated'.freeze,
       COACH_ASSIGNED = 'coach_assigned'.freeze,
+      JOB_RECOMMENDED = 'job_recommended'.freeze,
       LEAD_ADDED = 'lead_added'.freeze,
       NOTE_ADDED = 'note_added'.freeze,
       NOTE_MODIFIED = 'note_modified'.freeze,

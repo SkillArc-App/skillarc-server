@@ -29,6 +29,15 @@ class Job < ApplicationRecord
     ].freeze
   end
 
+  module Industries
+    ALL = [
+      MANUFACTURING = 'manufacturing'.freeze,
+      CONSTRUCTION = 'construction'.freeze,
+      HEALTHCARE = 'healthcare'.freeze,
+      LOGISTICS = 'logistics'.freeze
+    ].freeze
+  end
+
   belongs_to :employer
 
   has_many :applicants, dependent: :destroy
@@ -43,7 +52,8 @@ class Job < ApplicationRecord
 
   scope :shown, -> { where(hide_job: false) }
 
-  validates :employment_title, presence: { in: EmploymentTypes::ALL }
+  validates :employment_type, presence: { in: EmploymentTypes::ALL }
+  validates :industry, presence: { in: Industries::ALL }
 
   def self.with_employer_info
     includes(

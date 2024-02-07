@@ -23,5 +23,6 @@ module Coaches
     has_many :seeker_notes, dependent: :destroy, class_name: "Coaches::SeekerNote"
     has_many :seeker_applications, dependent: :destroy, class_name: "Coaches::SeekerApplication"
     has_many :seeker_barriers, dependent: :destroy, class_name: "Coaches::SeekerBarrier"
+    has_many :seeker_job_recommendations, dependent: :destroy, class_name: "Coaches::SeekerJobRecommendation"
   end
 end

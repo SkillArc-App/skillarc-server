@@ -82,4 +82,33 @@ RSpec.describe "Seekers", type: :request do
       end
     end
   end
+
+  describe "POST /:seeker_id/recommend_job" do
+    subject { post seeker_recommend_job_path(seeker_id), params:, headers: }
+
+    let(:seeker_id) { coach_seeker_context.profile_id }
+    let(:params) do
+      {
+        job_id:
+      }
+    end
+    let(:job_id) { create(:coaches__job).id }
+    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+
+    it_behaves_like "coach secured endpoint"
+
+    context "authenticated" do
+      include_context "coach authenticated"
+
+      it "calls SeekerService.recommend_job" do
+        expect(Coaches::SeekerService).to receive(:recommend_job).with(
+          profile_id: seeker_id,
+          job_id:,
+          coach:
+        )
+
+        subject
+      end
+    end
+  end
 end

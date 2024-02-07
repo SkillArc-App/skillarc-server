@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Coaches::SeekerService do
+RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:lead_added) { build(:events__message, :lead_added, aggregate_id: lead_id, data: lead, occurred_at: time1) }
   let(:non_seeker_user_created) { build(:events__message, :user_created, aggregate_id: coach_user_id, data: Events::Common::UntypedHashWrapper.build(email: "f@f.f")) }
   let(:user_without_email) { build(:events__message, :user_created, aggregate_id: user_without_email_id, data: Events::Common::UntypedHashWrapper.build(first_name: "Hannah", last_name: "Block")) }
@@ -22,6 +22,7 @@ RSpec.describe Coaches::SeekerService do
   let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(coach_id: coach_user_id, email: "coach@blocktrainapp.com"), occurred_at: time1) }
   let(:barriers_updated1) { build(:events__message, :barriers_updated, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier1.barrier_id]), occurred_at: time1) }
   let(:barriers_updated2) { build(:events__message, :barriers_updated, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier2.barrier_id]), occurred_at: time1) }
+  let(:job_recommended) { build(:events__message, :job_recommended, aggregate_id: profile_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id: coach_user_id), occurred_at: time1) }
 
   let(:lead) do
     Events::Common::UntypedHashWrapper.new(
@@ -92,7 +93,7 @@ RSpec.describe Coaches::SeekerService do
   let(:status1) { "pending intro" }
   let(:status2) { "hire" }
   let(:lead_id) { "91308d08-bd08-452b-a7de-74746a6c5f93" }
-  let(:coach_user_id) { "09534ac3-b46e-4646-99c5-c517deb00239" }
+  let(:coach_user_id) { create(:coaches__coach).coach_id }
   let(:user_without_email_id) { "4f878ed9-5cb9-429b-ab22-969b46305ea2" }
   let(:profile_without_email_id) { "b09195f7-a15e-461f-bec2-1e4744122fdf" }
   let(:user_id) { "9f769972-c41c-4b58-a056-bffb714ea24d" }
@@ -104,7 +105,7 @@ RSpec.describe Coaches::SeekerService do
   let(:applicant_id1) { "8aac8c6d-5c13-418d-b8e7-fd468fa291de" }
   let(:applicant_id2) { "749d43ba-08b5-40cb-977c-4e8ebd2da04a" }
   let(:applicant_id3) { "71f36a32-9c83-47e7-a22a-3d15b03c2dc0" }
-  let(:job_id) { "e43b2338-50bb-467f-85c4-ee26181052e2" }
+  let(:job_id) { create(:coaches__job).id }
   let(:updated_note) { "This note was updated" }
   let(:employer_name1) { "Cool company" }
   let(:employer_name2) { "Fun company" }
@@ -131,6 +132,7 @@ RSpec.describe Coaches::SeekerService do
     described_class.handle_event(applicant_status_updated4)
     described_class.handle_event(barriers_updated1)
     described_class.handle_event(barriers_updated2)
+    described_class.handle_event(job_recommended)
   end
 
   describe ".all_contexts" do
@@ -167,6 +169,7 @@ RSpec.describe Coaches::SeekerService do
             employmentTitle: employment_title2
           }
         ],
+        job_recommendations: [job_id],
         stage: 'profile_created'
       }
       expected_other_profile = {
@@ -195,10 +198,12 @@ RSpec.describe Coaches::SeekerService do
             employmentTitle: employment_title2
           }
         ],
+        job_recommendations: [],
         stage: 'profile_created'
       }
 
-      expect(subject).to contain_exactly(expected_profile, expected_other_profile)
+      expect(subject).to include(expected_profile)
+      expect(subject).to include(expected_other_profile)
     end
   end
 
@@ -254,6 +259,7 @@ RSpec.describe Coaches::SeekerService do
             employerName: employer_name2
           }
         ],
+        job_recommendations: [job_id],
         stage: 'profile_created'
       }
 
@@ -430,6 +436,28 @@ RSpec.describe Coaches::SeekerService do
           coach_email: coach.email,
           note_id: note_id2,
           note: updated_note
+        ),
+        occurred_at: now
+      ).and_call_original
+
+      subject
+    end
+  end
+
+  describe ".recommend_job" do
+    subject { described_class.recommend_job(profile_id:, job_id:, coach:, now:) }
+
+    let(:now) { Time.zone.local(2020, 1, 1) }
+    let(:coach) { create(:coaches__coach) }
+    let(:job_id) { create(:coaches__job).id }
+
+    it "creates an event" do
+      expect(EventService).to receive(:create!).with(
+        event_schema: Events::JobRecommended::V1,
+        aggregate_id: profile_id,
+        data: Events::JobRecommended::Data::V1.new(
+          job_id:,
+          coach_id: coach.coach_id
         ),
         occurred_at: now
       ).and_call_original

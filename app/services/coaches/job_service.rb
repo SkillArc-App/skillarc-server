@@ -1,5 +1,15 @@
 module Coaches
   class JobService
+    def self.handled_events
+      [
+        Events::JobCreated::V1
+      ].freeze
+    end
+
+    def self.handled_events_sync
+      [].freeze
+    end
+
     def self.call(event:)
       handle_event(event)
     end

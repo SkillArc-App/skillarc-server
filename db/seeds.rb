@@ -64,7 +64,7 @@ earthwork_job = Job.create!(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
 )
 
-Job.create!(
+contractor = Job.create!(
   id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
   employer: sg_employer,
   benefits_description: 'Dental insurance, Vision insurance, Disability insurance 401(k)',
@@ -871,3 +871,5 @@ Reason.create!(description: "The candidate did not show up for the interview")
 
 FactoryBot.create(:barrier, name: "Background")
 FactoryBot.create(:barrier, name: "Unable to Drive")
+
+FactoryBot.create(:coaches__job, job_id: contractor.id, employment_title: contractor.employment_title)

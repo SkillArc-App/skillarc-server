@@ -28,6 +28,8 @@ RSpec.describe Coaches::JobService do
     described_class.handle_event(job_created)
   end
 
+  it_behaves_like "an event consumer"
+
   describe ".all" do
     subject { described_class.all }
 

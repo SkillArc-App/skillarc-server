@@ -14,6 +14,8 @@ RSpec.describe Coaches::BarrierService do
   end
   let(:barrier_id) { SecureRandom.uuid }
 
+  it_behaves_like "an event consumer"
+
   describe ".all" do
     before do
       described_class.handle_event(barrier_added)

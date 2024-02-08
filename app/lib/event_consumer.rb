@@ -10,4 +10,8 @@ class EventConsumer
   def self.handled_events_sync
     []
   end
+
+  def self.reset_for_replay
+    raise NoMethodError
+  end
 end

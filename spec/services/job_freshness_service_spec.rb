@@ -43,6 +43,8 @@ RSpec.describe JobFreshnessService do
   let(:job_id) { "0cff79c1-fb70-4e02-9407-1572c25d8717" }
   let(:employer_id) { "dbd969af-df4f-4ec0-9c23-8549235354c4" }
 
+  it_behaves_like "an event consumer"
+
   describe ".handle_event" do
     subject { described_class.handle_event(event, with_side_effects:, now:) }
 

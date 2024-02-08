@@ -135,6 +135,8 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     described_class.handle_event(job_recommended)
   end
 
+  it_behaves_like "an event consumer"
+
   describe ".all_contexts" do
     subject { described_class.all_contexts }
 

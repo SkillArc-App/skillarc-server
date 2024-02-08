@@ -22,6 +22,8 @@ RSpec.describe Coaches::CoachService do
     described_class.handle_event(other_role_added)
   end
 
+  it_behaves_like "an event consumer"
+
   describe ".all" do
     subject { described_class.all }
 

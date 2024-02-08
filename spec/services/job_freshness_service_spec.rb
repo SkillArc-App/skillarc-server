@@ -109,6 +109,26 @@ RSpec.describe JobFreshnessService do
     end
   end
 
+  describe ".reset_for_replay" do
+    before do
+      FactoryBot.create(:job_freshness)
+      FactoryBot.create(:job_freshness_employer_job)
+      FactoryBot.create(:job_freshness_context)
+    end
+
+    it "destroys all records" do
+      expect(JobFreshness.count).not_to eq(0)
+      expect(JobFreshnessEmployerJob.count).not_to eq(0)
+      expect(JobFreshnessContext.count).not_to eq(0)
+
+      described_class.reset_for_replay
+
+      expect(JobFreshness.count).to eq(0)
+      expect(JobFreshnessEmployerJob.count).to eq(0)
+      expect(JobFreshnessContext.count).to eq(0)
+    end
+  end
+
   describe "#get" do
     subject { described_class.new(job_id, now:).get }
 

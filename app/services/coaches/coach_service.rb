@@ -28,6 +28,10 @@ module Coaches
       end
     end
 
+    def self.reset_for_replay
+      Coach.destroy_all
+    end
+
     def self.handle_role_added(event)
       return unless event.data[:role] == "coach"
 

@@ -137,6 +137,28 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
   it_behaves_like "an event consumer"
 
+  describe ".reset_for_replay" do
+    subject { described_class.reset_for_replay }
+
+    it "destroys all records" do
+      expect(Coaches::CoachSeekerContext.count).not_to eq(0)
+      expect(Coaches::SeekerLead.count).not_to eq(0)
+      expect(Coaches::SeekerApplication.count).not_to eq(0)
+      expect(Coaches::SeekerNote.count).not_to eq(0)
+      expect(Coaches::SeekerJobRecommendation.count).not_to eq(0)
+      expect(Coaches::SeekerBarrier.count).not_to eq(0)
+
+      subject
+
+      expect(Coaches::CoachSeekerContext.count).to eq(0)
+      expect(Coaches::SeekerLead.count).to eq(0)
+      expect(Coaches::SeekerApplication.count).to eq(0)
+      expect(Coaches::SeekerNote.count).to eq(0)
+      expect(Coaches::SeekerJobRecommendation.count).to eq(0)
+      expect(Coaches::SeekerBarrier.count).to eq(0)
+    end
+  end
+
   describe ".all_contexts" do
     subject { described_class.all_contexts }
 

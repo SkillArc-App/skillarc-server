@@ -23,6 +23,10 @@ module Coaches
       end
     end
 
+    def self.reset_for_replay
+      Job.destroy_all
+    end
+
     class << self
       private
 

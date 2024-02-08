@@ -42,4 +42,14 @@ RSpec.describe Coaches::JobService do
       )
     end
   end
+
+  describe ".reset_for_replay" do
+    it "destroys all records" do
+      expect(Coaches::Job.count).not_to eq(0)
+
+      described_class.reset_for_replay
+
+      expect(Coaches::Job.count).to eq(0)
+    end
+  end
 end

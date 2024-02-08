@@ -19,6 +19,10 @@ module Coaches
       end
     end
 
+    def self.reset_for_replay
+      Barrier.destroy_all
+    end
+
     def self.all
       Barrier.all.map do |barrier|
         {

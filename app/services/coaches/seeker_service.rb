@@ -82,6 +82,15 @@ module Coaches
       end
     end
 
+    def self.reset_for_replay
+      SeekerLead.destroy_all
+      SeekerNote.destroy_all
+      SeekerApplication.destroy_all
+      SeekerJobRecommendation.destroy_all
+      SeekerBarrier.destroy_all
+      CoachSeekerContext.destroy_all
+    end
+
     def self.all_leads
       SeekerLead.all.map do |seeker_lead|
         serialize_seeker_lead(seeker_lead)

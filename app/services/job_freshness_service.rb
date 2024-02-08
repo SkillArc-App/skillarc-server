@@ -70,6 +70,12 @@ class JobFreshnessService < EventConsumer
     true
   end
 
+  def self.reset_for_replay
+    JobFreshness.destroy_all
+    JobFreshnessContext.destroy_all
+    JobFreshnessEmployerJob.destroy_all
+  end
+
   def initialize(job_id, now: Time.zone.now)
     super()
     @job_id = job_id

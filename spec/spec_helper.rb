@@ -16,8 +16,14 @@
 
 require 'pry'
 
-# require all files in the shared_examples directory
-Dir[Rails.root.join('spec/shared_examples/**/*.rb')].each { |f| require f }
+require 'shared_examples/secure_endpoint'
+require 'shared_examples/admin_secure_endpoint'
+require 'shared_examples/training_provider_secure_endpoint'
+require "shared_examples/coach_secure_endpoint"
+require "shared_examples/employer_secure_endpoint"
+require "shared_examples/profile_secure_endpoint"
+require "shared_examples/default_headers_context"
+require "shared_examples/event_consumer"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

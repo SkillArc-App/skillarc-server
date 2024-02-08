@@ -22,6 +22,8 @@ RSpec.describe Coaches::CoachService do
     described_class.handle_event(other_role_added)
   end
 
+  it_behaves_like "an event consumer"
+
   describe ".all" do
     subject { described_class.all }
 
@@ -32,6 +34,16 @@ RSpec.describe Coaches::CoachService do
       }
 
       expect(subject).to contain_exactly(expected_coach)
+    end
+  end
+
+  describe ".reset_for_replay" do
+    it "destroys all records" do
+      expect(Coaches::Coach.count).not_to eq(0)
+
+      described_class.reset_for_replay
+
+      expect(Coaches::Coach.count).to eq(0)
     end
   end
 end

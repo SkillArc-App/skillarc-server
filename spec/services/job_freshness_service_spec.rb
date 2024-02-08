@@ -43,6 +43,8 @@ RSpec.describe JobFreshnessService do
   let(:job_id) { "0cff79c1-fb70-4e02-9407-1572c25d8717" }
   let(:employer_id) { "dbd969af-df4f-4ec0-9c23-8549235354c4" }
 
+  it_behaves_like "an event consumer"
+
   describe ".handle_event" do
     subject { described_class.handle_event(event, with_side_effects:, now:) }
 
@@ -104,6 +106,26 @@ RSpec.describe JobFreshnessService do
           described_class.handle_event(build(:events__message, :day_elapsed, data: Events::Common::Nothing), now:, with_side_effects: true)
         end.not_to(change(JobFreshness, :count))
       end
+    end
+  end
+
+  describe ".reset_for_replay" do
+    before do
+      FactoryBot.create(:job_freshness)
+      FactoryBot.create(:job_freshness_employer_job)
+      FactoryBot.create(:job_freshness_context)
+    end
+
+    it "destroys all records" do
+      expect(JobFreshness.count).not_to eq(0)
+      expect(JobFreshnessEmployerJob.count).not_to eq(0)
+      expect(JobFreshnessContext.count).not_to eq(0)
+
+      described_class.reset_for_replay
+
+      expect(JobFreshness.count).to eq(0)
+      expect(JobFreshnessEmployerJob.count).to eq(0)
+      expect(JobFreshnessContext.count).to eq(0)
     end
   end
 

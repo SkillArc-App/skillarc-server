@@ -1,5 +1,5 @@
 module Coaches
-  class SeekerService # rubocop:disable Metrics/ClassLength
+  class SeekerService < EventConsumer # rubocop:disable Metrics/ClassLength
     def self.handled_events_sync
       [
         Events::BarrierUpdated::V1,
@@ -80,6 +80,15 @@ module Coaches
         Events::OnboardingCompleted::V1
         handle_last_active_updated(event)
       end
+    end
+
+    def self.reset_for_replay
+      SeekerLead.destroy_all
+      SeekerNote.destroy_all
+      SeekerApplication.destroy_all
+      SeekerJobRecommendation.destroy_all
+      SeekerBarrier.destroy_all
+      CoachSeekerContext.destroy_all
     end
 
     def self.all_leads

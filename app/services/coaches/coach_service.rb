@@ -1,5 +1,5 @@
 module Coaches
-  class CoachService
+  class CoachService < EventConsumer
     def self.handled_events_sync
       [Events::RoleAdded::V1].freeze
     end
@@ -26,6 +26,10 @@ module Coaches
           email: coach.email
         }
       end
+    end
+
+    def self.reset_for_replay
+      Coach.destroy_all
     end
 
     def self.handle_role_added(event)

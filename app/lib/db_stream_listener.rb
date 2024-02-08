@@ -11,6 +11,8 @@ class DbStreamListener < StreamListener
   end
 
   def replay
+    consumer.reset_for_replay
+
     ListenerBookmark.find_by(consumer_name: listener_name)&.destroy
     play
   end
@@ -25,8 +27,8 @@ class DbStreamListener < StreamListener
     end
   end
 
-  def call(event:)
-    handle_event(event, with_side_effects: true)
+  def call(*)
+    play
   end
 
   private

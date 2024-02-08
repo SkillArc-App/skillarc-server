@@ -1,5 +1,5 @@
 module Coaches
-  class BarrierService
+  class BarrierService < EventConsumer
     def self.handled_events_sync
       [Events::BarrierAdded::V1].freeze
     end
@@ -17,6 +17,10 @@ module Coaches
       when Events::BarrierAdded::V1
         handle_barrier_added(event)
       end
+    end
+
+    def self.reset_for_replay
+      Barrier.destroy_all
     end
 
     def self.all

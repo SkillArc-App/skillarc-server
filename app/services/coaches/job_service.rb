@@ -1,13 +1,9 @@
 module Coaches
-  class JobService
+  class JobService < EventConsumer
     def self.handled_events
       [
         Events::JobCreated::V1
       ].freeze
-    end
-
-    def self.handled_events_sync
-      [].freeze
     end
 
     def self.call(event:)
@@ -25,6 +21,10 @@ module Coaches
       Job.all.map do |job|
         serialize_job(job)
       end
+    end
+
+    def self.reset_for_replay
+      Job.destroy_all
     end
 
     class << self

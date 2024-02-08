@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe DbStreamListener do
-  let(:consumer) { double(:consumer, handle_event: nil) }
+  let(:consumer) { double(:consumer, handle_event: nil, reset_for_replay: nil) }
 
   let!(:event) { create(:event, :user_created, occurred_at: event_occurred_at) }
   let!(:event2) { create(:event, :user_created, occurred_at: event_occurred_at + 2.days) }
@@ -81,6 +81,12 @@ RSpec.describe DbStreamListener do
       subject
     end
 
+    it "calls reset_for_replay on the consumer" do
+      expect(consumer).to receive(:reset_for_replay)
+
+      subject
+    end
+
     context "when a bookmark already exists" do
       let!(:listener_bookmark) do
         create(
@@ -102,10 +108,13 @@ RSpec.describe DbStreamListener do
     subject { described_class.build(consumer, "listener_name") }
 
     it "calls the consumer with the event and with_side_effects: true" do
-      event = build(:events__message, :user_created)
+      expect(consumer).to receive(:handle_event).with(
+        event.message,
+        with_side_effects: true
+      )
 
       expect(consumer).to receive(:handle_event).with(
-        event,
+        event2.message,
         with_side_effects: true
       )
 
@@ -115,7 +124,7 @@ RSpec.describe DbStreamListener do
     it "updates the bookmark" do
       expect { subject.call(event:) }.to change {
         ListenerBookmark.find_by(consumer_name: "listener_name")&.event_id
-      }.from(nil).to(event.id)
+      }.from(nil).to(event2.id)
     end
   end
 

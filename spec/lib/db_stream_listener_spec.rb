@@ -102,10 +102,13 @@ RSpec.describe DbStreamListener do
     subject { described_class.build(consumer, "listener_name") }
 
     it "calls the consumer with the event and with_side_effects: true" do
-      event = build(:events__message, :user_created)
+      expect(consumer).to receive(:handle_event).with(
+        event.message,
+        with_side_effects: true
+      )
 
       expect(consumer).to receive(:handle_event).with(
-        event,
+        event2.message,
         with_side_effects: true
       )
 
@@ -115,7 +118,7 @@ RSpec.describe DbStreamListener do
     it "updates the bookmark" do
       expect { subject.call(event:) }.to change {
         ListenerBookmark.find_by(consumer_name: "listener_name")&.event_id
-      }.from(nil).to(event.id)
+      }.from(nil).to(event2.id)
     end
   end
 

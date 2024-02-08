@@ -25,8 +25,8 @@ class DbStreamListener < StreamListener
     end
   end
 
-  def call(event:)
-    handle_event(event, with_side_effects: true)
+  def call(*)
+    play
   end
 
   private

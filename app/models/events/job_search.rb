@@ -27,7 +27,7 @@ module Events
 
         schema do
           source Either("seeker", "user", "unauthenticated")
-          id Either(Uuid, nil), default: nil
+          id Either(String, nil), default: nil
           utm_source Either(String, nil), default: nil
         end
       end

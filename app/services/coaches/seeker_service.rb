@@ -98,13 +98,13 @@ module Coaches
     end
 
     def self.all_contexts
-      CoachSeekerContext.includes(:seeker_notes, :seeker_applications, :seeker_barriers).where.not(profile_id: nil).where.not(email: nil).map do |csc|
+      CoachSeekerContext.with_everything.where.not(profile_id: nil).where.not(email: nil).map do |csc|
         serialize_coach_seeker_context(csc)
       end
     end
 
     def self.find_context(id)
-      csc = CoachSeekerContext.includes(:seeker_notes, :seeker_applications, :seeker_barriers).find_by!(profile_id: id)
+      csc = CoachSeekerContext.with_everything.find_by!(profile_id: id)
 
       serialize_coach_seeker_context(csc)
     end
@@ -253,10 +253,12 @@ module Coaches
     def self.handle_job_recommended(event)
       csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
 
+      job_recommendation = Coaches::Job.find_by!(job_id: event.data[:job_id])
+
       csc.seeker_job_recommendations << SeekerJobRecommendation.create!(
         coach_seeker_context: csc,
         coach_id: Coach.find_by(coach_id: event.data[:coach_id]).id,
-        job_id: event.data[:job_id]
+        job_id: job_recommendation.id
       )
     end
 
@@ -377,7 +379,7 @@ module Coaches
             employmentTitle: application.employment_title
           }
         end,
-        job_recommendations: csc.seeker_job_recommendations.map(&:job_id)
+        job_recommendations: csc.seeker_job_recommendations.map(&:job).map(&:job_id)
       }
     end
 

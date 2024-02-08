@@ -1,13 +1,9 @@
 module Coaches
-  class JobService
+  class JobService < EventConsumer
     def self.handled_events
       [
         Events::JobCreated::V1
       ].freeze
-    end
-
-    def self.handled_events_sync
-      [].freeze
     end
 
     def self.call(event:)

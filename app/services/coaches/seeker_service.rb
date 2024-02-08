@@ -1,5 +1,5 @@
 module Coaches
-  class SeekerService # rubocop:disable Metrics/ClassLength
+  class SeekerService < EventConsumer # rubocop:disable Metrics/ClassLength
     def self.handled_events_sync
       [
         Events::BarrierUpdated::V1,

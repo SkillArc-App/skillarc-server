@@ -1,5 +1,5 @@
 module Coaches
-  class BarrierService
+  class BarrierService < EventConsumer
     def self.handled_events_sync
       [Events::BarrierAdded::V1].freeze
     end

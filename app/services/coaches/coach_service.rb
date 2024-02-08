@@ -1,5 +1,5 @@
 module Coaches
-  class CoachService
+  class CoachService < EventConsumer
     def self.handled_events_sync
       [Events::RoleAdded::V1].freeze
     end

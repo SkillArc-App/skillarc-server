@@ -105,7 +105,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:applicant_id1) { "8aac8c6d-5c13-418d-b8e7-fd468fa291de" }
   let(:applicant_id2) { "749d43ba-08b5-40cb-977c-4e8ebd2da04a" }
   let(:applicant_id3) { "71f36a32-9c83-47e7-a22a-3d15b03c2dc0" }
-  let(:job_id) { create(:coaches__job).id }
+  let(:job_id) { create(:coaches__job).job_id }
   let(:updated_note) { "This note was updated" }
   let(:employer_name1) { "Cool company" }
   let(:employer_name2) { "Fun company" }
@@ -473,7 +473,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
     let(:now) { Time.zone.local(2020, 1, 1) }
     let(:coach) { create(:coaches__coach) }
-    let(:job_id) { create(:coaches__job).id }
+    let(:job_id) { create(:coaches__job).job_id }
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(

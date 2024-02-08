@@ -24,5 +24,7 @@ module Coaches
     has_many :seeker_applications, dependent: :destroy, class_name: "Coaches::SeekerApplication"
     has_many :seeker_barriers, dependent: :destroy, class_name: "Coaches::SeekerBarrier"
     has_many :seeker_job_recommendations, dependent: :destroy, class_name: "Coaches::SeekerJobRecommendation"
+
+    scope :with_everything, -> { includes(:seeker_notes, :seeker_applications, :seeker_barriers, seeker_job_recommendations: :job) }
   end
 end

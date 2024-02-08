@@ -92,7 +92,7 @@ RSpec.describe "Seekers", type: :request do
         job_id:
       }
     end
-    let(:job_id) { create(:coaches__job).id }
+    let(:job_id) { create(:coaches__job).job_id }
     let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
 
     it_behaves_like "coach secured endpoint"

@@ -10,6 +10,7 @@
 #  updated_at      :datetime         not null
 #  organization_id :text
 #  profile_id      :text             not null
+#  seeker_id       :uuid
 #
 # Foreign Keys
 #

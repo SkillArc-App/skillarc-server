@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_31_213715) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_09_222516) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -94,7 +94,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_31_213715) do
     t.text "profile_id", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-    t.uuid "seeker_id"
+    t.uuid "seeker_id", null: false
     t.index ["seeker_id"], name: "index_applicants_on_seeker_id"
   end
 
@@ -206,6 +206,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_31_213715) do
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.text "issued_date"
+    t.uuid "seeker_id"
   end
 
   create_table "desired_certifications", id: :text, force: :cascade do |t|
@@ -232,7 +233,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_31_213715) do
     t.text "gpa"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-    t.uuid "seeker_id"
+    t.uuid "seeker_id", null: false
     t.index ["seeker_id"], name: "index_education_experiences_on_seeker_id"
   end
 
@@ -413,7 +414,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_31_213715) do
     t.text "position"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-    t.uuid "seeker_id"
+    t.uuid "seeker_id", null: false
     t.index ["seeker_id"], name: "index_other_experiences_on_seeker_id"
   end
 
@@ -425,7 +426,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_31_213715) do
     t.text "description"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-    t.uuid "seeker_id"
+    t.uuid "seeker_id", null: false
     t.index ["seeker_id"], name: "index_personal_experiences_on_seeker_id"
   end
 
@@ -434,7 +435,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_31_213715) do
     t.text "response", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-    t.uuid "seeker_id"
+    t.uuid "seeker_id", null: false
     t.index ["seeker_id"], name: "index_professional_interests_on_seeker_id"
   end
 
@@ -452,7 +453,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_31_213715) do
     t.text "description"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-    t.uuid "seeker_id"
+    t.uuid "seeker_id", null: false
     t.index ["seeker_id"], name: "index_profile_skills_on_seeker_id"
   end
 
@@ -550,7 +551,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_31_213715) do
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.text "reference_text", null: false
-    t.uuid "seeker_id"
+    t.uuid "seeker_id", null: false
     t.index ["seeker_id"], name: "index_seeker_references_on_seeker_id"
   end
 
@@ -593,7 +594,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_31_213715) do
     t.text "response", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-    t.uuid "seeker_id"
+    t.uuid "seeker_id", null: false
     t.index ["seeker_id"], name: "index_stories_on_seeker_id"
   end
 

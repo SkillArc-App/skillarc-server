@@ -7,7 +7,7 @@
 #  updated_at :datetime         not null
 #  job_id     :text             not null
 #  profile_id :text             not null
-#  seeker_id  :uuid
+#  seeker_id  :uuid             not null
 #
 # Indexes
 #
@@ -24,7 +24,7 @@ class Applicant < ApplicationRecord
   belongs_to :profile
   belongs_to :seeker
 
-  validates :seeker, presence: true, on: :create
+  validates :seeker, presence: true
 
   has_many :applicant_statuses, dependent: :destroy
 

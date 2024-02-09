@@ -10,7 +10,7 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  profile_id  :text             not null
-#  seeker_id   :uuid
+#  seeker_id   :uuid             not null
 #
 # Indexes
 #

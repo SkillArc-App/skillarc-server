@@ -31,4 +31,12 @@ class Seeker < ApplicationRecord
   def onboarding_session
     OnboardingSession.where(user_id:).first
   end
+
+  def hiring_status
+    return 'Interviewing' if applicants.any? { |a| a.status.status == 'interviewing' }
+
+    return 'Applying to Jobs' unless applicants.empty?
+
+    'Profile Complete'
+  end
 end

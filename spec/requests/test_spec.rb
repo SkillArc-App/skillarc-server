@@ -70,6 +70,19 @@ RSpec.describe "Test", type: :request do
     end
   end
 
+  describe "POST /create_test_trainer_with_student" do
+    subject { post create_test_trainer_with_student_test_path, params:, headers: }
+
+    let(:headers) { {} }
+    let(:params) { {} }
+
+    it "returns a 200" do
+      subject
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "POST /create_seeker_lead" do
     subject { post create_seeker_lead_test_path, params:, headers: }
 

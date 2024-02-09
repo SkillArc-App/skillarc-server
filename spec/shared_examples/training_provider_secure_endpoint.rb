@@ -3,9 +3,10 @@ RSpec.shared_context "training provider authenticated" do
     TrainingProviderProfile.create!(
       id: SecureRandom.uuid,
       user:,
-      training_provider: create(:training_provider)
+      training_provider:
     )
   end
+  let(:training_provider) { create(:training_provider) }
   let!(:user) do
     User.create!(
       id: '1a7d78bd-ae41-4d09-95d5-0b417efbcb7f',

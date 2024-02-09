@@ -23,8 +23,10 @@ class StudentsController < ApplicationController
 
     programs = training_provider.programs.map do |program|
       students = program.students.map do |stp|
+        next if stp.user.seeker.blank?
+
         # TODO: 🙀 Horrible code. Refactor this.
-        reference = stp.user.profile.references.find_by(author_profile: training_provider_profile)
+        reference = stp.user.seeker.references.find_by(author_profile: training_provider_profile)
 
         {
           email: stp.user.email,
@@ -38,7 +40,7 @@ class StudentsController < ApplicationController
           status: stp.program_statuses.order(created_at: :desc).first&.status || 'Enrolled',
           hiringStatus: stp.user.profile&.hiring_status || 'FAIL'
         }
-      end
+      end.compact
 
       invitees = program.seeker_invites.map do |invite|
         {

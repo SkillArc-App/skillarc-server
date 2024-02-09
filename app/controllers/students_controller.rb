@@ -32,13 +32,13 @@ class StudentsController < ApplicationController
           email: stp.user.email,
           firstName: stp.user.first_name,
           lastName: stp.user.last_name,
-          profileId: stp.user.profile&.id,
+          profileId: stp.user.seeker&.id,
           reference: {
             referenceText: reference&.reference_text,
             referenceId: reference&.id
           },
           status: stp.program_statuses.order(created_at: :desc).first&.status || 'Enrolled',
-          hiringStatus: stp.user.profile&.hiring_status || 'FAIL'
+          hiringStatus: stp.user.seeker&.hiring_status || 'FAIL'
         }
       end.compact
 

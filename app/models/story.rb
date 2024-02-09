@@ -8,7 +8,7 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  profile_id :text             not null
-#  seeker_id  :uuid
+#  seeker_id  :uuid             not null
 #
 # Indexes
 #
@@ -21,7 +21,7 @@
 #
 class Story < ApplicationRecord
   belongs_to :profile
-  belongs_to :seeker, optional: true
+  belongs_to :seeker
 
   validates :seeker, presence: true
 end

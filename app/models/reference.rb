@@ -7,7 +7,7 @@
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  author_profile_id    :text             not null
-#  seeker_id            :uuid
+#  seeker_id            :uuid             not null
 #  seeker_profile_id    :text             not null
 #  training_provider_id :text             not null
 #
@@ -28,7 +28,7 @@ class Reference < ApplicationRecord
   belongs_to :author_profile, class_name: "TrainingProviderProfile"
   belongs_to :training_provider
   belongs_to :seeker_profile, class_name: "Profile"
-  belongs_to :seeker, optional: true
+  belongs_to :seeker
 
   validates :seeker, presence: true
 end

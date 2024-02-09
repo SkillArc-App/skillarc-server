@@ -12,7 +12,7 @@
 #  updated_at        :datetime         not null
 #  organization_id   :text
 #  profile_id        :text             not null
-#  seeker_id         :uuid
+#  seeker_id         :uuid             not null
 #
 # Indexes
 #
@@ -29,5 +29,5 @@ class EducationExperience < ApplicationRecord
   belongs_to :seeker, optional: true
 
   validates :profile_id, presence: true
-  validates :seeker, presence: true, on: :create
+  validates :seeker, presence: true
 end

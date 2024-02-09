@@ -337,6 +337,10 @@ GEM
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
       railties (>= 6.0.0)
+    twilio-ruby (6.9.1)
+      faraday (>= 0.9, < 3.0)
+      jwt (>= 1.5, < 3.0)
+      nokogiri (>= 1.6, < 2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2023.3)
@@ -399,6 +403,7 @@ DEPENDENCIES
   strong_migrations
   timecop
   turbo-rails
+  twilio-ruby
   tzinfo-data
   value_semantics
   web-console

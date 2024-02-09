@@ -71,6 +71,7 @@ class TestController < ApplicationController
     training_provider = program.training_provider
     trainer = FactoryBot.create(:training_provider_profile, training_provider:)
     student = FactoryBot.create(:seeker_training_provider, training_provider:, program:)
+    FactoryBot.create(:seeker, user: student.user)
 
     render json: {
       trainer: trainer.user,

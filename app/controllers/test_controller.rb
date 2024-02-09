@@ -65,6 +65,21 @@ class TestController < ApplicationController
     }
   end
 
+  def create_test_trainer_with_student
+    program = FactoryBot.create(:program)
+
+    training_provider = program.training_provider
+    trainer = FactoryBot.create(:training_provider_profile, training_provider:)
+    student = FactoryBot.create(:seeker_training_provider, training_provider:, program:)
+
+    render json: {
+      trainer: trainer.user,
+      student: student.user,
+      training_provider:,
+      program:
+    }
+  end
+
   def create_job
     render json: FactoryBot.create(:job, employment_title: SecureRandom.uuid)
   end

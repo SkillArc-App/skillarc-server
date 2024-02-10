@@ -29,6 +29,4 @@ class Reference < ApplicationRecord
   belongs_to :training_provider
   belongs_to :seeker_profile, class_name: "Profile"
   belongs_to :seeker
-
-  validates :seeker, presence: true
 end

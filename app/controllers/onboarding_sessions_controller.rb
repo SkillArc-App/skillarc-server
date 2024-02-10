@@ -26,41 +26,41 @@ class OnboardingSessionsController < ApplicationController
     filtered = params.require("onboarding_session").permit(
       responses: {
         education: {
-          response: [
-            :org,
-            :title,
-            :gradYear,
-            :gpa,
-            :activities
+          response: %i[
+            org
+            title
+            gradYear
+            gpa
+            activities
           ]
         },
         experience: {
-          response: [
-            :company,
-            :position,
-            :startDate,
-            :current,
-            :endDate,
-            :description
+          response: %i[
+            company
+            position
+            startDate
+            current
+            endDate
+            description
           ]
         },
         name: {
-          response: [
-            :firstName,
-            :lastName,
-            :phoneNumber,
-            :dateOfBirth
+          response: %i[
+            firstName
+            lastName
+            phoneNumber
+            dateOfBirth
           ]
         },
         opportunityInterests: {
           response: []
         },
         other: {
-          response: [
-            :activity,
-            :startDate,
-            :endDate,
-            :learning
+          response: %i[
+            activity
+            startDate
+            endDate
+            learning
           ]
         },
         reliability: {

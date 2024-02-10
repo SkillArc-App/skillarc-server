@@ -3,7 +3,7 @@ class EmployerInvitesController < ApplicationController
   include Admin
 
   before_action :authorize
-  before_action :admin_authorize, only: [:index, :create]
+  before_action :admin_authorize, only: %i[index create]
 
   def index
     render json: EmployerInvite.all.map { |invite| serialize_invite(invite) }
@@ -26,7 +26,7 @@ class EmployerInvitesController < ApplicationController
   private
 
   def serialize_invite(invite)
-    prefix = ENV['FRONTEND_URL']
+    prefix = ENV.fetch('FRONTEND_URL', nil)
 
     {
       email: invite.email,

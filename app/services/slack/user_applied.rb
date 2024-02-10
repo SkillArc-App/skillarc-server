@@ -7,7 +7,7 @@ module Slack
       user = applicant.profile.user
 
       notifier.ping(
-        "<#{ENV['FRONTEND_URL']}/profiles/#{user.profile.id}|#{user.email}> has applied to *#{applicant.job.employment_title}* at *#{applicant.job.employer.name}*"
+        "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{user.profile.id}|#{user.email}> has applied to *#{applicant.job.employment_title}* at *#{applicant.job.employer.name}*"
       )
     end
   end

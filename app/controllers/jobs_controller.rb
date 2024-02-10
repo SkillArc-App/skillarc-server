@@ -2,8 +2,8 @@ class JobsController < ApplicationController
   include Secured
   include Admin
 
-  before_action :authorize, only: [:apply, :create, :update, :index]
-  before_action :admin_authorize, only: [:index, :create, :update]
+  before_action :authorize, only: %i[apply create update index]
+  before_action :admin_authorize, only: %i[index create update]
 
   def apply
     job = Job.find(params[:job_id])
@@ -15,6 +15,26 @@ class JobsController < ApplicationController
     end
 
     render json: { applicant: }
+  end
+
+  def index
+    jobs = Job.includes(
+      :applicants,
+      :career_paths,
+      :employer,
+      :job_photos,
+      :testimonials,
+      job_tags: :tag,
+      desired_skills: :master_skill,
+      learned_skills: :master_skill,
+      desired_certifications: :master_certification
+    ).all
+
+    render json: jobs.map { |j| serialize_job(j) }
+  end
+
+  def show
+    render json: serialize_job(Job.find(params[:id]))
   end
 
   def create
@@ -60,26 +80,6 @@ class JobsController < ApplicationController
         ).to_h.symbolize_keys
       )
     )
-  end
-
-  def index
-    jobs = Job.includes(
-      :applicants,
-      :career_paths,
-      :employer,
-      :job_photos,
-      :testimonials,
-      job_tags: :tag,
-      desired_skills: :master_skill,
-      learned_skills: :master_skill,
-      desired_certifications: :master_certification
-    ).all
-
-    render json: jobs.map { |j| serialize_job(j) }
-  end
-
-  def show
-    render json: serialize_job(Job.find(params[:id]))
   end
 
   private

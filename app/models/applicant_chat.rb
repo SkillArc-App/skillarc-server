@@ -20,5 +20,5 @@ class ApplicantChat < ApplicationRecord
 
   has_many :messages, class_name: 'ChatMessage', dependent: :destroy
 
-  validates :applicant, presence: true, uniqueness: true
+  validates :applicant, uniqueness: true
 end

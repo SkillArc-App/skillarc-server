@@ -9,7 +9,7 @@ module Sms
 
     SmsGatewayEnvvarNotSetError = Class.new(StandardError)
 
-    def self.build(strategy: ENV["SMS_GATEWAY_STRATEGY"])
+    def self.build(strategy: ENV.fetch("SMS_GATEWAY_STRATEGY", nil))
       case strategy
       when Strategies::TWILIO
         TwilioCommunicator.new

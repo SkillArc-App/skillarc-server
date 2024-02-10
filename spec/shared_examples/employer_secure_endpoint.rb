@@ -13,7 +13,7 @@ RSpec.shared_context "employer authenticated" do
   let(:headers) { { "Authorization" => "Bearer #{user.sub}" } }
 
   around do |example|
-    original = ENV["MOCK_AUTH"]
+    original = ENV.fetch("MOCK_AUTH", nil)
     ENV["MOCK_AUTH"] = "true"
 
     example.run

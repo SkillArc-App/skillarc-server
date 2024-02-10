@@ -25,7 +25,7 @@ class SeekerChats
 
   def get
     ApplicantChat
-      .includes(messages: [:user, :read_receipts], applicant: { profile: :user, job: :employer })
+      .includes(messages: %i[user read_receipts], applicant: { profile: :user, job: :employer })
       .references(:messages, applicant: { profile: :user, job: :employer })
       .where(applicants: { profile: { users_profiles: { id: user.id } } }).map do |applicant_chat|
         job = applicant_chat.applicant.job
@@ -48,7 +48,7 @@ class SeekerChats
 
   def mark_read(applicant_id:)
     ApplicantChat
-      .includes(messages: [:user, :read_receipts], applicant: { profile: :user, job: :employer })
+      .includes(messages: %i[user read_receipts], applicant: { profile: :user, job: :employer })
       .references(:messages, applicant: { profile: :user, job: :employer })
       .where(applicants: { id: applicant_id })
       .find_each do |applicant_chat|

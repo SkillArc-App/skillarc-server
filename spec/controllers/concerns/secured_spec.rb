@@ -50,7 +50,7 @@ RSpec.describe ApplicationController, type: :controller do
 
       expect(response).to be_successful
 
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body['email']).to eq(email)
       expect(body['user_type']).to eq('SEEKER')
       expect(body['sub']).to eq(token)

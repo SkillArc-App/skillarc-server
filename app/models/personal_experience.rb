@@ -24,7 +24,4 @@
 class PersonalExperience < ApplicationRecord
   belongs_to :profile
   belongs_to :seeker
-
-  validates :profile_id, presence: true
-  validates :seeker, presence: true
 end

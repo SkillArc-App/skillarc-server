@@ -5,18 +5,18 @@ class TrainingProvidersController < ApplicationController
   before_action :authorize
   before_action :admin_authorize, only: [:create]
 
-  def create
-    tp = TrainingProvider.create!(**params.require(:training_provider).permit(:name, :description), id: SecureRandom.uuid)
-
-    render json: serialize_training_provider(tp)
-  end
-
   def index
     render json: TrainingProvider.includes(:programs).map { |tp| serialize_training_provider(tp) }
   end
 
   def show
     render json: serialize_training_provider(TrainingProvider.find(params[:id]))
+  end
+
+  def create
+    tp = TrainingProvider.create!(**params.require(:training_provider).permit(:name, :description), id: SecureRandom.uuid)
+
+    render json: serialize_training_provider(tp)
   end
 
   private

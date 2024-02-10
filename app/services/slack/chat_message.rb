@@ -9,9 +9,9 @@ module Slack
       job = applicant.job
 
       message = if applicant.profile.user.id == from_user_id
-                  "Applicant <#{ENV['FRONTEND_URL']}/profiles/#{profile.id}|#{profile.user.email}> has *sent* a message to *#{job.employer.name}* for their applcation to *#{job.employment_title}*."
+                  "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|#{profile.user.email}> has *sent* a message to *#{job.employer.name}* for their applcation to *#{job.employment_title}*."
                 else
-                  "Applicant <#{ENV['FRONTEND_URL']}/profiles/#{profile.id}|#{profile.user.email}> has *received* a message from *#{job.employer.name}* for their applcation to *#{job.employment_title}*."
+                  "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|#{profile.user.email}> has *received* a message from *#{job.employer.name}* for their applcation to *#{job.employment_title}*."
                 end
 
       notifier.ping(message)

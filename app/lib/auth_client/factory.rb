@@ -1,6 +1,6 @@
 module AuthClient
   class Factory
-    def self.build(auth0_domain: ENV['AUTH0_DOMAIN'], mock_auth: ENV['MOCK_AUTH'], mock_email: ENV['MOCK_USER_EMAIL'], mock_sub: ENV['MOCK_USER_SUB'])
+    def self.build(auth0_domain: ENV.fetch('AUTH0_DOMAIN', nil), mock_auth: ENV.fetch('MOCK_AUTH', nil), mock_email: ENV.fetch('MOCK_USER_EMAIL', nil), mock_sub: ENV.fetch('MOCK_USER_SUB', nil))
       if mock_auth == 'true'
         AuthClient::Fake.new(
           email: mock_email,

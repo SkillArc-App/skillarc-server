@@ -40,7 +40,7 @@ mechanic_job = Job.create!(
   location: 'Columbus, OH',
   employment_type: 'FULLTIME',
   hide_job: false,
-  industry: ['manufacturing', 'construction'],
+  industry: %w[manufacturing construction],
   schedule: '40-55 hours weekly',
   work_days: 'Weekdays',
   requirements_description:
@@ -71,7 +71,7 @@ contractor = Job.create!(
   responsibilities_description:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
   employment_title: 'General Contractor',
-  industry: ['healthcare', 'construction'],
+  industry: %w[healthcare construction],
   location: 'New Albany, OH',
   employment_type: 'FULLTIME',
   hide_job: false,

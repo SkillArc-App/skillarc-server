@@ -24,9 +24,9 @@ RSpec.describe SeekerService do
         user: profile.user,
         responses: {
           "opportunityInterests" => {
-            "response" => [
-              "Manufacturing",
-              "Healthcare"
+            "response" => %w[
+              Manufacturing
+              Healthcare
             ]
           }
         }

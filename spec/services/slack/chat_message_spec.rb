@@ -27,7 +27,7 @@ RSpec.describe Slack::ChatMessage do
 
       it "calls the Slack API" do
         expect_any_instance_of(Slack::FakeSlackGateway).to receive(:ping).with(
-          "Applicant <#{ENV['FRONTEND_URL']}/profiles/#{profile.id}|john@blocktrainapp.com> has *received* a message from *Acme Inc.* for their applcation to *Welder*."
+          "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|john@blocktrainapp.com> has *received* a message from *Acme Inc.* for their applcation to *Welder*."
         )
 
         subject.call(event:)
@@ -39,7 +39,7 @@ RSpec.describe Slack::ChatMessage do
 
       it "calls the Slack API" do
         expect_any_instance_of(Slack::FakeSlackGateway).to receive(:ping).with(
-          "Applicant <#{ENV['FRONTEND_URL']}/profiles/#{profile.id}|john@blocktrainapp.com> has *sent* a message to *Acme Inc.* for their applcation to *Welder*."
+          "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|john@blocktrainapp.com> has *sent* a message to *Acme Inc.* for their applcation to *Welder*."
         )
 
         subject.call(event:)

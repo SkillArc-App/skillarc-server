@@ -55,7 +55,7 @@ RSpec.describe FastTrackTasks do
 
       context "when ProfileCompleteness returns 'incomplete'" do
         it "returns 'Make your resume strong' as incomplete" do
-          allow_any_instance_of(ProfileCompleteness).to receive(:status).and_return(ProfileCompleteness::Result.new("incomplete", ["education", "work"]))
+          allow_any_instance_of(ProfileCompleteness).to receive(:status).and_return(ProfileCompleteness::Result.new("incomplete", %w[education work]))
 
           expect(subject.profile).to include({ name: "Make your resume strong", is_complete: false, route: "/profiles/#{profile.id}" })
         end

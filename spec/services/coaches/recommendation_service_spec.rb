@@ -16,7 +16,7 @@ RSpec.describe Coaches::RecommendationService do
       expect(Contact::SmsService).to receive(:new).with("1234567890").and_call_original
 
       expect_any_instance_of(Contact::SmsService).to receive(:send_message).with(
-        "From your SkillArc career coach. Check out this job: #{ENV['FRONTEND_URL']}/jobs/#{job_id}"
+        "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
       ).and_call_original
 
       described_class.handle_event(job_recommended)

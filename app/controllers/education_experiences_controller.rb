@@ -7,39 +7,33 @@ class EducationExperiencesController < ApplicationController
   before_action :seeker_editor_authorize
 
   def create
-    begin
-      ee = EducationExperienceService.new(profile, seeker).create(
-        **education_experience_params
-      )
+    ee = EducationExperienceService.new(profile, seeker).create(
+      **education_experience_params
+    )
 
-      render json: ee
-    rescue => e
-      render json: { error: e.message }, status: :bad_request
-    end
+    render json: ee
+  rescue StandardError => e
+    render json: { error: e.message }, status: :bad_request
   end
 
   def update
-    begin
-      ee = EducationExperienceService.new(profile, seeker).update(
-        **education_experience_params.merge(id: params[:id])
-      )
+    ee = EducationExperienceService.new(profile, seeker).update(
+      **education_experience_params.merge(id: params[:id])
+    )
 
-      render json: ee
-    rescue => e
-      render json: { error: e.message }, status: :bad_request
-    end
+    render json: ee
+  rescue StandardError => e
+    render json: { error: e.message }, status: :bad_request
   end
 
   def destroy
-    begin
-      ee = EducationExperienceService.new(profile, seeker).destroy(
-        id: params[:id]
-      )
+    ee = EducationExperienceService.new(profile, seeker).destroy(
+      id: params[:id]
+    )
 
-      render json: ee
-    rescue => e
-      render json: { error: e.message }, status: :bad_request
-    end
+    render json: ee
+  rescue StandardError => e
+    render json: { error: e.message }, status: :bad_request
   end
 
   private

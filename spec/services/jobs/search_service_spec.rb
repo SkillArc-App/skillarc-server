@@ -10,7 +10,7 @@ RSpec.describe Jobs::SearchService do
     let(:user) { nil }
 
     let!(:job1) { create(:job, employment_title: "Paid Friend", industry: ["Friendship"]) }
-    let!(:job2) { create(:job, employment_title: "Bouncer", industry: ["Clubs", "Bodyguards"]) }
+    let!(:job2) { create(:job, employment_title: "Bouncer", industry: %w[Clubs Bodyguards]) }
     let(:tag) { create(:tag, name: "Part Time") }
     let!(:job_tag) { create(:job_tag, job: job2, tag:) }
     let(:utm_source) { "www.google.com" }
@@ -144,7 +144,7 @@ RSpec.describe Jobs::SearchService do
       end
 
       context "When there is overlap with industries" do
-        let(:industries) { ["Friendship", "Baseball"] }
+        let(:industries) { %w[Friendship Baseball] }
 
         it "returns all no jobs" do
           expect(subject).to contain_exactly(job1)

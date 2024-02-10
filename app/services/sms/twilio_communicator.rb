@@ -1,6 +1,6 @@
 module Sms
   class TwilioCommunicator < SmsCommunicator
-    def initialize(from_number: ENV["TWILIO_FROM_NUMBER"], auth_token: ENV["TWILIO_AUTH_TOKEN"], account_sid: ENV["TWILIO_ACCOUNT_SID"])
+    def initialize(from_number: ENV.fetch("TWILIO_FROM_NUMBER", nil), auth_token: ENV.fetch("TWILIO_AUTH_TOKEN", nil), account_sid: ENV.fetch("TWILIO_ACCOUNT_SID", nil))
       super()
 
       @from_number = from_number

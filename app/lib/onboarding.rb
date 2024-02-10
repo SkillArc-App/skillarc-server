@@ -246,18 +246,10 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     return false unless (responses.dig("opportunityInterests", "response")&.length || 0).positive?
 
     reliability.all? do |r|
-      if r == "I've had or currently have a job" && response_for?(responses, "experience")
-        true
-      elsif r == 'I have a High School Diploma / GED' && response_for?(responses, "education")
-        true
-      elsif r == "I've attended a Training Program" && response_for?(responses, "trainingProvider")
-        true
-      elsif r == "I have other experience I'd like to share" && response_for?(responses, "other")
-
-        true
-      else
-        false
-      end
+      (r == "I've had or currently have a job" && response_for?(responses, "experience")) ||
+        (r == 'I have a High School Diploma / GED' && response_for?(responses, "education")) ||
+        (r == "I've attended a Training Program" && response_for?(responses, "trainingProvider")) ||
+        (r == "I have other experience I'd like to share" && response_for?(responses, "other"))
     end
   end
 

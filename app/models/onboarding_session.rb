@@ -25,7 +25,7 @@ class OnboardingSession < ApplicationRecord
     # begin
     #   responses["opportunityInterests"]["response"].map(&:downcase)
     # rescue
-    ['construction', 'manufacturing', 'healthcare']
+    %w[construction manufacturing healthcare]
     # end
   end
 end

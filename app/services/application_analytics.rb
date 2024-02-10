@@ -26,7 +26,7 @@ class ApplicationAnalytics
       total_hours = times_for_status.map { |time| time[:time][:hours] }.sum / times_for_status.count.to_f
 
       days = total_days.floor
-      hours = (total_days * 24 + total_hours) % 24
+      hours = ((total_days * 24) + total_hours) % 24
 
       {
         status:,

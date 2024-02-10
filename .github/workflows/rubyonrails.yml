@@ -7,9 +7,9 @@
 name: "Ruby on Rails CI"
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 jobs:
   test:
     runs-on:
@@ -31,6 +31,7 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
       SLACK_GATEWAY_STRATEGY: fake
+      SMS_GATEWAY_STRATEGY: fake
       CI: true
 
     steps:

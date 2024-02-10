@@ -2,7 +2,6 @@ FactoryBot.define do
   factory :applicant do
     id { SecureRandom.uuid }
     job
-    profile
     seeker
     applicant_statuses do
       [

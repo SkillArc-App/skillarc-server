@@ -836,6 +836,7 @@ coach = Coaches::Coach.create!(
 
 coach_seeker_context = Coaches::CoachSeekerContext.create!(
   profile_id: seeker_with_profile.id,
+  seeker_id: seeker_with_profile.id,
   user_id: seeker_with_profile.user.id,
   first_name: seeker_with_profile.user.first_name,
   last_name: seeker_with_profile.user.last_name,

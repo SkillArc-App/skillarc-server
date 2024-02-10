@@ -6,7 +6,6 @@
 #  response   :text             not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  profile_id :text             not null
 #  seeker_id  :uuid             not null
 #
 # Indexes
@@ -15,10 +14,11 @@
 #
 # Foreign Keys
 #
-#  ProfessionalInterests_profile_id_fkey  (profile_id => profiles.id) ON DELETE => restrict ON UPDATE => cascade
-#  fk_rails_...                           (seeker_id => seekers.id)
+#  fk_rails_...  (seeker_id => seekers.id)
 #
 class ProfessionalInterest < ApplicationRecord
-  belongs_to :profile
+  self.ignored_columns = ["profile_id"]
   belongs_to :seeker
+
+  validates :seeker, presence: true
 end

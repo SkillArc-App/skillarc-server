@@ -5,7 +5,6 @@ FactoryBot.define do
 
     author_profile { build(:training_provider_profile) }
     training_provider
-    seeker_profile { build(:profile) }
     reference_text { "This is a reference" }
   end
 end

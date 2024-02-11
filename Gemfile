@@ -66,6 +66,7 @@ gem "sentry-ruby"
 gem "slack-notifier"
 gem "strong_migrations"
 gem "timecop"
+gem "twilio-ruby"
 gem 'tzinfo-data'
 
 group :development, :test do

@@ -13,12 +13,11 @@ RSpec.describe Pubsub do
       allow(subscriber).to receive(:call)
       subject.subscribe(event_schema: message.event_schema, subscriber:)
 
-      expect(ExecuteSubscriberJob)
-        .to receive(:perform_now)
+      expect(subscriber)
+        .to receive(:call)
         .with(
-          message:,
-          subscriber_id: subscriber.id
-        ).and_call_original
+          message:
+        )
 
       subject.publish(message:)
     end

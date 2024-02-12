@@ -34,7 +34,7 @@ class EventService
 
   def self.get_schema(event_type:, version:)
     event_schema = registry.dig(event_type, version)
-    raise SchemaNotFoundError if event_schema.blank?
+    raise SchemaNotFoundError, "event_type: #{event_type} version: #{version}" if event_schema.blank?
 
     event_schema
   end

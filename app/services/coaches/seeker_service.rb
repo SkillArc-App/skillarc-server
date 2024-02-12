@@ -330,7 +330,8 @@ module Coaches
 
       csc.update!(
         last_active_on: event.occurred_at,
-        profile_id: event.data[:id]
+        profile_id: event.data[:id],
+        seeker_id: event.data[:id]
       )
     end
 
@@ -352,7 +353,7 @@ module Coaches
 
     def self.serialize_coach_seeker_context(csc)
       {
-        seekerId: csc.profile_id,
+        seekerId: csc.seeker_id,
         firstName: csc.first_name,
         lastName: csc.last_name,
         email: csc.email,

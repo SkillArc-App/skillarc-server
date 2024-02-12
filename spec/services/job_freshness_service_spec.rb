@@ -46,7 +46,7 @@ RSpec.describe JobFreshnessService do
   it_behaves_like "an event consumer"
 
   describe ".handle_event" do
-    subject { described_class.handle_event(event, with_side_effects:, now:) }
+    subject { described_class.handle_event(message, with_side_effects:, now:) }
 
     before do
       JobFreshnessEmployerJob.create!(
@@ -55,11 +55,11 @@ RSpec.describe JobFreshnessService do
       )
     end
 
-    let(:event) { job_created_at_event }
+    let(:message) { job_created_at_event }
     let(:with_side_effects) { false }
 
     context "when the event is not subscribed" do
-      let(:event) { build(:events__message, :user_created) }
+      let(:message) { build(:events__message, :user_created) }
 
       it "does nothing" do
         expect { subject }.not_to(change(JobFreshness, :count))
@@ -137,8 +137,8 @@ RSpec.describe JobFreshnessService do
         employer_id:,
         name: "Blocktrain"
       )
-      job_events.each do |event|
-        described_class.handle_event(event, now:)
+      job_events.each do |message|
+        described_class.handle_event(message, now:)
       end
     end
 

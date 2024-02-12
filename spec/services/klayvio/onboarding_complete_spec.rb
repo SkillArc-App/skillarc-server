@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Klayvio::OnboardingComplete do
   describe "#call" do
-    let(:event) do
+    let(:message) do
       build(
         :events__message,
         :onboarding_completed,
@@ -16,11 +16,11 @@ RSpec.describe Klayvio::OnboardingComplete do
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:onboarding_complete).with(
         email:,
-        event_id: event.id,
-        occurred_at: event.occurred_at
+        event_id: message.id,
+        occurred_at: message.occurred_at
       )
 
-      subject.call(event:)
+      subject.call(message:)
     end
   end
 end

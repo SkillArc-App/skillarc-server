@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe NotificationService do
   describe "#call" do
-    subject { described_class.new.call(event:) }
+    subject { described_class.new.call(message:) }
 
-    let(:event) { double(:event, aggregate_id: user.id, data:) }
+    let(:message) { double(:message, aggregate_id: user.id, data:) }
 
     let(:data) do
       {

@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Klayvio::JobSaved do
   describe "#call" do
-    subject { described_class.new.call(event:) }
+    subject { described_class.new.call(message:) }
 
-    let(:event) do
+    let(:message) do
       build(
         :events__message,
         :job_saved,
@@ -22,13 +22,13 @@ RSpec.describe Klayvio::JobSaved do
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:job_saved).with(
         email: user.email,
-        event_id: event.id,
+        event_id: message.id,
         event_properties: {
           job_id: "A",
           employment_title: "Welder",
           employer_name: "Acme Inc."
         },
-        occurred_at: event.occurred_at
+        occurred_at: message.occurred_at
       )
 
       subject

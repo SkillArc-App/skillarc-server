@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Slack::UserApplied do
   describe "#call" do
-    let(:event) do
+    let(:message) do
       build(
         :events__message,
         :applicant_status_updated,
@@ -33,7 +33,7 @@ RSpec.describe Slack::UserApplied do
           "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|hannah@blocktrainapp.com> has applied to *Welder* at *Acme Inc.*"
         )
 
-        subject.call(event:)
+        subject.call(message:)
       end
     end
 
@@ -43,7 +43,7 @@ RSpec.describe Slack::UserApplied do
       it "does not call the Slack API" do
         expect_any_instance_of(Slack::FakeSlackGateway).not_to receive(:ping)
 
-        subject.call(event:)
+        subject.call(message:)
       end
     end
   end

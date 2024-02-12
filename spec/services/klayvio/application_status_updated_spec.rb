@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Klayvio::ApplicationStatusUpdated do
   describe "#call" do
-    let(:event) do
+    let(:message) do
       build(
         :events__message,
         :applicant_status_updated,
@@ -30,12 +30,12 @@ RSpec.describe Klayvio::ApplicationStatusUpdated do
         email: user.email,
         employment_title: job.employment_title,
         employer_name: job.employer.name,
-        event_id: event.id,
-        occurred_at: event.occurred_at,
+        event_id: message.id,
+        occurred_at: message.occurred_at,
         status: "new"
       )
 
-      subject.call(event:)
+      subject.call(message:)
     end
   end
 end

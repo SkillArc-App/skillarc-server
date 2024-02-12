@@ -3,7 +3,7 @@ class StreamListener
     raise NoMethodError
   end
 
-  def call(event) # rubocop:disable Lint/UnusedMethodArgument
+  def call(message) # rubocop:disable Lint/UnusedMethodArgument
     raise NoMethodError
   end
 

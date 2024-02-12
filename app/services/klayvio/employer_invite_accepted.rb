@@ -1,15 +1,15 @@
 module Klayvio
   class EmployerInviteAccepted
-    def call(event:)
+    def call(message:)
       Klayvio.new.employer_invite_accepted(
-        event_id: event.id,
-        email: event.data[:invite_email],
+        event_id: message.id,
+        email: message.data[:invite_email],
         profile_properties: {
           is_recruiter: true,
-          employer_name: event.data[:employer_name],
-          employer_id: event.data[:employer_id]
+          employer_name: message.data[:employer_name],
+          employer_id: message.data[:employer_id]
         },
-        occurred_at: event.occurred_at
+        occurred_at: message.occurred_at
       )
     end
   end

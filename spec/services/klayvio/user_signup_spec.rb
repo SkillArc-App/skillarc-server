@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Klayvio::UserSignup do
   describe "#call" do
-    let(:event) do
+    let(:message) do
       build(:events__message, :user_created)
     end
     let(:email) { "tom@blocktrainapp.com" }
@@ -10,12 +10,12 @@ RSpec.describe Klayvio::UserSignup do
 
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:user_signup).with(
-        email: event.data[:email],
-        event_id: event.id,
-        occurred_at: event.occurred_at
+        email: message.data[:email],
+        event_id: message.id,
+        occurred_at: message.occurred_at
       )
 
-      subject.call(event:)
+      subject.call(message:)
     end
   end
 end

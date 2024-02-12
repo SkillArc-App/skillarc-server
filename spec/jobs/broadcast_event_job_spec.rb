@@ -14,7 +14,7 @@ RSpec.describe BroadcastEventJob do
 
     expect(PUBSUB)
       .to receive(:publish)
-      .with(event: message)
+      .with(message:)
       .and_call_original
 
     described_class.new.perform(message)

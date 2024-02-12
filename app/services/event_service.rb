@@ -19,7 +19,7 @@ class EventService
 
     Event.from_message!(message)
 
-    PUBSUB_SYNC.publish(event: message)
+    PUBSUB_SYNC.publish(message:)
     BroadcastEventJob.perform_later(message)
     message
   end

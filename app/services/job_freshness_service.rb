@@ -32,38 +32,38 @@ class JobFreshnessService < EventConsumer
     ].freeze
   end
 
-  def self.call(event:)
-    handle_event(event)
+  def self.call(message:)
+    handle_event(message)
   end
 
-  def self.handle_event(event, with_side_effects: false, now: Time.zone.now)
-    case event.event_schema
+  def self.handle_event(message, with_side_effects: false, now: Time.zone.now)
+    case message.event_schema
     when Events::ApplicantStatusUpdated::V1, Events::JobCreated::V1, Events::JobUpdated::V1
-      event.aggregate_id
+      message.aggregate_id
 
-      freshness = new(event.aggregate_id, now:)
+      freshness = new(message.aggregate_id, now:)
 
-      freshness.handle_event(event, with_side_effects:, now:)
+      freshness.handle_event(message, with_side_effects:, now:)
     when Events::EmployerCreated::V1, Events::EmployerUpdated::V1
-      eid = event.aggregate_id
+      eid = message.aggregate_id
 
       JobFreshnessEmployerJob
         .find_or_initialize_by(employer_id: eid)
         .update!(
-          name: event.data[:name],
+          name: message.data[:name],
           recruiter_exists: false
         )
     when Events::EmployerInviteAccepted::V1
-      eid = event.aggregate_id
+      eid = message.aggregate_id
 
       ej = JobFreshnessEmployerJob.find_by!(employer_id: eid)
       ej.update!(recruiter_exists: true)
       ej.jobs.each do |job_id|
-        new(job_id).handle_event(event, with_side_effects:, now:)
+        new(job_id).handle_event(message, with_side_effects:, now:)
       end
     when Events::DayElapsed::V1
       JobFreshnessContext.pluck(:job_id).each do |job_id|
-        new(job_id).handle_event(event, with_side_effects:, now:)
+        new(job_id).handle_event(message, with_side_effects:, now:)
       end
     end
 
@@ -86,23 +86,23 @@ class JobFreshnessService < EventConsumer
     freshness_context
   end
 
-  def handle_event(event, with_side_effects: false, now: Time.zone.now)
+  def handle_event(message, with_side_effects: false, now: Time.zone.now)
     @now = now
 
-    case event.event_type
+    case message.event_type
     when Event::EventTypes::APPLICANT_STATUS_UPDATED
-      applicant_status_updated(event)
+      applicant_status_updated(message)
     when Event::EventTypes::DAY_ELAPSED
-      day_elapsed(event)
+      day_elapsed(message)
     when Event::EventTypes::EMPLOYER_INVITE_ACCEPTED
-      employer_invite_accepted(event)
+      employer_invite_accepted(message)
     when Event::EventTypes::JOB_CREATED, Event::EventTypes::JOB_UPDATED
-      job_create_update(event)
+      job_create_update(message)
     else
       return
     end
 
-    freshness_context.status = recruiter_exists? && !hidden? && !any_ignored?(event.occurred_at) ? "fresh" : "stale"
+    freshness_context.status = recruiter_exists? && !hidden? && !any_ignored?(message.occurred_at) ? "fresh" : "stale"
     freshness_context.save!
 
     return unless with_side_effects
@@ -116,7 +116,7 @@ class JobFreshnessService < EventConsumer
       status: freshness_context.status,
       employer_name: freshness_context.employer_name,
       employment_title: freshness_context.employment_title,
-      occurred_at: event.occurred_at
+      occurred_at: message.occurred_at
     )
   end
 
@@ -128,7 +128,7 @@ class JobFreshnessService < EventConsumer
     end
   end
 
-  def day_elapsed(event); end
+  def day_elapsed(message); end
 
   def hidden?
     freshness_context.hidden
@@ -138,15 +138,15 @@ class JobFreshnessService < EventConsumer
     freshness_context.recruiter_exists
   end
 
-  def applicant_status_updated(event)
-    freshness_context.applicants[event.data.applicant_id] = {
-      "last_updated_at" => event.occurred_at.to_s,
-      "status" => event.data.status
+  def applicant_status_updated(message)
+    freshness_context.applicants[message.data.applicant_id] = {
+      "last_updated_at" => message.occurred_at.to_s,
+      "status" => message.data.status
     }
   end
 
-  def job_create_update(event)
-    @employer_id = event.data[:employer_id]
+  def job_create_update(message)
+    @employer_id = message.data[:employer_id]
 
     ej = employer_job(employer_id)
 
@@ -155,15 +155,15 @@ class JobFreshnessService < EventConsumer
       ej.save!
     end
 
-    freshness_context.job_id = event.aggregate_id
-    freshness_context.hidden = event.data[:hide_job]
-    freshness_context.employment_title = event.data[:employment_title]
+    freshness_context.job_id = message.aggregate_id
+    freshness_context.hidden = message.data[:hide_job]
+    freshness_context.employment_title = message.data[:employment_title]
 
     freshness_context.recruiter_exists = employer_job(employer_id)[:recruiter_exists]
     freshness_context.employer_name = employer_job(employer_id)[:name]
   end
 
-  def employer_invite_accepted(_event)
+  def employer_invite_accepted(_message)
     freshness_context.recruiter_exists = true
   end
 

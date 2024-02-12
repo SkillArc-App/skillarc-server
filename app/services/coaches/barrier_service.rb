@@ -8,14 +8,14 @@ module Coaches
       [].freeze
     end
 
-    def self.call(event:)
-      handle_event(event)
+    def self.call(message:)
+      handle_event(message)
     end
 
-    def self.handle_event(event, *_params)
-      case event.event_schema
+    def self.handle_event(message, *_params)
+      case message.event_schema
       when Events::BarrierAdded::V1
-        handle_barrier_added(event)
+        handle_barrier_added(message)
       end
     end
 
@@ -32,10 +32,10 @@ module Coaches
       end
     end
 
-    def self.handle_barrier_added(event)
+    def self.handle_barrier_added(message)
       Barrier.create!(
-        barrier_id: event.data[:barrier_id],
-        name: event.data[:name]
+        barrier_id: message.data[:barrier_id],
+        name: message.data[:name]
       )
     end
   end

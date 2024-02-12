@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Klayvio::UserUpdated do
   describe "#call" do
-    let(:event) do
+    let(:message) do
       build(
         :events__message,
         :user_updated,
@@ -19,9 +19,9 @@ RSpec.describe Klayvio::UserUpdated do
 
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:user_updated).with(
-        email: event.data[:email],
-        event_id: event.id,
-        occurred_at: event.occurred_at,
+        email: message.data[:email],
+        event_id: message.id,
+        occurred_at: message.occurred_at,
         profile_attributes: {
           first_name: "Tom",
           last_name: "Hanks",
@@ -32,7 +32,7 @@ RSpec.describe Klayvio::UserUpdated do
         }
       )
 
-      subject.call(event:)
+      subject.call(message:)
     end
   end
 end

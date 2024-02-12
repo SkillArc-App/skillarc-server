@@ -24,16 +24,16 @@ class UserEvents
 
   private
 
-  def event_message(event)
-    case event.event_type
+  def event_message(message)
+    case message.event_type
     when Event::EventTypes::APPLICANT_STATUS_UPDATED
-      "Applicant Status Updated: #{event.data[:employment_title]} - #{event.data[:status]}"
+      "Applicant Status Updated: #{message.data[:employment_title]} - #{message.data[:status]}"
     when Event::EventTypes::EDUCATION_EXPERIENCE_CREATED
-      "Education Experience Created: #{event.data[:organization_name]}"
+      "Education Experience Created: #{message.data[:organization_name]}"
     when Event::EventTypes::EXPERIENCE_CREATED
-      "Work Experience Created: #{event.data[:organization_name]}"
+      "Work Experience Created: #{message.data[:organization_name]}"
     when Event::EventTypes::JOB_SAVED
-      "Job Saved: #{event.data[:employment_title]}"
+      "Job Saved: #{message.data[:employment_title]}"
     when Event::EventTypes::ONBOARDING_COMPLETED
       "Onboarding Complete"
     when Event::EventTypes::USER_CREATED

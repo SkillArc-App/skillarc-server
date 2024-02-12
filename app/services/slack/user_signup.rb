@@ -1,8 +1,8 @@
 module Slack
   class UserSignup < SlackNotifier
-    def call(event:)
+    def call(message:)
       notifier.ping(
-        "New user signed up: *#{event.data[:email]}*"
+        "New user signed up: *#{message.data[:email]}*"
       )
     end
   end

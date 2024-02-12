@@ -127,7 +127,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
 
   create_table "coach_seeker_contexts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "user_id", null: false
-    t.uuid "profile_id"
     t.string "first_name"
     t.string "last_name"
     t.string "email"

@@ -4,16 +4,16 @@ class ProfilesController < ApplicationController
   include Cereal
   include SeekerAuth
 
-  before_action :authorize, only: [:index, :update]
-  before_action :admin_authorize, only: [:index, :update]
-  before_action :set_seeker, only: [:show, :update]
+  before_action :authorize, only: %i[index update]
+  before_action :admin_authorize, only: %i[index update]
+  before_action :set_seeker, only: %i[show update]
 
   before_action :set_current_user, only: [:show]
 
   def index
     # Profile all with nested include of user and seeker_training_providers
 
-    ps = Profile.includes(user: { seeker_training_providers: [:training_provider, :program] }).all.order(created_at: :desc).map do |p|
+    ps = Profile.includes(user: { seeker_training_providers: %i[training_provider program] }).order(created_at: :desc).map do |p|
       {
         **p.as_json,
         user: {

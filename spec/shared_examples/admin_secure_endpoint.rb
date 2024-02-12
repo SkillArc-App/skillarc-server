@@ -14,7 +14,7 @@ RSpec.shared_context "admin authenticated" do
   let(:role) { Role.create!(id: SecureRandom.uuid, name: "admin") }
 
   around do |example|
-    original = ENV["MOCK_AUTH"]
+    original = ENV.fetch("MOCK_AUTH", nil)
     ENV["MOCK_AUTH"] = "true"
 
     example.run

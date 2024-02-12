@@ -96,9 +96,7 @@ class JobFreshnessService < EventConsumer
       day_elapsed(event)
     when Event::EventTypes::EMPLOYER_INVITE_ACCEPTED
       employer_invite_accepted(event)
-    when Event::EventTypes::JOB_CREATED
-      job_create_update(event)
-    when Event::EventTypes::JOB_UPDATED
+    when Event::EventTypes::JOB_CREATED, Event::EventTypes::JOB_UPDATED
       job_create_update(event)
     else
       return
@@ -170,7 +168,7 @@ class JobFreshnessService < EventConsumer
   end
 
   def job_events
-    @job_events ||= Event.where(aggregate_id: Job.pluck(:id))
+    @job_events ||= Event.where(aggregate_id: Job.select(:id))
   end
 
   def freshness_context

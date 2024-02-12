@@ -24,7 +24,7 @@ module Coaches
         csc = CoachSeekerContext.find_by(seeker_id: event.aggregate_id)
 
         Contact::SmsService.new(csc.phone_number).send_message(
-          "From your SkillArc career coach. Check out this job: #{ENV['FRONTEND_URL']}/jobs/#{job_id}"
+          "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
         )
       end
     end

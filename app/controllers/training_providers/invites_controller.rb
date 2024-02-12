@@ -8,7 +8,7 @@ class TrainingProviders::InvitesController < ApplicationController
   def create
     invites = []
 
-    params.permit(invitees: [:email, :first_name, :last_name, :program_id])[:invitees].each do |invitee|
+    params.permit(invitees: %i[email first_name last_name program_id])[:invitees].each do |invitee|
       invites << {
         **invitee.as_json,
         id: SecureRandom.uuid

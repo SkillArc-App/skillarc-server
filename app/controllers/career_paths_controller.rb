@@ -3,9 +3,9 @@ class CareerPathsController < ApplicationController
   include Admin
 
   before_action :authorize
-  before_action :admin_authorize, only: [:create, :destroy]
+  before_action :admin_authorize, only: %i[create destroy]
   before_action :set_job
-  before_action :set_path, only: [:destroy, :up, :down]
+  before_action :set_path, only: %i[destroy up down]
 
   def up
     Jobs::CareerPathService.up(path)

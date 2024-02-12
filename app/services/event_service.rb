@@ -28,7 +28,7 @@ class EventService
     raise NotSchemaError unless event_schema.is_a?(Events::Schema)
 
     registry[event_schema.event_type] ||= {}
-    Rails.logger.debug "[Event Registry] the event_type #{event_schema.event_type} version: #{event_schema.version} was overritten" if registry[event_schema.event_type][event_schema.version].present?
+    Rails.logger.debug { "[Event Registry] the event_type #{event_schema.event_type} version: #{event_schema.version} was overritten" } if registry[event_schema.event_type][event_schema.version].present?
     registry[event_schema.event_type][event_schema.version] = event_schema
   end
 

@@ -1,7 +1,7 @@
 module Events
   module Payload
-    def schema(&block)
-      include(ValueSemantics.for_attributes(&block))
+    def schema(&)
+      include(ValueSemantics.for_attributes(&))
     end
 
     def from_hash(hash)

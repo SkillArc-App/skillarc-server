@@ -146,34 +146,34 @@ module Klayvio
 
     def event_data(event_type:, email:, time:, event_id:, event_properties: {}, profile_properties: {}, profile_attributes: {}) # rubocop:disable Metrics/ParameterLists
       {
-        "data": {
-          "type": "event",
-          "attributes": {
-            "properties": {
+        data: {
+          type: "event",
+          attributes: {
+            properties: {
               **event_properties
             },
-            "metric": {
-              "data": {
-                "type": "metric",
-                "attributes": {
-                  "name": event_type
+            metric: {
+              data: {
+                type: "metric",
+                attributes: {
+                  name: event_type
                 }
               }
             },
-            "profile": {
-              "data": {
-                "type": "profile",
-                "attributes": {
+            profile: {
+              data: {
+                type: "profile",
+                attributes: {
                   **profile_attributes,
-                  "email": email,
-                  "properties": {
+                  email:,
+                  properties: {
                     **profile_properties
                   }
                 }
               }
             },
-            "time": time.strftime("%Y-%m-%dT%H:%M"),
-            "unique_id": event_id
+            time: time.strftime("%Y-%m-%dT%H:%M"),
+            unique_id: event_id
           }
         }
       }
@@ -187,7 +187,7 @@ module Klayvio
       request["accept"] = 'application/json'
       request["revision"] = '2023-10-15'
       request["content-type"] = 'application/json'
-      request["Authorization"] = "Klaviyo-API-Key #{ENV['KLAVIYO_API_KEY']}"
+      request["Authorization"] = "Klaviyo-API-Key #{ENV.fetch('KLAVIYO_API_KEY', nil)}"
 
       request.body = data.to_json
 

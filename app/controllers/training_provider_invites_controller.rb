@@ -3,7 +3,7 @@ class TrainingProviderInvitesController < ApplicationController
   include Admin
 
   before_action :authorize
-  before_action :admin_authorize, only: [:index, :create]
+  before_action :admin_authorize, only: %i[index create]
 
   def index
     render json: TrainingProviderInvite.all.map { |invite| serialize_invite(invite) }

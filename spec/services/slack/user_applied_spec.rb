@@ -30,7 +30,7 @@ RSpec.describe Slack::UserApplied do
 
       it "calls the Slack API" do
         expect_any_instance_of(Slack::FakeSlackGateway).to receive(:ping).with(
-          "<#{ENV['FRONTEND_URL']}/profiles/#{profile.id}|hannah@blocktrainapp.com> has applied to *Welder* at *Acme Inc.*"
+          "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|hannah@blocktrainapp.com> has applied to *Welder* at *Acme Inc.*"
         )
 
         subject.call(event:)

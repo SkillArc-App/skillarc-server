@@ -12,9 +12,9 @@ module Jobs
         next nil if starting_path.blank?
 
         {
-          "employment_type": starting_path.lower_limit.to_i > 1000 ? "salary" : "hourly",
-          "upper_limit": starting_path.upper_limit.to_i,
-          "lower_limit": starting_path.lower_limit.to_i
+          employment_type: starting_path.lower_limit.to_i > 1000 ? "salary" : "hourly",
+          upper_limit: starting_path.upper_limit.to_i,
+          lower_limit: starting_path.lower_limit.to_i
         }
       end
       field :tags do |job, _options|

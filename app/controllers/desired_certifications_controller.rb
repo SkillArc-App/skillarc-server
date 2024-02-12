@@ -3,7 +3,7 @@ class DesiredCertificationsController < ApplicationController
   include Admin
 
   before_action :authorize
-  before_action :admin_authorize, only: [:create, :destroy]
+  before_action :admin_authorize, only: %i[create destroy]
   before_action :set_job
 
   def create

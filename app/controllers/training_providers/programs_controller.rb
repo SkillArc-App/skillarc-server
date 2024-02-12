@@ -6,10 +6,10 @@ class TrainingProviders::ProgramsController < ApplicationController
   before_action :authorize
 
   # 😱 These controllers definitely need to be separated
-  before_action :admin_authorize, only: [:create, :update]
+  before_action :admin_authorize, only: %i[create update]
   before_action :training_provider_authorize, only: [:index]
 
-  before_action :set_training_provider, only: [:create, :update]
+  before_action :set_training_provider, only: %i[create update]
 
   def index
     render json: training_provider_profile.training_provider.programs

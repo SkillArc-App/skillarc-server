@@ -1,4 +1,4 @@
-Resque.redis = Redis.new(url: ENV["REDIS_URL"])
+Resque.redis = Redis.new(url: ENV.fetch("REDIS_URL", nil))
 
 class BasicJsonFormatter
   ENQUEUED_REGEX = /got: \(Job\{([a-zA-Z0-9_]+)\} \| ([a-zA-Z0-9_]+) \| (.*)\)/

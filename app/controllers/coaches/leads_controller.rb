@@ -7,6 +7,10 @@ module Coaches
     before_action :coach_authorize
     before_action :set_coach
 
+    def index
+      render json: SeekerService.all_leads
+    end
+
     def create
       SeekerService.add_lead(
         lead_id: SecureRandom.uuid,
@@ -21,10 +25,6 @@ module Coaches
       )
 
       head :created
-    end
-
-    def index
-      render json: SeekerService.all_leads
     end
 
     private

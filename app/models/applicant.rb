@@ -24,8 +24,6 @@ class Applicant < ApplicationRecord
   belongs_to :profile
   belongs_to :seeker
 
-  validates :seeker, presence: true
-
   has_many :applicant_statuses, dependent: :destroy
 
   def status

@@ -3,42 +3,36 @@ class StoriesController < ApplicationController
 
   before_action :authorize
 
-  def update
-    begin
-      story = Story.find(params[:id])
+  def create
+    story = Story.create!(
+      **params.require(:story).permit(:prompt, :response),
+      id: SecureRandom.uuid,
+      profile: current_user.profile,
+      seeker: current_user.seeker
+    )
 
-      story.update!(**params.require(:story).permit(:prompt, :response))
-
-      render json: story
-    rescue => e
-      render json: { error: e.message }, status: :bad_request
-    end
+    render json: story
+  rescue StandardError => e
+    render json: { error: e.message }, status: :bad_request
   end
 
-  def create
-    begin
-      story = Story.create!(
-        **params.require(:story).permit(:prompt, :response),
-        id: SecureRandom.uuid,
-        profile: current_user.profile,
-        seeker: current_user.seeker
-      )
+  def update
+    story = Story.find(params[:id])
 
-      render json: story
-    rescue => e
-      render json: { error: e.message }, status: :bad_request
-    end
+    story.update!(**params.require(:story).permit(:prompt, :response))
+
+    render json: story
+  rescue StandardError => e
+    render json: { error: e.message }, status: :bad_request
   end
 
   def destroy
-    begin
-      story = Story.find(params[:id])
+    story = Story.find(params[:id])
 
-      story.destroy!
+    story.destroy!
 
-      render json: story
-    rescue => e
-      render json: { error: e.message }, status: :bad_request
-    end
+    render json: story
+  rescue StandardError => e
+    render json: { error: e.message }, status: :bad_request
   end
 end

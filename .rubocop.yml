@@ -1,7 +1,10 @@
 # TODO add these
 require:
- - rubocop-rails
+  - rubocop-rails
 #  - rubocop-factory_bot
 #  - rubocop-rspec
 
 inherit_from: .rubocop_todo.yml
+
+AllCops:
+  NewCops: enable

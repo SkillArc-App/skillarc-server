@@ -3,7 +3,7 @@ module Seekers
     include Secured
 
     before_action :set_current_user, only: [:index]
-    before_action :authorize, only: [:save, :unsave]
+    before_action :authorize, only: %i[save unsave]
 
     def index
       jobs = Jobs::SearchService.new(

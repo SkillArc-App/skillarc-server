@@ -13,7 +13,7 @@ RSpec.describe Events::Common::UntypedHashWrapper do
       {
         cat: 10,
         dog: 3,
-        nested: { "inner": [] }
+        nested: { inner: [] }
       }
     end
 
@@ -35,7 +35,7 @@ RSpec.describe Events::Common::UntypedHashWrapper do
       {
         cat: 10,
         dog: 3,
-        nested: { "inner": [] }
+        nested: { inner: [] }
       }
     end
 
@@ -54,7 +54,7 @@ RSpec.describe Events::Common::UntypedHashWrapper do
       {
         cat: 10,
         dog: 3,
-        nested: { "inner": [] }
+        nested: { inner: [] }
       }
     end
 

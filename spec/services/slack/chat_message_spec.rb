@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Slack::ChatMessage do
   describe "#call" do
-    let(:event) do
+    let(:message) do
       build(
         :events__message,
         :chat_message_sent,
@@ -30,7 +30,7 @@ RSpec.describe Slack::ChatMessage do
           "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|john@blocktrainapp.com> has *received* a message from *Acme Inc.* for their applcation to *Welder*."
         )
 
-        subject.call(event:)
+        subject.call(message:)
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.describe Slack::ChatMessage do
           "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|john@blocktrainapp.com> has *sent* a message to *Acme Inc.* for their applcation to *Welder*."
         )
 
-        subject.call(event:)
+        subject.call(message:)
       end
     end
   end

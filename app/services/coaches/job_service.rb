@@ -6,14 +6,14 @@ module Coaches
       ].freeze
     end
 
-    def self.call(event:)
-      handle_event(event)
+    def self.call(message:)
+      handle_event(message)
     end
 
-    def self.handle_event(event, *_params)
-      case event.event_schema
+    def self.handle_event(message, *_params)
+      case message.event_schema
       when Events::JobCreated::V1
-        handle_job_created(event)
+        handle_job_created(message)
       end
     end
 
@@ -30,10 +30,10 @@ module Coaches
     class << self
       private
 
-      def handle_job_created(event)
+      def handle_job_created(message)
         Job.create!(
-          job_id: event.aggregate_id,
-          employment_title: event.data[:employment_title]
+          job_id: message.aggregate_id,
+          employment_title: message.data[:employment_title]
         )
       end
 

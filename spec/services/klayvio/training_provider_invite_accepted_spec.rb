@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Klayvio::TrainingProviderInviteAccepted do
   describe "#call" do
-    let(:event) do
+    let(:message) do
       build(
         :events__message,
         event_type: Events::TrainingProviderInviteAccepted::V1.event_type,
@@ -19,16 +19,16 @@ RSpec.describe Klayvio::TrainingProviderInviteAccepted do
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:training_provider_invite_accepted).with(
         email: "sfb@crook.com",
-        event_id: event.id,
+        event_id: message.id,
         profile_properties: {
           is_training_provider: true,
           training_provider_name: "FTX",
           training_provider_id: "1"
         },
-        occurred_at: event.occurred_at
+        occurred_at: message.occurred_at
       )
 
-      subject.call(event:)
+      subject.call(message:)
     end
   end
 end

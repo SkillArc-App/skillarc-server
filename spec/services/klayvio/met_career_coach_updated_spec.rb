@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Klayvio::MetCareerCoachUpdated do
   describe "#call" do
-    subject { described_class.new.call(event:) }
+    subject { described_class.new.call(message:) }
 
-    let(:event) do
+    let(:message) do
       build(
         :events__message,
         :met_career_coach_updated,
@@ -20,8 +20,8 @@ RSpec.describe Klayvio::MetCareerCoachUpdated do
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:met_with_career_coach_updated).with(
         email:,
-        event_id: event.id,
-        occurred_at: event.occurred_at,
+        event_id: message.id,
+        occurred_at: message.occurred_at,
         profile_properties: {
           met_career_coach: true
         }

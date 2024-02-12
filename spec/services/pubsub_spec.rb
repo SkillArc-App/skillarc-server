@@ -1,16 +1,47 @@
 RSpec.describe Pubsub do
-  it "calls the subscriber when the event is published" do
-    # Arrange
-    event = build(:events__message, :user_created)
+  subject do
+    described_class.new(sync:)
+  end
 
-    subscriber = double("subscriber")
-    allow(subscriber).to receive(:call)
-    subject.subscribe(event_schema: event.event_schema, subscriber:)
+  context "when pubsub is sync" do
+    let(:sync) { true }
 
-    # Act
-    subject.publish(event:)
+    it "calls the subscriber when the event is published" do
+      message = build(:events__message, :user_created)
 
-    # Assert
-    expect(subscriber).to have_received(:call).with(event:)
+      subscriber = Klayvio::JobSaved.new
+      allow(subscriber).to receive(:call)
+      subject.subscribe(event_schema: message.event_schema, subscriber:)
+
+      expect(subscriber)
+        .to receive(:call)
+        .with(
+          message:
+        )
+
+      subject.publish(message:)
+    end
+  end
+
+  context "when pubsub is async" do
+    let(:sync) { false }
+
+    it "calls enqueues a execute subscriber job" do
+      message = build(:events__message, :user_created)
+
+      subscriber = Klayvio::JobSaved.new
+      allow(subscriber).to receive(:call)
+
+      subject.subscribe(event_schema: message.event_schema, subscriber:)
+
+      expect(ExecuteSubscriberJob)
+        .to receive(:perform_later)
+        .with(
+          message:,
+          subscriber_id: subscriber.id
+        ).and_call_original
+
+      subject.publish(message:)
+    end
   end
 end

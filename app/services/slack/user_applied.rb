@@ -1,9 +1,11 @@
 module Slack
   class UserApplied < SlackNotifier
-    def call(event:)
-      return unless event.data[:status] == "new"
+    include DefaultStreamId
 
-      applicant = Applicant.find(event.data[:applicant_id])
+    def call(message:)
+      return unless message.data[:status] == "new"
+
+      applicant = Applicant.find(message.data[:applicant_id])
       user = applicant.profile.user
 
       notifier.ping(

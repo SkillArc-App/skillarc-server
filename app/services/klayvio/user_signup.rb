@@ -1,10 +1,12 @@
 module Klayvio
   class UserSignup
-    def call(event:)
+    include DefaultStreamId
+
+    def call(message:)
       Klayvio.new.user_signup(
-        email: event.data[:email],
-        event_id: event.id,
-        occurred_at: event.occurred_at
+        email: message.data[:email],
+        event_id: message.id,
+        occurred_at: message.occurred_at
       )
     end
   end

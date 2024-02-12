@@ -1,8 +1,8 @@
 require 'pub_sub_initializer'
 require 'pubsub'
 
-PUBSUB = Pubsub.new
-PUBSUB_SYNC = Pubsub.new
+PUBSUB = Pubsub.new(sync: false)
+PUBSUB_SYNC = Pubsub.new(sync: true)
 
 Rails.application.config.after_initialize do
   PubSubInitializer.run

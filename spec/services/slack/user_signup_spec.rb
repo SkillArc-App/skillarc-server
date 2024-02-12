@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Slack::UserSignup do
   describe "#call" do
-    let(:event) do
+    let(:message) do
       build(
         :events__message,
         :user_created,
@@ -18,7 +18,7 @@ RSpec.describe Slack::UserSignup do
         "New user signed up: *#{email}*"
       )
 
-      subject.call(event:)
+      subject.call(message:)
     end
   end
 end

@@ -27,50 +27,50 @@ module Coaches
       ].freeze
     end
 
-    def self.call(event:)
-      handle_event(event)
+    def self.call(message:)
+      handle_event(message)
     end
 
-    def self.handle_event(event, with_side_effects: false, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
-      case event.event_schema
+    def self.handle_event(message, with_side_effects: false, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
+      case message.event_schema
 
       # Coach Originated
       when Events::BarrierUpdated::V1
-        handle_barriers_updated(event)
+        handle_barriers_updated(message)
       when Events::CoachAssigned::V1
-        handle_coach_assigned(event)
+        handle_coach_assigned(message)
 
       when Events::JobRecommended::V1
-        handle_job_recommended(event)
+        handle_job_recommended(message)
 
       when Events::LeadAdded::V1
-        handle_lead_added(event)
+        handle_lead_added(message)
 
       when Events::NoteAdded::V1
-        handle_note_added(event)
+        handle_note_added(message)
 
       when Events::NoteDeleted::V1
-        handle_note_deleted(event)
+        handle_note_deleted(message)
 
       when Events::NoteModified::V1
-        handle_note_modified(event)
+        handle_note_modified(message)
 
       when Events::SkillLevelUpdated::V1
-        handle_skill_level_updated(event)
+        handle_skill_level_updated(message)
 
       # Multi Origin
       when Events::ApplicantStatusUpdated::V1
-        handle_applicant_status_updated(event)
+        handle_applicant_status_updated(message)
 
       # Seeker Originated
       when Events::SeekerCreated::V1
-        handle_profile_created(event)
+        handle_profile_created(message)
 
       when Events::UserCreated::V1
-        handle_user_created(event)
+        handle_user_created(message)
 
       when Events::UserUpdated::V1
-        handle_user_updated(event)
+        handle_user_updated(message)
 
       when Events::EducationExperienceCreated::V1,
         Events::JobSaved::V1,
@@ -78,7 +78,7 @@ module Coaches
         Events::PersonalExperienceCreated::V1,
         Events::SeekerUpdated::V1,
         Events::OnboardingCompleted::V1
-        handle_last_active_updated(event)
+        handle_last_active_updated(message)
       end
     end
 
@@ -212,28 +212,28 @@ module Coaches
       )
     end
 
-    def self.handle_applicant_status_updated(event)
-      csc = CoachSeekerContext.find_by!(user_id: event.data[:user_id])
-      csc.update!(last_active_on: event.occurred_at)
+    def self.handle_applicant_status_updated(message)
+      csc = CoachSeekerContext.find_by!(user_id: message.data[:user_id])
+      csc.update!(last_active_on: message.occurred_at)
 
       application = SeekerApplication.find_or_create_by(
         coach_seeker_context: csc,
-        application_id: event.data.applicant_id
+        application_id: message.data.applicant_id
       )
 
       application.update!(
-        status: event.data.status,
-        employer_name: event.data.employer_name,
-        job_id: event.data.job_id,
-        employment_title: event.data.employment_title
+        status: message.data.status,
+        employer_name: message.data.employer_name,
+        job_id: message.data.job_id,
+        employment_title: message.data.employment_title
       )
     end
 
-    def self.handle_barriers_updated(event)
-      csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
+    def self.handle_barriers_updated(message)
+      csc = CoachSeekerContext.find_by!(profile_id: message.aggregate_id)
 
       csc.seeker_barriers.destroy_all
-      event.data[:barriers].each do |barrier|
+      message.data[:barriers].each do |barrier|
         b = Barrier.find_by!(barrier_id: barrier)
 
         csc.seeker_barriers << SeekerBarrier.create!(
@@ -243,111 +243,111 @@ module Coaches
       end
     end
 
-    def self.handle_coach_assigned(event)
-      csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
+    def self.handle_coach_assigned(message)
+      csc = CoachSeekerContext.find_by!(profile_id: message.aggregate_id)
 
-      csc.assigned_coach = event.data[:coach_id]
+      csc.assigned_coach = message.data[:coach_id]
       csc.save!
     end
 
-    def self.handle_job_recommended(event)
-      csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
+    def self.handle_job_recommended(message)
+      csc = CoachSeekerContext.find_by!(profile_id: message.aggregate_id)
 
-      job_recommendation = Coaches::Job.find_by!(job_id: event.data[:job_id])
+      job_recommendation = Coaches::Job.find_by!(job_id: message.data[:job_id])
 
       csc.seeker_job_recommendations << SeekerJobRecommendation.create!(
         coach_seeker_context: csc,
-        coach_id: Coach.find_by(coach_id: event.data[:coach_id]).id,
+        coach_id: Coach.find_by(coach_id: message.data[:coach_id]).id,
         job_id: job_recommendation.id
       )
     end
 
-    def self.handle_lead_added(event)
+    def self.handle_lead_added(message)
       SeekerLead.create!(
-        lead_id: event.data[:lead_id],
-        email: event.data[:email],
-        phone_number: event.data[:phone_number],
-        first_name: event.data[:first_name],
-        last_name: event.data[:last_name],
-        lead_captured_at: event.occurred_at,
-        lead_captured_by: event.data[:lead_captured_by],
+        lead_id: message.data[:lead_id],
+        email: message.data[:email],
+        phone_number: message.data[:phone_number],
+        first_name: message.data[:first_name],
+        last_name: message.data[:last_name],
+        lead_captured_at: message.occurred_at,
+        lead_captured_by: message.data[:lead_captured_by],
         status: SeekerLead::StatusTypes::NEW
       )
     end
 
-    def self.handle_note_deleted(event)
-      SeekerNote.find_by!(note_id: event.data[:note_id]).destroy
+    def self.handle_note_deleted(message)
+      SeekerNote.find_by!(note_id: message.data[:note_id]).destroy
     end
 
-    def self.handle_note_modified(event)
-      SeekerNote.find_by!(note_id: event.data[:note_id]).update!(note: event.data[:note])
+    def self.handle_note_modified(message)
+      SeekerNote.find_by!(note_id: message.data[:note_id]).update!(note: message.data[:note])
     end
 
-    def self.handle_note_added(event)
-      csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
+    def self.handle_note_added(message)
+      csc = CoachSeekerContext.find_by!(profile_id: message.aggregate_id)
 
-      csc.update!(last_contacted_at: event.occurred_at)
+      csc.update!(last_contacted_at: message.occurred_at)
       csc.seeker_notes << SeekerNote.create!(
         coach_seeker_context: csc,
-        note_taken_at: event.occurred_at,
-        note_taken_by: event.data[:coach_email],
-        note_id: event.data[:note_id],
-        note: event.data[:note]
+        note_taken_at: message.occurred_at,
+        note_taken_by: message.data[:coach_email],
+        note_id: message.data[:note_id],
+        note: message.data[:note]
       )
     end
 
-    def self.handle_user_created(event)
-      user_id = event.aggregate_id
+    def self.handle_user_created(message)
+      user_id = message.aggregate_id
 
       csc = CoachSeekerContext.find_or_create_by(
         user_id:,
-        email: event.data[:email],
-        first_name: event.data[:first_name],
-        last_name: event.data[:last_name],
-        phone_number: event.data[:phone_number]
+        email: message.data[:email],
+        first_name: message.data[:first_name],
+        last_name: message.data[:last_name],
+        phone_number: message.data[:phone_number]
       )
-      csc.last_active_on = event.occurred_at
+      csc.last_active_on = message.occurred_at
       csc.save!
 
-      SeekerLead.where(email: event.data[:email])
-                .or(SeekerLead.where(phone_number: event.data[:phone_number]))
+      SeekerLead.where(email: message.data[:email])
+                .or(SeekerLead.where(phone_number: message.data[:phone_number]))
                 .update!(status: SeekerLead::StatusTypes::CONVERTED)
     end
 
-    def self.handle_user_updated(event)
-      csc = CoachSeekerContext.find_by!(user_id: event.aggregate_id)
+    def self.handle_user_updated(message)
+      csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
 
       csc.update!(
-        last_active_on: event.occurred_at,
-        first_name: event.data[:first_name],
-        last_name: event.data[:last_name],
-        phone_number: event.data[:phone_number]
+        last_active_on: message.occurred_at,
+        first_name: message.data[:first_name],
+        last_name: message.data[:last_name],
+        phone_number: message.data[:phone_number]
       )
     end
 
-    def self.handle_profile_created(event)
-      csc = CoachSeekerContext.find_by!(user_id: event.aggregate_id)
+    def self.handle_profile_created(message)
+      csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
 
       csc.update!(
-        last_active_on: event.occurred_at,
-        profile_id: event.data[:id],
-        seeker_id: event.data[:id]
+        last_active_on: message.occurred_at,
+        profile_id: message.data[:id],
+        seeker_id: message.data[:id]
       )
     end
 
-    def self.handle_skill_level_updated(event)
-      csc = CoachSeekerContext.find_by!(profile_id: event.aggregate_id)
+    def self.handle_skill_level_updated(message)
+      csc = CoachSeekerContext.find_by!(profile_id: message.aggregate_id)
 
       csc.update!(
-        skill_level: event.data[:skill_level]
+        skill_level: message.data[:skill_level]
       )
     end
 
-    def self.handle_last_active_updated(event)
-      csc = CoachSeekerContext.find_by!(user_id: event.aggregate_id)
+    def self.handle_last_active_updated(message)
+      csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
 
       csc.update!(
-        last_active_on: event.occurred_at
+        last_active_on: message.occurred_at
       )
     end
 

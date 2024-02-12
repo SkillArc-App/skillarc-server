@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe BroadcastEventJob do
-  it "calls PubSub publish" do
+RSpec.describe ExecuteSubscriberJob do
+  it "calls PUBSUB execute_event" do
     message = Events::Message.new(
       id: SecureRandom.uuid,
       aggregate_id: "123",
@@ -13,10 +13,13 @@ RSpec.describe BroadcastEventJob do
     )
 
     expect(PUBSUB)
-      .to receive(:publish)
-      .with(message:)
+      .to receive(:execute_event)
+      .with(message:, subscriber_id: "a class")
       .and_call_original
 
-    described_class.new.perform(message)
+    # Not an actual subscriber
+    expect do
+      described_class.new.perform(message:, subscriber_id: "a class")
+    end.to raise_error(NoMethodError)
   end
 end

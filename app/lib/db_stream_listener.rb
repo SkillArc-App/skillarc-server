@@ -10,6 +10,10 @@ class DbStreamListener < StreamListener
     listener
   end
 
+  def id
+    "db-stream-listern-#{listener_name}"
+  end
+
   def replay
     consumer.reset_for_replay
 

@@ -12,7 +12,7 @@ module Events
           end_date Either(String, nil), default: nil
           description Either(String, nil), default: nil
           is_current Either(Bool(), nil), default: nil
-          profile_id Uuid
+          profile_id Either(Uuid, nil), default: nil
           seeker_id Uuid
         end
       end

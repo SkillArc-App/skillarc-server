@@ -10,7 +10,7 @@ module Events
           description Either(String, nil), default: nil
           start_date Either(String, nil), default: nil
           end_date Either(String, nil), default: nil
-          profile_id Uuid
+          profile_id Either(Uuid, nil), default: nil
           seeker_id Uuid
         end
       end

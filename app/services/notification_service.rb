@@ -1,4 +1,6 @@
 class NotificationService
+  include DefaultStreamId
+
   def call(message:)
     user = User.find(message.aggregate_id)
 

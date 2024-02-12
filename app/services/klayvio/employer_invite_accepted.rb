@@ -1,5 +1,7 @@
 module Klayvio
   class EmployerInviteAccepted
+    include DefaultStreamId
+
     def call(message:)
       Klayvio.new.employer_invite_accepted(
         event_id: message.id,

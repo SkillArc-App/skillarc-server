@@ -1,5 +1,7 @@
 module Klayvio
   class ChatMessageReceived
+    include DefaultStreamId
+
     def call(message:)
       applicant = Applicant.find(message.data[:applicant_id])
       recipient_user = applicant.profile.user

@@ -15,12 +15,11 @@ class Pubsub
   def subscribe(event_schema:, subscriber:)
     subscribers[event_schema.event_type] ||= {}
     subscribers[event_schema.event_type][event_schema.version] ||= {}
-    subscribers[event_schema.event_type][event_schema.version][subscriber.class.name] = subscriber
+    subscribers[event_schema.event_type][event_schema.version][subscriber.id] = subscriber
   end
 
-  def execute_event(message:, subscriber_class_name:)
-    subscriber = subscribers.dig(message.event_type, message.version, subscriber_class_name)
-
+  def execute_event(message:, subscriber_id:)
+    subscriber = subscribers.dig(message.event_type, message.version, subscriber_id)
     subscriber.call(message:)
   end
 
@@ -36,7 +35,7 @@ class Pubsub
     if sync
       subscriber.call(message:)
     else
-      ExecuteSubscriberJob.perform_later(message:, subscriber_class_name: subscriber.class.name)
+      ExecuteSubscriberJob.perform_later(message:, subscriber_id: subscriber.id)
     end
   end
 end

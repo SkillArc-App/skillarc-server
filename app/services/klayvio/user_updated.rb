@@ -1,5 +1,7 @@
 module Klayvio
   class UserUpdated
+    include DefaultStreamId
+
     def call(message:)
       dob = message.data[:date_of_birth]
       dob = Date.parse(dob) if dob.is_a?(String)

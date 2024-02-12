@@ -40,7 +40,7 @@ class EventService
   end
 
   class << self
-    private
+    # private
 
     def registry
       @registry ||= {}

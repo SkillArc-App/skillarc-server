@@ -14,12 +14,12 @@ RSpec.describe ExecuteSubscriberJob do
 
     expect(PUBSUB)
       .to receive(:execute_event)
-      .with(message:, subscriber_class_name: "a class")
+      .with(message:, subscriber_id: "a class")
       .and_call_original
 
     # Not an actual subscriber
     expect do
-      described_class.new.perform(message:, subscriber_class_name: "a class")
+      described_class.new.perform(message:, subscriber_id: "a class")
     end.to raise_error(NoMethodError)
   end
 end

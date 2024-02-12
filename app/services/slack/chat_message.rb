@@ -1,5 +1,7 @@
 module Slack
   class ChatMessage < SlackNotifier
+    include DefaultStreamId
+
     def call(message:)
       applicant = Applicant.find(message.data[:applicant_id])
       profile = applicant.profile

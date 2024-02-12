@@ -1,5 +1,7 @@
 module Klayvio
   class TrainingProviderInviteAccepted
+    include DefaultStreamId
+
     def call(message:)
       Klayvio.new.training_provider_invite_accepted(
         event_id: message.id,

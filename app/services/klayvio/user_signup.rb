@@ -1,5 +1,7 @@
 module Klayvio
   class UserSignup
+    include DefaultStreamId
+
     def call(message:)
       Klayvio.new.user_signup(
         email: message.data[:email],

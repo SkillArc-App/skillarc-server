@@ -1,5 +1,7 @@
 module Slack
   class UserApplied < SlackNotifier
+    include DefaultStreamId
+
     def call(message:)
       return unless message.data[:status] == "new"
 

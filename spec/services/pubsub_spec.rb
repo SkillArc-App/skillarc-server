@@ -9,13 +9,18 @@ RSpec.describe Pubsub do
     it "calls the subscriber when the event is published" do
       message = build(:events__message, :user_created)
 
-      subscriber = double("subscriber")
+      subscriber = Klayvio::JobSaved.new
       allow(subscriber).to receive(:call)
       subject.subscribe(event_schema: message.event_schema, subscriber:)
 
-      subject.publish(message:)
+      expect(ExecuteSubscriberJob)
+        .to receive(:perform_now)
+        .with(
+          message:,
+          subscriber_id: subscriber.id
+        ).and_call_original
 
-      expect(subscriber).to have_received(:call).with(message:)
+      subject.publish(message:)
     end
   end
 
@@ -25,16 +30,17 @@ RSpec.describe Pubsub do
     it "calls enqueues a execute subscriber job" do
       message = build(:events__message, :user_created)
 
-      subscriber = double("subscriber")
+      subscriber = Klayvio::JobSaved.new
       allow(subscriber).to receive(:call)
+
       subject.subscribe(event_schema: message.event_schema, subscriber:)
 
       expect(ExecuteSubscriberJob)
         .to receive(:perform_later)
         .with(
           message:,
-          subscriber_class_name: "RSpec::Mocks::Double"
-        )
+          subscriber_id: subscriber.id
+        ).and_call_original
 
       subject.publish(message:)
     end

@@ -1,5 +1,7 @@
 module Klayvio
   class JobSaved
+    include DefaultStreamId
+
     def call(message:)
       user = User.find(message.aggregate_id)
 

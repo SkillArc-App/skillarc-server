@@ -1,5 +1,7 @@
 module Klayvio
   class ApplicationStatusUpdated
+    include DefaultStreamId
+
     def call(message:)
       applicant = Applicant.find(message.data[:applicant_id])
       user = applicant.profile.user

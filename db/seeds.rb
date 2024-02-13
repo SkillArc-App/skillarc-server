@@ -610,10 +610,8 @@ LearnedSkill.create!([
                        },
                      ])
 
-trained_seeker_with_reference = Profile.create!(
-  id: SecureRandom.uuid,
+trained_seeker_with_reference = Seeker.create!(
   bio: "I learn stuff",
-  status: "I'm a high school student.",
   user: User.new(
     id: SecureRandom.uuid,
     first_name: 'Tom',
@@ -623,12 +621,8 @@ trained_seeker_with_reference = Profile.create!(
   )
 )
 
-Seeker.create!(**trained_seeker_with_reference.attributes.to_h.except("status", "met_career_coach"))
-
-trained_seeker = Profile.create!(
-  id: SecureRandom.uuid,
+trained_seeker = Seeker.create!(
   bio: 'I learn stuff',
-  status: "I'm a high school student.",
   user: User.new(
     id: 'cll2k67ub0000ao24lvmbzcqs',
     first_name: 'Tim',
@@ -638,12 +632,8 @@ trained_seeker = Profile.create!(
   )
 )
 
-Seeker.create!(**trained_seeker.attributes.to_h.except("status", "met_career_coach"))
-
-seeker_with_profile = Profile.create!(
-  id: SecureRandom.uuid,
+seeker_with_profile = Seeker.create!(
   bio: 'I learn stuff',
-  status: "I'm an adult with some work experience. Looking to switch to trades.",
   user: User.new(
     id: 'cll0yrt890002aor2v4pwo4ia',
     first_name: 'Rita',
@@ -653,12 +643,9 @@ seeker_with_profile = Profile.create!(
   )
 )
 
-Seeker.create!(**seeker_with_profile.attributes.to_h.except("status", "met_career_coach"))
-
 Applicant.create!(
   id: SecureRandom.uuid,
-  profile: seeker_with_profile,
-  seeker: FactoryBot.create(:seeker),
+  seeker: seeker_with_profile,
   job: mechanic_job,
   applicant_statuses: [
     ApplicantStatus.new(
@@ -813,9 +800,8 @@ SeekerTrainingProvider.create!(
 Reference.create!(
   id: SecureRandom.uuid,
   training_provider_id: cul.id,
-  seeker_profile_id: trained_seeker_with_reference.id,
+  seeker: trained_seeker_with_reference,
   author_profile_id: bill_trainer_profile.id,
-  seeker: FactoryBot.create(:seeker),
   reference_text: 'This person is good at carpentry'
 )
 
@@ -842,7 +828,6 @@ coach = Coaches::Coach.create!(
 )
 
 coach_seeker_context = Coaches::CoachSeekerContext.create!(
-  profile_id: seeker_with_profile.id,
   seeker_id: seeker_with_profile.id,
   user_id: seeker_with_profile.user.id,
   first_name: seeker_with_profile.user.first_name,

@@ -15,8 +15,7 @@ RSpec.describe "Stories", type: :request do
       }
     end
     let(:user) { create(:user) }
-    let(:profile) { create(:profile, user:) }
-    let(:seeker) { create(:seeker, id: profile.id, user:) }
+    let(:seeker) { create(:seeker, user:) }
 
     it "returns a 200" do
       subject
@@ -35,8 +34,7 @@ RSpec.describe "Stories", type: :request do
     include_context "authenticated"
 
     let(:user) { create(:user) }
-    let(:profile) { create(:profile, user:) }
-    let(:seeker) { create(:seeker, id: profile.id, user:) }
+    let(:seeker) { create(:seeker, user:) }
 
     let(:params) do
       {
@@ -46,7 +44,7 @@ RSpec.describe "Stories", type: :request do
         }
       }
     end
-    let!(:story) { create(:story, profile:) }
+    let!(:story) { create(:story, seeker:) }
 
     it "returns a 200" do
       subject

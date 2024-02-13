@@ -56,11 +56,6 @@ RSpec.describe Onboarding do
         )
       end
 
-      it "creates a profile" do
-        expect { subject }.to change(Profile, :count).by(1)
-        expect(Profile.last_created.user).to eq(user)
-      end
-
       it "creates a seeker" do
         expect { subject }.to change(Seeker, :count).by(1)
         expect(Seeker.last_created.user).to eq(user)
@@ -164,7 +159,6 @@ RSpec.describe Onboarding do
             is_current: true,
             end_date: nil,
             description: "Description",
-            profile_id: be_present, # TODO: Come up with a way to check the profile id as well
             seeker_id: be_present # TODO: Come up with a way to check the profile id as well
           ).and_call_original
 
@@ -223,7 +217,6 @@ RSpec.describe Onboarding do
           title: "Title",
           graduation_date: "2000",
           gpa: "4.0",
-          profile: user.profile,
           seeker: user.seeker
         )
       end
@@ -239,7 +232,6 @@ RSpec.describe Onboarding do
             title: "Title",
             graduation_date: "2000",
             gpa: "4.0",
-            profile_id: be_present, # TODO: Come up with a way to check the profile id as well
             seeker_id: be_present # TODO: Come up with a way to check the profile id as well
           ).and_call_original
         expect(EventService)
@@ -398,7 +390,7 @@ RSpec.describe Onboarding do
           start_date: "01/01/2000",
           end_date: "01/01/2001",
           description: "Learning",
-          profile: user.profile
+          seeker: user.seeker
         )
       end
 
@@ -420,7 +412,6 @@ RSpec.describe Onboarding do
             start_date: "01/01/2000",
             end_date: "01/01/2001",
             description: "Learning",
-            profile_id: be_present, # TODO: Come up with a way to check the profile id as well
             seeker_id: be_present # TODO: Come up with a way to check the profile id as well
           )
           .and_call_original
@@ -468,7 +459,7 @@ RSpec.describe Onboarding do
 
         expect(ProfessionalInterest.last_created).to have_attributes(
           response: "construction",
-          profile: user.profile
+          seeker: user.seeker
         )
       end
 

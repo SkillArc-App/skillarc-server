@@ -20,7 +20,7 @@ RSpec.describe "Seekers", type: :request do
   describe "GET /show" do
     subject { get seeker_path(seeker_id), headers: }
 
-    let(:seeker_id) { create(:coaches__coach_seeker_context).profile_id }
+    let(:seeker_id) { create(:coaches__coach_seeker_context).seeker_id }
 
     it_behaves_like "coach secured endpoint"
 
@@ -38,7 +38,7 @@ RSpec.describe "Seekers", type: :request do
   describe "POST /:seeker_id/skill-levels" do
     subject { post seeker_skill_levels_path(seeker_id), params:, headers: }
 
-    let(:seeker_id) { create(:profile).id }
+    let(:seeker_id) { create(:seeker).id }
     let(:params) do
       {
         level: "advanced"
@@ -61,7 +61,7 @@ RSpec.describe "Seekers", type: :request do
   describe "POST /:seeker_id/assign_coach" do
     subject { post seeker_assign_coach_path(seeker_id), params:, headers: }
 
-    let(:seeker_id) { coach_seeker_context.profile_id }
+    let(:seeker_id) { coach_seeker_context.seeker_id }
     let(:params) do
       {
         coach_id: coach.coach_id
@@ -86,7 +86,7 @@ RSpec.describe "Seekers", type: :request do
   describe "POST /:seeker_id/recommend_job" do
     subject { post seeker_recommend_job_path(seeker_id), params:, headers: }
 
-    let(:seeker_id) { coach_seeker_context.profile_id }
+    let(:seeker_id) { coach_seeker_context.seeker_id }
     let(:params) do
       {
         job_id:
@@ -102,7 +102,7 @@ RSpec.describe "Seekers", type: :request do
 
       it "calls SeekerService.recommend_job" do
         expect(Coaches::SeekerService).to receive(:recommend_job).with(
-          profile_id: seeker_id,
+          seeker_id:,
           job_id:,
           coach:
         )

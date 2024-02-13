@@ -6,7 +6,7 @@ module Events
 
         schema do
           applicant_id Uuid
-          profile_id Uuid
+          profile_id Either(Uuid, nil), default: nil
           seeker_id Uuid
           from_user_id String
           employer_name String

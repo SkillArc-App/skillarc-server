@@ -29,7 +29,7 @@ module Coaches
 
     def recommend_job
       SeekerService.recommend_job(
-        profile_id: params[:seeker_id],
+        seeker_id: params[:seeker_id],
         job_id: params[:job_id],
         coach: @coach
       )

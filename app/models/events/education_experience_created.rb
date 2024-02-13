@@ -11,7 +11,7 @@ module Events
           activities Either(String, nil), default: nil
           graduation_date Either(String, nil), default: nil
           gpa Either(String, nil), default: nil
-          profile_id Uuid
+          profile_id Either(Uuid, nil), default: nil
           seeker_id Uuid
         end
       end

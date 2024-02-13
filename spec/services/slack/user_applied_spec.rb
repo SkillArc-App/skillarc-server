@@ -9,7 +9,6 @@ RSpec.describe Slack::UserApplied do
         aggregate_id: job.id,
         data: Events::ApplicantStatusUpdated::Data::V1.new(
           applicant_id: applicant.id,
-          profile_id: profile.id,
           seeker_id: seeker.id,
           user_id: user.id,
           job_id: job.id,
@@ -20,8 +19,7 @@ RSpec.describe Slack::UserApplied do
       )
     end
     let(:job) { create(:job) }
-    let(:applicant) { create(:applicant, job:, profile:) }
-    let(:profile) { create(:profile, user:) }
+    let(:applicant) { create(:applicant, job:, seeker:) }
     let(:seeker) { create(:seeker, user:) }
     let(:user) { create(:user, email: "hannah@blocktrainapp.com") }
 
@@ -30,7 +28,7 @@ RSpec.describe Slack::UserApplied do
 
       it "calls the Slack API" do
         expect_any_instance_of(Slack::FakeSlackGateway).to receive(:ping).with(
-          "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|hannah@blocktrainapp.com> has applied to *Welder* at *Acme Inc.*"
+          "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker.id}|hannah@blocktrainapp.com> has applied to *Welder* at *Acme Inc.*"
         )
 
         subject.call(message:)

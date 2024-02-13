@@ -13,9 +13,8 @@ class SeekerChats
       aggregate_id: applicant_chat.applicant.job.id,
       data: Events::ChatMessageSent::Data::V1.new(
         applicant_id: applicant_chat.applicant.id,
-        profile_id: applicant_chat.applicant.profile_id,
         seeker_id: applicant_chat.applicant.seeker_id,
-        from_user_id: applicant_chat.applicant.profile.user.id,
+        from_user_id: applicant_chat.applicant.seeker.user.id,
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
@@ -25,9 +24,9 @@ class SeekerChats
 
   def get
     ApplicantChat
-      .includes(messages: %i[user read_receipts], applicant: { profile: :user, job: :employer })
-      .references(:messages, applicant: { profile: :user, job: :employer })
-      .where(applicants: { profile: { users_profiles: { id: user.id } } }).map do |applicant_chat|
+      .includes(messages: %i[user read_receipts], applicant: { seeker: :user, job: :employer })
+      .references(:messages, applicant: { seeker: :user, job: :employer })
+      .where(applicants: { seeker: { users_seekers: { id: user.id } } }).map do |applicant_chat|
         job = applicant_chat.applicant.job
         {
           id: applicant_chat.applicant.id,
@@ -48,8 +47,8 @@ class SeekerChats
 
   def mark_read(applicant_id:)
     ApplicantChat
-      .includes(messages: %i[user read_receipts], applicant: { profile: :user, job: :employer })
-      .references(:messages, applicant: { profile: :user, job: :employer })
+      .includes(messages: %i[user read_receipts], applicant: { seeker: :user, job: :employer })
+      .references(:messages, applicant: { seeker: :user, job: :employer })
       .where(applicants: { id: applicant_id })
       .find_each do |applicant_chat|
         applicant_chat.messages.each do |message|

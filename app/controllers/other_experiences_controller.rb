@@ -17,7 +17,6 @@ class OtherExperiencesController < ApplicationController
         :description
       ),
       id: SecureRandom.uuid,
-      profile:,
       seeker:
     )
 
@@ -49,10 +48,9 @@ class OtherExperiencesController < ApplicationController
 
   private
 
-  attr_reader :profile, :seeker
+  attr_reader :seeker
 
   def set_seeker
-    @profile = Profile.find(params[:profile_id])
     @seeker = Seeker.find(params[:profile_id])
   end
 end

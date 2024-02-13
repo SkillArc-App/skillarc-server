@@ -4,7 +4,7 @@ module Klayvio
 
     def call(message:)
       applicant = Applicant.find(message.data[:applicant_id])
-      user = applicant.profile.user
+      user = applicant.seeker.user
 
       Klayvio.new.application_status_updated(
         application_id: message.data[:applicant_id],

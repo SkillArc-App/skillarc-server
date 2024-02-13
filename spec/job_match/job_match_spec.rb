@@ -4,8 +4,7 @@ RSpec.describe JobMatch::JobMatch do
   subject { described_class.new(user:) }
 
   let(:user) { create(:user) }
-  let!(:profile) { create(:profile, user:) }
-  let!(:seeker) { create(:seeker, id: profile.id, user:) }
+  let!(:seeker) { create(:seeker, user:) }
 
   let(:saved_job) { create(:job) }
   let!(:unsaved_job) { create(:job) }
@@ -16,7 +15,7 @@ RSpec.describe JobMatch::JobMatch do
     create(:event, :job_unsaved, aggregate_id: user.id, data: { job_id: saved_job.id })
     create(:event, :job_saved, aggregate_id: user.id, data: { job_id: saved_job.id })
 
-    create(:applicant, profile:, seeker:, job: applied_job)
+    create(:applicant, seeker:, job: applied_job)
   end
 
   it "initializes with a list of jobs" do

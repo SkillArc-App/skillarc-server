@@ -37,8 +37,7 @@ RSpec.describe "References", type: :request do
       }
     end
 
-    let(:seeker_profile) { create(:profile) }
-    let(:seeker) { create(:seeker, id: seeker_profile.id) }
+    let(:seeker) { create(:seeker) }
 
     it "returns 200" do
       subject

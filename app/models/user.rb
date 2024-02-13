@@ -24,7 +24,6 @@
 #
 class User < ApplicationRecord
   has_one :recruiter, dependent: :destroy
-  has_one :profile, dependent: :destroy
   has_one :seeker, dependent: :destroy
   has_many :onboarding_sessions, dependent: :destroy
   has_many :user_roles, dependent: :destroy
@@ -33,7 +32,7 @@ class User < ApplicationRecord
   has_many :training_provider_profiles, dependent: :destroy
 
   def applied_jobs
-    (profile&.applicants || []).map(&:job)
+    (seeker&.applicants || []).map(&:job)
   end
 
   def employer_admin?

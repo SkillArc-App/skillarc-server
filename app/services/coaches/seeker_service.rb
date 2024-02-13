@@ -64,7 +64,7 @@ module Coaches
 
       # Seeker Originated
       when Events::SeekerCreated::V1
-        handle_profile_created(message)
+        handle_seeker_created(message)
 
       when Events::UserCreated::V1
         handle_user_created(message)
@@ -98,13 +98,13 @@ module Coaches
     end
 
     def self.all_contexts
-      CoachSeekerContext.with_everything.where.not(profile_id: nil).where.not(email: nil).map do |csc|
+      CoachSeekerContext.with_everything.where.not(seeker_id: nil).where.not(email: nil).map do |csc|
         serialize_coach_seeker_context(csc)
       end
     end
 
     def self.find_context(id)
-      csc = CoachSeekerContext.with_everything.find_by!(profile_id: id)
+      csc = CoachSeekerContext.with_everything.find_by!(seeker_id: id)
 
       serialize_coach_seeker_context(csc)
     end
@@ -166,10 +166,10 @@ module Coaches
       )
     end
 
-    def self.recommend_job(profile_id:, job_id:, coach:, now: Time.zone.now)
+    def self.recommend_job(seeker_id:, job_id:, coach:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::JobRecommended::V1,
-        aggregate_id: profile_id,
+        aggregate_id: seeker_id,
         data: Events::JobRecommended::Data::V1.new(
           coach_id: coach.coach_id,
           job_id:
@@ -230,7 +230,7 @@ module Coaches
     end
 
     def self.handle_barriers_updated(message)
-      csc = CoachSeekerContext.find_by!(profile_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       csc.seeker_barriers.destroy_all
       message.data[:barriers].each do |barrier|
@@ -244,14 +244,14 @@ module Coaches
     end
 
     def self.handle_coach_assigned(message)
-      csc = CoachSeekerContext.find_by!(profile_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       csc.assigned_coach = message.data[:coach_id]
       csc.save!
     end
 
     def self.handle_job_recommended(message)
-      csc = CoachSeekerContext.find_by!(profile_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       job_recommendation = Coaches::Job.find_by!(job_id: message.data[:job_id])
 
@@ -284,7 +284,7 @@ module Coaches
     end
 
     def self.handle_note_added(message)
-      csc = CoachSeekerContext.find_by!(profile_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       csc.update!(last_contacted_at: message.occurred_at)
       csc.seeker_notes << SeekerNote.create!(
@@ -325,18 +325,17 @@ module Coaches
       )
     end
 
-    def self.handle_profile_created(message)
+    def self.handle_seeker_created(message)
       csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
 
       csc.update!(
         last_active_on: message.occurred_at,
-        profile_id: message.data[:id],
         seeker_id: message.data[:id]
       )
     end
 
     def self.handle_skill_level_updated(message)
-      csc = CoachSeekerContext.find_by!(profile_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       csc.update!(
         skill_level: message.data[:skill_level]
@@ -363,7 +362,7 @@ module Coaches
         lastContacted: csc.last_contacted_at || "Never",
         assignedCoach: csc.assigned_coach || 'none',
         barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } },
-        stage: 'profile_created',
+        stage: 'seeker_created',
         notes: csc.seeker_notes.map do |note|
           {
             note: note.note,

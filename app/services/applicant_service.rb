@@ -22,9 +22,8 @@ class ApplicantService
       aggregate_id: applicant.job.id,
       data: Events::ApplicantStatusUpdated::Data::V1.new(
         applicant_id: applicant.id,
-        profile_id: applicant.profile.id,
         seeker_id: applicant.seeker.id,
-        user_id: applicant.profile.user.id,
+        user_id: applicant.seeker.user.id,
         job_id: applicant.job.id,
         employer_name: applicant.job.employer.name,
         employment_title: applicant.job.employment_title,

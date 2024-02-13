@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe SeekerService do
   describe "#get" do
-    subject { described_class.new(profile, nil).get(seeker_editor: true) }
+    subject { described_class.new(seeker).get(seeker_editor: true) }
 
-    let(:profile) { create(:profile, user:) }
+    let(:seeker) { create(:seeker, user:) }
     let(:user) do
       create(
         :user,
@@ -21,7 +21,7 @@ RSpec.describe SeekerService do
     before do
       create(
         :onboarding_session,
-        user: profile.user,
+        user: seeker.user,
         responses: {
           "opportunityInterests" => {
             "response" => %w[
@@ -34,7 +34,7 @@ RSpec.describe SeekerService do
 
       create(
         :education_experience,
-        profile:,
+        seeker:,
         organization_name: "University of Cincinnati",
         title: "Student",
         graduation_date: Date.new(2019, 5, 1),
@@ -44,7 +44,7 @@ RSpec.describe SeekerService do
 
       create(
         :other_experience,
-        profile:,
+        seeker:,
         organization_name: "Turner Construction",
         position: "Laborer",
         start_date: Date.new(2015, 1, 1),
@@ -55,7 +55,7 @@ RSpec.describe SeekerService do
 
       create(
         :personal_experience,
-        profile:,
+        seeker:,
         activity: "Babysitting",
         start_date: Date.new(2019, 1, 1),
         end_date: Date.new(2020, 1, 1),
@@ -64,14 +64,14 @@ RSpec.describe SeekerService do
 
       create(
         :profile_skill,
-        profile:,
+        seeker:,
         description: "I'm good at welding.",
         master_skill: create(:master_skill, skill: "Welding", type: MasterSkill::SkillTypes::TECHNICAL)
       )
 
       create(
         :story,
-        profile:,
+        seeker:,
         prompt: "Prompt",
         response: "Response"
       )
@@ -94,7 +94,7 @@ RSpec.describe SeekerService do
       )
     end
 
-    it "returns the expanded profile" do
+    it "returns the expanded seeker" do
       expect(subject[:educationExperiences]).to contain_exactly({
                                                                   "id" => be_a(String),
                                                                   "organization_name" => "University of Cincinnati",
@@ -173,11 +173,11 @@ RSpec.describe SeekerService do
   end
 
   describe "#update" do
-    subject { described_class.new(profile, seeker).update(params) }
+    subject { described_class.new(seeker).update(params) }
 
-    let(:profile) { create(:profile, user:) }
     let(:seeker) { create(:seeker, user:) }
     let(:user) { create(:user) }
+    let(:met_career_coach) { true }
 
     let(:params) do
       {
@@ -185,50 +185,34 @@ RSpec.describe SeekerService do
         met_career_coach:
       }
     end
-    let(:met_career_coach) { profile.met_career_coach }
 
-    it "updates the profile" do
+    it "updates the seeker" do
       expect { subject }
-        .to change { profile.reload.bio }.to("New Bio")
+        .to change { seeker.reload.bio }.to("New Bio")
     end
 
-    it "publishes a profile updated event" do
+    it "publishes a seeker updated event" do
+      allow(EventService).to receive(:create!)
       expect(EventService).to receive(:create!).with(
         event_schema: Events::SeekerUpdated::V1,
-        aggregate_id: profile.user.id,
+        aggregate_id: seeker.user.id,
         data: Events::Common::UntypedHashWrapper.build(
           bio: "New Bio",
-          met_career_coach: profile.met_career_coach,
-          image: profile.image
+          image: seeker.image
         )
       ).and_call_original
 
       subject
     end
 
-    context "when met_career_coach does not change" do
-      it "does not publish a met career coach event" do
-        expect(EventService).not_to receive(:create!).with(
-          event_schema: Events::MetCareerCoachUpdated::V1,
-          aggregate_id: profile.user.id,
-          data: Events::Common::UntypedHashWrapper.build(
-            met_career_coach:
-          ),
-          occurred_at: be_present
-        )
-
-        subject
-      end
-    end
-
-    context "when met_career_coach changes" do
-      let(:met_career_coach) { !profile.met_career_coach }
+    context "when met_career_coach is present" do
+      let(:met_career_coach) { false }
 
       it "creates an event" do
         allow(EventService).to receive(:create!)
         expect(EventService).to receive(:create!).with(
           event_schema: Events::MetCareerCoachUpdated::V1,
-          aggregate_id: profile.user.id,
+          aggregate_id: seeker.user.id,
           data: Events::Common::UntypedHashWrapper.build(
             met_career_coach:
           )

@@ -12,8 +12,8 @@ RSpec.describe User do
 
     context "when there is an applicant" do
       let(:job) { create(:job) }
-      let!(:applicant) { create(:applicant, job:, profile:) }
-      let(:profile) { create(:profile, user: subject) }
+      let!(:applicant) { create(:applicant, job:, seeker:) }
+      let(:seeker) { create(:seeker, user: subject) }
 
       it "returns an array with the job" do
         expect(subject.applied_jobs).to eq([job])

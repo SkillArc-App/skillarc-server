@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe ProfileCompleteness do
-  subject { described_class.new(profile) }
+  subject { described_class.new(seeker) }
 
   describe "#status" do
     context "when the profile is nil" do
-      let(:profile) { nil }
+      let(:seeker) { nil }
 
       it "returns everything as missing" do
         expect(subject.status.result).to eq("incomplete")
@@ -15,7 +15,7 @@ RSpec.describe ProfileCompleteness do
     end
 
     context "when the profile is not nil" do
-      let(:profile) { create(:profile) }
+      let(:seeker) { create(:seeker) }
 
       context "when the profile doesn't have work experience" do
         it "includes MISSING_WORK_EXPERIENCE" do
@@ -26,7 +26,7 @@ RSpec.describe ProfileCompleteness do
 
       context "when the profile has work experience" do
         before do
-          create(:other_experience, profile:)
+          create(:other_experience, seeker:)
         end
 
         it "doesn't include MISSING_WORK_EXPERIENCE" do
@@ -42,7 +42,7 @@ RSpec.describe ProfileCompleteness do
 
         context "when the profile has education" do
           before do
-            create(:education_experience, profile:)
+            create(:education_experience, seeker:)
           end
 
           it "doesn't include MISSING_EDUCATION" do

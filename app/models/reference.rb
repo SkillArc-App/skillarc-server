@@ -8,7 +8,6 @@
 #  updated_at           :datetime         not null
 #  author_profile_id    :text             not null
 #  seeker_id            :uuid             not null
-#  seeker_profile_id    :text             not null
 #  training_provider_id :text             not null
 #
 # Indexes
@@ -18,7 +17,6 @@
 # Foreign Keys
 #
 #  Reference_author_profile_id_fkey     (author_profile_id => training_provider_profiles.id) ON DELETE => restrict ON UPDATE => cascade
-#  Reference_seeker_profile_id_fkey     (seeker_profile_id => profiles.id) ON DELETE => restrict ON UPDATE => cascade
 #  Reference_training_provider_id_fkey  (training_provider_id => training_providers.id) ON DELETE => restrict ON UPDATE => cascade
 #  fk_rails_...                         (seeker_id => seekers.id)
 #
@@ -27,6 +25,5 @@ class Reference < ApplicationRecord
 
   belongs_to :author_profile, class_name: "TrainingProviderProfile"
   belongs_to :training_provider
-  belongs_to :seeker_profile, class_name: "Profile"
   belongs_to :seeker
 end

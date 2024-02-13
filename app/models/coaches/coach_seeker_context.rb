@@ -14,12 +14,13 @@
 #  stage             :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  profile_id        :uuid
 #  seeker_id         :uuid
 #  user_id           :string           not null
 #
 module Coaches
   class CoachSeekerContext < ApplicationRecord
+    self.ignored_columns += ["profile_id"]
+
     has_many :seeker_notes, dependent: :destroy, class_name: "Coaches::SeekerNote"
     has_many :seeker_applications, dependent: :destroy, class_name: "Coaches::SeekerApplication"
     has_many :seeker_barriers, dependent: :destroy, class_name: "Coaches::SeekerBarrier"

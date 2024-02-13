@@ -91,7 +91,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
 
   create_table "applicants", id: :text, force: :cascade do |t|
     t.text "job_id", null: false
-    t.text "profile_id", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.uuid "seeker_id", null: false
@@ -128,7 +127,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
 
   create_table "coach_seeker_contexts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "user_id", null: false
-    t.uuid "profile_id"
     t.string "first_name"
     t.string "last_name"
     t.string "email"
@@ -201,12 +199,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   create_table "credentials", id: :text, force: :cascade do |t|
     t.text "organization_id"
     t.text "name"
-    t.text "profile_id", null: false
     t.text "description"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.text "issued_date"
-    t.uuid "seeker_id"
+    t.uuid "seeker_id", null: false
   end
 
   create_table "desired_certifications", id: :text, force: :cascade do |t|
@@ -226,7 +223,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   create_table "education_experiences", id: :text, force: :cascade do |t|
     t.text "organization_id"
     t.text "organization_name"
-    t.text "profile_id", null: false
     t.text "title"
     t.text "activities"
     t.text "graduation_date"
@@ -406,7 +402,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   create_table "other_experiences", id: :text, force: :cascade do |t|
     t.text "organization_id"
     t.text "organization_name"
-    t.text "profile_id", null: false
     t.text "start_date"
     t.boolean "is_current"
     t.text "end_date"
@@ -419,7 +414,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   end
 
   create_table "personal_experiences", id: :text, force: :cascade do |t|
-    t.text "profile_id", null: false
     t.text "activity"
     t.text "start_date"
     t.text "end_date"
@@ -431,7 +425,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   end
 
   create_table "professional_interests", id: :text, force: :cascade do |t|
-    t.text "profile_id", null: false
     t.text "response", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
@@ -449,7 +442,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
 
   create_table "profile_skills", id: :text, force: :cascade do |t|
     t.text "master_skill_id", null: false
-    t.text "profile_id", null: false
     t.text "description"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
@@ -546,7 +538,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
 
   create_table "seeker_references", id: :text, force: :cascade do |t|
     t.text "author_profile_id", null: false
-    t.text "seeker_profile_id", null: false
     t.text "training_provider_id", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
@@ -589,7 +580,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   end
 
   create_table "stories", id: :text, force: :cascade do |t|
-    t.text "profile_id", null: false
     t.text "prompt", null: false
     t.text "response", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
@@ -690,7 +680,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   add_foreign_key "applicant_status_reasons", "reasons"
   add_foreign_key "applicant_statuses", "applicants", name: "ApplicantStatus_applicant_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "applicants", "jobs", name: "Applicant_job_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "applicants", "profiles", name: "Applicant_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "applicants", "seekers"
   add_foreign_key "career_paths", "jobs", name: "CareerPath_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "chat_messages", "applicant_chats"
@@ -700,13 +689,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   add_foreign_key "coaches_seeker_job_recommendations", "coaches"
   add_foreign_key "coaches_seeker_job_recommendations", "coaches_jobs", column: "job_id"
   add_foreign_key "credentials", "organizations", name: "Credential_organization_id_fkey", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "credentials", "profiles", name: "Credential_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_certifications", "jobs", name: "DesiredCertification_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_certifications", "master_certifications", name: "DesiredCertification_master_certification_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_skills", "jobs", name: "DesiredSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_skills", "master_skills", name: "DesiredSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "education_experiences", "organizations", name: "EducationExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "education_experiences", "profiles", name: "EducationExperience_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "education_experiences", "seekers"
   add_foreign_key "employer_invites", "employers", name: "EmployerInvite_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "job_photos", "jobs", name: "JobPhoto_job_id_fkey", on_update: :cascade, on_delete: :restrict
@@ -718,16 +705,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   add_foreign_key "notifications", "users"
   add_foreign_key "onboarding_sessions", "users", name: "OnboardingSession_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "other_experiences", "organizations", name: "OtherExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "other_experiences", "profiles", name: "OtherExperience_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "other_experiences", "seekers"
-  add_foreign_key "personal_experiences", "profiles", name: "PersonalExperience_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "personal_experiences", "seekers"
-  add_foreign_key "professional_interests", "profiles", name: "ProfessionalInterests_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "professional_interests", "seekers"
   add_foreign_key "profile_certifications", "master_certifications", name: "ProfileCertification_master_certification_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "profile_certifications", "profiles", name: "ProfileCertification_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "profile_skills", "master_skills", name: "ProfileSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "profile_skills", "profiles", name: "ProfileSkill_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "profile_skills", "seekers"
   add_foreign_key "profiles", "users", name: "Profile_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "program_skills", "master_skills", column: "skill_id", name: "ProgramSkill_skill_id_fkey", on_update: :cascade, on_delete: :restrict
@@ -742,7 +725,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   add_foreign_key "seeker_invites", "programs", name: "SeekerInvite_program_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_invites", "training_providers", name: "SeekerInvite_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_notes", "coach_seeker_contexts"
-  add_foreign_key "seeker_references", "profiles", column: "seeker_profile_id", name: "Reference_seeker_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_references", "seekers"
   add_foreign_key "seeker_references", "training_provider_profiles", column: "author_profile_id", name: "Reference_author_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_references", "training_providers", name: "Reference_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
@@ -752,7 +734,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   add_foreign_key "seeker_training_providers", "users", name: "SeekerTrainingProvider_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seekers", "users"
   add_foreign_key "sessions", "users", name: "Session_user_id_fkey", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "stories", "profiles", name: "Story_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "stories", "seekers"
   add_foreign_key "testimonials", "jobs", name: "Testimonial_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "training_provider_invites", "training_providers", name: "TrainingProviderInvite_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict

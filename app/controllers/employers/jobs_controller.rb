@@ -18,8 +18,18 @@ class Employers::JobsController < ApplicationController
       }
     end
 
+    # Because the reason list is small we just load all of them
+    # and do in memory lookups
+    reasons = Reason.all
+
     applicants = jobs.map do |job|
       job.applicants.map do |a|
+        applicant_status = a.applicant_statuses.max_by(&:created_at)
+
+        status_reasons = applicant_status&.applicant_status_reasons&.map do |asr|
+          reasons.detect { |r| r.id == asr.reason_id }&.description
+        end
+
         {
           id: a.id,
           jobId: job.id,
@@ -32,7 +42,8 @@ class Employers::JobsController < ApplicationController
           phoneNumber: a.seeker.user.phone_number,
           profileLink: "/profiles/#{a.seeker.id}",
           programs: [],
-          status: a.applicant_statuses.max_by(&:created_at)&.status
+          status_reasons:,
+          status: applicant_status&.status
         }
       end
     end.flatten

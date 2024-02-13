@@ -23,7 +23,8 @@ module Coaches
         Events::JobSaved::V1,
         Events::JobUnsaved::V1,
         Events::SeekerUpdated::V1,
-        Events::OnboardingCompleted::V1
+        Events::OnboardingCompleted::V1,
+        Events::JobSearch::V2
       ].freeze
     end
 
@@ -77,7 +78,8 @@ module Coaches
         Events::JobUnsaved::V1,
         Events::PersonalExperienceCreated::V1,
         Events::SeekerUpdated::V1,
-        Events::OnboardingCompleted::V1
+        Events::OnboardingCompleted::V1,
+        Events::JobSearch::V2
         handle_last_active_updated(message)
       end
     end

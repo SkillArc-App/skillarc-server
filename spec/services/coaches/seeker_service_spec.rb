@@ -358,6 +358,30 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           expect(subject[:lastActiveOn]).to eq(time2)
         end
       end
+
+      context "when a job_search version 2 occurs for a seeker" do
+        it "updates the last active to when the event occured" do
+          message = build(
+            :events__message,
+            event_type: Events::JobSearch::V2.event_type,
+            version: Events::JobSearch::V2.version,
+            data: Events::JobSearch::Data::V1.new(
+              search_terms: "A search",
+              industries: [],
+              tags: nil
+            ),
+            metadata: Events::JobSearch::MetaData::V2.new(
+              source: "seeker"
+            ),
+            aggregate_id: user_id,
+            occurred_at: time2
+          )
+
+          described_class.handle_event(message)
+
+          expect(subject[:lastActiveOn]).to eq(time2)
+        end
+      end
     end
   end
 

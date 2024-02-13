@@ -20,7 +20,6 @@ class OneUserController < ApplicationController
     seeker = current_user.seeker&.slice(
       :id,
       :image,
-      :status,
       :bio
     ) || {}
 

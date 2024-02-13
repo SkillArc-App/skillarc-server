@@ -8,10 +8,9 @@ RSpec.describe "Profiles", type: :request do
   end
 
   describe "GET /show" do
-    subject { get profile_path(profile), headers: }
+    subject { get profile_path(seeker), headers: }
 
-    let(:profile) { create(:profile) }
-
+    let(:seeker) { create(:seeker) }
     it "returns 200" do
       subject
 
@@ -46,7 +45,7 @@ RSpec.describe "Profiles", type: :request do
           include_context "authenticated"
 
           context "user is seeker owner" do
-            let(:profile) { create(:profile, user:) }
+            let(:seeker) { create(:seeker, user:) }
 
             it "calls the seeker service with seeker editor true" do
               expect_any_instance_of(SeekerService)
@@ -72,10 +71,9 @@ RSpec.describe "Profiles", type: :request do
   end
 
   describe "PUT /update" do
-    subject { put profile_path(profile), params:, headers: }
+    subject { put profile_path(seeker), params:, headers: }
 
-    let(:profile) { create(:profile) }
-
+    let(:seeker) { create(:seeker) }
     let(:params) do
       {
         profile: {
@@ -90,10 +88,9 @@ RSpec.describe "Profiles", type: :request do
     context "admin authenticated" do
       include_context "admin authenticated"
 
-      it "updates the profile" do
+      it "updates the seeker" do
         expect { subject }
-          .to change { profile.reload.bio }.to("New Bio")
-          .and change { profile.reload.met_career_coach }.to(true)
+          .to change { seeker.reload.bio }.to("New Bio")
       end
     end
   end

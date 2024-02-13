@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe FastTrackTasks do
   subject { described_class.new(user) }
 
-  let(:user) { create(:user, profile: nil, onboarding_sessions: [onboarding_session]) }
+  let(:user) { create(:user, onboarding_sessions: [onboarding_session]) }
   let(:onboarding_session) { build(:onboarding_session, completed_at:) }
   let(:completed_at) { Date.new(2020, 1, 1) }
 
@@ -40,24 +40,24 @@ RSpec.describe FastTrackTasks do
 
   describe "#profile" do
     it_behaves_like "base exits" do
-      let(:result) { subject.profile }
+      let(:result) { subject.seeker }
     end
 
-    context "when the profile is nil" do
+    context "when the seeker is nil" do
       it "returns 'Make your resume strong' as incomplete" do
-        expect(subject.profile).to include({ name: "Make your resume strong", is_complete: false, route: "/" })
+        expect(subject.seeker).to include({ name: "Make your resume strong", is_complete: false, route: "/" })
       end
     end
 
-    context "when the profile is not nil" do
-      let!(:profile) { create(:profile, user:, met_career_coach:) }
+    context "when the seeker is not nil" do
+      let!(:seeker) { create(:seeker, user:) }
       let(:met_career_coach) { false }
 
       context "when ProfileCompleteness returns 'incomplete'" do
         it "returns 'Make your resume strong' as incomplete" do
           allow_any_instance_of(ProfileCompleteness).to receive(:status).and_return(ProfileCompleteness::Result.new("incomplete", %w[education work]))
 
-          expect(subject.profile).to include({ name: "Make your resume strong", is_complete: false, route: "/profiles/#{profile.id}" })
+          expect(subject.seeker).to include({ name: "Make your resume strong", is_complete: false, route: "/profiles/#{seeker.id}" })
         end
       end
 
@@ -65,21 +65,7 @@ RSpec.describe FastTrackTasks do
         it "returns 'Make your resume is strong' as complete" do
           allow_any_instance_of(ProfileCompleteness).to receive(:status).and_return(ProfileCompleteness::Result.new("complete", []))
 
-          expect(subject.profile).to include({ name: "Make your resume strong", is_complete: true, route: "/profiles/#{profile.id}" })
-        end
-      end
-
-      context "when the user has not met with a career coach" do
-        it "returns 'Meet your career coach' as incomplete" do
-          expect(subject.profile).to include({ name: "Meet your career coach", is_complete: false, route: "https://meetings.hubspot.com/hannah-wexner" })
-        end
-      end
-
-      context "when the user has met with a career coach" do
-        let(:met_career_coach) { true }
-
-        it "returns 'Meet your career coach' as complete" do
-          expect(subject.profile).to include({ name: "Meet your career coach", is_complete: true, route: "https://meetings.hubspot.com/hannah-wexner" })
+          expect(subject.seeker).to include({ name: "Make your resume strong", is_complete: true, route: "/profiles/#{seeker.id}" })
         end
       end
     end

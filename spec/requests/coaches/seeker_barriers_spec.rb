@@ -4,7 +4,7 @@ RSpec.describe "Coaches::SeekerBarriers", type: :request do
   describe "PUT /update_barriers" do
     subject { put seeker_update_barriers_path(seeker_id), params:, headers: }
 
-    let(:seeker_id) { coach_seeker_context.profile_id }
+    let(:seeker_id) { coach_seeker_context.seeker_id }
     let(:params) do
       {
         barriers: [

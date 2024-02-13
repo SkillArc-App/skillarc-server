@@ -1,6 +1,5 @@
 class EducationExperienceService
-  def initialize(profile, seeker)
-    @profile = profile
+  def initialize(seeker)
     @seeker = seeker
   end
 
@@ -12,7 +11,6 @@ class EducationExperienceService
       gpa:,
       activities:,
       id: SecureRandom.uuid,
-      profile_id: profile.id,
       seeker_id: seeker.id
     )
 
@@ -26,7 +24,6 @@ class EducationExperienceService
         graduation_date:,
         gpa:,
         activities:,
-        profile_id: profile.id,
         seeker_id: seeker.id
       ),
       occurred_at: Time.zone.now
@@ -42,7 +39,6 @@ class EducationExperienceService
       event_schema: Events::EducationExperienceUpdated::V1,
       aggregate_id: seeker.user.id,
       data: Events::EducationExperienceUpdated::Data::V1.new(
-        profile_id: profile.id,
         seeker_id: seeker.id,
         **params.merge(id:)
       ),
@@ -67,5 +63,5 @@ class EducationExperienceService
 
   private
 
-  attr_reader :profile, :seeker
+  attr_reader :seeker
 end

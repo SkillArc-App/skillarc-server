@@ -60,7 +60,7 @@ class Job < ApplicationRecord
       :employer,
       applicants: [
         :applicant_statuses,
-        { profile: :user }
+        { seeker: :user }
       ]
     )
   end

@@ -26,11 +26,11 @@ class Employers::JobsController < ApplicationController
           chatEnabled: job.employer.chat_enabled,
           createdAt: a.created_at,
           jobName: job.employment_title,
-          firstName: a.profile.user.first_name,
-          lastName: a.profile.user.last_name,
-          email: a.profile.user.email,
-          phoneNumber: a.profile.user.phone_number,
-          profileLink: "/profiles/#{a.profile.id}",
+          firstName: a.seeker.user.first_name,
+          lastName: a.seeker.user.last_name,
+          email: a.seeker.user.email,
+          phoneNumber: a.seeker.user.phone_number,
+          profileLink: "/profiles/#{a.seeker.id}",
           programs: [],
           status: a.applicant_statuses.max_by(&:created_at)&.status
         }

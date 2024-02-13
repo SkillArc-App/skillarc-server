@@ -45,7 +45,7 @@ class ApplicationAnalytics
       days = (Time.zone.now - status.created_at).to_i / 1.day
       hours = ((Time.zone.now - status.created_at) - days.days).to_i / 1.hour
 
-      user = applicant.profile.user
+      user = applicant.seeker.user
 
       {
         id: applicant.id,
@@ -74,8 +74,8 @@ class ApplicationAnalytics
         employer_id: applicant.job.employer.id,
         employer_name: applicant.job.employer.name,
         employment_title: applicant.job.employment_title,
-        applicant_name: "#{applicant.profile.user.first_name} #{applicant.profile.user.last_name}",
-        applicant_email: applicant.profile.user.email,
+        applicant_name: "#{applicant.seeker.user.first_name} #{applicant.seeker.user.last_name}",
+        applicant_email: applicant.seeker.user.email,
         status: current_status_time[:status],
         days: current_status_time[:time][:days],
         hours: current_status_time[:time][:hours]
@@ -88,6 +88,6 @@ class ApplicationAnalytics
   private
 
   def filtered_applicants
-    Applicant.where.not(job_id: Job.where(hide_job: true).pluck(:id)).includes(profile: :user)
+    Applicant.where.not(job_id: Job.where(hide_job: true).pluck(:id)).includes(seeker: :user)
   end
 end

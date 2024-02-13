@@ -11,13 +11,13 @@ class OneUserController < ApplicationController
     ActiveRecord::Associations::Preloader.new(
       records: [current_user],
       associations: {
-        profile: {
+        seeker: {
           profile_skills: [:master_skill]
         }
       }
     ).call
 
-    profile = current_user.profile&.slice(
+    seeker = current_user.seeker&.slice(
       :id,
       :image,
       :status,
@@ -47,26 +47,26 @@ class OneUserController < ApplicationController
       onboardingSession: os_ret,
       userRoles: roles,
       fastTrackTasks: {
-        profile: fast_track_tasks.profile,
+        profile: fast_track_tasks.seeker,
         career: fast_track_tasks.career
       },
       notifications:,
       profile: {
-        **profile,
-        educationExperiences: current_user.profile&.education_experiences || [],
+        **seeker,
+        educationExperiences: current_user.seeker&.education_experiences || [],
         desiredOutcomes: [],
         professionalInterests: [],
         profileCertifications: [],
-        profileSkills: current_user.profile&.profile_skills&.map do |ps|
+        profileSkills: current_user.seeker&.profile_skills&.map do |ps|
           {
             **ps.as_json,
             masterSkill: ps.master_skill.as_json
           }
         end || [],
-        stories: current_user.profile&.stories || [],
-        otherExperiences: current_user.profile&.other_experiences || [],
-        personalExperience: current_user.profile&.personal_experiences || [],
-        missingProfileItems: ProfileCompleteness.new(current_user.profile).status.missing
+        stories: current_user.seeker&.stories || [],
+        otherExperiences: current_user.seeker&.other_experiences || [],
+        personalExperience: current_user.seeker&.personal_experiences || [],
+        missingProfileItems: ProfileCompleteness.new(current_user.seeker).status.missing
       },
       recruiter: current_user.recruiter&.as_json,
       trainingProviderProfile: current_user.training_provider_profile&.as_json

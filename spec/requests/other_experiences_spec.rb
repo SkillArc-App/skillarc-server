@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "OtherExperiences", type: :request do
-  let(:profile) { create(:profile, user:) }
-  let(:seeker) { create(:seeker, id: profile.id, user:) }
+  let(:seeker) { create(:seeker, user:) }
   let(:user) { create(:user) }
 
   describe "POST /create" do
@@ -35,7 +34,7 @@ RSpec.describe "OtherExperiences", type: :request do
   describe "UPDATE /update" do
     subject { put profile_other_experience_path(seeker, other_experience), params:, headers: }
 
-    let(:other_experience) { create(:other_experience, profile:) }
+    let(:other_experience) { create(:other_experience, seeker:) }
 
     let(:params) do
       {
@@ -59,7 +58,7 @@ RSpec.describe "OtherExperiences", type: :request do
   describe "DELETE /destroy" do
     subject { delete profile_other_experience_path(seeker, other_experience), headers: }
 
-    let!(:other_experience) { create(:other_experience, profile:) }
+    let!(:other_experience) { create(:other_experience, seeker:) }
 
     it_behaves_like "a profile secured endpoint"
 

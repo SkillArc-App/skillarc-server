@@ -22,11 +22,11 @@ class FastTrackTasks
     [save_3_jobs, apply_to_your_first_job]
   end
 
-  def profile
+  def seeker
     return [] unless seeker?
     return [] unless onboarding_complete?
 
-    if user.profile.nil?
+    if user.seeker.nil?
       return [
         { name: "Make your resume strong", is_complete: false, route: "/" },
         { name: "Meet your career coach", is_complete: false, route: "/" }
@@ -35,16 +35,11 @@ class FastTrackTasks
 
     make_your_resume_strong = {
       name: "Make your resume strong",
-      is_complete: ProfileCompleteness.new(user.profile).status.result == "complete",
-      route: "/profiles/#{user.profile.id}"
-    }
-    meet_you_career_coach = {
-      name: "Meet your career coach",
-      is_complete: user.profile.met_career_coach,
-      route: "https://meetings.hubspot.com/hannah-wexner"
+      is_complete: ProfileCompleteness.new(user.seeker).status.result == "complete",
+      route: "/profiles/#{user.seeker.id}"
     }
 
-    [make_your_resume_strong, meet_you_career_coach]
+    [make_your_resume_strong]
   end
 
   private

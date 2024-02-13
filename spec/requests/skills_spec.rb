@@ -4,8 +4,7 @@ RSpec.describe "Skills", type: :request do
   include_context "authenticated"
 
   let(:master_skill) { create(:master_skill) }
-  let(:profile) { create(:profile, user:) }
-  let(:seeker) { create(:seeker, id: profile.id, user:) }
+  let(:seeker) { create(:seeker, user:) }
 
   describe "POST /create" do
     subject { post profile_skills_path(seeker), params:, headers: }
@@ -33,7 +32,7 @@ RSpec.describe "Skills", type: :request do
   describe "PUT /update" do
     subject { put profile_skill_path(seeker, skill), params:, headers: }
 
-    let(:skill) { create(:profile_skill, profile:, seeker:) }
+    let(:skill) { create(:profile_skill, seeker:) }
 
     let(:params) do
       {
@@ -59,7 +58,7 @@ RSpec.describe "Skills", type: :request do
   describe "DELETE /destroy" do
     subject { delete profile_skill_path(seeker, skill), headers: }
 
-    let!(:skill) { create(:profile_skill, profile:, seeker:) }
+    let!(:skill) { create(:profile_skill, seeker:) }
 
     it "returns a 200" do
       subject

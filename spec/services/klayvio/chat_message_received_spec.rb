@@ -11,7 +11,6 @@ RSpec.describe Klayvio::ChatMessageReceived do
         aggregate_id: job.id,
         data: Events::ChatMessageSent::Data::V1.new(
           applicant_id: applicant.id,
-          profile_id: applicant.profile.id,
           seeker_id: applicant.seeker.id,
           employer_name: "Employer name",
           employment_title: "Employment title",
@@ -25,12 +24,11 @@ RSpec.describe Klayvio::ChatMessageReceived do
     let(:user) { create(:user, email:) }
     let(:occurred_at) { Time.zone.local(2020, 1, 1) }
     let(:job) { create(:job) }
-    let(:applicant) { create(:applicant, profile:, seeker:) }
-    let(:profile) { create(:profile, user:) }
+    let(:applicant) { create(:applicant, seeker:) }
     let(:seeker) { create(:seeker, user:) }
 
     context "when the sender is the applicant" do
-      let(:sender_id) { applicant.profile.user.id }
+      let(:sender_id) { applicant.seeker.user.id }
 
       it "does not call the Klayvio API" do
         expect_any_instance_of(Klayvio::Klayvio).not_to receive(:chat_message_received)

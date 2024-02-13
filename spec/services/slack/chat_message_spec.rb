@@ -8,7 +8,6 @@ RSpec.describe Slack::ChatMessage do
         :chat_message_sent,
         data: Events::ChatMessageSent::Data::V1.new(
           applicant_id: applicant.id,
-          profile_id: profile.id,
           seeker_id: seeker.id,
           employer_name: "A name",
           employment_title: "A title",
@@ -17,8 +16,7 @@ RSpec.describe Slack::ChatMessage do
         )
       )
     end
-    let(:applicant) { create(:applicant, profile:, seeker:) }
-    let(:profile) { create(:profile, user:) }
+    let(:applicant) { create(:applicant, seeker:) }
     let(:seeker) { create(:seeker, user:) }
     let(:user) { create(:user, email: "john@blocktrainapp.com") }
 
@@ -27,7 +25,7 @@ RSpec.describe Slack::ChatMessage do
 
       it "calls the Slack API" do
         expect_any_instance_of(Slack::FakeSlackGateway).to receive(:ping).with(
-          "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|john@blocktrainapp.com> has *received* a message from *Acme Inc.* for their applcation to *Welder*."
+          "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker.id}|john@blocktrainapp.com> has *received* a message from *Acme Inc.* for their applcation to *Welder*."
         )
 
         subject.call(message:)
@@ -39,7 +37,7 @@ RSpec.describe Slack::ChatMessage do
 
       it "calls the Slack API" do
         expect_any_instance_of(Slack::FakeSlackGateway).to receive(:ping).with(
-          "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{profile.id}|john@blocktrainapp.com> has *sent* a message to *Acme Inc.* for their applcation to *Welder*."
+          "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker.id}|john@blocktrainapp.com> has *sent* a message to *Acme Inc.* for their applcation to *Welder*."
         )
 
         subject.call(message:)

@@ -13,7 +13,7 @@ class ProfilesController < ApplicationController
   def index
     # Profile all with nested include of user and seeker_training_providers
 
-    ps = Profile.includes(user: { seeker_training_providers: %i[training_provider program] }).order(created_at: :desc).map do |p|
+    ps = Seeker.includes(user: { seeker_training_providers: %i[training_provider program] }).order(created_at: :desc).map do |p|
       {
         **p.as_json,
         user: {
@@ -33,20 +33,20 @@ class ProfilesController < ApplicationController
   end
 
   def show
-    render json: SeekerService.new(profile, seeker).get(seeker_editor: seeker_editor?)
+    render json: SeekerService.new(seeker).get(seeker_editor: seeker_editor?)
   end
 
   def update
-    SeekerService.new(profile, seeker).update(profile_params)
+    SeekerService.new(seeker).update(seeker_params)
 
-    render json: profile
+    render json: seeker
   end
 
   private
 
-  attr_reader :profile, :seeker
+  attr_reader :seeker
 
-  def profile_params
+  def seeker_params
     params.require(:profile).permit(
       :bio,
       :image,
@@ -56,7 +56,6 @@ class ProfilesController < ApplicationController
   end
 
   def set_seeker
-    @profile = Profile.includes(profile_skills: :master_skill).find(params[:id])
-    @seeker = Seeker.find_by(id: params[:id])
+    @seeker = Seeker.includes(profile_skills: :master_skill).find(params[:id])
   end
 end

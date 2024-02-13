@@ -4,7 +4,7 @@ module Klayvio
 
     def call(message:)
       applicant = Applicant.find(message.data[:applicant_id])
-      recipient_user = applicant.profile.user
+      recipient_user = applicant.seeker.user
 
       user = User.find(message.data[:from_user_id])
 

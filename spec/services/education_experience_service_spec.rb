@@ -1,11 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe EducationExperienceService do
-  let(:profile) { create(:profile) }
   let(:seeker) { create(:seeker) }
 
   describe "#create" do
-    subject { described_class.new(profile, seeker).create(organization_name:, title:, graduation_date:, gpa:, activities:) }
+    subject { described_class.new(seeker).create(organization_name:, title:, graduation_date:, gpa:, activities:) }
 
     let(:organization_name) { "University of Cincinnati" }
     let(:title) { "Student" }
@@ -27,7 +26,6 @@ RSpec.describe EducationExperienceService do
           graduation_date: Date.new(2019, 5, 1).to_s,
           gpa: "3.5",
           activities: "Activities",
-          profile_id: profile.id,
           seeker_id: seeker.id
         ).and_call_original
 
@@ -45,12 +43,11 @@ RSpec.describe EducationExperienceService do
   end
 
   describe "#update" do
-    subject { described_class.new(profile, seeker).update(id:, organization_name:, title:, graduation_date:, gpa:, activities:) }
+    subject { described_class.new(seeker).update(id:, organization_name:, title:, graduation_date:, gpa:, activities:) }
 
     let!(:education_experience) do
       create(
         :education_experience,
-        profile:,
         seeker:,
         organization_name: "The Ohio State University",
         title: "party animal",
@@ -86,7 +83,6 @@ RSpec.describe EducationExperienceService do
           graduation_date: "2019-05-01",
           gpa: "3.5",
           activities: "Activities",
-          profile_id: profile.id,
           seeker_id: seeker.id
         ),
         occurred_at: be_a(Time)
@@ -97,9 +93,9 @@ RSpec.describe EducationExperienceService do
   end
 
   describe "#destroy" do
-    subject { described_class.new(profile, seeker).destroy(id:) }
+    subject { described_class.new(seeker).destroy(id:) }
 
-    let!(:education_experience) { create(:education_experience, profile:, seeker:) }
+    let!(:education_experience) { create(:education_experience, seeker:) }
 
     let(:id) { education_experience.id }
 

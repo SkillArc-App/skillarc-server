@@ -7,10 +7,10 @@ class EmployerChats
 
   def get
     ApplicantChat
-      .includes(messages: :user, applicant: { profile: :user, job: :employer })
-      .references(:messages, applicant: { profile: :user, job: :employer })
+      .includes(messages: :user, applicant: { seeker: :user, job: :employer })
+      .references(:messages, applicant: { seeker: :user, job: :employer })
       .where(jobs: { employers: { id: recruiter.employer_id } }).map do |applicant_chat|
-      applicant_user = applicant_chat.applicant.profile.user
+      applicant_user = applicant_chat.applicant.seeker.user
 
       {
         id: applicant_chat.applicant.id,
@@ -31,8 +31,8 @@ class EmployerChats
 
   def mark_read(applicant_id:)
     ApplicantChat
-      .includes(messages: :user, applicant: { profile: :user, job: :employer })
-      .references(:messages, applicant: { profile: :user, job: :employer })
+      .includes(messages: :user, applicant: { seeker: :user, job: :employer })
+      .references(:messages, applicant: { seeker: :user, job: :employer })
       .where(applicants: { id: applicant_id })
       .find_each do |applicant_chat|
         applicant_chat.messages.each do |message|
@@ -51,7 +51,6 @@ class EmployerChats
       aggregate_id: applicant_chat.applicant.job_id,
       data: Events::ChatMessageSent::Data::V1.new(
         applicant_id: applicant_chat.applicant.id,
-        profile_id: applicant_chat.applicant.profile_id,
         seeker_id: applicant_chat.applicant.seeker_id,
         from_user_id: recruiter.user.id,
         employer_name: applicant_chat.applicant.job.employer.name,
@@ -69,9 +68,8 @@ class EmployerChats
       aggregate_id: applicant_chat.applicant.job.id,
       data: Events::ChatCreated::Data::V1.new(
         applicant_id: applicant_chat.applicant.id,
-        profile_id: applicant_chat.applicant.profile_id,
         seeker_id: applicant_chat.applicant.seeker_id,
-        user_id: applicant_chat.applicant.profile.user.id,
+        user_id: applicant_chat.applicant.seeker.user.id,
         employment_title: applicant_chat.applicant.job.employment_title
       )
     )

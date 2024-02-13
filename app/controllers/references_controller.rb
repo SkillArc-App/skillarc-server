@@ -14,7 +14,6 @@ class ReferencesController < ApplicationController
       id: SecureRandom.uuid,
       author_profile: training_provider_profile,
       reference_text: params[:reference],
-      seeker_profile_id: params[:seeker_profile_id],
       seeker_id: params[:seeker_profile_id],
       training_provider: training_provider_profile.training_provider
     )

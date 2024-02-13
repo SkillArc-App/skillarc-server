@@ -29,12 +29,10 @@ class TestController < ApplicationController
 
   def create_seeker
     user = FactoryBot.create(:user, onboarding_sessions: [FactoryBot.build(:onboarding_session, completed_at: Time.zone.now)])
-    profile = FactoryBot.create(:profile, user:)
-    seeker = FactoryBot.create(:seeker, id: profile.id, user:)
+    seeker = FactoryBot.create(:seeker, user:)
 
     Coaches::CoachSeekerContext.create!(
       user_id: user.id,
-      profile_id: profile.id,
       seeker_id: seeker.id,
       first_name: user.first_name,
       last_name: user.last_name,
@@ -60,7 +58,7 @@ class TestController < ApplicationController
     render json: {
       recruiter: recruiter.user,
       job:,
-      applicant: applicant.profile.user,
+      applicant: applicant.seeker.user,
       applicant_status: applicant.status
     }
   end
@@ -71,8 +69,7 @@ class TestController < ApplicationController
     training_provider = program.training_provider
     trainer = FactoryBot.create(:training_provider_profile, training_provider:)
     student = FactoryBot.create(:seeker_training_provider, training_provider:, program:)
-    seeker = FactoryBot.create(:seeker, user: student.user)
-    FactoryBot.create(:profile, id: seeker.id, user: student.user)
+    FactoryBot.create(:seeker, user: student.user)
 
     render json: {
       trainer: trainer.user,
@@ -92,12 +89,10 @@ class TestController < ApplicationController
 
   def create_active_seeker
     user = FactoryBot.create(:user)
-    profile = FactoryBot.create(:profile, user:)
-    seeker = FactoryBot.create(:seeker, id: profile.id, user:)
+    seeker = FactoryBot.create(:seeker, user:)
 
     csc = Coaches::CoachSeekerContext.create!(
       user_id: user.id,
-      profile_id: profile.id,
       seeker_id: seeker.id,
       first_name: user.first_name,
       last_name: user.last_name,
@@ -120,7 +115,7 @@ class TestController < ApplicationController
       status: ApplicantStatus::StatusTypes::PASS
     )
 
-    render json: profile.user
+    render json: seeker.user
   end
 
   def reset_test_database

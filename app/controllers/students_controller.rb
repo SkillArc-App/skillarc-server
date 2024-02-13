@@ -12,7 +12,7 @@ class StudentsController < ApplicationController
         students: {
           program_statuses: {},
           user: {
-            profile: {
+            seeker: {
               applicants: :applicant_statuses,
               references: {}
             }

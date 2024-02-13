@@ -33,7 +33,7 @@ RSpec.describe "Program::Students", type: :request do
     end
 
     let!(:student_user) { create(:user) }
-    let!(:student) { create(:profile, user: student_user) }
+    let!(:student) { create(:seeker, user: student_user) }
     let!(:seeker_training_provider) do
       create(
         :seeker_training_provider,

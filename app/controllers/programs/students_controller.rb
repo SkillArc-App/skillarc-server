@@ -7,7 +7,7 @@ class Programs::StudentsController < ApplicationController
   before_action :set_program, only: [:update]
 
   def update
-    seeker_training_provider = Profile.find(params[:id]).user.seeker_training_providers.find_by!(training_provider: training_provider_profile.training_provider, program:)
+    seeker_training_provider = Seeker.find(params[:id]).user.seeker_training_providers.find_by!(training_provider: training_provider_profile.training_provider, program:)
     new_status = SeekerTrainingProviderProgramStatus.create!(
       id: SecureRandom.uuid,
       seeker_training_provider:,

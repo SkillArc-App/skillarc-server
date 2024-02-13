@@ -7,8 +7,7 @@ RSpec.describe SeekerChats do
     subject { described_class.new(user).send_message(applicant_id: applicant.id, message:) }
 
     let(:message) { "This is a message" }
-    let!(:applicant) { create(:applicant, job:, profile:, seeker:) }
-    let(:profile) { create(:profile, user:) }
+    let!(:applicant) { create(:applicant, job:, seeker:) }
     let(:seeker) { create(:seeker, user:) }
 
     let!(:applicant_chat) { create(:applicant_chat, applicant:) }
@@ -33,7 +32,6 @@ RSpec.describe SeekerChats do
         aggregate_id: job.id,
         data: Events::ChatMessageSent::Data::V1.new(
           applicant_id: applicant.id,
-          profile_id: profile.id,
           seeker_id: seeker.id,
           from_user_id: user.id,
           employer_name: employer.name,
@@ -49,10 +47,10 @@ RSpec.describe SeekerChats do
   describe "#get" do
     subject { described_class.new(user).get }
 
-    let!(:applicant) { create(:applicant, profile:, job:) }
+    let!(:applicant) { create(:applicant, job:, seeker:) }
     let(:job) { create(:job, employment_title: "Welder", employer:) }
     let(:employer) { create(:employer, name: "Acme, Inc") }
-    let!(:profile) { create(:profile, user:) }
+    let!(:seeker) { create(:seeker, user:) }
 
     let!(:applicant_chat) { create(:applicant_chat, applicant:) }
 
@@ -97,8 +95,8 @@ RSpec.describe SeekerChats do
     let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }
     let!(:chat_message2) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant") }
 
-    let!(:applicant) { create(:applicant, profile:) }
-    let(:profile) { create(:profile, user:) }
+    let!(:applicant) { create(:applicant, seeker:) }
+    let(:seeker) { create(:seeker, user:) }
 
     it "creates a read receipt for each message" do
       expect { subject }.to change(ReadReceipt, :count).by(2)

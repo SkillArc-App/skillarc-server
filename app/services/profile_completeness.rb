@@ -1,12 +1,12 @@
 class ProfileCompleteness
   Result = Struct.new(:result, :missing)
 
-  def initialize(profile)
-    @profile = profile
+  def initialize(seeker)
+    @seeker = seeker
   end
 
   def status
-    return Result.new("incomplete", %w[education work]) if profile.nil?
+    return Result.new("incomplete", %w[education work]) if seeker.nil?
 
     missing = []
 
@@ -19,12 +19,12 @@ class ProfileCompleteness
   private
 
   def missing_education?
-    profile.education_experiences.empty?
+    seeker.education_experiences.empty?
   end
 
   def missing_work?
-    profile.other_experiences.empty?
+    seeker.other_experiences.empty?
   end
 
-  attr_reader :profile
+  attr_reader :seeker
 end

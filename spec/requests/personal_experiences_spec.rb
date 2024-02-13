@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe "PersonalExperiences", type: :request do
   include_context "authenticated"
 
-  let(:profile) { create(:profile, user:) }
-  let(:seeker) { create(:seeker, id: profile.id, user:) }
+  let(:seeker) { create(:seeker, user:) }
 
   describe "POST /create" do
     subject { post profile_personal_experiences_path(seeker), params:, headers: }
@@ -41,7 +40,7 @@ RSpec.describe "PersonalExperiences", type: :request do
         }
       }
     end
-    let!(:personal_experience) { create(:personal_experience, profile:, seeker:) }
+    let!(:personal_experience) { create(:personal_experience, seeker:) }
 
     it "returns 200" do
       subject
@@ -66,7 +65,7 @@ RSpec.describe "PersonalExperiences", type: :request do
         }
       }
     end
-    let!(:personal_experience) { create(:personal_experience, profile:, seeker:) }
+    let!(:personal_experience) { create(:personal_experience, seeker:) }
 
     it "returns 200" do
       subject

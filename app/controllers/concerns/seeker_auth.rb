@@ -10,8 +10,8 @@ module SeekerAuth
 
   def seeker_editor?
     return false unless current_user
-    return false unless profile
+    return false unless seeker
 
-    profile.user_id == current_user.id || coach?
+    seeker.user_id == current_user.id || coach?
   end
 end

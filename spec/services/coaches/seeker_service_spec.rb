@@ -4,25 +4,25 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:lead_added) { build(:events__message, :lead_added, aggregate_id: lead_id, data: lead, occurred_at: time1) }
   let(:non_seeker_user_created) { build(:events__message, :user_created, aggregate_id: coach_user_id, data: Events::Common::UntypedHashWrapper.build(email: "f@f.f")) }
   let(:user_without_email) { build(:events__message, :user_created, aggregate_id: user_without_email_id, data: Events::Common::UntypedHashWrapper.build(first_name: "Hannah", last_name: "Block")) }
-  let(:profile_without_email) { build(:events__message, :profile_created, aggregate_id: user_without_email_id, data: Events::SeekerCreated::Data::V1.new(id: profile_without_email_id, user_id: user_without_email_id)) }
+  let(:seeker_without_email) { build(:events__message, :profile_created, aggregate_id: user_without_email_id, data: Events::SeekerCreated::Data::V1.new(id: seeker_without_email_id, user_id: user_without_email_id)) }
   let(:user_created) { build(:events__message, :user_created, aggregate_id: user_id, data: Events::Common::UntypedHashWrapper.new(email: "hannah@blocktrainapp.com")) }
   let(:user_updated) { build(:events__message, :user_updated, aggregate_id: user_id, data: Events::Common::UntypedHashWrapper.new(first_name: "Hannah", last_name: "Block", phone_number: "1234567890")) }
   let(:other_user_created) { build(:events__message, :user_created, aggregate_id: other_user_id, data: Events::Common::UntypedHashWrapper.new(email: "katina@gmail.com", first_name: "Katina", last_name: "Hall")) }
-  let(:profile_created) { build(:events__message, :profile_created, aggregate_id: user_id, data: Events::SeekerCreated::Data::V1.new(id: profile_id, user_id:)) }
-  let(:other_profile_created) { build(:events__message, :profile_created, aggregate_id: other_user_id, data: Events::SeekerCreated::Data::V1.new(id: other_profile_id, user_id: other_user_id)) }
-  let(:note_with_id_added1) { build(:events__message, :note_added, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
-  let(:note_with_id_added2) { build(:events__message, :note_added, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
+  let(:seeker_created) { build(:events__message, :profile_created, aggregate_id: user_id, data: Events::SeekerCreated::Data::V1.new(id: seeker_id, user_id:)) }
+  let(:other_seeker_created) { build(:events__message, :profile_created, aggregate_id: other_user_id, data: Events::SeekerCreated::Data::V1.new(id: other_seeker_id, user_id: other_user_id)) }
+  let(:note_with_id_added1) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
+  let(:note_with_id_added2) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
   let(:applicant_status_updated1) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
   let(:applicant_status_updated2) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
   let(:applicant_status_updated3) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
   let(:applicant_status_updated4) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
-  let(:note_deleted) { build(:events__message, :note_deleted, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id", note_id: note_id1), occurred_at: time1) }
-  let(:note_modified) { build(:events__message, :note_modified, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(note: updated_note, note_id: note_id2), occurred_at: time1) }
-  let(:skill_level_updated) { build(:events__message, :skill_level_updated, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(skill_level: "advanced"), occurred_at: time1) }
-  let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(coach_id: coach_user_id, email: "coach@blocktrainapp.com"), occurred_at: time1) }
-  let(:barriers_updated1) { build(:events__message, :barriers_updated, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier1.barrier_id]), occurred_at: time1) }
-  let(:barriers_updated2) { build(:events__message, :barriers_updated, aggregate_id: profile_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier2.barrier_id]), occurred_at: time1) }
-  let(:job_recommended) { build(:events__message, :job_recommended, aggregate_id: profile_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id: coach_user_id), occurred_at: time1) }
+  let(:note_deleted) { build(:events__message, :note_deleted, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id", note_id: note_id1), occurred_at: time1) }
+  let(:note_modified) { build(:events__message, :note_modified, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: updated_note, note_id: note_id2), occurred_at: time1) }
+  let(:skill_level_updated) { build(:events__message, :skill_level_updated, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(skill_level: "advanced"), occurred_at: time1) }
+  let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(coach_id: coach_user_id, email: "coach@blocktrainapp.com"), occurred_at: time1) }
+  let(:barriers_updated1) { build(:events__message, :barriers_updated, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier1.barrier_id]), occurred_at: time1) }
+  let(:barriers_updated2) { build(:events__message, :barriers_updated, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier2.barrier_id]), occurred_at: time1) }
+  let(:job_recommended) { build(:events__message, :job_recommended, aggregate_id: seeker_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id: coach_user_id), occurred_at: time1) }
 
   let(:lead) do
     Events::Common::UntypedHashWrapper.new(
@@ -38,8 +38,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     Events::ApplicantStatusUpdated::Data::V1.new(
       job_id:,
       employer_name: employer_name1,
-      profile_id: other_profile_id,
-      seeker_id: other_profile_id,
+      seeker_id: other_seeker_id,
       user_id: other_user_id,
       applicant_id: applicant_id1,
       employment_title: employment_title1,
@@ -50,8 +49,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     Events::ApplicantStatusUpdated::Data::V1.new(
       job_id:,
       employer_name: employer_name1,
-      profile_id: other_profile_id,
-      seeker_id: other_profile_id,
+      seeker_id: other_seeker_id,
       user_id: other_user_id,
       applicant_id: applicant_id1,
       employment_title: employment_title1,
@@ -61,8 +59,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:status_updated3) do
     Events::ApplicantStatusUpdated::Data::V1.new(
       job_id:,
-      profile_id:,
-      seeker_id: profile_id,
+      seeker_id: seeker_id,
       user_id:,
       employer_name: employer_name2,
       applicant_id: applicant_id2,
@@ -74,8 +71,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     Events::ApplicantStatusUpdated::Data::V1.new(
       job_id:,
       employer_name: employer_name2,
-      profile_id: other_profile_id,
-      seeker_id: other_profile_id,
+      seeker_id: other_seeker_id,
       user_id: other_user_id,
       applicant_id: applicant_id3,
       employment_title: employment_title2,
@@ -95,11 +91,11 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:lead_id) { "91308d08-bd08-452b-a7de-74746a6c5f93" }
   let(:coach_user_id) { create(:coaches__coach).coach_id }
   let(:user_without_email_id) { "4f878ed9-5cb9-429b-ab22-969b46305ea2" }
-  let(:profile_without_email_id) { "b09195f7-a15e-461f-bec2-1e4744122fdf" }
+  let(:seeker_without_email_id) { "b09195f7-a15e-461f-bec2-1e4744122fdf" }
   let(:user_id) { "9f769972-c41c-4b58-a056-bffb714ea24d" }
   let(:other_user_id) { "7a381c1e-6f1c-41e7-b045-6f989acc2cf8" }
-  let(:profile_id) { "75372772-49dc-4884-b4ae-1d408e030aa4" }
-  let(:other_profile_id) { "2dc66599-1116-4d7a-bdbb-38652fbed6cd" }
+  let(:seeker_id) { "75372772-49dc-4884-b4ae-1d408e030aa4" }
+  let(:other_seeker_id) { "2dc66599-1116-4d7a-bdbb-38652fbed6cd" }
   let(:note_id1) { "78f22f6c-a770-46fc-a83c-1ad6cda4b8f9" }
   let(:note_id2) { "a0c1894f-df0d-40d3-bb1d-d68efea4772d" }
   let(:applicant_id1) { "8aac8c6d-5c13-418d-b8e7-fd468fa291de" }
@@ -114,12 +110,12 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     described_class.handle_event(lead_added)
     described_class.handle_event(non_seeker_user_created)
     described_class.handle_event(user_without_email)
-    described_class.handle_event(profile_without_email)
+    described_class.handle_event(seeker_without_email)
     described_class.handle_event(user_created)
     described_class.handle_event(user_updated)
     described_class.handle_event(other_user_created)
-    described_class.handle_event(profile_created)
-    described_class.handle_event(other_profile_created)
+    described_class.handle_event(seeker_created)
+    described_class.handle_event(other_seeker_created)
     described_class.handle_event(note_with_id_added1)
     described_class.handle_event(note_with_id_added2)
     described_class.handle_event(note_deleted)
@@ -164,7 +160,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
     it "returns all profiles" do
       expected_profile = {
-        seekerId: profile_id,
+        seekerId: seeker_id,
         firstName: "Hannah",
         lastName: "Block",
         email: "hannah@blocktrainapp.com",
@@ -194,10 +190,10 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           }
         ],
         job_recommendations: [job_id],
-        stage: 'profile_created'
+        stage: 'seeker_created'
       }
       expected_other_profile = {
-        seekerId: other_profile_id,
+        seekerId: other_seeker_id,
         firstName: "Katina",
         lastName: "Hall",
         email: "katina@gmail.com",
@@ -223,7 +219,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           }
         ],
         job_recommendations: [],
-        stage: 'profile_created'
+        stage: 'seeker_created'
       }
 
       expect(subject).to include(expected_profile)
@@ -250,11 +246,11 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   end
 
   describe ".find_context" do
-    subject { described_class.find_context(profile_id) }
+    subject { described_class.find_context(seeker_id) }
 
     it "returns the profile" do
       expected_profile = {
-        seekerId: profile_id,
+        seekerId: seeker_id,
         firstName: "Hannah",
         lastName: "Block",
         email: "hannah@blocktrainapp.com",
@@ -284,7 +280,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           }
         ],
         job_recommendations: [job_id],
-        stage: 'profile_created'
+        stage: 'seeker_created'
       }
 
       expect(subject).to eq(expected_profile)
@@ -326,7 +322,6 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               description: "A description",
               start_date: Time.zone.now.to_s,
               end_date: Time.zone.now.to_s,
-              profile_id: SecureRandom.uuid,
               seeker_id: SecureRandom.uuid
             ),
             aggregate_id: user_id,
@@ -352,7 +347,6 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               activities: nil,
               graduation_date: Time.zone.now.to_s,
               gpa: "1.9",
-              profile_id: SecureRandom.uuid,
               seeker_id: SecureRandom.uuid
             ),
             aggregate_id: user_id,
@@ -398,7 +392,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   end
 
   describe ".add_note" do
-    subject { described_class.add_note(id: profile_id, coach:, note: "This is a new note", note_id: note_id1, now:) }
+    subject { described_class.add_note(id: seeker_id, coach:, note: "This is a new note", note_id: note_id1, now:) }
 
     let(:coach) { create(:coaches__coach) }
 
@@ -407,7 +401,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::NoteAdded::V1,
-        aggregate_id: profile_id,
+        aggregate_id: seeker_id,
         data: Events::Common::UntypedHashWrapper.build(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -422,7 +416,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   end
 
   describe ".delete_note" do
-    subject { described_class.delete_note(coach:, id: profile_id, note_id: note.note_id, now:) }
+    subject { described_class.delete_note(coach:, id: seeker_id, note_id: note.note_id, now:) }
 
     let(:note) { create(:coaches__seeker_note, note_id: note_id1) }
     let(:coach) { create(:coaches__coach) }
@@ -431,7 +425,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::NoteDeleted::V1,
-        aggregate_id: profile_id,
+        aggregate_id: seeker_id,
         data: Events::Common::UntypedHashWrapper.build(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -445,7 +439,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   end
 
   describe ".modify_note" do
-    subject { described_class.modify_note(id: profile_id, coach:, note_id: note_id2, note: updated_note, now:) }
+    subject { described_class.modify_note(id: seeker_id, coach:, note_id: note_id2, note: updated_note, now:) }
 
     let(:coach) { create(:coaches__coach) }
 
@@ -454,7 +448,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::NoteModified::V1,
-        aggregate_id: profile_id,
+        aggregate_id: seeker_id,
         data: Events::Common::UntypedHashWrapper.build(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -469,7 +463,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   end
 
   describe ".recommend_job" do
-    subject { described_class.recommend_job(profile_id:, job_id:, coach:, now:) }
+    subject { described_class.recommend_job(seeker_id:, job_id:, coach:, now:) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
     let(:coach) { create(:coaches__coach) }
@@ -478,7 +472,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::JobRecommended::V1,
-        aggregate_id: profile_id,
+        aggregate_id: seeker_id,
         data: Events::JobRecommended::Data::V1.new(
           job_id:,
           coach_id: coach.coach_id
@@ -491,7 +485,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   end
 
   describe ".update_barriers" do
-    subject { described_class.update_barriers(id: profile_id, barriers: [barrier.barrier_id], now:) }
+    subject { described_class.update_barriers(id: seeker_id, barriers: [barrier.barrier_id], now:) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
     let(:barrier) { create(:barrier) }
@@ -505,7 +499,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
       expect(EventService).to receive(:create!).with(
         event_schema: Events::BarrierUpdated::V1,
-        aggregate_id: profile_id,
+        aggregate_id: seeker_id,
         data: be_a(Events::Common::UntypedHashWrapper),
         occurred_at: now
       ).and_call_original
@@ -515,14 +509,14 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   end
 
   describe ".assign_coach" do
-    subject { described_class.assign_coach(profile_id, "123", "coach@blocktrainapp.com", now:) }
+    subject { described_class.assign_coach(seeker_id, "123", "coach@blocktrainapp.com", now:) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::CoachAssigned::V1,
-        aggregate_id: profile_id,
+        aggregate_id: seeker_id,
         data: Events::Common::UntypedHashWrapper.build(
           coach_id: "123",
           email: "coach@blocktrainapp.com"
@@ -535,14 +529,14 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   end
 
   describe ".update_skill_level" do
-    subject { described_class.update_skill_level(profile_id, "advanced", now:) }
+    subject { described_class.update_skill_level(seeker_id, "advanced", now:) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::SkillLevelUpdated::V1,
-        aggregate_id: profile_id,
+        aggregate_id: seeker_id,
         data: Events::Common::UntypedHashWrapper.build(
           skill_level: "advanced"
         ),

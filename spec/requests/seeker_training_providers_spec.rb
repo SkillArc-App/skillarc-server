@@ -7,7 +7,6 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
   let!(:program) { create(:program, training_provider:) }
 
   let(:seeker) { create(:seeker, user:) }
-  let!(:profile) { create(:profile, user:) }
 
   describe "POST /create" do
     subject { post seeker_training_providers_path(seeker), params:, headers: }

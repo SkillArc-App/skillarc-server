@@ -23,8 +23,5 @@
 #  fk_rails_...                              (seeker_id => seekers.id)
 #
 class EducationExperience < ApplicationRecord
-  self.ignored_columns = ["profile_id"]
   belongs_to :seeker
-
-  validates :seeker, presence: true
 end

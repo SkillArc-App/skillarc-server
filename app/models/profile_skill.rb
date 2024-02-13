@@ -19,7 +19,6 @@
 #  fk_rails_...                       (seeker_id => seekers.id)
 #
 class ProfileSkill < ApplicationRecord
-  self.ignored_columns = ["profile_id"]
   belongs_to :master_skill
   belongs_to :seeker
 end

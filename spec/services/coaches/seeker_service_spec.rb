@@ -59,7 +59,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:status_updated3) do
     Events::ApplicantStatusUpdated::Data::V1.new(
       job_id:,
-      seeker_id: seeker_id,
+      seeker_id:,
       user_id:,
       employer_name: employer_name2,
       applicant_id: applicant_id2,

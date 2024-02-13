@@ -19,7 +19,7 @@
 #
 module Coaches
   class CoachSeekerContext < ApplicationRecord
-    self.ignored_columns = ["profile_id"]
+    self.ignored_columns += ["profile_id"]
 
     has_many :seeker_notes, dependent: :destroy, class_name: "Coaches::SeekerNote"
     has_many :seeker_applications, dependent: :destroy, class_name: "Coaches::SeekerApplication"

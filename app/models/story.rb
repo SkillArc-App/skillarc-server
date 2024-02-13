@@ -18,6 +18,5 @@
 #  fk_rails_...  (seeker_id => seekers.id)
 #
 class Story < ApplicationRecord
-  self.ignored_columns = ["profile_id"]
   belongs_to :seeker
 end

@@ -18,8 +18,6 @@
 #  fk_rails_...           (seeker_id => seekers.id)
 #
 class Applicant < ApplicationRecord
-  self.ignored_columns = ["profile_id"]
-
   belongs_to :job
   belongs_to :seeker
 

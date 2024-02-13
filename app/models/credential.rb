@@ -16,5 +16,4 @@
 #  Credential_organization_id_fkey  (organization_id => organizations.id) ON DELETE => nullify ON UPDATE => cascade
 #
 class Credential < ApplicationRecord
-  self.ignored_columns = ["profile_id"]
 end

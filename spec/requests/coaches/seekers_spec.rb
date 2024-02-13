@@ -102,7 +102,7 @@ RSpec.describe "Seekers", type: :request do
 
       it "calls SeekerService.recommend_job" do
         expect(Coaches::SeekerService).to receive(:recommend_job).with(
-          seeker_id: seeker_id,
+          seeker_id:,
           job_id:,
           coach:
         )

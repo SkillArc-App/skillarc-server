@@ -21,7 +21,6 @@
 #  fk_rails_...                         (seeker_id => seekers.id)
 #
 class Reference < ApplicationRecord
-  self.ignored_columns = ["profile_id"]
   self.table_name = "seeker_references"
 
   belongs_to :author_profile, class_name: "TrainingProviderProfile"

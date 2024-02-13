@@ -7,7 +7,7 @@
 #  employment_title             :text             not null
 #  employment_type              :enum             not null
 #  hide_job                     :boolean          default(FALSE), not null
-#  industry                     :text             is an Array
+#  industry                     :text             default([]), is an Array
 #  location                     :text             not null
 #  requirements_description     :text
 #  responsibilities_description :text

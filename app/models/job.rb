@@ -53,7 +53,7 @@ class Job < ApplicationRecord
   scope :shown, -> { where(hide_job: false) }
 
   validates :employment_type, presence: { in: EmploymentTypes::ALL }
-  validates :industry, presence: { in: Industries::ALL }
+  validate :industry_values_must_be_in_industries_all
 
   def self.with_employer_info
     includes(
@@ -86,5 +86,15 @@ class Job < ApplicationRecord
       learned_skills: :master_skill,
       desired_certifications: :master_certification
     )
+  end
+
+  private
+
+  def industry_values_must_be_in_industries_all
+    return if industry.blank?
+
+    industry.each do |value|
+      errors.add(:industry, "#{value} is not a valid industry") unless Industries::ALL.include?(value)
+    end
   end
 end

@@ -721,10 +721,17 @@ admin_user = User.create!(
 )
 
 admin = Role.create!(id: SecureRandom.uuid, name: "admin")
+employer_admin = Role.create!(id: SecureRandom.uuid, name: Role::Types::EMPLOYER_ADMIN)
 
 UserRole.create!(
   id: SecureRandom.uuid,
   role_id: admin.id,
+  user_id: admin_user.id
+)
+
+UserRole.create!(
+  id: SecureRandom.uuid,
+  role_id: employer_admin.id,
   user_id: admin_user.id
 )
 

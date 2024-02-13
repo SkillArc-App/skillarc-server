@@ -103,7 +103,7 @@ RSpec.describe Jobs::JobService do
     let(:schedule) { "NEW 9-5" }
     let(:work_days) { "NEW M-F" }
     let(:requirements_description) { "NEW Requirements" }
-    let(:industry) { ["NEW manufacturing"] }
+    let(:industry) { [Job::Industries::HEALTHCARE] }
 
     it "updates the job" do
       subject

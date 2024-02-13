@@ -9,15 +9,19 @@ RSpec.describe Jobs::SearchService do
     let(:tags) { nil }
     let(:user) { nil }
 
-    let!(:job1) { create(:job, employment_title: "Paid Friend", industry: ["Friendship"]) }
-    let!(:job2) { create(:job, employment_title: "Bouncer", industry: %w[Clubs Bodyguards]) }
+    let!(:job1) { create(:job, employment_title: "Paid Friend", industry: [construction]) }
+    let!(:job2) { create(:job, employment_title: "Bouncer", industry: [healthcare, manufacturing]) }
     let(:tag) { create(:tag, name: "Part Time") }
     let!(:job_tag) { create(:job_tag, job: job2, tag:) }
     let(:utm_source) { "www.google.com" }
+    let(:construction) { Job::Industries::CONSTRUCTION }
+    let(:healthcare) { Job::Industries::HEALTHCARE }
+    let(:logistics) { Job::Industries::LOGISTICS }
+    let(:manufacturing) { Job::Industries::MANUFACTURING }
 
     context "search source" do
       let(:search_terms) { "oun" }
-      let(:industries) { ["Clubs"] }
+      let(:industries) { [construction] }
       let(:tags) { ["Part Time"] }
 
       context "when user is nil" do
@@ -144,7 +148,7 @@ RSpec.describe Jobs::SearchService do
       end
 
       context "When there is overlap with industries" do
-        let(:industries) { %w[Friendship Baseball] }
+        let(:industries) { [construction, logistics] }
 
         it "returns all no jobs" do
           expect(subject).to contain_exactly(job1)
@@ -172,7 +176,7 @@ RSpec.describe Jobs::SearchService do
 
     context "when everything is used" do
       let(:search_terms) { "oun" }
-      let(:industries) { ["Clubs"] }
+      let(:industries) { [healthcare] }
       let(:tags) { ["Part Time"] }
 
       it "returns the matching job" do

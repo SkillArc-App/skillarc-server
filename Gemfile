@@ -58,16 +58,18 @@ gem 'omniauth-rails_csrf_protection'
 
 gem "rack-cors"
 
+gem 'rswag-api'
+gem 'rswag-ui'
+gem 'scout_apm'
+gem 'tzinfo-data'
 gem "redis"
 gem "resque"
-gem 'scout_apm'
 gem "sentry-rails"
 gem "sentry-ruby"
 gem "slack-notifier"
 gem "strong_migrations"
 gem "timecop"
 gem "twilio-ruby"
-gem 'tzinfo-data'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -78,6 +80,7 @@ group :development, :test do
   gem "pry"
   gem 'pry-byebug'
   gem "rspec-rails"
+  gem 'rswag-specs'
 
   gem "rubocop"
   gem 'rubocop-factory_bot'

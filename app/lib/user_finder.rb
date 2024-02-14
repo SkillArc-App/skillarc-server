@@ -17,7 +17,7 @@ class UserFinder
     EventService.create!(
       aggregate_id: new_user.id,
       event_schema: Events::UserCreated::V1,
-      data: Events::Common::UntypedHashWrapper.build(
+      data: Events::UserCreated::Data::V1.new(
         first_name: new_user.first_name,
         last_name: new_user.last_name,
         email: new_user.email,

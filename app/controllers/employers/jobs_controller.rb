@@ -11,28 +11,39 @@ class Employers::JobsController < ApplicationController
     ret_jobs = jobs.map do |job|
       {
         id: job.id,
-        employerId: job.employer_id,
-        employerName: job.employer.name,
+        employer_id: job.employer_id,
+        employer_name: job.employer.name,
         name: job.employment_title,
         description: "descriptions don't exist yet"
       }
     end
 
+    # Because the reason list is small we just load all of them
+    # and do in memory lookups
+    reasons = Reason.all
+
     applicants = jobs.map do |job|
       job.applicants.map do |a|
+        applicant_status = a.applicant_statuses.max_by(&:created_at)
+
+        status_reasons = applicant_status&.applicant_status_reasons&.map do |asr|
+          reasons.detect { |r| r.id == asr.reason_id }&.description
+        end
+
         {
           id: a.id,
-          jobId: job.id,
-          chatEnabled: job.employer.chat_enabled,
-          createdAt: a.created_at,
-          jobName: job.employment_title,
-          firstName: a.seeker.user.first_name,
-          lastName: a.seeker.user.last_name,
+          job_id: job.id,
+          chat_enabled: job.employer.chat_enabled,
+          created_at: a.created_at,
+          job_name: job.employment_title,
+          first_name: a.seeker.user.first_name,
+          last_name: a.seeker.user.last_name,
           email: a.seeker.user.email,
-          phoneNumber: a.seeker.user.phone_number,
-          profileLink: "/profiles/#{a.seeker.id}",
+          phone_number: a.seeker.user.phone_number,
+          profile_link: "/profiles/#{a.seeker.id}",
           programs: [],
-          status: a.applicant_statuses.max_by(&:created_at)&.status
+          status_reasons:,
+          status: applicant_status&.status
         }
       end
     end.flatten

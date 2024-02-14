@@ -60,6 +60,8 @@ gem "rack-cors"
 
 gem "redis"
 gem "resque"
+gem 'rswag-api'
+gem 'rswag-ui'
 gem 'scout_apm'
 gem "sentry-rails"
 gem "sentry-ruby"
@@ -78,6 +80,7 @@ group :development, :test do
   gem "pry"
   gem 'pry-byebug'
   gem "rspec-rails"
+  gem 'rswag-specs'
 
   gem "rubocop"
   gem 'rubocop-factory_bot'

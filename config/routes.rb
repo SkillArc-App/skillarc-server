@@ -1,6 +1,8 @@
 require 'resque/server'
 
 Rails.application.routes.draw do
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
   get 'employers/jobs' => 'employers/jobs#index'
   put 'employers/applicants/:id' => 'employers/applicants#update', as: 'employers_applicant'
 

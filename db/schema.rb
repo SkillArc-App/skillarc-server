@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_14_133032) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -251,6 +251,42 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.boolean "chat_enabled", default: false, null: false
+  end
+
+  create_table "employers_employers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "location"
+    t.string "bio", null: false
+    t.string "logo_url"
+    t.string "employer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "employers_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "job_id", null: false
+    t.string "employment_title", null: false
+    t.string "benefits_description", null: false
+    t.string "employment_type", null: false
+    t.boolean "hide_job", default: false, null: false
+    t.string "industry", default: [], array: true
+    t.string "location", null: false
+    t.string "requirements_description"
+    t.string "responsibilities_description"
+    t.string "schedule"
+    t.string "work_days"
+    t.uuid "employers_employer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employers_employer_id"], name: "index_employers_jobs_on_employers_employer_id"
+  end
+
+  create_table "employers_recruiters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "employers_employer_id", null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employers_employer_id"], name: "index_employers_recruiters_on_employers_employer_id"
   end
 
   create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -696,6 +732,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_020853) do
   add_foreign_key "education_experiences", "organizations", name: "EducationExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "education_experiences", "seekers"
   add_foreign_key "employer_invites", "employers", name: "EmployerInvite_employer_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "employers_jobs", "employers_employers"
+  add_foreign_key "employers_recruiters", "employers_employers"
   add_foreign_key "job_photos", "jobs", name: "JobPhoto_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "job_tags", "jobs", name: "JobTag_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "job_tags", "tags", name: "JobTag_tag_id_fkey", on_update: :cascade, on_delete: :restrict

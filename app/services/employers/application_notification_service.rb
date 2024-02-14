@@ -28,22 +28,70 @@ module Employers
       end
     end
 
-    def self.reset_for_replay; end
+    def self.reset_for_replay
+      Employer.destroy_all
+      Job.destroy_all
+      Recruiter.destroy_all
+    end
 
     class << self
       private
 
       def handle_applicant_status_updated(message); end
 
-      def handle_employer_created(message); end
+      def handle_employer_created(message)
+        Employer.create!(
+          employer_id: message.aggregate_id,
+          name: message.data.name,
+          location: message.data.location,
+          bio: message.data.bio,
+          logo_url: message.data.logo_url
+        )
+      end
 
-      def handle_employer_invite_accepted(message); end
+      def handle_employer_invite_accepted(message)
+        employer = Employer.find_by(employer_id: message.data.employer_id)
 
-      def handle_employer_updated(message); end
+        Recruiter.create!(
+          employer:,
+          email: message.data.invite_email
+        )
+      end
 
-      def handle_job_created(message); end
+      def handle_employer_updated(message)
+        e = Employer.find_by(employer_id: message.aggregate_id)
 
-      def handle_job_updated(message); end
+        e.update!(
+          **message.data.to_h
+        )
+      end
+
+      def handle_job_created(message)
+        employer = Employer.find_by(employer_id: message.data.employer_id)
+
+        Job.create!(
+          employer:,
+          job_id: message.aggregate_id,
+          employment_title: message.data.employment_title,
+          benefits_description: message.data.benefits_description,
+          responsibilities_description: message.data.responsibilities_description,
+          location: message.data.location,
+          employment_type: message.data.employment_type,
+          hide_job: message.data.hide_job,
+          schedule: message.data.schedule,
+          work_days: message.data.work_days,
+          requirements_description: message.data.requirements_description,
+          industry: message.data.industry
+        )
+      end
+
+      def handle_job_updated(message)
+        job = Job.find_by(job_id: message.aggregate_id)
+
+        job.update!(
+          **message.data.to_h
+        )
+      end
     end
   end
 end

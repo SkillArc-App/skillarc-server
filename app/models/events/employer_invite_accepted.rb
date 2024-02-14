@@ -14,7 +14,7 @@ module Events
     end
 
     V1 = Schema.build(
-      data: Common::UntypedHashWrapper,
+      data: Data::V1,
       metadata: Common::Nothing,
       event_type: Event::EventTypes::EMPLOYER_INVITE_ACCEPTED,
       version: 1

@@ -73,7 +73,8 @@ module PubSubInitializer
       DbStreamListener.build(Coaches::CoachService, "coaches"),
       DbStreamListener.build(Coaches::BarrierService, "barriers"),
       DbStreamListener.build(Coaches::JobService, "coaches_jobs"),
-      DbStreamListener.build(Coaches::RecommendationService, "coaches_recommendations")
+      DbStreamListener.build(Coaches::RecommendationService, "coaches_recommendations"),
+      DbStreamListener.build(Employers::EmployerService, "employers")
     ].each do |listener|
       listener.handled_events.each do |event_schema|
         PUBSUB.subscribe(

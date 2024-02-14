@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.configure do |config|
+  config.openapi_strict_schema_validation = true
+
   # Specify a root folder where Swagger JSON files are generated
   # NOTE: If you're using the rswag-api to serve API descriptions, you'll need
   # to ensure that it's configured to serve Swagger from the same folder
@@ -15,7 +17,7 @@ RSpec.configure do |config|
   # document below. You can override this behavior by adding a openapi_spec tag to the
   # the root example_group in your specs, e.g. describe '...', openapi_spec: 'v2/swagger.json'
   config.openapi_specs = {
-    'v1/swagger.yaml' => {
+    'v1/openapi.yaml' => {
       openapi: '3.0.1',
       info: {
         title: 'API V1',
@@ -31,7 +33,69 @@ RSpec.configure do |config|
             }
           }
         }
-      ]
+      ],
+      components: {
+        securitySchemes: {
+          bearer_auth: {
+            type: :http,
+            scheme: :bearer
+          }
+        },
+        schemas: {
+          employer_applicants: {
+            type: :object,
+            properties: {
+              id: {
+                type: :id,
+                format: :uuid
+              },
+              jobId: {
+                type: :id,
+                format: :uuid
+              },
+              chatEnabled: {
+                type: :boolean
+              },
+              createdAt: {
+                type: :string,
+                format: 'date-time'
+              },
+              jobName: {
+                type: :string
+              },
+              firstName: {
+                type: :string
+              },
+              lastName: {
+                type: :string
+              },
+              email: {
+                type: :string,
+                format: :email
+              },
+              phoneNumber: {
+                type: :string,
+                nullable: true
+              },
+              profileLink: {
+                type: :string
+              },
+              programs: {
+                type: :array
+              },
+              statusReasons: {
+                type: :array,
+                items: {
+                  type: :string
+                }
+              },
+              status: {
+                type: :string
+              }
+            }
+          }
+        }
+      }
     }
   }
 

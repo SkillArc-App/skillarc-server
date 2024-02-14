@@ -1,0 +1,10 @@
+<p>You have a new applicant for <b><%= @job.employment_title %></b></p>
+
+<div>Resume: <%= link_to "#{@applicant.first_name} #{@applicant.last_name}", "#{ENV['FRONTEND_URL']}/profiles/#{@applicant.seeker_id}" %></a></div>
+<div>Phone: <%= @applicant.phone_number %></div>
+<div>Email: <%= @applicant.email %></div>
+
+<p>You can view all your applicants at <%= "#{ENV['FRONTEND_URL']}/employers/jobs" %></p>
+
+<p>Thanks,</p>
+<div>The SkillArc Team</div>

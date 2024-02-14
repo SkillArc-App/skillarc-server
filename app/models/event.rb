@@ -51,6 +51,12 @@ class Event < ApplicationRecord
       TESTIMONIAL_DESTROYED = 'testimonial_destroyed'.freeze
     ].freeze
 
+    EMPLOYERS = [
+      EMPLOYER_CREATED = 'employer_created'.freeze,
+      EMPLOYER_INVITE_ACCEPTED = 'employer_invite_accepted'.freeze,
+      EMPLOYER_UPDATED = 'employer_updated'.freeze
+    ].freeze
+
     ALL = [
       APPLICANT_STATUS_UPDATED = 'applicant_status_updated'.freeze,
       CHAT_CREATED = 'chat_created'.freeze,
@@ -59,9 +65,6 @@ class Event < ApplicationRecord
       EDUCATION_EXPERIENCE_CREATED = 'education_experience_created'.freeze,
       EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated'.freeze,
       EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted'.freeze,
-      EMPLOYER_CREATED = 'employer_created'.freeze,
-      EMPLOYER_INVITE_ACCEPTED = 'employer_invite_accepted'.freeze,
-      EMPLOYER_UPDATED = 'employer_updated'.freeze,
       EXPERIENCE_CREATED = 'experience_created'.freeze,
       MET_CAREER_COACH_UPDATED = 'met_career_coach_updated'.freeze,
       JOB_SAVED = 'job_saved'.freeze,
@@ -76,10 +79,12 @@ class Event < ApplicationRecord
       SEEKER_CREATED = 'profile_created'.freeze,
       SEEKER_UPDATED = 'profile_updated'.freeze,
       SMS_SENT = 'sms_sent'.freeze,
+      SMTP_SENT = 'smtp_sent'.freeze,
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted'.freeze,
       USER_CREATED = 'user_created'.freeze,
       USER_UPDATED = 'user_updated'.freeze,
       *COACHES,
+      *EMPLOYERS,
       *JOBS
     ].freeze
   end

@@ -40,7 +40,7 @@ module Employers
 
     def set_r
       @r = if current_user.employer_admin?
-             EmployerChats::Recruiter.new(current_user, Employer.pluck(:id))
+             EmployerChats::Recruiter.new(current_user, ::Employer.pluck(:id))
            else
              EmployerChats::Recruiter.new(recruiter.user, recruiter.employer_id)
            end

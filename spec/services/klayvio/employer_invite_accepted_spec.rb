@@ -3,13 +3,15 @@ require 'rails_helper'
 RSpec.describe Klayvio::EmployerInviteAccepted do
   describe "#call" do
     let(:message) do
-      build(:events__message, :employer_invite_accepted, data: Events::Common::UntypedHashWrapper.new(
-        employer_invite_id: "A",
+      build(:events__message, :employer_invite_accepted, data: Events::EmployerInviteAccepted::Data::V1.new(
+        employer_invite_id:,
         invite_email: "sbf@crook.com",
-        employer_id: "1",
+        employer_id:,
         employer_name: "FTX"
       ))
     end
+    let(:employer_id) { SecureRandom.uuid }
+    let(:employer_invite_id) { SecureRandom.uuid }
 
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:employer_invite_accepted).with(
@@ -18,7 +20,7 @@ RSpec.describe Klayvio::EmployerInviteAccepted do
         profile_properties: {
           is_recruiter: true,
           employer_name: "FTX",
-          employer_id: "1"
+          employer_id:
         },
         occurred_at: message.occurred_at
       )

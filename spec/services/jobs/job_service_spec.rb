@@ -127,7 +127,7 @@ RSpec.describe Jobs::JobService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::JobUpdated::V1,
         aggregate_id: job.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::JobUpdated::Data::V1.new(
           employment_title:,
           benefits_description:,
           responsibilities_description:,

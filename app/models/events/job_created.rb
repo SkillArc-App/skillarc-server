@@ -2,7 +2,9 @@ module Events
   module JobCreated
     module Data
       class V1
-        include(ValueSemantics.for_attributes do
+        extend Payload
+
+        schema do
           employment_title String
           employer_id Uuid
           benefits_description String
@@ -14,10 +16,6 @@ module Events
           work_days Either(String, nil)
           requirements_description Either(String, nil)
           industry Either(ArrayOf(Either(*Job::Industries::ALL)), nil)
-        end)
-
-        def self.from_hash(hash)
-          new(**hash)
         end
       end
     end

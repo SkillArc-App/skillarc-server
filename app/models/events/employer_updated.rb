@@ -5,10 +5,10 @@ module Events
         extend Payload
 
         schema do
-          name String
-          location String
-          bio String
-          logo_url String
+          name Either(String, nil)
+          location Either(String, nil)
+          bio Either(String, nil)
+          logo_url Either(String, nil)
         end
       end
     end

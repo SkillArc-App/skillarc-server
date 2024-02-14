@@ -3,6 +3,10 @@
 # Table name: employers_applicants
 #
 #  id               :uuid             not null, primary key
+#  email            :string           not null
+#  first_name       :string           not null
+#  last_name        :string           not null
+#  phone_number     :string
 #  status           :string           not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null

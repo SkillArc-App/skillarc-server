@@ -29,5 +29,9 @@
 module Employers
   class Job < ApplicationRecord
     belongs_to :employer, class_name: "Employers::Employer", foreign_key: "employers_employer_id"
+
+    def owner_email
+      employer.recruiters.order(:created_at).first.email
+    end
   end
 end

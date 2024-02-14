@@ -13,6 +13,7 @@
 #
 module Employers
   class Employer < ApplicationRecord
-    has_many :jobs, class_name: "Employers::Job", dependent: :destroy
+    has_many :jobs, class_name: "Employers::Job", dependent: :destroy, inverse_of: :employer, foreign_key: "employers_employer_id"
+    has_many :recruiters, class_name: "Employers::Recruiter", dependent: :destroy, inverse_of: :employer, foreign_key: "employers_employer_id"
   end
 end

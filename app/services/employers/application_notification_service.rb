@@ -2,7 +2,7 @@ module Employers
   class ApplicationNotificationService < EventConsumer
     def self.handled_events
       [
-        Events::ApplicantStatusUpdated::V1,
+        Events::ApplicantStatusUpdated::V2,
         Events::EmployerCreated::V1,
         Events::EmployerInviteAccepted::V1,
         Events::EmployerUpdated::V1,
@@ -13,7 +13,7 @@ module Employers
 
     def self.handle_event(message, *_params)
       case message.event_schema
-      when Events::ApplicantStatusUpdated::V1
+      when Events::ApplicantStatusUpdated::V2
         handle_applicant_status_updated(message)
       when Events::EmployerCreated::V1
         handle_employer_created(message)
@@ -47,11 +47,19 @@ module Employers
         )
 
         applicant.update!(
+          first_name: message.data.applicant_first_name,
+          last_name: message.data.applicant_last_name,
+          email: message.data.applicant_email,
+          phone_number: message.data.applicant_phone_number,
           status: message.data.status
         )
-        # status: message.data.status
 
-        # Contact::SmtpService.new.notify_employer_of_applicant(
+        return unless applicant.status == Applicant::StatusTypes::NEW
+
+        Contact::SmtpService.new.notify_employer_of_applicant(
+          job,
+          applicant
+        )
       end
 
       def handle_employer_created(message)

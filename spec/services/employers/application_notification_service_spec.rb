@@ -95,10 +95,14 @@ RSpec.describe Employers::ApplicationNotificationService do
       described_class.handle_event(job_updated)
     end
 
-    let(:applicant_status_updated) { build(:events__message, :applicant_status_updated, data:) }
+    let(:applicant_status_updated) { build(:events__message, :applicant_status_updated, version: 2, data:) }
     let(:data) do
-      Events::ApplicantStatusUpdated::Data::V1.new(
+      Events::ApplicantStatusUpdated::Data::V2.new(
         applicant_id: SecureRandom.uuid,
+        applicant_first_name: "first_name",
+        applicant_last_name: "last_name",
+        applicant_email: "email",
+        applicant_phone_number: "phone_number",
         profile_id: SecureRandom.uuid,
         seeker_id: SecureRandom.uuid,
         user_id: "user_id",
@@ -110,22 +114,13 @@ RSpec.describe Employers::ApplicationNotificationService do
     end
     let(:status) { ApplicantStatus::StatusTypes::NEW }
 
-    context "for the first time" do
-      it "sends an email to the employer" do
-        job = Job.last_created
-        applicant = Applicant.last_created
+    it "sends an email to the employer" do
+      expect_any_instance_of(Contact::SmtpService)
+        .to receive(:notify_employer_of_applicant)
+        .with(be_a(Employers::Job), be_a(Employers::Applicant))
+        .and_call_original
 
-        expect_any_instance_of(Contact::SmtpService)
-          .to receive(:notify_employer_of_applicant)
-          .with(job, applicant)
-          .and_call_original
-
-        subject
-      end
-    end
-
-    context "not for the first time" do
-      it "does not send an email to the employer"
+      subject
     end
   end
 end

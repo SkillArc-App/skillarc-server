@@ -11,7 +11,7 @@ RSpec.describe EmployerInviteService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EmployerInviteAccepted::V1,
         aggregate_id: employer_invite.employer_id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::EmployerInviteAccepted::Data::V1.new(
           employer_invite_id: employer_invite.id,
           invite_email: employer_invite.email,
           employer_id: employer_invite.employer_id,

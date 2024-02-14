@@ -21,15 +21,7 @@ class JobFreshnessService < EventConsumer
   end
 
   def self.handled_events
-    [
-      Events::ApplicantStatusUpdated::V2,
-      Events::JobCreated::V1,
-      Events::JobUpdated::V1,
-      Events::EmployerCreated::V1,
-      Events::EmployerUpdated::V1,
-      Events::EmployerInviteAccepted::V1,
-      Events::DayElapsed::V1
-    ].freeze
+    [].freeze
   end
 
   def self.call(message:)
@@ -146,7 +138,7 @@ class JobFreshnessService < EventConsumer
   end
 
   def job_create_update(message)
-    @employer_id = message.data[:employer_id]
+    @employer_id = message.aggregate_id
 
     ej = employer_job(employer_id)
 

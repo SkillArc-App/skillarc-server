@@ -321,9 +321,9 @@ module Coaches
 
       csc.update!(
         last_active_on: message.occurred_at,
-        first_name: message.data[:first_name],
-        last_name: message.data[:last_name],
-        phone_number: message.data[:phone_number]
+        first_name: message.data.first_name,
+        last_name: message.data.last_name,
+        phone_number: message.data.phone_number
       )
     end
 

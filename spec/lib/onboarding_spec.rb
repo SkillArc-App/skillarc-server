@@ -88,7 +88,7 @@ RSpec.describe Onboarding do
           .with(
             aggregate_id: user.id,
             event_schema: Events::UserUpdated::V1,
-            data: Events::Common::UntypedHashWrapper.build(
+            data: Events::UserUpdated::Data::V1.new(
               email: user.email,
               first_name: "John",
               last_name: "Doe",
@@ -657,7 +657,7 @@ RSpec.describe Onboarding do
           .with(
             aggregate_id: user.id,
             event_schema: Events::UserUpdated::V1,
-            data: Events::Common::UntypedHashWrapper.build(
+            data: Events::UserUpdated::Data::V1.new(
               email: user.email,
               first_name: "John",
               last_name: "Doe",

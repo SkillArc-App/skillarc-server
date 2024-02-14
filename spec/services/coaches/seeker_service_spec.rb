@@ -6,7 +6,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:user_without_email) { build(:events__message, :user_created, aggregate_id: user_without_email_id, data: Events::UserCreated::Data::V1.new(first_name: "Hannah", last_name: "Block")) }
   let(:seeker_without_email) { build(:events__message, :profile_created, aggregate_id: user_without_email_id, data: Events::SeekerCreated::Data::V1.new(id: seeker_without_email_id, user_id: user_without_email_id)) }
   let(:user_created) { build(:events__message, :user_created, aggregate_id: user_id, data: Events::UserCreated::Data::V1.new(email: "hannah@blocktrainapp.com")) }
-  let(:user_updated) { build(:events__message, :user_updated, aggregate_id: user_id, data: Events::Common::UntypedHashWrapper.new(first_name: "Hannah", last_name: "Block", phone_number: "1234567890")) }
+  let(:user_updated) { build(:events__message, :user_updated, aggregate_id: user_id, data: Events::UserUpdated::Data::V1.new(first_name: "Hannah", last_name: "Block", phone_number: "1234567890")) }
   let(:other_user_created) { build(:events__message, :user_created, aggregate_id: other_user_id, data: Events::UserCreated::Data::V1.new(email: "katina@gmail.com", first_name: "Katina", last_name: "Hall")) }
   let(:seeker_created) { build(:events__message, :profile_created, aggregate_id: user_id, data: Events::SeekerCreated::Data::V1.new(id: seeker_id, user_id:)) }
   let(:other_seeker_created) { build(:events__message, :profile_created, aggregate_id: other_user_id, data: Events::SeekerCreated::Data::V1.new(id: other_seeker_id, user_id: other_user_id)) }

@@ -22,7 +22,7 @@ class JobFreshnessService < EventConsumer
 
   def self.handled_events
     [
-      Events::ApplicantStatusUpdated::V1,
+      Events::ApplicantStatusUpdated::V2,
       Events::JobCreated::V1,
       Events::JobUpdated::V1,
       Events::EmployerCreated::V1,
@@ -38,7 +38,7 @@ class JobFreshnessService < EventConsumer
 
   def self.handle_event(message, with_side_effects: false, now: Time.zone.now)
     case message.event_schema
-    when Events::ApplicantStatusUpdated::V1, Events::JobCreated::V1, Events::JobUpdated::V1
+    when Events::ApplicantStatusUpdated::V2, Events::JobCreated::V1, Events::JobUpdated::V1
       message.aggregate_id
 
       freshness = new(message.aggregate_id, now:)

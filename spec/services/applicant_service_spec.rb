@@ -20,10 +20,14 @@ RSpec.describe ApplicantService do
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_schema: Events::ApplicantStatusUpdated::V1,
+        event_schema: Events::ApplicantStatusUpdated::V2,
         aggregate_id: applicant.job.id,
-        data: Events::ApplicantStatusUpdated::Data::V1.new(
+        data: Events::ApplicantStatusUpdated::Data::V2.new(
           applicant_id: applicant.id,
+          applicant_first_name: applicant.seeker.user.first_name,
+          applicant_last_name: applicant.seeker.user.last_name,
+          applicant_email: applicant.seeker.user.email,
+          applicant_phone_number: applicant.seeker.user.phone_number,
           seeker_id: applicant.seeker.id,
           job_id: applicant.job.id,
           employer_name: applicant.job.employer.name,

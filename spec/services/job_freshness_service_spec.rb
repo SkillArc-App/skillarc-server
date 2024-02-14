@@ -221,8 +221,12 @@ RSpec.describe JobFreshnessService do
               :events__message,
               :applicant_status_updated,
               aggregate_id: job_id,
-              data: Events::ApplicantStatusUpdated::Data::V1.new(
+              data: Events::ApplicantStatusUpdated::Data::V2.new(
                 applicant_id: SecureRandom.uuid,
+                applicant_first_name: "John",
+                applicant_last_name: "Doe",
+                applicant_email: "john@john.com",
+                applicant_phone_number: "123-456-7890",
                 job_id:,
                 profile_id: SecureRandom.uuid,
                 seeker_id: SecureRandom.uuid,
@@ -231,7 +235,8 @@ RSpec.describe JobFreshnessService do
                 employer_name: "Employer",
                 status: "new"
               ),
-              occurred_at: applicant_created_at
+              occurred_at: applicant_created_at,
+              version: 2
             )
           end
 
@@ -266,8 +271,12 @@ RSpec.describe JobFreshnessService do
                   :events__message,
                   :applicant_status_updated,
                   aggregate_id: job_id,
-                  data: Events::ApplicantStatusUpdated::Data::V1.new(
+                  data: Events::ApplicantStatusUpdated::Data::V2.new(
                     applicant_id: applicant_created_at_event.data.applicant_id,
+                    applicant_first_name: "John",
+                    applicant_last_name: "Doe",
+                    applicant_email: "john@john.com",
+                    applicant_phone_number: "123-456-7890",
                     job_id:,
                     profile_id: SecureRandom.uuid,
                     user_id: SecureRandom.uuid,
@@ -276,7 +285,8 @@ RSpec.describe JobFreshnessService do
                     seeker_id: SecureRandom.uuid,
                     employer_name: "Employer"
                   ),
-                  occurred_at: applicant_status_updated_at
+                  occurred_at: applicant_status_updated_at,
+                  version: 2
                 )
               end
               let(:applicant_status_updated_at) { now - 1.week - 1.day }

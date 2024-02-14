@@ -12,10 +12,10 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:other_seeker_created) { build(:events__message, :profile_created, aggregate_id: other_user_id, data: Events::SeekerCreated::Data::V1.new(id: other_seeker_id, user_id: other_user_id)) }
   let(:note_with_id_added1) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
   let(:note_with_id_added2) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
-  let(:applicant_status_updated1) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
-  let(:applicant_status_updated2) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
-  let(:applicant_status_updated3) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
-  let(:applicant_status_updated4) { build(:events__message, :applicant_status_updated, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
+  let(:applicant_status_updated1) { build(:events__message, :applicant_status_updated, version: 2, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
+  let(:applicant_status_updated2) { build(:events__message, :applicant_status_updated, version: 2, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
+  let(:applicant_status_updated3) { build(:events__message, :applicant_status_updated, version: 2, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
+  let(:applicant_status_updated4) { build(:events__message, :applicant_status_updated, version: 2, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
   let(:note_deleted) { build(:events__message, :note_deleted, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id", note_id: note_id1), occurred_at: time1) }
   let(:note_modified) { build(:events__message, :note_modified, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: updated_note, note_id: note_id2), occurred_at: time1) }
   let(:skill_level_updated) { build(:events__message, :skill_level_updated, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(skill_level: "advanced"), occurred_at: time1) }
@@ -35,45 +35,61 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     )
   end
   let(:status_updated1) do
-    Events::ApplicantStatusUpdated::Data::V1.new(
+    Events::ApplicantStatusUpdated::Data::V2.new(
       job_id:,
+      applicant_id: applicant_id1,
+      applicant_first_name: "Hannah",
+      applicant_last_name: "Block",
+      applicant_email: "hannah@hannah.com",
+      applicant_phone_number: "1234567890",
       employer_name: employer_name1,
       seeker_id: other_seeker_id,
       user_id: other_user_id,
-      applicant_id: applicant_id1,
       employment_title: employment_title1,
       status: status1
     )
   end
   let(:status_updated2) do
-    Events::ApplicantStatusUpdated::Data::V1.new(
+    Events::ApplicantStatusUpdated::Data::V2.new(
       job_id:,
+      applicant_id: applicant_id1,
+      applicant_first_name: "Hannah",
+      applicant_last_name: "Block",
+      applicant_email: "hannah@hannah.com",
+      applicant_phone_number: "1234567890",
       employer_name: employer_name1,
       seeker_id: other_seeker_id,
       user_id: other_user_id,
-      applicant_id: applicant_id1,
       employment_title: employment_title1,
       status: status2
     )
   end
   let(:status_updated3) do
-    Events::ApplicantStatusUpdated::Data::V1.new(
+    Events::ApplicantStatusUpdated::Data::V2.new(
       job_id:,
+      applicant_id: applicant_id2,
+      applicant_first_name: "Hannah",
+      applicant_last_name: "Block",
+      applicant_email: "hannah@hannah.com",
+      applicant_phone_number: "1234567890",
       seeker_id:,
       user_id:,
       employer_name: employer_name2,
-      applicant_id: applicant_id2,
       employment_title: employment_title2,
       status: status1
     )
   end
   let(:status_updated4) do
-    Events::ApplicantStatusUpdated::Data::V1.new(
+    Events::ApplicantStatusUpdated::Data::V2.new(
       job_id:,
+      applicant_id: applicant_id3,
+      applicant_first_name: "Hannah",
+      applicant_last_name: "Block",
+      applicant_email: "hannah@hannah.com",
+      applicant_phone_number: "1234567890",
       employer_name: employer_name2,
       seeker_id: other_seeker_id,
       user_id: other_user_id,
-      applicant_id: applicant_id3,
       employment_title: employment_title2,
       status: status1
     )

@@ -24,7 +24,7 @@ module Events
           applicant_first_name String
           applicant_last_name String
           applicant_email String
-          applicant_phone_number String
+          applicant_phone_number Either(String, nil), default: nil
           profile_id Either(Uuid, nil), default: nil
           seeker_id Uuid
           user_id String

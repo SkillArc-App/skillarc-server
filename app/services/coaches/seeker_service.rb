@@ -15,7 +15,7 @@ module Coaches
     def self.handled_events
       [
         Events::SkillLevelUpdated::V1,
-        Events::ApplicantStatusUpdated::V1,
+        Events::ApplicantStatusUpdated::V2,
         Events::SeekerCreated::V1,
         Events::UserCreated::V1,
         Events::UserUpdated::V1,
@@ -60,7 +60,7 @@ module Coaches
         handle_skill_level_updated(message)
 
       # Multi Origin
-      when Events::ApplicantStatusUpdated::V1
+      when Events::ApplicantStatusUpdated::V2
         handle_applicant_status_updated(message)
 
       # Seeker Originated

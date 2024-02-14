@@ -5,6 +5,6 @@ class EmployerApplicantNotificationMailer < ApplicationMailer
     @job = job
     @applicant = applicant
 
-    mail(to: job.owner.email, subject: 'New Applicant')
+    mail(to: job.owner_email, subject: 'New Applicant')
   end
 end

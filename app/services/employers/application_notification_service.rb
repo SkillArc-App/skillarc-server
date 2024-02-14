@@ -29,6 +29,7 @@ module Employers
     end
 
     def self.reset_for_replay
+      Applicant.destroy_all
       Employer.destroy_all
       Job.destroy_all
       Recruiter.destroy_all
@@ -37,7 +38,21 @@ module Employers
     class << self
       private
 
-      def handle_applicant_status_updated(message); end
+      def handle_applicant_status_updated(message)
+        job = Job.find_by(job_id: message.data.job_id)
+        applicant = Applicant.find_or_initialize_by(
+          applicant_id: message.data.applicant_id,
+          seeker_id: message.data.seeker_id,
+          job:
+        )
+
+        applicant.update!(
+          status: message.data.status
+        )
+        # status: message.data.status
+
+        # Contact::SmtpService.new.notify_employer_of_applicant(
+      end
 
       def handle_employer_created(message)
         Employer.create!(

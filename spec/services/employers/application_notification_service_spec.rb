@@ -102,7 +102,7 @@ RSpec.describe Employers::ApplicationNotificationService do
         profile_id: SecureRandom.uuid,
         seeker_id: SecureRandom.uuid,
         user_id: "user_id",
-        job_id: SecureRandom.uuid,
+        job_id:,
         employer_name: "employer_name",
         employment_title: "employment_title",
         status:
@@ -112,7 +112,13 @@ RSpec.describe Employers::ApplicationNotificationService do
 
     context "for the first time" do
       it "sends an email to the employer" do
-        expect(EmployerApplicantNotificationMailer).to receive(:notify_employer).and_call_original
+        job = Job.last_created
+        applicant = Applicant.last_created
+
+        expect_any_instance_of(Contact::SmtpService)
+          .to receive(:notify_employer_of_applicant)
+          .with(job, applicant)
+          .and_call_original
 
         subject
       end

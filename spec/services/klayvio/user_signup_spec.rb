@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Klayvio::UserSignup do
   describe "#call" do
     let(:message) do
-      build(:events__message, :user_created)
+      build(:events__message, :user_created, data: Events::UserCreated::Data::V1.new)
     end
     let(:email) { "tom@blocktrainapp.com" }
     let(:occurred_at) { Date.new(2020, 1, 1) }

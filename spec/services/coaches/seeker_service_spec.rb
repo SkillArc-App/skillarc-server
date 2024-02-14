@@ -2,12 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:lead_added) { build(:events__message, :lead_added, aggregate_id: lead_id, data: lead, occurred_at: time1) }
-  let(:non_seeker_user_created) { build(:events__message, :user_created, aggregate_id: coach_user_id, data: Events::Common::UntypedHashWrapper.build(email: "f@f.f")) }
-  let(:user_without_email) { build(:events__message, :user_created, aggregate_id: user_without_email_id, data: Events::Common::UntypedHashWrapper.build(first_name: "Hannah", last_name: "Block")) }
+  let(:non_seeker_user_created) { build(:events__message, :user_created, aggregate_id: coach_user_id, data: Events::UserCreated::Data::V1.new(email: "f@f.f")) }
+  let(:user_without_email) { build(:events__message, :user_created, aggregate_id: user_without_email_id, data: Events::UserCreated::Data::V1.new(first_name: "Hannah", last_name: "Block")) }
   let(:seeker_without_email) { build(:events__message, :profile_created, aggregate_id: user_without_email_id, data: Events::SeekerCreated::Data::V1.new(id: seeker_without_email_id, user_id: user_without_email_id)) }
-  let(:user_created) { build(:events__message, :user_created, aggregate_id: user_id, data: Events::Common::UntypedHashWrapper.new(email: "hannah@blocktrainapp.com")) }
+  let(:user_created) { build(:events__message, :user_created, aggregate_id: user_id, data: Events::UserCreated::Data::V1.new(email: "hannah@blocktrainapp.com")) }
   let(:user_updated) { build(:events__message, :user_updated, aggregate_id: user_id, data: Events::Common::UntypedHashWrapper.new(first_name: "Hannah", last_name: "Block", phone_number: "1234567890")) }
-  let(:other_user_created) { build(:events__message, :user_created, aggregate_id: other_user_id, data: Events::Common::UntypedHashWrapper.new(email: "katina@gmail.com", first_name: "Katina", last_name: "Hall")) }
+  let(:other_user_created) { build(:events__message, :user_created, aggregate_id: other_user_id, data: Events::UserCreated::Data::V1.new(email: "katina@gmail.com", first_name: "Katina", last_name: "Hall")) }
   let(:seeker_created) { build(:events__message, :profile_created, aggregate_id: user_id, data: Events::SeekerCreated::Data::V1.new(id: seeker_id, user_id:)) }
   let(:other_seeker_created) { build(:events__message, :profile_created, aggregate_id: other_user_id, data: Events::SeekerCreated::Data::V1.new(id: other_seeker_id, user_id: other_user_id)) }
   let(:note_with_id_added1) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }

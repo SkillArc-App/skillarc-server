@@ -5,10 +5,10 @@ RSpec.describe ExecuteSubscriberJob do
     message = Events::Message.new(
       id: SecureRandom.uuid,
       aggregate_id: "123",
-      event_type: "user_created",
-      data: Events::Common::UntypedHashWrapper.build,
+      event_type: Events::UserCreated::V1.event_type,
+      data: Events::UserCreated::Data::V1.new,
       metadata: Events::Common::Nothing,
-      version: 1,
+      version: Events::UserCreated::V1.version,
       occurred_at: DateTime.new(2020, 1, 1)
     )
 

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe Pubsub do
   subject do
     described_class.new(sync:)
@@ -7,7 +9,7 @@ RSpec.describe Pubsub do
     let(:sync) { true }
 
     it "calls the subscriber when the event is published" do
-      message = build(:events__message, :user_created)
+      message = build(:events__message, :user_created, data: Events::UserCreated::Data::V1.new)
 
       subscriber = Klayvio::JobSaved.new
       allow(subscriber).to receive(:call)
@@ -27,7 +29,7 @@ RSpec.describe Pubsub do
     let(:sync) { false }
 
     it "calls enqueues a execute subscriber job" do
-      message = build(:events__message, :user_created)
+      message = build(:events__message, :user_created, data: Events::UserCreated::Data::V1.new)
 
       subscriber = Klayvio::JobSaved.new
       allow(subscriber).to receive(:call)

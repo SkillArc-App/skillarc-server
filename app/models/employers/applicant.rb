@@ -24,7 +24,7 @@
 #
 module Employers
   class Applicant < ApplicationRecord
-    belongs_to :job, class_name: "Employers::Job", foreign_key: "employers_job_id"
+    belongs_to :job, class_name: "Employers::Job", foreign_key: "employers_job_id", inverse_of: :applicants
 
     module StatusTypes
       ALL = [

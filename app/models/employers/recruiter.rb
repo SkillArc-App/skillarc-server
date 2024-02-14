@@ -18,6 +18,6 @@
 #
 module Employers
   class Recruiter < ApplicationRecord
-    belongs_to :employer, class_name: "Employers::Employer", foreign_key: "employers_employer_id"
+    belongs_to :employer, class_name: "Employers::Employer", foreign_key: "employers_employer_id", inverse_of: :recruiters
   end
 end

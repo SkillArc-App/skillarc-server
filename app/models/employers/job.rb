@@ -28,7 +28,8 @@
 #
 module Employers
   class Job < ApplicationRecord
-    belongs_to :employer, class_name: "Employers::Employer", foreign_key: "employers_employer_id"
+    belongs_to :employer, class_name: "Employers::Employer", foreign_key: "employers_employer_id", inverse_of: :jobs
+    has_many :applicants, class_name: "Employers::Applicant", foreign_key: "employers_job_id", inverse_of: :job, dependent: :destroy
 
     def owner_email
       employer.recruiters.order(:created_at).first.email

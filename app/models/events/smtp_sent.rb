@@ -15,7 +15,7 @@ module Events
     V1 = Schema.build(
       data: Data::V1,
       metadata: Common::Nothing,
-      event_type: Event::EventTypes::SMS_SENT,
+      event_type: Event::EventTypes::SMTP_SENT,
       version: 1
     )
   end

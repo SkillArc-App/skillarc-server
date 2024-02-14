@@ -79,6 +79,7 @@ class Event < ApplicationRecord
       SEEKER_CREATED = 'profile_created'.freeze,
       SEEKER_UPDATED = 'profile_updated'.freeze,
       SMS_SENT = 'sms_sent'.freeze,
+      SMTP_SENT = 'smtp_sent'.freeze,
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted'.freeze,
       USER_CREATED = 'user_created'.freeze,
       USER_UPDATED = 'user_updated'.freeze,

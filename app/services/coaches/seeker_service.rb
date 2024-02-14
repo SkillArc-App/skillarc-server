@@ -78,9 +78,11 @@ module Coaches
         Events::JobUnsaved::V1,
         Events::PersonalExperienceCreated::V1,
         Events::SeekerUpdated::V1,
-        Events::OnboardingCompleted::V1,
-        Events::JobSearch::V2
+        Events::OnboardingCompleted::V1
         handle_last_active_updated(message)
+
+      when Events::JobSearch::V2
+        handle_last_active_updated(message) if Uuid === message.aggregate_id # rubocop:disable Style/CaseEquality
       end
     end
 

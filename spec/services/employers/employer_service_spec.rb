@@ -4,8 +4,6 @@ RSpec.describe Employers::EmployerService do
   it_behaves_like "an event consumer"
 
   describe "application created" do
-    subject { described_class.handle_event(applicant_status_updated) }
-
     let(:employer_created) do
       build(
         :events__message,
@@ -87,23 +85,6 @@ RSpec.describe Employers::EmployerService do
     let(:employer_id) { SecureRandom.uuid }
     let(:job_id) { SecureRandom.uuid }
 
-    let(:applicant_status_updated) { build(:events__message, :applicant_status_updated, version: 2, data:) }
-    let(:data) do
-      Events::ApplicantStatusUpdated::Data::V2.new(
-        applicant_id: SecureRandom.uuid,
-        applicant_first_name: "first_name",
-        applicant_last_name: "last_name",
-        applicant_email: "email",
-        applicant_phone_number: "phone_number",
-        profile_id: SecureRandom.uuid,
-        seeker_id: SecureRandom.uuid,
-        user_id: "user_id",
-        job_id:,
-        employer_name: "employer_name",
-        employment_title: "employment_title",
-        status:
-      )
-    end
     let(:status) { ApplicantStatus::StatusTypes::NEW }
 
     it "creates the records" do

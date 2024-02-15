@@ -3,7 +3,6 @@ module Events
     module Data
       class V1
         extend Concerns::Payload
-        include Concerns::Splat
 
         schema do
           first_name Either(String, nil)

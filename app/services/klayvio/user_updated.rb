@@ -3,7 +3,7 @@ module Klayvio
     include DefaultStreamId
 
     def call(message:)
-      data = message.data.splat
+      data = message.data.to_h
 
       Klayvio.new.user_updated(
         email: data[:email],

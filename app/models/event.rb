@@ -65,7 +65,7 @@ class Event < ApplicationRecord
       EXPERIENCE_CREATED = 'experience_created'.freeze,
       JOB_SAVED = 'job_saved'.freeze,
       JOB_SEARCH = 'job_search'.freeze,
-      JOB_UNSAVED = 'job_unsaved'.freeze
+      JOB_UNSAVED = 'job_unsaved'.freeze,
       ONBOARDING_COMPLETED = 'onboarding_completed'.freeze,
       PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created'.freeze,
       SEEKER_CREATED = 'profile_created'.freeze,
@@ -80,6 +80,7 @@ class Event < ApplicationRecord
       MET_CAREER_COACH_UPDATED = 'met_career_coach_updated'.freeze,
       NOTIFICATION_CREATED = 'notification_created'.freeze,
       NOTIFICATIONS_MARKED_READ = 'notifications_marked_read'.freeze,
+      REASON_CREATED = 'reason_created'.freeze,
       ROLE_ADDED = 'role_added'.freeze,
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created'.freeze,
       SMS_SENT = 'sms_sent'.freeze,

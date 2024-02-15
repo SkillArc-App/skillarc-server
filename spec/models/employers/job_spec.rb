@@ -5,11 +5,20 @@ RSpec.describe Employers::Job, type: :model do
     subject { job.owner_email }
 
     let(:job) { create(:employers_job) }
-    let!(:recruiter) { create(:employers_recruiter, employer: job.employer) }
 
     context "when there is no job owner" do
-      it "returns the first recruiter's email" do
-        expect(subject).to eq(recruiter.email)
+      context "when there is a recruiter" do
+        let!(:recruiter) { create(:employers_recruiter, employer: job.employer) }
+
+        it "returns the first recruiter's email" do
+          expect(subject).to eq(recruiter.email)
+        end
+      end
+
+      context "when there is no recruiter" do
+        it "returns chris@skillarc.com" do
+          expect(subject).to eq("chris@skillarc.com")
+        end
       end
     end
 

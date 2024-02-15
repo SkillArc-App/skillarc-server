@@ -39,8 +39,14 @@ class EventService
     event_schema
   end
 
+  def self.migrate_event(event_schema:, &block)
+    Event.where(event_type: event_schema.event_type, version: event_schema.version).find_each do |e|
+      block.call(e.message)
+    end
+  end
+
   class << self
-    # private
+    private
 
     def registry
       @registry ||= {}

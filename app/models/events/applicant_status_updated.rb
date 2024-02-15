@@ -6,7 +6,7 @@ module Events
 
         schema do
           id Uuid
-          answer String
+          response Either(String, nil)
         end
       end
     end
@@ -47,7 +47,7 @@ module Events
           employer_name String
           employment_title String
           status Either(*ApplicantStatus::StatusTypes::ALL)
-          reason ArrayOf(Reason::V1), default: []
+          reasons ArrayOf(Reason::V1), default: []
         end
       end
     end

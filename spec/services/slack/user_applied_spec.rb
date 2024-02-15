@@ -19,10 +19,10 @@ RSpec.describe Slack::UserApplied do
           employer_name: "A employer",
           employment_title: "A title",
           status:,
-          reason: [
+          reasons: [
             Events::ApplicantStatusUpdated::Reason::V1.new(
               id: SecureRandom.uuid,
-              answer: "Applicant sucks"
+              response: "Applicant sucks"
             )
           ]
         )

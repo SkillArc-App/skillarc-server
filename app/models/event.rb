@@ -54,7 +54,8 @@ class Event < ApplicationRecord
     EMPLOYERS = [
       EMPLOYER_CREATED = 'employer_created'.freeze,
       EMPLOYER_INVITE_ACCEPTED = 'employer_invite_accepted'.freeze,
-      EMPLOYER_UPDATED = 'employer_updated'.freeze
+      EMPLOYER_UPDATED = 'employer_updated'.freeze,
+      JOB_OWNER_ASSIGNED = 'job_owner_assigned'.freeze
     ].freeze
 
     ALL = [

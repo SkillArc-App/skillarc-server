@@ -19,5 +19,7 @@
 module Employers
   class Recruiter < ApplicationRecord
     belongs_to :employer, class_name: "Employers::Employer", foreign_key: "employers_employer_id", inverse_of: :recruiters
+
+    has_many :job_owners, class_name: "Employers::JobOwner", foreign_key: "employers_recruiter_id", inverse_of: :recruiter, dependent: :destroy
   end
 end

@@ -83,7 +83,7 @@ RSpec.describe UserEvents do
           employment_title: "Test Job",
           employer_name: "Test Employer",
           status: "new",
-          reason: []
+          reasons: []
         ).to_h
       )
     end

@@ -22,5 +22,7 @@ module Employers
   class JobOwner < ApplicationRecord
     belongs_to :job, class_name: "Employers::Job", foreign_key: "employers_job_id", inverse_of: :job_owners
     belongs_to :recruiter, class_name: "Employers::Recruiter", foreign_key: "employers_recruiter_id", inverse_of: :job_owners
+
+    delegate :email, to: :recruiter
   end
 end

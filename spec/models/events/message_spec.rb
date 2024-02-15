@@ -98,23 +98,14 @@ RSpec.describe Events::Message do
         message = described_class.new(
           id: SecureRandom.uuid,
           aggregate_id: SecureRandom.uuid,
-          event_type: Events::ApplicantStatusUpdated::V1.event_type,
+          event_type: Events::UserCreated::V1.event_type,
           metadata: Events::Common::Nothing,
-          data: Events::ApplicantStatusUpdated::Data::V1.new(
-            applicant_id: SecureRandom.uuid,
-            profile_id: SecureRandom.uuid,
-            seeker_id: SecureRandom.uuid,
-            user_id: SecureRandom.uuid,
-            job_id: SecureRandom.uuid,
-            employer_name: "example",
-            employment_title: "example",
-            status: "new"
-          ),
-          version: Events::ApplicantStatusUpdated::V1.version,
+          data: Events::UserCreated::Data::V1.new,
+          version: Events::UserCreated::V1.version,
           occurred_at: Time.zone.now
         )
 
-        expect(message.event_schema).to eq(Events::ApplicantStatusUpdated::V1)
+        expect(message.event_schema).to eq(Events::UserCreated::V1)
       end
     end
   end

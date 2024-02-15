@@ -58,32 +58,37 @@ class Event < ApplicationRecord
       JOB_OWNER_ASSIGNED = 'job_owner_assigned'.freeze
     ].freeze
 
+    SEEKERS = [
+      EDUCATION_EXPERIENCE_CREATED = 'education_experience_created'.freeze,
+      EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted'.freeze,
+      EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated'.freeze,
+      EXPERIENCE_CREATED = 'experience_created'.freeze,
+      JOB_SAVED = 'job_saved'.freeze,
+      JOB_SEARCH = 'job_search'.freeze,
+      JOB_UNSAVED = 'job_unsaved'.freeze,
+      ONBOARDING_COMPLETED = 'onboarding_completed'.freeze,
+      PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created'.freeze,
+      SEEKER_CREATED = 'profile_created'.freeze,
+      SEEKER_UPDATED = 'profile_updated'.freeze
+    ].freeze
+
     ALL = [
       APPLICANT_STATUS_UPDATED = 'applicant_status_updated'.freeze,
       CHAT_CREATED = 'chat_created'.freeze,
       CHAT_MESSAGE_SENT = 'chat_message_sent'.freeze,
       DAY_ELAPSED = 'day_elapsed'.freeze,
-      EDUCATION_EXPERIENCE_CREATED = 'education_experience_created'.freeze,
-      EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated'.freeze,
-      EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted'.freeze,
-      EXPERIENCE_CREATED = 'experience_created'.freeze,
       MET_CAREER_COACH_UPDATED = 'met_career_coach_updated'.freeze,
-      JOB_SAVED = 'job_saved'.freeze,
-      JOB_SEARCH = 'job_search'.freeze,
-      JOB_UNSAVED = 'job_unsaved'.freeze,
       NOTIFICATION_CREATED = 'notification_created'.freeze,
       NOTIFICATIONS_MARKED_READ = 'notifications_marked_read'.freeze,
-      ONBOARDING_COMPLETED = 'onboarding_completed'.freeze,
-      PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created'.freeze,
+      REASON_CREATED = 'reason_created'.freeze,
       ROLE_ADDED = 'role_added'.freeze,
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created'.freeze,
-      SEEKER_CREATED = 'profile_created'.freeze,
-      SEEKER_UPDATED = 'profile_updated'.freeze,
       SMS_SENT = 'sms_sent'.freeze,
       SMTP_SENT = 'smtp_sent'.freeze,
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted'.freeze,
       USER_CREATED = 'user_created'.freeze,
       USER_UPDATED = 'user_updated'.freeze,
+      *SEEKERS,
       *COACHES,
       *EMPLOYERS,
       *JOBS

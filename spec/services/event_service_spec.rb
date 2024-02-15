@@ -102,7 +102,7 @@ RSpec.describe EventService do
     end
 
     context "when passed an Event::Schema" do
-      # Can't directlyt est see the Events::Schema spec
+      # Can't directly test see the Events::Schema spec
     end
   end
 
@@ -134,6 +134,41 @@ RSpec.describe EventService do
 
       it "raises a SchemaNotFoundError" do
         expect(subject).to eq(schema)
+      end
+    end
+  end
+
+  describe ".migrate_event" do
+    let(:event_schema) { Events::UserCreated::V1 }
+
+    let!(:message1) do
+      Events::Message.new(
+        id: SecureRandom.uuid,
+        aggregate_id: SecureRandom.uuid,
+        event_type: event_schema.event_type,
+        version: event_schema.version,
+        occurred_at: Time.zone.parse('2000-1-1'),
+        data: Events::UserCreated::Data::V1.new(first_name: "John"),
+        metadata: Events::Common::Nothing
+      )
+    end
+    let!(:message2) do
+      Events::Message.new(
+        id: SecureRandom.uuid,
+        aggregate_id: SecureRandom.uuid,
+        event_type: event_schema.event_type,
+        version: event_schema.version,
+        occurred_at: Time.zone.parse('2000-1-1'),
+        data: Events::UserCreated::Data::V1.new(first_name: "Chris"),
+        metadata: Events::Common::Nothing
+      )
+    end
+    let!(:event1) { Event.from_message!(message1) }
+    let!(:event2) { Event.from_message!(message2) }
+
+    it "passes each message for the schema to the provided block" do
+      described_class.migrate_event(event_schema:) do |message|
+        expect([message1, message2]).to include(message)
       end
     end
   end

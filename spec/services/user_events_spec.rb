@@ -70,15 +70,20 @@ RSpec.describe UserEvents do
         :applicant_status_updated,
         occurred_at:,
         aggregate_id: job.id,
-        data: Events::ApplicantStatusUpdated::Data::V1.new(
+        version: 3,
+        data: Events::ApplicantStatusUpdated::Data::V3.new(
           applicant_id: SecureRandom.uuid,
+          applicant_first_name: "John",
+          applicant_last_name: "Chabot",
+          applicant_email: "john@skillar.com",
           profile_id: SecureRandom.uuid,
           seeker_id: SecureRandom.uuid,
           job_id: SecureRandom.uuid,
           user_id: user.id,
           employment_title: "Test Job",
           employer_name: "Test Employer",
-          status: "new"
+          status: "new",
+          reason: []
         ).to_h
       )
     end

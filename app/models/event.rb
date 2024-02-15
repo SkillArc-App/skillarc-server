@@ -69,7 +69,7 @@ class Event < ApplicationRecord
       ONBOARDING_COMPLETED = 'onboarding_completed'.freeze,
       PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created'.freeze,
       SEEKER_CREATED = 'profile_created'.freeze,
-      SEEKER_UPDATED = 'profile_updated'.freeze,
+      SEEKER_UPDATED = 'profile_updated'.freeze
     ].freeze
 
     ALL = [

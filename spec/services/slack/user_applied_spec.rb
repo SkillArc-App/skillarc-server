@@ -6,15 +6,25 @@ RSpec.describe Slack::UserApplied do
       build(
         :events__message,
         :applicant_status_updated,
+        version: 3,
         aggregate_id: job.id,
-        data: Events::ApplicantStatusUpdated::Data::V1.new(
+        data: Events::ApplicantStatusUpdated::Data::V3.new(
           applicant_id: applicant.id,
+          applicant_first_name: "John",
+          applicant_last_name: "Chabot",
+          applicant_email: "john@skillar.com",
           seeker_id: seeker.id,
           user_id: user.id,
           job_id: job.id,
           employer_name: "A employer",
           employment_title: "A title",
-          status:
+          status:,
+          reason: [
+            Events::ApplicantStatusUpdated::Reason::V1.new(
+              id: SecureRandom.uuid,
+              answer: "Applicant sucks"
+            )
+          ]
         )
       )
     end

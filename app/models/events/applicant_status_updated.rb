@@ -47,7 +47,7 @@ module Events
           employer_name String
           employment_title String
           status Either(*ApplicantStatus::StatusTypes::ALL)
-          reason ArrayOf(Reason::V1)
+          reason ArrayOf(Reason::V1), default: []
         end
       end
     end

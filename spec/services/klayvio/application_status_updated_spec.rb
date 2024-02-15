@@ -6,9 +6,13 @@ RSpec.describe Klayvio::ApplicationStatusUpdated do
       build(
         :events__message,
         :applicant_status_updated,
+        version: 3,
         aggregate_id: job.id,
-        data: Events::ApplicantStatusUpdated::Data::V1.new(
+        data: Events::ApplicantStatusUpdated::Data::V3.new(
           applicant_id: applicant.id,
+          applicant_first_name: "John",
+          applicant_last_name: "Chabot",
+          applicant_email: "john@skillar.com",
           profile_id: SecureRandom.uuid,
           seeker_id: SecureRandom.uuid,
           user_id: SecureRandom.uuid,

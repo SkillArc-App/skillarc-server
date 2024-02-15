@@ -34,7 +34,7 @@ module Employers
 
     def owner_email
       job_owners.order(:created_at).first&.email ||
-        employer.recruiters.order(:created_at).first.email
+        employer.recruiters.order(:created_at).first&.email || "chris@skillarc.com"
     end
   end
 end

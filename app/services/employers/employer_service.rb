@@ -32,6 +32,7 @@ module Employers
       Applicant.destroy_all
       Employer.destroy_all
       Job.destroy_all
+      JobOwner.destroy_all
       Recruiter.destroy_all
     end
 

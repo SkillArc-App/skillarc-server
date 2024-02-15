@@ -6,6 +6,7 @@ module Employers
         Events::EmployerInviteAccepted::V1,
         Events::EmployerUpdated::V1,
         Events::JobCreated::V1,
+        Events::JobOwnerAssigned::V1,
         Events::JobUpdated::V1
       ].freeze
     end
@@ -20,6 +21,8 @@ module Employers
         handle_employer_updated(message)
       when Events::JobCreated::V1
         handle_job_created(message)
+      when Events::JobOwnerAssigned::V1
+        handle_job_owner_assigned(message)
       when Events::JobUpdated::V1
         handle_job_updated(message)
       end
@@ -78,6 +81,16 @@ module Employers
           work_days: message.data.work_days,
           requirements_description: message.data.requirements_description,
           industry: message.data.industry
+        )
+      end
+
+      def handle_job_owner_assigned(message)
+        job = Job.find_by(job_id: message.data.job_id)
+        recruiter = Recruiter.find_by(email: message.data.owner_email)
+
+        JobOwner.create!(
+          job:,
+          recruiter:
         )
       end
 

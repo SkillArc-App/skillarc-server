@@ -120,6 +120,21 @@ RSpec.describe Employers::EmployerService do
         employer: Employers::Employer.last_created,
         email: "invite_email"
       )
+
+      recruiter = Employers::Recruiter.last_created
+
+      expect do
+        described_class.handle_event(
+          build(
+            :events__message,
+            :job_owner_assigned,
+            data: Events::JobOwnerAssigned::Data::V1.new(
+              job_id:,
+              owner_email: recruiter.email
+            )
+          )
+        )
+      end.to change { Employers::JobOwner.count }.by(1)
     end
   end
 end

@@ -6,7 +6,7 @@ module Events
 
         schema do
           job_id Uuid
-          owner_id Uuid
+          owner_email String
         end
       end
     end

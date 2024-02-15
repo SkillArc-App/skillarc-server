@@ -10,7 +10,7 @@ module Events
           phone_number Either(String, nil)
           date_of_birth Either(Date, Common::UNDEFINED, nil), default: Common::UNDEFINED, coerce: Common::DateCoercer
           email Either(String, Common::UNDEFINED, nil), default: Common::UNDEFINED
-          zip_code Either(/^\d{5}(?:[-\s]\d{4})?$/, Common::UNDEFINED, nil), default: Common::UNDEFINED
+          zip_code Either(/^\d{5}(?:[-\s]\d{4})?$/, Common::UNDEFINED, nil), default: Common::UNDEFINED, coerce: Common::ZipCodeCoercer
         end
       end
     end

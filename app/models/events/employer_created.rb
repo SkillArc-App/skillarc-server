@@ -2,7 +2,7 @@ module Events
   module EmployerCreated
     module Data
       class V1
-        extend Payload
+        extend Concerns::Payload
 
         schema do
           name String

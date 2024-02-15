@@ -9,9 +9,10 @@ RSpec.describe DbStreamListener do
   let(:event_occurred_at) { Date.new(2020, 1, 1) }
 
   describe "#play" do
-    subject { instance.play }
+    subject { instance.play(with_side_effects:) }
 
     let(:instance) { described_class.build(consumer, "listener_name") }
+    let(:with_side_effects) { true }
 
     it "updates the bookmark" do
       expect { subject }.to change {
@@ -20,6 +21,19 @@ RSpec.describe DbStreamListener do
     end
 
     context "when there is no bookmark" do
+      context "when with side effects is false" do
+        let(:with_side_effects) { false }
+
+        it "calls the consumer with_side_effects: false" do
+          expect(consumer).to receive(:handle_event).with(
+            be_a(Events::Message),
+            with_side_effects: false
+          ).twice
+
+          subject
+        end
+      end
+
       it "consumes the events from the beginning with side effects" do
         expect(consumer).to receive(:handle_event).with(
           event.message,

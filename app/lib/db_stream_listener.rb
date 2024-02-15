@@ -21,13 +21,13 @@ class DbStreamListener < StreamListener
     play
   end
 
-  def play
+  def play(with_side_effects: true)
     after_events = Event.where("occurred_at > ?", bookmark_timestamp).order(:occurred_at)
 
     return if after_events.empty?
 
     after_events.each do |event|
-      handle_event(event.message, with_side_effects: true)
+      handle_event(event.message, with_side_effects:)
     end
   end
 

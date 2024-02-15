@@ -6,7 +6,7 @@ module Events
 
         schema do
           id Uuid
-          answer String
+          response Either(String, nil)
         end
       end
     end

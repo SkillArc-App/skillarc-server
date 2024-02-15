@@ -22,7 +22,7 @@ RSpec.describe Slack::UserApplied do
           reasons: [
             Events::ApplicantStatusUpdated::Reason::V1.new(
               id: SecureRandom.uuid,
-              answer: "Applicant sucks"
+              response: "Applicant sucks"
             )
           ]
         )

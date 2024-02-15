@@ -2,7 +2,7 @@ module Events
   module CareerPathDestroyed
     module Data
       class V1
-        extend Payload
+        extend Concerns::Payload
 
         schema do
           id Uuid

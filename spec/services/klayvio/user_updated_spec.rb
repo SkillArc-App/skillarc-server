@@ -6,7 +6,7 @@ RSpec.describe Klayvio::UserUpdated do
       build(
         :events__message,
         :user_updated,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::UserUpdated::Data::V1.new(
           first_name: "Tom",
           last_name: "Hanks",
           phone_number: "8155201035",
@@ -19,7 +19,7 @@ RSpec.describe Klayvio::UserUpdated do
 
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:user_updated).with(
-        email: message.data[:email],
+        email: nil,
         event_id: message.id,
         occurred_at: message.occurred_at,
         profile_attributes: {

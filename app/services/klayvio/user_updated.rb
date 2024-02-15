@@ -3,20 +3,19 @@ module Klayvio
     include DefaultStreamId
 
     def call(message:)
-      dob = message.data[:date_of_birth]
-      dob = Date.parse(dob) if dob.is_a?(String)
+      data = message.data.splat
 
       Klayvio.new.user_updated(
-        email: message.data[:email],
+        email: data[:email],
         event_id: message.id,
         occurred_at: message.occurred_at,
         profile_attributes: {
-          first_name: message.data[:first_name],
-          last_name: message.data[:last_name],
+          first_name: data[:first_name],
+          last_name: data[:last_name],
           phone_number: E164.normalize(message.data[:phone_number])
         },
         profile_properties: {
-          date_of_birth: dob
+          date_of_birth: data[:date_of_birth]
         }
       )
     end

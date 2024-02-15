@@ -36,9 +36,7 @@ RSpec.describe ApplicationController, type: :controller do
         .with(
           aggregate_id: be_a(String),
           event_schema: Events::UserCreated::V1,
-          data: Events::Common::UntypedHashWrapper.build(
-            first_name: nil,
-            last_name: nil,
+          data: Events::UserCreated::Data::V1.new(
             email:,
             sub: token
           ),

@@ -2,7 +2,7 @@ module Events
   module EmployerUpdated
     module Data
       class V1
-        extend Payload
+        extend Concerns::Payload
 
         schema do
           name Either(String, nil)

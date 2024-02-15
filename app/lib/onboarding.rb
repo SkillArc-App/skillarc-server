@@ -51,7 +51,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       EventService.create!(
         aggregate_id: user.id,
         event_schema: Events::UserUpdated::V1,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::UserUpdated::Data::V1.new(
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,

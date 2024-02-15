@@ -2,7 +2,7 @@ module Events
   module JobUpdated
     module Data
       class V1
-        extend Payload
+        extend Concerns::Payload
 
         schema do
           employment_title Either(String, nil), default: nil

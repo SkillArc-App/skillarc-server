@@ -15,7 +15,7 @@ module Seekers
       EventService.create!(
         event_schema: Events::UserUpdated::V1,
         aggregate_id: user.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::UserUpdated::Data::V1.new(
           first_name:,
           last_name:,
           phone_number:,

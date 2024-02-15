@@ -6,7 +6,7 @@ RSpec.describe Slack::UserSignup do
       build(
         :events__message,
         :user_created,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Events::UserCreated::Data::V1.new(
           email:
         )
       )

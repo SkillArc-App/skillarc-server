@@ -2,7 +2,7 @@ module Events
   module EducationExperienceCreated
     module Data
       class V1
-        extend Payload
+        extend Concerns::Payload
 
         schema do
           id Uuid

@@ -2,7 +2,7 @@ module Events
   module JobTagCreated
     module Data
       class V1
-        extend Payload
+        extend Concerns::Payload
 
         schema do
           job_id Uuid

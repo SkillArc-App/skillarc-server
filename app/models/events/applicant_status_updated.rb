@@ -2,7 +2,7 @@ module Events
   module ApplicantStatusUpdated
     module Data
       class V1
-        extend Payload
+        extend Concerns::Payload
 
         schema do
           applicant_id Uuid
@@ -17,7 +17,7 @@ module Events
       end
 
       class V2
-        extend Payload
+        extend Concerns::Payload
 
         schema do
           applicant_id Uuid

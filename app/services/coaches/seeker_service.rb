@@ -305,16 +305,14 @@ module Coaches
 
       csc = CoachSeekerContext.find_or_create_by(
         user_id:,
-        email: message.data[:email],
-        first_name: message.data[:first_name],
-        last_name: message.data[:last_name],
-        phone_number: message.data[:phone_number]
+        email: message.data.email,
+        first_name: message.data.first_name,
+        last_name: message.data.last_name
       )
       csc.last_active_on = message.occurred_at
       csc.save!
 
       SeekerLead.where(email: message.data[:email])
-                .or(SeekerLead.where(phone_number: message.data[:phone_number]))
                 .update!(status: SeekerLead::StatusTypes::CONVERTED)
     end
 
@@ -323,9 +321,9 @@ module Coaches
 
       csc.update!(
         last_active_on: message.occurred_at,
-        first_name: message.data[:first_name],
-        last_name: message.data[:last_name],
-        phone_number: message.data[:phone_number]
+        first_name: message.data.first_name,
+        last_name: message.data.last_name,
+        phone_number: message.data.phone_number
       )
     end
 

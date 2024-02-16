@@ -3,6 +3,7 @@
 # Table name: applicant_status_reasons
 #
 #  id                  :uuid             not null, primary key
+#  response            :string
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  applicant_status_id :text             not null

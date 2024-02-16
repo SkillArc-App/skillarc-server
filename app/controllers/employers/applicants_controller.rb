@@ -9,9 +9,7 @@ class Employers::ApplicantsController < ApplicationController
     applicant = Applicant.find(params[:id])
 
     status = applicant_update_params[:status]
-    reasons = applicant_update_params[:reasons]
-
-    reasons = reasons.map { |r| { id: r, response: nil } } if reasons&.all? { |r| r.is_a?(String) }
+    reasons = applicant_update_params[:reasons]&.map(&:to_h)
 
     ApplicantService.new(applicant).update_status(status:, reasons: reasons || [])
 
@@ -19,6 +17,6 @@ class Employers::ApplicantsController < ApplicationController
   end
 
   def applicant_update_params
-    params.permit(:status, reasons: [])
+    params.permit(:status, reasons: %i[id response])
   end
 end

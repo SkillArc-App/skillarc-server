@@ -42,6 +42,31 @@ RSpec.configure do |config|
           }
         },
         schemas: {
+          applicant: {
+            type: :object,
+            properties: {
+              id: {
+                type: :id,
+                format: :uuid
+              },
+              jobId: {
+                type: :id,
+                format: :uuid
+              },
+              seekerId: {
+                type: :id,
+                format: :uuid
+              },
+              createdAt: {
+                type: :string,
+                format: 'date-time'
+              },
+              updatedAt: {
+                type: :string,
+                format: 'date-time'
+              }
+            }
+          },
           employer_applicants: {
             type: :object,
             properties: {

@@ -4,6 +4,68 @@ info:
   title: API V1
   version: v1
 paths:
+  "/employers/applicants/{id}":
+    put:
+      summary: Update an applicants status
+      tags:
+      - Employers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Applicant updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/applicant"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                  - new
+                  - pending intro
+                  - intro made
+                  - interviewing
+                  - hire
+                  - pass
+                reasons:
+                  nullable: true
+                  type: array
+                  items:
+                    oneOf:
+                    - type: string
+                    - type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        response:
+                          type: string
+                          format: uuid
+              required:
+              - status
   "/employers/jobs":
     get:
       summary: Retrieve employer jobs
@@ -66,6 +128,24 @@ components:
       type: http
       scheme: bearer
   schemas:
+    applicant:
+      type: object
+      properties:
+        id:
+          type: id
+          format: uuid
+        jobId:
+          type: id
+          format: uuid
+        seekerId:
+          type: id
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     employer_applicants:
       type: object
       properties:

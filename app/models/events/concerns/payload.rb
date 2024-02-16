@@ -10,8 +10,7 @@ module Events
         hash = {}
 
         self.class.value_semantics.attributes.each do |attr|
-          value = send(attr.name)
-          value = value.to_h if attr.validator.respond_to?(:to_h)
+          value = to_h_value(attr.validator, send(attr.name))
           hash[attr.name] = value unless value == Common::UNDEFINED
         end
 
@@ -25,13 +24,33 @@ module Events
           # If a child is also a payload call from_hash as well verse taking the straight value
           next unless hash.key?(attr.name)
 
-          value = hash[attr.name]
-          value = attr.validator.from_hash(value) if attr.validator.respond_to?(:from_hash)
-
+          value = from_hash_value(attr.validator, hash[attr.name])
           deserialized_hash[attr.name] = value
         end
 
         new(**deserialized_hash)
+      end
+
+      private
+
+      def to_h_value(validator, value)
+        if validator.is_a?(ValueSemantics::ArrayOf)
+          value.map(&:to_h)
+        elsif validator.respond_to?(:to_h)
+          value.to_h
+        else
+          value
+        end
+      end
+
+      def from_hash_value(validator, value)
+        if validator.is_a?(ValueSemantics::ArrayOf)
+          value.map { |v| from_hash_value(validator.element_validator, v) }
+        elsif validator.respond_to?(:from_hash)
+          validator.from_hash(value)
+        else
+          value
+        end
       end
     end
   end

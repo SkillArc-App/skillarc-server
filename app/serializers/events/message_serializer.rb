@@ -23,8 +23,8 @@ module Events
         id: hash["id"],
         aggregate_id: hash["aggregate_id"],
         event_type: hash["event_type"],
-        data: schema.data.from_hash(hash["data"].symbolize_keys),
-        metadata: schema.metadata.from_hash(hash["metadata"].symbolize_keys),
+        data: schema.data.from_hash(hash["data"].deep_symbolize_keys),
+        metadata: schema.metadata.from_hash(hash["metadata"].deep_symbolize_keys),
         version: hash["version"],
         occurred_at: Time.zone.parse(hash["occurred_at"])
       )

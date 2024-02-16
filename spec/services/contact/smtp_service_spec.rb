@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe Contact::SmtpService do
   describe "#notify_employer_of_applicant" do
-    subject { described_class.new.notify_employer_of_applicant(job, applicant) }
+    subject { described_class.new.notify_employer_of_applicant(job, owner_email, applicant) }
 
     let(:job) do
       double(
-        employment_title: "Job Title",
-        owner_email: "recruiter@skillarc.com"
+        employment_title: "Job Title"
       )
     end
+    let(:owner_email) { "recruiter@skillarc.com" }
     let(:applicant) do
       double(
         first_name: "John",
@@ -23,7 +23,7 @@ RSpec.describe Contact::SmtpService do
     it "sends an email" do
       expect(EmployerApplicantNotificationMailer)
         .to receive(:notify_employer)
-        .with(job, applicant)
+        .with(job, owner_email, applicant)
         .and_call_original
 
       expect_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_call_original

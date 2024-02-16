@@ -39,10 +39,13 @@ module Employers
         return unless with_side_effects
         return unless applicant.status == Applicant::StatusTypes::NEW
 
-        Contact::SmtpService.new.notify_employer_of_applicant(
-          job,
-          applicant
-        )
+        job.owner_emails.each do |owner_email|
+          Contact::SmtpService.new.notify_employer_of_applicant(
+            job,
+            owner_email,
+            applicant
+          )
+        end
       end
     end
   end

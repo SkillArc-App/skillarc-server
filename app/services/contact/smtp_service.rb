@@ -1,18 +1,18 @@
 module Contact
   class SmtpService
-    def notify_employer_of_applicant(job, applicant)
-      EmployerApplicantNotificationMailer.notify_employer(job, applicant).deliver_now
+    def notify_employer_of_applicant(job, owner_email, applicant)
+      EmployerApplicantNotificationMailer.notify_employer(job, owner_email, applicant).deliver_now
 
       EventService.create!(
         event_schema: Events::SmtpSent::V1,
         aggregate_id: applicant.email,
         data: Events::SmtpSent::Data::V1.new(
-          email: job.owner_email,
+          email: owner_email,
           template: EmployerApplicantNotificationMailer.class.to_s,
           template_data: {
             job: {
               employment_title: job.employment_title,
-              owner_email: job.owner_email
+              owner_email:
             },
             applicant: {
               first_name: applicant.first_name,

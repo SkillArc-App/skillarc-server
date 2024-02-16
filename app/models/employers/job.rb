@@ -32,9 +32,12 @@ module Employers
     has_many :applicants, class_name: "Employers::Applicant", foreign_key: "employers_job_id", inverse_of: :job, dependent: :destroy
     has_many :job_owners, class_name: "Employers::JobOwner", foreign_key: "employers_job_id", inverse_of: :job, dependent: :destroy
 
-    def owner_email
-      job_owners.order(:created_at).first&.email ||
-        employer.recruiters.order(:created_at).first&.email || "chris@skillarc.com"
+    def owner_emails
+      return job_owners.map(&:email) if job_owners.present?
+
+      return employer.recruiters.map(&:email) if employer.recruiters.present?
+
+      ["chris@skillarc.com"]
     end
   end
 end

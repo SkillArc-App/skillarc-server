@@ -10,10 +10,11 @@ class ApplicantService
       status:
     )
 
-    reasons.each do |reason_id|
+    reasons.each do |reason|
       ApplicantStatusReason.create!(
         applicant_status:,
-        reason_id:
+        reason_id: reason[:id],
+        response: reason[:response]
       )
     end
 
@@ -32,10 +33,10 @@ class ApplicantService
         employer_name: applicant.job.employer.name,
         employment_title: applicant.job.employment_title,
         status: applicant.status.status,
-        reasons: reasons.map do |reason_id|
+        reasons: reasons.map do |reason|
           Events::ApplicantStatusUpdated::Reason::V1.new(
-            id: reason_id,
-            response: nil
+            id: reason[:id],
+            response: reason[:response]
           )
         end
       ),

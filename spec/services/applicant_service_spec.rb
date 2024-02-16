@@ -7,7 +7,7 @@ RSpec.describe ApplicantService do
     subject { described_class.new(applicant).update_status(status:, reasons:) }
 
     let(:status) { ApplicantStatus::StatusTypes::PENDING_INTRO }
-    let(:reasons) { [reason.id] }
+    let(:reasons) { [{ id: reason.id, response: "Bad canidate" }] }
     let(:reason) { create(:reason) }
 
     it "creates a new applicant status" do
@@ -37,7 +37,7 @@ RSpec.describe ApplicantService do
           reasons: [
             Events::ApplicantStatusUpdated::Reason::V1.new(
               id: reason.id,
-              response: nil
+              response: "Bad canidate"
             )
           ]
         ),

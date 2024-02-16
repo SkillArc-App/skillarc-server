@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Employers::Job, type: :model do
-  describe "#owner_email" do
-    subject { job.owner_email }
+  describe "#owner_emails" do
+    subject { job.owner_emails }
 
     let(:job) { create(:employers_job) }
 
@@ -11,13 +11,13 @@ RSpec.describe Employers::Job, type: :model do
         let!(:recruiter) { create(:employers_recruiter, employer: job.employer) }
 
         it "returns the first recruiter's email" do
-          expect(subject).to eq(recruiter.email)
+          expect(subject).to eq([recruiter.email])
         end
       end
 
       context "when there is no recruiter" do
         it "returns chris@skillarc.com" do
-          expect(subject).to eq("chris@skillarc.com")
+          expect(subject).to eq(["chris@skillarc.com"])
         end
       end
     end
@@ -27,7 +27,7 @@ RSpec.describe Employers::Job, type: :model do
       let(:other_recruiter) { create(:employers_recruiter, employer: job.employer) }
 
       it "returns the job owner's email" do
-        expect(subject).to eq(other_recruiter.email)
+        expect(subject).to eq([other_recruiter.email])
       end
     end
   end

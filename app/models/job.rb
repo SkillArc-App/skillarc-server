@@ -59,7 +59,7 @@ class Job < ApplicationRecord
     includes(
       :employer,
       applicants: [
-        :applicant_statuses,
+        { applicant_statuses: :applicant_status_reasons },
         { seeker: :user }
       ]
     )

@@ -29,7 +29,6 @@ module Employers
     end
 
     def self.reset_for_replay
-      Applicant.destroy_all
       Employer.destroy_all
       Job.destroy_all
       JobOwner.destroy_all

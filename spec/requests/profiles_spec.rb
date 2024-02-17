@@ -11,6 +11,8 @@ RSpec.describe "Profiles", type: :request do
     subject { get profile_path(seeker), headers: }
 
     let(:seeker) { create(:seeker) }
+    let!(:applicant) { create(:applicant, seeker:) }
+
     it "returns 200" do
       subject
 

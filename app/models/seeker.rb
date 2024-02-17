@@ -33,7 +33,7 @@ class Seeker < ApplicationRecord
   end
 
   def hiring_status
-    return 'Interviewing' if applicants.includes(:applicant_status).any? { |a| a.status.status == 'interviewing' }
+    return 'Interviewing' if applicants.includes(:applicant_statuses).any? { |a| a.status.status == 'interviewing' }
 
     return 'Applying to Jobs' unless applicants.empty?
 

@@ -1,10 +1,12 @@
-<p>You have a new applicant for <b><%= @job.employment_title %></b></p>
+<p>Great news! You have a new applicant for <b><%= @job.employment_title %>!</b></p>
 
 <div>Resume: <%= link_to "#{@applicant.first_name} #{@applicant.last_name}", "#{ENV['FRONTEND_URL']}/profiles/#{@applicant.seeker_id}" %></a></div>
 <div>Phone: <%= @applicant.phone_number %></div>
 <div>Email: <%= @applicant.email %></div>
 
-<p>You can view all your applicants at <%= "#{ENV['FRONTEND_URL']}/employers/jobs" %></p>
+<p>As always, you can view all your applicants on your <%= link_to "dashboard", "#{ENV['FRONTEND_URL']}/employers/jobs" %></p>
+
+<p>Please feel free to reach out anytime by responding to this email or hannah@skillarc.com with any questions or suggestions!</p>
 
 <p>Thanks,</p>
 <div>The SkillArc Team</div>

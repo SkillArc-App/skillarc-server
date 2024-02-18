@@ -5,6 +5,9 @@ class EmployerApplicantNotificationMailer < ApplicationMailer
     @job = job
     @applicant = applicant
 
-    mail(to: owner_email, subject: 'New Applicant') # rubocop:disable Rails/I18nLocaleTexts
+    mail(
+      to: owner_email,
+      subject: "New Applicant for #{job.employment_title} - #{applicant.first_name} #{applicant.last_name}"
+    )
   end
 end

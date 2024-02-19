@@ -2,8 +2,9 @@ require 'rails_helper'
 
 RSpec.describe SeekerService do
   describe "#get" do
-    subject { described_class.new(seeker).get(seeker_editor: true) }
+    subject { described_class.new(seeker).get(user_id:, seeker_editor: true) }
 
+    let(:user_id) { SecureRandom.uuid }
     let(:seeker) { create(:seeker, user:) }
     let(:user) do
       create(
@@ -169,6 +170,46 @@ RSpec.describe SeekerService do
       expect(second_stp["program"]).to be_nil
 
       expect(subject[:isProfileEditor]).to eq(true)
+    end
+
+    context "when the user_id is missing" do
+      let(:user_id) { nil }
+
+      it "does not emits a SeekerViewed event" do
+        expect(EventService)
+          .not_to receive(:create!)
+
+        subject
+      end
+    end
+
+    context "when the user_id is for the seeker" do
+      let(:user_id) { seeker.user.id }
+
+      it "does not emits a SeekerViewed event" do
+        expect(EventService)
+          .not_to receive(:create!)
+
+        subject
+      end
+    end
+
+    context "when the user_id not for the seeker" do
+      let(:user_id) { SecureRandom.uuid }
+
+      it "emits a SeekerViewed event" do
+        expect(EventService)
+          .to receive(:create!)
+          .with(
+            event_schema: Events::SeekerViewed::V1,
+            aggregate_id: user_id,
+            data: Events::SeekerViewed::Data::V1.new(
+              seeker_id: seeker.id
+            )
+          )
+
+        subject
+      end
     end
   end
 

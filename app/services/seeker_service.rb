@@ -5,8 +5,18 @@ class SeekerService
     @seeker = seeker
   end
 
-  def get(seeker_editor: false)
+  def get(user_id: nil, seeker_editor: false)
     industry_interests = seeker.user.onboarding_session&.responses&.dig("opportunityInterests", "response") || []
+
+    if user_id.present? && user_id != seeker.user.id
+      EventService.create!(
+        event_schema: Events::SeekerViewed::V1,
+        aggregate_id: user_id,
+        data: Events::SeekerViewed::Data::V1.new(
+          seeker_id: seeker.id
+        )
+      )
+    end
 
     {
       **seeker.as_json,

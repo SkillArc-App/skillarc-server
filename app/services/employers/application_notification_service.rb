@@ -33,7 +33,8 @@ module Employers
           last_name: message.data.applicant_last_name,
           email: message.data.applicant_email,
           phone_number: message.data.applicant_phone_number,
-          status: message.data.status
+          status: message.data.status,
+          status_as_of: message.occurred_at
         )
 
         return unless with_side_effects

@@ -33,6 +33,17 @@ RSpec.describe Employers::ApplicationNotificationService do
     it "creates the records" do
       expect { subject }
         .to change { Employers::Applicant.count }.by(1)
+
+      applicant = Employers::Applicant.last_created
+
+      expect(applicant.first_name).to eq(data.applicant_first_name)
+      expect(applicant.last_name).to eq(data.applicant_last_name)
+      expect(applicant.email).to eq(data.applicant_email)
+      expect(applicant.phone_number).to eq(data.applicant_phone_number)
+      expect(applicant.status).to eq(data.status)
+      expect(applicant.job).to eq(job)
+      expect(applicant.seeker_id).to eq(data.seeker_id)
+      expect(applicant.status_as_of).to eq(applicant_status_updated.occurred_at)
     end
 
     it "sends an email to the employer" do

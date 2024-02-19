@@ -39,7 +39,10 @@ RSpec.describe Events::Message do
           :events__message,
           version: Events::DayElapsed::V1.version,
           event_type: Events::DayElapsed::V1.event_type,
-          data: Events::Common::Nothing,
+          data: Events::DayElapsed::Data::V1.new(
+            date: Time.zone.local(2000, 1, 1),
+            day_of_week: Events::DayElapsed::Data::DaysOfWeek::WEDNESDAY
+          ),
           occurred_at:
         )
       end

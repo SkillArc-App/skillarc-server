@@ -5,7 +5,10 @@ class ElapseDayJob < ApplicationJob
     EventService.create!(
       aggregate_id: "day",
       event_schema: Events::DayElapsed::V1,
-      data: Events::Common::Nothing,
+      data: Events::DayElapsed::Data::V1.new(
+        date: now.to_date,
+        day_of_week: now.strftime("%A").downcase
+      ),
       occurred_at: now
     )
   end

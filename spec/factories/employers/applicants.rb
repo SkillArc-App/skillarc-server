@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :employers_applicant, class: 'Employers::Applicant' do
-    association :employer, factory: :employers_employer
+    association :job, factory: :employers_job
   end
 end

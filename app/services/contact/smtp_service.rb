@@ -1,7 +1,7 @@
 module Contact
   class SmtpService
     def notify_employer_of_applicant(job, owner_email, applicant)
-      EmployerApplicantNotificationMailer.notify_employer(job, owner_email, applicant).deliver_now
+      EmployerApplicantNotificationMailer.with(job:, owner_email:, applicant:).notify_employer.deliver_now
 
       EventService.create!(
         event_schema: Events::SmtpSent::V1,

@@ -22,8 +22,8 @@ RSpec.describe Contact::SmtpService do
 
     it "sends an email" do
       expect(EmployerApplicantNotificationMailer)
-        .to receive(:notify_employer)
-        .with(job, owner_email, applicant)
+        .to receive(:with)
+        .with(job:, owner_email:, applicant:)
         .and_call_original
 
       expect_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_call_original

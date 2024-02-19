@@ -14,11 +14,11 @@ class DbStreamListener < StreamListener
     "db-stream-listern-#{listener_name}"
   end
 
-  def replay
+  def replay(with_side_effects: true)
     consumer.reset_for_replay
 
     ListenerBookmark.find_by(consumer_name: listener_name)&.destroy
-    play
+    play(with_side_effects:)
   end
 
   def play(with_side_effects: true)

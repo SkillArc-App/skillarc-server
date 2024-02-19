@@ -91,6 +91,7 @@ RSpec.describe DbStreamListener do
     it "calls play" do
       expect(instance)
         .to receive(:play)
+        .with(with_side_effects: true)
 
       subject
     end
@@ -99,6 +100,16 @@ RSpec.describe DbStreamListener do
       expect(consumer).to receive(:reset_for_replay)
 
       subject
+    end
+
+    context "when with_side_effects is false" do
+      it "calls play with with_side_effects: false" do
+        expect(instance)
+          .to receive(:play)
+          .with(with_side_effects: false)
+
+        instance.replay(with_side_effects: false)
+      end
     end
 
     context "when a bookmark already exists" do

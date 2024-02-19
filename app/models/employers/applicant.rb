@@ -8,6 +8,7 @@
 #  last_name        :string           not null
 #  phone_number     :string
 #  status           :string           not null
+#  status_as_of     :datetime
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  applicant_id     :string           not null

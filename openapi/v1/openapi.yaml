@@ -117,6 +117,28 @@ paths:
                 required:
                 - jobs
                 - applicants
+  "/session":
+    post:
+      summary: Indicate a new session started
+      tags:
+      - Users
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Session Started
 servers:
 - url: https://{defaultHost}
   variables:

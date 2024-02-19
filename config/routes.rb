@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   end
 
   resources :employers
+  resources :session, only: [:create]
 
   post 'hooks/:id' => 'hooks#event', as: 'hooks_event'
 

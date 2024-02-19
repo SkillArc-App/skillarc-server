@@ -22,7 +22,7 @@ RSpec.describe "Profiles", type: :request do
     context "unauthenticated" do
       it "calls the seeker service with seeker editor false" do
         expect_any_instance_of(SeekerService)
-          .to receive(:get).with(seeker_editor: false)
+          .to receive(:get).with(user_id: nil, seeker_editor: false)
           .and_call_original
 
         subject
@@ -36,7 +36,7 @@ RSpec.describe "Profiles", type: :request do
 
           it "calls the seeker service with seeker editor true" do
             expect_any_instance_of(SeekerService)
-              .to receive(:get).with(seeker_editor: true)
+              .to receive(:get).with(user_id: user.id, seeker_editor: true)
               .and_call_original
 
             subject
@@ -51,7 +51,7 @@ RSpec.describe "Profiles", type: :request do
 
             it "calls the seeker service with seeker editor true" do
               expect_any_instance_of(SeekerService)
-                .to receive(:get).with(seeker_editor: true)
+                .to receive(:get).with(user_id: user.id, seeker_editor: true)
                 .and_call_original
 
               subject
@@ -61,7 +61,7 @@ RSpec.describe "Profiles", type: :request do
           context "user is not seeker owner" do
             it "calls the seeker service with seeker editor false" do
               expect_any_instance_of(SeekerService)
-                .to receive(:get).with(seeker_editor: false)
+                .to receive(:get).with(user_id: user.id, seeker_editor: false)
                 .and_call_original
 
               subject

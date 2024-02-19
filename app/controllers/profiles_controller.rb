@@ -33,7 +33,7 @@ class ProfilesController < ApplicationController
   end
 
   def show
-    render json: SeekerService.new(seeker).get(seeker_editor: seeker_editor?)
+    render json: SeekerService.new(seeker).get(user_id: current_user&.id, seeker_editor: seeker_editor?)
   end
 
   def update

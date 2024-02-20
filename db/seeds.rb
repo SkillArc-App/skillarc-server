@@ -24,6 +24,18 @@ recruiter_user = User.create!(
   sub: 'recruitersub'
 )
 
+EventService.create!(
+  aggregate_id: recruiter_user.id,
+  event_schema: Events::UserCreated::V1,
+  data: Events::UserCreated::Data::V1.new(
+    first_name: recruiter_user.first_name,
+    last_name: recruiter_user.last_name,
+    email: recruiter_user.email,
+    sub: recruiter_user.sub
+  ),
+  occurred_at: recruiter_user.created_at
+)
+
 Recruiter.create!(
   id: SecureRandom.uuid,
   employer: turner_employer,
@@ -621,6 +633,18 @@ trained_seeker_with_reference = Seeker.create!(
   )
 )
 
+EventService.create!(
+  aggregate_id: trained_seeker_with_reference.user.id,
+  event_schema: Events::UserCreated::V1,
+  data: Events::UserCreated::Data::V1.new(
+    first_name: trained_seeker_with_reference.user.first_name,
+    last_name: trained_seeker_with_reference.user.last_name,
+    email: trained_seeker_with_reference.user.email,
+    sub: trained_seeker_with_reference.user.sub
+  ),
+  occurred_at: trained_seeker_with_reference.user.created_at
+)
+
 trained_seeker = Seeker.create!(
   bio: 'I learn stuff',
   user: User.new(
@@ -632,6 +656,18 @@ trained_seeker = Seeker.create!(
   )
 )
 
+EventService.create!(
+  aggregate_id: trained_seeker.user.id,
+  event_schema: Events::UserCreated::V1,
+  data: Events::UserCreated::Data::V1.new(
+    first_name: trained_seeker.user.first_name,
+    last_name: trained_seeker.user.last_name,
+    email: trained_seeker.user.email,
+    sub: trained_seeker.user.sub
+  ),
+  occurred_at: trained_seeker.user.created_at
+)
+
 seeker_with_profile = Seeker.create!(
   bio: 'I learn stuff',
   user: User.new(
@@ -641,6 +677,18 @@ seeker_with_profile = Seeker.create!(
     email: 'seeker-with-profile@blocktrainapp.com',
     sub: 'ritasub'
   )
+)
+
+EventService.create!(
+  aggregate_id: seeker_with_profile.user.id,
+  event_schema: Events::UserCreated::V1,
+  data: Events::UserCreated::Data::V1.new(
+    first_name: seeker_with_profile.user.first_name,
+    last_name: seeker_with_profile.user.last_name,
+    email: seeker_with_profile.user.email,
+    sub: seeker_with_profile.user.sub
+  ),
+  occurred_at: seeker_with_profile.user.created_at
 )
 
 Applicant.create!(
@@ -684,6 +732,18 @@ trainer = User.create!(
   sub: 'megsub'
 )
 
+EventService.create!(
+  aggregate_id: trainer.id,
+  event_schema: Events::UserCreated::V1,
+  data: Events::UserCreated::Data::V1.new(
+    first_name: trainer.first_name,
+    last_name: trainer.last_name,
+    email: trainer.email,
+    sub: trainer.sub
+  ),
+  occurred_at: trainer.created_at
+)
+
 TrainingProviderProfile.create!(
   id: SecureRandom.uuid,
   training_provider_id: cul.id,
@@ -699,12 +759,36 @@ trainer_with_reference = User.create!(
   sub: 'billsub'
 )
 
+EventService.create!(
+  aggregate_id: trainer_with_reference.id,
+  event_schema: Events::UserCreated::V1,
+  data: Events::UserCreated::Data::V1.new(
+    first_name: trainer_with_reference.first_name,
+    last_name: trainer_with_reference.last_name,
+    email: trainer_with_reference.email,
+    sub: trainer_with_reference.sub
+  ),
+  occurred_at: trainer_with_reference.created_at
+)
+
 admin_user = User.create!(
   id: SecureRandom.uuid,
   first_name: 'Jake',
   last_name: 'Not-Onboard',
   email: 'admind@blocktrainapp.com',
   sub: 'jakesub'
+)
+
+EventService.create!(
+  aggregate_id: admin_user.id,
+  event_schema: Events::UserCreated::V1,
+  data: Events::UserCreated::Data::V1.new(
+    first_name: admin_user.first_name,
+    last_name: admin_user.last_name,
+    email: admin_user.email,
+    sub: admin_user.sub
+  ),
+  occurred_at: admin_user.created_at
 )
 
 admin = Role.create!(id: SecureRandom.uuid, name: "admin")
@@ -811,6 +895,18 @@ coach_user = User.create!(
   last_name: 'User',
   email: 'coach@blocktrainapp.com',
   sub: 'coachsub'
+)
+
+EventService.create!(
+  aggregate_id: coach_user.id,
+  event_schema: Events::UserCreated::V1,
+  data: Events::UserCreated::Data::V1.new(
+    first_name: coach_user.first_name,
+    last_name: coach_user.last_name,
+    email: coach_user.email,
+    sub: coach_user.sub
+  ),
+  occurred_at: coach_user.created_at
 )
 
 coach = Role.create!(id: SecureRandom.uuid, name: Role::Types::COACH)

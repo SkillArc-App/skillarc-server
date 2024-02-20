@@ -36,8 +36,12 @@ module Employers
         HIRE = "hire".freeze,
         PASS = "pass".freeze
       ].freeze
+
+      TERMINAL = [HIRE, PASS].freeze
     end
 
     validates :status, inclusion: { in: StatusTypes::ALL }
+
+    scope :active, -> { where.not(status: StatusTypes::TERMINAL) }
   end
 end

@@ -1,0 +1,134 @@
+<div class="logo_section">
+  <div>
+    <%= image_tag "logo.png", alt: "SkillArc logo", height: '48', width: '48' %>
+    <h1 class="logo_text">SkillArc</h1>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Hello!</h2>
+  <p>As a SkillArc partner, we are pleased to provide you with your weekly update on the progress of candidates who have applied to your job postings at <%= @employer[:name] %></p>
+</div>
+
+<div class="new_candidates section">
+  <h2>New Candidates</h2>
+  <p>There are <%= @new_applicants.count %> applicant waiting for you.</p>
+  <ul>
+  <% @new_applicants.each do |applicant| %>
+    <li><%= "#{applicant[:first_name]} #{applicant[:last_name]}"%></li>
+  <% end %>
+  </ul>
+  <%# Centered button says 'review and contact' %>
+  <div class="button_container">
+    <button>
+      <%= link_to "Review and Contact", "#{ENV['FRONTEND_URL']}/employers/jobs" %>
+    </button>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Pending Candidates</h2>
+  <p>In addition to the several new candidates this week, you have <%= @pending_applicants.count %> past applications still pending.</p>
+  <ul>
+    <% @pending_applicants.each do |applicant| %>
+      <li><%= "#{applicant[:first_name]} #{applicant[:last_name]}"%></li>
+    <% end %>
+  </ul>
+  <div class="button_container">
+    <button>
+      <%= link_to "Review and Update", "#{ENV['FRONTEND_URL']}/employers/jobs" %>
+    </button>
+  </div>
+</div>
+
+<hr/>
+
+<div class="footer_container">
+  <div>
+    <p><i>Questions or feedback? Please don't hesitate to respond to this email directly!</i></p>
+    <p><i>Thank you!</i></p>
+    <p><i>Hannah and the SkillArc Team</i></p>
+  </div>
+</div>
+
+<style>
+  :root {
+    --gray-700: #2D3748;
+    --gray-600: #4A5568;
+    --green-100: #C6F6D5;
+    --green-200: #9AE6B4;
+    --green-700: #276749;
+    --green-900: #1C4532;
+  }
+
+
+  /* remove default link styling */
+  a {
+    text-decoration: none;
+    color: white;
+  }
+
+  button {
+    padding: 1rem;
+    background-color: var(--green-700);
+    border: none;
+    color: white;
+    margin-top: 1rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: sans-serif;
+    color: var(--gray-700);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: sans-serif;
+    color: var(--gray-700);
+  }
+
+  li {
+    font-family: sans-serif;
+    color: var(--gray-600);
+  }
+
+  p {
+    font-family: sans-serif;
+    color: var(--gray-600);
+  }
+
+  .button_container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer_container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .logo_section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .logo_text {
+    font-family: serif;
+    color: var(--green-900);
+  }
+
+  .new_candidates {
+    background-color: var(--green-100);
+  } 
+
+  .section {
+    padding: 1rem;
+  }
+</style>

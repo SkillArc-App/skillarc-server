@@ -7,7 +7,10 @@ RSpec.describe ElapseDayJob do
       .with(
         aggregate_id: "day",
         event_schema: Events::DayElapsed::V1,
-        data: Events::Common::Nothing,
+        data: Events::DayElapsed::Data::V1.new(
+          date: Date.new(2020, 1, 1),
+          day_of_week: Events::DayElapsed::Data::DaysOfWeek::WEDNESDAY
+        ),
         occurred_at: Time.zone.local(2020, 1, 1)
       ).and_call_original
 

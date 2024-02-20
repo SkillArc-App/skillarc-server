@@ -32,6 +32,8 @@ module Employers
     has_many :applicants, class_name: "Employers::Applicant", foreign_key: "employers_job_id", inverse_of: :job, dependent: :destroy
     has_many :job_owners, class_name: "Employers::JobOwner", foreign_key: "employers_job_id", inverse_of: :job, dependent: :destroy
 
+    scope :active, -> { where(hide_job: false) }
+
     def owner_emails
       return job_owners.map(&:email) if job_owners.present?
 

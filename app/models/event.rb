@@ -28,6 +28,7 @@ class Event < ApplicationRecord
       NOTE_ADDED = 'note_added'.freeze,
       NOTE_MODIFIED = 'note_modified'.freeze,
       NOTE_DELETED = 'note_deleted'.freeze,
+      SEEKER_CERTIFIED = 'seeker_certified'.freeze,
       SKILL_LEVEL_UPDATED = 'skill_level_updated'.freeze
     ].freeze
 

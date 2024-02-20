@@ -118,6 +118,285 @@ RSpec.configure do |config|
                 type: :string
               }
             }
+          },
+          seeker: {
+            type: :object,
+            properties: {
+              id: {
+                type: :id,
+                format: :uuid
+              },
+              userId: {
+                type: :id,
+                format: :uuid
+              },
+              educationExperiences: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/education_experience'
+                }
+              },
+              hiringStatus: {
+                type: :string
+              },
+              industryInterests: {
+                type: :array,
+                items: {
+                  type: :string
+                }
+              },
+              isProfileEditor: {
+                type: :boolean
+              },
+              otherExperiences: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/other_experience'
+                }
+              },
+              personalExperience: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/personal_experience'
+                }
+              },
+              profileSkills: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/profile_skill'
+                }
+              },
+              reference: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/reference_with_training_provider'
+                }
+              },
+              stories: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/stories'
+                }
+              },
+              missingProfileItems: {
+                type: :array,
+                items: {
+                  type: :string,
+                  enum: %w[education work]
+                }
+              },
+              user: {
+                '$ref' => '#/components/schemas/user_with_training_provider'
+              }
+            }
+          },
+          other_experience: {
+            type: :object,
+            properties: {
+              id: {
+                type: :id,
+                format: :uuid
+              },
+              organizationName: {
+                type: :string
+              },
+              position: {
+                type: :string
+              },
+              startDate: {
+                type: :string
+              },
+              endDate: {
+                type: :string
+              },
+              isCurrent: {
+                type: :boolean
+              },
+              description: {
+                type: :string
+              }
+            }
+          },
+          education_experience: {
+            type: :object,
+            properties: {
+              id: {
+                type: :id,
+                format: :uuid
+              },
+              organizationName: {
+                type: :string,
+                nullable: true
+              },
+              title: {
+                type: :string,
+                nullable: true
+              },
+              graduationDate: {
+                type: :string,
+                nullable: true
+              },
+              gpa: {
+                type: :string,
+                nullable: true
+              },
+              activities: {
+                type: :string,
+                nullable: true
+              }
+            }
+          },
+          personal_experience: {
+            type: :object,
+            properties: {
+              id: {
+                type: :id,
+                format: :uuid
+              },
+              activity: {
+                type: :string
+              },
+              startDate: {
+                type: :string
+              },
+              endDate: {
+                type: :string
+              },
+              description: {
+                type: :string
+              }
+            }
+          },
+          profile_skill: {
+            type: :object,
+            properties: {
+              id: {
+                type: :id,
+                format: :uuid
+              },
+              description: {
+                type: :string,
+                nullable: true
+              },
+              masterSkill: {
+                '$ref' => '#/components/schemas/master_skill'
+              }
+            }
+          },
+          master_skill: {
+            type: :object,
+            properties: {
+              id: {
+                type: :id,
+                format: :uuid
+              },
+              skill: {
+                type: :string
+              },
+              type: {
+                type: :string,
+                enum: MasterSkill::SkillTypes::ALL
+              }
+            }
+          },
+          user: {
+            type: :object,
+            additionalProperties: true,
+            properties: {
+              id: {
+                type: :id,
+                format: :uuid
+              },
+              email: {
+                type: :string,
+                format: :email
+              },
+              firstName: {
+                type: :string
+              },
+              lastName: {
+                type: :string
+              },
+              zipCode: {
+                type: :string,
+                nullable: true
+              },
+              phoneNumber: {
+                type: :string,
+                nullable: true
+              }
+            }
+          },
+          user_with_training_provider: {
+            allOf: [
+              { '$ref' => '#/components/schemas/user' },
+              {
+                type: :object,
+                additionalProperties: true,
+                properties: {
+                  seekerTrainingProviders: {
+                    type: :array,
+                    items: {
+                      '$ref' => '#/components/schemas/seeker_training_provider'
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          seeker_training_provider: {
+            type: :object,
+            properties: {
+              programId: {
+                type: :string,
+                format: :uuid
+              },
+              trainingProviderId: {
+                type: :string,
+                format: :uuid
+              }
+            }
+          },
+          reference: {
+            type: :object,
+            additionalProperties: true,
+            properties: {
+              referenceText: {
+                type: :string
+              }
+            }
+          },
+          training_provider: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              name: {
+                type: :string,
+                format: :uuid
+              }
+            }
+          },
+          reference_with_training_provider: {
+            allOf: [
+              {
+                '$ref' => '#/components/schemas/reference'
+              },
+              {
+                type: :object,
+                additionalProperties: true,
+                properties: {
+                  trainingProvider: {
+                    '$ref' => "#/components/schemas/training_provider"
+                  },
+                  authorUser: {
+                    '$ref' => '#/components/schemas/user'
+                  }
+                }
+              }
+            ]
           }
         }
       }

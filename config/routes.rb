@@ -47,7 +47,7 @@ Rails.application.routes.draw do
   resources :onboarding_sessions
 
   resources :users
-  resources :profiles do
+  resources :profiles, only: %i[index show] do
     resources :stories
     resources :skills
     resources :education_experiences

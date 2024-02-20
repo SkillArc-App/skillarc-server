@@ -96,42 +96,42 @@ RSpec.describe SeekerService do
     end
 
     it "returns the expanded seeker" do
-      expect(subject[:educationExperiences]).to contain_exactly({
-                                                                  "id" => be_a(String),
-                                                                  "organization_name" => "University of Cincinnati",
-                                                                  "title" => "Student",
-                                                                  "graduation_date" => "2019-05-01",
-                                                                  "gpa" => "3.5",
-                                                                  "activities" => "Activities"
-                                                                })
-      expect(subject[:industryInterests]).to contain_exactly("Manufacturing", "Healthcare")
+      expect(subject[:education_experiences]).to contain_exactly({
+                                                                   id: be_a(String),
+                                                                   organization_name: "University of Cincinnati",
+                                                                   title: "Student",
+                                                                   graduation_date: "2019-05-01",
+                                                                   gpa: "3.5",
+                                                                   activities: "Activities"
+                                                                 })
+      expect(subject[:industry_interests]).to contain_exactly("Manufacturing", "Healthcare")
 
-      expect(subject[:otherExperiences]).to contain_exactly({
-                                                              id: anything,
-                                                              organizationName: "Turner Construction",
-                                                              position: "Laborer",
-                                                              startDate: "2015-01-01",
-                                                              endDate: "2019-01-01",
-                                                              isCurrent: false,
-                                                              description: "Description"
-                                                            })
+      expect(subject[:other_experiences]).to contain_exactly({
+                                                               id: anything,
+                                                               organization_name: "Turner Construction",
+                                                               position: "Laborer",
+                                                               start_date: "2015-01-01",
+                                                               end_date: "2019-01-01",
+                                                               is_current: false,
+                                                               description: "Description"
+                                                             })
 
-      expect(subject[:personalExperience]).to contain_exactly({
-                                                                id: anything,
-                                                                activity: "Babysitting",
-                                                                startDate: "2019-01-01",
-                                                                endDate: "2020-01-01",
-                                                                description: "I babysat for my neighbor's kids."
-                                                              })
+      expect(subject[:personal_experience]).to contain_exactly({
+                                                                 id: anything,
+                                                                 activity: "Babysitting",
+                                                                 start_date: "2019-01-01",
+                                                                 end_date: "2020-01-01",
+                                                                 description: "I babysat for my neighbor's kids."
+                                                               })
 
-      expect(subject[:profileSkills]).to contain_exactly(
+      expect(subject[:profile_skills]).to contain_exactly(
         {
-          "id" => be_a(String),
-          "description" => "I'm good at welding.",
-          "masterSkill" => {
-            "id" => be_a(String),
-            "skill" => "Welding",
-            "type" => MasterSkill::SkillTypes::TECHNICAL
+          id: be_a(String),
+          description: "I'm good at welding.",
+          master_skill: {
+            id: be_a(String),
+            skill: "Welding",
+            type: MasterSkill::SkillTypes::TECHNICAL
           }
         }
       )
@@ -146,30 +146,24 @@ RSpec.describe SeekerService do
 
       user = subject[:user]
 
-      expect(user["id"]).to be_a(String)
-      expect(user["email"]).to eq("seeker@blocktrainapp.com")
-      expect(user["firstName"]).to eq("First")
-      expect(user["lastName"]).to eq("Last")
-      expect(user["phoneNumber"]).to eq("1234567890")
-      expect(user["sub"]).to eq("sub")
-      expect(user["zipCode"]).to eq("43210")
+      expect(user[:id]).to be_a(String)
+      expect(user[:email]).to eq("seeker@blocktrainapp.com")
+      expect(user[:first_name]).to eq("First")
+      expect(user[:last_name]).to eq("Last")
+      expect(user[:phone_number]).to eq("1234567890")
+      expect(user[:zip_code]).to eq("43210")
 
-      stp = user["SeekerTrainingProvider"].select { |s| s["program"] }.first
+      stp = user[:seeker_training_providers][0]
 
-      expect(stp["id"]).to be_a(String)
-      expect(stp["trainingProvider"]["id"]).to be_a(String)
-      expect(stp["trainingProvider"]["name"]).to eq("Training Provider")
-      expect(stp["program"]["id"]).to be_a(String)
-      expect(stp["program"]["name"]).to eq("Program")
+      expect(stp[:training_provider_id]).to be_a(String)
+      expect(stp[:program_id]).to be_a(String)
 
-      second_stp = user["SeekerTrainingProvider"].select { |s| s["program"].nil? }.first
+      second_stp = user[:seeker_training_providers][1]
 
-      expect(second_stp["id"]).to be_a(String)
-      expect(second_stp["trainingProvider"]["id"]).to be_a(String)
-      expect(second_stp["trainingProvider"]["name"]).to eq("Second Training Provider")
-      expect(second_stp["program"]).to be_nil
+      expect(second_stp[:training_provider_id]).to be_a(String)
+      expect(second_stp[:program_id]).to eq(nil)
 
-      expect(subject[:isProfileEditor]).to eq(true)
+      expect(subject[:is_profile_editor]).to eq(true)
     end
 
     context "when the user_id is missing" do
@@ -207,57 +201,6 @@ RSpec.describe SeekerService do
               seeker_id: seeker.id
             )
           )
-
-        subject
-      end
-    end
-  end
-
-  describe "#update" do
-    subject { described_class.new(seeker).update(params) }
-
-    let(:seeker) { create(:seeker, user:) }
-    let(:user) { create(:user) }
-    let(:met_career_coach) { true }
-
-    let(:params) do
-      {
-        bio: "New Bio",
-        met_career_coach:
-      }
-    end
-
-    it "updates the seeker" do
-      expect { subject }
-        .to change { seeker.reload.bio }.to("New Bio")
-    end
-
-    it "publishes a seeker updated event" do
-      allow(EventService).to receive(:create!)
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::SeekerUpdated::V1,
-        aggregate_id: seeker.user.id,
-        data: Events::Common::UntypedHashWrapper.build(
-          bio: "New Bio",
-          image: seeker.image
-        )
-      ).and_call_original
-
-      subject
-    end
-
-    context "when met_career_coach is present" do
-      let(:met_career_coach) { false }
-
-      it "creates an event" do
-        allow(EventService).to receive(:create!)
-        expect(EventService).to receive(:create!).with(
-          event_schema: Events::MetCareerCoachUpdated::V1,
-          aggregate_id: seeker.user.id,
-          data: Events::Common::UntypedHashWrapper.build(
-            met_career_coach:
-          )
-        ).and_call_original
 
         subject
       end

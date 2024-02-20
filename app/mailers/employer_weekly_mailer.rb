@@ -5,8 +5,6 @@ class EmployerWeeklyMailer < ApplicationMailer
     @employer = params[:employer]
     @recruiter = params[:recruiter]
 
-    @job = params[:job]
-
     @new_applicants = params[:new_applicants]
     @pending_applicants = params[:pending_applicants]
 

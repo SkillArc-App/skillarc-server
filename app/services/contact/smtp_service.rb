@@ -25,5 +25,43 @@ module Contact
         )
       )
     end
+
+    def send_weekly_employer_update(new_applicants:, pending_applicants:, employer:, recruiter:)
+      EmployerWeeklyMailer.with(
+        employer:,
+        recruiter:,
+        new_applicants:,
+        pending_applicants:
+      ).applicants.deliver_now
+
+      EventService.create!(
+        event_schema: Events::SmtpSent::V1,
+        aggregate_id: recruiter.email,
+        data: Events::SmtpSent::Data::V1.new(
+          email: recruiter.email,
+          template: EmployerWeeklyMailer.class.to_s,
+          template_data: {
+            employer: {
+              name: employer.name
+            },
+            recruiter: {
+              email: recruiter.email
+            },
+            new_applicants: new_applicants.map do |applicant|
+              {
+                first_name: applicant.first_name,
+                last_name: applicant.last_name
+              }
+            end,
+            pending_applicants: pending_applicants.map do |applicant|
+              {
+                first_name: applicant.first_name,
+                last_name: applicant.last_name
+              }
+            end
+          }
+        )
+      )
+    end
   end
 end

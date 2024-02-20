@@ -57,4 +57,69 @@ RSpec.describe Contact::SmtpService do
       subject
     end
   end
+
+  describe "#send_weekly_employer_update" do
+    subject do
+      described_class.new.send_weekly_employer_update(
+        new_applicants:,
+        pending_applicants:,
+        employer:,
+        recruiter:
+      )
+    end
+
+    let(:new_applicants) { [double(first_name: "First", last_name: "Last")] }
+    let(:pending_applicants) { [double(first_name: "John", last_name: "Chabot")] }
+    let(:employer) { double(name: "Employer Name") }
+    let(:recruiter) { double(email: "foo@bar.baz") }
+
+    it "sends an email" do
+      expect(EmployerWeeklyMailer)
+        .to receive(:with)
+        .with(
+          new_applicants:,
+          pending_applicants:,
+          employer:,
+          recruiter:
+        )
+        .and_call_original
+
+      expect_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_call_original
+
+      subject
+    end
+
+    it "publishes an event" do
+      expect(EventService).to receive(:create!).with(
+        event_schema: Events::SmtpSent::V1,
+        aggregate_id: "foo@bar.baz",
+        data: Events::SmtpSent::Data::V1.new(
+          email: "foo@bar.baz",
+          template: EmployerWeeklyMailer.class.to_s,
+          template_data: {
+            employer: {
+              name: "Employer Name"
+            },
+            recruiter: {
+              email: "foo@bar.baz"
+            },
+            new_applicants: [
+              {
+                first_name: "First",
+                last_name: "Last"
+              }
+            ],
+            pending_applicants: [
+              {
+                first_name: "John",
+                last_name: "Chabot"
+              }
+            ]
+          }
+        )
+      )
+
+      subject
+    end
+  end
 end

@@ -26,6 +26,11 @@ RSpec.describe Employers::WeeklyUpdateService do
     let!(:recruiter) { create(:employers_recruiter, employer:) }
     let!(:second_recruiter) { create(:employers_recruiter, employer:) }
 
+    let(:dead_employer) { create(:employers_employer) }
+    let(:dead_job) { create(:employers_job, employer: dead_employer, hide_job: true) }
+    let!(:dead_applicant) { create(:employers_applicant, job: dead_job, status_as_of: date - 1.day) }
+    let(:dead_recruiter) { create(:employers_recruiter, employer: dead_employer) }
+
     context "when the day is a Tuesday" do
       let(:date) { Date.new(2024, 2, 20) }
 

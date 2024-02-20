@@ -1,6 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe Employers::Job, type: :model do
+  describe ".active" do
+    subject { described_class.active }
+
+    let!(:active_job) { create(:employers_job, hide_job: false) }
+    let!(:inactive_job) { create(:employers_job, hide_job: true) }
+
+    it "returns active jobs" do
+      expect(subject).to eq([active_job])
+    end
+  end
+
   describe "#owner_emails" do
     subject { job.owner_emails }
 

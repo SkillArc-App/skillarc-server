@@ -17,7 +17,7 @@ module Events
         extend Concerns::Payload
 
         schema do
-          date Date
+          date Date, coerce: Common::DateCoercer
           day_of_week Either(*DaysOfWeek::ALL)
         end
       end

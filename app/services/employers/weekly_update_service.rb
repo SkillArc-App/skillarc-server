@@ -22,6 +22,8 @@ module Employers
       return unless day_of_week == Events::DayElapsed::Data::DaysOfWeek::TUESDAY
 
       Employer.find_each do |employer|
+        next unless employer.active?
+
         employer.recruiters.each do |recruiter|
           new_applicants = employer.applicants.active.where("status_as_of >= ?", date - 1.week).map do |applicant|
             {

@@ -3,6 +3,7 @@
 # Table name: seekers
 #
 #  id         :uuid             not null, primary key
+#  about      :text
 #  bio        :string
 #  image      :string
 #  created_at :datetime         not null

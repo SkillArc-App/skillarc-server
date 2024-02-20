@@ -629,6 +629,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_210854) do
     t.text "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "about"
     t.index ["user_id"], name: "index_seekers_on_user_id"
   end
 

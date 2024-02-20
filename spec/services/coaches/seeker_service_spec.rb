@@ -19,10 +19,11 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:note_deleted) { build(:events__message, :note_deleted, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id", note_id: note_id1), occurred_at: time1) }
   let(:note_modified) { build(:events__message, :note_modified, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: updated_note, note_id: note_id2), occurred_at: time1) }
   let(:skill_level_updated) { build(:events__message, :skill_level_updated, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(skill_level: "advanced"), occurred_at: time1) }
-  let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(coach_id: coach_user_id, email: "coach@blocktrainapp.com"), occurred_at: time1) }
+  let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(coach_id:, email: "coach@blocktrainapp.com"), occurred_at: time1) }
   let(:barriers_updated1) { build(:events__message, :barriers_updated, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier1.barrier_id]), occurred_at: time1) }
   let(:barriers_updated2) { build(:events__message, :barriers_updated, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier2.barrier_id]), occurred_at: time1) }
-  let(:job_recommended) { build(:events__message, :job_recommended, aggregate_id: seeker_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id: coach_user_id), occurred_at: time1) }
+  let(:job_recommended) { build(:events__message, :job_recommended, aggregate_id: seeker_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id:), occurred_at: time1) }
+  let(:seeker_certified) { build(:events__message, :seeker_certified, aggregate_id: seeker_id, data: Events::SeekerCertified::Data::V1.new(coach_id:), occurred_at: time1) }
 
   let(:lead) do
     Events::Common::UntypedHashWrapper.new(
@@ -105,7 +106,9 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:status1) { "pending intro" }
   let(:status2) { "hire" }
   let(:lead_id) { "91308d08-bd08-452b-a7de-74746a6c5f93" }
-  let(:coach_user_id) { create(:coaches__coach).coach_id }
+  let(:coach) { create(:coaches__coach) }
+  let(:coach_id) { coach.coach_id }
+  let(:coach_user_id) { coach.user_id }
   let(:user_without_email_id) { "4f878ed9-5cb9-429b-ab22-969b46305ea2" }
   let(:seeker_without_email_id) { "b09195f7-a15e-461f-bec2-1e4744122fdf" }
   let(:user_id) { "9f769972-c41c-4b58-a056-bffb714ea24d" }
@@ -145,6 +148,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     described_class.handle_event(barriers_updated1)
     described_class.handle_event(barriers_updated2)
     described_class.handle_event(job_recommended)
+    described_class.handle_event(seeker_certified)
   end
 
   it_behaves_like "an event consumer"
@@ -184,7 +188,8 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
         skillLevel: 'advanced',
         lastActiveOn: applicant_status_updated3.occurred_at,
         lastContacted: note_with_id_added1.occurred_at,
-        assignedCoach: coach_user_id,
+        assignedCoach: coach_id,
+        certified_by: coach.email,
         barriers: [{
           id: barrier2.barrier_id,
           name: "barrier2"
@@ -218,6 +223,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
         lastActiveOn: applicant_status_updated4.occurred_at,
         lastContacted: "Never",
         assignedCoach: 'none',
+        certified_by: nil,
         barriers: [],
         notes: [],
         applications: [
@@ -274,7 +280,8 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
         skillLevel: 'advanced',
         lastActiveOn: applicant_status_updated3.occurred_at,
         lastContacted: note_with_id_added1.occurred_at,
-        assignedCoach: coach_user_id,
+        assignedCoach: coach_id,
+        certified_by: coach.email,
         barriers: [{
           id: barrier2.barrier_id,
           name: "barrier2"
@@ -515,6 +522,26 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
         aggregate_id: seeker_id,
         data: Events::JobRecommended::Data::V1.new(
           job_id:,
+          coach_id: coach.coach_id
+        ),
+        occurred_at: now
+      ).and_call_original
+
+      subject
+    end
+  end
+
+  describe ".certify" do
+    subject { described_class.certify(seeker_id:, coach:, now:) }
+
+    let(:now) { Time.zone.local(2020, 1, 1) }
+    let(:coach) { create(:coaches__coach) }
+
+    it "creates an event" do
+      expect(EventService).to receive(:create!).with(
+        event_schema: Events::SeekerCertified::V1,
+        aggregate_id: seeker_id,
+        data: Events::SeekerCertified::Data::V1.new(
           coach_id: coach.coach_id
         ),
         occurred_at: now

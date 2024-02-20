@@ -5,6 +5,7 @@ module Coaches
         Events::BarrierUpdated::V1,
         Events::CoachAssigned::V1,
         Events::JobRecommended::V1,
+        Events::SeekerCertified::V1,
         Events::LeadAdded::V1,
         Events::NoteAdded::V1,
         Events::NoteDeleted::V1,
@@ -43,6 +44,9 @@ module Coaches
 
       when Events::JobRecommended::V1
         handle_job_recommended(message)
+
+      when Events::SeekerCertified::V1
+        handle_certify(message)
 
       when Events::LeadAdded::V1
         handle_lead_added(message)
@@ -170,6 +174,17 @@ module Coaches
       )
     end
 
+    def self.certify(seeker_id:, coach:, now: Time.zone.now)
+      EventService.create!(
+        event_schema: Events::SeekerCertified::V1,
+        aggregate_id: seeker_id,
+        data: Events::SeekerCertified::Data::V1.new(
+          coach_id: coach.coach_id
+        ),
+        occurred_at: now
+      )
+    end
+
     def self.recommend_job(seeker_id:, job_id:, coach:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::JobRecommended::V1,
@@ -266,6 +281,12 @@ module Coaches
       )
     end
 
+    def self.handle_certify(message)
+      CoachSeekerContext.find_by!(seeker_id: message.aggregate_id).update!(
+        certified_by: Coach.find_by!(coach_id: message.data.coach_id).email
+      )
+    end
+
     def self.handle_lead_added(message)
       SeekerLead.create!(
         lead_id: message.data[:lead_id],
@@ -354,31 +375,32 @@ module Coaches
 
     def self.serialize_coach_seeker_context(csc)
       {
-        seekerId: csc.seeker_id,
-        firstName: csc.first_name,
-        lastName: csc.last_name,
+        seeker_id: csc.seeker_id,
+        first_name: csc.first_name,
+        last_name: csc.last_name,
         email: csc.email,
-        phoneNumber: csc.phone_number,
-        skillLevel: csc.skill_level || 'beginner',
-        lastActiveOn: csc.last_active_on,
-        lastContacted: csc.last_contacted_at || "Never",
-        assignedCoach: csc.assigned_coach || 'none',
+        phone_number: csc.phone_number,
+        certified_by: csc.certified_by,
+        skill_level: csc.skill_level || 'beginner',
+        last_active_on: csc.last_active_on,
+        last_contacted: csc.last_contacted_at || "Never",
+        assigned_coach: csc.assigned_coach || 'none',
         barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } },
         stage: 'seeker_created',
         notes: csc.seeker_notes.map do |note|
           {
             note: note.note,
-            noteId: note.note_id,
-            noteTakenBy: note.note_taken_by,
+            note_id: note.note_id,
+            note_taken_by: note.note_taken_by,
             date: note.note_taken_at
           }
         end,
         applications: csc.seeker_applications.map do |application|
           {
             status: application.status,
-            employerName: application.employer_name,
-            jobId: application.job_id,
-            employmentTitle: application.employment_title
+            employer_name: application.employer_name,
+            job_id: application.job_id,
+            employment_title: application.employment_title
           }
         end,
         job_recommendations: csc.seeker_job_recommendations.map(&:job).map(&:job_id)

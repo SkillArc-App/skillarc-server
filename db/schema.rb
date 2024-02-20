@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_19_162602) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_20_210854) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -140,6 +140,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_19_162602) do
     t.datetime "updated_at", null: false
     t.datetime "last_active_on"
     t.uuid "seeker_id"
+    t.string "certified_by"
   end
 
   create_table "coaches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

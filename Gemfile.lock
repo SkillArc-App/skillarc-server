@@ -83,6 +83,8 @@ GEM
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
     crass (1.0.6)
+    css_parser (1.16.0)
+      addressable
     database_cleaner-active_record (2.1.0)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
@@ -113,6 +115,7 @@ GEM
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashie (5.0.0)
+    htmlentities (4.3.4)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     importmap-rails (1.2.1)
@@ -192,6 +195,14 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
+    premailer (1.22.0)
+      addressable
+      css_parser (>= 1.12.0)
+      htmlentities (>= 4.0.0)
+    premailer-rails (1.12.0)
+      actionmailer (>= 3)
+      net-smtp
+      premailer (~> 1.7, >= 1.7.9)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -396,6 +407,7 @@ DEPENDENCIES
   omniauth-auth0
   omniauth-rails_csrf_protection
   pg (~> 1.1)
+  premailer-rails
   pry
   pry-byebug
   puma (~> 5.0)

@@ -1,98 +1,193 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "Profiles", type: :request do
-  describe "GET /index" do
-    subject { get profiles_path, headers: }
+  path '/profiles' do
+    get "Retrieve all seekers" do
+      tags 'Seekers'
+      produces 'application/json'
+      security [bearer_auth: []]
 
-    it_behaves_like "admin secured endpoint"
-  end
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-  describe "GET /show" do
-    subject { get profile_path(seeker), headers: }
+      it_behaves_like "admin spec unauthenticated openapi"
 
-    let(:seeker) { create(:seeker) }
-    let!(:applicant) { create(:applicant, seeker:) }
+      context "when authenticated" do
+        before do
+          create(:seeker)
+          seeker = create(:seeker)
 
-    it "returns 200" do
-      subject
+          program = create(:program)
+          create(:seeker_training_provider, user: seeker.user, program:, training_provider: program.training_provider)
+        end
 
-      expect(response).to have_http_status(:ok)
-    end
+        include_context "admin authenticated openapi"
 
-    context "unauthenticated" do
-      it "calls the seeker service with seeker editor false" do
-        expect_any_instance_of(SeekerService)
-          .to receive(:get).with(seeker_editor: false)
-          .and_call_original
+        response '200', 'profiles retrieved' do
+          schema type: :array,
+                 items: {
+                   type: :object,
+                   properties: {
+                     id: {
+                       type: :string,
+                       format: :uuid
+                     },
+                     firstName: {
+                       type: :string
+                     },
+                     lastName: {
+                       type: :string
+                     },
+                     email: {
+                       type: :string,
+                       format: :email
+                     },
+                     trainingProvider: {
+                       type: :array,
+                       items: {
+                         type: :object,
+                         properties: {
+                           id: {
+                             type: :string,
+                             format: :uuid
+                           },
+                           name: {
+                             type: :string
+                           }
+                         }
+                       }
+                     }
+                   }
+                 }
 
-        subject
+          run_test!
+        end
       end
     end
+  end
 
-    context "authenticated" do
-      context "user is not the seeker owner" do
-        context "the user is a coach" do
-          include_context "coach authenticated"
+  path "/profiles/{id}" do
+    get "Retrieve a seeker" do
+      tags 'Seekers'
+      produces 'application/json'
+      security [bearer_auth: []]
+      parameter name: :id, in: :path, type: :string
 
-          it "calls the seeker service with seeker editor true" do
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      let(:id) { seeker.id }
+      let(:seeker) { create(:seeker) }
+
+      response '404', 'Seeker not found' do
+        include_context "unauthenticated openapi"
+
+        let(:id) { SecureRandom.uuid }
+
+        run_test!
+      end
+
+      response '200', 'profiles retrieved' do
+        schema "$ref" => "#/components/schemas/seeker"
+
+        context "when unauthticated" do
+          include_context "unauthenticated openapi"
+
+          before do
             expect_any_instance_of(SeekerService)
-              .to receive(:get).with(seeker_editor: true)
+              .to receive(:get)
+              .with(user_id: nil, seeker_editor: false)
               .and_call_original
+          end
 
-            subject
+          context "when seeker is empty" do
+            let(:seeker) { create(:seeker) }
+
+            run_test!
+          end
+
+          context "when seeker is fully specified" do
+            before do
+              create(:education_experience, seeker:)
+              create(:other_experience, seeker:)
+              create(:personal_experience, seeker:)
+              create(:profile_skill, seeker:)
+              create(:reference, seeker:)
+              create(:seeker_training_provider, user: seeker.user)
+            end
+
+            let(:seeker) { create(:seeker) }
+
+            run_test!
           end
         end
 
-        context "the user is not a coach" do
-          include_context "authenticated"
+        context "when authenticated" do
+          context "when the user is the seeker" do
+            include_context "authenticated openapi"
 
-          context "user is seeker owner" do
-            let(:seeker) { create(:seeker, user:) }
-
-            it "calls the seeker service with seeker editor true" do
+            before do
               expect_any_instance_of(SeekerService)
-                .to receive(:get).with(seeker_editor: true)
+                .to receive(:get)
+                .with(user_id: user.id, seeker_editor: true)
                 .and_call_original
+            end
 
-              subject
+            context "when seeker is empty" do
+              let(:seeker) { create(:seeker, user:) }
+
+              run_test!
+            end
+
+            context "when seeker is fully specified" do
+              before do
+                create(:education_experience, seeker:)
+                create(:other_experience, seeker:)
+                create(:personal_experience, seeker:)
+                create(:profile_skill, seeker:)
+                create(:reference, seeker:)
+                create(:seeker_training_provider, user: seeker.user)
+              end
+
+              let(:seeker) { create(:seeker, user:) }
+
+              run_test!
             end
           end
 
-          context "user is not seeker owner" do
-            it "calls the seeker service with seeker editor false" do
-              expect_any_instance_of(SeekerService)
-                .to receive(:get).with(seeker_editor: false)
-                .and_call_original
+          context "when the user is a coach" do
+            include_context "coach authenticated openapi"
 
-              subject
+            before do
+              expect_any_instance_of(SeekerService)
+                .to receive(:get)
+                .with(user_id: user.id, seeker_editor: true)
+                .and_call_original
+            end
+
+            context "when seeker is empty" do
+              let(:seeker) { create(:seeker) }
+
+              run_test!
+            end
+
+            context "when seeker is fully specified" do
+              before do
+                create(:education_experience, seeker:)
+                create(:other_experience, seeker:)
+                create(:personal_experience, seeker:)
+                create(:profile_skill, seeker:)
+                create(:reference, seeker:)
+                create(:seeker_training_provider, user: seeker.user)
+              end
+
+              let(:seeker) { create(:seeker) }
+
+              run_test!
             end
           end
         end
-      end
-    end
-  end
-
-  describe "PUT /update" do
-    subject { put profile_path(seeker), params:, headers: }
-
-    let(:seeker) { create(:seeker) }
-    let(:params) do
-      {
-        profile: {
-          bio: "New Bio",
-          met_career_coach: true
-        }
-      }
-    end
-
-    it_behaves_like "admin secured endpoint"
-
-    context "admin authenticated" do
-      include_context "admin authenticated"
-
-      it "updates the seeker" do
-        expect { subject }
-          .to change { seeker.reload.bio }.to("New Bio")
       end
     end
   end

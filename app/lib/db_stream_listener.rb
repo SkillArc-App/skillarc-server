@@ -31,6 +31,10 @@ class DbStreamListener < StreamListener
     end
   end
 
+  def next_event
+    Event.where("occurred_at > ?", bookmark_timestamp).order(:occurred_at).take(1).first.message
+  end
+
   def call(*)
     play
   end

@@ -63,6 +63,10 @@ RSpec.shared_context "authenticated openapi" do
   end
 end
 
+RSpec.shared_context "unauthenticated openapi" do
+  let(:Authorization) { nil }
+end
+
 RSpec.shared_examples "spec unauthenticated openapi" do
   let(:Authorization) { nil }
 

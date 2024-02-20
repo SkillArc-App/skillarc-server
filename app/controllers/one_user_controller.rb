@@ -53,8 +53,6 @@ class OneUserController < ApplicationController
       profile: {
         **seeker,
         educationExperiences: current_user.seeker&.education_experiences || [],
-        desiredOutcomes: [],
-        professionalInterests: [],
         profileCertifications: [],
         profileSkills: current_user.seeker&.profile_skills&.map do |ps|
           {

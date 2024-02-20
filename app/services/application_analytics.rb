@@ -88,6 +88,6 @@ class ApplicationAnalytics
   private
 
   def filtered_applicants
-    Applicant.where.not(job_id: Job.where(hide_job: true).pluck(:id)).includes(seeker: :user)
+    Applicant.where.not(job_id: Job.where(hide_job: true).select(:id)).includes(seeker: :user)
   end
 end

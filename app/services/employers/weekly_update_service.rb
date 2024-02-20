@@ -23,14 +23,25 @@ module Employers
 
       Employer.find_each do |employer|
         employer.recruiters.each do |recruiter|
-          new_applicants = employer.applicants.active.where("status_as_of >= ?", date - 1.week)
-          pending_applicants = employer.applicants.active.where("status_as_of < ?", date - 1.week)
+          new_applicants = employer.applicants.active.where("status_as_of >= ?", date - 1.week).map do |applicant|
+            {
+              first_name: applicant.first_name,
+              last_name: applicant.last_name
+            }
+          end
 
-          Contact::SmtpService.new.send_weekly_employer_update(
+          pending_applicants = employer.applicants.active.where("status_as_of < ?", date - 1.week).map do |applicant|
+            {
+              first_name: applicant.first_name,
+              last_name: applicant.last_name
+            }
+          end
+
+          Employers::DeliverWeeklySummaryJob.perform_later(
             new_applicants:,
             pending_applicants:,
-            employer:,
-            recruiter:
+            employer: { name: employer.name },
+            recruiter: { email: recruiter.email }
           )
         end
       end

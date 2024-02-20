@@ -24,17 +24,25 @@ RSpec.describe Employers::WeeklyUpdateService do
     let!(:new_applicant) { create(:employers_applicant, job:, status_as_of: date - 1.day) }
     let!(:pending_applicant) { create(:employers_applicant, job:, status_as_of: date - 2.weeks) }
     let!(:recruiter) { create(:employers_recruiter, employer:) }
+    let!(:second_recruiter) { create(:employers_recruiter, employer:) }
 
     context "when the day is a Tuesday" do
       let(:date) { Date.new(2024, 2, 20) }
 
-      it "calls SmtpService#send_weekly_employer_update" do
-        expect_any_instance_of(Contact::SmtpService).to receive(:send_weekly_employer_update).with(
-          new_applicants: [new_applicant],
-          pending_applicants: [pending_applicant],
-          employer:,
-          recruiter:
-        )
+      it "enqueues a job" do
+        expect(Employers::DeliverWeeklySummaryJob).to receive(:perform_later).with(
+          new_applicants: [{ first_name: new_applicant.first_name, last_name: new_applicant.last_name }],
+          pending_applicants: [{ first_name: pending_applicant.first_name, last_name: pending_applicant.last_name }],
+          employer: { name: employer.name },
+          recruiter: { email: recruiter.email }
+        ).and_call_original
+
+        expect(Employers::DeliverWeeklySummaryJob).to receive(:perform_later).with(
+          new_applicants: [{ first_name: new_applicant.first_name, last_name: new_applicant.last_name }],
+          pending_applicants: [{ first_name: pending_applicant.first_name, last_name: pending_applicant.last_name }],
+          employer: { name: employer.name },
+          recruiter: { email: second_recruiter.email }
+        ).and_call_original
 
         subject
       end
@@ -45,6 +53,7 @@ RSpec.describe Employers::WeeklyUpdateService do
 
       it "does not call SmtpService#send_weekly_employer_update" do
         expect_any_instance_of(Contact::SmtpService).not_to receive(:send_weekly_employer_update)
+        expect(Employers::DeliverWeeklySummaryJob).not_to receive(:perform_later)
 
         subject
       end

@@ -68,10 +68,10 @@ RSpec.describe Contact::SmtpService do
       )
     end
 
-    let(:new_applicants) { [double(first_name: "First", last_name: "Last")] }
-    let(:pending_applicants) { [double(first_name: "John", last_name: "Chabot")] }
-    let(:employer) { double(name: "Employer Name") }
-    let(:recruiter) { double(email: "foo@bar.baz") }
+    let(:new_applicants) { [{ first_name: "First", last_name: "Last" }] }
+    let(:pending_applicants) { [{ first_name: "John", last_name: "Chabot" }] }
+    let(:employer) { { name: "Employer Name" } }
+    let(:recruiter) { { email: "foo@bar.baz" } }
 
     it "sends an email" do
       expect(EmployerWeeklyMailer)

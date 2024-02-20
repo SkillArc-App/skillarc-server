@@ -9,7 +9,7 @@ class EmployerWeeklyMailer < ApplicationMailer
     @pending_applicants = params[:pending_applicants]
 
     mail(
-      to: @recruiter.email,
+      to: @recruiter[:email],
       subject: 'Weekly Applicant Summary' # rubocop:disable Rails/I18nLocaleTexts
     )
   end

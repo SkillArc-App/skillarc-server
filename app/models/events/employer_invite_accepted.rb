@@ -2,7 +2,7 @@ module Events
   module EmployerInviteAccepted
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           employer_invite_id Uuid

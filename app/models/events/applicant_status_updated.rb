@@ -2,7 +2,7 @@ module Events
   module ApplicantStatusUpdated
     module Reason
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           id Uuid
@@ -11,7 +11,7 @@ module Events
       end
 
       class V2
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           id Uuid
@@ -23,7 +23,7 @@ module Events
 
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           applicant_id Uuid
@@ -38,7 +38,7 @@ module Events
       end
 
       class V2
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           applicant_id Uuid
@@ -57,7 +57,7 @@ module Events
       end
 
       class V3
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           applicant_id Uuid
@@ -77,7 +77,7 @@ module Events
       end
 
       class V4
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           applicant_id Uuid

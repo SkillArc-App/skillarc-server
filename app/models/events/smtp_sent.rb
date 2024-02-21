@@ -2,7 +2,7 @@ module Events
   module SmtpSent
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           email String

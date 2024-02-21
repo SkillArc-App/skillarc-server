@@ -2,7 +2,7 @@ module Events
   module ElevatorPitchCreated
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           job_id Uuid

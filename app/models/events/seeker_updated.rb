@@ -2,7 +2,7 @@ module Events
   module SeekerUpdated
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           about Either(String, Messages::UNDEFINED), default: Messages::UNDEFINED

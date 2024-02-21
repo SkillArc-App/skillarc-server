@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Events::Concerns::Payload do
+RSpec.describe Messages::Payload do
   let(:parent_klass) do
     Class.new do
-      extend Events::Concerns::Payload
+      extend Messages::Payload
 
       schema do
         child ArrayOf(Events::ApplicantStatusUpdated::Reason::V1)

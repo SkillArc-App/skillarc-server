@@ -2,7 +2,7 @@ module Events
   module JobSearch
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           search_terms Either(String, nil)
@@ -14,7 +14,7 @@ module Events
 
     module MetaData
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           source Either("seeker", "non-seeker")
@@ -23,7 +23,7 @@ module Events
       end
 
       class V2
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           source Either("seeker", "user", "unauthenticated")

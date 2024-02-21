@@ -2,7 +2,7 @@ module Events
   module LeadAdded
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           email Either(String, nil), default: nil

@@ -2,7 +2,7 @@ module Events
   module SkillLevelUpdated
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           skill_level String

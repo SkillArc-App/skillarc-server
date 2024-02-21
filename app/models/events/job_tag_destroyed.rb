@@ -2,7 +2,7 @@ module Events
   module JobTagDestroyed
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           job_tag_id Uuid

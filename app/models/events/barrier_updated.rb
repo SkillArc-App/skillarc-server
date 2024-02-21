@@ -2,7 +2,7 @@ module Events
   module BarrierUpdated
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           barriers ArrayOf(String)

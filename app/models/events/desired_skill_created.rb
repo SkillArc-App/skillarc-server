@@ -2,7 +2,7 @@ module Events
   module DesiredSkillCreated
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           id Uuid

@@ -2,7 +2,7 @@ module Events
   module NoteAdded
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           coach_id Either(Uuid, nil), default: nil

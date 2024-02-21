@@ -2,7 +2,7 @@ module Events
   module UserCreated
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           first_name Either(String, nil), default: nil

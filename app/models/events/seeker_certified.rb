@@ -2,7 +2,7 @@ module Events
   module SeekerCertified
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           coach_first_name Either(String, nil), default: nil

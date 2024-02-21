@@ -7,12 +7,11 @@ RSpec.describe "Users", type: :request do
     let(:user_to_edit) { create(:user) }
     let(:params) do
       {
-        user: {
-          first_name: "New First Name",
-          last_name: "Name Last Name",
-          phone_number: "1234567890",
-          zip_code: "12345"
-        }
+        about: "New About",
+        first_name: "New First Name",
+        last_name: "Name Last Name",
+        phone_number: "1234567890",
+        zip_code: "12345"
       }
     end
 
@@ -47,6 +46,7 @@ RSpec.describe "Users", type: :request do
 
           it "calls UserService.update" do
             expect_any_instance_of(Seekers::UserService).to receive(:update).with(
+              about: "New About",
               first_name: "New First Name",
               last_name: "Name Last Name",
               phone_number: "1234567890",
@@ -69,6 +69,7 @@ RSpec.describe "Users", type: :request do
 
         it "calls UserService.update" do
           expect_any_instance_of(Seekers::UserService).to receive(:update).with(
+            about: "New About",
             first_name: "New First Name",
             last_name: "Name Last Name",
             phone_number: "1234567890",

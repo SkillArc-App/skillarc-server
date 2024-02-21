@@ -81,9 +81,10 @@ module Coaches
         Events::JobSaved::V1,
         Events::JobUnsaved::V1,
         Events::PersonalExperienceCreated::V1,
-        Events::SeekerUpdated::V1,
         Events::OnboardingCompleted::V1
         handle_last_active_updated(message)
+      when Events::SeekerUpdated::V1
+        handle_seeker_updated(message)
 
       when Events::JobSearch::V2
         handle_last_active_updated(message) if Uuid === message.aggregate_id # rubocop:disable Style/CaseEquality
@@ -372,6 +373,14 @@ module Coaches
 
     def self.handle_last_active_updated(message)
       csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
+
+      csc.update!(
+        last_active_on: message.occurred_at
+      )
+    end
+
+    def self.handle_seeker_updated(message)
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       csc.update!(
         last_active_on: message.occurred_at

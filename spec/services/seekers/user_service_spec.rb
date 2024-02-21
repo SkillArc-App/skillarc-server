@@ -2,10 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Seekers::UserService do
   describe ".update" do
-    subject { described_class.new(id).update(first_name:, last_name:, phone_number:, zip_code:) }
+    subject { described_class.new(id).update(about:, first_name:, last_name:, phone_number:, zip_code:) }
 
     let(:id) { user.id }
     let(:user) { create(:user) }
+    let!(:seeker) { create(:seeker, user:) }
+    let(:about) { "New About" }
     let(:first_name) { "New First Name" }
     let(:last_name) { "New Last Name" }
     let(:phone_number) { "1234567890" }
@@ -32,7 +34,21 @@ RSpec.describe Seekers::UserService do
         occurred_at: be_a(Time)
       ).and_call_original
 
+      expect(EventService).to receive(:create!).with(
+        event_schema: Events::SeekerUpdated::V1,
+        aggregate_id: seeker.id,
+        data: Events::SeekerUpdated::Data::V1.new(
+          about:
+        ),
+        occurred_at: be_a(Time)
+      ).and_call_original
+
       subject
+    end
+
+    it "updates the seeker" do
+      expect { subject }
+        .to change { user.reload.seeker.about }.to(about)
     end
   end
 end

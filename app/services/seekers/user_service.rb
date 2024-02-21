@@ -4,7 +4,7 @@ module Seekers
       @user = User.find(user_id)
     end
 
-    def update(first_name:, last_name:, phone_number:, zip_code:)
+    def update(about:, first_name:, last_name:, phone_number:, zip_code:)
       user.update!(
         first_name:,
         last_name:,
@@ -20,6 +20,23 @@ module Seekers
           last_name:,
           phone_number:,
           zip_code:
+        ),
+        occurred_at: Time.zone.now
+      )
+
+      seeker = user.seeker
+
+      return unless seeker
+
+      seeker.update!(
+        about:
+      )
+
+      EventService.create!(
+        event_schema: Events::SeekerUpdated::V1,
+        aggregate_id: seeker.id,
+        data: Events::SeekerUpdated::Data::V1.new(
+          about:
         ),
         occurred_at: Time.zone.now
       )

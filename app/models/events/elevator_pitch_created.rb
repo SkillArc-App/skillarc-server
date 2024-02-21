@@ -14,7 +14,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
-      event_type: Event::EventTypes::ELEVATOR_PITCH_CREATED,
+      event_type: Messages::Types::ELEVATOR_PITCH_CREATED,
       version: 1
     )
   end

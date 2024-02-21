@@ -5,7 +5,7 @@ class Message
     id Uuid
     aggregate_id String
     trace_id Uuid
-    event_type Either(*Event::EventTypes::ALL)
+    event_type Either(*Messages::Types::ALL)
     data
     metadata
     version Integer

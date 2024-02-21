@@ -5,7 +5,7 @@ FactoryBot.define do
     version { 1 }
     trace_id { SecureRandom.uuid }
 
-    Event::EventTypes::ALL.each do |event_type|
+    Messages::Types::ALL.each do |event_type|
       trait event_type.to_sym do
         event_type { event_type }
         occurred_at { Time.zone.local(2020, 1, 1) }

@@ -20,7 +20,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
-      event_type: Event::EventTypes::EDUCATION_EXPERIENCE_UPDATED,
+      event_type: Messages::Types::EDUCATION_EXPERIENCE_UPDATED,
       version: 1
     )
   end

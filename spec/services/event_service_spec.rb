@@ -14,7 +14,7 @@ RSpec.describe EventService do
       )
     end
 
-    let(:event_type) { Event::EventTypes::CHAT_CREATED }
+    let(:event_type) { Messages::Types::CHAT_CREATED }
     let(:aggregate_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
     let(:data) { Messages::UntypedHashWrapper.new(data: "cool") }

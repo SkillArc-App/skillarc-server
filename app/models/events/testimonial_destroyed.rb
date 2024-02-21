@@ -13,7 +13,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
-      event_type: Event::EventTypes::TESTIMONIAL_DESTROYED,
+      event_type: Messages::Types::TESTIMONIAL_DESTROYED,
       version: 1
     )
   end

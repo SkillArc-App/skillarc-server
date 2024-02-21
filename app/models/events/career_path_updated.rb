@@ -18,7 +18,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
-      event_type: Event::EventTypes::CAREER_PATH_UPDATED,
+      event_type: Messages::Types::CAREER_PATH_UPDATED,
       version: 1
     )
   end

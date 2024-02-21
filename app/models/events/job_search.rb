@@ -36,13 +36,13 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: MetaData::V1,
-      event_type: Event::EventTypes::JOB_SEARCH,
+      event_type: Messages::Types::JOB_SEARCH,
       version: 1
     )
     V2 = Messages::Schema.build(
       data: Data::V1,
       metadata: MetaData::V2,
-      event_type: Event::EventTypes::JOB_SEARCH,
+      event_type: Messages::Types::JOB_SEARCH,
       version: 2
     )
   end

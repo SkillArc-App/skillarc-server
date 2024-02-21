@@ -100,28 +100,28 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
-      event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+      event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 1
     )
 
     V2 = Messages::Schema.build(
       data: Data::V2,
       metadata: Messages::Nothing,
-      event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+      event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 2
     )
 
     V3 = Messages::Schema.build(
       data: Data::V3,
       metadata: Messages::Nothing,
-      event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+      event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 3
     )
 
     V4 = Messages::Schema.build(
       data: Data::V4,
       metadata: Messages::Nothing,
-      event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+      event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 4
     )
   end

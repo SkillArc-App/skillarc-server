@@ -1,113 +1,275 @@
 require 'rails_helper'
+require 'swagger_helper'
 
-RSpec.describe "Seekers", type: :request do
-  describe "GET /index" do
-    subject { get seekers_path, headers: }
+RSpec.describe "Coaches::Seekers", type: :request do
+  path '/coaches/seekers' do
+    get "Retrieve all seekers" do
+      tags 'Coaches'
+      produces 'application/json'
+      security [bearer_auth: []]
 
-    it_behaves_like "coach secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "coach authenticated"
+      it_behaves_like "coach spec unauthenticated openapi"
 
-      it "calls SeekerService.all" do
-        expect(Coaches::SeekerService).to receive(:all_contexts)
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
 
-        subject
+        response '200', 'retrieve all seekers' do
+          schema type: :array,
+                 items: {
+                   '$ref' => '#/components/schemas/coach_seeker'
+                 }
+
+          context "when are no seekers" do
+            run_test!
+          end
+
+          context "when there are many seekers" do
+            before do
+              csc1 = create(:coaches__coach_seeker_context)
+              csc2 = create(:coaches__coach_seeker_context)
+
+              create(:coaches__seeker_note, coach_seeker_context: csc1)
+              create(:coaches__seeker_barrier, coach_seeker_context: csc1)
+              create(:coaches__seeker_application, coach_seeker_context: csc2)
+              create(:coaches__seeker_job_recommendation, coach_seeker_context: csc2)
+            end
+
+            run_test!
+          end
+        end
       end
     end
   end
 
-  describe "GET /show" do
-    subject { get seeker_path(seeker_id), headers: }
+  path '/coaches/seekers/{id}' do
+    get "Retrieve a seekers" do
+      tags 'Coaches'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :string
+      security [bearer_auth: []]
 
-    let(:seeker_id) { create(:coaches__coach_seeker_context).seeker_id }
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    it_behaves_like "coach secured endpoint"
+      it_behaves_like "coach spec unauthenticated openapi"
 
-    context "authenticated" do
-      include_context "coach authenticated"
+      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:id) { coach_seeker_context.seeker_id }
 
-      it "calls SeekerService.find" do
-        expect(Coaches::SeekerService).to receive(:find_context).with(seeker_id)
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
 
-        subject
+        response '404', 'seeker not found' do
+          let(:id) { SecureRandom.uuid }
+
+          run_test!
+        end
+
+        response '200', 'retrieve all seekers' do
+          schema '$ref' => '#/components/schemas/coach_seeker'
+
+          before do
+            create(:coaches__seeker_note, coach_seeker_context:)
+            create(:coaches__seeker_barrier, coach_seeker_context:)
+            create(:coaches__seeker_application, coach_seeker_context:)
+            create(:coaches__seeker_job_recommendation, coach_seeker_context:)
+
+            expect(Coaches::SeekerService)
+              .to receive(:find_context)
+              .with(id)
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end
 
-  describe "POST /:seeker_id/skill-levels" do
-    subject { post seeker_skill_levels_path(seeker_id), params:, headers: }
-
-    let(:seeker_id) { create(:seeker).id }
-    let(:params) do
-      {
-        level: "advanced"
+  path '/coaches/seekers/{id}/skill-levels' do
+    post "Update a skill level" do
+      tags 'Seekers'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+      parameter name: :update, in: :body, schema: {
+        type: :object,
+        properties: {
+          level: {
+            type: :string
+          }
+        },
+        required: %w[level]
       }
-    end
+      security [bearer_auth: []]
 
-    it_behaves_like "coach secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "coach authenticated"
+      it_behaves_like "coach spec unauthenticated openapi"
 
-      it "calls SeekerService.update_skill_level" do
-        expect(Coaches::SeekerService).to receive(:update_skill_level).with(seeker_id, params[:level])
+      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:id) { coach_seeker_context.seeker_id }
+      let(:update) do
+        {
+          level: "advanced"
+        }
+      end
 
-        subject
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
+
+        response '202', 'retrieve all seekers' do
+          before do
+            expect(Coaches::SeekerService)
+              .to receive(:update_skill_level)
+              .with(id, update[:level])
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end
 
-  describe "POST /:seeker_id/assign_coach" do
-    subject { post seeker_assign_coach_path(seeker_id), params:, headers: }
-
-    let(:seeker_id) { coach_seeker_context.seeker_id }
-    let(:params) do
-      {
-        coach_id: coach.coach_id
+  path '/coaches/seekers/{id}/assign_coach' do
+    post "Update a skill level" do
+      tags 'Seekers'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+      parameter name: :update, in: :body, schema: {
+        type: :object,
+        properties: {
+          coachId: {
+            type: :string,
+            format: :uuid
+          }
+        },
+        required: %w[coachId]
       }
-    end
-    let(:coach) { create(:coaches__coach) }
-    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      security [bearer_auth: []]
 
-    it_behaves_like "coach secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "coach authenticated"
+      it_behaves_like "coach spec unauthenticated openapi"
 
-      it "calls SeekerService.assign_coach" do
-        expect(Coaches::SeekerService).to receive(:assign_coach).with(seeker_id, params[:coach_id], coach.email)
+      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:coach) { create(:coaches__coach) }
+      let(:coach_id) { coach.coach_id }
+      let(:id) { coach_seeker_context.seeker_id }
+      let(:update) do
+        {
+          coachId: coach_id
+        }
+      end
 
-        subject
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
+
+        response '404', 'Coach not found' do
+          let(:coach_id) { SecureRandom.uuid }
+
+          run_test!
+        end
+
+        response '202', 'retrieve all seekers' do
+          before do
+            expect(Coaches::SeekerService)
+              .to receive(:assign_coach)
+              .with(id, coach_id, coach.email)
+          end
+
+          run_test!
+        end
       end
     end
   end
 
-  describe "POST /:seeker_id/recommend_job" do
-    subject { post seeker_recommend_job_path(seeker_id), params:, headers: }
-
-    let(:seeker_id) { coach_seeker_context.seeker_id }
-    let(:params) do
-      {
-        job_id:
+  path '/coaches/seekers/{id}/recommend_job' do
+    post "Update a skill level" do
+      tags 'Seekers'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+      parameter name: :update, in: :body, schema: {
+        type: :object,
+        properties: {
+          jobId: {
+            type: :string,
+            format: :uuid
+          }
+        },
+        required: %w[jobId]
       }
+      security [bearer_auth: []]
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      it_behaves_like "coach spec unauthenticated openapi"
+
+      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:id) { coach_seeker_context.seeker_id }
+      let(:job_id) { job.job_id }
+      let(:job) { create(:coaches__job) }
+      let(:update) do
+        {
+          jobId: job_id
+        }
+      end
+
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
+
+        response '202', 'retrieve all seekers' do
+          before do
+            expect(Coaches::SeekerService)
+              .to receive(:recommend_job)
+              .with(
+                seeker_id: id,
+                job_id:,
+                coach:
+              ).and_call_original
+          end
+
+          run_test!
+        end
+      end
     end
-    let(:job_id) { create(:coaches__job).job_id }
-    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+  end
 
-    it_behaves_like "coach secured endpoint"
+  path '/coaches/seekers/{id}/certify' do
+    post "Update a skill level" do
+      tags 'Seekers'
+      parameter name: :id, in: :path, type: :string
+      security [bearer_auth: []]
 
-    context "authenticated" do
-      include_context "coach authenticated"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-      it "calls SeekerService.recommend_job" do
-        expect(Coaches::SeekerService).to receive(:recommend_job).with(
-          seeker_id:,
-          job_id:,
-          coach:
-        )
+      it_behaves_like "coach spec unauthenticated openapi"
 
-        subject
+      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:id) { coach_seeker_context.seeker_id }
+
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
+
+        response '202', 'retrieve all seekers' do
+          before do
+            expect(Coaches::SeekerService)
+              .to receive(:certify)
+              .with(
+                seeker_id: id,
+                coach:
+              ).and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end

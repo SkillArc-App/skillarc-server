@@ -52,14 +52,5 @@ RSpec.describe Employers::ApplicationNotificationService do
 
       subject
     end
-
-    context "when with side effects is false" do
-      it "does not send an email to the employer" do
-        expect_any_instance_of(Contact::SmtpService)
-          .not_to receive(:notify_employer_of_applicant)
-
-        described_class.handle_event(applicant_status_updated, with_side_effects: false)
-      end
-    end
   end
 end

@@ -4,18 +4,16 @@ module Employers
       [Events::DayElapsed::V1].freeze
     end
 
-    def self.handle_event(message, with_side_effects: true)
+    def self.handle_event(message)
       case message.event_schema
       when Events::DayElapsed::V1
-        handle_day_elapsed(message, with_side_effects:)
+        handle_day_elapsed(message)
       end
     end
 
     def self.reset_for_replay; end
 
-    def self.handle_day_elapsed(message, with_side_effects: true)
-      return unless with_side_effects
-
+    def self.handle_day_elapsed(message)
       date = message.data.date
       day_of_week = date.strftime("%A").downcase
 

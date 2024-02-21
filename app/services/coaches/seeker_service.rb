@@ -33,7 +33,7 @@ module Coaches
       handle_event(message)
     end
 
-    def self.handle_event(message, with_side_effects: false, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
+    def self.handle_event(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
       case message.event_schema
 
       # Coach Originated

@@ -6,10 +6,10 @@ module Employers
       ].freeze
     end
 
-    def self.handle_event(message, with_side_effects: true)
+    def self.handle_event(message)
       case message.event_schema
       when Events::ApplicantStatusUpdated::V4
-        handle_applicant_status_updated(message, with_side_effects:)
+        handle_applicant_status_updated(message)
       end
     end
 
@@ -20,7 +20,7 @@ module Employers
     class << self
       private
 
-      def handle_applicant_status_updated(message, with_side_effects: true)
+      def handle_applicant_status_updated(message)
         job = Job.find_by(job_id: message.data.job_id)
 
         message_applicant = message.data
@@ -45,7 +45,6 @@ module Employers
         applicant.status = message_applicant.status
         applicant.status_as_of = message.occurred_at
 
-        return unless with_side_effects
         return unless applicant.status == Applicant::StatusTypes::NEW
 
         job.owner_emails.each do |owner_email|

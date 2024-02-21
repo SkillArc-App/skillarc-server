@@ -121,7 +121,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::LeadAdded::V1,
         aggregate_id: coach.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::LeadAdded::Data::V1.new(
           email:,
           lead_id:,
           phone_number:,
@@ -137,7 +137,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::NoteAdded::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::NoteAdded::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note:,
@@ -151,7 +151,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::NoteDeleted::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::NoteDeleted::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note_id:
@@ -164,7 +164,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::NoteModified::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::NoteModified::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note_id:,
@@ -201,7 +201,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::BarrierUpdated::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::BarrierUpdated::Data::V1.new(
           barriers:
         ),
         occurred_at: now
@@ -212,7 +212,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::CoachAssigned::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::CoachAssigned::Data::V1.new(
           coach_id:,
           email: coach_email
         ),
@@ -224,7 +224,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::SkillLevelUpdated::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::SkillLevelUpdated::Data::V1.new(
           skill_level:
         ),
         occurred_at: now
@@ -232,7 +232,7 @@ module Coaches
     end
 
     def self.handle_applicant_status_updated(message)
-      csc = CoachSeekerContext.find_by!(user_id: message.data[:user_id])
+      csc = CoachSeekerContext.find_by!(user_id: message.data.user_id)
       csc.update!(last_active_on: message.occurred_at)
 
       application = SeekerApplication.find_or_create_by(
@@ -252,7 +252,7 @@ module Coaches
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       csc.seeker_barriers.destroy_all
-      message.data[:barriers].each do |barrier|
+      message.data.barriers.each do |barrier|
         b = Barrier.find_by!(barrier_id: barrier)
 
         csc.seeker_barriers << SeekerBarrier.create!(
@@ -265,18 +265,18 @@ module Coaches
     def self.handle_coach_assigned(message)
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
-      csc.assigned_coach = message.data[:coach_id]
+      csc.assigned_coach = message.data.coach_id
       csc.save!
     end
 
     def self.handle_job_recommended(message)
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
-      job_recommendation = Coaches::Job.find_by!(job_id: message.data[:job_id])
+      job_recommendation = Coaches::Job.find_by!(job_id: message.data.job_id)
 
       csc.seeker_job_recommendations << SeekerJobRecommendation.create!(
         coach_seeker_context: csc,
-        coach_id: Coach.find_by(coach_id: message.data[:coach_id]).id,
+        coach_id: Coach.find_by!(coach_id: message.data.coach_id).id,
         job_id: job_recommendation.id
       )
     end
@@ -289,23 +289,23 @@ module Coaches
 
     def self.handle_lead_added(message)
       SeekerLead.create!(
-        lead_id: message.data[:lead_id],
-        email: message.data[:email],
-        phone_number: message.data[:phone_number],
-        first_name: message.data[:first_name],
-        last_name: message.data[:last_name],
+        lead_id: message.data.lead_id,
+        email: message.data.email,
+        phone_number: message.data.phone_number,
+        first_name: message.data.first_name,
+        last_name: message.data.last_name,
         lead_captured_at: message.occurred_at,
-        lead_captured_by: message.data[:lead_captured_by],
+        lead_captured_by: message.data.lead_captured_by,
         status: SeekerLead::StatusTypes::NEW
       )
     end
 
     def self.handle_note_deleted(message)
-      SeekerNote.find_by!(note_id: message.data[:note_id]).destroy
+      SeekerNote.find_by!(note_id: message.data.note_id).destroy
     end
 
     def self.handle_note_modified(message)
-      SeekerNote.find_by!(note_id: message.data[:note_id]).update!(note: message.data[:note])
+      SeekerNote.find_by!(note_id: message.data.note_id).update!(note: message.data.note)
     end
 
     def self.handle_note_added(message)
@@ -315,9 +315,9 @@ module Coaches
       csc.seeker_notes << SeekerNote.create!(
         coach_seeker_context: csc,
         note_taken_at: message.occurred_at,
-        note_taken_by: message.data[:coach_email],
-        note_id: message.data[:note_id],
-        note: message.data[:note]
+        note_taken_by: message.data.coach_email,
+        note_id: message.data.note_id,
+        note: message.data.note
       )
     end
 
@@ -333,7 +333,7 @@ module Coaches
       csc.last_active_on = message.occurred_at
       csc.save!
 
-      SeekerLead.where(email: message.data[:email])
+      SeekerLead.where(email: message.data.email)
                 .update!(status: SeekerLead::StatusTypes::CONVERTED)
     end
 
@@ -361,7 +361,7 @@ module Coaches
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       csc.update!(
-        skill_level: message.data[:skill_level]
+        skill_level: message.data.skill_level
       )
     end
 

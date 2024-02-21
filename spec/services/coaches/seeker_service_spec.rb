@@ -10,23 +10,23 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:other_user_created) { build(:events__message, :user_created, aggregate_id: other_user_id, data: Events::UserCreated::Data::V1.new(email: "katina@gmail.com", first_name: "Katina", last_name: "Hall")) }
   let(:seeker_created) { build(:events__message, :profile_created, aggregate_id: user_id, data: Events::SeekerCreated::Data::V1.new(id: seeker_id, user_id:)) }
   let(:other_seeker_created) { build(:events__message, :profile_created, aggregate_id: other_user_id, data: Events::SeekerCreated::Data::V1.new(id: other_seeker_id, user_id: other_user_id)) }
-  let(:note_with_id_added1) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
-  let(:note_with_id_added2) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
+  let(:note_with_id_added1) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::NoteAdded::Data::V1.new(note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
+  let(:note_with_id_added2) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::NoteAdded::Data::V1.new(note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
   let(:applicant_status_updated1) { build(:events__message, :applicant_status_updated, version: 3, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
   let(:applicant_status_updated2) { build(:events__message, :applicant_status_updated, version: 3, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
   let(:applicant_status_updated3) { build(:events__message, :applicant_status_updated, version: 3, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
   let(:applicant_status_updated4) { build(:events__message, :applicant_status_updated, version: 3, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
-  let(:note_deleted) { build(:events__message, :note_deleted, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: "This is a note with an id", note_id: note_id1), occurred_at: time1) }
-  let(:note_modified) { build(:events__message, :note_modified, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(note: updated_note, note_id: note_id2), occurred_at: time1) }
-  let(:skill_level_updated) { build(:events__message, :skill_level_updated, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(skill_level: "advanced"), occurred_at: time1) }
-  let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(coach_id:, email: "coach@blocktrainapp.com"), occurred_at: time1) }
-  let(:barriers_updated1) { build(:events__message, :barriers_updated, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier1.barrier_id]), occurred_at: time1) }
-  let(:barriers_updated2) { build(:events__message, :barriers_updated, aggregate_id: seeker_id, data: Events::Common::UntypedHashWrapper.new(barriers: [barrier2.barrier_id]), occurred_at: time1) }
+  let(:note_deleted) { build(:events__message, :note_deleted, aggregate_id: seeker_id, data: Events::NoteDeleted::Data::V1.new(note_id: note_id1, coach_id:, coach_email: coach.email), occurred_at: time1) }
+  let(:note_modified) { build(:events__message, :note_modified, aggregate_id: seeker_id, data: Events::NoteModified::Data::V1.new(note: updated_note, note_id: note_id2, coach_id:, coach_email: coach.email), occurred_at: time1) }
+  let(:skill_level_updated) { build(:events__message, :skill_level_updated, aggregate_id: seeker_id, data: Events::SkillLevelUpdated::Data::V1.new(skill_level: "advanced"), occurred_at: time1) }
+  let(:coach_assigned) { build(:events__message, :coach_assigned, aggregate_id: seeker_id, data: Events::CoachAssigned::Data::V1.new(coach_id:, email: "coach@blocktrainapp.com"), occurred_at: time1) }
+  let(:barriers_updated1) { build(:events__message, :barriers_updated, aggregate_id: seeker_id, data: Events::BarrierUpdated::Data::V1.new(barriers: [barrier1.barrier_id]), occurred_at: time1) }
+  let(:barriers_updated2) { build(:events__message, :barriers_updated, aggregate_id: seeker_id, data: Events::BarrierUpdated::Data::V1.new(barriers: [barrier2.barrier_id]), occurred_at: time1) }
   let(:job_recommended) { build(:events__message, :job_recommended, aggregate_id: seeker_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id:), occurred_at: time1) }
   let(:seeker_certified) { build(:events__message, :seeker_certified, aggregate_id: seeker_id, data: Events::SeekerCertified::Data::V1.new(coach_id:), occurred_at: time1) }
 
   let(:lead) do
-    Events::Common::UntypedHashWrapper.new(
+    Events::LeadAdded::Data::V1.new(
       email: nil,
       lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5",
       phone_number: "1234567890",
@@ -125,492 +125,505 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:employer_name1) { "Cool company" }
   let(:employer_name2) { "Fun company" }
 
-  before do
-    described_class.handle_event(lead_added)
-    described_class.handle_event(non_seeker_user_created)
-    described_class.handle_event(user_without_email)
-    described_class.handle_event(seeker_without_email)
-    described_class.handle_event(user_created)
-    described_class.handle_event(user_updated)
-    described_class.handle_event(other_user_created)
-    described_class.handle_event(seeker_created)
-    described_class.handle_event(other_seeker_created)
-    described_class.handle_event(note_with_id_added1)
-    described_class.handle_event(note_with_id_added2)
-    described_class.handle_event(note_deleted)
-    described_class.handle_event(note_modified)
-    described_class.handle_event(skill_level_updated)
-    described_class.handle_event(coach_assigned)
-    described_class.handle_event(applicant_status_updated1)
-    described_class.handle_event(applicant_status_updated2)
-    described_class.handle_event(applicant_status_updated3)
-    described_class.handle_event(applicant_status_updated4)
-    described_class.handle_event(barriers_updated1)
-    described_class.handle_event(barriers_updated2)
-    described_class.handle_event(job_recommended)
-    described_class.handle_event(seeker_certified)
-  end
-
   it_behaves_like "an event consumer"
 
-  describe ".reset_for_replay" do
-    subject { described_class.reset_for_replay }
-
-    it "destroys all records" do
-      expect(Coaches::CoachSeekerContext.count).not_to eq(0)
-      expect(Coaches::SeekerLead.count).not_to eq(0)
-      expect(Coaches::SeekerApplication.count).not_to eq(0)
-      expect(Coaches::SeekerNote.count).not_to eq(0)
-      expect(Coaches::SeekerJobRecommendation.count).not_to eq(0)
-      expect(Coaches::SeekerBarrier.count).not_to eq(0)
-
-      subject
-
-      expect(Coaches::CoachSeekerContext.count).to eq(0)
-      expect(Coaches::SeekerLead.count).to eq(0)
-      expect(Coaches::SeekerApplication.count).to eq(0)
-      expect(Coaches::SeekerNote.count).to eq(0)
-      expect(Coaches::SeekerJobRecommendation.count).to eq(0)
-      expect(Coaches::SeekerBarrier.count).to eq(0)
-    end
-  end
-
-  describe ".all_contexts" do
-    subject { described_class.all_contexts }
-
-    it "returns all profiles" do
-      expected_profile = {
-        seekerId: seeker_id,
-        firstName: "Hannah",
-        lastName: "Block",
-        email: "hannah@blocktrainapp.com",
-        phoneNumber: "1234567890",
-        skillLevel: 'advanced',
-        lastActiveOn: applicant_status_updated3.occurred_at,
-        lastContacted: note_with_id_added1.occurred_at,
-        assignedCoach: coach_id,
-        certified_by: coach.email,
-        barriers: [{
-          id: barrier2.barrier_id,
-          name: "barrier2"
-        }],
-        notes: [
-          {
-            note: "This note was updated",
-            noteId: note_id2,
-            noteTakenBy: "coach@blocktrainapp.com",
-            date: Time.utc(2020, 1, 1)
-          }
-        ],
-        applications: [
-          {
-            jobId: job_id,
-            employerName: employer_name2,
-            status: status1,
-            employmentTitle: employment_title2
-          }
-        ],
-        job_recommendations: [job_id],
-        stage: 'seeker_created'
-      }
-      expected_other_profile = {
-        seekerId: other_seeker_id,
-        firstName: "Katina",
-        lastName: "Hall",
-        email: "katina@gmail.com",
-        phoneNumber: nil,
-        skillLevel: 'beginner',
-        lastActiveOn: applicant_status_updated4.occurred_at,
-        lastContacted: "Never",
-        assignedCoach: 'none',
-        certified_by: nil,
-        barriers: [],
-        notes: [],
-        applications: [
-          {
-            jobId: job_id,
-            employerName: employer_name1,
-            status: status2,
-            employmentTitle: employment_title1
-          },
-          {
-            jobId: job_id,
-            employerName: employer_name2,
-            status: status1,
-            employmentTitle: employment_title2
-          }
-        ],
-        job_recommendations: [],
-        stage: 'seeker_created'
-      }
-
-      expect(subject).to include(expected_profile)
-      expect(subject).to include(expected_other_profile)
-    end
-  end
-
-  describe ".all_leads" do
-    subject { described_class.all_leads }
-
-    it "returns all profiles" do
-      expected_lead = {
-        phone_number: "1234567890",
-        first_name: "Hannah",
-        last_name: "Block",
-        lead_captured_at: time1,
-        email: nil,
-        lead_captured_by: "khall@blocktrainapp.com",
-        status: Coaches::SeekerLead::StatusTypes::CONVERTED
-      }
-
-      expect(subject).to contain_exactly(expected_lead)
-    end
-  end
-
-  describe ".find_context" do
-    subject { described_class.find_context(seeker_id) }
-
-    it "returns the profile" do
-      expected_profile = {
-        seekerId: seeker_id,
-        firstName: "Hannah",
-        lastName: "Block",
-        email: "hannah@blocktrainapp.com",
-        phoneNumber: "1234567890",
-        skillLevel: 'advanced',
-        lastActiveOn: applicant_status_updated3.occurred_at,
-        lastContacted: note_with_id_added1.occurred_at,
-        assignedCoach: coach_id,
-        certified_by: coach.email,
-        barriers: [{
-          id: barrier2.barrier_id,
-          name: "barrier2"
-        }],
-        notes: [
-          {
-            note: "This note was updated",
-            noteTakenBy: "coach@blocktrainapp.com",
-            date: Time.utc(2020, 1, 1),
-            noteId: note_id2
-          }
-        ],
-        applications: [
-          {
-            status: status1,
-            jobId: job_id,
-            employmentTitle: employment_title2,
-            employerName: employer_name2
-          }
-        ],
-        job_recommendations: [job_id],
-        stage: 'seeker_created'
-      }
-
-      expect(subject).to eq(expected_profile)
+  context "queries" do
+    before do
+      described_class.handle_event(lead_added)
+      described_class.handle_event(non_seeker_user_created)
+      described_class.handle_event(user_without_email)
+      described_class.handle_event(seeker_without_email)
+      described_class.handle_event(user_created)
+      described_class.handle_event(user_updated)
+      described_class.handle_event(other_user_created)
+      described_class.handle_event(seeker_created)
+      described_class.handle_event(other_seeker_created)
+      described_class.handle_event(note_with_id_added1)
+      described_class.handle_event(note_with_id_added2)
+      described_class.handle_event(note_deleted)
+      described_class.handle_event(note_modified)
+      described_class.handle_event(skill_level_updated)
+      described_class.handle_event(coach_assigned)
+      described_class.handle_event(applicant_status_updated1)
+      described_class.handle_event(applicant_status_updated2)
+      described_class.handle_event(applicant_status_updated3)
+      described_class.handle_event(applicant_status_updated4)
+      described_class.handle_event(barriers_updated1)
+      described_class.handle_event(barriers_updated2)
+      described_class.handle_event(job_recommended)
+      described_class.handle_event(seeker_certified)
     end
 
-    context "when another events occur which update last active on" do
-      [
-        Events::JobSaved::V1,
-        Events::JobUnsaved::V1,
-        Events::SeekerUpdated::V1,
-        Events::OnboardingCompleted::V1
-      ].each do |event_schema|
-        context "when a #{event_schema.event_type} version #{event_schema.version} occurs for a seeker" do
+    describe ".reset_for_replay" do
+      subject { described_class.reset_for_replay }
+
+      it "destroys all records" do
+        expect(Coaches::CoachSeekerContext.count).not_to eq(0)
+        expect(Coaches::SeekerLead.count).not_to eq(0)
+        expect(Coaches::SeekerApplication.count).not_to eq(0)
+        expect(Coaches::SeekerNote.count).not_to eq(0)
+        expect(Coaches::SeekerJobRecommendation.count).not_to eq(0)
+        expect(Coaches::SeekerBarrier.count).not_to eq(0)
+
+        subject
+
+        expect(Coaches::CoachSeekerContext.count).to eq(0)
+        expect(Coaches::SeekerLead.count).to eq(0)
+        expect(Coaches::SeekerApplication.count).to eq(0)
+        expect(Coaches::SeekerNote.count).to eq(0)
+        expect(Coaches::SeekerJobRecommendation.count).to eq(0)
+        expect(Coaches::SeekerBarrier.count).to eq(0)
+      end
+    end
+
+    describe ".all_contexts" do
+      subject { described_class.all_contexts }
+
+      it "returns all profiles" do
+        expected_profile = {
+          seeker_id:,
+          first_name: "Hannah",
+          last_name: "Block",
+          email: "hannah@blocktrainapp.com",
+          phone_number: "1234567890",
+          skill_level: 'advanced',
+          last_active_on: applicant_status_updated3.occurred_at,
+          last_contacted: note_with_id_added1.occurred_at,
+          assigned_coach: coach_id,
+          certified_by: coach.email,
+          barriers: [{
+            id: barrier2.barrier_id,
+            name: "barrier2"
+          }],
+          notes: [
+            {
+              note: "This note was updated",
+              note_id: note_id2,
+              note_taken_by: "coach@blocktrainapp.com",
+              date: Time.utc(2020, 1, 1)
+            }
+          ],
+          applications: [
+            {
+              job_id:,
+              employer_name: employer_name2,
+              status: status1,
+              employment_title: employment_title2
+            }
+          ],
+          job_recommendations: [job_id],
+          stage: 'seeker_created'
+        }
+        expected_other_profile = {
+          seeker_id: other_seeker_id,
+          first_name: "Katina",
+          last_name: "Hall",
+          email: "katina@gmail.com",
+          phone_number: nil,
+          skill_level: 'beginner',
+          last_active_on: applicant_status_updated4.occurred_at,
+          last_contacted: "Never",
+          assigned_coach: 'none',
+          certified_by: nil,
+          barriers: [],
+          notes: [],
+          applications: [
+            {
+              job_id:,
+              employer_name: employer_name1,
+              status: status2,
+              employment_title: employment_title1
+            },
+            {
+              job_id:,
+              employer_name: employer_name2,
+              status: status1,
+              employment_title: employment_title2
+            }
+          ],
+          job_recommendations: [],
+          stage: 'seeker_created'
+        }
+
+        expect(subject).to include(expected_profile)
+        expect(subject).to include(expected_other_profile)
+      end
+    end
+
+    describe ".all_leads" do
+      subject { described_class.all_leads }
+
+      it "returns all profiles" do
+        expected_lead = {
+          phone_number: "1234567890",
+          first_name: "Hannah",
+          last_name: "Block",
+          lead_captured_at: time1,
+          email: nil,
+          lead_captured_by: "khall@blocktrainapp.com",
+          status: Coaches::SeekerLead::StatusTypes::CONVERTED
+        }
+
+        expect(subject).to contain_exactly(expected_lead)
+      end
+    end
+
+    describe ".find_context" do
+      subject { described_class.find_context(seeker_id) }
+
+      it "returns the profile" do
+        expected_profile = {
+          seeker_id:,
+          first_name: "Hannah",
+          last_name: "Block",
+          email: "hannah@blocktrainapp.com",
+          phone_number: "1234567890",
+          skill_level: 'advanced',
+          last_active_on: applicant_status_updated3.occurred_at,
+          last_contacted: note_with_id_added1.occurred_at,
+          assigned_coach: coach_id,
+          certified_by: coach.email,
+          barriers: [{
+            id: barrier2.barrier_id,
+            name: "barrier2"
+          }],
+          notes: [
+            {
+              note: "This note was updated",
+              note_taken_by: "coach@blocktrainapp.com",
+              date: Time.utc(2020, 1, 1),
+              note_id: note_id2
+            }
+          ],
+          applications: [
+            {
+              status: status1,
+              job_id:,
+              employment_title: employment_title2,
+              employer_name: employer_name2
+            }
+          ],
+          job_recommendations: [job_id],
+          stage: 'seeker_created'
+        }
+
+        expect(subject).to eq(expected_profile)
+      end
+
+      context "when another events occur which update last active on" do
+        [
+          Events::JobSaved::V1,
+          Events::JobUnsaved::V1,
+          Events::SeekerUpdated::V1,
+          Events::OnboardingCompleted::V1
+        ].each do |event_schema|
+          context "when a #{event_schema.event_type} version #{event_schema.version} occurs for a seeker" do
+            it "updates the last active to when the event occured" do
+              message = build(
+                :events__message,
+                event_type: event_schema.event_type,
+                version: event_schema.version,
+                aggregate_id: user_id,
+                occurred_at: time2
+              )
+
+              described_class.handle_event(message)
+
+              expect(subject[:last_active_on]).to eq(time2)
+            end
+          end
+        end
+
+        context "when a personal_experience_created version 1 occurs for a seeker" do
           it "updates the last active to when the event occured" do
             message = build(
               :events__message,
-              event_type: event_schema.event_type,
-              version: event_schema.version,
+              event_type: Events::PersonalExperienceCreated::V1.event_type,
+              version: Events::PersonalExperienceCreated::V1.version,
+              data: Events::PersonalExperienceCreated::Data::V1.new(
+                id: SecureRandom.uuid,
+                activity: "something",
+                description: "A description",
+                start_date: Time.zone.now.to_s,
+                end_date: Time.zone.now.to_s,
+                seeker_id: SecureRandom.uuid
+              ),
               aggregate_id: user_id,
               occurred_at: time2
             )
 
             described_class.handle_event(message)
 
-            expect(subject[:lastActiveOn]).to eq(time2)
+            expect(subject[:last_active_on]).to eq(time2)
+          end
+        end
+
+        context "when a education_experience_created version 1 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :events__message,
+              event_type: Events::EducationExperienceCreated::V1.event_type,
+              version: Events::EducationExperienceCreated::V1.version,
+              data: Events::EducationExperienceCreated::Data::V1.new(
+                id: SecureRandom.uuid,
+                organization_name: "Org",
+                title: "A title",
+                activities: nil,
+                graduation_date: Time.zone.now.to_s,
+                gpa: "1.9",
+                seeker_id: SecureRandom.uuid
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
+
+            described_class.handle_event(message)
+
+            expect(subject[:last_active_on]).to eq(time2)
+          end
+        end
+
+        context "when a job_search version 2 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :events__message,
+              event_type: Events::JobSearch::V2.event_type,
+              version: Events::JobSearch::V2.version,
+              data: Events::JobSearch::Data::V1.new(
+                search_terms: "A search",
+                industries: [],
+                tags: nil
+              ),
+              metadata: Events::JobSearch::MetaData::V2.new(
+                source: "seeker"
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
+
+            described_class.handle_event(message)
+
+            expect(subject[:last_active_on]).to eq(time2)
           end
         end
       end
-
-      context "when a personal_experience_created version 1 occurs for a seeker" do
-        it "updates the last active to when the event occured" do
-          message = build(
-            :events__message,
-            event_type: Events::PersonalExperienceCreated::V1.event_type,
-            version: Events::PersonalExperienceCreated::V1.version,
-            data: Events::PersonalExperienceCreated::Data::V1.new(
-              id: SecureRandom.uuid,
-              activity: "something",
-              description: "A description",
-              start_date: Time.zone.now.to_s,
-              end_date: Time.zone.now.to_s,
-              seeker_id: SecureRandom.uuid
-            ),
-            aggregate_id: user_id,
-            occurred_at: time2
-          )
-
-          described_class.handle_event(message)
-
-          expect(subject[:lastActiveOn]).to eq(time2)
-        end
-      end
-
-      context "when a education_experience_created version 1 occurs for a seeker" do
-        it "updates the last active to when the event occured" do
-          message = build(
-            :events__message,
-            event_type: Events::EducationExperienceCreated::V1.event_type,
-            version: Events::EducationExperienceCreated::V1.version,
-            data: Events::EducationExperienceCreated::Data::V1.new(
-              id: SecureRandom.uuid,
-              organization_name: "Org",
-              title: "A title",
-              activities: nil,
-              graduation_date: Time.zone.now.to_s,
-              gpa: "1.9",
-              seeker_id: SecureRandom.uuid
-            ),
-            aggregate_id: user_id,
-            occurred_at: time2
-          )
-
-          described_class.handle_event(message)
-
-          expect(subject[:lastActiveOn]).to eq(time2)
-        end
-      end
-
-      context "when a job_search version 2 occurs for a seeker" do
-        it "updates the last active to when the event occured" do
-          message = build(
-            :events__message,
-            event_type: Events::JobSearch::V2.event_type,
-            version: Events::JobSearch::V2.version,
-            data: Events::JobSearch::Data::V1.new(
-              search_terms: "A search",
-              industries: [],
-              tags: nil
-            ),
-            metadata: Events::JobSearch::MetaData::V2.new(
-              source: "seeker"
-            ),
-            aggregate_id: user_id,
-            occurred_at: time2
-          )
-
-          described_class.handle_event(message)
-
-          expect(subject[:lastActiveOn]).to eq(time2)
-        end
-      end
     end
   end
 
-  describe ".add_lead" do
-    subject { described_class.add_lead(coach:, first_name:, last_name:, lead_id:, phone_number:, now:) }
-
-    let(:coach) { create(:coaches__coach) }
-    let(:first_name) { "John" }
-    let(:last_name) { "Chabot" }
-    let(:phone_number) { "333-333-3333" }
-    let(:lead_id) { "ffc354f5-e1c3-4859-b9f0-1e94106ddc96" }
-
-    let(:now) { Time.zone.local(2020, 1, 1) }
-
-    it "creates an event" do
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::LeadAdded::V1,
-        aggregate_id: coach.id,
-        data: Events::Common::UntypedHashWrapper.build(
-          first_name:,
-          last_name:,
-          phone_number:,
-          lead_id:,
-          email: nil,
-          lead_captured_by: coach.email
-        ),
-        occurred_at: now
-      ).and_call_original
-
-      subject
+  context "command" do
+    before do
+      described_class.handle_event(user_created)
+      described_class.handle_event(seeker_created)
+      described_class.handle_event(note_with_id_added1)
     end
-  end
 
-  describe ".add_note" do
-    subject { described_class.add_note(id: seeker_id, coach:, note: "This is a new note", note_id: note_id1, now:) }
+    describe ".add_lead" do
+      subject { described_class.add_lead(coach:, first_name:, last_name:, lead_id:, phone_number:, now:) }
 
-    let(:coach) { create(:coaches__coach) }
+      let(:coach) { create(:coaches__coach) }
+      let(:first_name) { "John" }
+      let(:last_name) { "Chabot" }
+      let(:phone_number) { "333-333-3333" }
+      let(:lead_id) { "ffc354f5-e1c3-4859-b9f0-1e94106ddc96" }
 
-    let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:now) { Time.zone.local(2020, 1, 1) }
 
-    it "creates an event" do
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::NoteAdded::V1,
-        aggregate_id: seeker_id,
-        data: Events::Common::UntypedHashWrapper.build(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
-          note: "This is a new note",
-          note_id: note_id1
-        ),
-        occurred_at: now
-      ).and_call_original
-
-      subject
-    end
-  end
-
-  describe ".delete_note" do
-    subject { described_class.delete_note(coach:, id: seeker_id, note_id: note.note_id, now:) }
-
-    let(:note) { create(:coaches__seeker_note, note_id: note_id1) }
-    let(:coach) { create(:coaches__coach) }
-    let(:now) { Time.zone.local(2020, 1, 1) }
-
-    it "creates an event" do
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::NoteDeleted::V1,
-        aggregate_id: seeker_id,
-        data: Events::Common::UntypedHashWrapper.build(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
-          note_id: note_id1
-        ),
-        occurred_at: now
-      ).and_call_original
-
-      subject
-    end
-  end
-
-  describe ".modify_note" do
-    subject { described_class.modify_note(id: seeker_id, coach:, note_id: note_id2, note: updated_note, now:) }
-
-    let(:coach) { create(:coaches__coach) }
-
-    let(:now) { Time.zone.local(2020, 1, 1) }
-
-    it "creates an event" do
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::NoteModified::V1,
-        aggregate_id: seeker_id,
-        data: Events::Common::UntypedHashWrapper.build(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
-          note_id: note_id2,
-          note: updated_note
-        ),
-        occurred_at: now
-      ).and_call_original
-
-      subject
-    end
-  end
-
-  describe ".recommend_job" do
-    subject { described_class.recommend_job(seeker_id:, job_id:, coach:, now:) }
-
-    let(:now) { Time.zone.local(2020, 1, 1) }
-    let(:coach) { create(:coaches__coach) }
-    let(:job_id) { create(:coaches__job).job_id }
-
-    it "creates an event" do
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::JobRecommended::V1,
-        aggregate_id: seeker_id,
-        data: Events::JobRecommended::Data::V1.new(
-          job_id:,
-          coach_id: coach.coach_id
-        ),
-        occurred_at: now
-      ).and_call_original
-
-      subject
-    end
-  end
-
-  describe ".certify" do
-    subject { described_class.certify(seeker_id:, coach:, now:) }
-
-    let(:now) { Time.zone.local(2020, 1, 1) }
-    let(:coach) { create(:coaches__coach) }
-
-    it "creates an event" do
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::SeekerCertified::V1,
-        aggregate_id: seeker_id,
-        data: Events::SeekerCertified::Data::V1.new(
-          coach_id: coach.coach_id
-        ),
-        occurred_at: now
-      ).and_call_original
-
-      subject
-    end
-  end
-
-  describe ".update_barriers" do
-    subject { described_class.update_barriers(id: seeker_id, barriers: [barrier.barrier_id], now:) }
-
-    let(:now) { Time.zone.local(2020, 1, 1) }
-    let(:barrier) { create(:barrier) }
-
-    it "creates an event" do
-      expect(Events::Common::UntypedHashWrapper)
-        .to receive(:build)
-        .with(
-          barriers: [be_a(String)]
+      it "creates an event" do
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::LeadAdded::V1,
+          aggregate_id: coach.id,
+          data: Events::LeadAdded::Data::V1.new(
+            first_name:,
+            last_name:,
+            phone_number:,
+            lead_id:,
+            email: nil,
+            lead_captured_by: coach.email
+          ),
+          occurred_at: now
         ).and_call_original
 
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::BarrierUpdated::V1,
-        aggregate_id: seeker_id,
-        data: be_a(Events::Common::UntypedHashWrapper),
-        occurred_at: now
-      ).and_call_original
-
-      subject
+        subject
+      end
     end
-  end
 
-  describe ".assign_coach" do
-    subject { described_class.assign_coach(seeker_id, "123", "coach@blocktrainapp.com", now:) }
+    describe ".add_note" do
+      subject { described_class.add_note(id: seeker_id, coach:, note: "This is a new note", note_id: note_id1, now:) }
 
-    let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:coach) { create(:coaches__coach) }
 
-    it "creates an event" do
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::CoachAssigned::V1,
-        aggregate_id: seeker_id,
-        data: Events::Common::UntypedHashWrapper.build(
-          coach_id: "123",
-          email: "coach@blocktrainapp.com"
-        ),
-        occurred_at: now
-      ).and_call_original
+      let(:now) { Time.zone.local(2020, 1, 1) }
 
-      subject
+      it "creates an event" do
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::NoteAdded::V1,
+          aggregate_id: seeker_id,
+          data: Events::NoteAdded::Data::V1.new(
+            coach_id: coach.coach_id,
+            coach_email: coach.email,
+            note: "This is a new note",
+            note_id: note_id1
+          ),
+          occurred_at: now
+        ).and_call_original
+
+        subject
+      end
     end
-  end
 
-  describe ".update_skill_level" do
-    subject { described_class.update_skill_level(seeker_id, "advanced", now:) }
+    describe ".delete_note" do
+      subject { described_class.delete_note(coach:, id: seeker_id, note_id: note.note_id, now:) }
 
-    let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:note) { create(:coaches__seeker_note, note_id: note_id1) }
+      let(:coach) { create(:coaches__coach) }
+      let(:now) { Time.zone.local(2020, 1, 1) }
 
-    it "creates an event" do
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::SkillLevelUpdated::V1,
-        aggregate_id: seeker_id,
-        data: Events::Common::UntypedHashWrapper.build(
-          skill_level: "advanced"
-        ),
-        occurred_at: now
-      ).and_call_original
+      it "creates an event" do
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::NoteDeleted::V1,
+          aggregate_id: seeker_id,
+          data: Events::NoteDeleted::Data::V1.new(
+            coach_id: coach.coach_id,
+            coach_email: coach.email,
+            note_id: note_id1
+          ),
+          occurred_at: now
+        ).and_call_original
 
-      subject
+        subject
+      end
+    end
+
+    describe ".modify_note" do
+      subject { described_class.modify_note(id: seeker_id, coach:, note_id: note_id1, note: updated_note, now:) }
+
+      let(:coach) { create(:coaches__coach) }
+
+      let(:now) { Time.zone.local(2020, 1, 1) }
+
+      it "creates an event" do
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::NoteModified::V1,
+          aggregate_id: seeker_id,
+          data: Events::NoteModified::Data::V1.new(
+            coach_id: coach.coach_id,
+            coach_email: coach.email,
+            note_id: note_id1,
+            note: updated_note
+          ),
+          occurred_at: now
+        ).and_call_original
+
+        subject
+      end
+    end
+
+    describe ".recommend_job" do
+      subject { described_class.recommend_job(seeker_id:, job_id:, coach:, now:) }
+
+      let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:coach) { create(:coaches__coach) }
+      let(:job_id) { create(:coaches__job).job_id }
+
+      it "creates an event" do
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::JobRecommended::V1,
+          aggregate_id: seeker_id,
+          data: Events::JobRecommended::Data::V1.new(
+            job_id:,
+            coach_id: coach.coach_id
+          ),
+          occurred_at: now
+        ).and_call_original
+
+        subject
+      end
+    end
+
+    describe ".certify" do
+      subject { described_class.certify(seeker_id:, coach:, now:) }
+
+      let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:coach) { create(:coaches__coach) }
+
+      it "creates an event" do
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::SeekerCertified::V1,
+          aggregate_id: seeker_id,
+          data: Events::SeekerCertified::Data::V1.new(
+            coach_id: coach.coach_id
+          ),
+          occurred_at: now
+        ).and_call_original
+
+        subject
+      end
+    end
+
+    describe ".update_barriers" do
+      subject { described_class.update_barriers(id: seeker_id, barriers: [barrier.barrier_id], now:) }
+
+      let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:barrier) { create(:barrier) }
+
+      it "creates an event" do
+        expect(Events::BarrierUpdated::Data::V1)
+          .to receive(:new)
+          .with(
+            barriers: [be_a(String)]
+          )
+          .twice
+          .and_call_original
+
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::BarrierUpdated::V1,
+          aggregate_id: seeker_id,
+          data: be_a(Events::BarrierUpdated::Data::V1),
+          occurred_at: now
+        ).and_call_original
+
+        subject
+      end
+    end
+
+    describe ".assign_coach" do
+      subject { described_class.assign_coach(seeker_id, coach_id, "coach@blocktrainapp.com", now:) }
+
+      let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:coach_id) { SecureRandom.uuid }
+
+      it "creates an event" do
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::CoachAssigned::V1,
+          aggregate_id: seeker_id,
+          data: Events::CoachAssigned::Data::V1.new(
+            coach_id:,
+            email: "coach@blocktrainapp.com"
+          ),
+          occurred_at: now
+        ).and_call_original
+
+        subject
+      end
+    end
+
+    describe ".update_skill_level" do
+      subject { described_class.update_skill_level(seeker_id, "advanced", now:) }
+
+      let(:now) { Time.zone.local(2020, 1, 1) }
+
+      it "creates an event" do
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::SkillLevelUpdated::V1,
+          aggregate_id: seeker_id,
+          data: Events::SkillLevelUpdated::Data::V1.new(
+            skill_level: "advanced"
+          ),
+          occurred_at: now
+        ).and_call_original
+
+        subject
+      end
     end
   end
 end

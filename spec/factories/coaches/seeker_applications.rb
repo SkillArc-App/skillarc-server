@@ -4,7 +4,7 @@ FactoryBot.define do
 
     application_id { SecureRandom.uuid }
     job_id { SecureRandom.uuid }
-    status { "This is a note" }
+    status { "Actively failing an interview" }
     employer_name { "Cool " }
     employment_title { "An application status" }
   end

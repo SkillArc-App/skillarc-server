@@ -7,13 +7,11 @@ RSpec.describe "Users", type: :request do
     let(:user_to_edit) { create(:user) }
     let(:params) do
       {
-        user: {
-          about: "New About",
-          first_name: "New First Name",
-          last_name: "Name Last Name",
-          phone_number: "1234567890",
-          zip_code: "12345"
-        }
+        about: "New About",
+        first_name: "New First Name",
+        last_name: "Name Last Name",
+        phone_number: "1234567890",
+        zip_code: "12345"
       }
     end
 

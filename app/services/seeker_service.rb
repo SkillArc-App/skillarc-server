@@ -20,6 +20,7 @@ class SeekerService
 
     {
       id: seeker.id,
+      about: seeker.about,
       userId: seeker.user.id,
       education_experiences: seeker.education_experiences.map do |ee|
         ee.slice(:id, :organization_name, :title, :graduation_date, :gpa, :activities).symbolize_keys

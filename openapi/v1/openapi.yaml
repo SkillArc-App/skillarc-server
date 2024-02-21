@@ -493,6 +493,8 @@ components:
         id:
           type: string
           format: uuid
+        about:
+          type: string
         userId:
           type: string
           format: uuid

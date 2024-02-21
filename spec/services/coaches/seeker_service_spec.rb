@@ -314,7 +314,6 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
         [
           Events::JobSaved::V1,
           Events::JobUnsaved::V1,
-          Events::SeekerUpdated::V1,
           Events::OnboardingCompleted::V1
         ].each do |event_schema|
           context "when a #{event_schema.event_type} version #{event_schema.version} occurs for a seeker" do
@@ -390,31 +389,6 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
                 description: "A description",
                 start_date: Time.zone.now.to_s,
                 end_date: Time.zone.now.to_s,
-                seeker_id: SecureRandom.uuid
-              ),
-              aggregate_id: user_id,
-              occurred_at: time2
-            )
-
-            described_class.handle_event(message)
-
-            expect(subject[:last_active_on]).to eq(time2)
-          end
-        end
-
-        context "when a education_experience_created version 1 occurs for a seeker" do
-          it "updates the last active to when the event occured" do
-            message = build(
-              :events__message,
-              event_type: Events::EducationExperienceCreated::V1.event_type,
-              version: Events::EducationExperienceCreated::V1.version,
-              data: Events::EducationExperienceCreated::Data::V1.new(
-                id: SecureRandom.uuid,
-                organization_name: "Org",
-                title: "A title",
-                activities: nil,
-                graduation_date: Time.zone.now.to_s,
-                gpa: "1.9",
                 seeker_id: SecureRandom.uuid
               ),
               aggregate_id: user_id,

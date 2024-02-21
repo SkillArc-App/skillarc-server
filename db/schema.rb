@@ -306,6 +306,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
     t.uuid "employers_employer_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "elevator_pitch"
     t.index ["employers_employer_id"], name: "index_employers_jobs_on_employers_employer_id"
   end
 

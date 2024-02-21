@@ -5,6 +5,7 @@ module Coaches
         Events::BarrierUpdated::V1,
         Events::CoachAssigned::V1,
         Events::JobRecommended::V1,
+        Events::SeekerCertified::V1,
         Events::LeadAdded::V1,
         Events::NoteAdded::V1,
         Events::NoteDeleted::V1,
@@ -43,6 +44,9 @@ module Coaches
 
       when Events::JobRecommended::V1
         handle_job_recommended(message)
+
+      when Events::SeekerCertified::V1
+        handle_certify(message)
 
       when Events::LeadAdded::V1
         handle_lead_added(message)
@@ -117,7 +121,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::LeadAdded::V1,
         aggregate_id: coach.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::LeadAdded::Data::V1.new(
           email:,
           lead_id:,
           phone_number:,
@@ -133,7 +137,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::NoteAdded::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::NoteAdded::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note:,
@@ -147,7 +151,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::NoteDeleted::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::NoteDeleted::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note_id:
@@ -160,11 +164,27 @@ module Coaches
       EventService.create!(
         event_schema: Events::NoteModified::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::NoteModified::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
           note_id:,
           note:
+        ),
+        occurred_at: now
+      )
+    end
+
+    def self.certify(seeker_id:, coach:, now: Time.zone.now)
+      user = User.find(coach.user_id)
+
+      EventService.create!(
+        event_schema: Events::SeekerCertified::V1,
+        aggregate_id: seeker_id,
+        data: Events::SeekerCertified::Data::V1.new(
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
+          coach_first_name: user.first_name,
+          coach_last_name: user.last_name
         ),
         occurred_at: now
       )
@@ -186,7 +206,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::BarrierUpdated::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::BarrierUpdated::Data::V1.new(
           barriers:
         ),
         occurred_at: now
@@ -197,7 +217,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::CoachAssigned::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::CoachAssigned::Data::V1.new(
           coach_id:,
           email: coach_email
         ),
@@ -209,7 +229,7 @@ module Coaches
       EventService.create!(
         event_schema: Events::SkillLevelUpdated::V1,
         aggregate_id: id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Events::SkillLevelUpdated::Data::V1.new(
           skill_level:
         ),
         occurred_at: now
@@ -217,7 +237,7 @@ module Coaches
     end
 
     def self.handle_applicant_status_updated(message)
-      csc = CoachSeekerContext.find_by!(user_id: message.data[:user_id])
+      csc = CoachSeekerContext.find_by!(user_id: message.data.user_id)
       csc.update!(last_active_on: message.occurred_at)
 
       application = SeekerApplication.find_or_create_by(
@@ -237,7 +257,7 @@ module Coaches
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       csc.seeker_barriers.destroy_all
-      message.data[:barriers].each do |barrier|
+      message.data.barriers.each do |barrier|
         b = Barrier.find_by!(barrier_id: barrier)
 
         csc.seeker_barriers << SeekerBarrier.create!(
@@ -250,41 +270,47 @@ module Coaches
     def self.handle_coach_assigned(message)
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
-      csc.assigned_coach = message.data[:coach_id]
+      csc.assigned_coach = message.data.coach_id
       csc.save!
     end
 
     def self.handle_job_recommended(message)
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
-      job_recommendation = Coaches::Job.find_by!(job_id: message.data[:job_id])
+      job_recommendation = Coaches::Job.find_by!(job_id: message.data.job_id)
 
       csc.seeker_job_recommendations << SeekerJobRecommendation.create!(
         coach_seeker_context: csc,
-        coach_id: Coach.find_by(coach_id: message.data[:coach_id]).id,
+        coach_id: Coach.find_by!(coach_id: message.data.coach_id).id,
         job_id: job_recommendation.id
+      )
+    end
+
+    def self.handle_certify(message)
+      CoachSeekerContext.find_by!(seeker_id: message.aggregate_id).update!(
+        certified_by: Coach.find_by!(coach_id: message.data.coach_id).email
       )
     end
 
     def self.handle_lead_added(message)
       SeekerLead.create!(
-        lead_id: message.data[:lead_id],
-        email: message.data[:email],
-        phone_number: message.data[:phone_number],
-        first_name: message.data[:first_name],
-        last_name: message.data[:last_name],
+        lead_id: message.data.lead_id,
+        email: message.data.email,
+        phone_number: message.data.phone_number,
+        first_name: message.data.first_name,
+        last_name: message.data.last_name,
         lead_captured_at: message.occurred_at,
-        lead_captured_by: message.data[:lead_captured_by],
+        lead_captured_by: message.data.lead_captured_by,
         status: SeekerLead::StatusTypes::NEW
       )
     end
 
     def self.handle_note_deleted(message)
-      SeekerNote.find_by!(note_id: message.data[:note_id]).destroy
+      SeekerNote.find_by!(note_id: message.data.note_id).destroy
     end
 
     def self.handle_note_modified(message)
-      SeekerNote.find_by!(note_id: message.data[:note_id]).update!(note: message.data[:note])
+      SeekerNote.find_by!(note_id: message.data.note_id).update!(note: message.data.note)
     end
 
     def self.handle_note_added(message)
@@ -294,9 +320,9 @@ module Coaches
       csc.seeker_notes << SeekerNote.create!(
         coach_seeker_context: csc,
         note_taken_at: message.occurred_at,
-        note_taken_by: message.data[:coach_email],
-        note_id: message.data[:note_id],
-        note: message.data[:note]
+        note_taken_by: message.data.coach_email,
+        note_id: message.data.note_id,
+        note: message.data.note
       )
     end
 
@@ -312,7 +338,7 @@ module Coaches
       csc.last_active_on = message.occurred_at
       csc.save!
 
-      SeekerLead.where(email: message.data[:email])
+      SeekerLead.where(email: message.data.email)
                 .update!(status: SeekerLead::StatusTypes::CONVERTED)
     end
 
@@ -340,7 +366,7 @@ module Coaches
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       csc.update!(
-        skill_level: message.data[:skill_level]
+        skill_level: message.data.skill_level
       )
     end
 
@@ -354,31 +380,32 @@ module Coaches
 
     def self.serialize_coach_seeker_context(csc)
       {
-        seekerId: csc.seeker_id,
-        firstName: csc.first_name,
-        lastName: csc.last_name,
+        seeker_id: csc.seeker_id,
+        first_name: csc.first_name,
+        last_name: csc.last_name,
         email: csc.email,
-        phoneNumber: csc.phone_number,
-        skillLevel: csc.skill_level || 'beginner',
-        lastActiveOn: csc.last_active_on,
-        lastContacted: csc.last_contacted_at || "Never",
-        assignedCoach: csc.assigned_coach || 'none',
+        phone_number: csc.phone_number,
+        certified_by: csc.certified_by,
+        skill_level: csc.skill_level || 'beginner',
+        last_active_on: csc.last_active_on,
+        last_contacted: csc.last_contacted_at || "Never",
+        assigned_coach: csc.assigned_coach || 'none',
         barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } },
         stage: 'seeker_created',
         notes: csc.seeker_notes.map do |note|
           {
             note: note.note,
-            noteId: note.note_id,
-            noteTakenBy: note.note_taken_by,
+            note_id: note.note_id,
+            note_taken_by: note.note_taken_by,
             date: note.note_taken_at
           }
         end,
         applications: csc.seeker_applications.map do |application|
           {
             status: application.status,
-            employerName: application.employer_name,
-            jobId: application.job_id,
-            employmentTitle: application.employment_title
+            employer_name: application.employer_name,
+            job_id: application.job_id,
+            employment_title: application.employment_title
           }
         end,
         job_recommendations: csc.seeker_job_recommendations.map(&:job).map(&:job_id)

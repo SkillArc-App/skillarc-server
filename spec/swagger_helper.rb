@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.configure do |config|
+RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
   config.openapi_strict_schema_validation = true
 
   # Specify a root folder where Swagger JSON files are generated
@@ -46,15 +46,15 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               id: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               jobId: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               seekerId: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               createdAt: {
@@ -71,11 +71,11 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               id: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               jobId: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               chatEnabled: {
@@ -123,11 +123,11 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               id: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               userId: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               educationExperiences: {
@@ -190,11 +190,149 @@ RSpec.configure do |config|
               }
             }
           },
+          coach_seeker: {
+            type: :object,
+            properties: {
+              seekerId: {
+                type: :string,
+                format: :uuid
+              },
+              firstName: {
+                type: :string,
+                nullable: true
+              },
+              lastName: {
+                type: :string,
+                nullable: true
+              },
+              email: {
+                type: :string,
+                format: :email,
+                nullable: true
+              },
+              phoneNumber: {
+                type: :string,
+                nullable: true
+              },
+              certifiedBy: {
+                type: :string,
+                nullable: true
+              },
+              skillLevel: {
+                type: :string,
+                nullable: true
+              },
+              lastActiveOn: {
+                type: :string,
+                format: 'date-time',
+                nullable: true
+              },
+              lastContacted: {
+                oneOf: [
+                  {
+                    type: :string,
+                    format: 'date-time'
+                  },
+                  {
+                    type: :string,
+                    enum: ['Never']
+                  }
+                ],
+                nullable: true
+              },
+              assignedCoach: {
+                type: :string,
+                nullable: true
+              },
+              barriers: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/seeker_barrier'
+                }
+              },
+              stage: {
+                type: :string,
+                enum: ['seeker_created']
+              },
+              notes: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/seeker_note'
+                }
+              },
+              applications: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/seeker_application'
+                }
+              },
+              jobRecommendations: {
+                type: :array,
+                items: {
+                  type: :string,
+                  format: :uuid
+                }
+              }
+            }
+          },
+          seeker_barrier: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              name: {
+                type: :string,
+                format: :uuid
+              }
+            }
+          },
+          seeker_note: {
+            type: :object,
+            properties: {
+              note: {
+                type: :string
+              },
+              noteId: {
+                type: :string,
+                format: :uuid
+              },
+              noteTakenBy: {
+                type: :string,
+                nullable: true
+              },
+              date: {
+                type: :string,
+                format: 'date-time'
+              }
+            }
+          },
+          seeker_application: {
+            type: :object,
+            properties: {
+              status: {
+                type: :string
+              },
+              employerName: {
+                type: :string
+              },
+              jobId: {
+                type: :string,
+                format: :uuid,
+                nullable: true
+              },
+              employmentTitle: {
+                type: :string,
+                nullable: true
+              }
+            }
+          },
           other_experience: {
             type: :object,
             properties: {
               id: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               organizationName: {
@@ -221,7 +359,7 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               id: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               organizationName: {
@@ -250,7 +388,7 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               id: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               activity: {
@@ -271,7 +409,7 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               id: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               description: {
@@ -287,7 +425,7 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               id: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               skill: {
@@ -304,7 +442,7 @@ RSpec.configure do |config|
             additionalProperties: true,
             properties: {
               id: {
-                type: :id,
+                type: :string,
                 format: :uuid
               },
               email: {

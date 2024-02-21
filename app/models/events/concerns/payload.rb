@@ -35,7 +35,11 @@ module Events
 
       def to_h_value(validator, value)
         if validator.is_a?(ValueSemantics::ArrayOf)
-          value.map(&:to_h)
+          if validator.element_validator.respond_to?(:to_h)
+            value.map(&:to_h)
+          else
+            value
+          end
         elsif validator.respond_to?(:to_h)
           value.to_h
         else

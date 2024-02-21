@@ -4,6 +4,7 @@
 #
 #  id                :uuid             not null, primary key
 #  assigned_coach    :string
+#  certified_by      :string
 #  email             :string
 #  first_name        :string
 #  last_active_on    :datetime

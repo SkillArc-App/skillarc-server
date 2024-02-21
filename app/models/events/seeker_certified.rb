@@ -1,14 +1,14 @@
 module Events
-  module NoteModified
+  module SeekerCertified
     module Data
       class V1
         extend Concerns::Payload
 
         schema do
-          coach_id Uuid
+          coach_first_name Either(String, nil), default: nil
+          coach_last_name Either(String, nil), default: nil
           coach_email String
-          note_id Uuid
-          note String
+          coach_id Uuid
         end
       end
     end
@@ -16,7 +16,7 @@ module Events
     V1 = Schema.build(
       data: Data::V1,
       metadata: Common::Nothing,
-      event_type: Event::EventTypes::NOTE_MODIFIED,
+      event_type: Event::EventTypes::SEEKER_CERTIFIED,
       version: 1
     )
   end

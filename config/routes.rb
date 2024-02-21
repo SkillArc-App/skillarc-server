@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :notes, only: %i[create update destroy]
       post 'skill-levels' => 'seekers#update_skill_level'
       post 'assign_coach' => 'seekers#assign'
+      post 'certify' => 'seekers#certify'
       post 'recommend_job' => 'seekers#recommend_job'
       put 'update_barriers' => 'seeker_barriers#update_all'
     end

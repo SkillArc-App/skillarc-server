@@ -175,11 +175,16 @@ module Coaches
     end
 
     def self.certify(seeker_id:, coach:, now: Time.zone.now)
+      user = User.find(coach.user_id)
+
       EventService.create!(
         event_schema: Events::SeekerCertified::V1,
         aggregate_id: seeker_id,
         data: Events::SeekerCertified::Data::V1.new(
-          coach_id: coach.coach_id
+          coach_id: coach.coach_id,
+          coach_email: coach.email,
+          coach_first_name: user.first_name,
+          coach_last_name: user.last_name
         ),
         occurred_at: now
       )

@@ -5,6 +5,9 @@ module Events
         extend Concerns::Payload
 
         schema do
+          coach_first_name Either(String, nil), default: nil
+          coach_last_name Either(String, nil), default: nil
+          coach_email String
           coach_id Uuid
         end
       end

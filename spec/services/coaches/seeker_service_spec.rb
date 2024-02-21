@@ -23,7 +23,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:barriers_updated1) { build(:events__message, :barriers_updated, aggregate_id: seeker_id, data: Events::BarrierUpdated::Data::V1.new(barriers: [barrier1.barrier_id]), occurred_at: time1) }
   let(:barriers_updated2) { build(:events__message, :barriers_updated, aggregate_id: seeker_id, data: Events::BarrierUpdated::Data::V1.new(barriers: [barrier2.barrier_id]), occurred_at: time1) }
   let(:job_recommended) { build(:events__message, :job_recommended, aggregate_id: seeker_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id:), occurred_at: time1) }
-  let(:seeker_certified) { build(:events__message, :seeker_certified, aggregate_id: seeker_id, data: Events::SeekerCertified::Data::V1.new(coach_id:), occurred_at: time1) }
+  let(:seeker_certified) { build(:events__message, :seeker_certified, aggregate_id: seeker_id, data: Events::SeekerCertified::Data::V1.new(coach_id:, coach_email: coach.email), occurred_at: time1) }
 
   let(:lead) do
     Events::LeadAdded::Data::V1.new(
@@ -544,14 +544,18 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       subject { described_class.certify(seeker_id:, coach:, now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
-      let(:coach) { create(:coaches__coach) }
+      let(:coach) { create(:coaches__coach, user_id: user.id) }
+      let(:user) { create(:user) }
 
       it "creates an event" do
         expect(EventService).to receive(:create!).with(
           event_schema: Events::SeekerCertified::V1,
           aggregate_id: seeker_id,
           data: Events::SeekerCertified::Data::V1.new(
-            coach_id: coach.coach_id
+            coach_id: coach.coach_id,
+            coach_email: coach.email,
+            coach_first_name: user.first_name,
+            coach_last_name: user.last_name
           ),
           occurred_at: now
         ).and_call_original

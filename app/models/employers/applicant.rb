@@ -17,7 +17,8 @@
 #
 # Indexes
 #
-#  index_employers_applicants_on_employers_job_id  (employers_job_id)
+#  index_employers_applicants_on_employers_job_id                (employers_job_id)
+#  index_employers_applicants_on_seeker_id_and_employers_job_id  (seeker_id,employers_job_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -41,6 +42,7 @@ module Employers
     end
 
     validates :status, inclusion: { in: StatusTypes::ALL }
+    validates :seeker_id, uniqueness: { scope: :employers_job_id }
 
     scope :active, -> { where.not(status: StatusTypes::TERMINAL) }
   end

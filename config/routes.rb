@@ -67,6 +67,7 @@ Rails.application.routes.draw do
 
   resources :jobs do
     post 'apply' => 'jobs#apply'
+    post 'elevator_pitch' => 'jobs#elevator_pitch'
     resources :career_paths do
       put 'up' => 'career_paths#up'
       put 'down' => 'career_paths#down'

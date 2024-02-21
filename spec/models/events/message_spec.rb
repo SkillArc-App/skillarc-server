@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Events::Message do
+RSpec.describe Message do
   describe "#initialize" do
     context "when missing a required key" do
       it "raises a ValueSemantics::MissingAttributes error" do
@@ -38,7 +38,7 @@ RSpec.describe Events::Message do
     describe "#occurred_at" do
       let(:message) do
         build(
-          :events__message,
+          :message,
           version: Events::DayElapsed::V1.version,
           event_type: Events::DayElapsed::V1.event_type,
           data: Events::DayElapsed::Data::V1.new(
@@ -75,7 +75,7 @@ RSpec.describe Events::Message do
 
       context "when passed something else" do
         it "converts it to ActiveSupport::TimeWithZone" do
-          expect { build(:events__message, occurred_at: "Cat o'clock") }.to raise_error(ValueSemantics::InvalidValue)
+          expect { build(:message, occurred_at: "Cat o'clock") }.to raise_error(ValueSemantics::InvalidValue)
         end
       end
     end

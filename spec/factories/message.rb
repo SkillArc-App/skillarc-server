@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :events__message, class: "Events::Message" do
+  factory :message, class: "Message" do
     id { SecureRandom.uuid }
     aggregate_id { SecureRandom.uuid }
     version { 1 }
@@ -16,6 +16,6 @@ FactoryBot.define do
 
     chat_message_sent
 
-    initialize_with { Events::Message.new(**attributes) }
+    initialize_with { Message.new(**attributes) }
   end
 end

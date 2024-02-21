@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Coaches::CoachService do
   let(:role_added) do
     build(
-      :events__message,
+      :message,
       :role_added,
       aggregate_id: user_id,
       data: Events::Common::UntypedHashWrapper.build(
@@ -13,7 +13,7 @@ RSpec.describe Coaches::CoachService do
       )
     )
   end
-  let(:other_role_added) { build(:events__message, :role_added, aggregate_id: user_id, data: Events::Common::UntypedHashWrapper.build(role: "admin", email: "not_coach@blocktrainapp.com")) }
+  let(:other_role_added) { build(:message, :role_added, aggregate_id: user_id, data: Events::Common::UntypedHashWrapper.build(role: "admin", email: "not_coach@blocktrainapp.com")) }
   let(:user_id) { SecureRandom.uuid }
   let(:coach_id) { SecureRandom.uuid }
 

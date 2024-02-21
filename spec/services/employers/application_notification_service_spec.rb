@@ -6,7 +6,7 @@ RSpec.describe Employers::ApplicationNotificationService do
   describe "application created" do
     subject { described_class.handle_event(applicant_status_updated) }
 
-    let(:applicant_status_updated) { build(:events__message, :applicant_status_updated, version: 4, data:) }
+    let(:applicant_status_updated) { build(:message, :applicant_status_updated, version: 4, data:) }
     let(:data) do
       Events::ApplicantStatusUpdated::Data::V4.new(
         applicant_id: applicant.applicant_id,

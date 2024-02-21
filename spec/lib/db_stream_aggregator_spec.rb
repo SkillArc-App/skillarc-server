@@ -22,7 +22,7 @@ RSpec.describe DbStreamAggregator do
     context "when there is no bookmark" do
       it "calls the consumer" do
         expect(consumer).to receive(:handle_event).with(
-          be_a(Events::Message)
+          be_a(Message)
         ).twice
 
         subject

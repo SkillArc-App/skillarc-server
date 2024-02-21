@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Coaches::RecommendationService do
-  let(:job_recommended) { build(:events__message, :job_recommended, aggregate_id: seeker_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id:)) }
+  let(:job_recommended) { build(:message, :job_recommended, aggregate_id: seeker_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id:)) }
 
   let(:job_id) { SecureRandom.uuid }
   let(:coach_id) { SecureRandom.uuid }

@@ -22,8 +22,8 @@ RSpec.describe Event do
       )
     end
 
-    it "creates an Events::Message with the same data" do
-      expect(subject).to be_a(Events::Message)
+    it "creates an Message with the same data" do
+      expect(subject).to be_a(Message)
 
       expect(subject.id).to eq(event[:id])
       expect(subject.trace_id).to eq(event[:trace_id])
@@ -44,12 +44,12 @@ RSpec.describe Event do
   end
 
   describe ".from_message!" do
-    subject { described_class.from_message!(events__message) }
+    subject { described_class.from_message!(message) }
 
     let(:id) { SecureRandom.uuid }
-    let(:events__message) do
+    let(:message) do
       build(
-        :events__message,
+        :message,
         version: Events::JobSearch::V1.version,
         event_type: Events::JobSearch::V1.event_type,
         data: Events::JobSearch::Data::V1.new(
@@ -64,13 +64,13 @@ RSpec.describe Event do
       )
     end
 
-    it "creates an Events::Message with the same data" do
+    it "creates an Message with the same data" do
       expect(subject).to be_a(described_class)
 
-      expect(subject[:id]).to eq(events__message.id)
-      expect(subject[:aggregate_id]).to eq(events__message.aggregate_id)
-      expect(subject[:trace_id]).to eq(events__message.trace_id)
-      expect(subject[:event_type]).to eq(events__message.event_type)
+      expect(subject[:id]).to eq(message.id)
+      expect(subject[:aggregate_id]).to eq(message.aggregate_id)
+      expect(subject[:trace_id]).to eq(message.trace_id)
+      expect(subject[:event_type]).to eq(message.event_type)
       expect(subject[:data].deep_symbolize_keys).to eq({
                                                          search_terms: "Cool job",
                                                          tags: nil,
@@ -80,8 +80,8 @@ RSpec.describe Event do
                                                              source: "seeker",
                                                              id:
                                                            })
-      expect(subject[:version]).to eq(events__message.version)
-      expect(subject[:occurred_at]).to eq(events__message.occurred_at)
+      expect(subject[:version]).to eq(message.version)
+      expect(subject[:occurred_at]).to eq(message.occurred_at)
     end
   end
 end

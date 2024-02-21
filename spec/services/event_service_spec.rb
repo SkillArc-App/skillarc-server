@@ -46,7 +46,7 @@ RSpec.describe EventService do
         let(:version) { 1 }
 
         it "raies a InvalidSchemaError" do
-          expect { subject }.to raise_error(Events::Message::InvalidSchemaError)
+          expect { subject }.to raise_error(Message::InvalidSchemaError)
         end
       end
 
@@ -55,7 +55,7 @@ RSpec.describe EventService do
         let(:version) { 2 }
 
         it "raies a InvalidSchemaError" do
-          expect { subject }.to raise_error(Events::Message::InvalidSchemaError)
+          expect { subject }.to raise_error(Message::InvalidSchemaError)
         end
       end
 
@@ -66,7 +66,7 @@ RSpec.describe EventService do
           expect(BroadcastEventJob)
             .to receive(:perform_later)
             .with(
-              Events::Message.new(
+              Message.new(
                 id:,
                 event_type:,
                 trace_id:,
@@ -145,7 +145,7 @@ RSpec.describe EventService do
     let(:event_schema) { Events::UserCreated::V1 }
 
     let!(:message1) do
-      Events::Message.new(
+      Message.new(
         id: SecureRandom.uuid,
         aggregate_id: SecureRandom.uuid,
         trace_id: SecureRandom.uuid,
@@ -157,7 +157,7 @@ RSpec.describe EventService do
       )
     end
     let!(:message2) do
-      Events::Message.new(
+      Message.new(
         id: SecureRandom.uuid,
         aggregate_id: SecureRandom.uuid,
         trace_id: SecureRandom.uuid,

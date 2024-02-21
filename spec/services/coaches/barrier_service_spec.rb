@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Coaches::BarrierService do
   let(:barrier_added) do
     build(
-      :events__message,
+      :message,
       :barrier_added,
       aggregate_id: "coaches",
       data: Events::Common::UntypedHashWrapper.new(

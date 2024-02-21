@@ -8,7 +8,7 @@ RSpec.describe Employers::WeeklyUpdateService do
 
     let(:message) do
       build(
-        :events__message,
+        :message,
         :day_elapsed,
         data: Events::DayElapsed::Data::V1.new(
           date:,

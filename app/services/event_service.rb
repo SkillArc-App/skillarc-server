@@ -7,7 +7,7 @@ class EventService
   def self.create!(event_schema:, aggregate_id:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Events::Common::Nothing) # rubocop:disable Metrics/ParameterLists
     raise NotEventSchemaError unless event_schema.is_a?(Events::Schema)
 
-    message = Events::Message.new(
+    message = Message.new(
       id:,
       aggregate_id:,
       occurred_at:,

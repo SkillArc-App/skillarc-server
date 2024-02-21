@@ -6,7 +6,7 @@ RSpec.describe Klayvio::ChatMessageReceived do
 
     let(:message) do
       build(
-        :events__message,
+        :message,
         :chat_message_sent,
         aggregate_id: job.id,
         data: Events::ChatMessageSent::Data::V1.new(

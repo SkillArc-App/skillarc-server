@@ -103,7 +103,7 @@ class Event < ApplicationRecord
   def message
     schema = EventService.get_schema(event_type:, version:)
 
-    Events::Message.new(
+    Message.new(
       id:,
       aggregate_id:,
       trace_id:,

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Coaches::JobService do
   let(:job_created) do
     build(
-      :events__message,
+      :message,
       :job_created,
       aggregate_id: job_id,
       data: Events::JobCreated::Data::V1.new(

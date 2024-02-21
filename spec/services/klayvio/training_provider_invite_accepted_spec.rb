@@ -4,7 +4,7 @@ RSpec.describe Klayvio::TrainingProviderInviteAccepted do
   describe "#call" do
     let(:message) do
       build(
-        :events__message,
+        :message,
         event_type: Events::TrainingProviderInviteAccepted::V1.event_type,
         version: Events::TrainingProviderInviteAccepted::V1.version,
         data: Events::Common::UntypedHashWrapper.new(

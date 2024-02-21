@@ -107,7 +107,7 @@ RSpec.describe EducationExperienceService do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EducationExperienceDeleted::V1,
         aggregate_id: seeker.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Messages::UntypedHashWrapper.build(
           id: education_experience.id
         ),
         occurred_at: be_a(Time)

@@ -11,7 +11,7 @@ module Events
 
         self.class.value_semantics.attributes.each do |attr|
           value = to_h_value(attr.validator, send(attr.name))
-          hash[attr.name] = value unless value == Common::UNDEFINED
+          hash[attr.name] = value unless value == Messages::UNDEFINED
         end
 
         hash

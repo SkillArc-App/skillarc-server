@@ -17,13 +17,13 @@ RSpec.describe EventService do
     let(:event_type) { Event::EventTypes::CHAT_CREATED }
     let(:aggregate_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
-    let(:data) { Events::Common::UntypedHashWrapper.new(data: "cool") }
+    let(:data) { Messages::UntypedHashWrapper.new(data: "cool") }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
-    let(:metadata) { Events::Common::UntypedHashWrapper.new(metadata: "cooler") }
+    let(:metadata) { Messages::UntypedHashWrapper.new(metadata: "cooler") }
     let(:version) { 4 }
     let(:id) { SecureRandom.uuid }
 
-    context "when the event_schema is not a Events::Schema" do
+    context "when the event_schema is not a Messages::Schema" do
       let(:event_schema) { 10 }
 
       it "raises a NotEventSchemaError" do
@@ -31,11 +31,11 @@ RSpec.describe EventService do
       end
     end
 
-    context "when event_schema is a Events::Schema" do
+    context "when event_schema is a Messages::Schema" do
       let!(:event_schema) do
-        Events::Schema.build(
-          data: Events::Common::UntypedHashWrapper,
-          metadata: Events::Common::UntypedHashWrapper,
+        Messages::Schema.build(
+          data: Messages::UntypedHashWrapper,
+          metadata: Messages::UntypedHashWrapper,
           event_type:,
           version:
         )
@@ -105,7 +105,7 @@ RSpec.describe EventService do
     end
 
     context "when passed an Event::Schema" do
-      # Can't directly test see the Events::Schema spec
+      # Can't directly test see the Messages::Schema spec
     end
   end
 
@@ -125,7 +125,7 @@ RSpec.describe EventService do
 
     context "when the schema exists" do
       let!(:schema) do
-        Events::Schema.build(
+        Messages::Schema.build(
           data: Array,
           metadata: Array,
           event_type:,
@@ -153,7 +153,7 @@ RSpec.describe EventService do
         version: event_schema.version,
         occurred_at: Time.zone.parse('2000-1-1'),
         data: Events::UserCreated::Data::V1.new(first_name: "John"),
-        metadata: Events::Common::Nothing
+        metadata: Messages::Nothing
       )
     end
     let!(:message2) do
@@ -165,7 +165,7 @@ RSpec.describe EventService do
         version: event_schema.version,
         occurred_at: Time.zone.parse('2000-1-1'),
         data: Events::UserCreated::Data::V1.new(first_name: "Chris"),
-        metadata: Events::Common::Nothing
+        metadata: Messages::Nothing
       )
     end
     let!(:event1) { Event.from_message!(message1) }

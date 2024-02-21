@@ -19,7 +19,7 @@ module Seekers
       EventService.create!(
         event_schema: Events::JobSaved::V1,
         aggregate_id: current_user.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Messages::UntypedHashWrapper.build(
           job_id: job.id,
           employment_title: job.employment_title,
           employer_name: job.employer.name
@@ -33,7 +33,7 @@ module Seekers
       EventService.create!(
         event_schema: Events::JobUnsaved::V1,
         aggregate_id: current_user.id,
-        data: Events::Common::UntypedHashWrapper.build(
+        data: Messages::UntypedHashWrapper.build(
           job_id: job.id,
           employment_title: job.employment_title,
           employer_name: job.employer.name

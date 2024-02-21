@@ -17,15 +17,15 @@ module Events
         extend Concerns::Payload
 
         schema do
-          date Date, coerce: Common::DateCoercer
+          date Date, coerce: Messages::DateCoercer
           day_of_week Either(*DaysOfWeek::ALL)
         end
       end
     end
 
-    V1 = Schema.build(
+    V1 = Messages::Schema.build(
       data: Data::V1,
-      metadata: Common::Nothing,
+      metadata: Messages::Nothing,
       event_type: Event::EventTypes::DAY_ELAPSED,
       version: 1
     )

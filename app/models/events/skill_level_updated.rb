@@ -10,9 +10,9 @@ module Events
       end
     end
 
-    V1 = Schema.build(
+    V1 = Messages::Schema.build(
       data: Data::V1,
-      metadata: Common::Nothing,
+      metadata: Messages::Nothing,
       event_type: Event::EventTypes::SKILL_LEVEL_UPDATED,
       version: 1
     )

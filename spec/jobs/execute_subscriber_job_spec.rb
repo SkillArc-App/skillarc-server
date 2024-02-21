@@ -8,7 +8,7 @@ RSpec.describe ExecuteSubscriberJob do
       trace_id: SecureRandom.uuid,
       event_type: Events::UserCreated::V1.event_type,
       data: Events::UserCreated::Data::V1.new,
-      metadata: Events::Common::Nothing,
+      metadata: Messages::Nothing,
       version: Events::UserCreated::V1.version,
       occurred_at: DateTime.new(2020, 1, 1)
     )

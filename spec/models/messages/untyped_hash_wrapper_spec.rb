@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Events::Common::UntypedHashWrapper do
+RSpec.describe Messages::UntypedHashWrapper do
   describe "#[]" do
     subject do
       instance

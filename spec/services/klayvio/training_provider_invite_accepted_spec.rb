@@ -7,7 +7,7 @@ RSpec.describe Klayvio::TrainingProviderInviteAccepted do
         :message,
         event_type: Events::TrainingProviderInviteAccepted::V1.event_type,
         version: Events::TrainingProviderInviteAccepted::V1.version,
-        data: Events::Common::UntypedHashWrapper.new(
+        data: Messages::UntypedHashWrapper.new(
           training_provider_invite_id: "A",
           invite_email: "sfb@crook.com",
           training_provider_id: "1",

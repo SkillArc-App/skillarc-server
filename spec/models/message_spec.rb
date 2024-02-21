@@ -106,7 +106,7 @@ RSpec.describe Message do
           aggregate_id: SecureRandom.uuid,
           trace_id: SecureRandom.uuid,
           event_type: Events::UserCreated::V1.event_type,
-          metadata: Events::Common::Nothing,
+          metadata: Messages::Nothing,
           data: Events::UserCreated::Data::V1.new,
           version: Events::UserCreated::V1.version,
           occurred_at: Time.zone.now

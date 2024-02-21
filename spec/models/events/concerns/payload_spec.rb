@@ -8,7 +8,7 @@ RSpec.describe Events::Concerns::Payload do
       schema do
         child ArrayOf(Events::ApplicantStatusUpdated::Reason::V1)
         stringChild ArrayOf(String)
-        optional Either(String, Events::Common::UNDEFINED), default: Events::Common::UNDEFINED
+        optional Either(String, Messages::UNDEFINED), default: Messages::UNDEFINED
       end
     end
   end
@@ -30,7 +30,7 @@ RSpec.describe Events::Concerns::Payload do
       expect(instance).to eq(parent_klass.new(
                                child: [Events::ApplicantStatusUpdated::Reason::V1.new(id:, response: nil)],
                                stringChild: ['cat'],
-                               optional: Events::Common::UNDEFINED
+                               optional: Messages::UNDEFINED
                              ))
     end
   end

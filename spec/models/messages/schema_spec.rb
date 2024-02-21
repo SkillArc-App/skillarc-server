@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Events::Schema do
+RSpec.describe Messages::Schema do
   describe ".build" do
     before(:each) do
       stub_const("Event::EventTypes::LEAD_ADDED", "test_event_name-#{SecureRandom.uuid}")

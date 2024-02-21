@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Events::Common::Nothing do
+RSpec.describe Messages::Nothing do
   describe ".===" do
     it "is case equal to itself" do
       expect(described_class === described_class).to eq(true) # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands,Style/CaseEquality

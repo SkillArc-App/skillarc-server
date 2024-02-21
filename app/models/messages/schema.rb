@@ -1,4 +1,4 @@
-module Events
+module Messages
   class Schema
     attr_reader :data, :metadata, :event_type, :version
 

@@ -6,7 +6,7 @@ RSpec.describe Coaches::BarrierService do
       :message,
       :barrier_added,
       aggregate_id: "coaches",
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Messages::UntypedHashWrapper.new(
         barrier_id:,
         name: "barrier name"
       )

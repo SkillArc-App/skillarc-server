@@ -18,7 +18,7 @@ RSpec.describe Coaches::BarrierService do
   it_behaves_like "an event consumer"
 
   before do
-    consumer.handle_event(barrier_added)
+    consumer.handle_message(barrier_added)
   end
 
   describe ".all" do

@@ -1,5 +1,5 @@
 class EventConsumer
-  def handle_event(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
+  def handle_message(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
     raise NoMethodError
   end
 

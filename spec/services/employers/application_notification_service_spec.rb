@@ -4,7 +4,7 @@ RSpec.describe Employers::ApplicationNotificationService do
   it_behaves_like "an event consumer"
 
   describe "application created" do
-    subject { described_class.new.handle_event(applicant_status_updated) }
+    subject { described_class.new.handle_message(applicant_status_updated) }
 
     let(:applicant_status_updated) { build(:message, :applicant_status_updated, version: 4, data:) }
     let(:data) do

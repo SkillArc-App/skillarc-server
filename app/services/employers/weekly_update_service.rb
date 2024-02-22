@@ -4,7 +4,7 @@ module Employers
       [Events::DayElapsed::V1].freeze
     end
 
-    def handle_event(message)
+    def handle_message(message)
       case message.event_schema
       when Events::DayElapsed::V1
         handle_day_elapsed(message)

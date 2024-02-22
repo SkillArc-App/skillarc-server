@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe DbStreamAggregator do
-  let(:consumer) { double(:consumer, handle_event: nil, reset_for_replay: nil) }
+  let(:consumer) { double(:consumer, handle_message: nil, reset_for_replay: nil) }
 
   let!(:event) { create(:event, :user_created, occurred_at: event_occurred_at) }
   let!(:event2) { create(:event, :user_created, occurred_at: event_occurred_at + 2.days) }
@@ -21,7 +21,7 @@ RSpec.describe DbStreamAggregator do
 
     context "when there is no bookmark" do
       it "calls the consumer" do
-        expect(consumer).to receive(:handle_event).with(
+        expect(consumer).to receive(:handle_message).with(
           be_a(Message)
         ).twice
 
@@ -41,11 +41,11 @@ RSpec.describe DbStreamAggregator do
       let(:bookmark_event) { event }
 
       it "consumes the events after the bookmark" do
-        expect(consumer).to receive(:handle_event).with(
+        expect(consumer).to receive(:handle_message).with(
           event2.message
         )
 
-        expect(consumer).not_to receive(:handle_event).with(
+        expect(consumer).not_to receive(:handle_message).with(
           event.message
         )
 
@@ -101,11 +101,11 @@ RSpec.describe DbStreamAggregator do
     subject { described_class.build(consumer, "listener_name") }
 
     it "calls the consumer with the event" do
-      expect(consumer).to receive(:handle_event).with(
+      expect(consumer).to receive(:handle_message).with(
         event.message
       )
 
-      expect(consumer).to receive(:handle_event).with(
+      expect(consumer).to receive(:handle_message).with(
         event2.message
       )
 

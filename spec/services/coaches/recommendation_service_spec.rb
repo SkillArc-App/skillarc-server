@@ -25,7 +25,7 @@ RSpec.describe Coaches::RecommendationService do
         )
         .and_call_original
 
-      described_class.new.handle_event(job_recommended)
+      described_class.new.handle_message(job_recommended)
     end
   end
 end

@@ -26,7 +26,7 @@ RSpec.describe Coaches::JobService do
   let(:consumer) { described_class.new }
 
   before do
-    consumer.handle_event(job_created)
+    consumer.handle_message(job_created)
   end
 
   it_behaves_like "an event consumer"

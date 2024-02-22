@@ -114,12 +114,12 @@ RSpec.describe Employers::EmployerService do
       consumer = described_class.new
 
       expect do
-        consumer.handle_event(employer_created)
-        consumer.handle_event(employer_updated)
-        consumer.handle_event(employer_invite_accepted)
-        consumer.handle_event(job_created)
-        consumer.handle_event(job_updated)
-        consumer.handle_event(applicant_status_updated)
+        consumer.handle_message(employer_created)
+        consumer.handle_message(employer_updated)
+        consumer.handle_message(employer_invite_accepted)
+        consumer.handle_message(job_created)
+        consumer.handle_message(job_updated)
+        consumer.handle_message(applicant_status_updated)
       end
         .to change { Employers::Job.count }.by(1)
         .and change { Employers::Employer.count }.by(1)
@@ -169,7 +169,7 @@ RSpec.describe Employers::EmployerService do
       recruiter = Employers::Recruiter.last_created
 
       expect do
-        consumer.handle_event(
+        consumer.handle_message(
           build(
             :message,
             :job_owner_assigned,

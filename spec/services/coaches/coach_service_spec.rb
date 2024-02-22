@@ -19,8 +19,8 @@ RSpec.describe Coaches::CoachService do
   let(:consumer) { described_class.new }
 
   before do
-    consumer.handle_event(role_added)
-    consumer.handle_event(other_role_added)
+    consumer.handle_message(role_added)
+    consumer.handle_message(other_role_added)
   end
 
   it_behaves_like "an event consumer"

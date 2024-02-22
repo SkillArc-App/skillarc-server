@@ -9,10 +9,10 @@ module Coaches
     end
 
     def call(message:)
-      handle_event(message)
+      handle_message(message)
     end
 
-    def handle_event(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
+    def handle_message(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
       case message.event_schema
       when Events::RoleAdded::V1
         handle_role_added(message)

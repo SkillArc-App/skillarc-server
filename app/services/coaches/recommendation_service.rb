@@ -6,7 +6,7 @@ module Coaches
       ].freeze
     end
 
-    def handle_event(message, *_params)
+    def handle_message(message, *_params)
       case message.event_schema
       when Events::JobRecommended::V1
         handle_job_recommended(message)

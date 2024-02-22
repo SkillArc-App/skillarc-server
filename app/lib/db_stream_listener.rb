@@ -21,7 +21,7 @@ class DbStreamListener < StreamListener
     return if events.empty?
 
     events.each do |event|
-      handle_event(event.message)
+      handle_message(event.message)
       update_bookmark(event)
     end
   end
@@ -59,7 +59,7 @@ class DbStreamListener < StreamListener
       .update!(event_id: event.id)
   end
 
-  def handle_event(*)
+  def handle_message(*)
     raise NoMethodError
   end
 

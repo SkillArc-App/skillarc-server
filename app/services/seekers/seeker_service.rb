@@ -6,7 +6,7 @@ module Seekers
       ].freeze
     end
 
-    def handle_event(message, *_params)
+    def handle_message(message, *_params)
       case message.event_schema
       when Events::ElevatorPitchCreated::V1
         handle_elevator_pitch_created(message)

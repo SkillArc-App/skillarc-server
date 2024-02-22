@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Contact::SmsService do
-  describe "#handle_event" do
-    subject { described_class.new(sms_service:).handle_event(message) }
+  describe "#handle_message" do
+    subject { described_class.new(sms_service:).handle_message(message) }
 
     let(:sms_service) { instance_double(Sms::SmsCommunicator, send_message: nil) }
     let(:message) do

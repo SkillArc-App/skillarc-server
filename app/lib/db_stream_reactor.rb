@@ -11,9 +11,9 @@ class DbStreamReactor < DbStreamListener
 
   private
 
-  def handle_event(event)
+  def handle_message(message)
     # TODO do the memo thing
 
-    consumer.handle_event(event)
+    consumer.handle_message(message)
   end
 end

@@ -130,29 +130,29 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
   context "queries" do
     before do
-      consumer.handle_event(lead_added)
-      consumer.handle_event(non_seeker_user_created)
-      consumer.handle_event(user_without_email)
-      consumer.handle_event(seeker_without_email)
-      consumer.handle_event(user_created)
-      consumer.handle_event(user_updated)
-      consumer.handle_event(other_user_created)
-      consumer.handle_event(seeker_created)
-      consumer.handle_event(other_seeker_created)
-      consumer.handle_event(note_with_id_added1)
-      consumer.handle_event(note_with_id_added2)
-      consumer.handle_event(note_deleted)
-      consumer.handle_event(note_modified)
-      consumer.handle_event(skill_level_updated)
-      consumer.handle_event(coach_assigned)
-      consumer.handle_event(applicant_status_updated1)
-      consumer.handle_event(applicant_status_updated2)
-      consumer.handle_event(applicant_status_updated3)
-      consumer.handle_event(applicant_status_updated4)
-      consumer.handle_event(barriers_updated1)
-      consumer.handle_event(barriers_updated2)
-      consumer.handle_event(job_recommended)
-      consumer.handle_event(seeker_certified)
+      consumer.handle_message(lead_added)
+      consumer.handle_message(non_seeker_user_created)
+      consumer.handle_message(user_without_email)
+      consumer.handle_message(seeker_without_email)
+      consumer.handle_message(user_created)
+      consumer.handle_message(user_updated)
+      consumer.handle_message(other_user_created)
+      consumer.handle_message(seeker_created)
+      consumer.handle_message(other_seeker_created)
+      consumer.handle_message(note_with_id_added1)
+      consumer.handle_message(note_with_id_added2)
+      consumer.handle_message(note_deleted)
+      consumer.handle_message(note_modified)
+      consumer.handle_message(skill_level_updated)
+      consumer.handle_message(coach_assigned)
+      consumer.handle_message(applicant_status_updated1)
+      consumer.handle_message(applicant_status_updated2)
+      consumer.handle_message(applicant_status_updated3)
+      consumer.handle_message(applicant_status_updated4)
+      consumer.handle_message(barriers_updated1)
+      consumer.handle_message(barriers_updated2)
+      consumer.handle_message(job_recommended)
+      consumer.handle_message(seeker_certified)
     end
 
     describe ".reset_for_replay" do
@@ -327,7 +327,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
                 occurred_at: time2
               )
 
-              consumer.handle_event(message)
+              consumer.handle_message(message)
 
               expect(subject[:last_active_on]).to eq(time2)
             end
@@ -353,7 +353,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               occurred_at: time2
             )
 
-            consumer.handle_event(message)
+            consumer.handle_message(message)
 
             expect(subject[:last_active_on]).to eq(time2)
           end
@@ -372,7 +372,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               occurred_at: time2
             )
 
-            consumer.handle_event(message)
+            consumer.handle_message(message)
 
             expect(subject[:last_active_on]).to eq(time2)
           end
@@ -396,7 +396,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               occurred_at: time2
             )
 
-            consumer.handle_event(message)
+            consumer.handle_message(message)
 
             expect(subject[:last_active_on]).to eq(time2)
           end
@@ -420,7 +420,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               occurred_at: time2
             )
 
-            consumer.handle_event(message)
+            consumer.handle_message(message)
 
             expect(subject[:last_active_on]).to eq(time2)
           end
@@ -431,9 +431,9 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
   context "command" do
     before do
-      consumer.handle_event(user_created)
-      consumer.handle_event(seeker_created)
-      consumer.handle_event(note_with_id_added1)
+      consumer.handle_message(user_created)
+      consumer.handle_message(seeker_created)
+      consumer.handle_message(note_with_id_added1)
     end
 
     describe ".add_lead" do

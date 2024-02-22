@@ -6,7 +6,7 @@ module Employers
       ].freeze
     end
 
-    def handle_event(message)
+    def handle_message(message)
       case message.event_schema
       when Events::ApplicantStatusUpdated::V4
         handle_applicant_status_updated(message)

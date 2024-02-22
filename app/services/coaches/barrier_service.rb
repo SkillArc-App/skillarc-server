@@ -9,10 +9,10 @@ module Coaches
     end
 
     def call(message:)
-      handle_event(message)
+      handle_message(message)
     end
 
-    def handle_event(message, *_params)
+    def handle_message(message, *_params)
       case message.event_schema
       when Events::BarrierAdded::V1
         handle_barrier_added(message)

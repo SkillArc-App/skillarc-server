@@ -1,6 +1,6 @@
 RSpec.shared_examples "an event consumer" do
-  describe ".handle_event" do
-    subject { described_class.new.handle_event(message) }
+  describe ".handle_message" do
+    subject { described_class.new.handle_message(message) }
 
     let(:message) { build(:message, :role_added) }
 

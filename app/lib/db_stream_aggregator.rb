@@ -11,7 +11,7 @@ class DbStreamAggregator < DbStreamListener
 
   private
 
-  def handle_event(event)
-    consumer.handle_event(event)
+  def handle_message(message)
+    consumer.handle_message(message)
   end
 end

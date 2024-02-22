@@ -7,7 +7,7 @@ module Coaches
     before_action :coach_authorize
 
     def update_all
-      SeekerService.update_barriers(
+      SeekerService.new.update_barriers(
         id: params[:seeker_id],
         barriers: params[:barriers]
       )

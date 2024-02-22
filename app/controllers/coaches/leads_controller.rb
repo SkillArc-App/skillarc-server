@@ -8,11 +8,11 @@ module Coaches
     before_action :set_coach
 
     def index
-      render json: SeekerService.all_leads
+      render json: SeekerService.new.all_leads
     end
 
     def create
-      SeekerService.add_lead(
+      SeekerService.new.add_lead(
         lead_id: SecureRandom.uuid,
         **params.require(:lead).permit(
           :lead_id,

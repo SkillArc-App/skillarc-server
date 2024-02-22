@@ -10,7 +10,7 @@ RSpec.describe "Coaches::Barriers", type: :request do
       include_context "coach authenticated"
 
       it "calls BarrierService.all" do
-        expect(Coaches::BarrierService).to receive(:all).and_call_original
+        expect_any_instance_of(Coaches::BarrierService).to receive(:all).and_call_original
 
         subject
       end

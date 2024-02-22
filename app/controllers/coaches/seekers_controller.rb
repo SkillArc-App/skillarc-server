@@ -8,17 +8,17 @@ module Coaches
     before_action :set_coach, only: %i[recommend_job certify]
 
     def index
-      render json: SeekerService.all_contexts
+      render json: SeekerService.new.all_contexts
     end
 
     def show
-      render json: SeekerService.find_context(params[:id])
+      render json: SeekerService.new.find_context(params[:id])
     end
 
     def assign
       coach = Coach.find_by!(coach_id: params[:coach_id])
 
-      SeekerService.assign_coach(
+      SeekerService.new.assign_coach(
         params[:seeker_id],
         coach.coach_id,
         coach.email
@@ -28,7 +28,7 @@ module Coaches
     end
 
     def recommend_job
-      SeekerService.recommend_job(
+      SeekerService.new.recommend_job(
         seeker_id: params[:seeker_id],
         job_id: params[:job_id],
         coach:
@@ -38,13 +38,13 @@ module Coaches
     end
 
     def certify
-      SeekerService.certify(seeker_id: params[:seeker_id], coach:)
+      SeekerService.new.certify(seeker_id: params[:seeker_id], coach:)
 
       head :accepted
     end
 
     def update_skill_level
-      SeekerService.update_skill_level(
+      SeekerService.new.update_skill_level(
         params[:seeker_id],
         params[:level]
       )

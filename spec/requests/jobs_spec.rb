@@ -44,6 +44,7 @@ RSpec.describe "Jobs", type: :request do
     let(:job) { create(:job) }
     let(:params) { { elevator_pitch: "New Elevator Pitch" } }
     let!(:seeker) { create(:seeker) }
+    let!(:applicant) { create(:applicant, job:, seeker:) }
     let(:user) { nil }
 
     before do

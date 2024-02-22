@@ -13,11 +13,17 @@ RSpec.describe Coaches::RecommendationService do
 
   context "JobRecommended" do
     it "calls the Sms Gateway" do
-      expect(Contact::SmsService).to receive(:new).with("1234567890").and_call_original
-
-      expect_any_instance_of(Contact::SmsService).to receive(:send_message).with(
-        "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
-      ).and_call_original
+      expect(CommandService)
+        .to receive(:create!)
+        .with(
+          command_schema: Commands::SendSms::V1,
+          aggregate_id: coach_seeker_context.seeker_id,
+          data: Commands::SendSms::Data::V1.new(
+            phone_number: "1234567890",
+            message: "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
+          )
+        )
+        .and_call_original
 
       described_class.new.handle_event(job_recommended)
     end

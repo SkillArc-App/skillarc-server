@@ -20,12 +20,16 @@ module Coaches
     def handle_job_recommended(message)
       job_id = message.data.job_id
 
-        csc = CoachSeekerContext.find_by(seeker_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by(seeker_id: message.aggregate_id)
 
-        Contact::SmsService.new(csc.phone_number).send_message(
-          "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
+      CommandService.create!(
+        command_schema: Commands::SendSms::V1,
+        aggregate_id: csc.seeker_id,
+        data: Commands::SendSms::Data::V1.new(
+          phone_number: csc.phone_number,
+          message: "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
         )
-      end
+      )
     end
   end
 end

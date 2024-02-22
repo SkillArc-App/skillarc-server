@@ -73,6 +73,7 @@ module PubSubInitializer
       DbStreamAggregator.build(Coaches::CoachService.new, "coaches"),
       DbStreamAggregator.build(Coaches::BarrierService.new, "barriers"),
       DbStreamAggregator.build(Coaches::JobService.new, "coaches_jobs"),
+      DbStreamReactor.build(Contact::SmsService.new, "contact_sms"),
       DbStreamAggregator.build(Coaches::RecommendationService.new, "coaches_recommendations"),
       DbStreamAggregator.build(Employers::EmployerService.new, "employers"),
       DbStreamAggregator.build(Employers::ApplicationNotificationService.new, "employers_application_notification_service"),

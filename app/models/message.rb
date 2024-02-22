@@ -1,6 +1,8 @@
 class Message
   InvalidSchemaError = Class.new(StandardError)
 
+  MESSAGE_UUID_NAMESPACE = "3e1e29c9-0fff-437c-92a7-531ca1b744b1".freeze
+
   include(ValueSemantics.for_attributes do
     id Uuid
     aggregate_id String
@@ -30,6 +32,10 @@ class Message
       occurred_at == other.occurred_at &&
       data == other.data &&
       metadata == other.metadata
+  end
+
+  def checksum
+    Digest::UUID.uuid_v3(MESSAGE_UUID_NAMESPACE, data.to_json + trace_id + event_type + version.to_s)
   end
 
   def event_schema

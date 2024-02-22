@@ -81,6 +81,22 @@ RSpec.describe Employers::EmployerService do
         )
       )
     end
+    let(:applicant_status_updated) do
+      build(:events__message, :applicant_status_updated, version: 3, data: Events::ApplicantStatusUpdated::Data::V3.new(
+        applicant_id: SecureRandom.uuid,
+        applicant_first_name: "first_name",
+        applicant_last_name: "last_name",
+        applicant_email: "email",
+        applicant_phone_number: "phone_number",
+        profile_id: SecureRandom.uuid,
+        seeker_id: SecureRandom.uuid,
+        user_id: "user_id",
+        job_id:,
+        employer_name: "employer_name",
+        employment_title: "employment_title",
+        status: ApplicantStatus::StatusTypes::NEW
+      ))
+    end
 
     let(:employer_id) { SecureRandom.uuid }
     let(:job_id) { SecureRandom.uuid }
@@ -94,10 +110,23 @@ RSpec.describe Employers::EmployerService do
         described_class.handle_event(employer_invite_accepted)
         described_class.handle_event(job_created)
         described_class.handle_event(job_updated)
+        described_class.handle_event(applicant_status_updated)
       end
         .to change { Employers::Job.count }.by(1)
         .and change { Employers::Employer.count }.by(1)
         .and change { Employers::Recruiter.count }.by(1)
+        .and change { Employers::Applicant.count }.by(1)
+
+      expect(Employers::Applicant.last_created).to have_attributes(
+        first_name: "first_name",
+        last_name: "last_name",
+        email: "email",
+        phone_number: "phone_number",
+        status:,
+        job: Employers::Job.last_created,
+        seeker_id: applicant_status_updated.data.seeker_id,
+        status_as_of: applicant_status_updated.occurred_at
+      )
 
       expect(Employers::Job.last_created).to have_attributes(
         employment_title: "employment title",

@@ -9,42 +9,27 @@ RSpec.describe Employers::ApplicationNotificationService do
     let(:applicant_status_updated) { build(:events__message, :applicant_status_updated, version: 3, data:) }
     let(:data) do
       Events::ApplicantStatusUpdated::Data::V3.new(
-        applicant_id: SecureRandom.uuid,
-        applicant_first_name: "first_name",
-        applicant_last_name: "last_name",
-        applicant_email: "email",
-        applicant_phone_number: "phone_number",
-        profile_id: SecureRandom.uuid,
-        seeker_id: SecureRandom.uuid,
-        user_id: "user_id",
-        job_id:,
+        applicant_id: applicant.applicant_id,
+        applicant_first_name: applicant.first_name,
+        applicant_last_name: applicant.last_name,
+        applicant_email: applicant.email,
+        applicant_phone_number: applicant.phone_number,
+        profile_id: applicant.seeker_id,
+        seeker_id: applicant.seeker_id,
+        user_id: SecureRandom.uuid,
+        job_id: applicant.job.job_id,
         employer_name: "employer_name",
         employment_title: "employment_title",
         status:
       )
     end
+    let(:applicant) { create(:employers_applicant, job:) }
     let(:status) { ApplicantStatus::StatusTypes::NEW }
 
     let(:job) { create(:employers_job) }
     let(:job_id) { job.job_id }
 
     let!(:recruiter) { create(:employers_recruiter, employer: job.employer) }
-
-    it "creates the records" do
-      expect { subject }
-        .to change { Employers::Applicant.count }.by(1)
-
-      applicant = Employers::Applicant.last_created
-
-      expect(applicant.first_name).to eq(data.applicant_first_name)
-      expect(applicant.last_name).to eq(data.applicant_last_name)
-      expect(applicant.email).to eq(data.applicant_email)
-      expect(applicant.phone_number).to eq(data.applicant_phone_number)
-      expect(applicant.status).to eq(data.status)
-      expect(applicant.job).to eq(job)
-      expect(applicant.seeker_id).to eq(data.seeker_id)
-      expect(applicant.status_as_of).to eq(applicant_status_updated.occurred_at)
-    end
 
     it "sends an email to the employer" do
       expect_any_instance_of(Contact::SmtpService)

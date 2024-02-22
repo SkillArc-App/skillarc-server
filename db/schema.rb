@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_22_183744) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -324,7 +324,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_183744) do
     t.datetime "occurred_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "trace_id"
+    t.uuid "trace_id", null: false
     t.index ["aggregate_id", "version"], name: "index_events_on_aggregate_id_and_version"
     t.index ["event_type"], name: "index_events_on_event_type"
   end

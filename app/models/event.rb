@@ -11,6 +11,7 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  aggregate_id :string           not null
+#  trace_id     :uuid
 #
 # Indexes
 #

@@ -2,11 +2,12 @@
 #
 # Table name: applicants
 #
-#  id         :text             not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  job_id     :text             not null
-#  seeker_id  :uuid             not null
+#  id             :text             not null, primary key
+#  elevator_pitch :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  job_id         :text             not null
+#  seeker_id      :uuid             not null
 #
 # Indexes
 #

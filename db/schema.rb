@@ -95,6 +95,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.uuid "seeker_id", null: false
+    t.string "elevator_pitch"
     t.index ["seeker_id", "job_id"], name: "index_applicants_on_seeker_id_and_job_id", unique: true
     t.index ["seeker_id"], name: "index_applicants_on_seeker_id"
   end

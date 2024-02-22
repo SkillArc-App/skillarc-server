@@ -8,6 +8,7 @@ RSpec.describe Events::Message do
           described_class.new(
             id: SecureRandom.uuid,
             aggregate_id: SecureRandom.uuid,
+            trace_id: SecureRandom.uuid,
             event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
             metadata: {},
             version: 1,
@@ -22,6 +23,7 @@ RSpec.describe Events::Message do
         expect do
           described_class.new(
             id: SecureRandom.uuid,
+            trace_id: SecureRandom.uuid,
             aggregate_id: 10,
             event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
             metadata: {},
@@ -86,6 +88,7 @@ RSpec.describe Events::Message do
           described_class.new(
             id: SecureRandom.uuid,
             aggregate_id: SecureRandom.uuid,
+            trace_id: SecureRandom.uuid,
             event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
             metadata: {},
             data: {},
@@ -101,6 +104,7 @@ RSpec.describe Events::Message do
         message = described_class.new(
           id: SecureRandom.uuid,
           aggregate_id: SecureRandom.uuid,
+          trace_id: SecureRandom.uuid,
           event_type: Events::UserCreated::V1.event_type,
           metadata: Events::Common::Nothing,
           data: Events::UserCreated::Data::V1.new,

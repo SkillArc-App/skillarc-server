@@ -105,6 +105,7 @@ class Event < ApplicationRecord
     Events::Message.new(
       id:,
       aggregate_id:,
+      trace_id:,
       event_type:,
       version:,
       data: schema.data.from_hash(data),
@@ -117,6 +118,7 @@ class Event < ApplicationRecord
     create!(
       id: message.id,
       aggregate_id: message.aggregate_id,
+      trace_id: message.trace_id,
       event_type: message.event_type,
       data: message.data.to_h,
       metadata: message.metadata.to_h,

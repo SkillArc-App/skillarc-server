@@ -5,6 +5,7 @@ module Events
     include(ValueSemantics.for_attributes do
       id Uuid
       aggregate_id String
+      trace_id Uuid
       event_type Either(*Event::EventTypes::ALL)
       data
       metadata
@@ -25,6 +26,7 @@ module Events
       self.class == other.class &&
         event_type == other.event_type &&
         version == other.version &&
+        trace_id == other.trace_id &&
         aggregate_id == other.aggregate_id &&
         id == other.id &&
         occurred_at == other.occurred_at &&

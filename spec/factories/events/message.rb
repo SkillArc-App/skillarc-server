@@ -3,6 +3,7 @@ FactoryBot.define do
     id { SecureRandom.uuid }
     aggregate_id { SecureRandom.uuid }
     version { 1 }
+    trace_id { SecureRandom.uuid }
 
     Event::EventTypes::ALL.each do |event_type|
       trait event_type.to_sym do

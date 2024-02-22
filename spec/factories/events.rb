@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :event do
     id { SecureRandom.uuid }
     aggregate_id { SecureRandom.uuid }
+    trace_id { SecureRandom.uuid }
     chat_message_sent
     version { 1 }
 

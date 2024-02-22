@@ -4,7 +4,7 @@ class EventService
   SchemaAlreadyDefinedError = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
 
-  def self.create!(event_schema:, aggregate_id:, data:, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Events::Common::Nothing) # rubocop:disable Metrics/ParameterLists
+  def self.create!(event_schema:, aggregate_id:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Events::Common::Nothing) # rubocop:disable Metrics/ParameterLists
     raise NotEventSchemaError unless event_schema.is_a?(Events::Schema)
 
     message = Events::Message.new(
@@ -12,6 +12,7 @@ class EventService
       aggregate_id:,
       occurred_at:,
       data:,
+      trace_id:,
       metadata:,
       event_type: event_schema.event_type,
       version: event_schema.version

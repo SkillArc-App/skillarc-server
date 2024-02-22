@@ -7,6 +7,7 @@ RSpec.describe EventService do
         id:,
         event_schema:,
         aggregate_id:,
+        trace_id:,
         data:,
         occurred_at:,
         metadata:
@@ -15,6 +16,7 @@ RSpec.describe EventService do
 
     let(:event_type) { Event::EventTypes::CHAT_CREATED }
     let(:aggregate_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
     let(:data) { Events::Common::UntypedHashWrapper.new(data: "cool") }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::Common::UntypedHashWrapper.new(metadata: "cooler") }
@@ -67,6 +69,7 @@ RSpec.describe EventService do
               Events::Message.new(
                 id:,
                 event_type:,
+                trace_id:,
                 aggregate_id:,
                 data:,
                 occurred_at:,
@@ -145,6 +148,7 @@ RSpec.describe EventService do
       Events::Message.new(
         id: SecureRandom.uuid,
         aggregate_id: SecureRandom.uuid,
+        trace_id: SecureRandom.uuid,
         event_type: event_schema.event_type,
         version: event_schema.version,
         occurred_at: Time.zone.parse('2000-1-1'),
@@ -156,6 +160,7 @@ RSpec.describe EventService do
       Events::Message.new(
         id: SecureRandom.uuid,
         aggregate_id: SecureRandom.uuid,
+        trace_id: SecureRandom.uuid,
         event_type: event_schema.event_type,
         version: event_schema.version,
         occurred_at: Time.zone.parse('2000-1-1'),

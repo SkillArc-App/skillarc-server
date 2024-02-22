@@ -18,6 +18,7 @@ RSpec.describe Coaches::RecommendationService do
         .with(
           command_schema: Commands::SendSms::V1,
           aggregate_id: coach_seeker_context.seeker_id,
+          trace_id: job_recommended.trace_id,
           data: Commands::SendSms::Data::V1.new(
             phone_number: "1234567890",
             message: "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"

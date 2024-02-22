@@ -7,6 +7,7 @@ RSpec.describe CommandService do
         id:,
         command_schema:,
         aggregate_id:,
+        trace_id:,
         data:,
         occurred_at:,
         metadata:
@@ -14,6 +15,7 @@ RSpec.describe CommandService do
     end
 
     let(:aggregate_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
     let(:data) { Commands::SendSms::Data::V1.new(phone_number: "1234567890", message: "cool") }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:command_schema) { Commands::SendSms::V1 }
@@ -27,6 +29,7 @@ RSpec.describe CommandService do
           id:,
           event_schema: command_schema,
           aggregate_id:,
+          trace_id:,
           data:,
           occurred_at:,
           metadata:

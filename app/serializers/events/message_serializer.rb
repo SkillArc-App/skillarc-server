@@ -7,6 +7,7 @@ module Events
     def serialize(message)
       super(
         "id" => message.id,
+        "trace_id" => message.trace_id,
         "aggregate_id" => message.aggregate_id,
         "event_type" => message.event_type,
         "data" => message.data.to_h,
@@ -21,6 +22,7 @@ module Events
 
       klass.new(
         id: hash["id"],
+        trace_id: hash["trace_id"],
         aggregate_id: hash["aggregate_id"],
         event_type: hash["event_type"],
         data: schema.data.from_hash(hash["data"].deep_symbolize_keys),

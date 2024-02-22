@@ -14,9 +14,8 @@ RSpec.describe JobMatch::JobMatch do
     create(:event, :job_saved, aggregate_id: user.id, data: { job_id: saved_job.id })
     create(:event, :job_unsaved, aggregate_id: user.id, data: { job_id: saved_job.id })
     create(:event, :job_saved, aggregate_id: user.id, data: { job_id: saved_job.id })
-
-    create(:applicant, seeker:, job: applied_job)
   end
+  let!(:applicant) { create(:applicant, seeker:, job: applied_job, elevator_pitch: "pitch") }
 
   it "initializes with a list of jobs" do
     expect(subject.jobs).not_to be_nil
@@ -29,6 +28,10 @@ RSpec.describe JobMatch::JobMatch do
   it "returns a correct saved status" do
     expect(subject.jobs).to include(hash_including(id: saved_job.id, saved: true))
     expect(subject.jobs).to include(hash_including(id: unsaved_job.id, saved: false))
+  end
+
+  it "returns an elevator pitch" do
+    expect(subject.jobs).to include(hash_including(id: applied_job.id, elevator_pitch: "pitch"))
   end
 
   context "new application" do

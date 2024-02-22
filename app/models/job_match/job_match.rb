@@ -54,6 +54,7 @@ module JobMatch
           percent_match: match_score(job),
           saved: save_events[job.id]&.sort_by(&:occurred_at)&.last&.event_type == Event::EventTypes::JOB_SAVED,
           applied: application.present?,
+          elevator_pitch: application&.elevator_pitch,
           applicationStatus: application_status
         }
       end.sort_by { |job| job[:percent_match] }.reverse

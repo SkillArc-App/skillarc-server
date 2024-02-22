@@ -124,38 +124,39 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:updated_note) { "This note was updated" }
   let(:employer_name1) { "Cool company" }
   let(:employer_name2) { "Fun company" }
+  let(:consumer) { described_class.new }
 
   it_behaves_like "an event consumer"
 
   context "queries" do
     before do
-      described_class.handle_event(lead_added)
-      described_class.handle_event(non_seeker_user_created)
-      described_class.handle_event(user_without_email)
-      described_class.handle_event(seeker_without_email)
-      described_class.handle_event(user_created)
-      described_class.handle_event(user_updated)
-      described_class.handle_event(other_user_created)
-      described_class.handle_event(seeker_created)
-      described_class.handle_event(other_seeker_created)
-      described_class.handle_event(note_with_id_added1)
-      described_class.handle_event(note_with_id_added2)
-      described_class.handle_event(note_deleted)
-      described_class.handle_event(note_modified)
-      described_class.handle_event(skill_level_updated)
-      described_class.handle_event(coach_assigned)
-      described_class.handle_event(applicant_status_updated1)
-      described_class.handle_event(applicant_status_updated2)
-      described_class.handle_event(applicant_status_updated3)
-      described_class.handle_event(applicant_status_updated4)
-      described_class.handle_event(barriers_updated1)
-      described_class.handle_event(barriers_updated2)
-      described_class.handle_event(job_recommended)
-      described_class.handle_event(seeker_certified)
+      consumer.handle_event(lead_added)
+      consumer.handle_event(non_seeker_user_created)
+      consumer.handle_event(user_without_email)
+      consumer.handle_event(seeker_without_email)
+      consumer.handle_event(user_created)
+      consumer.handle_event(user_updated)
+      consumer.handle_event(other_user_created)
+      consumer.handle_event(seeker_created)
+      consumer.handle_event(other_seeker_created)
+      consumer.handle_event(note_with_id_added1)
+      consumer.handle_event(note_with_id_added2)
+      consumer.handle_event(note_deleted)
+      consumer.handle_event(note_modified)
+      consumer.handle_event(skill_level_updated)
+      consumer.handle_event(coach_assigned)
+      consumer.handle_event(applicant_status_updated1)
+      consumer.handle_event(applicant_status_updated2)
+      consumer.handle_event(applicant_status_updated3)
+      consumer.handle_event(applicant_status_updated4)
+      consumer.handle_event(barriers_updated1)
+      consumer.handle_event(barriers_updated2)
+      consumer.handle_event(job_recommended)
+      consumer.handle_event(seeker_certified)
     end
 
     describe ".reset_for_replay" do
-      subject { described_class.reset_for_replay }
+      subject { consumer.reset_for_replay }
 
       it "destroys all records" do
         expect(Coaches::CoachSeekerContext.count).not_to eq(0)
@@ -177,7 +178,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".all_contexts" do
-      subject { described_class.all_contexts }
+      subject { consumer.all_contexts }
 
       it "returns all profiles" do
         expected_profile = {
@@ -251,7 +252,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".all_leads" do
-      subject { described_class.all_leads }
+      subject { consumer.all_leads }
 
       it "returns all profiles" do
         expected_lead = {
@@ -269,7 +270,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".find_context" do
-      subject { described_class.find_context(seeker_id) }
+      subject { consumer.find_context(seeker_id) }
 
       it "returns the profile" do
         expected_profile = {
@@ -326,7 +327,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
                 occurred_at: time2
               )
 
-              described_class.handle_event(message)
+              consumer.handle_event(message)
 
               expect(subject[:last_active_on]).to eq(time2)
             end
@@ -352,7 +353,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               occurred_at: time2
             )
 
-            described_class.handle_event(message)
+            consumer.handle_event(message)
 
             expect(subject[:last_active_on]).to eq(time2)
           end
@@ -371,7 +372,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               occurred_at: time2
             )
 
-            described_class.handle_event(message)
+            consumer.handle_event(message)
 
             expect(subject[:last_active_on]).to eq(time2)
           end
@@ -395,7 +396,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               occurred_at: time2
             )
 
-            described_class.handle_event(message)
+            consumer.handle_event(message)
 
             expect(subject[:last_active_on]).to eq(time2)
           end
@@ -419,7 +420,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               occurred_at: time2
             )
 
-            described_class.handle_event(message)
+            consumer.handle_event(message)
 
             expect(subject[:last_active_on]).to eq(time2)
           end
@@ -430,13 +431,13 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
   context "command" do
     before do
-      described_class.handle_event(user_created)
-      described_class.handle_event(seeker_created)
-      described_class.handle_event(note_with_id_added1)
+      consumer.handle_event(user_created)
+      consumer.handle_event(seeker_created)
+      consumer.handle_event(note_with_id_added1)
     end
 
     describe ".add_lead" do
-      subject { described_class.add_lead(coach:, first_name:, last_name:, lead_id:, phone_number:, now:) }
+      subject { consumer.add_lead(coach:, first_name:, last_name:, lead_id:, phone_number:, now:) }
 
       let(:coach) { create(:coaches__coach) }
       let(:first_name) { "John" }
@@ -466,7 +467,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".add_note" do
-      subject { described_class.add_note(id: seeker_id, coach:, note: "This is a new note", note_id: note_id1, now:) }
+      subject { consumer.add_note(id: seeker_id, coach:, note: "This is a new note", note_id: note_id1, now:) }
 
       let(:coach) { create(:coaches__coach) }
 
@@ -490,7 +491,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".delete_note" do
-      subject { described_class.delete_note(coach:, id: seeker_id, note_id: note.note_id, now:) }
+      subject { consumer.delete_note(coach:, id: seeker_id, note_id: note.note_id, now:) }
 
       let(:note) { create(:coaches__seeker_note, note_id: note_id1) }
       let(:coach) { create(:coaches__coach) }
@@ -513,7 +514,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".modify_note" do
-      subject { described_class.modify_note(id: seeker_id, coach:, note_id: note_id1, note: updated_note, now:) }
+      subject { consumer.modify_note(id: seeker_id, coach:, note_id: note_id1, note: updated_note, now:) }
 
       let(:coach) { create(:coaches__coach) }
 
@@ -537,7 +538,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".recommend_job" do
-      subject { described_class.recommend_job(seeker_id:, job_id:, coach:, now:) }
+      subject { consumer.recommend_job(seeker_id:, job_id:, coach:, now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
       let(:coach) { create(:coaches__coach) }
@@ -559,7 +560,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".certify" do
-      subject { described_class.certify(seeker_id:, coach:, now:) }
+      subject { consumer.certify(seeker_id:, coach:, now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
       let(:coach) { create(:coaches__coach, user_id: user.id) }
@@ -583,7 +584,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".update_barriers" do
-      subject { described_class.update_barriers(id: seeker_id, barriers: [barrier.barrier_id], now:) }
+      subject { consumer.update_barriers(id: seeker_id, barriers: [barrier.barrier_id], now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
       let(:barrier) { create(:barrier) }
@@ -609,7 +610,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".assign_coach" do
-      subject { described_class.assign_coach(seeker_id, coach_id, "coach@blocktrainapp.com", now:) }
+      subject { consumer.assign_coach(seeker_id, coach_id, "coach@blocktrainapp.com", now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
       let(:coach_id) { SecureRandom.uuid }
@@ -630,7 +631,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".update_skill_level" do
-      subject { described_class.update_skill_level(seeker_id, "advanced", now:) }
+      subject { consumer.update_skill_level(seeker_id, "advanced", now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
 

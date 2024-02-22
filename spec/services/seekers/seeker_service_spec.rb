@@ -21,7 +21,7 @@ RSpec.describe Seekers::SeekerService do
 
   describe "elevator pitch added" do
     before do
-      described_class.handle_event(elevator_pitch_created)
+      described_class.new.handle_message(elevator_pitch_created)
     end
 
     it "updates the seeker's elevator pitch" do

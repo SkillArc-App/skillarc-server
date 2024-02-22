@@ -69,15 +69,15 @@ module PubSubInitializer
     )
 
     [
-      DbStreamAggregator.build(Coaches::SeekerService, "coach_seekers"),
-      DbStreamAggregator.build(Coaches::CoachService, "coaches"),
-      DbStreamAggregator.build(Coaches::BarrierService, "barriers"),
-      DbStreamAggregator.build(Coaches::JobService, "coaches_jobs"),
-      DbStreamAggregator.build(Coaches::RecommendationService, "coaches_recommendations"),
-      DbStreamAggregator.build(Employers::EmployerService, "employers"),
-      DbStreamAggregator.build(Employers::ApplicationNotificationService, "employers_application_notification_service"),
-      DbStreamAggregator.build(Employers::WeeklyUpdateService, "employers_weekly_update_service"),
-      DbStreamAggregator.build(Seekers::SeekerService, "seekers")
+      DbStreamAggregator.build(Coaches::SeekerService.new, "coach_seekers"),
+      DbStreamAggregator.build(Coaches::CoachService.new, "coaches"),
+      DbStreamAggregator.build(Coaches::BarrierService.new, "barriers"),
+      DbStreamAggregator.build(Coaches::JobService.new, "coaches_jobs"),
+      DbStreamAggregator.build(Coaches::RecommendationService.new, "coaches_recommendations"),
+      DbStreamAggregator.build(Employers::EmployerService.new, "employers"),
+      DbStreamAggregator.build(Employers::ApplicationNotificationService.new, "employers_application_notification_service"),
+      DbStreamAggregator.build(Employers::WeeklyUpdateService.new, "employers_weekly_update_service"),
+      DbStreamAggregator.build(Seekers::SeekerService.new, "seekers")
     ].each do |listener|
       listener.handled_events.each do |event_schema|
         PUBSUB.subscribe(

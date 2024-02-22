@@ -19,7 +19,7 @@ RSpec.describe Coaches::RecommendationService do
         "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
       ).and_call_original
 
-      described_class.handle_event(job_recommended)
+      described_class.new.handle_event(job_recommended)
     end
   end
 end

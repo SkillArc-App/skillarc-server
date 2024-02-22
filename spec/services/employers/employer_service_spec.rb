@@ -111,13 +111,15 @@ RSpec.describe Employers::EmployerService do
     let(:status) { ApplicantStatus::StatusTypes::NEW }
 
     it "creates the records" do
+      consumer = described_class.new
+
       expect do
-        described_class.handle_event(employer_created)
-        described_class.handle_event(employer_updated)
-        described_class.handle_event(employer_invite_accepted)
-        described_class.handle_event(job_created)
-        described_class.handle_event(job_updated)
-        described_class.handle_event(applicant_status_updated)
+        consumer.handle_event(employer_created)
+        consumer.handle_event(employer_updated)
+        consumer.handle_event(employer_invite_accepted)
+        consumer.handle_event(job_created)
+        consumer.handle_event(job_updated)
+        consumer.handle_event(applicant_status_updated)
       end
         .to change { Employers::Job.count }.by(1)
         .and change { Employers::Employer.count }.by(1)
@@ -167,7 +169,7 @@ RSpec.describe Employers::EmployerService do
       recruiter = Employers::Recruiter.last_created
 
       expect do
-        described_class.handle_event(
+        consumer.handle_event(
           build(
             :message,
             :job_owner_assigned,

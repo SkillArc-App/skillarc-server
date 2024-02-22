@@ -23,15 +23,16 @@ RSpec.describe Coaches::JobService do
   end
   let(:job_id) { SecureRandom.uuid }
   let(:employer_id) { SecureRandom.uuid }
+  let(:consumer) { described_class.new }
 
   before do
-    described_class.handle_event(job_created)
+    consumer.handle_event(job_created)
   end
 
   it_behaves_like "an event consumer"
 
   describe ".all" do
-    subject { described_class.all }
+    subject { consumer.all }
 
     it "returns all jobs" do
       expect(subject).to eq(
@@ -47,7 +48,7 @@ RSpec.describe Coaches::JobService do
     it "destroys all records" do
       expect(Coaches::Job.count).not_to eq(0)
 
-      described_class.reset_for_replay
+      consumer.reset_for_replay
 
       expect(Coaches::Job.count).to eq(0)
     end

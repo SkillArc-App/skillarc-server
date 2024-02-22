@@ -1,19 +1,21 @@
 module Employers
   class WeeklyUpdateService < EventConsumer
-    def self.handled_events
+    def handled_events
       [Events::DayElapsed::V1].freeze
     end
 
-    def self.handle_event(message)
+    def handle_event(message)
       case message.event_schema
       when Events::DayElapsed::V1
         handle_day_elapsed(message)
       end
     end
 
-    def self.reset_for_replay; end
+    def reset_for_replay; end
 
-    def self.handle_day_elapsed(message)
+    private
+
+    def handle_day_elapsed(message)
       date = message.data.date
       day_of_week = date.strftime("%A").downcase
 

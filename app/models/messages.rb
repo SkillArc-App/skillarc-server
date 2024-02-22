@@ -70,6 +70,7 @@ module Messages
       SESSION_STARTED = 'session_started'.freeze,
       ROLE_ADDED = 'role_added'.freeze,
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created'.freeze,
+      SEND_SMS = 'send_sms'.freeze,
       SMS_SENT = 'sms_sent'.freeze,
       SMTP_SENT = 'smtp_sent'.freeze,
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted'.freeze,

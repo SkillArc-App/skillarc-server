@@ -256,6 +256,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
     t.boolean "chat_enabled", default: false, null: false
   end
 
+  create_table "employers_applicant_status_reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "employers_applicant_id", null: false
+    t.string "reason", null: false
+    t.string "response", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employers_applicant_id"], name: "index_emp_applicant_status_reasons_on_emp_applicant_id"
+  end
+
   create_table "employers_applicants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "applicant_id", null: false
     t.uuid "seeker_id", null: false
@@ -763,6 +772,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
   add_foreign_key "education_experiences", "organizations", name: "EducationExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "education_experiences", "seekers"
   add_foreign_key "employer_invites", "employers", name: "EmployerInvite_employer_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "employers_applicant_status_reasons", "employers_applicants"
   add_foreign_key "employers_applicants", "employers_jobs"
   add_foreign_key "employers_job_owners", "employers_jobs"
   add_foreign_key "employers_job_owners", "employers_recruiters"

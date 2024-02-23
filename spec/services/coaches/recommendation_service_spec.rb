@@ -12,7 +12,7 @@ RSpec.describe Coaches::RecommendationService do
   it_behaves_like "an event consumer"
 
   context "JobRecommended" do
-    it "calls the Sms Gateway" do
+    it "does emit an SEND_SMS command" do
       expect(CommandService)
         .to receive(:create!)
         .with(
@@ -27,6 +27,17 @@ RSpec.describe Coaches::RecommendationService do
         .and_call_original
 
       described_class.new.handle_message(job_recommended)
+    end
+
+    context "when the phone number is not on the coach seekers context" do
+      let!(:coach_seeker_context) { create(:coaches__coach_seeker_context, phone_number: nil, seeker_id:) }
+
+      it "does not emit an SEND_SMS command" do
+        expect(CommandService)
+          .not_to receive(:create!)
+
+        described_class.new.handle_message(job_recommended)
+      end
     end
   end
 end

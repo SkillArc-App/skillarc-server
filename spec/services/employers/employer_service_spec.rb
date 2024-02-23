@@ -104,6 +104,12 @@ RSpec.describe Employers::EmployerService do
         ]
       ))
     end
+    let(:seeker_certified) do
+      build(:message, :seeker_certified, version: 1, data: Events::SeekerCertified::Data::V1.new(
+        coach_email: "hannah@skillarc.com",
+        coach_id: SecureRandom.uuid
+      ))
+    end
 
     let(:employer_id) { SecureRandom.uuid }
     let(:job_id) { SecureRandom.uuid }
@@ -120,12 +126,14 @@ RSpec.describe Employers::EmployerService do
         consumer.handle_message(job_created)
         consumer.handle_message(job_updated)
         consumer.handle_message(applicant_status_updated)
+        consumer.handle_message(seeker_certified)
       end
         .to change { Employers::Job.count }.by(1)
         .and change { Employers::Employer.count }.by(1)
         .and change { Employers::Recruiter.count }.by(1)
         .and change { Employers::Applicant.count }.by(1)
         .and change { Employers::ApplicantStatusReason.count }.by(1)
+        .and change { Employers::Seeker.count }.by(1)
 
       expect(Employers::Applicant.last_created).to have_attributes(
         first_name: "first_name",
@@ -164,6 +172,11 @@ RSpec.describe Employers::EmployerService do
       expect(Employers::Recruiter.last_created).to have_attributes(
         employer: Employers::Employer.last_created,
         email: "invite_email"
+      )
+
+      expect(Employers::Seeker.last_created).to have_attributes(
+        seeker_id: seeker_certified.aggregate_id,
+        certified_by: "hannah@skillarc.com"
       )
 
       recruiter = Employers::Recruiter.last_created

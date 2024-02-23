@@ -11,6 +11,7 @@ module Employers
         Events::EmployerCreated::V1,
         Events::EmployerInviteAccepted::V1,
         Events::EmployerUpdated::V1,
+        Events::SeekerCertified::V1,
         Events::JobCreated::V1,
         Events::JobOwnerAssigned::V1,
         Events::JobUpdated::V1
@@ -27,6 +28,8 @@ module Employers
         handle_employer_invite_accepted(message)
       when Events::EmployerUpdated::V1
         handle_employer_updated(message)
+      when Events::SeekerCertified::V1
+        handle_seeker_certified(message)
       when Events::JobCreated::V1
         handle_job_created(message)
       when Events::JobOwnerAssigned::V1
@@ -97,6 +100,16 @@ module Employers
 
       e.update!(
         **message.data.to_h
+      )
+    end
+
+    def handle_seeker_certified(message)
+      e = Seeker.find_or_initialize_by(
+        seeker_id: message.aggregate_id
+      )
+
+      e.update!(
+        certified_by: message.data.coach_email
       )
     end
 

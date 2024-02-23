@@ -34,7 +34,7 @@ RSpec.describe Employers::ApplicantService do
       expect(subject).to eq(
         [
           {
-            id: applicant.id,
+            id: applicant.applicant_id,
             job_id: job.id,
             chat_enabled: true,
             created_at: applicant.created_at,

@@ -1,8 +1,13 @@
 module Employers
   class EmployerService < EventConsumer
+    def self.handled_events_sync
+      [
+        Events::ApplicantStatusUpdated::V3
+      ].freeze
+    end
+
     def self.handled_events
       [
-        Events::ApplicantStatusUpdated::V3,
         Events::EmployerCreated::V1,
         Events::EmployerInviteAccepted::V1,
         Events::EmployerUpdated::V1,

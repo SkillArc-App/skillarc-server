@@ -7,7 +7,7 @@ class Employers::JobsController < ApplicationController
 
   def index
     # jobs = current_user.employer_admin? ? Job.all.with_employer_info : recruiter.employer.jobs.with_employer_info
-    employers = current_user.employer_admin? ? Employers::Employer.all : [recruiter.employer]
+    employers = current_user.employer_admin? ? Employers::Employer.all : [Employers::Recruiter.find_by(email: current_user.email).employer]
 
     jobs = Employers::JobService.new(employers:).all
     # Because the reason list is small we just load all of them

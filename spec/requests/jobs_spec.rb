@@ -22,6 +22,10 @@ RSpec.describe "Jobs", type: :request do
   describe "POST /apply" do
     subject { post job_apply_path(job), headers: }
 
+    before do
+      allow(Employers::EmployerService).to receive(:handle_event)
+    end
+
     include_context "authenticated"
 
     let(:job) { create(:job) }

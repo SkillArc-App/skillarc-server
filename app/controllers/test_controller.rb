@@ -78,8 +78,27 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_test_recruiter_with_applicant
     recruiter = FactoryBot.create(:recruiter)
+    employer = recruiter.employer
+
+    employers_employer = FactoryBot.create(:employers_employer, employer_id: employer.id, name: employer.name)
+    FactoryBot.create(:employers_recruiter, employer: employers_employer, email: recruiter.user.email)
+
     job = FactoryBot.create(:job, employer: recruiter.employer)
+    employers_job = FactoryBot.create(:employers_job, job_id: job.id, employer: employers_employer, employment_title: job.employment_title)
+
     applicant = FactoryBot.create(:applicant, job:)
+    FactoryBot.create(
+      :employers_applicant,
+      applicant_id: applicant.id,
+      job: employers_job,
+      seeker_id: applicant.seeker.id,
+      first_name: applicant.seeker.user.first_name,
+      last_name: applicant.seeker.user.last_name,
+      email: applicant.seeker.user.email,
+      phone_number: applicant.seeker.user.phone_number,
+      status: applicant.status.status,
+      status_as_of: Time.zone.now
+    )
 
     Coaches::CoachSeekerContext.create!(
       user_id: recruiter.user.id,

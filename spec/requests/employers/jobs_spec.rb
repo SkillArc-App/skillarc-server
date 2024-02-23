@@ -9,7 +9,7 @@ RSpec.describe "Employers::Jobs", type: :request do
       it "calls Employers::JobService" do
         expect(Employers::JobService)
           .to receive(:new)
-          .with(employers: [employer])
+          .with(employers: [employers_employer])
           .and_call_original
 
         expect_any_instance_of(Employers::JobService)
@@ -22,7 +22,7 @@ RSpec.describe "Employers::Jobs", type: :request do
       it "calls Employers::ApplicantService" do
         expect(Employers::ApplicantService)
           .to receive(:new)
-          .with(employers: [employer])
+          .with(employers: [employers_employer])
           .and_call_original
 
         expect_any_instance_of(Employers::ApplicantService)
@@ -48,9 +48,15 @@ RSpec.describe "Employers::Jobs", type: :request do
           job1 = create(:job, employer:)
           job2 = create(:job, employer:)
 
+          employers_job1 = create(:employers_job, employer: employers_employer, employment_title: job1.employment_title)
+          employers_job2 = create(:employers_job, employer: employers_employer, employment_title: job2.employment_title)
+
           create(:applicant, job: job1)
           create(:applicant, job: job2)
           create(:applicant, job: job2)
+
+          create(:employers_applicant, job: employers_job1)
+          create(:employers_applicant, job: employers_job2)
         end
 
         include_context "employer authenticated openapi"

@@ -8,8 +8,8 @@ module Employers
       Job.where(employer: employers).map do |job|
         {
           id: job.id,
-          employer_id: job.employer.id,
-          employment_title: job.employment_title,
+          employer_id: job.employer.employer_id,
+          name: job.employment_title,
           employer_name: job.employer.name,
           description: "descriptions don't exist yet"
         }

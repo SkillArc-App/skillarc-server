@@ -25,6 +25,7 @@ RSpec.describe "Employers::Chats", type: :request do
       include_context "employer authenticated"
 
       let(:recruiter) { nil }
+      let(:employers_recruiter) { nil }
 
       before do
         create(:user_role, user:, role: Role.create!(id: SecureRandom.uuid, name: "employer_admin"))

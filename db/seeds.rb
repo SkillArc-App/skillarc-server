@@ -16,6 +16,22 @@ sg_employer = Employer.create!(
     'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
 )
 
+employers_turner = Employers::Employer.create!(
+  employer_id: turner_employer.id,
+  name: turner_employer.name,
+  bio: turner_employer.bio,
+  location: turner_employer.location,
+  logo_url: turner_employer.logo_url
+)
+
+employers_sg = Employers::Employer.create!(
+  employer_id: sg_employer.id,
+  name: sg_employer.name,
+  bio: sg_employer.bio,
+  location: sg_employer.location,
+  logo_url: sg_employer.logo_url
+)
+
 recruiter_user = User.create!(
   id: SecureRandom.uuid,
   first_name: 'Recruiter',
@@ -36,10 +52,15 @@ EventService.create!(
   occurred_at: recruiter_user.created_at
 )
 
-Recruiter.create!(
+recruiter = Recruiter.create!(
   id: SecureRandom.uuid,
   employer: turner_employer,
   user: recruiter_user
+)
+
+Employers::Recruiter.create!(
+  employer: employers_turner,
+  email: recruiter.user.email
 )
 
 mechanic_job = Job.create!(
@@ -91,6 +112,51 @@ contractor = Job.create!(
   work_days: 'Weekdays, some weekends',
   requirements_description:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
+)
+
+employers_mechanic_job = Employers::Job.create!(
+  employer: employers_turner,
+  job_id: mechanic_job.id,
+  employment_title: mechanic_job.employment_title,
+  location: mechanic_job.location,
+  employment_type: mechanic_job.employment_type,
+  hide_job: mechanic_job.hide_job,
+  benefits_description: mechanic_job.benefits_description,
+  responsibilities_description: mechanic_job.responsibilities_description,
+  industry: mechanic_job.industry,
+  schedule: mechanic_job.schedule,
+  work_days: mechanic_job.work_days,
+  requirements_description: mechanic_job.requirements_description
+)
+
+employers_earthwork_job = Employers::Job.create!(
+  employer: employers_sg,
+  job_id: earthwork_job.id,
+  employment_title: earthwork_job.employment_title,
+  location: earthwork_job.location,
+  employment_type: earthwork_job.employment_type,
+  hide_job: earthwork_job.hide_job,
+  benefits_description: earthwork_job.benefits_description,
+  responsibilities_description: earthwork_job.responsibilities_description,
+  industry: earthwork_job.industry,
+  schedule: earthwork_job.schedule,
+  work_days: earthwork_job.work_days,
+  requirements_description: earthwork_job.requirements_description
+)
+
+employers_contractor = Employers::Job.create!(
+  employer: employers_sg,
+  job_id: contractor.id,
+  employment_title: contractor.employment_title,
+  location: contractor.location,
+  employment_type: contractor.employment_type,
+  hide_job: contractor.hide_job,
+  benefits_description: contractor.benefits_description,
+  responsibilities_description: contractor.responsibilities_description,
+  industry: contractor.industry,
+  schedule: contractor.schedule,
+  work_days: contractor.work_days,
+  requirements_description: contractor.requirements_description
 )
 
 tag = Tag.create!(
@@ -691,7 +757,7 @@ EventService.create!(
   occurred_at: seeker_with_profile.user.created_at
 )
 
-Applicant.create!(
+applicant = Applicant.create!(
   id: SecureRandom.uuid,
   seeker: seeker_with_profile,
   job: mechanic_job,
@@ -701,6 +767,17 @@ Applicant.create!(
       status: 'new'
     )
   ]
+)
+
+Employers::Applicant.create!(
+  seeker_id: applicant.seeker.id,
+  job: employers_mechanic_job,
+  first_name: applicant.seeker.user.first_name,
+  last_name: applicant.seeker.user.last_name,
+  email: applicant.seeker.user.email,
+  phone_number: applicant.seeker.user.phone_number,
+  applicant_id: applicant.id,
+  status: 'new'
 )
 
 OnboardingSession.create!(

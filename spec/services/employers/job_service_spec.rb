@@ -23,8 +23,8 @@ RSpec.describe Employers::JobService do
         [{
           id: job.id,
           description: "descriptions don't exist yet",
-          employer_id: employer.id,
-          employment_title: "Welder",
+          employer_id: employer.employer_id,
+          name: "Welder",
           employer_name: "Employer"
         }]
       )

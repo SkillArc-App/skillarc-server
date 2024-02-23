@@ -37,7 +37,7 @@ RSpec.describe JobMatch::JobMatch do
   context "new application" do
     it "returns a correct applied status" do
       expect(subject.jobs).to include(hash_including(id: saved_job.id, applied: false))
-      expect(subject.jobs).to include(hash_including(id: applied_job.id, applied: true, applicationStatus: "Application Sent"))
+      expect(subject.jobs).to include(hash_including(id: applied_job.id, applied: true, application_status: "Application Sent"))
     end
   end
 
@@ -47,7 +47,13 @@ RSpec.describe JobMatch::JobMatch do
     end
 
     it "returns a correct applied status" do
-      expect(subject.jobs).to include(hash_including(id: applied_job.id, applied: true, applicationStatus: "Introduction Sent"))
+      expect(subject.jobs).to include(
+        hash_including(
+          id: applied_job.id,
+          applied: true,
+          application_status: "Introduction Sent"
+        )
+      )
     end
   end
 
@@ -57,7 +63,13 @@ RSpec.describe JobMatch::JobMatch do
     end
 
     it "returns a correct applied status" do
-      expect(subject.jobs).to include(hash_including(id: applied_job.id, applied: true, applicationStatus: "Interview in Progress"))
+      expect(subject.jobs).to include(
+        hash_including(
+          id: applied_job.id,
+          applied: true,
+          application_status: "Interview in Progress"
+        )
+      )
     end
   end
 end

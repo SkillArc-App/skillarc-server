@@ -37,25 +37,25 @@ module JobMatch
 
         {
           id: job.id,
-          careerPaths: job.career_paths.sort_by { |cp| cp[:order] },
-          employerId: job.employer_id,
+          career_paths: job.career_paths.sort_by { |cp| cp[:order] },
+          employer_id: job.employer_id,
           employer: job.employer,
           employment_title: job.employment_title,
           industry: job.industry,
-          benefitsDescription: job.benefits_description,
-          responsibilitiesDescription: job.responsibilities_description,
+          benefits_description: job.benefits_description,
+          responsibilities_description: job.responsibilities_description,
           location: job.location,
-          employmentType: job.employment_type,
-          hideJob: job.hide_job,
+          employment_type: job.employment_type,
+          hide_job: job.hide_job,
           schedule: job.schedule,
-          jobTag: job_tags,
-          workDays: job.work_days,
-          requirementsDescription: job.requirements_description,
+          job_tag: job_tags,
+          work_days: job.work_days,
+          requirements_description: job.requirements_description,
           percent_match: match_score(job),
           saved: save_events[job.id]&.sort_by(&:occurred_at)&.last&.event_type == Event::EventTypes::JOB_SAVED,
           applied: application.present?,
           elevator_pitch: application&.elevator_pitch,
-          applicationStatus: application_status
+          application_status:
         }
       end.sort_by { |job| job[:percent_match] }.reverse
     end

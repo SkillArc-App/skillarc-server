@@ -10,6 +10,10 @@ RSpec.describe ApplicantService do
     let(:reasons) { [{ id: reason.id, response: "Bad canidate" }] }
     let(:reason) { create(:reason) }
 
+    before do
+      allow(Employers::EmployerService).to receive(:handle_event)
+    end
+
     it "creates a new applicant status" do
       expect do
         subject

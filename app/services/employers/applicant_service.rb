@@ -9,7 +9,7 @@ module Employers
 
       Applicant.where(job: jobs).map do |a|
         {
-          id: a.id,
+          id: a.applicant_id,
           job_id: a.job.id,
           chat_enabled: true,
           created_at: a.created_at,

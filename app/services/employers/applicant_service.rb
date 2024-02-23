@@ -21,7 +21,7 @@ module Employers
           profile_link: "/profiles/#{a.seeker_id}",
           programs: [], # TODO
           status: a.status,
-          status_reasons: [] # TODO
+          status_reasons: a.applicant_status_reasons.map(&:reason)
         }
       end
     end

@@ -129,7 +129,7 @@ employers_mechanic_job = Employers::Job.create!(
   requirements_description: mechanic_job.requirements_description
 )
 
-employers_earthwork_job = Employers::Job.create!(
+Employers::Job.create!(
   employer: employers_sg,
   job_id: earthwork_job.id,
   employment_title: earthwork_job.employment_title,
@@ -144,7 +144,7 @@ employers_earthwork_job = Employers::Job.create!(
   requirements_description: earthwork_job.requirements_description
 )
 
-employers_contractor = Employers::Job.create!(
+Employers::Job.create!(
   employer: employers_sg,
   job_id: contractor.id,
   employment_title: contractor.employment_title,

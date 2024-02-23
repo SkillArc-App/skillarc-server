@@ -80,6 +80,21 @@ RSpec.describe DbStreamAggregator do
       subject
     end
 
+    context "when replayed more than once" do
+      it "plays the events twice" do
+        expect(consumer).to receive(:handle_message).with(
+          event.message
+        ).twice
+
+        expect(consumer).to receive(:handle_message).with(
+          event2.message
+        ).twice
+
+        instance.replay
+        instance.replay
+      end
+    end
+
     context "when a bookmark already exists" do
       let!(:listener_bookmark) do
         create(

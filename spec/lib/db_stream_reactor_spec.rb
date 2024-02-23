@@ -80,6 +80,21 @@ RSpec.describe DbStreamReactor do
       subject
     end
 
+    context "when replayed more than once" do
+      it "only plays the events once" do
+        expect(consumer).to receive(:handle_message).with(
+          event.message
+        ).once
+
+        expect(consumer).to receive(:handle_message).with(
+          event2.message
+        ).once
+
+        instance.replay
+        instance.replay
+      end
+    end
+
     context "when a bookmark already exists" do
       let!(:listener_bookmark) do
         create(

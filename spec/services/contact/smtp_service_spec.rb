@@ -1,125 +1,134 @@
 require 'rails_helper'
 
 RSpec.describe Contact::SmtpService do
-  describe "#notify_employer_of_applicant" do
-    subject { described_class.new.notify_employer_of_applicant(job, owner_email, applicant) }
+  describe "#handle_message" do
+    subject { described_class.new.handle_message(message) }
 
-    let(:job) do
-      double(
-        employment_title: "Job Title"
-      )
-    end
-    let(:owner_email) { "recruiter@skillarc.com" }
-    let(:applicant) do
-      double(
-        first_name: "John",
-        last_name: "Chabot",
-        email: "applicant@a.com",
-        phone_number: "1 555 555 5555",
-        seeker_id: "seeker_id"
-      )
-    end
+    context "when the message is Commands::NotifyEmployerOfApplicant::V1" do
+      let(:message) do
+        build(
+          :message,
+          :notify_employer_of_applicant,
+          version: 1,
+          data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
+            employment_title: "Job Title",
+            recepent_email: "recruiter@skillarc.com",
 
-    it "sends an email" do
-      expect(EmployerApplicantNotificationMailer)
-        .to receive(:with)
-        .with(job:, owner_email:, applicant:)
-        .and_call_original
+            certified_by: "chris@skillarc.com",
+            applicant_first_name: "John",
+            applicant_last_name: "Chabot",
+            applicant_email: "applicant@a.com",
+            applicant_phone_number: "1 555 555 5555",
+            applicant_seeker_id: "47407410-d0df-4045-b2d8-20c9f03b6b55"
+          )
+        )
+      end
 
-      expect_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_call_original
+      it "sends an email" do
+        expect(EmployerApplicantNotificationMailer)
+          .to receive(:with)
+          .with(message:)
+          .and_call_original
 
-      subject
-    end
+        expect_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_call_original
 
-    it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::SmtpSent::V1,
-        aggregate_id: "applicant@a.com",
-        data: Events::SmtpSent::Data::V1.new(
-          email: "recruiter@skillarc.com",
-          template: EmployerApplicantNotificationMailer.class.to_s,
-          template_data: {
-            job: {
+        subject
+      end
+
+      it "publishes an event" do
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::SmtpSent::V1,
+          aggregate_id: "recruiter@skillarc.com",
+          trace_id: message.trace_id,
+          data: Events::SmtpSent::Data::V1.new(
+            email: "recruiter@skillarc.com",
+            template: EmployerApplicantNotificationMailer.class.to_s,
+            template_data: {
               employment_title: "Job Title",
-              owner_email: "recruiter@skillarc.com"
-            },
-            applicant: {
-              first_name: "John",
-              last_name: "Chabot",
-              email: "applicant@a.com",
-              phone_number: "1 555 555 5555",
-              seeker_id: "seeker_id"
+              recepent_email: "recruiter@skillarc.com",
+
+              certified_by: "chris@skillarc.com",
+              applicant_first_name: "John",
+              applicant_last_name: "Chabot",
+              applicant_email: "applicant@a.com",
+              applicant_phone_number: "1 555 555 5555",
+              applicant_seeker_id: "47407410-d0df-4045-b2d8-20c9f03b6b55"
             }
-          }
+          )
         )
-      )
 
-      subject
-    end
-  end
-
-  describe "#send_weekly_employer_update" do
-    subject do
-      described_class.new.send_weekly_employer_update(
-        new_applicants:,
-        pending_applicants:,
-        employer:,
-        recruiter:
-      )
+        subject
+      end
     end
 
-    let(:new_applicants) { [{ first_name: "First", last_name: "Last" }] }
-    let(:pending_applicants) { [{ first_name: "John", last_name: "Chabot" }] }
-    let(:employer) { { name: "Employer Name" } }
-    let(:recruiter) { { email: "foo@bar.baz" } }
-
-    it "sends an email" do
-      expect(EmployerWeeklyMailer)
-        .to receive(:with)
-        .with(
-          new_applicants:,
-          pending_applicants:,
-          employer:,
-          recruiter:
-        )
-        .and_call_original
-
-      expect_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_call_original
-
-      subject
-    end
-
-    it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::SmtpSent::V1,
-        aggregate_id: "foo@bar.baz",
-        data: Events::SmtpSent::Data::V1.new(
-          email: "foo@bar.baz",
-          template: EmployerWeeklyMailer.class.to_s,
-          template_data: {
-            employer: {
-              name: "Employer Name"
-            },
-            recruiter: {
-              email: "foo@bar.baz"
-            },
+    context "when the message is Commands::SendWeeklyEmployerUpdate::V1" do
+      let(:message) do
+        build(
+          :message,
+          :send_weekly_employer_update,
+          version: 1,
+          data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+            employer_name: "Employer Name",
+            recepent_email: "foo@bar.baz",
             new_applicants: [
-              {
+              Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
                 first_name: "First",
                 last_name: "Last"
-              }
+              )
             ],
             pending_applicants: [
-              {
+              Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
                 first_name: "John",
-                last_name: "Chabot"
-              }
+                last_name: "Chabot",
+                certified_by: "chris@skillarc.com"
+              )
             ]
-          }
+          )
         )
-      )
+      end
 
-      subject
+      it "sends an email" do
+        expect(EmployerWeeklyMailer)
+          .to receive(:with)
+          .with(message:)
+          .and_call_original
+
+        expect_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_call_original
+
+        subject
+      end
+
+      it "publishes an event" do
+        expect(EventService).to receive(:create!).with(
+          event_schema: Events::SmtpSent::V1,
+          aggregate_id: "foo@bar.baz",
+          trace_id: message.trace_id,
+          data: Events::SmtpSent::Data::V1.new(
+            email: "foo@bar.baz",
+            template: EmployerWeeklyMailer.class.to_s,
+            template_data: {
+              employer_name: "Employer Name",
+              recepent_email: "foo@bar.baz",
+              new_applicants: [
+                {
+                  first_name: "First",
+                  last_name: "Last",
+                  certified_by: nil
+                }
+              ],
+              pending_applicants: [
+                {
+                  first_name: "John",
+                  last_name: "Chabot",
+                  certified_by: "chris@skillarc.com"
+                }
+              ]
+            }
+          )
+        )
+
+        subject
+      end
     end
   end
 end

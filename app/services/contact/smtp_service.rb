@@ -1,65 +1,42 @@
 module Contact
-  class SmtpService
-    def notify_employer_of_applicant(job, owner_email, applicant)
-      EmployerApplicantNotificationMailer.with(job:, owner_email:, applicant:).notify_employer.deliver_now
-
-      EventService.create!(
-        event_schema: Events::SmtpSent::V1,
-        aggregate_id: applicant.email,
-        data: Events::SmtpSent::Data::V1.new(
-          email: owner_email,
-          template: EmployerApplicantNotificationMailer.class.to_s,
-          template_data: {
-            job: {
-              employment_title: job.employment_title,
-              owner_email:
-            },
-            applicant: {
-              first_name: applicant.first_name,
-              last_name: applicant.last_name,
-              email: applicant.email,
-              phone_number: applicant.phone_number,
-              seeker_id: applicant.seeker_id
-            }
-          }
-        )
-      )
+  class SmtpService < EventConsumer
+    def handled_events
+      [
+        Commands::NotifyEmployerOfApplicant::V1,
+        Commands::SendWeeklyEmployerUpdate::V1
+      ]
     end
 
-    def send_weekly_employer_update(new_applicants:, pending_applicants:, employer:, recruiter:)
-      EmployerWeeklyMailer.with(
-        employer:,
-        recruiter:,
-        new_applicants:,
-        pending_applicants:
-      ).applicants.deliver_now
+    def handle_message(message, *_params)
+      case message.event_schema
+      when Commands::NotifyEmployerOfApplicant::V1
+        handle_notify_employer_of_applicant(message)
+      when Commands::SendWeeklyEmployerUpdate::V1
+        handle_send_weekly_employer_update(message)
+      end
+    end
 
+    private
+
+    def handle_notify_employer_of_applicant(message)
+      EmployerApplicantNotificationMailer.with(message:).notify_employer.deliver_now
+      emit_smtp_sent_event(message)
+    end
+
+    def handle_send_weekly_employer_update(message)
+      EmployerWeeklyMailer.with(message:).applicants.deliver_now
+      emit_smtp_sent_event(message)
+    end
+
+    def emit_smtp_sent_event(message)
       EventService.create!(
         event_schema: Events::SmtpSent::V1,
-        aggregate_id: recruiter[:email],
+        aggregate_id: message.data.recepent_email,
+        trace_id: message.trace_id,
         data: Events::SmtpSent::Data::V1.new(
-          email: recruiter[:email],
+          email: message.data.recepent_email,
           template: EmployerWeeklyMailer.class.to_s,
-          template_data: {
-            employer: {
-              name: employer[:name]
-            },
-            recruiter: {
-              email: recruiter[:email]
-            },
-            new_applicants: new_applicants.map do |applicant|
-              {
-                first_name: applicant[:first_name],
-                last_name: applicant[:last_name]
-              }
-            end,
-            pending_applicants: pending_applicants.map do |applicant|
-              {
-                first_name: applicant[:first_name],
-                last_name: applicant[:last_name]
-              }
-            end
-          }
+          template_data: message.data.to_h
         )
       )
     end

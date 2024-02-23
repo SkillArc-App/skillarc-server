@@ -74,10 +74,10 @@ module PubSubInitializer
       DbStreamAggregator.build(Coaches::BarrierService.new, "barriers"),
       DbStreamAggregator.build(Coaches::JobService.new, "coaches_jobs"),
       DbStreamReactor.build(Contact::SmsService.new, "contact_sms"),
-      DbStreamAggregator.build(Coaches::RecommendationService.new, "coaches_recommendations"),
+      DbStreamReactor.build(Coaches::RecommendationService.new, "coaches_recommendations"),
       DbStreamAggregator.build(Employers::EmployerService.new, "employers"),
       DbStreamAggregator.build(Employers::ApplicationNotificationService.new, "employers_application_notification_service"),
-      DbStreamAggregator.build(Employers::WeeklyUpdateService.new, "employers_weekly_update_service"),
+      DbStreamReactor.build(Employers::WeeklyUpdateService.new, "employers_weekly_update_service"),
       DbStreamAggregator.build(Seekers::SeekerService.new, "seekers")
     ].each do |listener|
       listener.handled_events.each do |event_schema|

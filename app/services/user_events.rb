@@ -28,13 +28,13 @@ class UserEvents
     case message.event_type
     when Messages::Types::APPLICANT_STATUS_UPDATED
       "Applicant Status Updated: #{message.data[:employment_title]} - #{message.data[:status]}"
-    when Messages::Types::EDUCATION_EXPERIENCE_CREATED
+    when Messages::Types::Seekers::EDUCATION_EXPERIENCE_CREATED
       "Education Experience Created: #{message.data[:organization_name]}"
-    when Messages::Types::EXPERIENCE_CREATED
+    when Messages::Types::Seekers::EXPERIENCE_CREATED
       "Work Experience Created: #{message.data[:organization_name]}"
-    when Messages::Types::JOB_SAVED
+    when Messages::Types::Seekers::JOB_SAVED
       "Job Saved: #{message.data[:employment_title]}"
-    when Messages::Types::ONBOARDING_COMPLETED
+    when Messages::Types::Seekers::ONBOARDING_COMPLETED
       "Onboarding Complete"
     when Messages::Types::USER_CREATED
       "Signed Up"

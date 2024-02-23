@@ -34,12 +34,12 @@ module Jobs
         save_events = Event
                       .where(
                         aggregate_id: options[:user].id,
-                        event_type: [Messages::Types::JOB_SAVED, Messages::Types::JOB_UNSAVED]
+                        event_type: [Messages::Types::Seekers::JOB_SAVED, Messages::Types::Seekers::JOB_UNSAVED]
                       )
                       .map(&:message)
                       .select { |e| e.data[:job_id] == job.id }
 
-        save_events&.sort_by(&:occurred_at)&.last&.event_type == Messages::Types::JOB_SAVED || false
+        save_events&.sort_by(&:occurred_at)&.last&.event_type == Messages::Types::Seekers::JOB_SAVED || false
       end
       association :employer, blueprint: Employers::EmployerBlueprint
     end

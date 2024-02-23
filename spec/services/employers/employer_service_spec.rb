@@ -94,7 +94,14 @@ RSpec.describe Employers::EmployerService do
         job_id:,
         employer_name: "employer_name",
         employment_title: "employment_title",
-        status: ApplicantStatus::StatusTypes::NEW
+        status: ApplicantStatus::StatusTypes::NEW,
+        reasons: [
+          Events::ApplicantStatusUpdated::Reason::V2.new(
+            id: SecureRandom.uuid,
+            response: "response",
+            reason_description: "reason_description"
+          )
+        ]
       ))
     end
 
@@ -116,6 +123,7 @@ RSpec.describe Employers::EmployerService do
         .and change { Employers::Employer.count }.by(1)
         .and change { Employers::Recruiter.count }.by(1)
         .and change { Employers::Applicant.count }.by(1)
+        .and change { Employers::ApplicantStatusReason.count }.by(1)
 
       expect(Employers::Applicant.last_created).to have_attributes(
         first_name: "first_name",
@@ -126,6 +134,12 @@ RSpec.describe Employers::EmployerService do
         job: Employers::Job.last_created,
         seeker_id: applicant_status_updated.data.seeker_id,
         status_as_of: applicant_status_updated.occurred_at
+      )
+
+      expect(Employers::ApplicantStatusReason.last_created).to have_attributes(
+        applicant: Employers::Applicant.last_created,
+        reason: "reason_description",
+        response: "response"
       )
 
       expect(Employers::Job.last_created).to have_attributes(

@@ -62,6 +62,16 @@ module Employers
           status: message.data.status,
           status_as_of: message.occurred_at
         )
+
+        applicant.applicant_status_reasons.destroy_all
+
+        message.data.reasons.each do |reason|
+          ApplicantStatusReason.create!(
+            applicant:,
+            reason: reason.reason_description,
+            response: reason.response
+          )
+        end
       end
 
       def handle_employer_created(message)

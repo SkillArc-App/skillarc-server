@@ -1,6 +1,8 @@
 RSpec.shared_context "employer authenticated" do
   let!(:recruiter) { create(:recruiter, user:, employer:) }
   let!(:employer) { create(:employer) }
+  let!(:employers_employer) { create(:employers_employer, employer_id: employer.id, name: employer.name) }
+  let!(:employers_recruiter) { create(:employers_recruiter, employer: employers_employer, email: recruiter.user.email) }
   let!(:user) do
     User.create!(
       id: '1a7d78bd-ae41-4d09-95d5-0b417efbcb7f',
@@ -45,6 +47,8 @@ end
 RSpec.shared_context "employer authenticated openapi" do
   let!(:recruiter) { create(:recruiter, user:, employer:) }
   let!(:employer) { create(:employer) }
+  let!(:employers_employer) { create(:employers_employer, employer_id: employer.id, name: employer.name) }
+  let!(:employers_recruiter) { create(:employers_recruiter, employer: employers_employer, email: recruiter.user.email) }
   let!(:user) do
     User.create!(
       id: '1a7d78bd-ae41-4d09-95d5-0b417efbcb7f',

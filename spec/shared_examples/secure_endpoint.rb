@@ -36,7 +36,7 @@ RSpec.shared_examples "a secured endpoint" do
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:ok).or have_http_status(:accepted)
     end
   end
 end

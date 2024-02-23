@@ -64,6 +64,7 @@ class Event < ApplicationRecord
       EDUCATION_EXPERIENCE_CREATED = 'education_experience_created'.freeze,
       EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted'.freeze,
       EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated'.freeze,
+      ELEVATOR_PITCH_CREATED = 'elevator_pitch_created'.freeze,
       EXPERIENCE_CREATED = 'experience_created'.freeze,
       JOB_SAVED = 'job_saved'.freeze,
       JOB_SEARCH = 'job_search'.freeze,

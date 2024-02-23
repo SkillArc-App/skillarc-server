@@ -10,6 +10,7 @@
 #
 # Indexes
 #
+#  index_employers_recruiters_on_email                  (email) UNIQUE
 #  index_employers_recruiters_on_employers_employer_id  (employers_employer_id)
 #
 # Foreign Keys

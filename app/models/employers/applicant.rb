@@ -17,7 +17,8 @@
 #
 # Indexes
 #
-#  index_employers_applicants_on_employers_job_id  (employers_job_id)
+#  index_employers_applicants_on_employers_job_id                (employers_job_id)
+#  index_employers_applicants_on_seeker_id_and_employers_job_id  (seeker_id,employers_job_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -26,6 +27,7 @@
 module Employers
   class Applicant < ApplicationRecord
     belongs_to :job, class_name: "Employers::Job", foreign_key: "employers_job_id", inverse_of: :applicants
+    has_many :applicant_status_reasons, class_name: "Employers::ApplicantStatusReason", foreign_key: "employers_applicant_id", inverse_of: :applicant, dependent: :destroy
 
     module StatusTypes
       ALL = [
@@ -41,6 +43,7 @@ module Employers
     end
 
     validates :status, inclusion: { in: StatusTypes::ALL }
+    validates :seeker_id, uniqueness: { scope: :employers_job_id }
 
     scope :active, -> { where.not(status: StatusTypes::TERMINAL) }
   end

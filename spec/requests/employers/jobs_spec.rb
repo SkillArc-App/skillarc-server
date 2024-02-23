@@ -3,6 +3,36 @@ require 'swagger_helper'
 
 RSpec.describe "Employers::Jobs", type: :request do
   path '/employers/jobs' do
+    context "when authenticated" do
+      include_context "employer authenticated"
+
+      it "calls Employers::JobService" do
+        expect(Employers::JobService)
+          .to receive(:new)
+          .with(employers: [employers_employer])
+          .and_call_original
+
+        expect_any_instance_of(Employers::JobService)
+          .to receive(:all)
+          .and_call_original
+
+        get employers_jobs_path, headers:
+      end
+
+      it "calls Employers::ApplicantService" do
+        expect(Employers::ApplicantService)
+          .to receive(:new)
+          .with(employers: [employers_employer])
+          .and_call_original
+
+        expect_any_instance_of(Employers::ApplicantService)
+          .to receive(:all)
+          .and_call_original
+
+        get employers_jobs_path, headers:
+      end
+    end
+
     get "Retrieve employer jobs" do
       tags 'Employers'
       produces 'application/json'
@@ -18,9 +48,15 @@ RSpec.describe "Employers::Jobs", type: :request do
           job1 = create(:job, employer:)
           job2 = create(:job, employer:)
 
+          employers_job1 = create(:employers_job, employer: employers_employer, employment_title: job1.employment_title)
+          employers_job2 = create(:employers_job, employer: employers_employer, employment_title: job2.employment_title)
+
           create(:applicant, job: job1)
           create(:applicant, job: job2)
           create(:applicant, job: job2)
+
+          create(:employers_applicant, job: employers_job1)
+          create(:employers_applicant, job: employers_job2)
         end
 
         include_context "employer authenticated openapi"

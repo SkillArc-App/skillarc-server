@@ -12,10 +12,10 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:other_seeker_created) { build(:events__message, :profile_created, aggregate_id: other_user_id, data: Events::SeekerCreated::Data::V1.new(id: other_seeker_id, user_id: other_user_id)) }
   let(:note_with_id_added1) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::NoteAdded::Data::V1.new(note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
   let(:note_with_id_added2) { build(:events__message, :note_added, aggregate_id: seeker_id, data: Events::NoteAdded::Data::V1.new(note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
-  let(:applicant_status_updated1) { build(:events__message, :applicant_status_updated, version: 3, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
-  let(:applicant_status_updated2) { build(:events__message, :applicant_status_updated, version: 3, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
-  let(:applicant_status_updated3) { build(:events__message, :applicant_status_updated, version: 3, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
-  let(:applicant_status_updated4) { build(:events__message, :applicant_status_updated, version: 3, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
+  let(:applicant_status_updated1) { build(:events__message, :applicant_status_updated, version: 4, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
+  let(:applicant_status_updated2) { build(:events__message, :applicant_status_updated, version: 4, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
+  let(:applicant_status_updated3) { build(:events__message, :applicant_status_updated, version: 4, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
+  let(:applicant_status_updated4) { build(:events__message, :applicant_status_updated, version: 4, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
   let(:note_deleted) { build(:events__message, :note_deleted, aggregate_id: seeker_id, data: Events::NoteDeleted::Data::V1.new(note_id: note_id1, coach_id:, coach_email: coach.email), occurred_at: time1) }
   let(:note_modified) { build(:events__message, :note_modified, aggregate_id: seeker_id, data: Events::NoteModified::Data::V1.new(note: updated_note, note_id: note_id2, coach_id:, coach_email: coach.email), occurred_at: time1) }
   let(:skill_level_updated) { build(:events__message, :skill_level_updated, aggregate_id: seeker_id, data: Events::SkillLevelUpdated::Data::V1.new(skill_level: "advanced"), occurred_at: time1) }
@@ -36,7 +36,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     )
   end
   let(:status_updated1) do
-    Events::ApplicantStatusUpdated::Data::V3.new(
+    Events::ApplicantStatusUpdated::Data::V4.new(
       job_id:,
       applicant_id: applicant_id1,
       applicant_first_name: "Hannah",
@@ -51,7 +51,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     )
   end
   let(:status_updated2) do
-    Events::ApplicantStatusUpdated::Data::V3.new(
+    Events::ApplicantStatusUpdated::Data::V4.new(
       job_id:,
       applicant_id: applicant_id1,
       applicant_first_name: "Hannah",
@@ -66,7 +66,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     )
   end
   let(:status_updated3) do
-    Events::ApplicantStatusUpdated::Data::V3.new(
+    Events::ApplicantStatusUpdated::Data::V4.new(
       job_id:,
       applicant_id: applicant_id2,
       applicant_first_name: "Hannah",
@@ -81,7 +81,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     )
   end
   let(:status_updated4) do
-    Events::ApplicantStatusUpdated::Data::V3.new(
+    Events::ApplicantStatusUpdated::Data::V4.new(
       job_id:,
       applicant_id: applicant_id3,
       applicant_first_name: "Hannah",

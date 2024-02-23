@@ -49,6 +49,10 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 type: :string,
                 format: :uuid
               },
+              elevatorPitch: {
+                type: :string,
+                nullable: true
+              },
               jobId: {
                 type: :string,
                 format: :uuid

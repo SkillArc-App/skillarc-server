@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_23_165609) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -95,6 +95,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.uuid "seeker_id", null: false
+    t.string "elevator_pitch"
+    t.index ["seeker_id", "job_id"], name: "index_applicants_on_seeker_id_and_job_id", unique: true
     t.index ["seeker_id"], name: "index_applicants_on_seeker_id"
   end
 
@@ -255,6 +257,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
     t.boolean "chat_enabled", default: false, null: false
   end
 
+  create_table "employers_applicant_status_reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "employers_applicant_id", null: false
+    t.string "reason", null: false
+    t.string "response"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employers_applicant_id"], name: "index_emp_applicant_status_reasons_on_emp_applicant_id"
+  end
+
   create_table "employers_applicants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "applicant_id", null: false
     t.uuid "seeker_id", null: false
@@ -268,6 +279,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
     t.datetime "updated_at", null: false
     t.datetime "status_as_of"
     t.index ["employers_job_id"], name: "index_employers_applicants_on_employers_job_id"
+    t.index ["seeker_id", "employers_job_id"], name: "index_employers_applicants_on_seeker_id_and_employers_job_id", unique: true
   end
 
   create_table "employers_employers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -304,6 +316,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
     t.uuid "employers_employer_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "elevator_pitch"
     t.index ["employers_employer_id"], name: "index_employers_jobs_on_employers_employer_id"
   end
 
@@ -312,6 +325,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
     t.string "email", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_employers_recruiters_on_email", unique: true
     t.index ["employers_employer_id"], name: "index_employers_recruiters_on_employers_employer_id"
   end
 
@@ -760,6 +774,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
   add_foreign_key "education_experiences", "organizations", name: "EducationExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "education_experiences", "seekers"
   add_foreign_key "employer_invites", "employers", name: "EmployerInvite_employer_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "employers_applicant_status_reasons", "employers_applicants"
   add_foreign_key "employers_applicants", "employers_jobs"
   add_foreign_key "employers_job_owners", "employers_jobs"
   add_foreign_key "employers_job_owners", "employers_recruiters"

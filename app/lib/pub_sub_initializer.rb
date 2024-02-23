@@ -49,12 +49,12 @@ module PubSubInitializer
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::ApplicantStatusUpdated::V3,
+      event_schema: Events::ApplicantStatusUpdated::V4,
       subscriber: Klayvio::ApplicationStatusUpdated.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::ApplicantStatusUpdated::V3,
+      event_schema: Events::ApplicantStatusUpdated::V4,
       subscriber: Slack::UserApplied.new
     )
 
@@ -76,7 +76,8 @@ module PubSubInitializer
       DbStreamListener.build(Coaches::RecommendationService, "coaches_recommendations"),
       DbStreamListener.build(Employers::EmployerService, "employers"),
       DbStreamListener.build(Employers::ApplicationNotificationService, "employers_application_notification_service"),
-      DbStreamListener.build(Employers::WeeklyUpdateService, "employers_weekly_update_service")
+      DbStreamListener.build(Employers::WeeklyUpdateService, "employers_weekly_update_service"),
+      DbStreamListener.build(Seekers::SeekerService, "seekers")
     ].each do |listener|
       listener.handled_events.each do |event_schema|
         PUBSUB.subscribe(

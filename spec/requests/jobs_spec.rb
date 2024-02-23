@@ -22,6 +22,10 @@ RSpec.describe "Jobs", type: :request do
   describe "POST /apply" do
     subject { post job_apply_path(job), headers: }
 
+    before do
+      allow(Employers::EmployerService).to receive(:handle_event)
+    end
+
     include_context "authenticated"
 
     let(:job) { create(:job) }
@@ -35,6 +39,40 @@ RSpec.describe "Jobs", type: :request do
 
     it "creates an applicant" do
       expect { subject }.to change(Applicant, :count).by(1)
+    end
+  end
+
+  describe "POST /elevator_pitch" do
+    subject { post job_elevator_pitch_path(job), params:, headers: }
+
+    let(:job) { create(:job) }
+    let(:params) { { elevator_pitch: "New Elevator Pitch" } }
+    let!(:seeker) { create(:seeker) }
+    let!(:applicant) { create(:applicant, job:, seeker:) }
+    let(:user) { nil }
+
+    before do
+      seeker.update(user:) if user
+    end
+
+    it_behaves_like "a secured endpoint"
+
+    context "authenticated" do
+      include_context "authenticated"
+
+      it "calls the Seekers::JobService" do
+        expect(Seekers::JobService)
+          .to receive(:new)
+          .with(job:, seeker:)
+          .and_call_original
+
+        expect_any_instance_of(Seekers::JobService)
+          .to receive(:add_elevator_pitch)
+          .with("New Elevator Pitch")
+          .and_call_original
+
+        subject
+      end
     end
   end
 

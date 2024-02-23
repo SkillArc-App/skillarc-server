@@ -10,6 +10,10 @@ RSpec.describe ApplicantService do
     let(:reasons) { [{ id: reason.id, response: "Bad canidate" }] }
     let(:reason) { create(:reason) }
 
+    before do
+      allow(Employers::EmployerService).to receive(:handle_event)
+    end
+
     it "creates a new applicant status" do
       expect do
         subject
@@ -20,9 +24,9 @@ RSpec.describe ApplicantService do
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_schema: Events::ApplicantStatusUpdated::V3,
+        event_schema: Events::ApplicantStatusUpdated::V4,
         aggregate_id: applicant.job.id,
-        data: Events::ApplicantStatusUpdated::Data::V3.new(
+        data: Events::ApplicantStatusUpdated::Data::V4.new(
           applicant_id: applicant.id,
           applicant_first_name: applicant.seeker.user.first_name,
           applicant_last_name: applicant.seeker.user.last_name,
@@ -35,9 +39,10 @@ RSpec.describe ApplicantService do
           employment_title: applicant.job.employment_title,
           status: ApplicantStatus::StatusTypes::PENDING_INTRO,
           reasons: [
-            Events::ApplicantStatusUpdated::Reason::V1.new(
+            Events::ApplicantStatusUpdated::Reason::V2.new(
               id: reason.id,
-              response: "Bad canidate"
+              response: "Bad canidate",
+              reason_description: "This is a description"
             )
           ]
         ),

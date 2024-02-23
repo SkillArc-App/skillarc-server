@@ -1,5 +1,11 @@
 module Employers
   class EmployerService < EventConsumer
+    def self.handled_events_sync
+      [
+        Events::ApplicantStatusUpdated::V4
+      ].freeze
+    end
+
     def self.handled_events
       [
         Events::EmployerCreated::V1,
@@ -13,6 +19,8 @@ module Employers
 
     def self.handle_event(message, *_params)
       case message.event_schema
+      when Events::ApplicantStatusUpdated::V4
+        handle_applicant_status_updated(message)
       when Events::EmployerCreated::V1
         handle_employer_created(message)
       when Events::EmployerInviteAccepted::V1
@@ -37,6 +45,34 @@ module Employers
 
     class << self
       private
+
+      def handle_applicant_status_updated(message)
+        job = Job.find_by(job_id: message.data.job_id)
+        applicant = Applicant.find_or_initialize_by(
+          applicant_id: message.data.applicant_id,
+          seeker_id: message.data.seeker_id,
+          job:
+        )
+
+        applicant.update!(
+          first_name: message.data.applicant_first_name,
+          last_name: message.data.applicant_last_name,
+          email: message.data.applicant_email,
+          phone_number: message.data.applicant_phone_number,
+          status: message.data.status,
+          status_as_of: message.occurred_at
+        )
+
+        applicant.applicant_status_reasons.destroy_all
+
+        message.data.reasons.each do |reason|
+          ApplicantStatusReason.create!(
+            applicant:,
+            reason: reason.reason_description,
+            response: reason.response
+          )
+        end
+      end
 
       def handle_employer_created(message)
         Employer.create!(

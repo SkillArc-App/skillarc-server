@@ -2,7 +2,7 @@ class JobsController < ApplicationController
   include Secured
   include Admin
 
-  before_action :authorize, only: %i[apply create update index]
+  before_action :authorize, only: %i[apply create elevator_pitch update index]
   before_action :admin_authorize, only: %i[index create update]
 
   def apply
@@ -15,6 +15,14 @@ class JobsController < ApplicationController
     end
 
     render json: { applicant: }
+  end
+
+  def elevator_pitch
+    job = Job.find(params[:job_id])
+
+    Seekers::JobService.new(job:, seeker: current_user.seeker).add_elevator_pitch(params[:elevator_pitch])
+
+    head :accepted
   end
 
   def index

@@ -21,6 +21,7 @@ module Coaches
       job_id = message.data.job_id
 
       csc = CoachSeekerContext.find_by(seeker_id: message.aggregate_id)
+      return if csc&.phone_number.nil?
 
       CommandService.create!(
         command_schema: Commands::SendSms::V1,

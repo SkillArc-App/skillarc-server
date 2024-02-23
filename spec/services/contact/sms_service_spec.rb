@@ -40,5 +40,19 @@ RSpec.describe Contact::SmsService do
 
       subject
     end
+
+    context "when the sms_service raises" do
+      before do
+        allow(sms_service).to receive(:send_message).and_raise(error)
+      end
+
+      let(:error) { StandardError.new }
+
+      it "reports the error to sentry" do
+        expect(Sentry).to receive(:capture_exception).with(error)
+
+        subject
+      end
+    end
   end
 end

@@ -73,7 +73,8 @@ module Messages
       ].freeze
 
       COMMANDS = [
-        SEND_SMS = 'send_sms'.freeze
+        SEND_SMS = 'send_sms'.freeze,
+        NOTIFY_EMPLOYER_OF_APPLICANT = 'notify_employer_of_applicant'.freeze
       ].freeze
     end
 

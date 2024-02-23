@@ -22,14 +22,22 @@ module Employers
 
       def handle_applicant_status_updated(message, with_side_effects: true)
         job = Job.find_by(job_id: message.data.job_id)
-        applicant = Applicant.find_by(
-          applicant_id: message.data.applicant_id,
-          seeker_id: message.data.seeker_id,
-          job:
-        )
 
         message_applicant = message.data
 
+        applicant = Struct.new(
+          :applicant_id,
+          :first_name,
+          :last_name,
+          :email,
+          :phone_number,
+          :seeker_id,
+          :status,
+          :status_as_of
+        ).new
+
+        applicant.applicant_id = message_applicant.applicant_id
+        applicant.seeker_id = message_applicant.seeker_id
         applicant.first_name = message_applicant.applicant_first_name
         applicant.last_name = message_applicant.applicant_last_name
         applicant.email = message_applicant.applicant_email

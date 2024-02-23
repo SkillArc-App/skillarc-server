@@ -22,7 +22,7 @@ class JobsController < ApplicationController
 
     Seekers::JobService.new(job:, seeker: current_user.seeker).add_elevator_pitch(params[:elevator_pitch])
 
-    render json: {}
+    head :accepted
   end
 
   def index

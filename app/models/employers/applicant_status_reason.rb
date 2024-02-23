@@ -4,7 +4,7 @@
 #
 #  id                     :uuid             not null, primary key
 #  reason                 :string           not null
-#  response               :string           not null
+#  response               :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  employers_applicant_id :uuid             not null

@@ -34,7 +34,20 @@ RSpec.describe Employers::ApplicationNotificationService do
     it "sends an email to the employer" do
       expect_any_instance_of(Contact::SmtpService)
         .to receive(:notify_employer_of_applicant)
-        .with(be_a(Employers::Job), job.owner_emails.first, be_a(Employers::Applicant))
+        .with(
+          be_a(Employers::Job),
+          recruiter.email,
+          have_attributes(
+            applicant_id: applicant.applicant_id,
+            first_name: applicant.first_name,
+            last_name: applicant.last_name,
+            email: applicant.email,
+            phone_number: applicant.phone_number,
+            seeker_id: applicant.seeker_id,
+            status:,
+            status_as_of: applicant_status_updated.occurred_at
+          )
+        )
         .and_call_original
 
       subject

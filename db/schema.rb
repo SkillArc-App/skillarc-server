@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_23_165609) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -260,7 +260,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
   create_table "employers_applicant_status_reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "employers_applicant_id", null: false
     t.string "reason", null: false
-    t.string "response", null: false
+    t.string "response"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["employers_applicant_id"], name: "index_emp_applicant_status_reasons_on_emp_applicant_id"
@@ -325,6 +325,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_190917) do
     t.string "email", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_employers_recruiters_on_email", unique: true
     t.index ["employers_employer_id"], name: "index_employers_recruiters_on_employers_employer_id"
   end
 

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe PlayStreamJob do
-  let(:listener) { DbStreamListener.build(consumer, listener_name) }
-  let(:consumer) { double(:consumer, handle_event: nil) }
+  let(:listener) { DbStreamAggregator.build(consumer, listener_name) }
+  let(:consumer) { double(:consumer, handle_message: nil) }
   let(:listener_name) { SecureRandom.uuid }
 
   it "plays the stream" do

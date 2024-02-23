@@ -23,7 +23,7 @@ RSpec.describe "Jobs", type: :request do
     subject { post job_apply_path(job), headers: }
 
     before do
-      allow(Employers::EmployerService).to receive(:handle_event)
+      allow_any_instance_of(Employers::EmployerService).to receive(:handle_message)
     end
 
     include_context "authenticated"

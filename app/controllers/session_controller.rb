@@ -7,7 +7,7 @@ class SessionController < ApplicationController
     EventService.create!(
       event_schema: Events::SessionStarted::V1,
       aggregate_id: current_user.id,
-      data: Events::Common::Nothing
+      data: Messages::Nothing
     )
 
     head :accepted

@@ -2,7 +2,7 @@ module Events
   module ApplicantStatusUpdated
     module Reason
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           id Uuid
@@ -11,7 +11,7 @@ module Events
       end
 
       class V2
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           id Uuid
@@ -23,7 +23,7 @@ module Events
 
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           applicant_id Uuid
@@ -38,7 +38,7 @@ module Events
       end
 
       class V2
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           applicant_id Uuid
@@ -57,7 +57,7 @@ module Events
       end
 
       class V3
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           applicant_id Uuid
@@ -77,7 +77,7 @@ module Events
       end
 
       class V4
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           applicant_id Uuid
@@ -97,31 +97,31 @@ module Events
       end
     end
 
-    V1 = Schema.build(
+    V1 = Messages::Schema.build(
       data: Data::V1,
-      metadata: Common::Nothing,
-      event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+      metadata: Messages::Nothing,
+      event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 1
     )
 
-    V2 = Schema.build(
+    V2 = Messages::Schema.build(
       data: Data::V2,
-      metadata: Common::Nothing,
-      event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+      metadata: Messages::Nothing,
+      event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 2
     )
 
-    V3 = Schema.build(
+    V3 = Messages::Schema.build(
       data: Data::V3,
-      metadata: Common::Nothing,
-      event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+      metadata: Messages::Nothing,
+      event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 3
     )
 
-    V4 = Schema.build(
+    V4 = Messages::Schema.build(
       data: Data::V4,
-      metadata: Common::Nothing,
-      event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+      metadata: Messages::Nothing,
+      event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 4
     )
   end

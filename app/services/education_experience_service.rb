@@ -54,7 +54,7 @@ class EducationExperienceService
     EventService.create!(
       event_schema: Events::EducationExperienceDeleted::V1,
       aggregate_id: seeker.id,
-      data: Events::Common::UntypedHashWrapper.build(
+      data: Messages::UntypedHashWrapper.build(
         id: education_experience.id
       ),
       occurred_at: Time.zone.now

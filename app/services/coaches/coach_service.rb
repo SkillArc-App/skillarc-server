@@ -1,25 +1,25 @@
 module Coaches
   class CoachService < EventConsumer
-    def self.handled_events_sync
+    def handled_events_sync
       [Events::RoleAdded::V1].freeze
     end
 
-    def self.handled_events
+    def handled_events
       [].freeze
     end
 
-    def self.call(message:)
-      handle_event(message)
+    def call(message:)
+      handle_message(message)
     end
 
-    def self.handle_event(message, with_side_effects: false, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
+    def handle_message(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
       case message.event_schema
       when Events::RoleAdded::V1
         handle_role_added(message)
       end
     end
 
-    def self.all
+    def all
       Coach.all.map do |coach|
         {
           id: coach.coach_id,
@@ -28,11 +28,13 @@ module Coaches
       end
     end
 
-    def self.reset_for_replay
+    def reset_for_replay
       Coach.destroy_all
     end
 
-    def self.handle_role_added(message)
+    private
+
+    def handle_role_added(message)
       return unless message.data[:role] == "coach"
 
       Coach.create!(

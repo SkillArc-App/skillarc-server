@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Events::Common::ZipCodeCoercer do
+RSpec.describe Messages::ZipCodeCoercer do
   describe ".call" do
     subject { described_class.call(value) }
 
@@ -13,10 +13,10 @@ RSpec.describe Events::Common::ZipCodeCoercer do
     end
 
     context "when value is UNDEFINED" do
-      let(:value) { Events::Common::UNDEFINED }
+      let(:value) { Messages::UNDEFINED }
 
       it "returns UNDEFINED" do
-        expect(subject).to eq(Events::Common::UNDEFINED)
+        expect(subject).to eq(Messages::UNDEFINED)
       end
     end
 

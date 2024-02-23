@@ -4,7 +4,7 @@ RSpec.describe Slack::UserSignup do
   describe "#call" do
     let(:message) do
       build(
-        :events__message,
+        :message,
         :user_created,
         data: Events::UserCreated::Data::V1.new(
           email:

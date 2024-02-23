@@ -3,25 +3,26 @@ require "rails_helper"
 RSpec.describe Coaches::BarrierService do
   let(:barrier_added) do
     build(
-      :events__message,
+      :message,
       :barrier_added,
       aggregate_id: "coaches",
-      data: Events::Common::UntypedHashWrapper.new(
+      data: Messages::UntypedHashWrapper.new(
         barrier_id:,
         name: "barrier name"
       )
     )
   end
   let(:barrier_id) { SecureRandom.uuid }
+  let(:consumer) { described_class.new }
 
   it_behaves_like "an event consumer"
 
   before do
-    described_class.handle_event(barrier_added)
+    consumer.handle_message(barrier_added)
   end
 
   describe ".all" do
-    subject { described_class.all }
+    subject { consumer.all }
 
     it "returns all barriers" do
       expect(subject).to contain_exactly(
@@ -37,7 +38,7 @@ RSpec.describe Coaches::BarrierService do
     it "destroys all records" do
       expect(Barrier.count).not_to eq(0)
 
-      described_class.reset_for_replay
+      consumer.reset_for_replay
 
       expect(Barrier.count).to eq(0)
     end

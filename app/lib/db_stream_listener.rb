@@ -4,35 +4,30 @@ class DbStreamListener < StreamListener
 
   attr_reader :listener_name
 
-  def self.build(consumer, listener_name)
-    listener = new(consumer, listener_name)
-    StreamListener.register(listener_name, listener)
-    listener
-  end
-
   def id
-    "db-stream-listern-#{listener_name}"
+    "db-stream-#{kind}-#{listener_name}"
   end
 
-  def replay(with_side_effects: true)
+  def replay
     consumer.reset_for_replay
 
     ListenerBookmark.find_by(consumer_name: listener_name)&.destroy
-    play(with_side_effects:)
+    play
   end
 
-  def play(with_side_effects: true)
-    after_events = Event.where("occurred_at > ?", bookmark_timestamp).order(:occurred_at)
+  def play
+    events = unplayed_events
 
-    return if after_events.empty?
+    return if events.empty?
 
-    after_events.each do |event|
-      handle_event(event.message, with_side_effects:)
+    events.each do |event|
+      handle_message(event.message)
+      update_bookmark(event)
     end
   end
 
   def next_event
-    Event.where("occurred_at > ?", bookmark_timestamp).order(:occurred_at).take(1).first.message
+    unplayed_events.take(1).first.message
   end
 
   def call(*)
@@ -40,6 +35,10 @@ class DbStreamListener < StreamListener
   end
 
   private
+
+  def unplayed_events
+    Event.where("occurred_at > ?", bookmark_timestamp).order(:occurred_at)
+  end
 
   def initialize(consumer, listener_name) # rubocop:disable Lint/MissingSuper
     @consumer = consumer
@@ -54,12 +53,14 @@ class DbStreamListener < StreamListener
     Event.find(bookmark.event_id).message.occurred_at
   end
 
-  def handle_event(event, with_side_effects: false)
-    consumer.handle_event(event, with_side_effects:)
-
+  def update_bookmark(event)
     ListenerBookmark
       .find_or_initialize_by(consumer_name: listener_name)
       .update!(event_id: event.id)
+  end
+
+  def handle_message(*)
+    raise NoMethodError
   end
 
   attr_reader :consumer

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe DbStreamListener do
-  let(:consumer) { double(:consumer, handle_event: nil, reset_for_replay: nil) }
+RSpec.describe DbStreamReactor do
+  let(:consumer) { double(:consumer, handle_message: nil, reset_for_replay: nil) }
 
   let!(:event) { create(:event, :user_created, occurred_at: event_occurred_at) }
   let!(:event2) { create(:event, :user_created, occurred_at: event_occurred_at + 2.days) }
@@ -9,10 +9,9 @@ RSpec.describe DbStreamListener do
   let(:event_occurred_at) { Date.new(2020, 1, 1) }
 
   describe "#play" do
-    subject { instance.play(with_side_effects:) }
+    subject { instance.play }
 
     let(:instance) { described_class.build(consumer, "listener_name") }
-    let(:with_side_effects) { true }
 
     it "updates the bookmark" do
       expect { subject }.to change {
@@ -21,28 +20,10 @@ RSpec.describe DbStreamListener do
     end
 
     context "when there is no bookmark" do
-      context "when with side effects is false" do
-        let(:with_side_effects) { false }
-
-        it "calls the consumer with_side_effects: false" do
-          expect(consumer).to receive(:handle_event).with(
-            be_a(Events::Message),
-            with_side_effects: false
-          ).twice
-
-          subject
-        end
-      end
-
-      it "consumes the events from the beginning with side effects" do
-        expect(consumer).to receive(:handle_event).with(
-          event.message,
-          with_side_effects: true
-        )
-        expect(consumer).to receive(:handle_event).with(
-          event2.message,
-          with_side_effects: true
-        )
+      it "calls the consumer" do
+        expect(consumer).to receive(:handle_message).with(
+          be_a(Message)
+        ).twice
 
         subject
       end
@@ -60,14 +41,12 @@ RSpec.describe DbStreamListener do
       let(:bookmark_event) { event }
 
       it "consumes the events after the bookmark" do
-        expect(consumer).to receive(:handle_event).with(
-          event2.message,
-          with_side_effects: true
+        expect(consumer).to receive(:handle_message).with(
+          event2.message
         )
 
-        expect(consumer).not_to receive(:handle_event).with(
-          event.message,
-          with_side_effects: false
+        expect(consumer).not_to receive(:handle_message).with(
+          event.message
         )
 
         subject
@@ -91,7 +70,6 @@ RSpec.describe DbStreamListener do
     it "calls play" do
       expect(instance)
         .to receive(:play)
-        .with(with_side_effects: true)
 
       subject
     end
@@ -102,13 +80,18 @@ RSpec.describe DbStreamListener do
       subject
     end
 
-    context "when with_side_effects is false" do
-      it "calls play with with_side_effects: false" do
-        expect(instance)
-          .to receive(:play)
-          .with(with_side_effects: false)
+    context "when replayed more than once" do
+      it "only plays the events once" do
+        expect(consumer).to receive(:handle_message).with(
+          event.message
+        ).once
 
-        instance.replay(with_side_effects: false)
+        expect(consumer).to receive(:handle_message).with(
+          event2.message
+        ).once
+
+        instance.replay
+        instance.replay
       end
     end
 
@@ -132,15 +115,13 @@ RSpec.describe DbStreamListener do
   describe "#call" do
     subject { described_class.build(consumer, "listener_name") }
 
-    it "calls the consumer with the event and with_side_effects: true" do
-      expect(consumer).to receive(:handle_event).with(
-        event.message,
-        with_side_effects: true
+    it "calls the consumer with the event" do
+      expect(consumer).to receive(:handle_message).with(
+        event.message
       )
 
-      expect(consumer).to receive(:handle_event).with(
-        event2.message,
-        with_side_effects: true
+      expect(consumer).to receive(:handle_message).with(
+        event2.message
       )
 
       subject.call(event:)

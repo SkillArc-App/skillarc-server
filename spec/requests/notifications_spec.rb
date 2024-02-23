@@ -22,7 +22,7 @@ RSpec.describe "Notifications", type: :request do
         expect(EventService).to receive(:create!).with(
           event_schema: Events::NotificationMarkedRead::V1,
           aggregate_id: user.id,
-          data: Events::Common::UntypedHashWrapper.build(
+          data: Messages::UntypedHashWrapper.build(
             notification_id: notification1.id
           )
         ).and_call_original
@@ -30,7 +30,7 @@ RSpec.describe "Notifications", type: :request do
         expect(EventService).to receive(:create!).with(
           event_schema: Events::NotificationMarkedRead::V1,
           aggregate_id: user.id,
-          data: Events::Common::UntypedHashWrapper.build(
+          data: Messages::UntypedHashWrapper.build(
             notification_id: notification2.id
           )
         ).and_call_original

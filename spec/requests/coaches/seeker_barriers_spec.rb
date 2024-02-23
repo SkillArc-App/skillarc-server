@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Coaches::SeekerBarriers", type: :request do
+RSpec.describe "Coaches::SeekerBarriersController", type: :request do
   describe "PUT /update_barriers" do
     subject { put seeker_update_barriers_path(seeker_id), params:, headers: }
 
@@ -20,7 +20,7 @@ RSpec.describe "Coaches::SeekerBarriers", type: :request do
       include_context "coach authenticated"
 
       it "calls SeekerService.update_barriers" do
-        expect(Coaches::SeekerService)
+        expect_any_instance_of(Coaches::SeekerService)
           .to receive(:update_barriers)
           .with(
             id: seeker_id,

@@ -2,7 +2,7 @@ module Events
   module SeekerCertified
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           coach_first_name Either(String, nil), default: nil
@@ -13,10 +13,10 @@ module Events
       end
     end
 
-    V1 = Schema.build(
+    V1 = Messages::Schema.build(
       data: Data::V1,
-      metadata: Common::Nothing,
-      event_type: Event::EventTypes::SEEKER_CERTIFIED,
+      metadata: Messages::Nothing,
+      event_type: Messages::Types::SEEKER_CERTIFIED,
       version: 1
     )
   end

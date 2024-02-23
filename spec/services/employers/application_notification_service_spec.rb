@@ -4,9 +4,9 @@ RSpec.describe Employers::ApplicationNotificationService do
   it_behaves_like "an event consumer"
 
   describe "application created" do
-    subject { described_class.handle_event(applicant_status_updated) }
+    subject { described_class.new.handle_message(applicant_status_updated) }
 
-    let(:applicant_status_updated) { build(:events__message, :applicant_status_updated, version: 4, data:) }
+    let(:applicant_status_updated) { build(:message, :applicant_status_updated, version: 4, data:) }
     let(:data) do
       Events::ApplicantStatusUpdated::Data::V4.new(
         applicant_id: applicant.applicant_id,
@@ -51,15 +51,6 @@ RSpec.describe Employers::ApplicationNotificationService do
         .and_call_original
 
       subject
-    end
-
-    context "when with side effects is false" do
-      it "does not send an email to the employer" do
-        expect_any_instance_of(Contact::SmtpService)
-          .not_to receive(:notify_employer_of_applicant)
-
-        described_class.handle_event(applicant_status_updated, with_side_effects: false)
-      end
     end
   end
 end

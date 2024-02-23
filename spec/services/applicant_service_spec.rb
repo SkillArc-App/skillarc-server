@@ -11,7 +11,7 @@ RSpec.describe ApplicantService do
     let(:reason) { create(:reason) }
 
     before do
-      allow(Employers::EmployerService).to receive(:handle_event)
+      allow_any_instance_of(Employers::EmployerService).to receive(:handle_message)
     end
 
     it "creates a new applicant status" do

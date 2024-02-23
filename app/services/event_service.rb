@@ -4,10 +4,10 @@ class EventService
   SchemaAlreadyDefinedError = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
 
-  def self.create!(event_schema:, aggregate_id:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Events::Common::Nothing) # rubocop:disable Metrics/ParameterLists
-    raise NotEventSchemaError unless event_schema.is_a?(Events::Schema)
+  def self.create!(event_schema:, aggregate_id:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing) # rubocop:disable Metrics/ParameterLists
+    raise NotEventSchemaError unless event_schema.is_a?(Messages::Schema)
 
-    message = Events::Message.new(
+    message = Message.new(
       id:,
       aggregate_id:,
       occurred_at:,
@@ -26,7 +26,7 @@ class EventService
   end
 
   def self.register(event_schema:)
-    raise NotSchemaError unless event_schema.is_a?(Events::Schema)
+    raise NotSchemaError unless event_schema.is_a?(Messages::Schema)
 
     registry[event_schema.event_type] ||= {}
     Rails.logger.debug { "[Event Registry] the event_type #{event_schema.event_type} version: #{event_schema.version} was overritten" } if registry[event_schema.event_type][event_schema.version].present?

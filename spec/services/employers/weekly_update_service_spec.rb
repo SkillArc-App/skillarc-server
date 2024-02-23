@@ -4,11 +4,11 @@ RSpec.describe Employers::WeeklyUpdateService do
   it_behaves_like "an event consumer"
 
   describe "day elapsed" do
-    subject { described_class.handle_event(message) }
+    subject { described_class.new.handle_message(message) }
 
     let(:message) do
       build(
-        :events__message,
+        :message,
         :day_elapsed,
         data: Events::DayElapsed::Data::V1.new(
           date:,

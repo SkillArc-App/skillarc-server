@@ -2,7 +2,7 @@ module Events
   module NoteModified
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           coach_id Uuid
@@ -13,10 +13,10 @@ module Events
       end
     end
 
-    V1 = Schema.build(
+    V1 = Messages::Schema.build(
       data: Data::V1,
-      metadata: Common::Nothing,
-      event_type: Event::EventTypes::NOTE_MODIFIED,
+      metadata: Messages::Nothing,
+      event_type: Messages::Types::NOTE_MODIFIED,
       version: 1
     )
   end

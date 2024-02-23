@@ -1,29 +1,29 @@
 module Coaches
   class BarrierService < EventConsumer
-    def self.handled_events_sync
+    def handled_events_sync
       [Events::BarrierAdded::V1].freeze
     end
 
-    def self.handled_events
+    def handled_events
       [].freeze
     end
 
-    def self.call(message:)
-      handle_event(message)
+    def call(message:)
+      handle_message(message)
     end
 
-    def self.handle_event(message, *_params)
+    def handle_message(message, *_params)
       case message.event_schema
       when Events::BarrierAdded::V1
         handle_barrier_added(message)
       end
     end
 
-    def self.reset_for_replay
+    def reset_for_replay
       Barrier.destroy_all
     end
 
-    def self.all
+    def all
       Barrier.all.map do |barrier|
         {
           id: barrier.barrier_id,
@@ -32,7 +32,9 @@ module Coaches
       end
     end
 
-    def self.handle_barrier_added(message)
+    private
+
+    def handle_barrier_added(message)
       Barrier.create!(
         barrier_id: message.data[:barrier_id],
         name: message.data[:name]

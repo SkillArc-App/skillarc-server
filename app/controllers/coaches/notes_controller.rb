@@ -8,7 +8,7 @@ module Coaches
     before_action :set_coach
 
     def create
-      SeekerService.add_note(
+      SeekerService.new.add_note(
         coach:,
         id: params[:seeker_id],
         note: params[:note],
@@ -19,7 +19,7 @@ module Coaches
     end
 
     def update
-      SeekerService.modify_note(
+      SeekerService.new.modify_note(
         id: params[:seeker_id],
         coach:,
         note_id: params[:id],
@@ -30,7 +30,7 @@ module Coaches
     end
 
     def destroy
-      SeekerService.delete_note(
+      SeekerService.new.delete_note(
         coach:,
         id: params[:seeker_id],
         note_id: params[:id]

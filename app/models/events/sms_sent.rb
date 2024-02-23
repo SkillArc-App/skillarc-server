@@ -2,7 +2,7 @@ module Events
   module SmsSent
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
           phone_number String
@@ -11,10 +11,10 @@ module Events
       end
     end
 
-    V1 = Schema.build(
+    V1 = Messages::Schema.build(
       data: Data::V1,
-      metadata: Common::Nothing,
-      event_type: Event::EventTypes::SMS_SENT,
+      metadata: Messages::Nothing,
+      event_type: Messages::Types::SMS_SENT,
       version: 1
     )
   end

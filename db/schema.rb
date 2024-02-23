@@ -552,6 +552,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_23_165609) do
     t.datetime "updated_at", precision: 3, null: false
   end
 
+  create_table "reactor_message_states", force: :cascade do |t|
+    t.uuid "message_checksum", null: false
+    t.string "consumer_name", null: false
+    t.string "state", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["consumer_name", "message_checksum"], name: "reactor_message_state_index", unique: true
+  end
+
   create_table "read_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "chat_message_id", null: false
     t.text "user_id", null: false

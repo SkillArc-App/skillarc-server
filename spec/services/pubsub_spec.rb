@@ -9,7 +9,7 @@ RSpec.describe Pubsub do
     let(:sync) { true }
 
     it "calls the subscriber when the event is published" do
-      message = build(:events__message, :user_created, data: Events::UserCreated::Data::V1.new)
+      message = build(:message, :user_created, data: Events::UserCreated::Data::V1.new)
 
       subscriber = Klayvio::JobSaved.new
       allow(subscriber).to receive(:call)
@@ -29,7 +29,7 @@ RSpec.describe Pubsub do
     let(:sync) { false }
 
     it "calls enqueues a execute subscriber job" do
-      message = build(:events__message, :user_created, data: Events::UserCreated::Data::V1.new)
+      message = build(:message, :user_created, data: Events::UserCreated::Data::V1.new)
 
       subscriber = Klayvio::JobSaved.new
       allow(subscriber).to receive(:call)

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Seekers::SeekerService do
   let(:elevator_pitch_created) do
     build(
-      :events__message,
+      :message,
       :elevator_pitch_created,
       aggregate_id: seeker.id,
       data: Events::ElevatorPitchCreated::Data::V1.new(
@@ -21,7 +21,7 @@ RSpec.describe Seekers::SeekerService do
 
   describe "elevator pitch added" do
     before do
-      described_class.handle_event(elevator_pitch_created)
+      described_class.new.handle_message(elevator_pitch_created)
     end
 
     it "updates the seeker's elevator pitch" do

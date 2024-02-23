@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe ExecuteSubscriberJob do
   it "calls PUBSUB execute_event" do
-    message = Events::Message.new(
+    message = Message.new(
       id: SecureRandom.uuid,
       aggregate_id: "123",
       trace_id: SecureRandom.uuid,
       event_type: Events::UserCreated::V1.event_type,
       data: Events::UserCreated::Data::V1.new,
-      metadata: Events::Common::Nothing,
+      metadata: Messages::Nothing,
       version: Events::UserCreated::V1.version,
       occurred_at: DateTime.new(2020, 1, 1)
     )

@@ -1,4 +1,4 @@
-module Events
+module Messages
   module Common
     UNDEFINED = Undefined.new
   end

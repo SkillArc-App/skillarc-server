@@ -6,7 +6,7 @@ FactoryBot.define do
     chat_message_sent
     version { 1 }
 
-    Event::EventTypes::ALL.each do |event_type|
+    Messages::Types::ALL.each do |event_type|
       trait event_type.to_sym do
         event_type { event_type }
         occurred_at { Time.zone.local(2020, 1, 1) }

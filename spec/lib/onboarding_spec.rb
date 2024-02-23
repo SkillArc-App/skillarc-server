@@ -295,16 +295,16 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
-        allow(Events::Common::UntypedHashWrapper).to receive(:new).and_call_original
+        allow(Messages::UntypedHashWrapper).to receive(:new).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
             aggregate_id: user.id,
             event_schema: Events::SeekerTrainingProviderCreated::V1,
-            data: be_a(Events::Common::UntypedHashWrapper),
+            data: be_a(Messages::UntypedHashWrapper),
             occurred_at: be_present
           ).and_call_original
-        allow(Events::Common::UntypedHashWrapper)
+        allow(Messages::UntypedHashWrapper)
           .to receive(:new)
           .with(
             id: be_present,
@@ -541,17 +541,17 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
-          allow(Events::Common::UntypedHashWrapper).to receive(:build).and_call_original
+          allow(Messages::UntypedHashWrapper).to receive(:build).and_call_original
           allow(EventService).to receive(:create!)
           expect(EventService)
             .to receive(:create!)
             .with(
               aggregate_id: user.id,
               event_schema: Events::OnboardingCompleted::V1,
-              data: be_a(Events::Common::UntypedHashWrapper),
+              data: be_a(Messages::UntypedHashWrapper),
               occurred_at: be_present
             ).and_call_original
-          expect(Events::Common::UntypedHashWrapper)
+          expect(Messages::UntypedHashWrapper)
             .to receive(:build)
             .with(
               name: responses["name"],

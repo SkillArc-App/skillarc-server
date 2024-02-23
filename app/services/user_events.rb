@@ -6,7 +6,7 @@ class UserEvents
   def all
     events = Event.where(aggregate_id: user.id).order(occurred_at: :desc).map(&:message)
 
-    applicant_events = Event.where(event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED)
+    applicant_events = Event.where(event_type: Messages::Types::APPLICANT_STATUS_UPDATED)
                             .where("data->>'user_id' = ?", user.id)
                             .map(&:message)
 
@@ -26,17 +26,17 @@ class UserEvents
 
   def event_message(message)
     case message.event_type
-    when Event::EventTypes::APPLICANT_STATUS_UPDATED
+    when Messages::Types::APPLICANT_STATUS_UPDATED
       "Applicant Status Updated: #{message.data[:employment_title]} - #{message.data[:status]}"
-    when Event::EventTypes::EDUCATION_EXPERIENCE_CREATED
+    when Messages::Types::EDUCATION_EXPERIENCE_CREATED
       "Education Experience Created: #{message.data[:organization_name]}"
-    when Event::EventTypes::EXPERIENCE_CREATED
+    when Messages::Types::EXPERIENCE_CREATED
       "Work Experience Created: #{message.data[:organization_name]}"
-    when Event::EventTypes::JOB_SAVED
+    when Messages::Types::JOB_SAVED
       "Job Saved: #{message.data[:employment_title]}"
-    when Event::EventTypes::ONBOARDING_COMPLETED
+    when Messages::Types::ONBOARDING_COMPLETED
       "Onboarding Complete"
-    when Event::EventTypes::USER_CREATED
+    when Messages::Types::USER_CREATED
       "Signed Up"
     end
   end

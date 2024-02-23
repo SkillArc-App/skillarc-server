@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Events::Schema do
+RSpec.describe Messages::Schema do
   describe ".build" do
     before(:each) do
-      stub_const("Event::EventTypes::LEAD_ADDED", "test_event_name-#{SecureRandom.uuid}")
+      stub_const("Messages::Types::LEAD_ADDED", "test_event_name-#{SecureRandom.uuid}")
     end
 
     subject do
@@ -17,7 +17,7 @@ RSpec.describe Events::Schema do
 
     let(:data) { String }
     let(:metadata) { Hash }
-    let(:event_type) { Event::EventTypes::LEAD_ADDED }
+    let(:event_type) { Messages::Types::LEAD_ADDED }
     let(:version) { 1 }
 
     it "returns the schema and registers it" do

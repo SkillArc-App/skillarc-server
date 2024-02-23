@@ -6,7 +6,7 @@ RSpec.describe Employers::EmployerService do
   describe "application created" do
     let(:employer_created) do
       build(
-        :events__message,
+        :message,
         :employer_created,
         aggregate_id: employer_id,
         data: Events::EmployerCreated::Data::V1.new(
@@ -19,7 +19,7 @@ RSpec.describe Employers::EmployerService do
     end
     let(:employer_updated) do
       build(
-        :events__message,
+        :message,
         :employer_updated,
         aggregate_id: employer_id,
         data: Events::EmployerUpdated::Data::V1.new(
@@ -32,7 +32,7 @@ RSpec.describe Employers::EmployerService do
     end
     let(:employer_invite_accepted) do
       build(
-        :events__message,
+        :message,
         :employer_invite_accepted,
         data: Events::EmployerInviteAccepted::Data::V1.new(
           employer_invite_id: SecureRandom.uuid,
@@ -44,7 +44,7 @@ RSpec.describe Employers::EmployerService do
     end
     let(:job_created) do
       build(
-        :events__message,
+        :message,
         :job_created,
         aggregate_id: job_id,
         data: Events::JobCreated::Data::V1.new(
@@ -64,7 +64,7 @@ RSpec.describe Employers::EmployerService do
     end
     let(:job_updated) do
       build(
-        :events__message,
+        :message,
         :job_updated,
         aggregate_id: job_id,
         data: Events::JobUpdated::Data::V1.new(
@@ -82,7 +82,7 @@ RSpec.describe Employers::EmployerService do
       )
     end
     let(:applicant_status_updated) do
-      build(:events__message, :applicant_status_updated, version: 4, data: Events::ApplicantStatusUpdated::Data::V4.new(
+      build(:message, :applicant_status_updated, version: 4, data: Events::ApplicantStatusUpdated::Data::V4.new(
         applicant_id: SecureRandom.uuid,
         applicant_first_name: "first_name",
         applicant_last_name: "last_name",
@@ -111,13 +111,15 @@ RSpec.describe Employers::EmployerService do
     let(:status) { ApplicantStatus::StatusTypes::NEW }
 
     it "creates the records" do
+      consumer = described_class.new
+
       expect do
-        described_class.handle_event(employer_created)
-        described_class.handle_event(employer_updated)
-        described_class.handle_event(employer_invite_accepted)
-        described_class.handle_event(job_created)
-        described_class.handle_event(job_updated)
-        described_class.handle_event(applicant_status_updated)
+        consumer.handle_message(employer_created)
+        consumer.handle_message(employer_updated)
+        consumer.handle_message(employer_invite_accepted)
+        consumer.handle_message(job_created)
+        consumer.handle_message(job_updated)
+        consumer.handle_message(applicant_status_updated)
       end
         .to change { Employers::Job.count }.by(1)
         .and change { Employers::Employer.count }.by(1)
@@ -167,9 +169,9 @@ RSpec.describe Employers::EmployerService do
       recruiter = Employers::Recruiter.last_created
 
       expect do
-        described_class.handle_event(
+        consumer.handle_message(
           build(
-            :events__message,
+            :message,
             :job_owner_assigned,
             data: Events::JobOwnerAssigned::Data::V1.new(
               job_id:,

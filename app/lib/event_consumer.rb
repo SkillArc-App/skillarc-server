@@ -1,17 +1,17 @@
 class EventConsumer
-  def self.handle_event(message, with_side_effects: false, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
+  def handle_message(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
     raise NoMethodError
   end
 
-  def self.handled_events
+  def handled_events
     []
   end
 
-  def self.handled_events_sync
+  def handled_events_sync
     []
   end
 
-  def self.reset_for_replay
+  def reset_for_replay
     raise NoMethodError
   end
 end

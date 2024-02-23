@@ -1,12 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe Contact::SmsService do
-  describe "#send_message" do
-    subject { described_class.new(phone_number, sms_service:).send_message(message) }
+  describe "#handle_message" do
+    subject { described_class.new(sms_service:).handle_message(message) }
 
     let(:sms_service) { instance_double(Sms::SmsCommunicator, send_message: nil) }
+    let(:message) do
+      build(
+        :message,
+        :send_sms,
+        data: Commands::SendSms::Data::V1.new(
+          phone_number:,
+          message: sms_message
+        )
+      )
+    end
 
-    let(:message) { "Hello, world!" }
+    let(:sms_message) { "Hello, world!" }
     let(:phone_number) { "1234567890" }
 
     it "calls the Sms Gateway" do
@@ -24,7 +34,7 @@ RSpec.describe Contact::SmsService do
         aggregate_id: phone_number,
         data: Events::SmsSent::Data::V1.new(
           phone_number:,
-          message:
+          message: sms_message
         )
       )
 

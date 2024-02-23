@@ -2,18 +2,18 @@ module Events
   module SeekerUpdated
     module Data
       class V1
-        extend Concerns::Payload
+        extend Messages::Payload
 
         schema do
-          about Either(String, Common::UNDEFINED), default: Common::UNDEFINED
+          about Either(String, Messages::UNDEFINED), default: Messages::UNDEFINED
         end
       end
     end
 
-    V1 = Schema.build(
+    V1 = Messages::Schema.build(
       data: Data::V1,
-      metadata: Common::Nothing,
-      event_type: Event::EventTypes::SEEKER_UPDATED,
+      metadata: Messages::Nothing,
+      event_type: Messages::Types::SEEKER_UPDATED,
       version: 1
     )
   end

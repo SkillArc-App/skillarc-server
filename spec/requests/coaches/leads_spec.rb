@@ -14,7 +14,7 @@ RSpec.describe "Leads", type: :request do
       include_context "coach authenticated"
 
       it "calls CoachService.all" do
-        expect(Coaches::SeekerService).to receive(:all_leads).and_call_original
+        expect_any_instance_of(Coaches::SeekerService).to receive(:all_leads).and_call_original
 
         subject
       end
@@ -42,7 +42,7 @@ RSpec.describe "Leads", type: :request do
       include_context "coach authenticated"
 
       it "calls CoachService.all" do
-        expect(Coaches::SeekerService)
+        expect_any_instance_of(Coaches::SeekerService)
           .to receive(:add_lead)
           .with(
             coach:,

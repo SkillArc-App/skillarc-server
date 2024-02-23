@@ -10,7 +10,7 @@ RSpec.describe "Coaches", type: :request do
       include_context "coach authenticated"
 
       it "calls CoachService.all" do
-        expect(Coaches::CoachService).to receive(:all)
+        expect_any_instance_of(Coaches::CoachService).to receive(:all)
 
         subject
       end

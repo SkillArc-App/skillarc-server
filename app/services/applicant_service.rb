@@ -10,7 +10,7 @@ class ApplicantService
       status:
     )
 
-    reasons.each do |reason|
+    applicant_status_reasons = reasons.map do |reason|
       ApplicantStatusReason.create!(
         applicant_status:,
         reason_id: reason[:id],
@@ -19,9 +19,9 @@ class ApplicantService
     end
 
     EventService.create!(
-      event_schema: Events::ApplicantStatusUpdated::V3,
+      event_schema: Events::ApplicantStatusUpdated::V4,
       aggregate_id: applicant.job.id,
-      data: Events::ApplicantStatusUpdated::Data::V3.new(
+      data: Events::ApplicantStatusUpdated::Data::V4.new(
         applicant_id: applicant.id,
         applicant_first_name: applicant.seeker.user.first_name,
         applicant_last_name: applicant.seeker.user.last_name,
@@ -33,10 +33,11 @@ class ApplicantService
         employer_name: applicant.job.employer.name,
         employment_title: applicant.job.employment_title,
         status: applicant.status.status,
-        reasons: reasons.map do |reason|
-          Events::ApplicantStatusUpdated::Reason::V1.new(
-            id: reason[:id],
-            response: reason[:response]
+        reasons: applicant_status_reasons.map do |asr|
+          Events::ApplicantStatusUpdated::Reason::V2.new(
+            id: asr.reason_id,
+            response: asr.response,
+            reason_description: asr.reason.description
           )
         end
       ),

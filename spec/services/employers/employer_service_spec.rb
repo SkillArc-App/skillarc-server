@@ -82,7 +82,7 @@ RSpec.describe Employers::EmployerService do
       )
     end
     let(:applicant_status_updated) do
-      build(:events__message, :applicant_status_updated, version: 3, data: Events::ApplicantStatusUpdated::Data::V3.new(
+      build(:events__message, :applicant_status_updated, version: 4, data: Events::ApplicantStatusUpdated::Data::V4.new(
         applicant_id: SecureRandom.uuid,
         applicant_first_name: "first_name",
         applicant_last_name: "last_name",

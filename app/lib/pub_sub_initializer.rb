@@ -49,12 +49,12 @@ module PubSubInitializer
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::ApplicantStatusUpdated::V3,
+      event_schema: Events::ApplicantStatusUpdated::V4,
       subscriber: Klayvio::ApplicationStatusUpdated.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::ApplicantStatusUpdated::V3,
+      event_schema: Events::ApplicantStatusUpdated::V4,
       subscriber: Slack::UserApplied.new
     )
 

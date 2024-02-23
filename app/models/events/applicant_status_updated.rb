@@ -9,6 +9,16 @@ module Events
           response Either(String, nil)
         end
       end
+
+      class V2
+        extend Concerns::Payload
+
+        schema do
+          id Uuid
+          reason_description String
+          response Either(String, nil)
+        end
+      end
     end
 
     module Data
@@ -65,6 +75,26 @@ module Events
           reasons ArrayOf(Reason::V1), default: []
         end
       end
+
+      class V4
+        extend Concerns::Payload
+
+        schema do
+          applicant_id Uuid
+          applicant_first_name String
+          applicant_last_name String
+          applicant_email String
+          applicant_phone_number Either(String, nil), default: nil
+          profile_id Either(Uuid, nil), default: nil
+          seeker_id Uuid
+          user_id String
+          job_id Uuid
+          employer_name String
+          employment_title String
+          status Either(*ApplicantStatus::StatusTypes::ALL)
+          reasons ArrayOf(Reason::V2), default: []
+        end
+      end
     end
 
     V1 = Schema.build(
@@ -86,6 +116,13 @@ module Events
       metadata: Common::Nothing,
       event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
       version: 3
+    )
+
+    V4 = Schema.build(
+      data: Data::V4,
+      metadata: Common::Nothing,
+      event_type: Event::EventTypes::APPLICANT_STATUS_UPDATED,
+      version: 4
     )
   end
 end

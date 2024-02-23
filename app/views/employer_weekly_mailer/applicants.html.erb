@@ -9,15 +9,19 @@
 
 <div class="section">
   <h2>Hello!</h2>
-  <p>As a SkillArc partner, we are pleased to provide you with your weekly update on the progress of candidates who have applied to your job postings at <%= @employer[:name] %></p>
+  <p>As a SkillArc partner, we are pleased to provide you with your weekly update on the progress of candidates who have applied to your job postings at <%= @data.employer_name %></p>
 </div>
 
 <div class="new_candidates section">
   <h2>New Candidates</h2>
-  <p>There are <%= @new_applicants.count %> applicant waiting for you.</p>
+  <p>There are <%= @data.new_applicants.length %> applicant waiting for you.</p>
   <ul>
-  <% @new_applicants.each do |applicant| %>
-    <li><%= "#{applicant[:first_name]} #{applicant[:last_name]}"%></li>
+  <% @data.new_applicants.each do |applicant| %>
+    <% if applicant.certified_by %>
+        <li><%= "#{applicant.first_name} #{applicant.last_name}"%> who was certified by <%= applicant.certified_by %></li>
+      <% else %>
+        <li><%= "#{applicant.first_name} #{applicant.last_name}"%></li>
+      <% end %>
   <% end %>
   </ul>
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -35,10 +39,14 @@
 
 <div class="section">
   <h2>Pending Candidates</h2>
-  <p>In addition to the several new candidates this week, you have <%= @pending_applicants.count %> past applications still pending.</p>
+  <p>In addition to the several new candidates this week, you have <%= @data.pending_applicants.length %> past applications still pending.</p>
   <ul>
-    <% @pending_applicants.each do |applicant| %>
-      <li><%= "#{applicant[:first_name]} #{applicant[:last_name]}"%></li>
+    <% @data.pending_applicants.each do |applicant| %>
+      <% if applicant.certified_by %>
+        <li><%= "#{applicant.first_name} #{applicant.last_name}"%> who was certified by <%= applicant.certified_by %></li>
+      <% else %>
+        <li><%= "#{applicant.first_name} #{applicant.last_name}"%></li>
+      <% end %>
     <% end %>
   </ul>
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -132,7 +140,7 @@
 
   .new_candidates {
     background-color: #c6f6d5;
-  } 
+  }
 
   .section {
     padding: 1rem;

@@ -74,7 +74,8 @@ module Messages
 
       COMMANDS = [
         SEND_SMS = 'send_sms'.freeze,
-        NOTIFY_EMPLOYER_OF_APPLICANT = 'notify_employer_of_applicant'.freeze
+        NOTIFY_EMPLOYER_OF_APPLICANT = 'notify_employer_of_applicant'.freeze,
+        SEND_WEEKLY_EMPLOYER_UPDATE = 'send_weekly_employer_update'.freeze
       ].freeze
     end
 

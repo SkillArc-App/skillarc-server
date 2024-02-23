@@ -36,6 +36,8 @@ module Contact
           message: message.data.message
         )
       )
+    rescue StandardError => e
+      Sentry.capture_exception(e)
     end
 
     attr_reader :sms_service

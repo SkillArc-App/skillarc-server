@@ -227,6 +227,17 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     render json: seeker.user
   end
 
+  def assert_no_failed_jobs
+    failure_count = Resque::Failure.count
+    Resque::Failure.clear
+
+    if failure_count.zero?
+      head :no_content
+    else
+      render json: { message: 'Failed resque jobs' }, status: :internal_server_error
+    end
+  end
+
   def reset_test_database
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean

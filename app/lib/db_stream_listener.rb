@@ -8,13 +8,6 @@ class DbStreamListener < StreamListener
     "db-stream-#{kind}-#{listener_name}"
   end
 
-  def replay
-    consumer.reset_for_replay
-
-    ListenerBookmark.find_by(consumer_name: listener_name)&.destroy
-    play
-  end
-
   def play
     events = unplayed_events
 
@@ -48,7 +41,7 @@ class DbStreamListener < StreamListener
   def bookmark_timestamp
     bookmark = ListenerBookmark.find_by(consumer_name: listener_name)
 
-    return Time.zone.at(0) unless bookmark
+    return default_time unless bookmark
 
     Event.find(bookmark.event_id).message.occurred_at
   end
@@ -57,6 +50,10 @@ class DbStreamListener < StreamListener
     ListenerBookmark
       .find_or_initialize_by(consumer_name: listener_name)
       .update!(event_id: event.id)
+  end
+
+  def default_time
+    raise NoMethodError
   end
 
   def handle_message(*)

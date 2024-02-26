@@ -9,7 +9,18 @@ class DbStreamAggregator < DbStreamListener
     aggreagtor
   end
 
+  def replay
+    consumer.reset_for_replay
+
+    ListenerBookmark.find_by(consumer_name: listener_name)&.destroy
+    play
+  end
+
   private
+
+  def default_time
+    Time.zone.at(0)
+  end
 
   def handle_message(message)
     consumer.handle_message(message)

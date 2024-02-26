@@ -7,11 +7,10 @@ RSpec.describe DbStreamAggregator do
   let!(:event2) { create(:event, :user_created, occurred_at: event_occurred_at + 2.days) }
 
   let(:event_occurred_at) { Date.new(2020, 1, 1) }
+  let(:instance) { described_class.build(consumer, "listener_name") }
 
   describe "#play" do
     subject { instance.play }
-
-    let(:instance) { described_class.build(consumer, "listener_name") }
 
     it "updates the bookmark" do
       expect { subject }.to change {
@@ -65,8 +64,6 @@ RSpec.describe DbStreamAggregator do
   describe "#replay" do
     subject { instance.replay }
 
-    let(:instance) { described_class.build(consumer, "listener_name") }
-
     it "calls play" do
       expect(instance)
         .to receive(:play)
@@ -113,24 +110,12 @@ RSpec.describe DbStreamAggregator do
   end
 
   describe "#call" do
-    subject { described_class.build(consumer, "listener_name") }
+    it "calls play" do
+      expect(instance)
+        .to receive(:play)
+        .and_call_original
 
-    it "calls the consumer with the event" do
-      expect(consumer).to receive(:handle_message).with(
-        event.message
-      )
-
-      expect(consumer).to receive(:handle_message).with(
-        event2.message
-      )
-
-      subject.call(event:)
-    end
-
-    it "updates the bookmark" do
-      expect { subject.call(event:) }.to change {
-        ListenerBookmark.find_by(consumer_name: "listener_name")&.event_id
-      }.from(nil).to(event2.id)
+      instance.call(event:)
     end
   end
 

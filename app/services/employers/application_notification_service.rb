@@ -22,7 +22,7 @@ module Employers
     def handle_applicant_status_updated(message)
       return unless message.data.status == Applicant::StatusTypes::NEW
 
-      job = Job.find_by(job_id: message.data.job_id)
+      job = Job.find_by!(job_id: message.data.job_id)
       certified_by = Seeker.find_by(seeker_id: message.data.seeker_id)&.certified_by
 
       data = message.data

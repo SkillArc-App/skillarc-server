@@ -15,7 +15,7 @@ class EmployerInviteService
       )
     )
 
-    user = User.find_by(email: employer_invite.email)
+    user = User.find_by!(email: employer_invite.email)
 
     EmployerInvite.transaction do
       employer_invite.update!(used_at: DateTime.now)

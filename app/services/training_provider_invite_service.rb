@@ -15,7 +15,7 @@ class TrainingProviderInviteService
       )
     )
 
-    user = User.find_by(email: invite.email)
+    user = User.find_by!(email: invite.email)
 
     TrainingProviderProfile.transaction do
       TrainingProviderProfile.create!(

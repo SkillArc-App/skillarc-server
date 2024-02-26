@@ -178,7 +178,13 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   end
 
   def create_job
-    render json: FactoryBot.create(:job, employment_title: SecureRandom.uuid)
+    employer = FactoryBot.create(:employer)
+    employers_employer = FactoryBot.create(:employers_employer, employer_id: employer.id, name: employer.name)
+
+    job = FactoryBot.create(:job, employment_title: SecureRandom.uuid, employer:)
+    FactoryBot.create(:employers_job, job_id: job.id, employer: employers_employer, employment_title: job.employment_title)
+
+    render json: job
   end
 
   def create_seeker_lead
@@ -202,7 +208,12 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       last_active_on: Time.zone.now
     )
 
-    job = FactoryBot.create(:job)
+    employer = FactoryBot.create(:employer)
+    employers_employer = FactoryBot.create(:employers_employer, employer_id: employer.id)
+
+    job = FactoryBot.create(:job, employer:)
+    FactoryBot.create(:employers_job, job_id: job.id, employer: employers_employer, employment_title: job.employment_title)
+
     FactoryBot.create(:desired_skill, job:)
 
     csc.seeker_applications.create!(
@@ -214,6 +225,17 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     )
 
     render json: seeker.user
+  end
+
+  def assert_no_failed_jobs
+    failure_count = Resque::Failure.count
+    Resque::Failure.clear
+
+    if failure_count.zero?
+      head :no_content
+    else
+      render json: { message: 'Failed resque jobs' }, status: :internal_server_error
+    end
   end
 
   def reset_test_database

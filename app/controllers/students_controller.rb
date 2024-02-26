@@ -19,7 +19,7 @@ class StudentsController < ApplicationController
           }
         }
       }
-    ).find_by(id: training_provider_profile.training_provider_id)
+    ).find(training_provider_profile.training_provider_id)
 
     programs = training_provider.programs.map do |program|
       students = program.students.map do |stp|

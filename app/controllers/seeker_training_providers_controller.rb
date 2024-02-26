@@ -25,7 +25,7 @@ class SeekerTrainingProvidersController < ApplicationController
     program_id = params["programId"]
     training_provider_id = params["trainingProviderId"]
 
-    stp = SeekerTrainingProvider.find_by(
+    stp = SeekerTrainingProvider.find_by!(
       user_id: Seeker.find(seeker_id).user_id
     )
 

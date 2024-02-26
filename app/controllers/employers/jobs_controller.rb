@@ -9,7 +9,7 @@ class Employers::JobsController < ApplicationController
     employers = if current_user.employer_admin?
                   Employers::Employer.all
                 else
-                  [Employers::Recruiter.find_by(email: current_user.email).employer]
+                  [Employers::Recruiter.find_by!(email: current_user.email).employer]
                 end
 
     jobs = Employers::JobService.new(employers:).all

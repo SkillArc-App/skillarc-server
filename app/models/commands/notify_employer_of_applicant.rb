@@ -13,7 +13,7 @@ module Commands
           applicant_last_name String
           applicant_seeker_id Uuid
           applicant_email String
-          applicant_phone_number String
+          applicant_phone_number Either(String, nil), default: nil
         end
       end
     end

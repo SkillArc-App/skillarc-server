@@ -1,6 +1,6 @@
 class HookService
   def create_notification(email:, title:, body:, url:)
-    user = User.find_by(email:)
+    user = User.find_by!(email:)
 
     EventService.create!(
       event_schema: Events::NotificationCreated::V1,

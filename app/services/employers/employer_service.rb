@@ -49,7 +49,7 @@ module Employers
     private
 
     def handle_applicant_status_updated(message)
-      job = Job.find_by(job_id: message.data.job_id)
+      job = Job.find_by!(job_id: message.data.job_id)
       applicant = Applicant.find_or_initialize_by(
         applicant_id: message.data.applicant_id,
         seeker_id: message.data.seeker_id,
@@ -87,7 +87,7 @@ module Employers
     end
 
     def handle_employer_invite_accepted(message)
-      employer = Employer.find_by(employer_id: message.data.employer_id)
+      employer = Employer.find_by!(employer_id: message.data.employer_id)
 
       Recruiter.create!(
         employer:,
@@ -96,7 +96,7 @@ module Employers
     end
 
     def handle_employer_updated(message)
-      e = Employer.find_by(employer_id: message.aggregate_id)
+      e = Employer.find_by!(employer_id: message.aggregate_id)
 
       e.update!(
         **message.data.to_h
@@ -114,7 +114,7 @@ module Employers
     end
 
     def handle_job_created(message)
-      employer = Employer.find_by(employer_id: message.data.employer_id)
+      employer = Employer.find_by!(employer_id: message.data.employer_id)
 
       Job.create!(
         employer:,
@@ -133,8 +133,8 @@ module Employers
     end
 
     def handle_job_owner_assigned(message)
-      job = Job.find_by(job_id: message.data.job_id)
-      recruiter = Recruiter.find_by(email: message.data.owner_email)
+      job = Job.find_by!(job_id: message.data.job_id)
+      recruiter = Recruiter.find_by!(email: message.data.owner_email)
 
       JobOwner.create!(
         job:,
@@ -143,7 +143,7 @@ module Employers
     end
 
     def handle_job_updated(message)
-      job = Job.find_by(job_id: message.aggregate_id)
+      job = Job.find_by!(job_id: message.aggregate_id)
 
       job.update!(
         **message.data.to_h

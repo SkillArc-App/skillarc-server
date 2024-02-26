@@ -24,7 +24,7 @@ module Jobs
     def self.up(career_path)
       return if career_path.order.zero?
 
-      upper_career_path = career_path.job.career_paths.find_by(order: career_path.order - 1)
+      upper_career_path = career_path.job.career_paths.find_by!(order: career_path.order - 1)
 
       career_path.update!(order: career_path.order - 1)
       upper_career_path.update!(order: upper_career_path.order + 1)
@@ -51,7 +51,7 @@ module Jobs
     def self.down(career_path)
       return if career_path.order == career_path.job.career_paths.count - 1
 
-      lower_career_path = career_path.job.career_paths.find_by(order: career_path.order + 1)
+      lower_career_path = career_path.job.career_paths.find_by!(order: career_path.order + 1)
 
       career_path.update!(order: career_path.order + 1)
       lower_career_path.update!(order: lower_career_path.order - 1)

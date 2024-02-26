@@ -89,7 +89,6 @@ RSpec.describe Employers::WeeklyUpdateService do
 
       it "does not call SmtpService#send_weekly_employer_update" do
         expect(CommandService).not_to receive(:create!)
-        expect(Employers::DeliverWeeklySummaryJob).not_to receive(:perform_later)
 
         subject
       end

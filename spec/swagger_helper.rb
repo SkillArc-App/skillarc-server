@@ -85,6 +85,10 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               chatEnabled: {
                 type: :boolean
               },
+              certifiedBy: {
+                type: :string,
+                nullable: true
+              },
               createdAt: {
                 type: :string,
                 format: 'date-time'

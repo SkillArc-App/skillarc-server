@@ -3,36 +3,6 @@ require 'swagger_helper'
 
 RSpec.describe "Employers::Jobs", type: :request do
   path '/employers/jobs' do
-    context "when authenticated" do
-      include_context "employer authenticated"
-
-      it "calls Employers::JobService" do
-        expect(Employers::JobService)
-          .to receive(:new)
-          .with(employers: [employers_employer])
-          .and_call_original
-
-        expect_any_instance_of(Employers::JobService)
-          .to receive(:all)
-          .and_call_original
-
-        get employers_jobs_path, headers:
-      end
-
-      it "calls Employers::ApplicantService" do
-        expect(Employers::ApplicantService)
-          .to receive(:new)
-          .with(employers: [employers_employer])
-          .and_call_original
-
-        expect_any_instance_of(Employers::ApplicantService)
-          .to receive(:all)
-          .and_call_original
-
-        get employers_jobs_path, headers:
-      end
-    end
-
     get "Retrieve employer jobs" do
       tags 'Employers'
       produces 'application/json'
@@ -98,6 +68,26 @@ RSpec.describe "Employers::Jobs", type: :request do
                    }
                  },
                  required: %w[jobs applicants]
+
+          before do
+            expect(Employers::JobService)
+              .to receive(:new)
+              .with(employers: [employers_employer])
+              .and_call_original
+
+            expect(Employers::ApplicantService)
+              .to receive(:new)
+              .with(employers: [employers_employer])
+              .and_call_original
+
+            expect_any_instance_of(Employers::JobService)
+              .to receive(:all)
+              .and_call_original
+
+            expect_any_instance_of(Employers::ApplicantService)
+              .to receive(:all)
+              .and_call_original
+          end
 
           run_test!
         end

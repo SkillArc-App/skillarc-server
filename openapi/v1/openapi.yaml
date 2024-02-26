@@ -439,6 +439,9 @@ components:
         id:
           type: string
           format: uuid
+        elevatorPitch:
+          type: string
+          nullable: true
         jobId:
           type: string
           format: uuid
@@ -462,6 +465,9 @@ components:
           format: uuid
         chatEnabled:
           type: boolean
+        certifiedBy:
+          type: string
+          nullable: true
         createdAt:
           type: string
           format: date-time

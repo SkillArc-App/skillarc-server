@@ -3,13 +3,24 @@ class DbStreamReactor < DbStreamListener
     StreamListener::Kind::REACTOR
   end
 
-  def self.build(consumer, listener_name)
-    reactor = new(consumer, listener_name)
+  def self.build(consumer, listener_name, now: Time.zone.now)
+    reactor = new(consumer, listener_name, now)
     StreamListener.register(listener_name, reactor)
     reactor
   end
 
+  def replay; end
+
   private
+
+  def initialize(consumer, listener_name, now)
+    super(consumer, listener_name)
+    @now = now
+  end
+
+  def default_time
+    @now
+  end
 
   def handle_message(message)
     dedup(message) do

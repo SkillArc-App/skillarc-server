@@ -46,7 +46,8 @@ RSpec.describe Jobs::JobBlueprint do
               "location" => job.location,
               "industries" => job.industry,
               "saved" => false,
-              "application_status" => nil
+              "application_status" => nil,
+              "elevator_pitch" => nil
             }
           )
         end
@@ -76,7 +77,8 @@ RSpec.describe Jobs::JobBlueprint do
                 "location" => job.location,
                 "industries" => job.industry,
                 "saved" => false,
-                "application_status" => nil
+                "application_status" => nil,
+                "elevator_pitch" => nil
               }
             )
           end
@@ -86,7 +88,7 @@ RSpec.describe Jobs::JobBlueprint do
           before do
             create(:event, aggregate_id: user.id, event_type: Messages::Types::Seekers::JOB_SAVED, data: { job_id: job.id })
             seeker = create(:seeker, user:)
-            create(:applicant, seeker:, job:)
+            create(:applicant, seeker:, job:, elevator_pitch: "I'm a cowboy")
           end
 
           it "shows it as save with application status" do
@@ -108,7 +110,8 @@ RSpec.describe Jobs::JobBlueprint do
                 "location" => job.location,
                 "industries" => job.industry,
                 "saved" => true,
-                "application_status" => "new"
+                "application_status" => "new",
+                "elevator_pitch" => "I'm a cowboy"
               }
             )
           end

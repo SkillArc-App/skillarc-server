@@ -38,6 +38,13 @@ RSpec.describe Employers::ApplicantService do
         employment_title: "Welder"
       )
     end
+    let!(:seeker) do
+      create(
+        :employers_seeker,
+        certified_by: "chris@skillarc.com",
+        seeker_id: applicant.seeker_id
+      )
+    end
 
     it "returns all applicants for the employer" do
       expect(subject).to eq(
@@ -47,6 +54,7 @@ RSpec.describe Employers::ApplicantService do
             job_id: job.id,
             chat_enabled: true,
             created_at: applicant.created_at,
+            certified_by: "chris@skillarc.com",
             job_name: "Welder",
             first_name: "Hannah",
             last_name: "Block",

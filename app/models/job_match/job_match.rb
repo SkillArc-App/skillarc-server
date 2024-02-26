@@ -8,7 +8,7 @@ module JobMatch
       save_events = Event
                     .where(
                       aggregate_id: user.id,
-                      event_type: [Messages::Types::JOB_SAVED, Messages::Types::JOB_UNSAVED]
+                      event_type: [Messages::Types::Seekers::JOB_SAVED, Messages::Types::Seekers::JOB_UNSAVED]
                     )
                     .map(&:message)
                     .group_by { |e| e.data[:job_id] }
@@ -52,7 +52,7 @@ module JobMatch
           work_days: job.work_days,
           requirements_description: job.requirements_description,
           percent_match: match_score(job),
-          saved: save_events[job.id]&.sort_by(&:occurred_at)&.last&.event_type == Messages::Types::JOB_SAVED,
+          saved: save_events[job.id]&.sort_by(&:occurred_at)&.last&.event_type == Messages::Types::Seekers::JOB_SAVED,
           applied: application.present?,
           elevator_pitch: application&.elevator_pitch,
           application_status:

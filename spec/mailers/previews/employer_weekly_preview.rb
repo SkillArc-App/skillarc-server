@@ -1,22 +1,38 @@
-# Preview all emails at http://localhost:3000/rails/mailers/employer_weekly
+# Preview all emails at http://localhost:3001/rails/mailers/employer_weekly
 class EmployerWeeklyPreview < ActionMailer::Preview
   def applicants
-    employer = FactoryBot.build(:employers_employer, name: Faker::Company.name)
-    recruiter = FactoryBot.build(:employers_recruiter, employer: @employer)
+    message = FactoryBot.build(
+      :message,
+      :send_weekly_employer_update,
+      version: 1,
+      data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+        employer_name: Faker::Company.name,
+        recepent_email: Faker::Internet.email,
+        new_applicants: [
+          Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
+            first_name: Faker::Name.first_name,
+            last_name: Faker::Name.last_name,
+            certified_by: "john@skillarc.com"
+          ),
+          Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
+            first_name: Faker::Name.first_name,
+            last_name: Faker::Name.last_name
+          )
+        ],
+        pending_applicants: [
+          Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
+            first_name: Faker::Name.first_name,
+            last_name: Faker::Name.last_name,
+            certified_by: "john@skillarc.com"
+          ),
+          Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
+            first_name: Faker::Name.first_name,
+            last_name: Faker::Name.last_name
+          )
+        ]
+      )
+    )
 
-    job = FactoryBot.build(:employers_job, employer: @employer)
-
-    new_applicants = [
-      FactoryBot.build(:employers_applicant, job:, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, phone_number: "1 555 555 5555"),
-      FactoryBot.build(:employers_applicant, job:, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, phone_number: "1 555 555 5555")
-    ]
-
-    pending_applicants = [
-      FactoryBot.build(:employers_applicant, job:, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, phone_number: "1 555 555 5555"),
-      FactoryBot.build(:employers_applicant, job:, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, phone_number: "1 555 555 5555"),
-      FactoryBot.build(:employers_applicant, job:, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, phone_number: "1 555 555 5555")
-    ]
-
-    EmployerWeeklyMailer.with({ employer:, recruiter:, job:, new_applicants:, pending_applicants: }).applicants
+    EmployerWeeklyMailer.with(message:).applicants
   end
 end

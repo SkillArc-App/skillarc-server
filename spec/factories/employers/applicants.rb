@@ -4,6 +4,7 @@ FactoryBot.define do
 
     status { Employers::Applicant::StatusTypes::NEW }
     applicant_id { SecureRandom.uuid }
+    certified_by { "john@skillarc.com" }
     seeker_id { SecureRandom.uuid }
     email { Faker::Internet.email }
     first_name { Faker::Name.first_name }

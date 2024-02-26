@@ -13,7 +13,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
-      event_type: Messages::Types::JOB_TAG_DELETED,
+      event_type: Messages::Types::Jobs::JOB_TAG_DELETED,
       version: 1
     )
   end

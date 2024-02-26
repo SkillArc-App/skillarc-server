@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Messages::Schema do
   describe ".build" do
     before(:each) do
-      stub_const("Messages::Types::LEAD_ADDED", "test_event_name-#{SecureRandom.uuid}")
+      stub_const("Messages::Types::Coaches::LEAD_ADDED", "test_event_name-#{SecureRandom.uuid}")
     end
 
     subject do
@@ -17,7 +17,7 @@ RSpec.describe Messages::Schema do
 
     let(:data) { String }
     let(:metadata) { Hash }
-    let(:event_type) { Messages::Types::LEAD_ADDED }
+    let(:event_type) { Messages::Types::Coaches::LEAD_ADDED }
     let(:version) { 1 }
 
     it "returns the schema and registers it" do

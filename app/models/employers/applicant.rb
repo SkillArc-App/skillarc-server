@@ -3,6 +3,7 @@
 # Table name: employers_applicants
 #
 #  id               :uuid             not null, primary key
+#  certified_by     :string
 #  email            :string           not null
 #  first_name       :string           not null
 #  last_name        :string           not null

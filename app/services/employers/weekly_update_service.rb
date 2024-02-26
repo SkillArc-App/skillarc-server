@@ -24,26 +24,33 @@ module Employers
       Employer.find_each do |employer|
         next unless employer.active?
 
+        new_applicants = employer.applicants.active.where("status_as_of >= ?", date - 1.week).map do |applicant|
+          Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
+            first_name: applicant.first_name,
+            last_name: applicant.last_name,
+            certified_by: Seeker.find_by(seeker_id: applicant.seeker_id)&.certified_by
+          )
+        end
+
+        pending_applicants = employer.applicants.active.where("status_as_of < ?", date - 1.week).map do |applicant|
+          Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
+            first_name: applicant.first_name,
+            last_name: applicant.last_name,
+            certified_by: Seeker.find_by(seeker_id: applicant.seeker_id)&.certified_by
+          )
+        end
+
         employer.recruiters.each do |recruiter|
-          new_applicants = employer.applicants.active.where("status_as_of >= ?", date - 1.week).map do |applicant|
-            {
-              first_name: applicant.first_name,
-              last_name: applicant.last_name
-            }
-          end
-
-          pending_applicants = employer.applicants.active.where("status_as_of < ?", date - 1.week).map do |applicant|
-            {
-              first_name: applicant.first_name,
-              last_name: applicant.last_name
-            }
-          end
-
-          Employers::DeliverWeeklySummaryJob.perform_later(
-            new_applicants:,
-            pending_applicants:,
-            employer: { name: employer.name },
-            recruiter: { email: recruiter.email }
+          CommandService.create!(
+            command_schema: Commands::SendWeeklyEmployerUpdate::V1,
+            aggregate_id: employer.id,
+            trace_id: SecureRandom.uuid,
+            data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+              employer_name: employer.name,
+              recepent_email: recruiter.email,
+              new_applicants:,
+              pending_applicants:
+            )
           )
         end
       end

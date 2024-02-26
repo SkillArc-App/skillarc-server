@@ -23,6 +23,7 @@ RSpec.describe Employers::WeeklyUpdateService do
 
     let!(:new_applicant) { create(:employers_applicant, job:, status_as_of: date - 1.day) }
     let!(:pending_applicant) { create(:employers_applicant, job:, status_as_of: date - 2.weeks) }
+    let!(:seeker) { create(:employers_seeker, certified_by: "jim@skillarc.com", seeker_id: new_applicant.seeker_id) }
     let!(:recruiter) { create(:employers_recruiter, employer:) }
     let!(:second_recruiter) { create(:employers_recruiter, employer:) }
 
@@ -35,19 +36,49 @@ RSpec.describe Employers::WeeklyUpdateService do
       let(:date) { Date.new(2024, 2, 20) }
 
       it "enqueues a job" do
-        expect(Employers::DeliverWeeklySummaryJob).to receive(:perform_later).with(
-          new_applicants: [{ first_name: new_applicant.first_name, last_name: new_applicant.last_name }],
-          pending_applicants: [{ first_name: pending_applicant.first_name, last_name: pending_applicant.last_name }],
-          employer: { name: employer.name },
-          recruiter: { email: recruiter.email }
-        ).and_call_original
+        new_applicants = [
+          Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
+            first_name: new_applicant.first_name,
+            last_name: new_applicant.last_name,
+            certified_by: seeker.certified_by
+          )
+        ]
 
-        expect(Employers::DeliverWeeklySummaryJob).to receive(:perform_later).with(
-          new_applicants: [{ first_name: new_applicant.first_name, last_name: new_applicant.last_name }],
-          pending_applicants: [{ first_name: pending_applicant.first_name, last_name: pending_applicant.last_name }],
-          employer: { name: employer.name },
-          recruiter: { email: second_recruiter.email }
-        ).and_call_original
+        pending_applicants = [
+          Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
+            first_name: pending_applicant.first_name,
+            last_name: pending_applicant.last_name,
+            certified_by: nil
+          )
+        ]
+
+        expect(CommandService)
+          .to receive(:create!)
+          .with(
+            command_schema: Commands::SendWeeklyEmployerUpdate::V1,
+            aggregate_id: employer.id,
+            trace_id: be_a(String),
+            data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+              employer_name: employer.name,
+              recepent_email: recruiter.email,
+              new_applicants:,
+              pending_applicants:
+            )
+          )
+
+        expect(CommandService)
+          .to receive(:create!)
+          .with(
+            command_schema: Commands::SendWeeklyEmployerUpdate::V1,
+            aggregate_id: employer.id,
+            trace_id: be_a(String),
+            data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+              employer_name: employer.name,
+              recepent_email: second_recruiter.email,
+              new_applicants:,
+              pending_applicants:
+            )
+          )
 
         subject
       end
@@ -57,7 +88,7 @@ RSpec.describe Employers::WeeklyUpdateService do
       let(:date) { Date.new(2024, 2, 21) }
 
       it "does not call SmtpService#send_weekly_employer_update" do
-        expect_any_instance_of(Contact::SmtpService).not_to receive(:send_weekly_employer_update)
+        expect(CommandService).not_to receive(:create!)
         expect(Employers::DeliverWeeklySummaryJob).not_to receive(:perform_later)
 
         subject

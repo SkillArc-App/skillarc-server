@@ -20,37 +20,28 @@ module Employers
     private
 
     def handle_applicant_status_updated(message)
+      return unless message.data.status == Applicant::StatusTypes::NEW
+
       job = Job.find_by(job_id: message.data.job_id)
+      certified_by = Seeker.find_by(seeker_id: message.data.seeker_id)&.certified_by
 
-      message_applicant = message.data
-
-      applicant = Struct.new(
-        :applicant_id,
-        :first_name,
-        :last_name,
-        :email,
-        :phone_number,
-        :seeker_id,
-        :status,
-        :status_as_of
-      ).new
-
-      applicant.applicant_id = message_applicant.applicant_id
-      applicant.seeker_id = message_applicant.seeker_id
-      applicant.first_name = message_applicant.applicant_first_name
-      applicant.last_name = message_applicant.applicant_last_name
-      applicant.email = message_applicant.applicant_email
-      applicant.phone_number = message_applicant.applicant_phone_number
-      applicant.status = message_applicant.status
-      applicant.status_as_of = message.occurred_at
-
-      return unless applicant.status == Applicant::StatusTypes::NEW
+      data = message.data
 
       job.owner_emails.each do |owner_email|
-        Contact::SmtpService.new.notify_employer_of_applicant(
-          job,
-          owner_email,
-          applicant
+        CommandService.create!(
+          command_schema: Commands::NotifyEmployerOfApplicant::V1,
+          aggregate_id: data.applicant_id,
+          trace_id: message.trace_id,
+          data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
+            employment_title: data.employment_title,
+            recepent_email: owner_email,
+            certified_by:,
+            applicant_first_name: data.applicant_first_name,
+            applicant_last_name: data.applicant_last_name,
+            applicant_seeker_id: data.seeker_id,
+            applicant_email: data.applicant_email,
+            applicant_phone_number: data.applicant_phone_number
+          )
         )
       end
     end

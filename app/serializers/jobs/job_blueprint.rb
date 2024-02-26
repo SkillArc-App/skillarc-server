@@ -6,7 +6,6 @@ module Jobs
       field :employment_title
       field :industry, name: :industries
       field :location
-      field :application_status
       field :starting_pay do |job|
         starting_path = job.career_paths.detect { |p| p.order.zero? }
         next nil if starting_path.blank?
@@ -26,6 +25,12 @@ module Jobs
 
         applicant = job.applicants.detect { |a| a.seeker_id == options[:user].seeker.id }
         applicant&.status&.status
+      end
+      field :elevator_pitch do |job, options|
+        next nil if options[:user].blank?
+        next nil if options[:user].seeker.blank?
+
+        job.applicants.detect { |a| a.seeker_id == options[:user].seeker.id }&.elevator_pitch
       end
       field :saved do |job, options|
         next false if options[:user].blank?

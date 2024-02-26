@@ -6,12 +6,15 @@ module Employers
 
     def all
       jobs = employers.map(&:jobs).flatten
+      applicants = Applicant.includes(:applicant_status_reasons).where(job: jobs)
+      seekers = Seeker.where(seeker_id: applicants.select(:seeker_id))
 
       Applicant.where(job: jobs).map do |a|
         {
           id: a.applicant_id,
           job_id: a.job.id,
           chat_enabled: true,
+          certified_by: seekers.detect { |s| s.seeker_id == a.seeker_id }&.certified_by,
           created_at: a.created_at,
           job_name: a.job.employment_title,
           first_name: a.first_name,

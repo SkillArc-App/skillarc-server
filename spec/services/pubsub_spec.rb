@@ -37,11 +37,16 @@ RSpec.describe Pubsub do
       subject.subscribe(event_schema: message.event_schema, subscriber:)
 
       expect(ExecuteSubscriberJob)
-        .to receive(:perform_later)
+        .to receive(:new)
         .with(
           message:,
           subscriber_id: subscriber.id
         ).and_call_original
+
+      expect(ActiveJob)
+        .to receive(:perform_all_later)
+        .with([be_a(ExecuteSubscriberJob)])
+        .and_call_original
 
       subject.publish(message:)
     end

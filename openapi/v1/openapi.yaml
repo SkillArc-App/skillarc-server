@@ -422,6 +422,202 @@ paths:
           description: unauthenticated
         '202':
           description: Session Started
+  "/test/create_user":
+    post:
+      summary: Create test user
+      tags:
+      - Test
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: Create test user
+          content:
+            application/json:
+              schema:
+                type: object
+  "/test/create_coach":
+    post:
+      summary: Create test coach
+      tags:
+      - Test
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: Create test coach
+          content:
+            application/json:
+              schema:
+                type: object
+  "/test/create_seeker":
+    post:
+      summary: Create test seeker
+      tags:
+      - Test
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: Create test seeker
+          content:
+            application/json:
+              schema:
+                type: object
+  "/test/create_job":
+    post:
+      summary: Create test job
+      tags:
+      - Test
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: Create test job
+          content:
+            application/json:
+              schema:
+                type: object
+  "/test/create_recruiter_with_applicant":
+    post:
+      summary: Create test recruiter with applicant
+      tags:
+      - Test
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: Create test recruiter with applicant
+          content:
+            application/json:
+              schema:
+                type: object
+  "/test/create_test_trainer_with_student":
+    post:
+      summary: Create test trainer with student
+      tags:
+      - Test
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: Create test trainer with student
+          content:
+            application/json:
+              schema:
+                type: object
+  "/test/create_seeker_lead":
+    post:
+      summary: Create seeker lead
+      tags:
+      - Test
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: Create seeker lead
+          content:
+            application/json:
+              schema:
+                type: object
+  "/test/create_active_seeker":
+    post:
+      summary: Create active seeker
+      tags:
+      - Test
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: Create active seeker
+          content:
+            application/json:
+              schema:
+                type: object
+  "/test/assert_no_failed_jobs":
+    get:
+      summary: Assert job failure status
+      tags:
+      - Test
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '204':
+          description: No failed jobs
+        '500':
+          description: failed jobs
 servers:
 - url: https://{defaultHost}
   variables:

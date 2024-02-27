@@ -42,6 +42,19 @@ jobs:
           comment_on_pr: false
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Checkout Skillarc GH action
+        uses: actions/checkout@v4
+        with:
+          repository: SkillArc-App/skillarc-ci-action
+          ref: v0.1.4
+          ssh-key: ${{ secrets.SKILLARC_CI_ACTION_ACCESS }}
+          path: .github/actions/skillarc-ci-action
+      - name: Run SkillArc GH action
+        uses: ./.github/actions/skillarc-ci-action
+        with:
+          alert_threshold: 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       # Add or replace dependency steps here
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
@@ -64,6 +77,19 @@ jobs:
           comment_on_pr: false
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Checkout Skillarc GH action
+        uses: actions/checkout@v4
+        with:
+          repository: SkillArc-App/skillarc-ci-action
+          ref: v0.1.4
+          ssh-key: ${{ secrets.SKILLARC_CI_ACTION_ACCESS }}
+          path: .github/actions/skillarc-ci-action
+      - name: Run SkillArc GH action
+        uses: ./.github/actions/skillarc-ci-action
+        with:
+          alert_threshold: 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:

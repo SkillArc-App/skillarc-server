@@ -15,7 +15,7 @@ gem "pg", "~> 1.1"
 gem "premailer-rails"
 gem "puma", "~> 5.0"
 gem "rack-cors"
-gem "rails", "~> 7.0.7", ">= 7.0.7.2"
+gem "rails", "~> 7.1", ">= 7.1"
 gem "redis"
 gem "resque"
 gem 'rswag-api'

@@ -117,7 +117,7 @@ Rails.application.routes.draw do
     post 'accept', on: :member
   end
 
-  if Rails.env.test? || Rails.env.development?
+  if Rails.env.local?
     resource :test do
       post '/reset_database' => 'test#reset_test_database'
       post '/create_user' => 'test#create_test_user'

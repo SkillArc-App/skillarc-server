@@ -7,9 +7,11 @@ class Pubsub
   end
 
   def publish(message:)
-    subscribers.dig(message.event_type, message.version)&.values&.each do |subscriber|
+    jobs = subscribers.dig(message.event_type, message.version)&.values&.map do |subscriber|
       resolve_event(message, subscriber)
-    end
+    end&.compact || []
+
+    ActiveJob.perform_all_later(jobs)
   end
 
   def subscribe(event_schema:, subscriber:)
@@ -34,8 +36,9 @@ class Pubsub
   def resolve_event(message, subscriber)
     if sync
       subscriber.call(message:)
+      nil
     else
-      ExecuteSubscriberJob.perform_later(message:, subscriber_id: subscriber.id)
+      ExecuteSubscriberJob.new(message:, subscriber_id: subscriber.id)
     end
   end
 end

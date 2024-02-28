@@ -52,7 +52,7 @@ jobs:
       - name: Run SkillArc GH action
         uses: ./.github/actions/skillarc-ci-action
         with:
-          alert_threshold: 1
+          alert_threshold: 120
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       # Add or replace dependency steps here
@@ -87,7 +87,7 @@ jobs:
       - name: Run SkillArc GH action
         uses: ./.github/actions/skillarc-ci-action
         with:
-          alert_threshold: 1
+          alert_threshold: 120
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       - name: Install Ruby and gems

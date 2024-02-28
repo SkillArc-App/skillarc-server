@@ -4,11 +4,12 @@ RSpec.describe ApplicantService do
   let(:applicant) { create(:applicant) }
 
   describe "#update_status" do
-    subject { described_class.new(applicant).update_status(status:, reasons:) }
+    subject { described_class.new(applicant).update_status(status:, user_id:, reasons:) }
 
     let(:status) { ApplicantStatus::StatusTypes::PENDING_INTRO }
     let(:reasons) { [{ id: reason.id, response: "Bad canidate" }] }
     let(:reason) { create(:reason) }
+    let(:user_id) { SecureRandom.uuid }
 
     before do
       allow_any_instance_of(Employers::EmployerService).to receive(:handle_message)
@@ -24,7 +25,7 @@ RSpec.describe ApplicantService do
 
     it "creates an event" do
       expect(EventService).to receive(:create!).with(
-        event_schema: Events::ApplicantStatusUpdated::V4,
+        event_schema: Events::ApplicantStatusUpdated::V5,
         aggregate_id: applicant.job.id,
         data: Events::ApplicantStatusUpdated::Data::V4.new(
           applicant_id: applicant.id,
@@ -45,6 +46,9 @@ RSpec.describe ApplicantService do
               reason_description: "This is a description"
             )
           ]
+        ),
+        metadata: Events::ApplicantStatusUpdated::MetaData::V1.new(
+          user_id:
         ),
         occurred_at: anything
       ).and_call_original

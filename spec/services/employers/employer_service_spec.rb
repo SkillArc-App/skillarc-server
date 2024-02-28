@@ -82,27 +82,31 @@ RSpec.describe Employers::EmployerService do
       )
     end
     let(:applicant_status_updated) do
-      build(:message, :applicant_status_updated, version: 4, data: Events::ApplicantStatusUpdated::Data::V4.new(
-        applicant_id: SecureRandom.uuid,
-        applicant_first_name: "first_name",
-        applicant_last_name: "last_name",
-        applicant_email: "email",
-        applicant_phone_number: "phone_number",
-        profile_id: SecureRandom.uuid,
-        seeker_id: SecureRandom.uuid,
-        user_id: "user_id",
-        job_id:,
-        employer_name: "employer_name",
-        employment_title: "employment_title",
-        status: ApplicantStatus::StatusTypes::NEW,
-        reasons: [
-          Events::ApplicantStatusUpdated::Reason::V2.new(
-            id: SecureRandom.uuid,
-            response: "response",
-            reason_description: "reason_description"
-          )
-        ]
-      ))
+      build(:message,
+            :applicant_status_updated,
+            version: 5,
+            data: Events::ApplicantStatusUpdated::Data::V4.new(
+              applicant_id: SecureRandom.uuid,
+              applicant_first_name: "first_name",
+              applicant_last_name: "last_name",
+              applicant_email: "email",
+              applicant_phone_number: "phone_number",
+              profile_id: SecureRandom.uuid,
+              seeker_id: SecureRandom.uuid,
+              user_id: "user_id",
+              job_id:,
+              employer_name: "employer_name",
+              employment_title: "employment_title",
+              status: ApplicantStatus::StatusTypes::NEW,
+              reasons: [
+                Events::ApplicantStatusUpdated::Reason::V2.new(
+                  id: SecureRandom.uuid,
+                  response: "response",
+                  reason_description: "reason_description"
+                )
+              ]
+            ),
+            metadata: Events::ApplicantStatusUpdated::MetaData::V1.new)
     end
     let(:seeker_certified) do
       build(:message, :seeker_certified, version: 1, data: Events::SeekerCertified::Data::V1.new(

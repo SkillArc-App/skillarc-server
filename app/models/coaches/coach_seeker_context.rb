@@ -17,7 +17,7 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  seeker_id         :uuid
-#  user_id           :string           not null
+#  user_id           :string
 #
 module Coaches
   class CoachSeekerContext < ApplicationRecord

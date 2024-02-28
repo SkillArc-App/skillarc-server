@@ -42,7 +42,19 @@ class JobsController < ApplicationController
   end
 
   def show
-    render json: serialize_job(Job.find(params[:id]))
+    job = Job.includes(
+      :applicants,
+      :career_paths,
+      :employer,
+      :job_photos,
+      :testimonials,
+      job_tags: :tag,
+      desired_skills: :master_skill,
+      learned_skills: :master_skill,
+      desired_certifications: :master_certification
+    ).find(params[:id])
+
+    render json: serialize_job(job)
   end
 
   def create

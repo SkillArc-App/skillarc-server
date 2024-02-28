@@ -7,6 +7,7 @@
 #  certified_by      :string
 #  email             :string
 #  first_name        :string
+#  kind              :string
 #  last_active_on    :datetime
 #  last_contacted_at :datetime
 #  last_name         :string
@@ -20,12 +21,19 @@
 #
 module Coaches
   class CoachSeekerContext < ApplicationRecord
-    self.ignored_columns += ["profile_id"]
+    module Kind
+      ALL = [
+        SEEKER = "seeker".freeze,
+        LEAD = "lead".freeze
+      ].freeze
+    end
 
     has_many :seeker_notes, dependent: :destroy, class_name: "Coaches::SeekerNote"
     has_many :seeker_applications, dependent: :destroy, class_name: "Coaches::SeekerApplication"
     has_many :seeker_barriers, dependent: :destroy, class_name: "Coaches::SeekerBarrier"
     has_many :seeker_job_recommendations, dependent: :destroy, class_name: "Coaches::SeekerJobRecommendation"
+
+    validates :kind, allow_nil: true, inclusion: { in: Kind::ALL }
 
     scope :with_everything, -> { includes(:seeker_notes, :seeker_applications, :seeker_barriers, seeker_job_recommendations: :job) }
   end

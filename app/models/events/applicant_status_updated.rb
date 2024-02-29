@@ -102,7 +102,7 @@ module Events
         extend Messages::Payload
 
         schema do
-          user_id Either(Uuid, nil), default: nil
+          user_id Either(String, nil), default: nil
         end
       end
     end

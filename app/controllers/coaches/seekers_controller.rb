@@ -8,7 +8,7 @@ module Coaches
     before_action :set_coach, only: %i[recommend_job certify]
 
     def index
-      render json: SeekerService.new.all_contexts
+      render json: SeekerService.new.all_seekers
     end
 
     def show

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_23_221123) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_29_174535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -129,7 +129,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_23_221123) do
   end
 
   create_table "coach_seeker_contexts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "user_id", null: false
+    t.string "user_id"
     t.string "first_name"
     t.string "last_name"
     t.string "email"
@@ -143,6 +143,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_23_221123) do
     t.datetime "last_active_on"
     t.uuid "seeker_id"
     t.string "certified_by"
+    t.string "kind"
+    t.datetime "lead_captured_at"
+    t.string "lead_captured_by"
+    t.uuid "context_id"
   end
 
   create_table "coaches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -183,21 +187,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_23_221123) do
     t.index ["coach_id"], name: "index_coaches_seeker_job_recommendations_on_coach_id"
     t.index ["coach_seeker_context_id"], name: "index_seeker_job_recommendations_on_coach_seeker_context_id"
     t.index ["job_id"], name: "index_coaches_seeker_job_recommendations_on_job_id"
-  end
-
-  create_table "coaches_seeker_leads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "lead_id", null: false
-    t.string "first_name", null: false
-    t.string "last_name", null: false
-    t.string "phone_number", null: false
-    t.string "email"
-    t.string "status", null: false
-    t.string "lead_captured_by", null: false
-    t.datetime "lead_captured_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_coaches_seeker_leads_on_email", unique: true, where: "(email IS NOT NULL)"
-    t.index ["phone_number"], name: "index_coaches_seeker_leads_on_phone_number", unique: true
   end
 
   create_table "credentials", id: :text, force: :cascade do |t|

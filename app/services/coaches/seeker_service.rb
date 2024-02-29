@@ -92,7 +92,6 @@ module Coaches
     end
 
     def reset_for_replay
-      SeekerLead.destroy_all
       SeekerNote.destroy_all
       SeekerApplication.destroy_all
       SeekerJobRecommendation.destroy_all
@@ -101,13 +100,13 @@ module Coaches
     end
 
     def all_leads
-      SeekerLead.all.map do |seeker_lead|
-        serialize_seeker_lead(seeker_lead)
+      CoachSeekerContext.leads.with_everything.map do |csc|
+        serialize_seeker_lead(csc)
       end
     end
 
-    def all_contexts
-      CoachSeekerContext.with_everything.where.not(seeker_id: nil).where.not(email: nil).map do |csc|
+    def all_seekers
+      CoachSeekerContext.seekers.with_everything.where.not(seeker_id: nil).where.not(email: nil).map do |csc|
         serialize_coach_seeker_context(csc)
       end
     end
@@ -296,15 +295,18 @@ module Coaches
     end
 
     def handle_lead_added(message)
-      SeekerLead.create!(
-        lead_id: message.data.lead_id,
+      return if message.data.email.present? && CoachSeekerContext.find_by(email: message.data.email)
+      return if CoachSeekerContext.find_by(phone_number: message.data.phone_number)
+
+      CoachSeekerContext.create!(
         email: message.data.email,
+        context_id: message.data.lead_id,
         phone_number: message.data.phone_number,
+        lead_captured_by: message.data.lead_captured_by,
+        lead_captured_at: message.occurred_at,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
-        lead_captured_at: message.occurred_at,
-        lead_captured_by: message.data.lead_captured_by,
-        status: SeekerLead::StatusTypes::NEW
+        kind: CoachSeekerContext::Kind::LEAD
       )
     end
 
@@ -330,19 +332,27 @@ module Coaches
     end
 
     def handle_user_created(message)
-      user_id = message.aggregate_id
-
-      csc = CoachSeekerContext.find_or_create_by(
-        user_id:,
-        email: message.data.email,
-        first_name: message.data.first_name,
-        last_name: message.data.last_name
-      )
-      csc.last_active_on = message.occurred_at
-      csc.save!
-
-      SeekerLead.where(email: message.data.email)
-                .update!(status: SeekerLead::StatusTypes::CONVERTED)
+      lead = CoachSeekerContext.find_by(email: message.data.email)
+      if lead.present?
+        lead.update!(
+          user_id: message.aggregate_id,
+          email: message.data.email,
+          first_name: message.data.first_name,
+          last_name: message.data.last_name,
+          last_active_on: message.occurred_at,
+          kind: CoachSeekerContext::Kind::SEEKER
+        )
+      else
+        CoachSeekerContext.create!(
+          user_id: message.aggregate_id,
+          context_id: message.aggregate_id,
+          email: message.data.email,
+          first_name: message.data.first_name,
+          last_name: message.data.last_name,
+          last_active_on: message.occurred_at,
+          kind: CoachSeekerContext::Kind::SEEKER
+        )
+      end
     end
 
     def handle_user_updated(message)
@@ -391,6 +401,7 @@ module Coaches
 
     def serialize_coach_seeker_context(csc)
       {
+        id: csc.context_id,
         seeker_id: csc.seeker_id,
         first_name: csc.first_name,
         last_name: csc.last_name,
@@ -423,15 +434,16 @@ module Coaches
       }
     end
 
-    def serialize_seeker_lead(seeker_lead)
+    def serialize_seeker_lead(csc)
       {
-        email: seeker_lead.email,
-        phone_number: seeker_lead.phone_number,
-        first_name: seeker_lead.first_name,
-        last_name: seeker_lead.last_name,
-        lead_captured_at: seeker_lead.lead_captured_at,
-        lead_captured_by: seeker_lead.lead_captured_by,
-        status: seeker_lead.status
+        id: csc.context_id,
+        email: csc.email,
+        phone_number: csc.phone_number,
+        first_name: csc.first_name,
+        last_name: csc.last_name,
+        lead_captured_at: csc.lead_captured_at,
+        lead_captured_by: csc.lead_captured_by,
+        status: "new"
       }
     end
   end

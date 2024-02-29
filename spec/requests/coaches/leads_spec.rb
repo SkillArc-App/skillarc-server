@@ -8,7 +8,7 @@ RSpec.describe "Leads", type: :request do
 
     context "authenticated" do
       before do
-        create(:coaches__seeker_lead)
+        create(:coaches__coach_seeker_context, kind: Coaches::CoachSeekerContext::Kind::LEAD)
       end
 
       include_context "coach authenticated"

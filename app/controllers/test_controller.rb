@@ -4,6 +4,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     Coaches::CoachSeekerContext.create!(
       user_id: user.id,
+      context_id: user.id,
       seeker_id: nil,
       first_name: user.first_name,
       last_name: user.last_name,
@@ -39,6 +40,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     Coaches::CoachSeekerContext.create!(
       user_id: user.id,
+      context_id: user.id,
       seeker_id: nil,
       first_name: user.first_name,
       last_name: user.last_name,
@@ -59,6 +61,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     Coaches::CoachSeekerContext.create!(
       user_id: user.id,
+      context_id: user.id,
       seeker_id: seeker.id,
       first_name: user.first_name,
       last_name: user.last_name,
@@ -102,6 +105,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     Coaches::CoachSeekerContext.create!(
       user_id: recruiter.user.id,
+      context_id: recruiter.user.id,
       seeker_id: nil,
       first_name: recruiter.user.first_name,
       last_name: recruiter.user.last_name,
@@ -115,6 +119,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     Coaches::CoachSeekerContext.create!(
       user_id: applicant.seeker.user.id,
+      context_id: applicant.seeker.user.id,
       seeker_id: nil,
       first_name: applicant.seeker.user.first_name,
       last_name: applicant.seeker.user.last_name,
@@ -143,6 +148,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     Coaches::CoachSeekerContext.create!(
       user_id: trainer.user.id,
+      context_id: trainer.user.id,
       seeker_id: nil,
       first_name: trainer.user.first_name,
       last_name: trainer.user.last_name,
@@ -156,6 +162,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     Coaches::CoachSeekerContext.create!(
       user_id: student.user.id,
+      context_id: student.user.id,
       seeker_id: nil,
       first_name: student.user.first_name,
       last_name: student.user.last_name,
@@ -188,7 +195,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   end
 
   def create_seeker_lead
-    render json: FactoryBot.create(:coaches__seeker_lead)
+    render json: FactoryBot.create(:coaches__coach_seeker_context, :lead)
   end
 
   def create_active_seeker
@@ -197,6 +204,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     csc = Coaches::CoachSeekerContext.create!(
       user_id: user.id,
+      context_id: user.id,
       seeker_id: seeker.id,
       first_name: user.first_name,
       last_name: user.last_name,

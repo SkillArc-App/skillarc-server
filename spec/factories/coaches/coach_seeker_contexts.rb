@@ -9,5 +9,13 @@ FactoryBot.define do
     email { Faker::Internet.email }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
+
+    trait :lead do
+      kind { Coaches::CoachSeekerContext::Kind::LEAD }
+    end
+
+    trait :seeker do
+      kind { Coaches::CoachSeekerContext::Kind::SEEKER }
+    end
   end
 end

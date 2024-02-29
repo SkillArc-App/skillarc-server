@@ -204,6 +204,10 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
           coach_seeker: {
             type: :object,
             properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
               seekerId: {
                 type: :string,
                 format: :uuid

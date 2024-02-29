@@ -97,6 +97,16 @@ module Events
       end
     end
 
+    module MetaData
+      class V1
+        extend Messages::Payload
+
+        schema do
+          user_id Either(Uuid, nil), default: nil
+        end
+      end
+    end
+
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
@@ -123,6 +133,13 @@ module Events
       metadata: Messages::Nothing,
       event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 4
+    )
+
+    V5 = Messages::Schema.build(
+      data: Data::V4,
+      metadata: MetaData::V1,
+      event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+      version: 5
     )
   end
 end

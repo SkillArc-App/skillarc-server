@@ -12,10 +12,10 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:other_seeker_created) { build(:message, :profile_created, aggregate_id: other_user_id, data: Events::SeekerCreated::Data::V1.new(id: other_seeker_id, user_id: other_user_id)) }
   let(:note_with_id_added1) { build(:message, :note_added, aggregate_id: seeker_id, data: Events::NoteAdded::Data::V1.new(note: "This is a note with an id 1", note_id: note_id1, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
   let(:note_with_id_added2) { build(:message, :note_added, aggregate_id: seeker_id, data: Events::NoteAdded::Data::V1.new(note: "This is a note with an id 2", note_id: note_id2, coach_email: "coach@blocktrainapp.com"), occurred_at: time1) }
-  let(:applicant_status_updated1) { build(:message, :applicant_status_updated, version: 4, aggregate_id: job_id, data: status_updated1, occurred_at: time2) }
-  let(:applicant_status_updated2) { build(:message, :applicant_status_updated, version: 4, aggregate_id: job_id, data: status_updated2, occurred_at: time2) }
-  let(:applicant_status_updated3) { build(:message, :applicant_status_updated, version: 4, aggregate_id: job_id, data: status_updated3, occurred_at: time2) }
-  let(:applicant_status_updated4) { build(:message, :applicant_status_updated, version: 4, aggregate_id: job_id, data: status_updated4, occurred_at: time2) }
+  let(:applicant_status_updated1) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated1, metadata: status_metadata, occurred_at: time2) }
+  let(:applicant_status_updated2) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated2, metadata: status_metadata, occurred_at: time2) }
+  let(:applicant_status_updated3) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated3, metadata: status_metadata, occurred_at: time2) }
+  let(:applicant_status_updated4) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated4, metadata: status_metadata, occurred_at: time2) }
   let(:note_deleted) { build(:message, :note_deleted, aggregate_id: seeker_id, data: Events::NoteDeleted::Data::V1.new(note_id: note_id1, coach_id:, coach_email: coach.email), occurred_at: time1) }
   let(:note_modified) { build(:message, :note_modified, aggregate_id: seeker_id, data: Events::NoteModified::Data::V1.new(note: updated_note, note_id: note_id2, coach_id:, coach_email: coach.email), occurred_at: time1) }
   let(:skill_level_updated) { build(:message, :skill_level_updated, aggregate_id: seeker_id, data: Events::SkillLevelUpdated::Data::V1.new(skill_level: "advanced"), occurred_at: time1) }
@@ -95,7 +95,9 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       status: status1
     )
   end
-
+  let(:status_metadata) do
+    Events::ApplicantStatusUpdated::MetaData::V1.new
+  end
   let(:barrier1) { create(:barrier, name: "barrier1") }
   let(:barrier2) { create(:barrier, name: "barrier2") }
 

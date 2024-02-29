@@ -11,7 +11,7 @@ class Employers::ApplicantsController < ApplicationController
     status = applicant_update_params[:status]
     reasons = applicant_update_params[:reasons]&.map(&:to_h)
 
-    ApplicantService.new(applicant).update_status(status:, reasons: reasons || [])
+    ApplicantService.new(applicant).update_status(status:, user_id: current_user.id, reasons: reasons || [])
 
     render json: applicant
   end

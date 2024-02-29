@@ -72,7 +72,7 @@ RSpec.describe "Employers::Applicants", type: :request do
             before do
               expect_any_instance_of(ApplicantService)
                 .to receive(:update_status)
-                .with(status:, reasons: [])
+                .with(status:, user_id: user.id, reasons: [])
             end
 
             run_test!
@@ -84,7 +84,7 @@ RSpec.describe "Employers::Applicants", type: :request do
             before do
               expect_any_instance_of(ApplicantService)
                 .to receive(:update_status)
-                .with(status:, reasons:)
+                .with(status:, user_id: user.id, reasons:)
             end
 
             run_test!

@@ -2,13 +2,13 @@ module Employers
   class ApplicationNotificationService < EventConsumer
     def handled_events
       [
-        Events::ApplicantStatusUpdated::V4
+        Events::ApplicantStatusUpdated::V5
       ].freeze
     end
 
     def handle_message(message)
       case message.event_schema
-      when Events::ApplicantStatusUpdated::V4
+      when Events::ApplicantStatusUpdated::V5
         handle_applicant_status_updated(message)
       end
     end

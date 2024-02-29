@@ -3,7 +3,7 @@ class ApplicantService
     @applicant = applicant
   end
 
-  def update_status(status:, reasons: [])
+  def update_status(status:, user_id:, reasons: [])
     applicant_status = ApplicantStatus.create!(
       id: SecureRandom.uuid,
       applicant:,
@@ -19,7 +19,7 @@ class ApplicantService
     end
 
     EventService.create!(
-      event_schema: Events::ApplicantStatusUpdated::V4,
+      event_schema: Events::ApplicantStatusUpdated::V5,
       aggregate_id: applicant.job.id,
       data: Events::ApplicantStatusUpdated::Data::V4.new(
         applicant_id: applicant.id,
@@ -40,6 +40,9 @@ class ApplicantService
             reason_description: asr.reason.description
           )
         end
+      ),
+      metadata: Events::ApplicantStatusUpdated::MetaData::V1.new(
+        user_id:
       ),
       occurred_at: applicant_status.created_at
     )

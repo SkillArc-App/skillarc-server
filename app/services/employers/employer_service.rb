@@ -2,7 +2,7 @@ module Employers
   class EmployerService < EventConsumer
     def handled_events_sync
       [
-        Events::ApplicantStatusUpdated::V4
+        Events::ApplicantStatusUpdated::V5
       ].freeze
     end
 
@@ -20,7 +20,7 @@ module Employers
 
     def handle_message(message, *_params)
       case message.event_schema
-      when Events::ApplicantStatusUpdated::V4
+      when Events::ApplicantStatusUpdated::V5
         handle_applicant_status_updated(message)
       when Events::EmployerCreated::V1
         handle_employer_created(message)

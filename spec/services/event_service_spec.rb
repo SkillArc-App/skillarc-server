@@ -109,6 +109,23 @@ RSpec.describe EventService do
     end
   end
 
+  describe ".all_schemas" do
+    subject { described_class.all_schemas }
+
+    let!(:schema) do
+      Messages::Schema.build(
+        data: Array,
+        metadata: Array,
+        event_type: "some_event",
+        version: 1
+      )
+    end
+
+    it "returns all registered schemas" do
+      expect(subject).to include(schema)
+    end
+  end
+
   describe ".get_schema" do
     subject do
       described_class.get_schema(event_type:, version:)

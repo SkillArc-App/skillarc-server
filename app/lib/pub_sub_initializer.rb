@@ -68,6 +68,8 @@ module PubSubInitializer
       subscriber: Slack::ChatMessage.new
     )
 
+    all_schemas = EventService.all_schemas
+
     [
       DbStreamAggregator.build(Coaches::SeekerService.new, "coach_seekers"),
       DbStreamAggregator.build(Coaches::CoachService.new, "coaches"),
@@ -90,6 +92,13 @@ module PubSubInitializer
 
       listener.handled_events_sync.each do |event_schema|
         PUBSUB_SYNC.subscribe(
+          event_schema:,
+          subscriber: listener
+        )
+      end
+
+      (all_schemas - listener.all_handled_events).each do |event_schema|
+        PUBSUB.subscribe(
           event_schema:,
           subscriber: listener
         )

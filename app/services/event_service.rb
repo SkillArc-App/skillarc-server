@@ -46,6 +46,14 @@ class EventService
     end
   end
 
+  def self.all_schemas
+    registry.to_a.map do |_event_type, versions|
+      versions.map do |_version, event_schema|
+        event_schema
+      end
+    end.flatten
+  end
+
   class << self
     private
 

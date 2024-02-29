@@ -17,7 +17,7 @@ class MessageSerializer < ActiveJob::Serializers::ObjectSerializer
   end
 
   def deserialize(hash)
-    schema = MessageService.get_schema(event_type: hash["message_type"], version: hash["version"])
+    schema = MessageService.get_schema(message_type: hash["message_type"], version: hash["version"])
 
     klass.new(
       id: hash["id"],

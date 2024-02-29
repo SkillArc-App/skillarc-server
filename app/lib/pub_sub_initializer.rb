@@ -97,9 +97,9 @@ module PubSubInitializer
         )
       end
 
-      (all_schemas - listener.all_handled_events).each do |event_schema|
+      (all_schemas - listener.all_handled_events).each do |message_schema|
         PUBSUB.subscribe(
-          event_schema:,
+          message_schema:,
           subscriber: listener
         )
       end

@@ -114,7 +114,7 @@ RSpec.describe MessageService do
       Messages::Schema.build(
         data: Array,
         metadata: Array,
-        event_type: "some_event",
+        message_type: Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
         version: 1
       )
     end

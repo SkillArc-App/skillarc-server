@@ -14,7 +14,7 @@ module Commands
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
-      event_type: Messages::Types::Contact::SEND_SMS,
+      message_type: Messages::Types::Contact::SEND_SMS,
       version: 1
     )
   end

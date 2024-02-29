@@ -25,18 +25,18 @@ class UserEvents
   private
 
   def event_message(message)
-    case message.event_type
-    when Messages::Types::APPLICANT_STATUS_UPDATED
+    case message.schema
+    when Events::ApplicantStatusUpdated::V5
       "Applicant Status Updated: #{message.data[:employment_title]} - #{message.data[:status]}"
-    when Messages::Types::Seekers::EDUCATION_EXPERIENCE_CREATED
+    when Events::EducationExperienceCreated::V1
       "Education Experience Created: #{message.data[:organization_name]}"
-    when Messages::Types::Seekers::EXPERIENCE_CREATED
+    when Events::ExperienceCreated::V1
       "Work Experience Created: #{message.data[:organization_name]}"
-    when Messages::Types::Seekers::JOB_SAVED
+    when Events::JobSaved::V1
       "Job Saved: #{message.data[:employment_title]}"
-    when Messages::Types::Seekers::ONBOARDING_COMPLETED
+    when Events::OnboardingCompleted::V1
       "Onboarding Complete"
-    when Messages::Types::USER_CREATED
+    when Events::UserCreated::V1
       "Signed Up"
     end
   end

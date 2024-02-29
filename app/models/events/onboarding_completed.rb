@@ -3,7 +3,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Messages::UntypedHashWrapper,
       metadata: Messages::Nothing,
-      event_type: Messages::Types::Seekers::ONBOARDING_COMPLETED,
+      message_type: Messages::Types::Seekers::ONBOARDING_COMPLETED,
       version: 1
     )
   end

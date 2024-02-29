@@ -3,7 +3,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Messages::UntypedHashWrapper,
       metadata: Messages::Nothing,
-      event_type: Messages::Types::NOTIFICATION_CREATED,
+      message_type: Messages::Types::NOTIFICATION_CREATED,
       version: 1
     )
   end

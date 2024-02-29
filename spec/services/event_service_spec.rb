@@ -14,184 +14,28 @@ RSpec.describe EventService do
       )
     end
 
-    let(:event_type) { Messages::Types::CHAT_CREATED }
     let(:aggregate_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
-    let(:data) { Messages::UntypedHashWrapper.new(data: "cool") }
+    let(:data) { Events::UserCreated::Data::V1.new }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
-    let(:metadata) { Messages::UntypedHashWrapper.new(metadata: "cooler") }
-    let(:version) { 4 }
+    let(:event_schema) { Events::UserCreated::V1 }
+    let(:metadata) { Messages::Nothing }
     let(:id) { SecureRandom.uuid }
 
-    context "when the event_schema is not a Messages::Schema" do
-      let(:event_schema) { 10 }
-
-      it "raises a NotEventSchemaError" do
-        expect { subject }.to raise_error(described_class::NotEventSchemaError)
-      end
-    end
-
-    context "when event_schema is a Messages::Schema" do
-      let!(:event_schema) do
-        Messages::Schema.build(
-          data: Messages::UntypedHashWrapper,
-          metadata: Messages::UntypedHashWrapper,
-          event_type:,
-          version:
+    it "calls EventService.create! with the same data" do
+      expect(MessageService)
+        .to receive(:create!)
+        .with(
+          id:,
+          message_schema: event_schema,
+          aggregate_id:,
+          trace_id:,
+          data:,
+          occurred_at:,
+          metadata:
         )
-      end
 
-      context "when data doesn't type check" do
-        let(:data) { "cat" }
-        let(:version) { 1 }
-
-        it "raies a InvalidSchemaError" do
-          expect { subject }.to raise_error(Message::InvalidSchemaError)
-        end
-      end
-
-      context "when metadata doesn't type check" do
-        let(:metadata) { [1, 2, 3] }
-        let(:version) { 2 }
-
-        it "raies a InvalidSchemaError" do
-          expect { subject }.to raise_error(Message::InvalidSchemaError)
-        end
-      end
-
-      context "when data and metadata type check" do
-        let(:version) { 3 }
-
-        it "enqueues a BroadcastEvent job, persists and event and returns the produced event message" do
-          expect(BroadcastEventJob)
-            .to receive(:perform_later)
-            .with(
-              Message.new(
-                id:,
-                event_type:,
-                trace_id:,
-                aggregate_id:,
-                data:,
-                occurred_at:,
-                metadata:,
-                version:
-              )
-            )
-
-          expect { subject }.to change(Event, :count).by(1)
-          expect(subject.id).to eq(Event.last_created.message.id)
-          expect(subject.aggregate_id).to eq(Event.last_created.message.aggregate_id)
-          expect(subject.event_type).to eq(Event.last_created.message.event_type)
-          expect(subject.data).to eq(Event.last_created.message.data)
-          expect(subject.metadata).to eq(Event.last_created.message.metadata)
-          expect(subject.version).to eq(Event.last_created.message.version)
-          expect(subject.occurred_at).to eq(Event.last_created.message.occurred_at)
-        end
-      end
-    end
-  end
-
-  describe ".register" do
-    subject do
-      described_class.register(event_schema:)
-    end
-
-    context "passed something other than a Event::Schema" do
-      let(:event_schema) { { not: "a schema" } }
-
-      it "raises a NotSchemaError" do
-        expect { subject }.to raise_error(described_class::NotSchemaError)
-      end
-    end
-
-    context "when passed an Event::Schema" do
-      # Can't directly test see the Messages::Schema spec
-    end
-  end
-
-  describe ".all_schemas" do
-    subject { described_class.all_schemas }
-
-    let!(:schema) do
-      Messages::Schema.build(
-        data: Array,
-        metadata: Array,
-        event_type: "some_event",
-        version: 1
-      )
-    end
-
-    it "returns all registered schemas" do
-      expect(subject).to include(schema)
-    end
-  end
-
-  describe ".get_schema" do
-    subject do
-      described_class.get_schema(event_type:, version:)
-    end
-
-    context "when the schema does not exist" do
-      let(:event_type) { "not_a_real_event" }
-      let(:version) { 1 }
-
-      it "raises a SchemaNotFoundError" do
-        expect { subject }.to raise_error(described_class::SchemaNotFoundError)
-      end
-    end
-
-    context "when the schema exists" do
-      let!(:schema) do
-        Messages::Schema.build(
-          data: Array,
-          metadata: Array,
-          event_type:,
-          version:
-        )
-      end
-      let(:event_type) { "some_event" }
-      let(:version) { 1 }
-
-      it "raises a SchemaNotFoundError" do
-        expect(subject).to eq(schema)
-      end
-    end
-  end
-
-  describe ".migrate_event" do
-    let(:event_schema) { Events::UserCreated::V1 }
-
-    let!(:message1) do
-      Message.new(
-        id: SecureRandom.uuid,
-        aggregate_id: SecureRandom.uuid,
-        trace_id: SecureRandom.uuid,
-        event_type: event_schema.event_type,
-        version: event_schema.version,
-        occurred_at: Time.zone.parse('2000-1-1'),
-        data: Events::UserCreated::Data::V1.new(first_name: "John"),
-        metadata: Messages::Nothing
-      )
-    end
-    let!(:message2) do
-      Message.new(
-        id: SecureRandom.uuid,
-        aggregate_id: SecureRandom.uuid,
-        trace_id: SecureRandom.uuid,
-        event_type: event_schema.event_type,
-        version: event_schema.version,
-        occurred_at: Time.zone.parse('2000-1-1'),
-        data: Events::UserCreated::Data::V1.new(first_name: "Chris"),
-        metadata: Messages::Nothing
-      )
-    end
-    let!(:event1) { Event.from_message!(message1) }
-    let!(:event2) { Event.from_message!(message2) }
-
-    it "passes each message for the schema to the provided block" do
-      described_class.migrate_event(event_schema:) do |message|
-        expect([message1, message2]).to include(message)
-      end
+      subject
     end
   end
 end

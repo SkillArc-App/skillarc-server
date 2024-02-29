@@ -5,7 +5,7 @@ RSpec.describe Klayvio::TrainingProviderInviteAccepted do
     let(:message) do
       build(
         :message,
-        event_type: Events::TrainingProviderInviteAccepted::V1.event_type,
+        message_type: Events::TrainingProviderInviteAccepted::V1.message_type,
         version: Events::TrainingProviderInviteAccepted::V1.version,
         data: Messages::UntypedHashWrapper.new(
           training_provider_invite_id: "A",

@@ -7,7 +7,7 @@ module Seekers
     end
 
     def handle_message(message, *_params)
-      case message.event_schema
+      case message.schema
       when Events::ElevatorPitchCreated::V1
         handle_elevator_pitch_created(message)
       end

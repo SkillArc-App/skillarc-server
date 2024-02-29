@@ -23,11 +23,11 @@ RSpec.describe CommandService do
     let(:id) { SecureRandom.uuid }
 
     it "calls EventService.create! with the same data" do
-      expect(EventService)
+      expect(MessageService)
         .to receive(:create!)
         .with(
           id:,
-          event_schema: command_schema,
+          message_schema: command_schema,
           aggregate_id:,
           trace_id:,
           data:,

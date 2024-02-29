@@ -5,7 +5,7 @@ module Employers
     end
 
     def handle_message(message)
-      case message.event_schema
+      case message.schema
       when Events::DayElapsed::V1
         handle_day_elapsed(message)
       end

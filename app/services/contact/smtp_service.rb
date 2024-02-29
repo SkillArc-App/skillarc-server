@@ -8,7 +8,7 @@ module Contact
     end
 
     def handle_message(message, *_params)
-      case message.event_schema
+      case message.schema
       when Commands::NotifyEmployerOfApplicant::V1
         handle_notify_employer_of_applicant(message)
       when Commands::SendWeeklyEmployerUpdate::V1

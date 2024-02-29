@@ -4,71 +4,71 @@ module PubSubInitializer
     PUBSUB_SYNC.reset
 
     PUBSUB.subscribe(
-      event_schema: Events::UserCreated::V1,
+      message_schema: Events::UserCreated::V1,
       subscriber: Klayvio::UserSignup.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::UserCreated::V1,
+      message_schema: Events::UserCreated::V1,
       subscriber: Slack::UserSignup.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::UserUpdated::V1,
+      message_schema: Events::UserUpdated::V1,
       subscriber: Klayvio::UserUpdated.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::MetCareerCoachUpdated::V1,
+      message_schema: Events::MetCareerCoachUpdated::V1,
       subscriber: Klayvio::MetCareerCoachUpdated.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::NotificationCreated::V1,
+      message_schema: Events::NotificationCreated::V1,
       subscriber: NotificationService.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::EducationExperienceCreated::V1,
+      message_schema: Events::EducationExperienceCreated::V1,
       subscriber: Klayvio::EducationExperienceEntered.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::EmployerInviteAccepted::V1,
+      message_schema: Events::EmployerInviteAccepted::V1,
       subscriber: Klayvio::EmployerInviteAccepted.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::ExperienceCreated::V1,
+      message_schema: Events::ExperienceCreated::V1,
       subscriber: Klayvio::ExperienceEntered.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::OnboardingCompleted::V1,
+      message_schema: Events::OnboardingCompleted::V1,
       subscriber: Klayvio::OnboardingComplete.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::ApplicantStatusUpdated::V5,
+      message_schema: Events::ApplicantStatusUpdated::V5,
       subscriber: Klayvio::ApplicationStatusUpdated.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::ApplicantStatusUpdated::V5,
+      message_schema: Events::ApplicantStatusUpdated::V5,
       subscriber: Slack::UserApplied.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::ChatMessageSent::V1,
+      message_schema: Events::ChatMessageSent::V1,
       subscriber: Klayvio::ChatMessageReceived.new
     )
 
     PUBSUB.subscribe(
-      event_schema: Events::ChatMessageSent::V1,
+      message_schema: Events::ChatMessageSent::V1,
       subscriber: Slack::ChatMessage.new
     )
 
-    all_schemas = EventService.all_schemas
+    all_schemas = MessageService.all_schemas
 
     [
       DbStreamAggregator.build(Coaches::SeekerService.new, "coach_seekers"),
@@ -83,23 +83,23 @@ module PubSubInitializer
       DbStreamReactor.build(Employers::WeeklyUpdateService.new, "employers_weekly_update_service"),
       DbStreamAggregator.build(Seekers::SeekerService.new, "seekers")
     ].each do |listener|
-      listener.handled_events.each do |event_schema|
+      listener.handled_events.each do |message_schema|
         PUBSUB.subscribe(
-          event_schema:,
+          message_schema:,
           subscriber: listener
         )
       end
 
-      listener.handled_events_sync.each do |event_schema|
+      listener.handled_events_sync.each do |message_schema|
         PUBSUB_SYNC.subscribe(
-          event_schema:,
+          message_schema:,
           subscriber: listener
         )
       end
 
-      (all_schemas - listener.all_handled_events).each do |event_schema|
+      (all_schemas - listener.all_handled_events).each do |message_schema|
         PUBSUB.subscribe(
-          event_schema:,
+          message_schema:,
           subscriber: listener
         )
       end

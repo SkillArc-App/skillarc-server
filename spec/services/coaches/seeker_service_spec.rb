@@ -332,13 +332,13 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           Events::JobSaved::V1,
           Events::JobUnsaved::V1,
           Events::OnboardingCompleted::V1
-        ].each do |event_schema|
-          context "when a #{event_schema.event_type} version #{event_schema.version} occurs for a seeker" do
+        ].each do |message_schema|
+          context "when a #{message_schema.message_type} version #{message_schema.version} occurs for a seeker" do
             it "updates the last active to when the event occured" do
               message = build(
                 :message,
-                event_type: event_schema.event_type,
-                version: event_schema.version,
+                message_type: message_schema.message_type,
+                version: message_schema.version,
                 aggregate_id: user_id,
                 occurred_at: time2
               )
@@ -354,7 +354,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           it "updates the last active to when the event occured" do
             message = build(
               :message,
-              event_type: Events::EducationExperienceCreated::V1.event_type,
+              message_type: Events::EducationExperienceCreated::V1.message_type,
               version: Events::EducationExperienceCreated::V1.version,
               data: Events::EducationExperienceCreated::Data::V1.new(
                 id: SecureRandom.uuid,
@@ -379,7 +379,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           it "updates the last active to when the event occured" do
             message = build(
               :message,
-              event_type: Events::SeekerUpdated::V1.event_type,
+              message_type: Events::SeekerUpdated::V1.message_type,
               version: Events::SeekerUpdated::V1.version,
               data: Events::SeekerUpdated::Data::V1.new(
                 about: "A new about"
@@ -398,7 +398,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           it "updates the last active to when the event occured" do
             message = build(
               :message,
-              event_type: Events::PersonalExperienceCreated::V1.event_type,
+              message_type: Events::PersonalExperienceCreated::V1.message_type,
               version: Events::PersonalExperienceCreated::V1.version,
               data: Events::PersonalExperienceCreated::Data::V1.new(
                 id: SecureRandom.uuid,
@@ -422,7 +422,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           it "updates the last active to when the event occured" do
             message = build(
               :message,
-              event_type: Events::JobSearch::V2.event_type,
+              message_type: Events::JobSearch::V2.message_type,
               version: Events::JobSearch::V2.version,
               data: Events::JobSearch::Data::V1.new(
                 search_terms: "A search",

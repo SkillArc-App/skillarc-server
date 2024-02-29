@@ -7,7 +7,7 @@ module Employers
     end
 
     def handle_message(message)
-      case message.event_schema
+      case message.schema
       when Events::ApplicantStatusUpdated::V5
         handle_applicant_status_updated(message)
       end

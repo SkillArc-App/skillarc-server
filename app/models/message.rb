@@ -7,26 +7,22 @@ class Message
     id Uuid
     aggregate_id String
     trace_id Uuid
-    message_type Either(*Messages::Types::ALL)
+    schema Messages::Schema
     data
     metadata
-    version Integer
     occurred_at ActiveSupport::TimeWithZone, coerce: true
   end)
 
   def initialize(**kwarg)
     super(**kwarg)
 
-    current_schema = schema
-
-    raise InvalidSchemaError unless current_schema.data === data # rubocop:disable Style/CaseEquality
-    raise InvalidSchemaError unless current_schema.metadata === metadata # rubocop:disable Style/CaseEquality
+    raise InvalidSchemaError unless schema.data === data # rubocop:disable Style/CaseEquality
+    raise InvalidSchemaError unless schema.metadata === metadata # rubocop:disable Style/CaseEquality
   end
 
   def ==(other)
     self.class == other.class &&
-      message_type == other.message_type &&
-      version == other.version &&
+      schema == other.schema &&
       aggregate_id == other.aggregate_id &&
       id == other.id &&
       occurred_at == other.occurred_at &&
@@ -35,11 +31,7 @@ class Message
   end
 
   def checksum
-    Digest::UUID.uuid_v3(MESSAGE_UUID_NAMESPACE, data.to_json + trace_id + message_type + version.to_s)
-  end
-
-  def schema
-    MessageService.get_schema(message_type:, version:)
+    Digest::UUID.uuid_v3(MESSAGE_UUID_NAMESPACE, data.to_json + trace_id + schema.message_type + schema.version.to_s)
   end
 
   def self.coerce_occurred_at(value)

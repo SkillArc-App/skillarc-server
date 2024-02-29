@@ -68,23 +68,21 @@ RSpec.describe MessageService do
             .with(
               Message.new(
                 id:,
-                message_type:,
                 trace_id:,
                 aggregate_id:,
                 data:,
                 occurred_at:,
                 metadata:,
-                version:
+                schema: message_schema
               )
             )
 
           expect { subject }.to change(Event, :count).by(1)
           expect(subject.id).to eq(Event.last_created.message.id)
           expect(subject.aggregate_id).to eq(Event.last_created.message.aggregate_id)
-          expect(subject.message_type).to eq(Event.last_created.message.message_type)
+          expect(subject.schema).to eq(Event.last_created.message.schema)
           expect(subject.data).to eq(Event.last_created.message.data)
           expect(subject.metadata).to eq(Event.last_created.message.metadata)
-          expect(subject.version).to eq(Event.last_created.message.version)
           expect(subject.occurred_at).to eq(Event.last_created.message.occurred_at)
         end
       end
@@ -166,8 +164,7 @@ RSpec.describe MessageService do
         id: SecureRandom.uuid,
         aggregate_id: SecureRandom.uuid,
         trace_id: SecureRandom.uuid,
-        message_type: message_schema.message_type,
-        version: message_schema.version,
+        schema: message_schema,
         occurred_at: Time.zone.parse('2000-1-1'),
         data: Events::UserCreated::Data::V1.new(first_name: "John"),
         metadata: Messages::Nothing
@@ -178,8 +175,7 @@ RSpec.describe MessageService do
         id: SecureRandom.uuid,
         aggregate_id: SecureRandom.uuid,
         trace_id: SecureRandom.uuid,
-        message_type: message_schema.message_type,
-        version: message_schema.version,
+        schema: message_schema,
         occurred_at: Time.zone.parse('2000-1-1'),
         data: Events::UserCreated::Data::V1.new(first_name: "Chris"),
         metadata: Messages::Nothing

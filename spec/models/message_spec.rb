@@ -9,9 +9,8 @@ RSpec.describe Message do
             id: SecureRandom.uuid,
             aggregate_id: SecureRandom.uuid,
             trace_id: SecureRandom.uuid,
-            message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+            schema: Events::ApplicantStatusUpdated::V1,
             metadata: {},
-            version: 1,
             occurred_at: Time.zone.now
           )
         end.to raise_error(ValueSemantics::MissingAttributes)
@@ -25,10 +24,9 @@ RSpec.describe Message do
             id: SecureRandom.uuid,
             trace_id: SecureRandom.uuid,
             aggregate_id: 10,
-            message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+            schema: Events::ApplicantStatusUpdated::V1,
             metadata: {},
             data: {},
-            version: 1,
             occurred_at: Time.zone.now
           )
         end.to raise_error(ValueSemantics::InvalidValue)
@@ -39,8 +37,7 @@ RSpec.describe Message do
       let(:message) do
         build(
           :message,
-          version: Events::DayElapsed::V1.version,
-          message_type: Events::DayElapsed::V1.message_type,
+          schema: Events::DayElapsed::V1,
           data: Events::DayElapsed::Data::V1.new(
             date: Date.new(2000, 1, 1),
             day_of_week: Events::DayElapsed::Data::DaysOfWeek::WEDNESDAY
@@ -77,42 +74,6 @@ RSpec.describe Message do
         it "converts it to ActiveSupport::TimeWithZone" do
           expect { build(:message, occurred_at: "Cat o'clock") }.to raise_error(ValueSemantics::InvalidValue)
         end
-      end
-    end
-  end
-
-  describe "#event_schema" do
-    context "when the schema doesn't exist" do
-      it "raises a EventService::SchemaNotFoundError error" do
-        expect do
-          described_class.new(
-            id: SecureRandom.uuid,
-            aggregate_id: SecureRandom.uuid,
-            trace_id: SecureRandom.uuid,
-            message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
-            metadata: {},
-            data: {},
-            version: -10,
-            occurred_at: Time.zone.now
-          ).event_schema
-        end.to raise_error(MessageService::SchemaNotFoundError)
-      end
-    end
-
-    context "when the schema does exist" do
-      it "returns the schema" do
-        message = described_class.new(
-          id: SecureRandom.uuid,
-          aggregate_id: SecureRandom.uuid,
-          trace_id: SecureRandom.uuid,
-          message_type: Events::UserCreated::V1.message_type,
-          metadata: Messages::Nothing,
-          data: Events::UserCreated::Data::V1.new,
-          version: Events::UserCreated::V1.version,
-          occurred_at: Time.zone.now
-        )
-
-        expect(message.schema).to eq(Events::UserCreated::V1)
       end
     end
   end

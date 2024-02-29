@@ -26,8 +26,7 @@ class Event < ApplicationRecord
       id:,
       aggregate_id:,
       trace_id:,
-      message_type: event_type,
-      version:,
+      schema:,
       data: schema.data.from_hash(data),
       metadata: schema.metadata.from_hash(metadata),
       occurred_at:
@@ -39,10 +38,10 @@ class Event < ApplicationRecord
       id: message.id,
       aggregate_id: message.aggregate_id,
       trace_id: message.trace_id,
-      event_type: message.message_type,
+      event_type: message.schema.message_type,
       data: message.data.to_h,
       metadata: message.metadata.to_h,
-      version: message.version,
+      version: message.schema.version,
       occurred_at: message.occurred_at
     )
   end

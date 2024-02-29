@@ -14,8 +14,7 @@ class MessageService
       data:,
       trace_id:,
       metadata:,
-      message_type: message_schema.message_type,
-      version: message_schema.version
+      schema: message_schema
     )
 
     Event.from_message!(message)

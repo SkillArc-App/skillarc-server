@@ -79,6 +79,16 @@ module Messages
       ].freeze
     end
 
+    # Because our instance amount to singleton
+    # if we want to test actual creating an event we need to
+    # make it accurate as rspec stubing occurs _after_
+    # these schemas have already been generated
+    module TestingOnly
+      EVENTS = [
+        TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST = "test_event_type_dont_use_outside_of_test".freeze
+      ].freeze
+    end
+
     EVENTS = [
       APPLICANT_STATUS_UPDATED = 'applicant_status_updated'.freeze,
       CHAT_CREATED = 'chat_created'.freeze,
@@ -98,7 +108,8 @@ module Messages
       *Jobs::EVENTS,
       *Employers::EVENTS,
       *Seekers::EVENTS,
-      *Contact::EVENTS
+      *Contact::EVENTS,
+      *TestingOnly::EVENTS
     ].freeze
 
     COMMANDS = [

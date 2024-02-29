@@ -149,10 +149,10 @@ RSpec.describe MessageService do
           version:
         )
       end
-      let(:message_type) { "some_message" }
+      let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
       let(:version) { 1 }
 
-      it "raises a SchemaNotFoundError" do
+      it "returns the schema" do
         expect(subject).to eq(schema)
       end
     end

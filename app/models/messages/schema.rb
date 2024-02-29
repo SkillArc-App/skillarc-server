@@ -1,6 +1,11 @@
 module Messages
   class Schema
-    attr_reader :data, :metadata, :message_type, :version
+    include(ValueSemantics.for_attributes do
+      data
+      metadata
+      version Integer
+      message_type Either(*Messages::Types::ALL)
+    end)
 
     def self.build(data:, metadata:, message_type:, version:)
       message_schema = new(data:, metadata:, message_type:, version:)
@@ -11,10 +16,7 @@ module Messages
     private
 
     def initialize(data:, metadata:, message_type:, version:)
-      @data = data
-      @metadata = metadata
-      @message_type = message_type
-      @version = version
+      super(data:, metadata:, message_type:, version:)
     end
   end
 end

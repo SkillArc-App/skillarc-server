@@ -92,7 +92,6 @@ module Coaches
     end
 
     def reset_for_replay
-      SeekerLead.destroy_all
       SeekerNote.destroy_all
       SeekerApplication.destroy_all
       SeekerJobRecommendation.destroy_all
@@ -440,7 +439,7 @@ module Coaches
         last_name: csc.last_name,
         lead_captured_at: csc.lead_captured_at,
         lead_captured_by: csc.lead_captured_by,
-        status: SeekerLead::StatusTypes::NEW
+        status: "new"
       }
     end
   end

@@ -174,7 +174,6 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
       it "destroys all records" do
         expect(Coaches::CoachSeekerContext.count).not_to eq(0)
-        expect(Coaches::SeekerLead.count).to eq(0)
         expect(Coaches::SeekerApplication.count).not_to eq(0)
         expect(Coaches::SeekerNote.count).not_to eq(0)
         expect(Coaches::SeekerJobRecommendation.count).not_to eq(0)
@@ -183,7 +182,6 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
         subject
 
         expect(Coaches::CoachSeekerContext.count).to eq(0)
-        expect(Coaches::SeekerLead.count).to eq(0)
         expect(Coaches::SeekerApplication.count).to eq(0)
         expect(Coaches::SeekerNote.count).to eq(0)
         expect(Coaches::SeekerJobRecommendation.count).to eq(0)
@@ -276,7 +274,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           lead_captured_at: time1,
           email: nil,
           lead_captured_by: "someone@skillarc.com",
-          status: Coaches::SeekerLead::StatusTypes::NEW
+          status: "new"
         }
 
         expect(subject).to contain_exactly(expected_lead)

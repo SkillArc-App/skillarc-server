@@ -3,6 +3,10 @@ class EventConsumer
     raise NoMethodError
   end
 
+  def all_handled_events
+    handled_events + handled_events_sync
+  end
+
   def handled_events
     []
   end

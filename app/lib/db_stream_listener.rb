@@ -14,10 +14,19 @@ class DbStreamListener < StreamListener
 
     return if events.empty?
 
+    last_handled_event = nil
+
     events.each do |event|
-      handle_message(event.message)
-      update_bookmark(event)
+      begin
+        handle_message(event.message)
+      rescue StandardError => e
+        update_bookmark(last_handled_event) if last_handled_event
+        raise e
+      end
+
+      last_handled_event = event
     end
+    update_bookmark(last_handled_event)
   end
 
   def next_event
@@ -30,6 +39,10 @@ class DbStreamListener < StreamListener
 
   private
 
+  def bookmark
+    ListenerBookmark.find_or_initialize_by(consumer_name: listener_name)
+  end
+
   def unplayed_events
     Event.where("occurred_at > ?", bookmark_timestamp).order(:occurred_at)
   end
@@ -40,17 +53,15 @@ class DbStreamListener < StreamListener
   end
 
   def bookmark_timestamp
-    bookmark = ListenerBookmark.find_by(consumer_name: listener_name)
+    b = bookmark
 
-    return default_time unless bookmark
+    return default_time unless bookmark.id
 
-    Event.find(bookmark.event_id).message.occurred_at
+    Event.find(b.event_id).message.occurred_at
   end
 
   def update_bookmark(event)
-    ListenerBookmark
-      .find_or_initialize_by(consumer_name: listener_name)
-      .update!(event_id: event.id)
+    bookmark.update!(event_id: event.id)
   end
 
   def default_time

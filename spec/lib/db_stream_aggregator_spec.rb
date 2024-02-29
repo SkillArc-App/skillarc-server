@@ -13,9 +13,27 @@ RSpec.describe DbStreamAggregator do
     subject { instance.play }
 
     it "updates the bookmark" do
+      expect_any_instance_of(ListenerBookmark).to receive(:update!).with(event_id: event2.id).and_call_original
+
       expect { subject }.to change {
         ListenerBookmark.find_by(consumer_name: "listener_name")&.event_id
       }.from(nil).to(event2.id)
+    end
+
+    context "when the second event raises an error" do
+      it "updates the bookmark" do
+        expect(consumer).to receive(:handle_message).with(
+          event.message
+        )
+
+        expect(consumer).to receive(:handle_message).with(
+          event2.message
+        ).and_raise(StandardError)
+
+        expect { subject }.to raise_error(StandardError)
+
+        expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(event.id)
+      end
     end
 
     context "when there is no bookmark" do

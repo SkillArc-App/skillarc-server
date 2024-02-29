@@ -300,6 +300,7 @@ module Coaches
 
       CoachSeekerContext.create!(
         email: message.data.email,
+        context_id: message.data.lead_id,
         phone_number: message.data.phone_number,
         lead_captured_by: message.data.lead_captured_by,
         lead_captured_at: message.occurred_at,
@@ -344,6 +345,7 @@ module Coaches
       else
         CoachSeekerContext.create!(
           user_id: message.aggregate_id,
+          context_id: message.aggregate_id,
           email: message.data.email,
           first_name: message.data.first_name,
           last_name: message.data.last_name,
@@ -399,6 +401,7 @@ module Coaches
 
     def serialize_coach_seeker_context(csc)
       {
+        id: csc.context_id,
         seeker_id: csc.seeker_id,
         first_name: csc.first_name,
         last_name: csc.last_name,
@@ -433,6 +436,7 @@ module Coaches
 
     def serialize_seeker_lead(csc)
       {
+        id: csc.context_id,
         email: csc.email,
         phone_number: csc.phone_number,
         first_name: csc.first_name,

@@ -3,6 +3,7 @@ FactoryBot.define do
     user_id { SecureRandom.uuid }
     seeker_id { SecureRandom.uuid }
     kind { Coaches::CoachSeekerContext::Kind::SEEKER }
+    context_id { SecureRandom.uuid }
     assigned_coach { SecureRandom.uuid }
     certified_by { "jim@cool.com" }
     email { Faker::Internet.email }

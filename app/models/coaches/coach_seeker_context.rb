@@ -37,6 +37,7 @@ module Coaches
     has_many :seeker_job_recommendations, dependent: :destroy, class_name: "Coaches::SeekerJobRecommendation"
 
     validates :kind, allow_nil: true, inclusion: { in: Kind::ALL }
+    validates :context_id, presence: true, on: [:create]
 
     scope :leads, -> { where(kind: Kind::LEAD) }
     scope :seekers, -> { where(kind: [nil, Kind::SEEKER]) }

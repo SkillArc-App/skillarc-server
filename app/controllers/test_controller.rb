@@ -195,7 +195,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   end
 
   def create_seeker_lead
-    render json: FactoryBot.create(:coaches__coach_seeker_context, :lead)
+    render json: FactoryBot.create(:coaches__coach_seeker_context, :lead, phone_number: Faker::PhoneNumber.phone_number)
   end
 
   def create_active_seeker

@@ -7,7 +7,7 @@ module Coaches
     end
 
     def handle_message(message, *_params)
-      case message.event_schema
+      case message.schema
       when Events::JobRecommended::V1
         handle_job_recommended(message)
       end

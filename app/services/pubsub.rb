@@ -7,17 +7,17 @@ class Pubsub
   end
 
   def publish(message:)
-    jobs = subscribers.dig(message.event_type, message.version)&.values&.map do |subscriber|
+    jobs = subscribers.dig(message.message_type, message.version)&.values&.map do |subscriber|
       resolve_event(message, subscriber)
     end&.compact || []
 
     ActiveJob.perform_all_later(jobs)
   end
 
-  def subscribe(event_schema:, subscriber:)
-    subscribers[event_schema.event_type] ||= {}
-    subscribers[event_schema.event_type][event_schema.version] ||= {}
-    subscribers[event_schema.event_type][event_schema.version][subscriber.id] = subscriber
+  def subscribe(message_schema:, subscriber:)
+    subscribers[message_schema.message_type] ||= {}
+    subscribers[message_schema.message_type][message_schema.version] ||= {}
+    subscribers[message_schema.message_type][message_schema.version][subscriber.id] = subscriber
   end
 
   def execute_event(message:, subscriber_id:)

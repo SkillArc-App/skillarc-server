@@ -20,13 +20,13 @@
 #
 class Event < ApplicationRecord
   def message
-    schema = EventService.get_schema(event_type:, version:)
+    schema = MessageService.get_schema(message_type: event_type, version:)
 
     Message.new(
       id:,
       aggregate_id:,
       trace_id:,
-      event_type:,
+      message_type: event_type,
       version:,
       data: schema.data.from_hash(data),
       metadata: schema.metadata.from_hash(metadata),
@@ -39,7 +39,7 @@ class Event < ApplicationRecord
       id: message.id,
       aggregate_id: message.aggregate_id,
       trace_id: message.trace_id,
-      event_type: message.event_type,
+      event_type: message.message_type,
       data: message.data.to_h,
       metadata: message.metadata.to_h,
       version: message.version,

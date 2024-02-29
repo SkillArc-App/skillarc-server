@@ -9,7 +9,7 @@ RSpec.describe Event do
       build(
         :event,
         version: Events::JobSearch::V1.version,
-        event_type: Events::JobSearch::V1.event_type,
+        event_type: Events::JobSearch::V1.message_type,
         data: {
           search_terms: "Cool job",
           tags: nil,
@@ -28,7 +28,7 @@ RSpec.describe Event do
       expect(subject.id).to eq(event[:id])
       expect(subject.trace_id).to eq(event[:trace_id])
       expect(subject.aggregate_id).to eq(event[:aggregate_id])
-      expect(subject.event_type).to eq(event[:event_type])
+      expect(subject.message_type).to eq(event[:event_type])
       expect(subject.data).to eq(Events::JobSearch::Data::V1.new(
                                    search_terms: "Cool job",
                                    tags: nil,
@@ -51,7 +51,7 @@ RSpec.describe Event do
       build(
         :message,
         version: Events::JobSearch::V1.version,
-        event_type: Events::JobSearch::V1.event_type,
+        message_type: Events::JobSearch::V1.message_type,
         data: Events::JobSearch::Data::V1.new(
           search_terms: "Cool job",
           tags: nil,
@@ -70,7 +70,7 @@ RSpec.describe Event do
       expect(subject[:id]).to eq(message.id)
       expect(subject[:aggregate_id]).to eq(message.aggregate_id)
       expect(subject[:trace_id]).to eq(message.trace_id)
-      expect(subject[:event_type]).to eq(message.event_type)
+      expect(subject[:event_type]).to eq(message.message_type)
       expect(subject[:data].deep_symbolize_keys).to eq({
                                                          search_terms: "Cool job",
                                                          tags: nil,

@@ -7,7 +7,7 @@ module Contact
     end
 
     def handle_message(message, *_params)
-      case message.event_schema
+      case message.schema
       when Commands::SendSms::V1
         handle_send_sms(message)
       end

@@ -7,7 +7,7 @@ class Message
     id Uuid
     aggregate_id String
     trace_id Uuid
-    event_type Either(*Messages::Types::ALL)
+    message_type Either(*Messages::Types::ALL)
     data
     metadata
     version Integer
@@ -17,15 +17,15 @@ class Message
   def initialize(**kwarg)
     super(**kwarg)
 
-    schema = event_schema
+    current_schema = schema
 
-    raise InvalidSchemaError unless schema.data === data # rubocop:disable Style/CaseEquality
-    raise InvalidSchemaError unless schema.metadata === metadata # rubocop:disable Style/CaseEquality
+    raise InvalidSchemaError unless current_schema.data === data # rubocop:disable Style/CaseEquality
+    raise InvalidSchemaError unless current_schema.metadata === metadata # rubocop:disable Style/CaseEquality
   end
 
   def ==(other)
     self.class == other.class &&
-      event_type == other.event_type &&
+      message_type == other.message_type &&
       version == other.version &&
       aggregate_id == other.aggregate_id &&
       id == other.id &&
@@ -35,11 +35,11 @@ class Message
   end
 
   def checksum
-    Digest::UUID.uuid_v3(MESSAGE_UUID_NAMESPACE, data.to_json + trace_id + event_type + version.to_s)
+    Digest::UUID.uuid_v3(MESSAGE_UUID_NAMESPACE, data.to_json + trace_id + message_type + version.to_s)
   end
 
-  def event_schema
-    EventService.get_schema(event_type:, version:)
+  def schema
+    MessageService.get_schema(message_type:, version:)
   end
 
   def self.coerce_occurred_at(value)

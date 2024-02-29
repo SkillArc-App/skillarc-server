@@ -11,7 +11,7 @@ module Coaches
     end
 
     def handle_message(message, *_params)
-      case message.event_schema
+      case message.schema
       when Events::JobCreated::V1
         handle_job_created(message)
       end

@@ -29,7 +29,7 @@ module Commands
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
-      event_type: Messages::Types::Contact::SEND_WEEKLY_EMPLOYER_UPDATE,
+      message_type: Messages::Types::Contact::SEND_WEEKLY_EMPLOYER_UPDATE,
       version: 1
     )
   end

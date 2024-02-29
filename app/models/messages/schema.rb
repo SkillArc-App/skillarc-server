@@ -1,19 +1,19 @@
 module Messages
   class Schema
-    attr_reader :data, :metadata, :event_type, :version
+    attr_reader :data, :metadata, :message_type, :version
 
-    def self.build(data:, metadata:, event_type:, version:)
-      event_schema = new(data:, metadata:, event_type:, version:)
-      EventService.register(event_schema:)
-      event_schema
+    def self.build(data:, metadata:, message_type:, version:)
+      message_schema = new(data:, metadata:, message_type:, version:)
+      MessageService.register(message_schema:)
+      message_schema
     end
 
     private
 
-    def initialize(data:, metadata:, event_type:, version:)
+    def initialize(data:, metadata:, message_type:, version:)
       @data = data
       @metadata = metadata
-      @event_type = event_type
+      @message_type = message_type
       @version = version
     end
   end

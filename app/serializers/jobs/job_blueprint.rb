@@ -44,7 +44,7 @@ module Jobs
                       .map(&:message)
                       .select { |e| e.data[:job_id] == job.id }
 
-        save_events&.sort_by(&:occurred_at)&.last&.event_type == Messages::Types::Seekers::JOB_SAVED || false
+        save_events&.sort_by(&:occurred_at)&.last&.message_type == Messages::Types::Seekers::JOB_SAVED || false
       end
       association :employer, blueprint: Employers::EmployerBlueprint
     end

@@ -34,7 +34,7 @@ module Coaches
     end
 
     def handle_message(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
-      case message.event_schema
+      case message.schema
 
       # Coach Originated
       when Events::BarrierUpdated::V1

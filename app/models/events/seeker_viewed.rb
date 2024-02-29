@@ -13,7 +13,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
-      event_type: Messages::Types::Seekers::SEEKER_VIEWED,
+      message_type: Messages::Types::Seekers::SEEKER_VIEWED,
       version: 1
     )
   end

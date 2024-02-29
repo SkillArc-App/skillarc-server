@@ -51,7 +51,7 @@ class User < ApplicationRecord
               .map do |job_id, events|
       last_event = events.max_by(&:occurred_at)
 
-      job_id if last_event.event_type == Messages::Types::Seekers::JOB_SAVED
+      job_id if last_event.message_type == Messages::Types::Seekers::JOB_SAVED
     end
 
     Job.where(id: job_ids.compact.uniq)

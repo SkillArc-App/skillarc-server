@@ -6,7 +6,7 @@ RSpec.describe ExecuteSubscriberJob do
       id: SecureRandom.uuid,
       aggregate_id: "123",
       trace_id: SecureRandom.uuid,
-      event_type: Events::UserCreated::V1.event_type,
+      message_type: Events::UserCreated::V1.message_type,
       data: Events::UserCreated::Data::V1.new,
       metadata: Messages::Nothing,
       version: Events::UserCreated::V1.version,

@@ -9,7 +9,7 @@ RSpec.describe Message do
             id: SecureRandom.uuid,
             aggregate_id: SecureRandom.uuid,
             trace_id: SecureRandom.uuid,
-            event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+            message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
             metadata: {},
             version: 1,
             occurred_at: Time.zone.now
@@ -25,7 +25,7 @@ RSpec.describe Message do
             id: SecureRandom.uuid,
             trace_id: SecureRandom.uuid,
             aggregate_id: 10,
-            event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+            message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
             metadata: {},
             data: {},
             version: 1,
@@ -40,7 +40,7 @@ RSpec.describe Message do
         build(
           :message,
           version: Events::DayElapsed::V1.version,
-          event_type: Events::DayElapsed::V1.event_type,
+          message_type: Events::DayElapsed::V1.message_type,
           data: Events::DayElapsed::Data::V1.new(
             date: Date.new(2000, 1, 1),
             day_of_week: Events::DayElapsed::Data::DaysOfWeek::WEDNESDAY
@@ -89,13 +89,13 @@ RSpec.describe Message do
             id: SecureRandom.uuid,
             aggregate_id: SecureRandom.uuid,
             trace_id: SecureRandom.uuid,
-            event_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+            message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
             metadata: {},
             data: {},
             version: -10,
             occurred_at: Time.zone.now
           ).event_schema
-        end.to raise_error(EventService::SchemaNotFoundError)
+        end.to raise_error(MessageService::SchemaNotFoundError)
       end
     end
 
@@ -105,14 +105,14 @@ RSpec.describe Message do
           id: SecureRandom.uuid,
           aggregate_id: SecureRandom.uuid,
           trace_id: SecureRandom.uuid,
-          event_type: Events::UserCreated::V1.event_type,
+          message_type: Events::UserCreated::V1.message_type,
           metadata: Messages::Nothing,
           data: Events::UserCreated::Data::V1.new,
           version: Events::UserCreated::V1.version,
           occurred_at: Time.zone.now
         )
 
-        expect(message.event_schema).to eq(Events::UserCreated::V1)
+        expect(message.schema).to eq(Events::UserCreated::V1)
       end
     end
   end
@@ -125,7 +125,7 @@ RSpec.describe Message do
         message1 = build(
           :message,
           version: Commands::SendSms::V1.version,
-          event_type: Commands::SendSms::V1.event_type,
+          message_type: Commands::SendSms::V1.message_type,
           trace_id:,
           data: Commands::SendSms::Data::V1.new(
             phone_number: "1234567890",
@@ -136,7 +136,7 @@ RSpec.describe Message do
         message2 = build(
           :message,
           version: Commands::SendSms::V1.version,
-          event_type: Commands::SendSms::V1.event_type,
+          message_type: Commands::SendSms::V1.message_type,
           trace_id:,
           data: Commands::SendSms::Data::V1.new(
             phone_number: "1234567890",
@@ -157,7 +157,7 @@ RSpec.describe Message do
         message1 = build(
           :message,
           version: Commands::SendSms::V1.version,
-          event_type: Commands::SendSms::V1.event_type,
+          message_type: Commands::SendSms::V1.message_type,
           trace_id: trace_id1,
           data: Commands::SendSms::Data::V1.new(
             phone_number: "1234567890",
@@ -168,7 +168,7 @@ RSpec.describe Message do
         message2 = build(
           :message,
           version: Commands::SendSms::V1.version,
-          event_type: Commands::SendSms::V1.event_type,
+          message_type: Commands::SendSms::V1.message_type,
           trace_id: trace_id2,
           data: Commands::SendSms::Data::V1.new(
             phone_number: "1234567890",
@@ -188,7 +188,7 @@ RSpec.describe Message do
         message1 = build(
           :message,
           version: Commands::SendSms::V1.version,
-          event_type: Commands::SendSms::V1.event_type,
+          message_type: Commands::SendSms::V1.message_type,
           trace_id:,
           data: Commands::SendSms::Data::V1.new(
             phone_number: "1234567890",
@@ -199,7 +199,7 @@ RSpec.describe Message do
         message2 = build(
           :message,
           version: Commands::SendSms::V1.version,
-          event_type: Commands::SendSms::V1.event_type,
+          message_type: Commands::SendSms::V1.message_type,
           trace_id:,
           data: Commands::SendSms::Data::V1.new(
             phone_number: "1234567890",

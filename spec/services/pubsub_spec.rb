@@ -13,7 +13,7 @@ RSpec.describe Pubsub do
 
       subscriber = Klayvio::JobSaved.new
       allow(subscriber).to receive(:call)
-      subject.subscribe(event_schema: message.event_schema, subscriber:)
+      subject.subscribe(message_schema: message.schema, subscriber:)
 
       expect(subscriber)
         .to receive(:call)
@@ -34,7 +34,7 @@ RSpec.describe Pubsub do
       subscriber = Klayvio::JobSaved.new
       allow(subscriber).to receive(:call)
 
-      subject.subscribe(event_schema: message.event_schema, subscriber:)
+      subject.subscribe(message_schema: message.schema, subscriber:)
 
       expect(ExecuteSubscriberJob)
         .to receive(:new)

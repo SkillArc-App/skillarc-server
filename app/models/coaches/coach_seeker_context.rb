@@ -18,7 +18,7 @@
 #  stage             :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  context_id        :uuid
+#  context_id        :string
 #  seeker_id         :uuid
 #  user_id           :string
 #

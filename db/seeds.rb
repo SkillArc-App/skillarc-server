@@ -1003,6 +1003,7 @@ coach = Coaches::Coach.create!(
 coach_seeker_context = Coaches::CoachSeekerContext.create!(
   seeker_id: seeker_with_profile.id,
   user_id: seeker_with_profile.user.id,
+  context_id: seeker_with_profile.user.id,
   first_name: seeker_with_profile.user.first_name,
   last_name: seeker_with_profile.user.last_name,
   email: seeker_with_profile.user.email,

@@ -28,7 +28,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
   let(:lead1) do
     Events::LeadAdded::Data::V1.new(
-      email: nil,
+      email: "hannah@blocktrainapp.com",
       lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5",
       phone_number: "1234567890",
       first_name: "Hannah",
@@ -194,7 +194,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
       it "returns all profiles" do
         expected_profile = {
-          id: user_id,
+          id: lead1.lead_id,
           seeker_id:,
           first_name: "Hannah",
           last_name: "Block",
@@ -289,7 +289,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
 
       it "returns the profile" do
         expected_profile = {
-          id: user_id,
+          id: lead1.lead_id,
           seeker_id:,
           first_name: "Hannah",
           last_name: "Block",

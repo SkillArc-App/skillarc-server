@@ -332,7 +332,8 @@ module Coaches
     end
 
     def handle_user_created(message)
-      lead = CoachSeekerContext.find_by(email: message.data.email)
+      lead = CoachSeekerContext.find_by(email: message.data.email) if message.data.email.present?
+
       if lead.present?
         lead.update!(
           user_id: message.aggregate_id,

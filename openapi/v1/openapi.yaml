@@ -744,6 +744,8 @@ components:
     coach_seeker:
       type: object
       properties:
+        id:
+          type: string
         seekerId:
           type: string
           format: uuid

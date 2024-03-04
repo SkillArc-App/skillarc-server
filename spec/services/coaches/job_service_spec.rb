@@ -23,12 +23,36 @@ RSpec.describe Coaches::JobService do
       )
     )
   end
+  let(:job_created2) do
+    build(
+      :message,
+      :job_created,
+      aggregate_id: other_job_id,
+      version: 2,
+      data: Events::JobCreated::Data::V2.new(
+        employment_title: "Other Laborer",
+        employer_name: "Employer",
+        employer_id:,
+        benefits_description: "Benefits",
+        responsibilities_description: "Responsibilities",
+        location: "Columbus, OH",
+        employment_type: "FULLTIME",
+        hide_job: true,
+        schedule: "9-5",
+        work_days: "M-F",
+        requirements_description: "Requirements",
+        industry: [Job::Industries::MANUFACTURING]
+      )
+    )
+  end
   let(:job_id) { SecureRandom.uuid }
+  let(:other_job_id) { SecureRandom.uuid }
   let(:employer_id) { SecureRandom.uuid }
   let(:consumer) { described_class.new }
 
   before do
     consumer.handle_message(job_created)
+    consumer.handle_message(job_created2)
   end
 
   it_behaves_like "an event consumer"
@@ -36,7 +60,7 @@ RSpec.describe Coaches::JobService do
   describe ".all" do
     subject { consumer.all }
 
-    it "returns all jobs" do
+    it "returns all unhidden jobs" do
       expect(subject).to eq(
         [{
           id: job_id,

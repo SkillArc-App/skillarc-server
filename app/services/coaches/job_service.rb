@@ -18,7 +18,7 @@ module Coaches
     end
 
     def all
-      Job.all.map do |job|
+      Job.visible.map do |job|
         serialize_job(job)
       end
     end
@@ -33,7 +33,8 @@ module Coaches
       Job.create!(
         job_id: message.aggregate_id,
         employment_title: message.data[:employment_title],
-        employer_name: message.data[:employer_name]
+        employer_name: message.data[:employer_name],
+        hide_job: message.data[:hide_job]
       )
     end
 

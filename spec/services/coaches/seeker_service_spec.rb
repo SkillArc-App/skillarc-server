@@ -203,7 +203,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           skill_level: 'advanced',
           last_active_on: applicant_status_updated3.occurred_at,
           last_contacted: note_with_id_added1.occurred_at,
-          assigned_coach: coach_id,
+          assigned_coach: "coach@blocktrainapp.com",
           certified_by: coach.email,
           barriers: [{
             id: barrier2.barrier_id,
@@ -298,7 +298,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           skill_level: 'advanced',
           last_active_on: applicant_status_updated3.occurred_at,
           last_contacted: note_with_id_added1.occurred_at,
-          assigned_coach: coach_id,
+          assigned_coach: "coach@blocktrainapp.com",
           certified_by: coach.email,
           barriers: [{
             id: barrier2.barrier_id,

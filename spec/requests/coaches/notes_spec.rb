@@ -29,7 +29,7 @@ RSpec.describe "Notes", type: :request do
           expect_any_instance_of(Coaches::SeekerService)
             .to receive(:add_note)
             .with(
-              id: seeker_id,
+              seeker_id:,
               coach:,
               note: params[:note],
               note_id: params[:note_id]
@@ -46,7 +46,7 @@ RSpec.describe "Notes", type: :request do
             .to receive(:add_note)
             .with(
               coach:,
-              id: seeker_id,
+              seeker_id:,
               note: params[:note],
               note_id: be_a(String)
             )
@@ -81,7 +81,7 @@ RSpec.describe "Notes", type: :request do
         expect_any_instance_of(Coaches::SeekerService)
           .to receive(:modify_note)
           .with(
-            id: seeker_id,
+            seeker_id:,
             coach:,
             note_id:,
             note: params[:note]
@@ -111,7 +111,7 @@ RSpec.describe "Notes", type: :request do
         expect_any_instance_of(Coaches::SeekerService)
           .to receive(:delete_note)
           .with(
-            id: seeker_id,
+            seeker_id:,
             coach:,
             note_id:
           )

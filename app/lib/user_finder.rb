@@ -15,7 +15,7 @@ class UserFinder
     )
 
     EventService.create!(
-      aggregate_id: new_user.id,
+      user_id: new_user.id,
       event_schema: Events::UserCreated::V1,
       data: Events::UserCreated::Data::V1.new(
         first_name: new_user.first_name,

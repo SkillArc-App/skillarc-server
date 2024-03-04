@@ -6,7 +6,7 @@ class TrainingProviderInviteService
   def accept
     EventService.create!(
       event_schema: Events::TrainingProviderInviteAccepted::V1,
-      aggregate_id: invite.training_provider_id,
+      training_provider_id: invite.training_provider_id,
       data: Messages::UntypedHashWrapper.build(
         training_provider_invite_id: invite.id,
         invite_email: invite.email,

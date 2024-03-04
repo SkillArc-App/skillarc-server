@@ -34,7 +34,7 @@ RSpec.describe ApplicationController, type: :controller do
       expect(EventService)
         .to receive(:create!)
         .with(
-          aggregate_id: be_a(String),
+          user_id: be_a(String),
           event_schema: Events::UserCreated::V1,
           data: Events::UserCreated::Data::V1.new(
             email:,

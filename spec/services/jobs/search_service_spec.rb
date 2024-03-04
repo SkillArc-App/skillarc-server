@@ -35,7 +35,7 @@ RSpec.describe Jobs::SearchService do
                 industries:,
                 tags:
               ),
-              aggregate_id: 'unauthenticated',
+              search_id: 'unauthenticated',
               metadata: Events::JobSearch::MetaData::V2.new(
                 source: "unauthenticated",
                 utm_source:
@@ -59,7 +59,7 @@ RSpec.describe Jobs::SearchService do
                 industries:,
                 tags:
               ),
-              aggregate_id: user.id,
+              search_id: user.id,
               metadata: Events::JobSearch::MetaData::V2.new(
                 source: "user",
                 id: user.id,
@@ -85,7 +85,7 @@ RSpec.describe Jobs::SearchService do
                 industries:,
                 tags:
               ),
-              aggregate_id: user.id,
+              search_id: user.id,
               metadata: Events::JobSearch::MetaData::V2.new(
                 source: "seeker",
                 id: user.id,

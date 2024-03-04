@@ -25,7 +25,7 @@ module Coaches
 
       CommandService.create!(
         command_schema: Commands::SendSms::V1,
-        aggregate_id: csc.seeker_id,
+        seeker_id: csc.seeker_id,
         trace_id: message.trace_id,
         data: Commands::SendSms::Data::V1.new(
           phone_number: csc.phone_number,

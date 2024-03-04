@@ -16,7 +16,7 @@ class EducationExperienceService
 
     EventService.create!(
       event_schema: Events::EducationExperienceCreated::V1,
-      aggregate_id: seeker.user.id,
+      user_id: seeker.user.id,
       data: Events::EducationExperienceCreated::Data::V1.new(
         id: ee.id,
         organization_name:,
@@ -37,7 +37,7 @@ class EducationExperienceService
 
     EventService.create!(
       event_schema: Events::EducationExperienceUpdated::V1,
-      aggregate_id: seeker.user.id,
+      user_id: seeker.user.id,
       data: Events::EducationExperienceUpdated::Data::V1.new(
         seeker_id: seeker.id,
         **params.merge(id:)
@@ -53,7 +53,7 @@ class EducationExperienceService
 
     EventService.create!(
       event_schema: Events::EducationExperienceDeleted::V1,
-      aggregate_id: seeker.id,
+      seeker_id: seeker.id,
       data: Messages::UntypedHashWrapper.build(
         id: education_experience.id
       ),

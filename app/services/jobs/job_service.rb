@@ -8,7 +8,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::JobCreated::V2,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: Events::JobCreated::Data::V2.new(
           employment_title: job.employment_title,
           employer_name: job.employer.name,
@@ -34,7 +34,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::JobUpdated::V1,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: Events::JobUpdated::Data::V1.new(
           employment_title: job.employment_title,
           benefits_description: job.benefits_description,

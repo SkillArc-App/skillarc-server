@@ -30,14 +30,14 @@ module Jobs
                    "user"
                  end
 
-        aggregate_id = user.id
+        search_id = user.id
         metadata = Events::JobSearch::MetaData::V2.new(
           source:,
           id: user.id,
           utm_source:
         )
       else
-        aggregate_id = "unauthenticated"
+        search_id = "unauthenticated"
         metadata = Events::JobSearch::MetaData::V2.new(
           source: "unauthenticated",
           utm_source:
@@ -51,7 +51,7 @@ module Jobs
           industries:,
           tags:
         ),
-        aggregate_id:,
+        search_id:,
         metadata:
       )
     end

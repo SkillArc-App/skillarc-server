@@ -5,7 +5,7 @@ RSpec.describe ElapseDayJob do
     expect(EventService)
       .to receive(:create!)
       .with(
-        aggregate_id: "day",
+        day: "day",
         event_schema: Events::DayElapsed::V1,
         data: Events::DayElapsed::Data::V1.new(
           date: Date.new(2020, 1, 1),

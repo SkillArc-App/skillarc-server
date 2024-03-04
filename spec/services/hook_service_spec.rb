@@ -21,7 +21,7 @@ RSpec.describe HookService do
     it "enqueues a notification created event job" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::NotificationCreated::V1,
-        aggregate_id: user.id,
+        user_id: user.id,
         data: Messages::UntypedHashWrapper.build(
           title:,
           body:,

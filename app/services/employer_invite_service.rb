@@ -6,7 +6,7 @@ class EmployerInviteService
   def accept
     EventService.create!(
       event_schema: Events::EmployerInviteAccepted::V1,
-      aggregate_id: employer_invite.employer_id,
+      employer_id: employer_invite.employer_id,
       data: Events::EmployerInviteAccepted::Data::V1.new(
         employer_invite_id: employer_invite.id,
         invite_email: employer_invite.email,

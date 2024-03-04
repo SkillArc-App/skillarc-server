@@ -7,7 +7,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::CareerPathCreated::V1,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: Events::CareerPathCreated::Data::V1.new(
           id: career_path.id,
           job_id: job.id,
@@ -31,7 +31,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::CareerPathUpdated::V1,
-        aggregate_id: upper_career_path.job_id,
+        job_id: upper_career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: upper_career_path.id,
           order: upper_career_path.order
@@ -40,7 +40,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::CareerPathUpdated::V1,
-        aggregate_id: career_path.job_id,
+        job_id: career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: career_path.id,
           order: career_path.order
@@ -58,7 +58,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::CareerPathUpdated::V1,
-        aggregate_id: lower_career_path.job_id,
+        job_id: lower_career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: lower_career_path.id,
           order: lower_career_path.order
@@ -67,7 +67,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::CareerPathUpdated::V1,
-        aggregate_id: career_path.job_id,
+        job_id: career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: career_path.id,
           order: career_path.order
@@ -85,7 +85,7 @@ module Jobs
 
         EventService.create!(
           event_schema: Events::CareerPathUpdated::V1,
-          aggregate_id: path.job_id,
+          job_id: path.job_id,
           data: Events::CareerPathUpdated::Data::V1.new(
             id: path.id,
             job_id: path.job_id,
@@ -99,7 +99,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::CareerPathDestroyed::V1,
-        aggregate_id: career_path.job_id,
+        job_id: career_path.job_id,
         data: Events::CareerPathDestroyed::Data::V1.new(
           id: career_path.id
         )

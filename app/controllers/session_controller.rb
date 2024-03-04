@@ -6,7 +6,7 @@ class SessionController < ApplicationController
   def create
     EventService.create!(
       event_schema: Events::SessionStarted::V1,
-      aggregate_id: current_user.id,
+      user_id: current_user.id,
       data: Messages::Nothing
     )
 

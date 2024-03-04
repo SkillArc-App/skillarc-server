@@ -12,7 +12,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::TestimonialCreated::V1,
-        aggregate_id: job_id,
+        job_id:,
         data: Events::TestimonialCreated::Data::V1.new(
           id: t.id,
           job_id:,
@@ -32,7 +32,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::TestimonialDestroyed::V1,
-        aggregate_id: testimonial.job_id,
+        job_id: testimonial.job_id,
         data: Events::TestimonialDestroyed::Data::V1.new(
           id: testimonial.id
         ),

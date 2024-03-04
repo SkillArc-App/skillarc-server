@@ -38,7 +38,7 @@ RSpec.describe Contact::SmtpService do
       it "publishes an event" do
         expect(EventService).to receive(:create!).with(
           event_schema: Events::SmtpSent::V1,
-          aggregate_id: "recruiter@skillarc.com",
+          contact: "recruiter@skillarc.com",
           trace_id: message.trace_id,
           data: Events::SmtpSent::Data::V1.new(
             email: "recruiter@skillarc.com",
@@ -101,7 +101,7 @@ RSpec.describe Contact::SmtpService do
       it "publishes an event" do
         expect(EventService).to receive(:create!).with(
           event_schema: Events::SmtpSent::V1,
-          aggregate_id: "foo@bar.baz",
+          contact: "foo@bar.baz",
           trace_id: message.trace_id,
           data: Events::SmtpSent::Data::V1.new(
             email: "foo@bar.baz",

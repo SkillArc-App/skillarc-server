@@ -40,7 +40,7 @@ RSpec.describe Employers::ApplicationNotificationService do
           .to receive(:create!)
           .with(
             command_schema: Commands::NotifyEmployerOfApplicant::V1,
-            aggregate_id: data.applicant_id,
+            applicant_id: data.applicant_id,
             trace_id: applicant_status_updated.trace_id,
             data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
               employment_title: data.employment_title,
@@ -67,7 +67,7 @@ RSpec.describe Employers::ApplicationNotificationService do
           .to receive(:create!)
           .with(
             command_schema: Commands::NotifyEmployerOfApplicant::V1,
-            aggregate_id: data.applicant_id,
+            applicant_id: data.applicant_id,
             trace_id: applicant_status_updated.trace_id,
             data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
               employment_title: data.employment_title,

@@ -1,6 +1,6 @@
 module Coaches
   class SeekerService < EventConsumer # rubocop:disable Metrics/ClassLength
-    def handled_events_sync
+    def handled_messages_sync
       [
         Events::BarrierUpdated::V1,
         Events::CoachAssigned::V1,
@@ -120,7 +120,7 @@ module Coaches
     def add_lead(coach:, lead_id:, phone_number:, first_name:, last_name:, email: nil, now: Time.zone.now) # rubocop:disable Metrics/ParameterLists
       EventService.create!(
         event_schema: Events::LeadAdded::V1,
-        aggregate_id: coach.id,
+        coach_id: coach.id,
         data: Events::LeadAdded::Data::V1.new(
           email:,
           lead_id:,
@@ -133,10 +133,10 @@ module Coaches
       )
     end
 
-    def add_note(id:, coach:, note:, note_id:, now: Time.zone.now)
+    def add_note(seeker_id:, coach:, note:, note_id:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::NoteAdded::V1,
-        aggregate_id: id,
+        seeker_id:,
         data: Events::NoteAdded::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -147,10 +147,10 @@ module Coaches
       )
     end
 
-    def delete_note(id:, coach:, note_id:, now: Time.zone.now)
+    def delete_note(seeker_id:, coach:, note_id:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::NoteDeleted::V1,
-        aggregate_id: id,
+        seeker_id:,
         data: Events::NoteDeleted::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -160,10 +160,10 @@ module Coaches
       )
     end
 
-    def modify_note(id:, coach:, note_id:, note:, now: Time.zone.now)
+    def modify_note(seeker_id:, coach:, note_id:, note:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::NoteModified::V1,
-        aggregate_id: id,
+        seeker_id:,
         data: Events::NoteModified::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -179,7 +179,7 @@ module Coaches
 
       EventService.create!(
         event_schema: Events::SeekerCertified::V1,
-        aggregate_id: seeker_id,
+        seeker_id:,
         data: Events::SeekerCertified::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -193,7 +193,7 @@ module Coaches
     def recommend_job(seeker_id:, job_id:, coach:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::JobRecommended::V1,
-        aggregate_id: seeker_id,
+        seeker_id:,
         data: Events::JobRecommended::Data::V1.new(
           coach_id: coach.coach_id,
           job_id:
@@ -202,10 +202,10 @@ module Coaches
       )
     end
 
-    def update_barriers(id:, barriers:, now: Time.zone.now)
+    def update_barriers(seeker_id:, barriers:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::BarrierUpdated::V1,
-        aggregate_id: id,
+        seeker_id:,
         data: Events::BarrierUpdated::Data::V1.new(
           barriers:
         ),
@@ -213,10 +213,10 @@ module Coaches
       )
     end
 
-    def assign_coach(id, coach_id, coach_email, now: Time.zone.now)
+    def assign_coach(seeker_id, coach_id, coach_email, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::CoachAssigned::V1,
-        aggregate_id: id,
+        seeker_id:,
         data: Events::CoachAssigned::Data::V1.new(
           coach_id:,
           email: coach_email
@@ -225,10 +225,10 @@ module Coaches
       )
     end
 
-    def update_skill_level(id, skill_level, now: Time.zone.now)
+    def update_skill_level(seeker_id, skill_level, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::SkillLevelUpdated::V1,
-        aggregate_id: id,
+        seeker_id:,
         data: Events::SkillLevelUpdated::Data::V1.new(
           skill_level:
         ),

@@ -30,12 +30,10 @@ RSpec.describe EducationExperienceService do
         ).and_call_original
 
       expect(EventService).to receive(:create!).with(
-        hash_including(
-          event_schema: Events::EducationExperienceCreated::V1,
-          aggregate_id: seeker.user.id,
-          data: be_a(Events::EducationExperienceCreated::Data::V1),
-          occurred_at: be_a(Time)
-        )
+        event_schema: Events::EducationExperienceCreated::V1,
+        user_id: seeker.user.id,
+        data: be_a(Events::EducationExperienceCreated::Data::V1),
+        occurred_at: be_a(Time)
       )
 
       subject
@@ -75,7 +73,7 @@ RSpec.describe EducationExperienceService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EducationExperienceUpdated::V1,
-        aggregate_id: seeker.user.id,
+        user_id: seeker.user.id,
         data: Events::EducationExperienceUpdated::Data::V1.new(
           id: education_experience.id,
           organization_name: "University of Cincinnati",
@@ -106,7 +104,7 @@ RSpec.describe EducationExperienceService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EducationExperienceDeleted::V1,
-        aggregate_id: seeker.id,
+        seeker_id: seeker.id,
         data: Messages::UntypedHashWrapper.build(
           id: education_experience.id
         ),

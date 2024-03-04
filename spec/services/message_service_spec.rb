@@ -6,7 +6,7 @@ RSpec.describe MessageService do
       described_class.create!(
         id:,
         message_schema:,
-        aggregate_id:,
+        user_id:,
         trace_id:,
         data:,
         occurred_at:,
@@ -15,7 +15,7 @@ RSpec.describe MessageService do
     end
 
     let(:message_type) { Messages::Types::CHAT_CREATED }
-    let(:aggregate_id) { SecureRandom.uuid }
+    let(:user_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
     let(:data) { Messages::UntypedHashWrapper.new(data: "cool") }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
@@ -36,6 +36,7 @@ RSpec.describe MessageService do
         Messages::Schema.build(
           data: Messages::UntypedHashWrapper,
           metadata: Messages::UntypedHashWrapper,
+          aggregate: Aggregates::User,
           message_type:,
           version:
         )
@@ -69,7 +70,7 @@ RSpec.describe MessageService do
               Message.new(
                 id:,
                 trace_id:,
-                aggregate_id:,
+                aggregate: Aggregates::User.new(user_id:),
                 data:,
                 occurred_at:,
                 metadata:,
@@ -114,6 +115,7 @@ RSpec.describe MessageService do
       Messages::Schema.build(
         data: Array,
         metadata: Array,
+        aggregate: Aggregates::User,
         message_type: Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
         version: 1
       )
@@ -143,6 +145,7 @@ RSpec.describe MessageService do
         Messages::Schema.build(
           data: Array,
           metadata: Array,
+          aggregate: Aggregates::User,
           message_type:,
           version:
         )
@@ -162,7 +165,7 @@ RSpec.describe MessageService do
     let!(:message1) do
       Message.new(
         id: SecureRandom.uuid,
-        aggregate_id: SecureRandom.uuid,
+        aggregate: Aggregates::User.new(user_id: SecureRandom.uuid),
         trace_id: SecureRandom.uuid,
         schema: message_schema,
         occurred_at: Time.zone.parse('2000-1-1'),
@@ -173,7 +176,7 @@ RSpec.describe MessageService do
     let!(:message2) do
       Message.new(
         id: SecureRandom.uuid,
-        aggregate_id: SecureRandom.uuid,
+        aggregate: Aggregates::User.new(user_id: SecureRandom.uuid),
         trace_id: SecureRandom.uuid,
         schema: message_schema,
         occurred_at: Time.zone.parse('2000-1-1'),

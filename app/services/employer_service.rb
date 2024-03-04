@@ -4,7 +4,7 @@ class EmployerService
 
     EventService.create!(
       event_schema: Events::EmployerCreated::V1,
-      aggregate_id: e.id,
+      employer_id: e.id,
       data: Events::EmployerCreated::Data::V1.new(
         name: e.name,
         location: e.location,
@@ -23,7 +23,7 @@ class EmployerService
 
     EventService.create!(
       event_schema: Events::EmployerUpdated::V1,
-      aggregate_id: e.id,
+      employer_id: e.id,
       data: Events::EmployerUpdated::Data::V1.new(
         name: e.name,
         location: e.location,

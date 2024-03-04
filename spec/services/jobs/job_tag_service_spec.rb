@@ -19,7 +19,7 @@ RSpec.describe Jobs::JobTagService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::JobTagCreated::V1,
-        aggregate_id: be_present,
+        job_id: be_present,
         data: Events::JobTagCreated::Data::V1.new(
           job_id: job.id,
           tag_id: tag.id
@@ -42,7 +42,7 @@ RSpec.describe Jobs::JobTagService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::JobTagDestroyed::V1,
-        aggregate_id: job_tag.job_id,
+        job_id: job_tag.job_id,
         data: Events::JobTagDestroyed::Data::V1.new(
           job_tag_id: job_tag.id
         )

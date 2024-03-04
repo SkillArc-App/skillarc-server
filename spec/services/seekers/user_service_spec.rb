@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Seekers::UserService do
   describe ".update" do
-    subject { described_class.new(id).update(about:, first_name:, last_name:, phone_number:, zip_code:) }
+    subject { described_class.new(user_id).update(about:, first_name:, last_name:, phone_number:, zip_code:) }
 
-    let(:id) { user.id }
+    let(:user_id) { user.id }
     let(:user) { create(:user) }
     let!(:seeker) { create(:seeker, user:) }
     let(:about) { "New About" }
@@ -24,7 +24,7 @@ RSpec.describe Seekers::UserService do
     it "publishes a user_updated event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::UserUpdated::V1,
-        aggregate_id: id,
+        user_id:,
         data: Events::UserUpdated::Data::V1.new(
           first_name:,
           last_name:,
@@ -36,7 +36,7 @@ RSpec.describe Seekers::UserService do
 
       expect(EventService).to receive(:create!).with(
         event_schema: Events::SeekerUpdated::V1,
-        aggregate_id: seeker.id,
+        seeker_id: seeker.id,
         data: Events::SeekerUpdated::Data::V1.new(
           about:
         ),

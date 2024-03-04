@@ -22,7 +22,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     onboarding_session.update!(completed_at:)
 
     EventService.create!(
-      aggregate_id: user.id,
+      user_id: user.id,
       event_schema: Events::OnboardingCompleted::V1,
       data: Messages::UntypedHashWrapper.build(
         name: responses["name"],
@@ -49,7 +49,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       )
 
       EventService.create!(
-        aggregate_id: user.id,
+        user_id: user.id,
         event_schema: Events::UserUpdated::V1,
         data: Events::UserUpdated::Data::V1.new(
           email: user.email,
@@ -67,7 +67,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     seeker = Seeker.create!(user:)
 
     EventService.create!(
-      aggregate_id: user.id,
+      user_id: user.id,
       event_schema: Events::SeekerCreated::V1,
       data: Events::SeekerCreated::Data::V1.new(
         id: seeker.id,
@@ -98,7 +98,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         other_experience.save!
 
         EventService.create!(
-          aggregate_id: user.id,
+          user_id: user.id,
           event_schema: Events::ExperienceCreated::V1,
           data: Events::ExperienceCreated::Data::V1.new(
             id: other_experience.id,
@@ -136,7 +136,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         ee.save!
 
         EventService.create!(
-          aggregate_id: user.id,
+          user_id: user.id,
           event_schema: Events::EducationExperienceCreated::V1,
           data: Events::EducationExperienceCreated::Data::V1.new(
             id: ee.id,
@@ -163,7 +163,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         stp.save!
 
         EventService.create!(
-          aggregate_id: user.id,
+          user_id: user.id,
           event_schema: Events::SeekerTrainingProviderCreated::V1,
           data: Messages::UntypedHashWrapper.build(
             id: stp.id,
@@ -195,7 +195,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       pe.save!
 
       EventService.create!(
-        aggregate_id: user.id,
+        user_id: user.id,
         event_schema: Events::PersonalExperienceCreated::V1,
         data: Events::PersonalExperienceCreated::Data::V1.new(
           id: pe.id,

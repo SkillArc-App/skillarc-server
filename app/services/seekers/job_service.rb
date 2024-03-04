@@ -8,7 +8,7 @@ module Seekers
     def add_elevator_pitch(elevator_pitch)
       EventService.create!(
         event_schema: Events::ElevatorPitchCreated::V1,
-        aggregate_id: seeker.id,
+        seeker_id: seeker.id,
         data: Events::ElevatorPitchCreated::Data::V1.new(
           job_id: job.id,
           pitch: elevator_pitch

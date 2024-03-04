@@ -48,7 +48,7 @@ class EmployerChats
 
     EventService.create!(
       event_schema: Events::ChatMessageSent::V1,
-      aggregate_id: applicant_chat.applicant.job_id,
+      job_id: applicant_chat.applicant.job_id,
       data: Events::ChatMessageSent::Data::V1.new(
         applicant_id: applicant_chat.applicant.id,
         seeker_id: applicant_chat.applicant.seeker_id,
@@ -65,7 +65,7 @@ class EmployerChats
 
     EventService.create!(
       event_schema: Events::ChatCreated::V1,
-      aggregate_id: applicant_chat.applicant.job.id,
+      job_id: applicant_chat.applicant.job.id,
       data: Events::ChatCreated::Data::V1.new(
         applicant_id: applicant_chat.applicant.id,
         seeker_id: applicant_chat.applicant.seeker_id,

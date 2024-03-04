@@ -1039,4 +1039,4 @@ Reason.create!(description: "The candidate did not show up for the interview")
 FactoryBot.create(:barrier, name: "Background")
 FactoryBot.create(:barrier, name: "Unable to Drive")
 
-FactoryBot.create(:coaches__job, job_id: contractor.id, employment_title: contractor.employment_title)
+FactoryBot.create(:coaches__job, job_id: contractor.id, employer_name: contractor.employer.name, employment_title: contractor.employment_title)

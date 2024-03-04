@@ -6,8 +6,10 @@ RSpec.describe Coaches::JobService do
       :message,
       :job_created,
       aggregate_id: job_id,
-      data: Events::JobCreated::Data::V1.new(
+      version: 2,
+      data: Events::JobCreated::Data::V2.new(
         employment_title: "Laborer",
+        employer_name: "Employer",
         employer_id:,
         benefits_description: "Benefits",
         responsibilities_description: "Responsibilities",
@@ -38,6 +40,7 @@ RSpec.describe Coaches::JobService do
       expect(subject).to eq(
         [{
           id: job_id,
+          employer_name: "Employer",
           employment_title: "Laborer"
         }]
       )

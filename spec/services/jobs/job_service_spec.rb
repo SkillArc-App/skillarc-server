@@ -20,7 +20,9 @@ RSpec.describe Jobs::JobService do
       }
     end
     let(:employment_title) { "Laborer" }
-    let(:employer_id) { create(:employer).id }
+    let(:employer) { create(:employer) }
+    let(:employer_id) { employer.id }
+    let(:employer_name) { employer.name }
     let(:benefits_description) { "Benefits" }
     let(:responsibilities_description) { "Responsibilities" }
     let(:employment_title) { "Laborer" }
@@ -53,10 +55,11 @@ RSpec.describe Jobs::JobService do
 
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
-        event_schema: Events::JobCreated::V1,
+        event_schema: Events::JobCreated::V2,
         aggregate_id: be_present,
-        data: Events::JobCreated::Data::V1.new(
+        data: Events::JobCreated::Data::V2.new(
           employment_title:,
+          employer_name:,
           employer_id:,
           benefits_description:,
           responsibilities_description:,

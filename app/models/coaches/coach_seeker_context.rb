@@ -22,6 +22,10 @@
 #  seeker_id         :uuid
 #  user_id           :string
 #
+# Indexes
+#
+#  index_coach_seeker_contexts_on_context_id  (context_id) UNIQUE
+#
 module Coaches
   class CoachSeekerContext < ApplicationRecord
     module Kind

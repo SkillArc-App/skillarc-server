@@ -8,7 +8,7 @@ module Coaches
 
     def update_all
       SeekerService.new.update_barriers(
-        id: params[:seeker_id],
+        seeker_id: params[:seeker_id],
         barriers: params[:barriers]
       )
 

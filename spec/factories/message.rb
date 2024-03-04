@@ -1,15 +1,16 @@
 FactoryBot.define do
   factory :message, class: "Message" do
     id { SecureRandom.uuid }
-    aggregate_id { SecureRandom.uuid }
 
     transient do
       version { 1 }
       message_type { "chat_message_sent" }
+      aggregate_id { SecureRandom.uuid }
     end
 
     schema { MessageService.get_schema(message_type:, version:) }
     trace_id { SecureRandom.uuid }
+    aggregate { schema.aggregate.new(**{ schema.aggregate.id => aggregate_id }) }
 
     Messages::Types::ALL.each do |message_type|
       trait message_type.to_sym do

@@ -1,6 +1,6 @@
 module Seekers
-  class SeekerService < EventConsumer
-    def handled_events_sync
+  class SeekerService < MessageConsumer
+    def handled_messages_sync
       [
         Events::ElevatorPitchCreated::V1
       ].freeze

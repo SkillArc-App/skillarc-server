@@ -4,12 +4,14 @@ class MessageService
   SchemaAlreadyDefinedError = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
 
-  def self.create!(message_schema:, aggregate_id:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing) # rubocop:disable Metrics/ParameterLists
+  def self.create!(message_schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     raise NotEventSchemaError unless message_schema.is_a?(Messages::Schema)
+
+    aggregate = message_schema.aggregate.new(**)
 
     message = Message.new(
       id:,
-      aggregate_id:,
+      aggregate:,
       occurred_at:,
       data:,
       trace_id:,

@@ -10,7 +10,7 @@ module Coaches
     def create
       SeekerService.new.add_note(
         coach:,
-        id: params[:seeker_id],
+        seeker_id: params[:seeker_id],
         note: params[:note],
         note_id: params[:note_id] || SecureRandom.uuid
       )
@@ -20,7 +20,7 @@ module Coaches
 
     def update
       SeekerService.new.modify_note(
-        id: params[:seeker_id],
+        seeker_id: params[:seeker_id],
         coach:,
         note_id: params[:id],
         note: params[:note]
@@ -32,7 +32,7 @@ module Coaches
     def destroy
       SeekerService.new.delete_note(
         coach:,
-        id: params[:seeker_id],
+        seeker_id: params[:seeker_id],
         note_id: params[:id]
       )
 

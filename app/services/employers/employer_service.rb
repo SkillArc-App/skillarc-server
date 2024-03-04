@@ -1,12 +1,12 @@
 module Employers
-  class EmployerService < EventConsumer
-    def handled_events_sync
+  class EmployerService < MessageConsumer
+    def handled_messages_sync
       [
         Events::ApplicantStatusUpdated::V5
       ].freeze
     end
 
-    def handled_events
+    def handled_messages
       [
         Events::EmployerCreated::V1,
         Events::EmployerInviteAccepted::V1,

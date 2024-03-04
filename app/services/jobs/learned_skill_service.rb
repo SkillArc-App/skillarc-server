@@ -5,7 +5,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::LearnedSkillCreated::V1,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: Events::LearnedSkillCreated::Data::V1.new(
           id: learned_skill.id,
           job_id: job.id,
@@ -21,7 +21,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::LearnedSkillDestroyed::V1,
-        aggregate_id: learned_skill.job_id,
+        job_id: learned_skill.job_id,
         data: Events::LearnedSkillDestroyed::Data::V1.new(
           id: learned_skill.id
         )

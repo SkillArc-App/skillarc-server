@@ -7,7 +7,8 @@ RSpec.describe Messages::Schema do
         data:,
         metadata:,
         message_type:,
-        version:
+        version:,
+        aggregate:
       )
     end
 
@@ -15,6 +16,7 @@ RSpec.describe Messages::Schema do
     let(:metadata) { Hash }
     let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
+    let(:aggregate) { Aggregates::User }
 
     it "returns the schema and registers it" do
       expect(MessageService)
@@ -27,6 +29,7 @@ RSpec.describe Messages::Schema do
       expect(subject.metadata).to eq(metadata)
       expect(subject.message_type).to eq(message_type)
       expect(subject.version).to eq(version)
+      expect(subject.aggregate).to eq(aggregate)
     end
   end
 end

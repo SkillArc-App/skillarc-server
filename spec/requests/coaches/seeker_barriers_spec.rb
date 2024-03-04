@@ -23,7 +23,7 @@ RSpec.describe "Coaches::SeekerBarriersController", type: :request do
         expect_any_instance_of(Coaches::SeekerService)
           .to receive(:update_barriers)
           .with(
-            id: seeker_id,
+            seeker_id:,
             barriers: params[:barriers]
           )
           .and_call_original

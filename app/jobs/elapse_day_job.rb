@@ -3,7 +3,7 @@ class ElapseDayJob < ApplicationJob
 
   def perform(now = Time.zone.now)
     EventService.create!(
-      aggregate_id: "day",
+      day: "day",
       event_schema: Events::DayElapsed::V1,
       data: Events::DayElapsed::Data::V1.new(
         date: now.to_date,

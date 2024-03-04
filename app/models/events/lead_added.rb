@@ -18,6 +18,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Coach,
       message_type: Messages::Types::Coaches::LEAD_ADDED,
       version: 1
     )

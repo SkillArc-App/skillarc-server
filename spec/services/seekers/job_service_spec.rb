@@ -13,7 +13,7 @@ RSpec.describe Seekers::JobService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::ElevatorPitchCreated::V1,
-        aggregate_id: seeker.id,
+        seeker_id: seeker.id,
         data: Events::ElevatorPitchCreated::Data::V1.new(
           job_id: job.id,
           pitch: elevator_pitch

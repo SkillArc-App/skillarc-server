@@ -7,7 +7,7 @@ RSpec.describe Message do
         expect do
           described_class.new(
             id: SecureRandom.uuid,
-            aggregate_id: SecureRandom.uuid,
+            aggregate: Aggregates::Job.new(job_id: SecureRandom.uuid),
             trace_id: SecureRandom.uuid,
             schema: Events::ApplicantStatusUpdated::V1,
             metadata: {},
@@ -23,7 +23,7 @@ RSpec.describe Message do
           described_class.new(
             id: SecureRandom.uuid,
             trace_id: SecureRandom.uuid,
-            aggregate_id: 10,
+            aggregate: 10,
             schema: Events::ApplicantStatusUpdated::V1,
             metadata: {},
             data: {},

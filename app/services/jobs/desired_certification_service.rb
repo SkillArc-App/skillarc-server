@@ -5,7 +5,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::DesiredCertificationCreated::V1,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: Events::DesiredCertificationCreated::Data::V1.new(
           id: desired_certification.id,
           job_id: job.id,
@@ -21,7 +21,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::DesiredCertificationDestroyed::V1,
-        aggregate_id: desired_certification.job_id,
+        job_id: desired_certification.job_id,
         data: Events::DesiredCertificationDestroyed::Data::V1.new(
           id: desired_certification.id
         )

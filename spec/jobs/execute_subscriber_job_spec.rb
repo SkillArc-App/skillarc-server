@@ -4,7 +4,7 @@ RSpec.describe ExecuteSubscriberJob do
   it "calls PUBSUB execute_event" do
     message = Message.new(
       id: SecureRandom.uuid,
-      aggregate_id: "123",
+      aggregate: Aggregates::User.new(user_id: "123"),
       trace_id: SecureRandom.uuid,
       schema: Events::UserCreated::V1,
       data: Events::UserCreated::Data::V1.new,

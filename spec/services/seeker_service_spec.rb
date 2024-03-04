@@ -196,7 +196,7 @@ RSpec.describe SeekerService do
           .to receive(:create!)
           .with(
             event_schema: Events::SeekerViewed::V1,
-            aggregate_id: user_id,
+            user_id:,
             data: Events::SeekerViewed::Data::V1.new(
               seeker_id: seeker.id
             )

@@ -25,7 +25,7 @@ RSpec.describe Jobs::LearnedSkillService do
 
       expect(EventService).to receive(:create!).with(
         event_schema: Events::LearnedSkillCreated::V1,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: be_a(Events::LearnedSkillCreated::Data::V1)
       ).and_call_original
 
@@ -45,7 +45,7 @@ RSpec.describe Jobs::LearnedSkillService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::LearnedSkillDestroyed::V1,
-        aggregate_id: learned_skill.job_id,
+        job_id: learned_skill.job_id,
         data: Events::LearnedSkillDestroyed::Data::V1.new(
           id: learned_skill.id
         )

@@ -27,7 +27,7 @@ RSpec.describe EmployerService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EmployerCreated::V1,
-        aggregate_id: be_present,
+        employer_id: be_present,
         data: Events::EmployerCreated::Data::V1.new(
           name: "Blocktrain",
           location: "Columbus, OH",
@@ -78,7 +78,7 @@ RSpec.describe EmployerService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::EmployerUpdated::V1,
-        aggregate_id: employer.id,
+        employer_id: employer.id,
         data: Events::EmployerUpdated::Data::V1.new(
           name: "Portiko",
           location: "Columbus, O-H-I-O",

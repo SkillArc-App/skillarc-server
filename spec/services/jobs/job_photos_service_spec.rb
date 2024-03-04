@@ -25,7 +25,7 @@ RSpec.describe Jobs::JobPhotosService do
 
       expect(EventService).to receive(:create!).with(
         event_schema: Events::JobPhotoCreated::V1,
-        aggregate_id: be_present,
+        job_id: be_present,
         data: be_a(Events::JobPhotoCreated::Data::V1)
       ).and_call_original
 
@@ -45,7 +45,7 @@ RSpec.describe Jobs::JobPhotosService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::JobPhotoDestroyed::V1,
-        aggregate_id: job_photo.job_id,
+        job_id: job_photo.job_id,
         data: Events::JobPhotoDestroyed::Data::V1.new(
           id: job_photo.id
         )

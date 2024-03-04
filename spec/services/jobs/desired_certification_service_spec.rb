@@ -20,7 +20,7 @@ RSpec.describe Jobs::DesiredCertificationService do
 
       expect(EventService).to receive(:create!).with(
         event_schema: Events::DesiredCertificationCreated::V1,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: be_a(Events::DesiredCertificationCreated::Data::V1)
       ).and_call_original
 
@@ -40,7 +40,7 @@ RSpec.describe Jobs::DesiredCertificationService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::DesiredCertificationDestroyed::V1,
-        aggregate_id: desired_certification.job_id,
+        job_id: desired_certification.job_id,
         data: Events::DesiredCertificationDestroyed::Data::V1.new(
           id: desired_certification.id
         )

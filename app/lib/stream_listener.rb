@@ -14,15 +14,15 @@ class StreamListener
     raise NoMethodError
   end
 
-  def all_handled_events
+  def all_handled_messages
     raise NoMethodError
   end
 
-  def handled_events
+  def handled_messages
     raise NoMethodError
   end
 
-  def handled_events_sync
+  def handled_messages_sync
     raise NoMethodError
   end
 

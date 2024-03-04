@@ -18,7 +18,7 @@ module Seekers
     def save
       EventService.create!(
         event_schema: Events::JobSaved::V1,
-        aggregate_id: current_user.id,
+        user_id: current_user.id,
         data: Messages::UntypedHashWrapper.build(
           job_id: job.id,
           employment_title: job.employment_title,
@@ -32,7 +32,7 @@ module Seekers
     def unsave
       EventService.create!(
         event_schema: Events::JobUnsaved::V1,
-        aggregate_id: current_user.id,
+        user_id: current_user.id,
         data: Messages::UntypedHashWrapper.build(
           job_id: job.id,
           employment_title: job.employment_title,

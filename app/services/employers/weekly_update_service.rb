@@ -1,6 +1,6 @@
 module Employers
-  class WeeklyUpdateService < EventConsumer
-    def handled_events
+  class WeeklyUpdateService < MessageConsumer
+    def handled_messages
       [Events::DayElapsed::V1].freeze
     end
 

@@ -89,7 +89,7 @@ RSpec.describe EmployerChats do
     it "enqueues an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::ChatMessageSent::V1,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: Events::ChatMessageSent::Data::V1.new(
           applicant_id: applicant.id,
           seeker_id: seeker.id,
@@ -120,7 +120,7 @@ RSpec.describe EmployerChats do
     it "enqueues an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::ChatCreated::V1,
-        aggregate_id: applicant.job.id,
+        job_id: applicant.job.id,
         data: Events::ChatCreated::Data::V1.new(
           applicant_id: applicant.id,
           seeker_id: applicant.seeker.id,

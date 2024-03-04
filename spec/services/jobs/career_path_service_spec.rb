@@ -32,7 +32,7 @@ RSpec.describe Jobs::CareerPathService do
 
       expect(EventService).to receive(:create!).with(
         event_schema: Events::CareerPathCreated::V1,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: be_a(Events::CareerPathCreated::Data::V1)
       ).and_call_original
 
@@ -79,7 +79,7 @@ RSpec.describe Jobs::CareerPathService do
 
       expect(EventService).to receive(:create!).with(
         event_schema: Events::CareerPathUpdated::V1,
-        aggregate_id: upper_career_path.job_id,
+        job_id: upper_career_path.job_id,
         data: be_a(Events::CareerPathUpdated::Data::V1)
       ).and_call_original
 
@@ -90,7 +90,7 @@ RSpec.describe Jobs::CareerPathService do
 
       expect(EventService).to receive(:create!).with(
         event_schema: Events::CareerPathUpdated::V1,
-        aggregate_id: career_path.job_id,
+        job_id: career_path.job_id,
         data: be_a(Events::CareerPathUpdated::Data::V1)
       ).and_call_original
 
@@ -132,7 +132,7 @@ RSpec.describe Jobs::CareerPathService do
 
         expect(EventService).to receive(:create!).with(
           event_schema: Events::CareerPathUpdated::V1,
-          aggregate_id: lower_career_path.job_id,
+          job_id: lower_career_path.job_id,
           data: be_a(Events::CareerPathUpdated::Data::V1)
         ).and_call_original
 
@@ -143,7 +143,7 @@ RSpec.describe Jobs::CareerPathService do
 
         expect(EventService).to receive(:create!).with(
           event_schema: Events::CareerPathUpdated::V1,
-          aggregate_id: career_path.job_id,
+          job_id: career_path.job_id,
           data: be_a(Events::CareerPathUpdated::Data::V1)
         ).and_call_original
 
@@ -167,29 +167,25 @@ RSpec.describe Jobs::CareerPathService do
     end
 
     it "publishes events" do
-      expect(Events::CareerPathDestroyed::Data::V1).to receive(:new).with(
-        id: career_path.id
+      expect(EventService).to receive(:create!).with(
+        event_schema: Events::CareerPathUpdated::V1,
+        job_id: higher_career_path.job_id,
+        data: Events::CareerPathUpdated::Data::V1.new(
+          id: higher_career_path.id,
+          job_id: higher_career_path.job_id,
+          title: higher_career_path.title,
+          lower_limit: higher_career_path.lower_limit,
+          upper_limit: higher_career_path.upper_limit,
+          order: higher_career_path.order - 1
+        )
       ).and_call_original
 
       expect(EventService).to receive(:create!).with(
         event_schema: Events::CareerPathDestroyed::V1,
-        aggregate_id: career_path.job_id,
-        data: be_a(Events::CareerPathDestroyed::Data::V1)
-      ).and_call_original
-
-      expect(Events::CareerPathUpdated::Data::V1).to receive(:new).with(
-        id: higher_career_path.id,
-        job_id: higher_career_path.job_id,
-        title: higher_career_path.title,
-        lower_limit: higher_career_path.lower_limit,
-        upper_limit: higher_career_path.upper_limit,
-        order: higher_career_path.order - 1
-      ).and_call_original
-
-      expect(EventService).to receive(:create!).with(
-        event_schema: Events::CareerPathUpdated::V1,
-        aggregate_id: higher_career_path.job_id,
-        data: be_a(Events::CareerPathUpdated::Data::V1)
+        job_id: career_path.job_id,
+        data: Events::CareerPathDestroyed::Data::V1.new(
+          id: career_path.id
+        )
       ).and_call_original
 
       subject

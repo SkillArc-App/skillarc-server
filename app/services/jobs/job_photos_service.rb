@@ -8,7 +8,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::JobPhotoCreated::V1,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: Events::JobPhotoCreated::Data::V1.new(
           id: job_photo.id,
           job_id: job.id,
@@ -24,7 +24,7 @@ module Jobs
 
       EventService.create!(
         event_schema: Events::JobPhotoDestroyed::V1,
-        aggregate_id: job_photo.job_id,
+        job_id: job_photo.job_id,
         data: Events::JobPhotoDestroyed::Data::V1.new(
           id: job_photo.id
         )

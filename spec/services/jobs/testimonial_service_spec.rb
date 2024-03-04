@@ -34,7 +34,7 @@ RSpec.describe Jobs::TestimonialService do
 
       expect(EventService).to receive(:create!).with(
         event_schema: Events::TestimonialCreated::V1,
-        aggregate_id: job.id,
+        job_id: job.id,
         data: be_a(Events::TestimonialCreated::Data::V1),
         occurred_at: be_present
       ).and_call_original
@@ -55,7 +55,7 @@ RSpec.describe Jobs::TestimonialService do
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
         event_schema: Events::TestimonialDestroyed::V1,
-        aggregate_id: testimonial.job_id,
+        job_id: testimonial.job_id,
         data: Events::TestimonialDestroyed::Data::V1.new(
           id: testimonial.id
         ),

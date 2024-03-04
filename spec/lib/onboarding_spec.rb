@@ -66,7 +66,7 @@ RSpec.describe Onboarding do
         expect(EventService)
           .to receive(:create!)
           .with(
-            aggregate_id: user.id,
+            user_id: user.id,
             event_schema: Events::SeekerCreated::V1,
             data: be_a(Events::SeekerCreated::Data::V1),
             occurred_at: be_present
@@ -86,7 +86,7 @@ RSpec.describe Onboarding do
         expect(EventService)
           .to receive(:create!)
           .with(
-            aggregate_id: user.id,
+            user_id: user.id,
             event_schema: Events::UserUpdated::V1,
             data: Events::UserUpdated::Data::V1.new(
               email: user.email,
@@ -144,7 +144,7 @@ RSpec.describe Onboarding do
         expect(EventService)
           .to receive(:create!)
           .with(
-            aggregate_id: user.id,
+            user_id: user.id,
             event_schema: Events::ExperienceCreated::V1,
             data: be_a(Events::ExperienceCreated::Data::V1),
             occurred_at: be_present
@@ -237,7 +237,7 @@ RSpec.describe Onboarding do
         expect(EventService)
           .to receive(:create!)
           .with(
-            aggregate_id: user.id,
+            user_id: user.id,
             event_schema: Events::EducationExperienceCreated::V1,
             data: be_a(Events::EducationExperienceCreated::Data::V1),
             occurred_at: be_present
@@ -299,7 +299,7 @@ RSpec.describe Onboarding do
         expect(EventService)
           .to receive(:create!)
           .with(
-            aggregate_id: user.id,
+            user_id: user.id,
             event_schema: Events::SeekerTrainingProviderCreated::V1,
             data: be_a(Messages::UntypedHashWrapper),
             occurred_at: be_present
@@ -399,7 +399,7 @@ RSpec.describe Onboarding do
         expect(EventService)
           .to receive(:create!)
           .with(
-            aggregate_id: user.id,
+            user_id: user.id,
             event_schema: Events::PersonalExperienceCreated::V1,
             data: be_a(Events::PersonalExperienceCreated::Data::V1),
             occurred_at: be_present
@@ -546,7 +546,7 @@ RSpec.describe Onboarding do
           expect(EventService)
             .to receive(:create!)
             .with(
-              aggregate_id: user.id,
+              user_id: user.id,
               event_schema: Events::OnboardingCompleted::V1,
               data: be_a(Messages::UntypedHashWrapper),
               occurred_at: be_present
@@ -655,7 +655,7 @@ RSpec.describe Onboarding do
         expect(EventService)
           .to receive(:create!)
           .with(
-            aggregate_id: user.id,
+            user_id: user.id,
             event_schema: Events::UserUpdated::V1,
             data: Events::UserUpdated::Data::V1.new(
               email: user.email,

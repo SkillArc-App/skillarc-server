@@ -18,6 +18,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Job,
       message_type: Messages::Types::Jobs::CAREER_PATH_CREATED,
       version: 1
     )

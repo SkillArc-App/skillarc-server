@@ -1,6 +1,6 @@
 module Contact
-  class SmtpService < EventConsumer
-    def handled_events
+  class SmtpService < MessageConsumer
+    def handled_messages
       [
         Commands::NotifyEmployerOfApplicant::V1,
         Commands::SendWeeklyEmployerUpdate::V1
@@ -31,7 +31,7 @@ module Contact
     def emit_smtp_sent_event(message)
       EventService.create!(
         event_schema: Events::SmtpSent::V1,
-        aggregate_id: message.data.recepent_email,
+        contact: message.data.recepent_email,
         trace_id: message.trace_id,
         data: Events::SmtpSent::Data::V1.new(
           email: message.data.recepent_email,

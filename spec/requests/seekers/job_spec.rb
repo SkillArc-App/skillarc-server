@@ -199,7 +199,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
           .to receive(:create!)
           .with(
             event_schema: Events::JobSaved::V1,
-            aggregate_id: user.id,
+            user_id: user.id,
             data: Messages::UntypedHashWrapper.new(
               job_id: job.id,
               employment_title: job.employment_title,
@@ -228,7 +228,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
           .to receive(:create!)
           .with(
             event_schema: Events::JobUnsaved::V1,
-            aggregate_id: user.id,
+            user_id: user.id,
             data: Messages::UntypedHashWrapper.new(
               job_id: job.id,
               employment_title: job.employment_title,

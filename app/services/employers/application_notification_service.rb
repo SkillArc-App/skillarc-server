@@ -1,6 +1,6 @@
 module Employers
-  class ApplicationNotificationService < EventConsumer
-    def handled_events
+  class ApplicationNotificationService < MessageConsumer
+    def handled_messages
       [
         Events::ApplicantStatusUpdated::V5
       ].freeze
@@ -30,7 +30,7 @@ module Employers
       job.owner_emails.each do |owner_email|
         CommandService.create!(
           command_schema: Commands::NotifyEmployerOfApplicant::V1,
-          aggregate_id: data.applicant_id,
+          applicant_id: data.applicant_id,
           trace_id: message.trace_id,
           data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
             employment_title: data.employment_title,

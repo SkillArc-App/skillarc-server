@@ -47,8 +47,10 @@ RSpec.describe Employers::EmployerService do
         :message,
         :job_created,
         aggregate_id: job_id,
-        data: Events::JobCreated::Data::V1.new(
+        version: 2,
+        data: Events::JobCreated::Data::V2.new(
           employer_id:,
+          employer_name: "employer_name",
           employment_title: "employment title",
           benefits_description: "benefits description",
           responsibilities_description: "responsibilities description",

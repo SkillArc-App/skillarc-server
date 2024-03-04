@@ -3,7 +3,9 @@
 # Table name: coaches_jobs
 #
 #  id               :uuid             not null, primary key
+#  employer_name    :string
 #  employment_title :string           not null
+#  hide_job         :boolean          default(FALSE), not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  job_id           :uuid             not null
@@ -15,5 +17,7 @@
 module Coaches
   class Job < ApplicationRecord
     self.table_name = "coaches_jobs"
+
+    scope :visible, -> { where(hide_job: false) }
   end
 end

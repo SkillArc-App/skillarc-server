@@ -12,7 +12,7 @@ module Employers
         Events::EmployerInviteAccepted::V1,
         Events::EmployerUpdated::V1,
         Events::SeekerCertified::V1,
-        Events::JobCreated::V1,
+        Events::JobCreated::V2,
         Events::JobOwnerAssigned::V1,
         Events::JobUpdated::V1
       ].freeze
@@ -30,7 +30,7 @@ module Employers
         handle_employer_updated(message)
       when Events::SeekerCertified::V1
         handle_seeker_certified(message)
-      when Events::JobCreated::V1
+      when Events::JobCreated::V2
         handle_job_created(message)
       when Events::JobOwnerAssigned::V1
         handle_job_owner_assigned(message)

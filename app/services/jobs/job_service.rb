@@ -7,10 +7,11 @@ module Jobs
       )
 
       EventService.create!(
-        event_schema: Events::JobCreated::V1,
+        event_schema: Events::JobCreated::V2,
         aggregate_id: job.id,
-        data: Events::JobCreated::Data::V1.new(
+        data: Events::JobCreated::Data::V2.new(
           employment_title: job.employment_title,
+          employer_name: job.employer.name,
           employer_id: job.employer_id,
           benefits_description: job.benefits_description,
           responsibilities_description: job.responsibilities_description,

@@ -41,7 +41,7 @@ recruiter_user = User.create!(
 )
 
 EventService.create!(
-  aggregate_id: recruiter_user.id,
+  user_id: recruiter_user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: recruiter_user.first_name,
@@ -700,7 +700,7 @@ trained_seeker_with_reference = Seeker.create!(
 )
 
 EventService.create!(
-  aggregate_id: trained_seeker_with_reference.user.id,
+  user_id: trained_seeker_with_reference.user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: trained_seeker_with_reference.user.first_name,
@@ -723,7 +723,7 @@ trained_seeker = Seeker.create!(
 )
 
 EventService.create!(
-  aggregate_id: trained_seeker.user.id,
+  user_id: trained_seeker.user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: trained_seeker.user.first_name,
@@ -746,7 +746,7 @@ seeker_with_profile = Seeker.create!(
 )
 
 EventService.create!(
-  aggregate_id: seeker_with_profile.user.id,
+  user_id: seeker_with_profile.user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: seeker_with_profile.user.first_name,
@@ -810,7 +810,7 @@ trainer = User.create!(
 )
 
 EventService.create!(
-  aggregate_id: trainer.id,
+  user_id: trainer.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: trainer.first_name,
@@ -837,7 +837,7 @@ trainer_with_reference = User.create!(
 )
 
 EventService.create!(
-  aggregate_id: trainer_with_reference.id,
+  user_id: trainer_with_reference.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: trainer_with_reference.first_name,
@@ -857,7 +857,7 @@ admin_user = User.create!(
 )
 
 EventService.create!(
-  aggregate_id: admin_user.id,
+  user_id: admin_user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: admin_user.first_name,
@@ -975,7 +975,7 @@ coach_user = User.create!(
 )
 
 EventService.create!(
-  aggregate_id: coach_user.id,
+  user_id: coach_user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: coach_user.first_name,

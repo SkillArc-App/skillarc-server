@@ -272,7 +272,7 @@ module Coaches
     def handle_coach_assigned(message)
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
-      csc.assigned_coach = message.data.coach_id
+      csc.assigned_coach = message.data.email
       csc.save!
     end
 

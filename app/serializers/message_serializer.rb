@@ -7,7 +7,7 @@ class MessageSerializer < ActiveJob::Serializers::ObjectSerializer
     super(
       "id" => message.id,
       "trace_id" => message.trace_id,
-      "aggregate_id" => message.aggregate_id,
+      "aggregate_id" => message.aggregate.id,
       "message_type" => message.schema.message_type,
       "data" => message.data.to_h,
       "metadata" => message.metadata.to_h,
@@ -22,7 +22,7 @@ class MessageSerializer < ActiveJob::Serializers::ObjectSerializer
     klass.new(
       id: hash["id"],
       trace_id: hash["trace_id"],
-      aggregate_id: hash["aggregate_id"],
+      aggregate: schema.aggregate.new(**{ schema.aggregate.id => hash["aggregate_id"] }),
       data: schema.data.from_hash(hash["data"].deep_symbolize_keys),
       metadata: schema.metadata.from_hash(hash["metadata"].deep_symbolize_keys),
       schema:,

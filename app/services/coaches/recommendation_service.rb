@@ -1,6 +1,6 @@
 module Coaches
-  class RecommendationService < EventConsumer
-    def handled_events
+  class RecommendationService < MessageConsumer
+    def handled_messages
       [
         Events::JobRecommended::V1
       ].freeze

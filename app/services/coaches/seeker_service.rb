@@ -1,5 +1,5 @@
 module Coaches
-  class SeekerService < EventConsumer # rubocop:disable Metrics/ClassLength
+  class SeekerService < MessageConsumer # rubocop:disable Metrics/ClassLength
     def handled_messages_sync
       [
         Events::BarrierUpdated::V1,
@@ -13,7 +13,7 @@ module Coaches
       ].freeze
     end
 
-    def handled_events
+    def handled_messages
       [
         Events::SkillLevelUpdated::V1,
         Events::ApplicantStatusUpdated::V5,

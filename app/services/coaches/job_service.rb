@@ -1,6 +1,6 @@
 module Coaches
-  class JobService < EventConsumer
-    def handled_events
+  class JobService < MessageConsumer
+    def handled_messages
       [
         Events::JobCreated::V2
       ].freeze

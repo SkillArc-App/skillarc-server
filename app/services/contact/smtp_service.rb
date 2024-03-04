@@ -1,6 +1,6 @@
 module Contact
-  class SmtpService < EventConsumer
-    def handled_events
+  class SmtpService < MessageConsumer
+    def handled_messages
       [
         Commands::NotifyEmployerOfApplicant::V1,
         Commands::SendWeeklyEmployerUpdate::V1

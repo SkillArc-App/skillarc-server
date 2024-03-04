@@ -1,7 +1,7 @@
 class DbStreamListener < StreamListener
-  delegate :all_handled_events, to: :consumer
-  delegate :handled_events, to: :consumer
-  delegate :handled_events_sync, to: :consumer
+  delegate :all_handled_messages, to: :consumer
+  delegate :handled_messages, to: :consumer
+  delegate :handled_messages_sync, to: :consumer
 
   attr_reader :listener_name
 

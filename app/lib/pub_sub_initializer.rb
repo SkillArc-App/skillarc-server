@@ -83,21 +83,21 @@ module PubSubInitializer
       DbStreamReactor.build(Employers::WeeklyUpdateService.new, "employers_weekly_update_service"),
       DbStreamAggregator.build(Seekers::SeekerService.new, "seekers")
     ].each do |listener|
-      listener.handled_events.each do |message_schema|
+      listener.handled_messages.each do |message_schema|
         PUBSUB.subscribe(
           message_schema:,
           subscriber: listener
         )
       end
 
-      listener.handled_events_sync.each do |message_schema|
+      listener.handled_messages_sync.each do |message_schema|
         PUBSUB_SYNC.subscribe(
           message_schema:,
           subscriber: listener
         )
       end
 
-      (all_schemas - listener.all_handled_events).each do |message_schema|
+      (all_schemas - listener.all_handled_messages).each do |message_schema|
         PUBSUB.subscribe(
           message_schema:,
           subscriber: listener

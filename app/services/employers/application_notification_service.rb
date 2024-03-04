@@ -1,6 +1,6 @@
 module Employers
-  class ApplicationNotificationService < EventConsumer
-    def handled_events
+  class ApplicationNotificationService < MessageConsumer
+    def handled_messages
       [
         Events::ApplicantStatusUpdated::V5
       ].freeze

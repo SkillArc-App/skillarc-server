@@ -1,10 +1,10 @@
 module Coaches
-  class BarrierService < EventConsumer
-    def handled_events_sync
+  class BarrierService < MessageConsumer
+    def handled_messages_sync
       [Events::BarrierAdded::V1].freeze
     end
 
-    def handled_events
+    def handled_messages
       [].freeze
     end
 

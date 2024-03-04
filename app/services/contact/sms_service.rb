@@ -1,6 +1,6 @@
 module Contact
-  class SmsService < EventConsumer
-    def handled_events
+  class SmsService < MessageConsumer
+    def handled_messages
       [
         Commands::SendSms::V1
       ]

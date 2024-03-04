@@ -1,10 +1,10 @@
 module Coaches
-  class CoachService < EventConsumer
-    def handled_events_sync
+  class CoachService < MessageConsumer
+    def handled_messages_sync
       [Events::RoleAdded::V1].freeze
     end
 
-    def handled_events
+    def handled_messages
       [].freeze
     end
 

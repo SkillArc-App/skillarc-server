@@ -110,6 +110,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 1
     )
@@ -117,6 +118,7 @@ module Events
     V2 = Messages::Schema.build(
       data: Data::V2,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 2
     )
@@ -124,6 +126,7 @@ module Events
     V3 = Messages::Schema.build(
       data: Data::V3,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 3
     )
@@ -131,6 +134,7 @@ module Events
     V4 = Messages::Schema.build(
       data: Data::V4,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 4
     )
@@ -138,6 +142,7 @@ module Events
     V5 = Messages::Schema.build(
       data: Data::V4,
       metadata: MetaData::V1,
+      aggregate: Aggregates::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 5
     )

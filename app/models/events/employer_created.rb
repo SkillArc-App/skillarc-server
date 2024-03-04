@@ -16,6 +16,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Employer,
       message_type: Messages::Types::Employers::EMPLOYER_CREATED,
       version: 1
     )

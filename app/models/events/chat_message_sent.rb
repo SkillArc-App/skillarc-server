@@ -19,6 +19,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Job,
       message_type: Messages::Types::CHAT_MESSAGE_SENT,
       version: 1
     )

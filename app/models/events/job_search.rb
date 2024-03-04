@@ -36,12 +36,14 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: MetaData::V1,
+      aggregate: Aggregates::User,
       message_type: Messages::Types::Seekers::JOB_SEARCH,
       version: 1
     )
     V2 = Messages::Schema.build(
       data: Data::V1,
       metadata: MetaData::V2,
+      aggregate: Aggregates::Search,
       message_type: Messages::Types::Seekers::JOB_SEARCH,
       version: 2
     )

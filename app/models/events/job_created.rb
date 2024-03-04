@@ -42,6 +42,7 @@ module Events
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Job,
       message_type: Messages::Types::Jobs::JOB_CREATED,
       version: 1
     )
@@ -49,6 +50,7 @@ module Events
     V2 = Messages::Schema.build(
       data: Data::V2,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Job,
       message_type: Messages::Types::Jobs::JOB_CREATED,
       version: 2
     )

@@ -21,6 +21,7 @@ module Commands
     V1 = Messages::Schema.build(
       data: Data::V1,
       metadata: Messages::Nothing,
+      aggregate: Aggregates::Applicant,
       message_type: Messages::Types::Contact::NOTIFY_EMPLOYER_OF_APPLICANT,
       version: 1
     )

@@ -3,9 +3,11 @@ class Message
 
   MESSAGE_UUID_NAMESPACE = "3e1e29c9-0fff-437c-92a7-531ca1b744b1".freeze
 
+  delegate :id, to: :aggregate, prefix: true
+
   include(ValueSemantics.for_attributes do
     id Uuid
-    aggregate_id String
+    aggregate Messages::Aggregate
     trace_id Uuid
     schema Messages::Schema
     data
@@ -23,7 +25,7 @@ class Message
   def ==(other)
     self.class == other.class &&
       schema == other.schema &&
-      aggregate_id == other.aggregate_id &&
+      aggregate == other.aggregate &&
       id == other.id &&
       occurred_at == other.occurred_at &&
       data == other.data &&

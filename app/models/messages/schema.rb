@@ -5,18 +5,19 @@ module Messages
       metadata
       version Integer
       message_type Either(*Messages::Types::ALL)
+      aggregate SubClass.Of(Aggregate)
     end)
 
-    def self.build(data:, metadata:, message_type:, version:)
-      message_schema = new(data:, metadata:, message_type:, version:)
+    def self.build(data:, metadata:, message_type:, version:, aggregate:)
+      message_schema = new(data:, metadata:, message_type:, version:, aggregate:)
       MessageService.register(message_schema:)
       message_schema
     end
 
     private
 
-    def initialize(data:, metadata:, message_type:, version:)
-      super(data:, metadata:, message_type:, version:)
+    def initialize(data:, metadata:, message_type:, version:, aggregate:)
+      super(data:, metadata:, message_type:, version:, aggregate:)
     end
   end
 end

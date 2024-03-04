@@ -611,6 +611,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           .with(
             barriers: [barrier.barrier_id]
           )
+          .twice
           .and_call_original
 
         expect(EventService).to receive(:create!).with(

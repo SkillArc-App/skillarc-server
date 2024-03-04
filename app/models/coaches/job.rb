@@ -3,6 +3,7 @@
 # Table name: coaches_jobs
 #
 #  id               :uuid             not null, primary key
+#  employer_name    :string
 #  employment_title :string           not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null

@@ -1,34 +1,55 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "Coaches::SeekerBarriersController", type: :request do
-  describe "PUT /update_barriers" do
-    subject { put seeker_update_barriers_path(seeker_id), params:, headers: }
-
-    let(:seeker_id) { coach_seeker_context.seeker_id }
-    let(:params) do
-      {
-        barriers: [
-          create(:barrier).barrier_id
-        ]
+  path '/coaches/contexts/{id}/update_barriers' do
+    put "update barriers" do
+      tags 'Coaches'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+      parameter name: :barriers_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          barriers: {
+            type: :array,
+            items: {
+              type: :string
+            }
+          }
+        },
+        required: %w[barriers]
       }
-    end
-    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      security [bearer_auth: []]
 
-    it_behaves_like "coach secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "coach authenticated"
+      it_behaves_like "coach spec unauthenticated openapi"
 
-      it "calls SeekerService.update_barriers" do
-        expect_any_instance_of(Coaches::SeekerService)
-          .to receive(:update_barriers)
-          .with(
-            seeker_id:,
-            barriers: params[:barriers]
-          )
-          .and_call_original
+      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:id) { coach_seeker_context.context_id }
+      let(:barriers_params) do
+        {
+          barriers:
+        }
+      end
+      let(:barriers) do
+        [create(:barrier).barrier_id]
+      end
 
-        subject
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
+
+        response '202', 'Update barriers' do
+          before do
+            expect_any_instance_of(Coaches::SeekerService)
+              .to receive(:update_barriers)
+              .with(context_id: id, barriers:)
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end

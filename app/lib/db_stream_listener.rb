@@ -17,18 +17,16 @@ class DbStreamListener < StreamListener
 
       last_handled_event = nil
 
-      events.each do |event|
-        begin
+      begin
+        events.each do |event|
           handle_message(event.message)
-        rescue StandardError => e
-          Sentry.capture_exception(e)
-          break
+          last_handled_event = event
         end
-
-        last_handled_event = event
+      rescue StandardError => e
+        Sentry.capture_exception(e)
+      ensure
+        update_bookmark(last_handled_event) if last_handled_event
       end
-
-      update_bookmark(last_handled_event)
     end
   end
 

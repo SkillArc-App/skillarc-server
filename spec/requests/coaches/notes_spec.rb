@@ -1,123 +1,164 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "Notes", type: :request do
-  describe "POST /:seeker_id/notes" do
-    subject { post seeker_notes_path(seeker_id), params:, headers: }
-
-    let(:seeker_id) { coach_seeker_context.seeker_id }
-    let(:params) do
-      {
-        note: "This is a note"
-      }
-    end
-    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-
-    it_behaves_like "coach secured endpoint"
-
-    context "authenticated" do
-      include_context "coach authenticated"
-
-      context "when a note id is included in the body" do
-        let(:params) do
-          {
-            note: "This is a note",
-            note_id: SecureRandom.uuid
+  path '/coaches/contexts/{id}/notes' do
+    post "create a note" do
+      tags 'Coaches'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+      parameter name: :note_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          note: {
+            type: :string
+          },
+          note_id: {
+            type: :string,
+            format: :uuid
           }
-        end
-
-        it "calls SeekerService.create_note" do
-          expect_any_instance_of(Coaches::SeekerService)
-            .to receive(:add_note)
-            .with(
-              seeker_id:,
-              coach:,
-              note: params[:note],
-              note_id: params[:note_id]
-            )
-            .and_call_original
-
-          subject
-        end
-      end
-
-      context "when a note id is not included in the body" do
-        it "calls SeekerService.create_note" do
-          expect_any_instance_of(Coaches::SeekerService)
-            .to receive(:add_note)
-            .with(
-              coach:,
-              seeker_id:,
-              note: params[:note],
-              note_id: be_a(String)
-            )
-            .and_call_original
-
-          subject
-        end
-      end
-    end
-  end
-
-  describe "PUT /:seeker_id/notes/:note_id" do
-    subject { put seeker_note_path(seeker_id, note_id), params:, headers: }
-
-    let(:seeker_id) { coach_seeker_context.seeker_id }
-    let(:note_id) { seeker_note.note_id }
-
-    let(:params) do
-      {
-        note: "This is a updated note"
+        },
+        required: %w[note]
       }
-    end
-    let(:seeker_note) { create(:coaches__seeker_note, coach_seeker_context:) }
-    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      security [bearer_auth: []]
 
-    it_behaves_like "coach secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "coach authenticated"
+      it_behaves_like "coach spec unauthenticated openapi"
 
-      it "calls SeekerService.modify_note" do
-        expect_any_instance_of(Coaches::SeekerService)
-          .to receive(:modify_note)
-          .with(
-            seeker_id:,
-            coach:,
-            note_id:,
-            note: params[:note]
-          )
-          .and_call_original
+      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:id) { coach_seeker_context.context_id }
+      let(:note_params) do
+        {
+          note:,
+          note_id:
+        }
+      end
+      let(:note_id) { SecureRandom.uuid }
+      let(:note) { "A note" }
 
-        subject
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
+
+        response '202', 'Creates a note' do
+          before do
+            expect_any_instance_of(Coaches::SeekerService)
+              .to receive(:add_note)
+              .with(coach:, context_id: id, note:, note_id:)
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end
 
-  describe "DELETE /:seeker_id/notes/:note_id" do
-    subject { delete seeker_note_path(seeker_id, note_id), headers: }
+  path '/coaches/contexts/{id}/notes/{note_id}' do
+    put "modify a note" do
+      tags 'Coaches'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+      parameter name: :note_id, in: :path, type: :string
+      parameter name: :note_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          note: {
+            type: :string
+          }
+        },
+        required: %w[context_id note]
+      }
+      security [bearer_auth: []]
 
-    let(:seeker_id) { coach_seeker_context.seeker_id }
-    let(:note_id) { seeker_note.note_id }
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    let(:seeker_note) { create(:coaches__seeker_note, coach_seeker_context:) }
-    let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      it_behaves_like "coach spec unauthenticated openapi"
 
-    it_behaves_like "coach secured endpoint"
+      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:id) { coach_seeker_context.context_id }
+      let(:note_params) do
+        {
+          note:
+        }
+      end
+      let(:note_id) { SecureRandom.uuid }
+      let(:note) { "A note" }
 
-    context "authenticated" do
-      include_context "coach authenticated"
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
 
-      it "calls SeekerService.delete_note" do
-        expect_any_instance_of(Coaches::SeekerService)
-          .to receive(:delete_note)
-          .with(
-            seeker_id:,
-            coach:,
-            note_id:
-          )
-          .and_call_original
+        before do
+          create(:coaches__seeker_note, note_id:)
+        end
 
-        subject
+        response '202', 'Creates a note' do
+          before do
+            expect_any_instance_of(Coaches::SeekerService)
+              .to receive(:modify_note)
+              .with(coach:, context_id: id, note:, note_id:)
+              .and_call_original
+          end
+
+          run_test!
+        end
+      end
+    end
+
+    delete "remove a note" do
+      tags 'Coaches'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+      parameter name: :note_id, in: :path, type: :string
+      parameter name: :note_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          note: {
+            type: :string
+          }
+        },
+        required: %w[context_id note]
+      }
+      security [bearer_auth: []]
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      it_behaves_like "coach spec unauthenticated openapi"
+
+      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:id) { coach_seeker_context.context_id }
+      let(:note_params) do
+        {
+          note:
+        }
+      end
+      let(:note_id) { SecureRandom.uuid }
+      let(:note) { "A note" }
+
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
+
+        before do
+          create(:coaches__seeker_note, note_id:)
+        end
+
+        response '202', 'Creates a note' do
+          before do
+            expect_any_instance_of(Coaches::SeekerService)
+              .to receive(:delete_note)
+              .with(
+                context_id: id,
+                coach:,
+                note_id:
+              )
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end

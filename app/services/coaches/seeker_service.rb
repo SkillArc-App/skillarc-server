@@ -112,7 +112,7 @@ module Coaches
     end
 
     def find_context(id)
-      csc = CoachSeekerContext.with_everything.find_by!(seeker_id: id)
+      csc = CoachSeekerContext.find_by!(context_id: id)
 
       serialize_coach_seeker_context(csc)
     end
@@ -133,10 +133,10 @@ module Coaches
       )
     end
 
-    def add_note(seeker_id:, coach:, note:, note_id:, now: Time.zone.now)
+    def add_note(context_id:, coach:, note:, note_id:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::NoteAdded::V1,
-        seeker_id:,
+        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
         data: Events::NoteAdded::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -147,10 +147,10 @@ module Coaches
       )
     end
 
-    def delete_note(seeker_id:, coach:, note_id:, now: Time.zone.now)
+    def delete_note(context_id:, coach:, note_id:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::NoteDeleted::V1,
-        seeker_id:,
+        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
         data: Events::NoteDeleted::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -160,10 +160,10 @@ module Coaches
       )
     end
 
-    def modify_note(seeker_id:, coach:, note_id:, note:, now: Time.zone.now)
+    def modify_note(context_id:, coach:, note_id:, note:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::NoteModified::V1,
-        seeker_id:,
+        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
         data: Events::NoteModified::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -174,12 +174,12 @@ module Coaches
       )
     end
 
-    def certify(seeker_id:, coach:, now: Time.zone.now)
+    def certify(context_id:, coach:, now: Time.zone.now)
       user = User.find(coach.user_id)
 
       EventService.create!(
         event_schema: Events::SeekerCertified::V1,
-        seeker_id:,
+        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
         data: Events::SeekerCertified::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -190,10 +190,10 @@ module Coaches
       )
     end
 
-    def recommend_job(seeker_id:, job_id:, coach:, now: Time.zone.now)
+    def recommend_job(context_id:, job_id:, coach:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::JobRecommended::V1,
-        seeker_id:,
+        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
         data: Events::JobRecommended::Data::V1.new(
           coach_id: coach.coach_id,
           job_id:
@@ -202,10 +202,10 @@ module Coaches
       )
     end
 
-    def update_barriers(seeker_id:, barriers:, now: Time.zone.now)
+    def update_barriers(context_id:, barriers:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::BarrierUpdated::V1,
-        seeker_id:,
+        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
         data: Events::BarrierUpdated::Data::V1.new(
           barriers:
         ),
@@ -213,10 +213,10 @@ module Coaches
       )
     end
 
-    def assign_coach(seeker_id, coach_id, coach_email, now: Time.zone.now)
+    def assign_coach(context_id:, coach_id:, coach_email:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::CoachAssigned::V1,
-        seeker_id:,
+        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
         data: Events::CoachAssigned::Data::V1.new(
           coach_id:,
           email: coach_email
@@ -225,10 +225,10 @@ module Coaches
       )
     end
 
-    def update_skill_level(seeker_id, skill_level, now: Time.zone.now)
+    def update_skill_level(context_id:, skill_level:, now: Time.zone.now)
       EventService.create!(
         event_schema: Events::SkillLevelUpdated::V1,
-        seeker_id:,
+        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
         data: Events::SkillLevelUpdated::Data::V1.new(
           skill_level:
         ),
@@ -272,7 +272,7 @@ module Coaches
     def handle_coach_assigned(message)
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
-      csc.assigned_coach = message.data.coach_id
+      csc.assigned_coach = message.data.email
       csc.save!
     end
 

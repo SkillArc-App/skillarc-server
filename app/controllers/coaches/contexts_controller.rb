@@ -1,5 +1,5 @@
 module Coaches
-  class SeekersController < ApplicationController
+  class ContextsController < ApplicationController
     include Secured
     include CoachAuth
 
@@ -19,9 +19,9 @@ module Coaches
       coach = Coach.find_by!(coach_id: params[:coach_id])
 
       SeekerService.new.assign_coach(
-        params[:seeker_id],
-        coach.coach_id,
-        coach.email
+        context_id: params[:context_id],
+        coach_id: coach.coach_id,
+        coach_email: coach.email
       )
 
       head :accepted
@@ -29,7 +29,7 @@ module Coaches
 
     def recommend_job
       SeekerService.new.recommend_job(
-        seeker_id: params[:seeker_id],
+        context_id: params[:context_id],
         job_id: params[:job_id],
         coach:
       )
@@ -38,15 +38,15 @@ module Coaches
     end
 
     def certify
-      SeekerService.new.certify(seeker_id: params[:seeker_id], coach:)
+      SeekerService.new.certify(context_id: params[:context_id], coach:)
 
       head :accepted
     end
 
     def update_skill_level
       SeekerService.new.update_skill_level(
-        params[:seeker_id],
-        params[:level]
+        context_id: params[:context_id],
+        skill_level: params[:level]
       )
 
       head :accepted

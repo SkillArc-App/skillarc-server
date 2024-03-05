@@ -203,7 +203,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           skill_level: 'advanced',
           last_active_on: applicant_status_updated3.occurred_at,
           last_contacted: note_with_id_added1.occurred_at,
-          assigned_coach: coach_id,
+          assigned_coach: "coach@blocktrainapp.com",
           certified_by: coach.email,
           barriers: [{
             id: barrier2.barrier_id,
@@ -285,9 +285,9 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".find_context" do
-      subject { consumer.find_context(seeker_id) }
+      subject { consumer.find_context(lead1.lead_id) }
 
-      it "returns the profile" do
+      it "returns the seeker" do
         expected_profile = {
           id: lead1.lead_id,
           seeker_id:,
@@ -298,7 +298,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           skill_level: 'advanced',
           last_active_on: applicant_status_updated3.occurred_at,
           last_contacted: note_with_id_added1.occurred_at,
-          assigned_coach: coach_id,
+          assigned_coach: "coach@blocktrainapp.com",
           certified_by: coach.email,
           barriers: [{
             id: barrier2.barrier_id,
@@ -483,11 +483,12 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".add_note" do
-      subject { consumer.add_note(seeker_id:, coach:, note: "This is a new note", note_id: note_id1, now:) }
+      subject { consumer.add_note(context_id:, coach:, note: "This is a new note", note_id: note_id1, now:) }
 
       let(:coach) { create(:coaches__coach) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:context_id) { user_id }
 
       it "creates an event" do
         expect(EventService).to receive(:create!).with(
@@ -507,11 +508,12 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".delete_note" do
-      subject { consumer.delete_note(coach:, seeker_id:, note_id: note.note_id, now:) }
+      subject { consumer.delete_note(coach:, context_id:, note_id: note.note_id, now:) }
 
       let(:note) { create(:coaches__seeker_note, note_id: note_id1) }
       let(:coach) { create(:coaches__coach) }
       let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:context_id) { user_id }
 
       it "creates an event" do
         expect(EventService).to receive(:create!).with(
@@ -530,11 +532,11 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".modify_note" do
-      subject { consumer.modify_note(seeker_id:, coach:, note_id: note_id1, note: updated_note, now:) }
+      subject { consumer.modify_note(context_id:, coach:, note_id: note_id1, note: updated_note, now:) }
 
       let(:coach) { create(:coaches__coach) }
-
       let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:context_id) { user_id }
 
       it "creates an event" do
         expect(EventService).to receive(:create!).with(
@@ -554,11 +556,12 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".recommend_job" do
-      subject { consumer.recommend_job(seeker_id:, job_id:, coach:, now:) }
+      subject { consumer.recommend_job(context_id:, job_id:, coach:, now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
       let(:coach) { create(:coaches__coach) }
       let(:job_id) { create(:coaches__job).job_id }
+      let(:context_id) { user_id }
 
       it "creates an event" do
         expect(EventService).to receive(:create!).with(
@@ -576,11 +579,12 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".certify" do
-      subject { consumer.certify(seeker_id:, coach:, now:) }
+      subject { consumer.certify(context_id:, coach:, now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
       let(:coach) { create(:coaches__coach, user_id: user.id) }
       let(:user) { create(:user) }
+      let(:context_id) { user_id }
 
       it "creates an event" do
         expect(EventService).to receive(:create!).with(
@@ -600,10 +604,11 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".update_barriers" do
-      subject { consumer.update_barriers(seeker_id:, barriers: [barrier.barrier_id], now:) }
+      subject { consumer.update_barriers(context_id:, barriers: [barrier.barrier_id], now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
       let(:barrier) { create(:barrier) }
+      let(:context_id) { user_id }
 
       it "creates an event" do
         expect(Events::BarrierUpdated::Data::V1)
@@ -626,10 +631,11 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".assign_coach" do
-      subject { consumer.assign_coach(seeker_id, coach_id, "coach@blocktrainapp.com", now:) }
+      subject { consumer.assign_coach(context_id:, coach_id:, coach_email: "coach@blocktrainapp.com", now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
       let(:coach_id) { SecureRandom.uuid }
+      let(:context_id) { user_id }
 
       it "creates an event" do
         expect(EventService).to receive(:create!).with(
@@ -647,9 +653,10 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
     end
 
     describe ".update_skill_level" do
-      subject { consumer.update_skill_level(seeker_id, "advanced", now:) }
+      subject { consumer.update_skill_level(context_id:, skill_level: "advanced", now:) }
 
       let(:now) { Time.zone.local(2020, 1, 1) }
+      let(:context_id) { user_id }
 
       it "creates an event" do
         expect(EventService).to receive(:create!).with(

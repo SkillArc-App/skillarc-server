@@ -4,9 +4,9 @@ info:
   title: API V1
   version: v1
 paths:
-  "/coaches/seekers":
+  "/coaches/contexts":
     get:
-      summary: Retrieve all seekers
+      summary: Retrieve all contexts
       tags:
       - Coaches
       security:
@@ -32,9 +32,9 @@ paths:
                 type: array
                 items:
                   "$ref": "#/components/schemas/coach_seeker"
-  "/coaches/seekers/{id}":
+  "/coaches/contexts/{id}":
     get:
-      summary: Retrieve a seekers
+      summary: Retrieve a context
       tags:
       - Coaches
       parameters:
@@ -65,7 +65,7 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/coach_seeker"
-  "/coaches/seekers/{id}/skill-levels":
+  "/coaches/contexts/{id}/skill-levels":
     post:
       summary: Update a skill level
       tags:
@@ -102,7 +102,7 @@ paths:
                   type: string
               required:
               - level
-  "/coaches/seekers/{id}/assign_coach":
+  "/coaches/contexts/{id}/assign_coach":
     post:
       summary: Update a skill level
       tags:
@@ -142,7 +142,7 @@ paths:
                   format: uuid
               required:
               - coachId
-  "/coaches/seekers/{id}/recommend_job":
+  "/coaches/contexts/{id}/recommend_job":
     post:
       summary: Update a skill level
       tags:
@@ -180,7 +180,7 @@ paths:
                   format: uuid
               required:
               - jobId
-  "/coaches/seekers/{id}/certify":
+  "/coaches/contexts/{id}/certify":
     post:
       summary: Update a skill level
       tags:
@@ -207,6 +207,170 @@ paths:
           description: unauthenticated
         '202':
           description: retrieve all seekers
+  "/coaches/contexts/{id}/notes":
+    post:
+      summary: create a note
+      tags:
+      - Coaches
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Creates a note
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+                note_id:
+                  type: string
+                  format: uuid
+              required:
+              - note
+  "/coaches/contexts/{id}/notes/{note_id}":
+    put:
+      summary: modify a note
+      tags:
+      - Coaches
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Creates a note
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+              required:
+              - context_id
+              - note
+    delete:
+      summary: remove a note
+      tags:
+      - Coaches
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: note_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Creates a note
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+              required:
+              - context_id
+              - note
+  "/coaches/contexts/{id}/update_barriers":
+    put:
+      summary: update barriers
+      tags:
+      - Coaches
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Update barriers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                barriers:
+                  type: array
+                  items:
+                    type: string
+              required:
+              - barriers
   "/employers/applicants/{id}":
     put:
       summary: Update an applicants status

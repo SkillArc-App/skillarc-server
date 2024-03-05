@@ -43,7 +43,7 @@ module Employers
         employer.recruiters.each do |recruiter|
           CommandService.create!(
             command_schema: Commands::SendWeeklyEmployerUpdate::V1,
-            aggregate_id: employer.id,
+            employer_id: employer.id,
             trace_id: SecureRandom.uuid,
             data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
               employer_name: employer.name,

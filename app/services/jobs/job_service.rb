@@ -7,9 +7,10 @@ module Jobs
       )
 
       EventService.create!(
-        event_schema: Events::JobCreated::V2,
+        event_schema: Events::JobCreated::V3,
         job_id: job.id,
-        data: Events::JobCreated::Data::V2.new(
+        data: Events::JobCreated::Data::V3.new(
+          category: job.category,
           employment_title: job.employment_title,
           employer_name: job.employer.name,
           employer_id: job.employer_id,
@@ -33,9 +34,10 @@ module Jobs
       job.update!(**params)
 
       EventService.create!(
-        event_schema: Events::JobUpdated::V1,
+        event_schema: Events::JobUpdated::V2,
         job_id: job.id,
-        data: Events::JobUpdated::Data::V1.new(
+        data: Events::JobUpdated::Data::V2.new(
+          category: job.category,
           employment_title: job.employment_title,
           benefits_description: job.benefits_description,
           responsibilities_description: job.responsibilities_description,

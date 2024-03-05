@@ -10,7 +10,7 @@ module Coaches
       Job.delete_all
     end
 
-    on_message Events::JobCreated::V2 do |message|
+    on_message Events::JobCreated::V3 do |message|
       Job.create!(
         job_id: message.aggregate_id,
         employment_title: message.data[:employment_title],

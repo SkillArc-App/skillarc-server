@@ -100,7 +100,8 @@ Rails.application.routes.draw do
     end
   end
 
-  scope module: 'admin', path: 'admin' do
+  namespace :admin do
+    resources :jobs
     resources :users
     resources :application_analytics
   end

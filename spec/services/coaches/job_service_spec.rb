@@ -6,8 +6,9 @@ RSpec.describe Coaches::JobService do
       :message,
       :job_created,
       aggregate_id: job_id,
-      version: 2,
-      data: Events::JobCreated::Data::V2.new(
+      version: 3,
+      data: Events::JobCreated::Data::V3.new(
+        category: Job::Categories::MARKETPLACE,
         employment_title: "Laborer",
         employer_name: "Employer",
         employer_id:,
@@ -28,8 +29,9 @@ RSpec.describe Coaches::JobService do
       :message,
       :job_created,
       aggregate_id: other_job_id,
-      version: 2,
-      data: Events::JobCreated::Data::V2.new(
+      version: 3,
+      data: Events::JobCreated::Data::V3.new(
+        category: Job::Categories::MARKETPLACE,
         employment_title: "Other Laborer",
         employer_name: "Employer",
         employer_id:,

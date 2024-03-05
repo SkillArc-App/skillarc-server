@@ -4,6 +4,7 @@
 #
 #  id                           :text             not null, primary key
 #  benefits_description         :text             not null
+#  category                     :string           default("marketplace")
 #  employment_title             :text             not null
 #  employment_type              :enum             not null
 #  hide_job                     :boolean          default(FALSE), not null
@@ -22,6 +23,13 @@
 #  Job_employer_id_fkey  (employer_id => employers.id) ON DELETE => restrict ON UPDATE => cascade
 #
 class Job < ApplicationRecord
+  module Categories
+    ALL = [
+      MARKETPLACE = 'marketplace'.freeze,
+      STAFFING = 'staffing'.freeze
+    ].freeze
+  end
+
   module EmploymentTypes
     ALL = [
       FULLTIME = 'FULLTIME'.freeze,
@@ -52,6 +60,7 @@ class Job < ApplicationRecord
 
   scope :shown, -> { where(hide_job: false) }
 
+  validates :category, presence: { in: Categories::ALL }
   validates :employment_type, presence: { in: EmploymentTypes::ALL }
   validate :industry_values_must_be_in_industries_all
 

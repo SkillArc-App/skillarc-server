@@ -1,9 +1,7 @@
 class JobsController < ApplicationController
   include Secured
-  include Admin
 
-  before_action :authorize, only: %i[apply create elevator_pitch update index]
-  before_action :admin_authorize, only: %i[index create update]
+  before_action :authorize, only: %i[apply elevator_pitch]
 
   def apply
     job = Job.find(params[:job_id])
@@ -25,22 +23,6 @@ class JobsController < ApplicationController
     head :accepted
   end
 
-  def index
-    jobs = Job.includes(
-      :applicants,
-      :career_paths,
-      :employer,
-      :job_photos,
-      :testimonials,
-      job_tags: :tag,
-      desired_skills: :master_skill,
-      learned_skills: :master_skill,
-      desired_certifications: :master_certification
-    ).all
-
-    render json: jobs.map { |j| serialize_job(j) }
-  end
-
   def show
     job = Job.includes(
       :applicants,
@@ -55,51 +37,6 @@ class JobsController < ApplicationController
     ).find(params[:id])
 
     render json: serialize_job(job)
-  end
-
-  def create
-    job = Jobs::JobService.new.create(
-      **params.require(:job).permit(
-        :employment_title,
-        :employer_id,
-        :benefits_description,
-        :responsibilities_description,
-        :employment_title,
-        :location,
-        :employment_type,
-        :hide_job,
-        :schedule,
-        :work_days,
-        :requirements_description,
-        industry: []
-      ).to_h.symbolize_keys
-    )
-
-    render json: serialize_job(job)
-  end
-
-  def update
-    job = Job.find(params[:id])
-
-    render json: serialize_job(
-      Jobs::JobService.new.update(
-        job,
-        **params.require(:job).permit(
-          :employment_title,
-          :employer_id,
-          :benefits_description,
-          :responsibilities_description,
-          :employment_title,
-          :location,
-          :employment_type,
-          :hide_job,
-          :schedule,
-          :work_day,
-          :requirements_description,
-          industry: []
-        ).to_h.symbolize_keys
-      )
-    )
   end
 
   private

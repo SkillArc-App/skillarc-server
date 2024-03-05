@@ -56,7 +56,7 @@ RSpec.describe Employers::WeeklyUpdateService do
           .to receive(:create!)
           .with(
             command_schema: Commands::SendWeeklyEmployerUpdate::V1,
-            aggregate_id: employer.id,
+            employer_id: employer.id,
             trace_id: be_a(String),
             data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
               employer_name: employer.name,
@@ -64,13 +64,13 @@ RSpec.describe Employers::WeeklyUpdateService do
               new_applicants:,
               pending_applicants:
             )
-          )
+          ).and_call_original
 
         expect(CommandService)
           .to receive(:create!)
           .with(
             command_schema: Commands::SendWeeklyEmployerUpdate::V1,
-            aggregate_id: employer.id,
+            employer_id: employer.id,
             trace_id: be_a(String),
             data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
               employer_name: employer.name,
@@ -78,7 +78,7 @@ RSpec.describe Employers::WeeklyUpdateService do
               new_applicants:,
               pending_applicants:
             )
-          )
+          ).and_call_original
 
         subject
       end

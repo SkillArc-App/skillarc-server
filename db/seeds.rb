@@ -852,7 +852,7 @@ admin_user = User.create!(
   id: SecureRandom.uuid,
   first_name: 'Jake',
   last_name: 'Not-Onboard',
-  email: 'admind@blocktrainapp.com',
+  email: 'admin@blocktrainapp.com',
   sub: 'jakesub'
 )
 

@@ -13,6 +13,7 @@ RSpec.describe "Admin::Jobs", type: :request do
     let(:params) do
       {
         job: {
+          category: Job::Categories::STAFFING,
           employment_title: "Laborer",
           employer_id: employer.id,
           location: "Columbus, OH",
@@ -35,6 +36,7 @@ RSpec.describe "Admin::Jobs", type: :request do
 
       it "calls the job service" do
         expect_any_instance_of(Jobs::JobService).to receive(:create).with(
+          category: Job::Categories::STAFFING,
           employment_title: "Laborer",
           employer_id: employer.id,
           location: "Columbus, OH",

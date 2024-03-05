@@ -72,7 +72,7 @@ module Employers
       )
     end
 
-    on_message Events::JobCreated::V2 do |message|
+    on_message Events::JobCreated::V3 do |message|
       employer = Employer.find_by!(employer_id: message.data.employer_id)
 
       Job.create!(

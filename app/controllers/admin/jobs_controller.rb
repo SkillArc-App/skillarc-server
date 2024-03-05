@@ -19,6 +19,7 @@ module Admin
     def create
       job = Jobs::JobService.new.create(
         **params.require(:job).permit(
+          :category,
           :employment_title,
           :employer_id,
           :benefits_description,
@@ -44,6 +45,7 @@ module Admin
         Jobs::JobService.new.update(
           job,
           **params.require(:job).permit(
+            :category,
             :employment_title,
             :employer_id,
             :benefits_description,

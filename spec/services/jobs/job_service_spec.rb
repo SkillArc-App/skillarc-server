@@ -6,6 +6,7 @@ RSpec.describe Jobs::JobService do
 
     let(:params) do
       {
+        category:,
         employment_title:,
         employer_id:,
         benefits_description:,
@@ -19,6 +20,7 @@ RSpec.describe Jobs::JobService do
         industry:
       }
     end
+    let(:category) { Job::Categories::MARKETPLACE }
     let(:employment_title) { "Laborer" }
     let(:employer) { create(:employer) }
     let(:employer_id) { employer.id }
@@ -55,9 +57,10 @@ RSpec.describe Jobs::JobService do
 
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
-        event_schema: Events::JobCreated::V2,
+        event_schema: Events::JobCreated::V3,
         job_id: be_present,
-        data: Events::JobCreated::Data::V2.new(
+        data: Events::JobCreated::Data::V3.new(
+          category:,
           employment_title:,
           employer_name:,
           employer_id:,
@@ -84,6 +87,7 @@ RSpec.describe Jobs::JobService do
     let(:job) { create(:job) }
     let(:params) do
       {
+        category:,
         employment_title:,
         benefits_description:,
         responsibilities_description:,
@@ -96,6 +100,7 @@ RSpec.describe Jobs::JobService do
         industry:
       }
     end
+    let(:category) { Job::Categories::STAFFING }
     let(:employment_title) { "NEW Laborer" }
     let(:benefits_description) { "NEW Benefits" }
     let(:responsibilities_description) { "NEW Responsibilities" }
@@ -113,6 +118,7 @@ RSpec.describe Jobs::JobService do
 
       job.reload
 
+      expect(job.category).to eq(category)
       expect(job.employment_title).to eq(employment_title)
       expect(job.benefits_description).to eq(benefits_description)
       expect(job.responsibilities_description).to eq(responsibilities_description)
@@ -128,9 +134,10 @@ RSpec.describe Jobs::JobService do
 
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
-        event_schema: Events::JobUpdated::V1,
+        event_schema: Events::JobUpdated::V2,
         job_id: job.id,
-        data: Events::JobUpdated::Data::V1.new(
+        data: Events::JobUpdated::Data::V2.new(
+          category:,
           employment_title:,
           benefits_description:,
           responsibilities_description:,

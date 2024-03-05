@@ -1,22 +1,5 @@
 module Coaches
   class JobService < MessageConsumer
-    def handled_messages
-      [
-        Events::JobCreated::V2
-      ].freeze
-    end
-
-    def call(message:)
-      handle_message(message)
-    end
-
-    def handle_message(message, *_params)
-      case message.schema
-      when Events::JobCreated::V2
-        handle_job_created(message)
-      end
-    end
-
     def all
       Job.visible.map do |job|
         serialize_job(job)
@@ -27,9 +10,7 @@ module Coaches
       Job.delete_all
     end
 
-    private
-
-    def handle_job_created(message)
+    on_message Events::JobCreated::V2 do |message|
       Job.create!(
         job_id: message.aggregate_id,
         employment_title: message.data[:employment_title],
@@ -37,6 +18,8 @@ module Coaches
         hide_job: message.data[:hide_job]
       )
     end
+
+    private
 
     def serialize_job(job)
       {

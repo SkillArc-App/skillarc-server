@@ -1,96 +1,5 @@
 module Coaches
   class SeekerService < MessageConsumer # rubocop:disable Metrics/ClassLength
-    def handled_messages_sync
-      [
-        Events::BarrierUpdated::V2,
-        Events::CoachAssigned::V2,
-        Events::JobRecommended::V2,
-        Events::SeekerCertified::V1,
-        Events::LeadAdded::V1,
-        Events::NoteAdded::V2,
-        Events::NoteDeleted::V2,
-        Events::NoteModified::V2
-      ].freeze
-    end
-
-    def handled_messages
-      [
-        Events::SkillLevelUpdated::V1,
-        Events::ApplicantStatusUpdated::V5,
-        Events::SeekerCreated::V1,
-        Events::UserCreated::V1,
-        Events::UserUpdated::V1,
-        Events::EducationExperienceCreated::V1,
-        Events::JobSaved::V1,
-        Events::JobUnsaved::V1,
-        Events::SeekerUpdated::V1,
-        Events::OnboardingCompleted::V1,
-        Events::JobSearch::V2
-      ].freeze
-    end
-
-    def call(message:)
-      handle_message(message)
-    end
-
-    def handle_message(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
-      case message.schema
-
-      # Coach Originated
-      when Events::BarrierUpdated::V2
-        handle_barriers_updated(message)
-      when Events::CoachAssigned::V2
-        handle_coach_assigned(message)
-
-      when Events::JobRecommended::V2
-        handle_job_recommended(message)
-
-      when Events::SeekerCertified::V1
-        handle_certify(message)
-
-      when Events::LeadAdded::V1
-        handle_lead_added(message)
-
-      when Events::NoteAdded::V2
-        handle_note_added(message)
-
-      when Events::NoteDeleted::V2
-        handle_note_deleted(message)
-
-      when Events::NoteModified::V2
-        handle_note_modified(message)
-
-      when Events::SkillLevelUpdated::V2
-        handle_skill_level_updated(message)
-
-      # Multi Origin
-      when Events::ApplicantStatusUpdated::V5
-        handle_applicant_status_updated(message)
-
-      # Seeker Originated
-      when Events::SeekerCreated::V1
-        handle_seeker_created(message)
-
-      when Events::UserCreated::V1
-        handle_user_created(message)
-
-      when Events::UserUpdated::V1
-        handle_user_updated(message)
-
-      when Events::EducationExperienceCreated::V1,
-        Events::JobSaved::V1,
-        Events::JobUnsaved::V1,
-        Events::PersonalExperienceCreated::V1,
-        Events::OnboardingCompleted::V1
-        handle_last_active_updated(message)
-      when Events::SeekerUpdated::V1
-        handle_seeker_updated(message)
-
-      when Events::JobSearch::V2
-        handle_last_active_updated(message) if Uuid === message.aggregate_id # rubocop:disable Style/CaseEquality
-      end
-    end
-
     def reset_for_replay
       SeekerNote.delete_all
       SeekerApplication.delete_all
@@ -236,9 +145,7 @@ module Coaches
       )
     end
 
-    private
-
-    def handle_applicant_status_updated(message)
+    on_message Events::ApplicantStatusUpdated::V5 do |message|
       csc = CoachSeekerContext.find_by!(user_id: message.data.user_id)
       csc.update!(last_active_on: message.occurred_at)
 
@@ -255,7 +162,7 @@ module Coaches
       )
     end
 
-    def handle_barriers_updated(message)
+    on_message Events::BarrierUpdated::V2, :sync do |message|
       csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.seeker_barriers.destroy_all
@@ -269,14 +176,14 @@ module Coaches
       end
     end
 
-    def handle_coach_assigned(message)
+    on_message Events::CoachAssigned::V2, :sync do |message|
       csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.assigned_coach = message.data.email
       csc.save!
     end
 
-    def handle_job_recommended(message)
+    on_message Events::JobRecommended::V2, :sync do |message|
       csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       job_recommendation = Coaches::Job.find_by!(job_id: message.data.job_id)
@@ -288,13 +195,13 @@ module Coaches
       )
     end
 
-    def handle_certify(message)
+    on_message Events::SeekerCertified::V1, :sync do |message|
       CoachSeekerContext.find_by!(seeker_id: message.aggregate_id).update!(
         certified_by: Coach.find_by!(coach_id: message.data.coach_id).email
       )
     end
 
-    def handle_lead_added(message)
+    on_message Events::LeadAdded::V1, :sync do |message|
       return if message.data.email.present? && CoachSeekerContext.find_by(email: message.data.email)
       return if CoachSeekerContext.find_by(phone_number: message.data.phone_number)
 
@@ -310,15 +217,15 @@ module Coaches
       )
     end
 
-    def handle_note_deleted(message)
+    on_message Events::NoteDeleted::V2, :sync do |message|
       SeekerNote.find_by!(note_id: message.data.note_id).destroy
     end
 
-    def handle_note_modified(message)
+    on_message Events::NoteModified::V2, :sync do |message|
       SeekerNote.find_by!(note_id: message.data.note_id).update!(note: message.data.note)
     end
 
-    def handle_note_added(message)
+    on_message Events::NoteAdded::V2, :sync do |message|
       csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.update!(last_contacted_at: message.occurred_at)
@@ -331,7 +238,7 @@ module Coaches
       )
     end
 
-    def handle_user_created(message)
+    on_message Events::UserCreated::V1 do |message|
       lead = CoachSeekerContext.find_by(email: message.data.email) if message.data.email.present?
 
       if lead.present?
@@ -356,7 +263,7 @@ module Coaches
       end
     end
 
-    def handle_user_updated(message)
+    on_message Events::UserUpdated::V1 do |message|
       csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
 
       csc.update!(
@@ -367,7 +274,7 @@ module Coaches
       )
     end
 
-    def handle_seeker_created(message)
+    on_message Events::SeekerCreated::V1 do |message|
       csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
 
       csc.update!(
@@ -376,7 +283,7 @@ module Coaches
       )
     end
 
-    def handle_skill_level_updated(message)
+    on_message Events::SkillLevelUpdated::V2 do |message|
       csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.update!(
@@ -384,16 +291,44 @@ module Coaches
       )
     end
 
-    def handle_last_active_updated(message)
-      csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
+    on_message Events::EducationExperienceCreated::V1 do |message|
+      handle_last_active_updated(message)
+    end
+
+    on_message Events::JobSaved::V1 do |message|
+      handle_last_active_updated(message)
+    end
+
+    on_message Events::JobUnsaved::V1 do |message|
+      handle_last_active_updated(message)
+    end
+
+    on_message Events::PersonalExperienceCreated::V1 do |message|
+      handle_last_active_updated(message)
+    end
+
+    on_message Events::OnboardingCompleted::V1 do |message|
+      handle_last_active_updated(message)
+    end
+
+    on_message Events::JobSearch::V2 do |message|
+      return unless Uuid === message.aggregate_id # rubocop:disable Style/CaseEquality
+
+      handle_last_active_updated(message)
+    end
+
+    on_message Events::SeekerUpdated::V1 do |message|
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
 
       csc.update!(
         last_active_on: message.occurred_at
       )
     end
 
-    def handle_seeker_updated(message)
-      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
+    private
+
+    def handle_last_active_updated(message)
+      csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
 
       csc.update!(
         last_active_on: message.occurred_at

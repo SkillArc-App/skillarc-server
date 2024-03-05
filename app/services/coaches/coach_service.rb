@@ -1,24 +1,5 @@
 module Coaches
   class CoachService < MessageConsumer
-    def handled_messages_sync
-      [Events::RoleAdded::V1].freeze
-    end
-
-    def handled_messages
-      [].freeze
-    end
-
-    def call(message:)
-      handle_message(message)
-    end
-
-    def handle_message(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
-      case message.schema
-      when Events::RoleAdded::V1
-        handle_role_added(message)
-      end
-    end
-
     def all
       Coach.all.map do |coach|
         {
@@ -32,9 +13,7 @@ module Coaches
       Coach.delete_all
     end
 
-    private
-
-    def handle_role_added(message)
+    on_message Events::RoleAdded::V1, :sync do |message|
       return unless message.data[:role] == "coach"
 
       Coach.create!(

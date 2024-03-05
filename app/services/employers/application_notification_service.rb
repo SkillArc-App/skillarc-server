@@ -1,25 +1,10 @@
 module Employers
   class ApplicationNotificationService < MessageConsumer
-    def handled_messages
-      [
-        Events::ApplicantStatusUpdated::V5
-      ].freeze
-    end
-
-    def handle_message(message)
-      case message.schema
-      when Events::ApplicantStatusUpdated::V5
-        handle_applicant_status_updated(message)
-      end
-    end
-
     def reset_for_replay
       Applicant.destroy_all
     end
 
-    private
-
-    def handle_applicant_status_updated(message)
+    on_message Events::ApplicantStatusUpdated::V5 do |message|
       return unless message.data.status == Applicant::StatusTypes::NEW
 
       job = Job.find_by!(job_id: message.data.job_id)

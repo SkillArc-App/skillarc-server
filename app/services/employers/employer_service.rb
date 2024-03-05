@@ -1,44 +1,5 @@
 module Employers
   class EmployerService < MessageConsumer
-    def handled_messages_sync
-      [
-        Events::ApplicantStatusUpdated::V5
-      ].freeze
-    end
-
-    def handled_messages
-      [
-        Events::EmployerCreated::V1,
-        Events::EmployerInviteAccepted::V1,
-        Events::EmployerUpdated::V1,
-        Events::SeekerCertified::V1,
-        Events::JobCreated::V2,
-        Events::JobOwnerAssigned::V1,
-        Events::JobUpdated::V1
-      ].freeze
-    end
-
-    def handle_message(message, *_params)
-      case message.schema
-      when Events::ApplicantStatusUpdated::V5
-        handle_applicant_status_updated(message)
-      when Events::EmployerCreated::V1
-        handle_employer_created(message)
-      when Events::EmployerInviteAccepted::V1
-        handle_employer_invite_accepted(message)
-      when Events::EmployerUpdated::V1
-        handle_employer_updated(message)
-      when Events::SeekerCertified::V1
-        handle_seeker_certified(message)
-      when Events::JobCreated::V2
-        handle_job_created(message)
-      when Events::JobOwnerAssigned::V1
-        handle_job_owner_assigned(message)
-      when Events::JobUpdated::V1
-        handle_job_updated(message)
-      end
-    end
-
     def reset_for_replay
       Employer.destroy_all
       Job.destroy_all
@@ -46,9 +7,7 @@ module Employers
       Recruiter.destroy_all
     end
 
-    private
-
-    def handle_applicant_status_updated(message)
+    on_message Events::ApplicantStatusUpdated::V5, :sync do |message|
       job = Job.find_by!(job_id: message.data.job_id)
       applicant = Applicant.find_or_initialize_by(
         applicant_id: message.data.applicant_id,
@@ -76,7 +35,7 @@ module Employers
       end
     end
 
-    def handle_employer_created(message)
+    on_message Events::EmployerCreated::V1 do |message|
       Employer.create!(
         employer_id: message.aggregate_id,
         name: message.data.name,
@@ -86,7 +45,7 @@ module Employers
       )
     end
 
-    def handle_employer_invite_accepted(message)
+    on_message Events::EmployerInviteAccepted::V1 do |message|
       employer = Employer.find_by!(employer_id: message.data.employer_id)
 
       Recruiter.create!(
@@ -95,7 +54,7 @@ module Employers
       )
     end
 
-    def handle_employer_updated(message)
+    on_message Events::EmployerUpdated::V1 do |message|
       e = Employer.find_by!(employer_id: message.aggregate_id)
 
       e.update!(
@@ -103,7 +62,7 @@ module Employers
       )
     end
 
-    def handle_seeker_certified(message)
+    on_message Events::SeekerCertified::V1 do |message|
       e = Seeker.find_or_initialize_by(
         seeker_id: message.aggregate_id
       )
@@ -113,7 +72,7 @@ module Employers
       )
     end
 
-    def handle_job_created(message)
+    on_message Events::JobCreated::V2 do |message|
       employer = Employer.find_by!(employer_id: message.data.employer_id)
 
       Job.create!(
@@ -132,7 +91,7 @@ module Employers
       )
     end
 
-    def handle_job_owner_assigned(message)
+    on_message Events::JobOwnerAssigned::V1 do |message|
       job = Job.find_by!(job_id: message.data.job_id)
       recruiter = Recruiter.find_by!(email: message.data.owner_email)
 
@@ -142,7 +101,7 @@ module Employers
       )
     end
 
-    def handle_job_updated(message)
+    on_message Events::JobUpdated::V1 do |message|
       job = Job.find_by!(job_id: message.aggregate_id)
 
       job.update!(

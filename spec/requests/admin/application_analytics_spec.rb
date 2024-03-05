@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "ApplicationAnalytics", type: :request do
   describe "GET /index" do
-    subject { get application_analytics_path, headers: }
+    subject { get admin_application_analytics_path, headers: }
 
     it_behaves_like "admin secured endpoint"
 

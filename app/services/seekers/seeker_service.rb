@@ -4,7 +4,7 @@ module Seekers
       # We can't fill this in yet since seekers aren't fully event sourced
     end
 
-    on_message Events::ElevatorPitchCreated::V1 do |message|
+    on_message Events::ElevatorPitchCreated::V1, :sync do |message|
       applicant = Applicant.find_by!(
         job: message.data.job_id,
         seeker_id: message.aggregate_id

@@ -1,18 +1,5 @@
 module Contact
   class SmsService < MessageConsumer
-    def handled_messages
-      [
-        Commands::SendSms::V1
-      ]
-    end
-
-    def handle_message(message, *_params)
-      case message.schema
-      when Commands::SendSms::V1
-        handle_send_sms(message)
-      end
-    end
-
     def reset_for_replay; end
 
     def initialize(sms_service: Sms::Gateway.build)
@@ -20,9 +7,7 @@ module Contact
       @sms_service = sms_service
     end
 
-    private
-
-    def handle_send_sms(message)
+    on_message Commands::SendSms::V1 do |message|
       sms_service.send_message(
         phone_number: message.data.phone_number,
         message: message.data.message
@@ -40,6 +25,8 @@ module Contact
     rescue StandardError => e
       Sentry.capture_exception(e)
     end
+
+    private
 
     attr_reader :sms_service
   end

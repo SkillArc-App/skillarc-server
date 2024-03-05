@@ -1,23 +1,8 @@
 module Coaches
   class RecommendationService < MessageConsumer
-    def handled_messages
-      [
-        Events::JobRecommended::V1
-      ].freeze
-    end
-
-    def handle_message(message, *_params)
-      case message.schema
-      when Events::JobRecommended::V1
-        handle_job_recommended(message)
-      end
-    end
-
     def reset_for_replay; end
 
-    private
-
-    def handle_job_recommended(message)
+    on_message Events::JobRecommended::V1 do |message|
       job_id = message.data.job_id
 
       csc = CoachSeekerContext.find_by(seeker_id: message.aggregate_id)

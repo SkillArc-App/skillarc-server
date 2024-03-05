@@ -1,32 +1,16 @@
 module Contact
   class SmtpService < MessageConsumer
-    def handled_messages
-      [
-        Commands::NotifyEmployerOfApplicant::V1,
-        Commands::SendWeeklyEmployerUpdate::V1
-      ]
-    end
-
-    def handle_message(message, *_params)
-      case message.schema
-      when Commands::NotifyEmployerOfApplicant::V1
-        handle_notify_employer_of_applicant(message)
-      when Commands::SendWeeklyEmployerUpdate::V1
-        handle_send_weekly_employer_update(message)
-      end
-    end
-
-    private
-
-    def handle_notify_employer_of_applicant(message)
+    on_message Commands::NotifyEmployerOfApplicant::V1 do |message|
       EmployerApplicantNotificationMailer.with(message:).notify_employer.deliver_now
       emit_smtp_sent_event(message)
     end
 
-    def handle_send_weekly_employer_update(message)
+    on_message Commands::SendWeeklyEmployerUpdate::V1 do |message|
       EmployerWeeklyMailer.with(message:).applicants.deliver_now
       emit_smtp_sent_event(message)
     end
+
+    private
 
     def emit_smtp_sent_event(message)
       EventService.create!(

@@ -50,8 +50,4 @@ class MessageConsumer
   def self.handled_messages_sync
     @handled_messages_sync ||= []
   end
-
-  def self.handlers
-    @handlers ||= {}
-  end
 end

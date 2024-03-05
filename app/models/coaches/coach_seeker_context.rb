@@ -18,9 +18,13 @@
 #  stage             :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  context_id        :string
+#  context_id        :string           not null
 #  seeker_id         :uuid
 #  user_id           :string
+#
+# Indexes
+#
+#  index_coach_seeker_contexts_on_context_id  (context_id) UNIQUE
 #
 module Coaches
   class CoachSeekerContext < ApplicationRecord

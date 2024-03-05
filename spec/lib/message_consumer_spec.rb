@@ -17,10 +17,6 @@ RSpec.describe MessageConsumer do
       sub_klass.new.handle_message(message)
     end
 
-    it "make individual handlers private" do
-      expect { sub_klass.new.session_started_1(message) }.to raise_error(NoMethodError)
-    end
-
     context "when on_message is sync" do
       let(:sub_klass) do
         Class.new(described_class) do

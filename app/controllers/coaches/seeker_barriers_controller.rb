@@ -8,11 +8,11 @@ module Coaches
 
     def update_all
       SeekerService.new.update_barriers(
-        seeker_id: params[:seeker_id],
+        context_id: params[:context_id],
         barriers: params[:barriers]
       )
 
-      render json: {}
+      head :accepted
     end
   end
 end

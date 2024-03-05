@@ -8,12 +8,12 @@ Rails.application.routes.draw do
 
   scope module: 'coaches', path: 'coaches' do
     resources :barriers
-    resources :seekers do
+    resources :contexts do
       resources :notes, only: %i[create update destroy]
-      post 'skill-levels' => 'seekers#update_skill_level'
-      post 'assign_coach' => 'seekers#assign'
-      post 'certify' => 'seekers#certify'
-      post 'recommend_job' => 'seekers#recommend_job'
+      post 'skill-levels' => 'contexts#update_skill_level'
+      post 'assign_coach' => 'contexts#assign'
+      post 'certify' => 'contexts#certify'
+      post 'recommend_job' => 'contexts#recommend_job'
       put 'update_barriers' => 'seeker_barriers#update_all'
     end
     resources :leads, only: %i[create index]

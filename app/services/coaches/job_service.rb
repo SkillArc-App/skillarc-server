@@ -24,7 +24,7 @@ module Coaches
     end
 
     def reset_for_replay
-      Job.destroy_all
+      Job.delete_all
     end
 
     private

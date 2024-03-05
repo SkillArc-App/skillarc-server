@@ -29,7 +29,7 @@ module Coaches
     end
 
     def reset_for_replay
-      Coach.destroy_all
+      Coach.delete_all
     end
 
     private

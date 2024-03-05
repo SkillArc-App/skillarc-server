@@ -17,5 +17,12 @@ module Events
       message_type: Messages::Types::Coaches::SKILL_LEVEL_UPDATED,
       version: 1
     )
+    V2 = Messages::Schema.build(
+      data: Data::V1,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Coaches::SeekerContext,
+      message_type: Messages::Types::Coaches::SKILL_LEVEL_UPDATED,
+      version: 2
+    )
   end
 end

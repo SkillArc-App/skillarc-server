@@ -2,14 +2,14 @@ module Coaches
   class SeekerService < MessageConsumer # rubocop:disable Metrics/ClassLength
     def handled_messages_sync
       [
-        Events::BarrierUpdated::V1,
-        Events::CoachAssigned::V1,
-        Events::JobRecommended::V1,
+        Events::BarrierUpdated::V2,
+        Events::CoachAssigned::V2,
+        Events::JobRecommended::V2,
         Events::SeekerCertified::V1,
         Events::LeadAdded::V1,
-        Events::NoteAdded::V1,
-        Events::NoteDeleted::V1,
-        Events::NoteModified::V1
+        Events::NoteAdded::V2,
+        Events::NoteDeleted::V2,
+        Events::NoteModified::V2
       ].freeze
     end
 
@@ -37,12 +37,12 @@ module Coaches
       case message.schema
 
       # Coach Originated
-      when Events::BarrierUpdated::V1
+      when Events::BarrierUpdated::V2
         handle_barriers_updated(message)
-      when Events::CoachAssigned::V1
+      when Events::CoachAssigned::V2
         handle_coach_assigned(message)
 
-      when Events::JobRecommended::V1
+      when Events::JobRecommended::V2
         handle_job_recommended(message)
 
       when Events::SeekerCertified::V1
@@ -51,16 +51,16 @@ module Coaches
       when Events::LeadAdded::V1
         handle_lead_added(message)
 
-      when Events::NoteAdded::V1
+      when Events::NoteAdded::V2
         handle_note_added(message)
 
-      when Events::NoteDeleted::V1
+      when Events::NoteDeleted::V2
         handle_note_deleted(message)
 
-      when Events::NoteModified::V1
+      when Events::NoteModified::V2
         handle_note_modified(message)
 
-      when Events::SkillLevelUpdated::V1
+      when Events::SkillLevelUpdated::V2
         handle_skill_level_updated(message)
 
       # Multi Origin
@@ -92,11 +92,11 @@ module Coaches
     end
 
     def reset_for_replay
-      SeekerNote.destroy_all
-      SeekerApplication.destroy_all
-      SeekerJobRecommendation.destroy_all
-      SeekerBarrier.destroy_all
-      CoachSeekerContext.destroy_all
+      SeekerNote.delete_all
+      SeekerApplication.delete_all
+      SeekerJobRecommendation.delete_all
+      SeekerBarrier.delete_all
+      CoachSeekerContext.delete_all
     end
 
     def all_leads
@@ -135,8 +135,8 @@ module Coaches
 
     def add_note(context_id:, coach:, note:, note_id:, now: Time.zone.now)
       EventService.create!(
-        event_schema: Events::NoteAdded::V1,
-        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
+        event_schema: Events::NoteAdded::V2,
+        context_id:,
         data: Events::NoteAdded::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -149,8 +149,8 @@ module Coaches
 
     def delete_note(context_id:, coach:, note_id:, now: Time.zone.now)
       EventService.create!(
-        event_schema: Events::NoteDeleted::V1,
-        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
+        event_schema: Events::NoteDeleted::V2,
+        context_id:,
         data: Events::NoteDeleted::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -162,8 +162,8 @@ module Coaches
 
     def modify_note(context_id:, coach:, note_id:, note:, now: Time.zone.now)
       EventService.create!(
-        event_schema: Events::NoteModified::V1,
-        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
+        event_schema: Events::NoteModified::V2,
+        context_id:,
         data: Events::NoteModified::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -192,8 +192,8 @@ module Coaches
 
     def recommend_job(context_id:, job_id:, coach:, now: Time.zone.now)
       EventService.create!(
-        event_schema: Events::JobRecommended::V1,
-        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
+        event_schema: Events::JobRecommended::V2,
+        context_id:,
         data: Events::JobRecommended::Data::V1.new(
           coach_id: coach.coach_id,
           job_id:
@@ -204,8 +204,8 @@ module Coaches
 
     def update_barriers(context_id:, barriers:, now: Time.zone.now)
       EventService.create!(
-        event_schema: Events::BarrierUpdated::V1,
-        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
+        event_schema: Events::BarrierUpdated::V2,
+        context_id:,
         data: Events::BarrierUpdated::Data::V1.new(
           barriers:
         ),
@@ -215,8 +215,8 @@ module Coaches
 
     def assign_coach(context_id:, coach_id:, coach_email:, now: Time.zone.now)
       EventService.create!(
-        event_schema: Events::CoachAssigned::V1,
-        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
+        event_schema: Events::CoachAssigned::V2,
+        context_id:,
         data: Events::CoachAssigned::Data::V1.new(
           coach_id:,
           email: coach_email
@@ -227,8 +227,8 @@ module Coaches
 
     def update_skill_level(context_id:, skill_level:, now: Time.zone.now)
       EventService.create!(
-        event_schema: Events::SkillLevelUpdated::V1,
-        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
+        event_schema: Events::SkillLevelUpdated::V2,
+        context_id:,
         data: Events::SkillLevelUpdated::Data::V1.new(
           skill_level:
         ),
@@ -256,7 +256,7 @@ module Coaches
     end
 
     def handle_barriers_updated(message)
-      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.seeker_barriers.destroy_all
       message.data.barriers.each do |barrier|
@@ -270,14 +270,14 @@ module Coaches
     end
 
     def handle_coach_assigned(message)
-      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.assigned_coach = message.data.email
       csc.save!
     end
 
     def handle_job_recommended(message)
-      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       job_recommendation = Coaches::Job.find_by!(job_id: message.data.job_id)
 
@@ -319,7 +319,7 @@ module Coaches
     end
 
     def handle_note_added(message)
-      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.update!(last_contacted_at: message.occurred_at)
       csc.seeker_notes << SeekerNote.create!(
@@ -377,7 +377,7 @@ module Coaches
     end
 
     def handle_skill_level_updated(message)
-      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.update!(
         skill_level: message.data.skill_level

@@ -1,10 +1,5 @@
 module Admin
-  class ApplicationAnalyticsController < ApplicationController
-    include Secured
-    include Admin
-
-    before_action :authorize, unless: -> { Rails.env.development? }
-
+  class ApplicationAnalyticsController < AdminController
     def index
       application_analytics = ApplicationAnalytics.new
 

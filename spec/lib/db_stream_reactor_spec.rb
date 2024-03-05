@@ -13,6 +13,42 @@ RSpec.describe DbStreamReactor do
   describe "#play" do
     subject { instance.play }
 
+    context "when the first event raises an error" do
+      let(:now) { Time.zone.local(2019, 1, 1) }
+
+      it "does not update the bookmark" do
+        expect(consumer).to receive(:handle_message).with(
+          event.message
+        ).and_raise(StandardError)
+
+        expect(Sentry).to receive(:capture_exception).with(StandardError)
+
+        subject
+
+        expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(nil)
+      end
+    end
+
+    context "when the second event raises an error" do
+      let(:now) { Time.zone.local(2019, 1, 1) }
+
+      it "updates the bookmark" do
+        expect(consumer).to receive(:handle_message).with(
+          event.message
+        )
+
+        expect(consumer).to receive(:handle_message).with(
+          event2.message
+        ).and_raise(StandardError)
+
+        expect(Sentry).to receive(:capture_exception).with(StandardError)
+
+        subject
+
+        expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(event.id)
+      end
+    end
+
     context "when now is before the events" do
       let(:now) { Time.zone.local(2019, 1, 1) }
 

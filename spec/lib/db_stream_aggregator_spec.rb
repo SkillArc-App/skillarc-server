@@ -20,6 +20,20 @@ RSpec.describe DbStreamAggregator do
       }.from(nil).to(event2.id)
     end
 
+    context "when the first event raises an error" do
+      it "updates the bookmark" do
+        expect(consumer).to receive(:handle_message).with(
+          event.message
+        ).and_raise(StandardError)
+
+        expect(Sentry).to receive(:capture_exception).with(StandardError)
+
+        subject
+
+        expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(nil)
+      end
+    end
+
     context "when the second event raises an error" do
       it "updates the bookmark" do
         expect(consumer).to receive(:handle_message).with(

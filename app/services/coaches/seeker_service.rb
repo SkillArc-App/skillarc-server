@@ -92,11 +92,11 @@ module Coaches
     end
 
     def reset_for_replay
-      SeekerNote.destroy_all
-      SeekerApplication.destroy_all
-      SeekerJobRecommendation.destroy_all
-      SeekerBarrier.destroy_all
-      CoachSeekerContext.destroy_all
+      SeekerNote.delete_all
+      SeekerApplication.delete_all
+      SeekerJobRecommendation.delete_all
+      SeekerBarrier.delete_all
+      CoachSeekerContext.delete_all
     end
 
     def all_leads

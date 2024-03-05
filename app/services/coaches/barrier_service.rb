@@ -20,7 +20,7 @@ module Coaches
     end
 
     def reset_for_replay
-      Barrier.destroy_all
+      Barrier.delete_all
     end
 
     def all

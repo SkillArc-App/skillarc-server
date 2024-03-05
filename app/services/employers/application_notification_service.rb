@@ -1,8 +1,6 @@
 module Employers
   class ApplicationNotificationService < MessageConsumer
-    def reset_for_replay
-      Applicant.destroy_all
-    end
+    def reset_for_replay; end
 
     on_message Events::ApplicantStatusUpdated::V5 do |message|
       return unless message.data.status == Applicant::StatusTypes::NEW

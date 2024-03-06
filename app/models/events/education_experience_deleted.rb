@@ -1,7 +1,17 @@
 module Events
   module EducationExperienceDeleted
+    module Data
+      class V1
+        extend Messages::Payload
+
+        schema do
+          id Uuid
+        end
+      end
+    end
+
     V1 = Messages::Schema.build(
-      data: Messages::UntypedHashWrapper,
+      data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
       message_type: Messages::Types::Seekers::EDUCATION_EXPERIENCE_DELETED,

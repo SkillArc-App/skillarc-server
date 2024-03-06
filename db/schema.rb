@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_05_162755) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_06_155928) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -143,7 +143,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_05_162755) do
     t.datetime "last_active_on"
     t.uuid "seeker_id"
     t.string "certified_by"
-    t.string "kind"
+    t.string "kind", null: false
     t.datetime "lead_captured_at"
     t.string "lead_captured_by"
     t.string "context_id", null: false

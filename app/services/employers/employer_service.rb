@@ -1,10 +1,12 @@
 module Employers
   class EmployerService < MessageConsumer
     def reset_for_replay
-      Employer.destroy_all
-      Job.destroy_all
-      JobOwner.destroy_all
-      Recruiter.destroy_all
+      JobOwner.delete_all
+      ApplicantStatusReason.delete_all
+      Applicant.delete_all
+      Recruiter.delete_all
+      Job.delete_all
+      Employer.delete_all
     end
 
     on_message Events::ApplicantStatusUpdated::V5, :sync do |message|

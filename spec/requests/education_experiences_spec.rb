@@ -19,7 +19,7 @@ RSpec.describe "EducationExperiences", type: :request do
       }
     end
 
-    it_behaves_like "a profile secured endpoint"
+    it_behaves_like "a seeker secured endpoint"
 
     context "authenticated" do
       include_context "profile owner"
@@ -52,7 +52,7 @@ RSpec.describe "EducationExperiences", type: :request do
       }
     end
 
-    it_behaves_like "a profile secured endpoint"
+    it_behaves_like "a seeker secured endpoint"
 
     context "authenticated" do
       include_context "profile owner"
@@ -75,7 +75,7 @@ RSpec.describe "EducationExperiences", type: :request do
 
     let!(:education_experience) { create(:education_experience, seeker:) }
 
-    it_behaves_like "a profile secured endpoint"
+    it_behaves_like "a seeker secured endpoint"
 
     context "authenticated" do
       include_context "profile owner"

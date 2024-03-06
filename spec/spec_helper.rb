@@ -22,7 +22,7 @@ require 'shared_examples/olive_branch_casing'
 require 'shared_examples/training_provider_secure_endpoint'
 require "shared_examples/coach_secure_endpoint"
 require "shared_examples/employer_secure_endpoint"
-require "shared_examples/profile_secure_endpoint"
+require "shared_examples/seeker_secure_endpoint"
 require "shared_examples/default_headers_context"
 require "shared_examples/event_consumer"
 

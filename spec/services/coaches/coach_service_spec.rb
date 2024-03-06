@@ -6,14 +6,14 @@ RSpec.describe Coaches::CoachService do
       :message,
       :role_added,
       aggregate_id: user_id,
-      data: Messages::UntypedHashWrapper.build(
+      data: Events::RoleAdded::Data::V1.new(
         coach_id:,
         role: "coach",
         email: "coach@blocktrainapp.com"
       )
     )
   end
-  let(:other_role_added) { build(:message, :role_added, aggregate_id: user_id, data: Messages::UntypedHashWrapper.build(role: "admin", email: "not_coach@blocktrainapp.com")) }
+  let(:other_role_added) { build(:message, :role_added, aggregate_id: user_id, data: Events::RoleAdded::Data::V1.new(role: "admin", email: "not_coach@blocktrainapp.com")) }
   let(:user_id) { SecureRandom.uuid }
   let(:coach_id) { SecureRandom.uuid }
   let(:consumer) { described_class.new }

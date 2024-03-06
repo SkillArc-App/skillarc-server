@@ -86,7 +86,7 @@ RSpec.describe Jobs::JobBlueprint do
 
         context "when the user has saved and applied to the job" do
           before do
-            create(:event, aggregate_id: user.id, event_type: Messages::Types::Seekers::JOB_SAVED, data: { job_id: job.id })
+            create(:event, aggregate_id: user.id, event_type: Messages::Types::Seekers::JOB_SAVED, data: Events::JobSaved::Data::V1.new(job_id: job.id, employment_title: "A", employer_name: "B"))
             seeker = create(:seeker, user:)
             create(:applicant, seeker:, job:, elevator_pitch: "I'm a cowboy")
           end

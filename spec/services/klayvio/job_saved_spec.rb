@@ -9,8 +9,8 @@ RSpec.describe Klayvio::JobSaved do
         :message,
         :job_saved,
         aggregate_id: user.id,
-        data: Messages::UntypedHashWrapper.new(
-          job_id: "A",
+        data: Events::JobSaved::Data::V1.new(
+          job_id:,
           employment_title: "Welder",
           employer_name: "Acme Inc."
         )
@@ -18,13 +18,14 @@ RSpec.describe Klayvio::JobSaved do
     end
 
     let(:user) { create(:user) }
+    let(:job_id) { SecureRandom.uuid }
 
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:job_saved).with(
         email: user.email,
         event_id: message.id,
         event_properties: {
-          job_id: "A",
+          job_id:,
           employment_title: "Welder",
           employer_name: "Acme Inc."
         },

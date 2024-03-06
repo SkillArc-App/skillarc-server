@@ -15,8 +15,8 @@ module Coaches
 
     on_message Events::BarrierAdded::V1, :sync do |message|
       Barrier.create!(
-        barrier_id: message.data[:barrier_id],
-        name: message.data[:name]
+        barrier_id: message.data.barrier_id,
+        name: message.data.name
       )
     end
   end

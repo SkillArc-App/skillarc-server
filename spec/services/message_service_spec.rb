@@ -17,9 +17,9 @@ RSpec.describe MessageService do
     let(:message_type) { Messages::Types::CHAT_CREATED }
     let(:user_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
-    let(:data) { Messages::UntypedHashWrapper.new(data: "cool") }
+    let(:data) { Messages::Nothing }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
-    let(:metadata) { Messages::UntypedHashWrapper.new(metadata: "cooler") }
+    let(:metadata) { Messages::Nothing }
     let(:version) { 4 }
     let(:id) { SecureRandom.uuid }
 
@@ -34,8 +34,8 @@ RSpec.describe MessageService do
     context "when event_schema is a Messages::Schema" do
       let!(:message_schema) do
         Messages::Schema.build(
-          data: Messages::UntypedHashWrapper,
-          metadata: Messages::UntypedHashWrapper,
+          data: Messages::Nothing,
+          metadata: Messages::Nothing,
           aggregate: Aggregates::User,
           message_type:,
           version:

@@ -16,7 +16,7 @@ FactoryBot.define do
       trait message_type.to_sym do
         schema { MessageService.get_schema(message_type:, version:) }
         occurred_at { Time.zone.local(2020, 1, 1) }
-        data { Messages::UntypedHashWrapper.build }
+        data { Messages::Nothing }
         metadata { Messages::Nothing }
       end
     end

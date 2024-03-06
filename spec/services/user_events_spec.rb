@@ -49,7 +49,15 @@ RSpec.describe UserEvents do
         :event,
         :onboarding_completed,
         occurred_at:,
-        aggregate_id: user.id
+        aggregate_id: user.id,
+        data: Events::OnboardingCompleted::Data::V1.new(
+          name: {},
+          experience: nil,
+          education: nil,
+          trainingProvider: nil,
+          other: nil,
+          opportunityInterests: nil
+        ).to_h
       )
     end
     let!(:job_saved_event) do
@@ -58,9 +66,11 @@ RSpec.describe UserEvents do
         :job_saved,
         occurred_at:,
         aggregate_id: user.id,
-        data: {
-          employment_title: "Test Job"
-        }
+        data: Events::JobSaved::Data::V1.new(
+          employment_title: "Test Job",
+          job_id: SecureRandom.uuid,
+          employer_name: "A"
+        ).to_h
       )
     end
 

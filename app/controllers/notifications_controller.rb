@@ -12,7 +12,7 @@ class NotificationsController < ApplicationController
       EventService.create!(
         event_schema: Events::NotificationMarkedRead::V1,
         user_id: current_user.id,
-        data: Messages::UntypedHashWrapper.build(
+        data: Events::NotificationMarkedRead::Data::V1.new(
           notification_id: n.id
         )
       )

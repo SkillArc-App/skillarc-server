@@ -4,6 +4,12 @@ RSpec.shared_context "profile owner" do
   let(:seeker) { create(:seeker, user:) }
 end
 
+RSpec.shared_context "profile owner openapi" do
+  include_context "authenticated openapi"
+
+  let(:seeker) { create(:seeker, user:) }
+end
+
 RSpec.shared_examples "a seeker secured endpoint" do
   context "unauthenticated" do
     it "returns 401" do
@@ -47,5 +53,13 @@ RSpec.shared_examples "a seeker secured endpoint" do
         end
       end
     end
+  end
+end
+
+RSpec.shared_examples "seeker spec unauthenticated openapi" do
+  let(:Authorization) { nil }
+
+  response '401', 'unauthenticated' do
+    run_test!
   end
 end

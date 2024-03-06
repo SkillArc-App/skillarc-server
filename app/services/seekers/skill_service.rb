@@ -4,9 +4,8 @@ module Seekers
       @seeker = seeker
     end
 
-    def create(params)
-      master_skill = MasterSkill.find(params[:master_skill_id])
-      description = params[:description]
+    def create(master_skill_id:, description:)
+      master_skill = MasterSkill.find(master_skill_id)
 
       skill = ProfileSkill.create!(
         id: SecureRandom.uuid,
@@ -29,14 +28,14 @@ module Seekers
       skill
     end
 
-    def update(skill, params)
-      skill.update!(description: params[:description])
+    def update(skill, description:)
+      skill.update!(description:)
 
       EventService.create!(
         event_schema: Events::SeekerSkillUpdated::V1,
         seeker_id: seeker.id,
         data: Events::SeekerSkillUpdated::Data::V1.new(
-          description: params[:description],
+          description:,
           skill_id: skill.master_skill_id,
           name: skill.master_skill.skill,
           type: skill.master_skill.type

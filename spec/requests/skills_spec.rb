@@ -1,99 +1,196 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "Skills", type: :request do
   let(:master_skill) { create(:master_skill) }
   let(:seeker) { create(:seeker, user: user_to_edit) }
   let(:user_to_edit) { create(:user) }
 
-  describe "POST /create" do
-    subject { post profile_skills_path(seeker), params:, headers: }
-
-    let(:params) do
-      {
-        skill: {
-          description: "This is a description",
-          master_skill_id: master_skill.id
-        }
+  path '/profiles/{profile_id}/skills' do
+    post 'Creates a skill' do
+      tags 'Seekers'
+      consumes 'application/json'
+      produces 'application/json'
+      security [bearer_auth: []]
+      parameter name: :profile_id, in: :path, type: :string, format: :uuid
+      parameter name: :create_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          skill: {
+            type: :object,
+            required: %w[master_skill_id],
+            properties: {
+              masterSkillId: {
+                type: :string,
+                format: :uuid
+              },
+              description: {
+                type: :string
+              }
+            }
+          }
+        },
+        required: %w[skill]
       }
-    end
 
-    it_behaves_like "a seeker secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "profile owner"
+      let(:profile_id) { seeker.id }
+      let(:create_params) do
+        {
+          skill: {
+            masterSkillId: master_skill.id,
+            description: "This is a description"
+          }
+        }
+      end
+      let(:master_skill) { create(:master_skill) }
 
-      it "calls the Seekers::SkillService" do
-        expect(Seekers::SkillService)
-          .to receive(:new)
-          .with(seeker)
-          .and_call_original
+      it_behaves_like "seeker spec unauthenticated openapi"
 
-        expect_any_instance_of(Seekers::SkillService)
-          .to receive(:create)
-          .with(master_skill_id: master_skill.id, description: "This is a description")
-          .and_call_original
+      context "when authenticated" do
+        include_context "profile owner openapi"
 
-        subject
+        response '201', 'skill created' do
+          schema type: :object, properties: {
+            id: { type: :string, format: :uuid },
+            masterSkillId: { type: :string, format: :uuid },
+            description: { type: :string },
+            createdAt: { type: :string, format: :datetime },
+            updatedAt: { type: :string, format: :datetime },
+            seekerId: { type: :string, format: :uuid }
+          }
+
+          before do
+            expect(Seekers::SkillService)
+              .to receive(:new)
+              .with(seeker)
+              .and_call_original
+
+            expect_any_instance_of(Seekers::SkillService)
+              .to receive(:create)
+              .with(master_skill_id: master_skill.id, description: "This is a description")
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end
 
-  describe "PUT /update" do
-    subject { put profile_skill_path(seeker, skill), params:, headers: }
+  path '/profiles/{profile_id}/skills/{id}' do
+    put 'Updates a skill' do
+      tags 'Seekers'
+      consumes 'application/json'
+      produces 'application/json'
+      security [bearer_auth: []]
 
-    let(:skill) { create(:profile_skill, seeker:) }
+      parameter name: :profile_id, in: :path, type: :string, format: :uuid
+      parameter name: :id, in: :path, type: :string, format: :uuid
 
-    let(:params) do
-      {
-        skill: {
-          description: "This is a new description"
-        }
+      parameter name: :update_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          skill: {
+            type: :object,
+            required: %w[description],
+            properties: {
+              description: {
+                type: :string
+              }
+            }
+          }
+        },
+        required: %w[skill]
       }
-    end
 
-    it_behaves_like "a seeker secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "profile owner"
+      let(:profile_id) { seeker.id }
+      let(:id) { skill.id }
 
-      it "calls the Seekers::SkillService" do
-        expect(Seekers::SkillService)
-          .to receive(:new)
-          .with(seeker)
-          .and_call_original
+      let(:skill) { create(:profile_skill, seeker:) }
 
-        expect_any_instance_of(Seekers::SkillService)
-          .to receive(:update)
-          .with(skill, description: "This is a new description")
-          .and_call_original
+      let(:update_params) do
+        {
+          skill: {
+            description: "This is a new description"
+          }
+        }
+      end
 
-        subject
+      it_behaves_like "seeker spec unauthenticated openapi"
+
+      context "when authenticated" do
+        include_context "profile owner openapi"
+
+        response '200', 'skill updated' do
+          schema type: :object, properties: {
+            id: { type: :string, format: :uuid },
+            masterSkillId: { type: :string, format: :uuid },
+            description: { type: :string },
+            createdAt: { type: :string, format: :datetime },
+            updatedAt: { type: :string, format: :datetime },
+            seekerId: { type: :string, format: :uuid }
+          }
+
+          before do
+            expect(Seekers::SkillService)
+              .to receive(:new)
+              .with(seeker)
+              .and_call_original
+
+            expect_any_instance_of(Seekers::SkillService)
+              .to receive(:update)
+              .with(skill, description: "This is a new description")
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
-  end
 
-  describe "DELETE /destroy" do
-    subject { delete profile_skill_path(seeker, skill), headers: }
+    delete 'Deletes a skill' do
+      tags 'Seekers'
+      consumes 'application/json'
+      produces 'application/json'
+      security [bearer_auth: []]
 
-    let!(:skill) { create(:profile_skill, seeker:) }
+      parameter name: :profile_id, in: :path, type: :string, format: :uuid
+      parameter name: :id, in: :path, type: :string, format: :uuid
 
-    it_behaves_like "a seeker secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "profile owner"
+      let(:profile_id) { seeker.id }
+      let(:id) { skill.id }
 
-      it "calls the Seekers::SkillService" do
-        expect(Seekers::SkillService)
-          .to receive(:new)
-          .with(seeker)
-          .and_call_original
+      let(:skill) { create(:profile_skill, seeker:) }
 
-        expect_any_instance_of(Seekers::SkillService)
-          .to receive(:destroy)
-          .with(skill)
-          .and_call_original
+      it_behaves_like "seeker spec unauthenticated openapi"
 
-        subject
+      context "when authenticated" do
+        include_context "profile owner openapi"
+
+        response '204', 'skill destroyed' do
+          before do
+            expect(Seekers::SkillService)
+              .to receive(:new)
+              .with(seeker)
+              .and_call_original
+
+            expect_any_instance_of(Seekers::SkillService)
+              .to receive(:destroy)
+              .with(skill)
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end

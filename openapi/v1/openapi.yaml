@@ -661,6 +661,178 @@ paths:
           description: unauthenticated
         '202':
           description: Session Started
+  "/profiles/{profile_id}/skills":
+    post:
+      summary: Creates a skill
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: profile_id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: skill created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  masterSkillId:
+                    type: string
+                    format: uuid
+                  description:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: datetime
+                  updatedAt:
+                    type: string
+                    format: datetime
+                  seekerId:
+                    type: string
+                    format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skill:
+                  type: object
+                  required:
+                  - master_skill_id
+                  properties:
+                    masterSkillId:
+                      type: string
+                      format: uuid
+                    description:
+                      type: string
+              required:
+              - skill
+  "/profiles/{profile_id}/skills/{id}":
+    put:
+      summary: Updates a skill
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: profile_id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: skill updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  masterSkillId:
+                    type: string
+                    format: uuid
+                  description:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: datetime
+                  updatedAt:
+                    type: string
+                    format: datetime
+                  seekerId:
+                    type: string
+                    format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skill:
+                  type: object
+                  required:
+                  - description
+                  properties:
+                    description:
+                      type: string
+              required:
+              - skill
+    delete:
+      summary: Deletes a skill
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: profile_id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '204':
+          description: skill destroyed
   "/test/create_user":
     post:
       summary: Create test user

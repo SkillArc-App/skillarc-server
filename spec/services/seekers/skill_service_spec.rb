@@ -2,15 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Seekers::SkillService do
   describe "#create" do
-    subject { described_class.new(seeker).create(params) }
+    subject { described_class.new(seeker).create(master_skill_id:, description:) }
 
     let(:seeker) { create(:seeker) }
-    let(:params) do
-      {
-        description: "This is a description",
-        master_skill_id: master_skill.id
-      }
-    end
+    let(:description) { "This is a description" }
+    let(:master_skill_id) { master_skill.id }
     let(:master_skill) do
       create(
         :master_skill,
@@ -40,15 +36,11 @@ RSpec.describe Seekers::SkillService do
   end
 
   describe "#update" do
-    subject { described_class.new(seeker).update(skill, params) }
+    subject { described_class.new(seeker).update(skill, description:) }
 
     let(:seeker) { create(:seeker) }
     let(:skill) { create(:profile_skill, seeker:) }
-    let(:params) do
-      {
-        description: "This is a new description"
-      }
-    end
+    let(:description) { "This is a new description" }
 
     it "updates the skill" do
       subject

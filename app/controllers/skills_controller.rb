@@ -12,7 +12,7 @@ class SkillsController < ApplicationController
       **params.require(:skill).permit(:description, :master_skill_id).to_h.symbolize_keys
     )
 
-    render json: skill
+    render json: skill, status: :created
   end
 
   def update
@@ -20,7 +20,9 @@ class SkillsController < ApplicationController
   end
 
   def destroy
-    render json: Seekers::SkillService.new(seeker).destroy(skill)
+    Seekers::SkillService.new(seeker).destroy(skill)
+
+    head :no_content
   end
 
   private

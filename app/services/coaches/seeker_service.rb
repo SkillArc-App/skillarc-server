@@ -338,6 +338,7 @@ module Coaches
     def serialize_coach_seeker_context(csc)
       {
         id: csc.context_id,
+        kind: csc.kind,
         seeker_id: csc.seeker_id,
         first_name: csc.first_name,
         last_name: csc.last_name,
@@ -349,7 +350,6 @@ module Coaches
         last_contacted: csc.last_contacted_at || "Never",
         assigned_coach: csc.assigned_coach || 'none',
         barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } },
-        stage: 'seeker_created',
         notes: csc.seeker_notes.map do |note|
           {
             note: note.note,
@@ -379,6 +379,7 @@ module Coaches
         last_name: csc.last_name,
         lead_captured_at: csc.lead_captured_at,
         lead_captured_by: csc.lead_captured_by,
+        kind: csc.kind,
         status: "new"
       }
     end

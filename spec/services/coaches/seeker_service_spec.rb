@@ -198,6 +198,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           seeker_id:,
           first_name: "Hannah",
           last_name: "Block",
+          kind: 'seeker',
           email: "hannah@blocktrainapp.com",
           phone_number: "1234567890",
           skill_level: 'advanced',
@@ -225,14 +226,14 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               employment_title: employment_title2
             }
           ],
-          job_recommendations: [job_id],
-          stage: 'seeker_created'
+          job_recommendations: [job_id]
         }
         expected_other_profile = {
           id: other_user_id,
           seeker_id: other_seeker_id,
           first_name: "Katina",
           last_name: "Hall",
+          kind: 'seeker',
           email: "katina@gmail.com",
           phone_number: nil,
           skill_level: 'beginner',
@@ -256,8 +257,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               employment_title: employment_title2
             }
           ],
-          job_recommendations: [],
-          stage: 'seeker_created'
+          job_recommendations: []
         }
 
         expect(subject).to include(expected_profile)
@@ -277,6 +277,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           lead_captured_at: time1,
           email: nil,
           lead_captured_by: "someone@skillarc.com",
+          kind: Coaches::CoachSeekerContext::Kind::LEAD,
           status: "new"
         }
 
@@ -293,6 +294,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           seeker_id:,
           first_name: "Hannah",
           last_name: "Block",
+          kind: 'seeker',
           email: "hannah@blocktrainapp.com",
           phone_number: "1234567890",
           skill_level: 'advanced',
@@ -320,8 +322,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
               employer_name: employer_name2
             }
           ],
-          job_recommendations: [job_id],
-          stage: 'seeker_created'
+          job_recommendations: [job_id]
         }
 
         expect(subject).to eq(expected_profile)

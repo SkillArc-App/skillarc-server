@@ -207,6 +207,81 @@ paths:
           description: unauthenticated
         '202':
           description: retrieve all seekers
+  "/coaches/leads":
+    get:
+      summary: Retrieve all leads
+      tags:
+      - Coaches
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: retrieve all seekers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/lead"
+    post:
+      summary: Create new lead
+      tags:
+      - Coaches
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: lead created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lead:
+                  type: object
+                  properties:
+                    leadId:
+                      type: string
+                      format: uuid
+                    email:
+                      type: string
+                      format: email
+                    phoneNumber:
+                      type: string
+                    firstName:
+                      type: string
+                    lastName:
+                      type: string
+              required:
+              - email
+              - phoneNumber
+              - firstName
+              - lastName
   "/coaches/contexts/{id}/notes":
     post:
       summary: create a note
@@ -905,6 +980,40 @@ components:
             - work
         user:
           "$ref": "#/components/schemas/user_with_training_provider"
+    lead:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+          nullable: true
+        phoneNumber:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+        lastName:
+          type: string
+        leadCapturedAt:
+          type: string
+          format: date-time
+          nullable: true
+        leadCapturedBy:
+          type: string
+          format: email
+          nullable: true
+        kind:
+          type: string
+          enum:
+          - seeker
+          - lead
+        status:
+          type: string
+          enum:
+          - new
     coach_seeker:
       type: object
       properties:
@@ -951,10 +1060,11 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/seeker_barrier"
-        stage:
+        kind:
           type: string
           enum:
-          - seeker_created
+          - seeker
+          - lead
         notes:
           type: array
           items:

@@ -1,60 +1,117 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "Leads", type: :request do
-  describe "GET /leads" do
-    subject { get leads_path, headers: }
+  path "/coaches/leads" do
+    get "Retrieve all leads" do
+      tags 'Coaches'
+      produces 'application/json'
+      security [bearer_auth: []]
 
-    it_behaves_like "coach secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      before do
-        create(:coaches__coach_seeker_context, kind: Coaches::CoachSeekerContext::Kind::LEAD)
-      end
+      it_behaves_like "coach spec unauthenticated openapi"
 
-      include_context "coach authenticated"
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
 
-      it "calls CoachService.all" do
-        expect_any_instance_of(Coaches::SeekerService).to receive(:all_leads).and_call_original
+        response '200', 'retrieve all seekers' do
+          schema type: :array,
+                 items: {
+                   '$ref' => '#/components/schemas/lead'
+                 }
 
-        subject
+          context "when are no seekers" do
+            run_test!
+          end
+
+          context "when there are many leads" do
+            before do
+              create(:coaches__coach_seeker_context, :lead)
+              create(:coaches__coach_seeker_context, :lead)
+            end
+
+            run_test!
+          end
+        end
       end
     end
   end
 
-  describe "POST /leads" do
-    subject { post leads_path, headers:, params: }
-
-    let(:params) do
-      {
-        lead: {
-          email: "john.chabot@blocktrainapp.com",
-          phone_number: "333-333-3333",
-          first_name: "john",
-          last_name: "Chabot",
-          lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5"
-        }
+  path "/coaches/leads" do
+    post "Create new lead" do
+      tags 'Coaches'
+      consumes 'application/json'
+      security [bearer_auth: []]
+      parameter name: :lead_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          lead: {
+            type: :object,
+            properties: {
+              leadId: {
+                type: :string,
+                format: :uuid
+              },
+              email: {
+                type: :string,
+                format: :email
+              },
+              phoneNumber: {
+                type: :string
+              },
+              firstName: {
+                type: :string
+              },
+              lastName: {
+                type: :string
+              }
+            }
+          }
+        },
+        required: %w[email phoneNumber firstName lastName]
       }
-    end
 
-    it_behaves_like "coach secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "coach authenticated"
+      it_behaves_like "coach spec unauthenticated openapi"
 
-      it "calls CoachService.all" do
-        expect_any_instance_of(Coaches::SeekerService)
-          .to receive(:add_lead)
-          .with(
-            coach:,
+      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:id) { coach_seeker_context.context_id }
+      let(:lead_params) do
+        {
+          lead: {
             email: "john.chabot@blocktrainapp.com",
             phone_number: "333-333-3333",
             first_name: "john",
             last_name: "Chabot",
             lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5"
-          )
-          .and_call_original
+          }
+        }
+      end
 
-        subject
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
+
+        response '201', 'lead created' do
+          before do
+            expect_any_instance_of(Coaches::SeekerService)
+              .to receive(:add_lead)
+              .with(
+                coach:,
+                email: "john.chabot@blocktrainapp.com",
+                phone_number: "333-333-3333",
+                first_name: "john",
+                last_name: "Chabot",
+                lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5"
+              )
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end

@@ -201,6 +201,48 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
+          lead: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              email: {
+                type: :string,
+                format: :email,
+                nullable: true
+              },
+              phoneNumber: {
+                type: :string,
+                nullable: true
+              },
+              firstName: {
+                type: :string
+              },
+              lastName: {
+                type: :string
+              },
+              leadCapturedAt: {
+                type: :string,
+                format: 'date-time',
+                nullable: true
+              },
+              leadCapturedBy: {
+                type: :string,
+                format: :email,
+                nullable: true
+              },
+              kind: {
+                type: :string,
+                enum: Coaches::CoachSeekerContext::Kind::ALL
+              },
+              status: {
+                type: :string,
+                enum: ["new"]
+              }
+            }
+          },
           coach_seeker: {
             type: :object,
             properties: {
@@ -264,9 +306,9 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                   '$ref' => '#/components/schemas/seeker_barrier'
                 }
               },
-              stage: {
+              kind: {
                 type: :string,
-                enum: ['seeker_created']
+                enum: Coaches::CoachSeekerContext::Kind::ALL
               },
               notes: {
                 type: :array,

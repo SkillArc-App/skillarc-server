@@ -7,7 +7,7 @@
 #  certified_by      :string
 #  email             :string
 #  first_name        :string
-#  kind              :string
+#  kind              :string           not null
 #  last_active_on    :datetime
 #  last_contacted_at :datetime
 #  last_name         :string
@@ -41,7 +41,7 @@ module Coaches
     has_many :seeker_job_recommendations, dependent: :destroy, class_name: "Coaches::SeekerJobRecommendation"
 
     validates :kind, allow_nil: true, inclusion: { in: Kind::ALL }
-    validates :context_id, presence: true, on: [:create]
+    validates :context_id, presence: true
 
     scope :leads, -> { where(kind: Kind::LEAD) }
     scope :seekers, -> { where(kind: [nil, Kind::SEEKER]) }

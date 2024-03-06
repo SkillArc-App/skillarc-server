@@ -61,6 +61,9 @@ module Messages
         ONBOARDING_COMPLETED = 'onboarding_completed'.freeze,
         PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created'.freeze,
         SEEKER_CREATED = 'profile_created'.freeze,
+        SEEKER_SKILL_CREATED = 'seeker_skill_created'.freeze,
+        SEEKER_SKILL_UPDATED = 'seeker_skill_updated'.freeze,
+        SEEKER_SKILL_DESTROYED = 'seeker_skill_destroyed'.freeze,
         SEEKER_UPDATED = 'seeker_updated'.freeze,
         SEEKER_VIEWED = 'seeker_viewed'.freeze
       ].freeze

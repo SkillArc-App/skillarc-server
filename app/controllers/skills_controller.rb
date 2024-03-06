@@ -1,31 +1,37 @@
 class SkillsController < ApplicationController
   include Secured
+  include SeekerAuth
 
   before_action :authorize
+  before_action :set_seeker
+  before_action :seeker_editor_authorize
+  before_action :set_skill, only: %i[update destroy]
 
   def create
-    skill = ProfileSkill.create!(
-      **params.require(:skill).permit(:name, :description, :master_skill_id, :type),
-      id: SecureRandom.uuid,
-      seeker: current_user.seeker
+    skill = Seekers::SkillService.new(seeker).create(
+      **params.require(:skill).permit(:description, :master_skill_id).to_h.symbolize_keys
     )
 
     render json: skill
   end
 
   def update
-    skill = ProfileSkill.find(params[:id])
-
-    skill.update!(**params.require(:skill).permit(:name, :description, :master_skill_id, :type))
-
-    render json: skill
+    render json: Seekers::SkillService.new(seeker).update(skill, description: params[:skill][:description])
   end
 
   def destroy
-    skill = ProfileSkill.find(params[:id])
+    render json: Seekers::SkillService.new(seeker).destroy(skill)
+  end
 
-    skill.destroy!
+  private
 
-    render json: skill
+  attr_reader :seeker, :skill
+
+  def set_skill
+    @skill = ProfileSkill.find(params[:id])
+  end
+
+  def set_seeker
+    @seeker = Seeker.includes(profile_skills: :master_skill).find(params[:profile_id])
   end
 end

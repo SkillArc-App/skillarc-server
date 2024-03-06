@@ -1,10 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "Skills", type: :request do
-  include_context "authenticated"
-
   let(:master_skill) { create(:master_skill) }
-  let(:seeker) { create(:seeker, user:) }
+  let(:seeker) { create(:seeker, user: user_to_edit) }
+  let(:user_to_edit) { create(:user) }
 
   describe "POST /create" do
     subject { post profile_skills_path(seeker), params:, headers: }
@@ -18,14 +17,24 @@ RSpec.describe "Skills", type: :request do
       }
     end
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "a seeker secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "authenticated" do
+      include_context "profile owner"
 
-    it "creates a skill" do
-      expect { subject }.to change(ProfileSkill, :count).by(1)
+      it "calls the Seekers::SkillService" do
+        expect(Seekers::SkillService)
+          .to receive(:new)
+          .with(seeker)
+          .and_call_original
+
+        expect_any_instance_of(Seekers::SkillService)
+          .to receive(:create)
+          .with(master_skill_id: master_skill.id, description: "This is a description")
+          .and_call_original
+
+        subject
+      end
     end
   end
 
@@ -42,16 +51,24 @@ RSpec.describe "Skills", type: :request do
       }
     end
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "a seeker secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "authenticated" do
+      include_context "profile owner"
 
-    it "updates the skill" do
-      subject
+      it "calls the Seekers::SkillService" do
+        expect(Seekers::SkillService)
+          .to receive(:new)
+          .with(seeker)
+          .and_call_original
 
-      expect(skill.reload.description).to eq("This is a new description")
+        expect_any_instance_of(Seekers::SkillService)
+          .to receive(:update)
+          .with(skill, description: "This is a new description")
+          .and_call_original
+
+        subject
+      end
     end
   end
 
@@ -60,14 +77,24 @@ RSpec.describe "Skills", type: :request do
 
     let!(:skill) { create(:profile_skill, seeker:) }
 
-    it "returns a 200" do
-      subject
+    it_behaves_like "a seeker secured endpoint"
 
-      expect(response).to have_http_status(:ok)
-    end
+    context "authenticated" do
+      include_context "profile owner"
 
-    it "deletes the skill" do
-      expect { subject }.to change(ProfileSkill, :count).by(-1)
+      it "calls the Seekers::SkillService" do
+        expect(Seekers::SkillService)
+          .to receive(:new)
+          .with(seeker)
+          .and_call_original
+
+        expect_any_instance_of(Seekers::SkillService)
+          .to receive(:destroy)
+          .with(skill)
+          .and_call_original
+
+        subject
+      end
     end
   end
 end

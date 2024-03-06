@@ -4,7 +4,7 @@ RSpec.shared_context "profile owner" do
   let(:seeker) { create(:seeker, user:) }
 end
 
-RSpec.shared_examples "a profile secured endpoint" do
+RSpec.shared_examples "a seeker secured endpoint" do
   context "unauthenticated" do
     it "returns 401" do
       subject

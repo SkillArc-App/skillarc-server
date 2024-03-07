@@ -14,6 +14,10 @@ module Messages
       message_schema
     end
 
+    def all_messages
+      MessageService.all_messages(self)
+    end
+
     private
 
     def initialize(data:, metadata:, message_type:, version:, aggregate:)

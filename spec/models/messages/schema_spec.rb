@@ -32,4 +32,30 @@ RSpec.describe Messages::Schema do
       expect(subject.aggregate).to eq(aggregate)
     end
   end
+
+  describe "#all_messages" do
+    let(:instance) do
+      described_class.build(
+        data:,
+        metadata:,
+        message_type:,
+        version:,
+        aggregate:
+      )
+    end
+
+    let(:data) { String }
+    let(:metadata) { Hash }
+    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:version) { 1 }
+    let(:aggregate) { Aggregates::User }
+
+    it "passes itself to MessageService.all_messages" do
+      expect(MessageService)
+        .to receive(:all_messages)
+        .with(instance)
+
+      instance.all_messages
+    end
+  end
 end

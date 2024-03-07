@@ -7,14 +7,15 @@ RSpec.describe Klayvio::TrainingProviderInviteAccepted do
         :message,
         message_type: Events::TrainingProviderInviteAccepted::V1.message_type,
         version: Events::TrainingProviderInviteAccepted::V1.version,
-        data: Messages::UntypedHashWrapper.new(
-          training_provider_invite_id: "A",
+        data: Events::TrainingProviderInviteAccepted::Data::V1.new(
+          training_provider_invite_id: SecureRandom.uuid,
           invite_email: "sfb@crook.com",
-          training_provider_id: "1",
+          training_provider_id:,
           training_provider_name: "FTX"
         )
       )
     end
+    let(:training_provider_id) { SecureRandom.uuid }
 
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::Klayvio).to receive(:training_provider_invite_accepted).with(
@@ -23,7 +24,7 @@ RSpec.describe Klayvio::TrainingProviderInviteAccepted do
         profile_properties: {
           is_training_provider: true,
           training_provider_name: "FTX",
-          training_provider_id: "1"
+          training_provider_id:
         },
         occurred_at: message.occurred_at
       )

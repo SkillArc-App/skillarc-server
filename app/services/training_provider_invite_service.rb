@@ -7,7 +7,7 @@ class TrainingProviderInviteService
     EventService.create!(
       event_schema: Events::TrainingProviderInviteAccepted::V1,
       training_provider_id: invite.training_provider_id,
-      data: Messages::UntypedHashWrapper.build(
+      data: Events::TrainingProviderInviteAccepted::Data::V1.new(
         training_provider_invite_id: invite.id,
         invite_email: invite.email,
         training_provider_id: invite.training_provider_id,

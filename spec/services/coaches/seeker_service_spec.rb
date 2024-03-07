@@ -329,25 +329,69 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       end
 
       context "when another events occur which update last active on" do
-        [
-          Events::JobSaved::V1,
-          Events::JobUnsaved::V1,
-          Events::OnboardingCompleted::V1
-        ].each do |message_schema|
-          context "when a #{message_schema.message_type} version #{message_schema.version} occurs for a seeker" do
-            it "updates the last active to when the event occured" do
-              message = build(
-                :message,
-                message_type: message_schema.message_type,
-                version: message_schema.version,
-                aggregate_id: user_id,
-                occurred_at: time2
-              )
+        context "when a onboarding complete version 1 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :message,
+              message_type: Events::OnboardingCompleted::V1.message_type,
+              version: Events::OnboardingCompleted::V1.version,
+              data: Events::OnboardingCompleted::Data::V1.new(
+                name: {},
+                experience: nil,
+                education: nil,
+                trainingProvider: nil,
+                other: nil,
+                opportunityInterests: nil
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
 
-              consumer.handle_message(message)
+            consumer.handle_message(message)
 
-              expect(subject[:last_active_on]).to eq(time2)
-            end
+            expect(subject[:last_active_on]).to eq(time2)
+          end
+        end
+
+        context "when a job_saved version 1 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :message,
+              message_type: Events::JobSaved::V1.message_type,
+              version: Events::JobSaved::V1.version,
+              data: Events::JobSaved::Data::V1.new(
+                job_id: SecureRandom.uuid,
+                employment_title: "A",
+                employer_name: "B"
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
+
+            consumer.handle_message(message)
+
+            expect(subject[:last_active_on]).to eq(time2)
+          end
+        end
+
+        context "when a job_unsaved version 1 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :message,
+              message_type: Events::JobUnsaved::V1.message_type,
+              version: Events::JobUnsaved::V1.version,
+              data: Events::JobUnsaved::Data::V1.new(
+                job_id: SecureRandom.uuid,
+                employment_title: "A",
+                employer_name: "B"
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
+
+            consumer.handle_message(message)
+
+            expect(subject[:last_active_on]).to eq(time2)
           end
         end
 

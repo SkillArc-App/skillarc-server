@@ -9,7 +9,7 @@ RSpec.describe Klayvio::MetCareerCoachUpdated do
         :message,
         :met_career_coach_updated,
         aggregate_id: user.id,
-        data: Messages::UntypedHashWrapper.new(
+        data: Events::MetCareerCoachUpdated::Data::V1.new(
           met_career_coach: true
         )
       )

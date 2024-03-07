@@ -24,7 +24,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     EventService.create!(
       user_id: user.id,
       event_schema: Events::OnboardingCompleted::V1,
-      data: Messages::UntypedHashWrapper.build(
+      data: Events::OnboardingCompleted::Data::V1.new(
         name: responses["name"],
         experience: responses["experience"],
         education: responses["education"],
@@ -165,7 +165,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         EventService.create!(
           user_id: user.id,
           event_schema: Events::SeekerTrainingProviderCreated::V1,
-          data: Messages::UntypedHashWrapper.build(
+          data: Events::SeekerTrainingProviderCreated::Data::V1.new(
             id: stp.id,
             user_id: stp.user_id,
             training_provider_id: stp.training_provider_id

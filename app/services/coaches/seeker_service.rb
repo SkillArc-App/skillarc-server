@@ -15,7 +15,7 @@ module Coaches
     end
 
     def all_seekers
-      CoachSeekerContext.seekers.with_everything.where.not(seeker_id: nil).where.not(email: nil).map do |csc|
+      CoachSeekerContext.seekers.with_everything.map do |csc|
         serialize_coach_seeker_context(csc)
       end
     end

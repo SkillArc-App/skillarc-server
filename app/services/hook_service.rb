@@ -5,7 +5,7 @@ class HookService
     EventService.create!(
       event_schema: Events::NotificationCreated::V1,
       user_id: user.id,
-      data: Messages::UntypedHashWrapper.build(
+      data: Events::NotificationCreated::Data::V1.new(
         title:,
         body:,
         url:

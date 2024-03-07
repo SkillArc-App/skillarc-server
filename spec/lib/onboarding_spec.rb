@@ -295,16 +295,15 @@ RSpec.describe Onboarding do
 
       it "publishes an event" do
         allow(EventService).to receive(:create!)
-        allow(Messages::UntypedHashWrapper).to receive(:new).and_call_original
         expect(EventService)
           .to receive(:create!)
           .with(
             user_id: user.id,
             event_schema: Events::SeekerTrainingProviderCreated::V1,
-            data: be_a(Messages::UntypedHashWrapper),
+            data: be_a(Events::SeekerTrainingProviderCreated::Data::V1),
             occurred_at: be_present
           ).and_call_original
-        allow(Messages::UntypedHashWrapper)
+        allow(Events::SeekerTrainingProviderCreated::Data::V1)
           .to receive(:new)
           .with(
             id: be_present,
@@ -541,25 +540,21 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
-          allow(Messages::UntypedHashWrapper).to receive(:build).and_call_original
           allow(EventService).to receive(:create!)
           expect(EventService)
             .to receive(:create!)
             .with(
               user_id: user.id,
               event_schema: Events::OnboardingCompleted::V1,
-              data: be_a(Messages::UntypedHashWrapper),
+              data: Events::OnboardingCompleted::Data::V1.new(
+                name: responses["name"],
+                experience: responses["experience"],
+                education: responses["education"],
+                trainingProvider: responses["trainingProvider"],
+                other: responses["other"],
+                opportunityInterests: responses["opportunityInterests"]
+              ),
               occurred_at: be_present
-            ).and_call_original
-          expect(Messages::UntypedHashWrapper)
-            .to receive(:build)
-            .with(
-              name: responses["name"],
-              experience: responses["experience"],
-              education: responses["education"],
-              trainingProvider: responses["trainingProvider"],
-              other: responses["other"],
-              opportunityInterests: responses["opportunityInterests"]
             ).and_call_original
 
           subject

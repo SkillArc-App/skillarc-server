@@ -200,7 +200,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
           .with(
             event_schema: Events::JobSaved::V1,
             user_id: user.id,
-            data: Messages::UntypedHashWrapper.new(
+            data: Events::JobSaved::Data::V1.new(
               job_id: job.id,
               employment_title: job.employment_title,
               employer_name: job.employer.name
@@ -229,7 +229,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
           .with(
             event_schema: Events::JobUnsaved::V1,
             user_id: user.id,
-            data: Messages::UntypedHashWrapper.new(
+            data: Events::JobUnsaved::Data::V1.new(
               job_id: job.id,
               employment_title: job.employment_title,
               employer_name: job.employer.name

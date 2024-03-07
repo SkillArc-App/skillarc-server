@@ -13,8 +13,7 @@ on:
 permissions: read-all
 jobs:
   test:
-    runs-on:
-      group: organization/Default
+    runs-on: ubuntu-latest
     services:
       redis:
         image: "redis:7.2.1-alpine"
@@ -68,8 +67,7 @@ jobs:
         run: bundle exec rspec
 
   lint:
-    runs-on:
-      group: organization/Default
+    runs-on: ubuntu-latest
     steps:
       - name: Collect Workflow Telemetry
         uses: catchpoint/workflow-telemetry-action@v2

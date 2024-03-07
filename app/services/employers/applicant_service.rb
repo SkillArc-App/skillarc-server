@@ -9,7 +9,9 @@ module Employers
       applicants = Applicant.includes(:applicant_status_reasons).where(job: jobs)
       seekers = Seeker.where(seeker_id: applicants.select(:seeker_id))
 
-      Applicant.where(job: jobs).map do |a|
+      Applicant.includes(:job, :applicant_status_reasons).where(job: jobs).map do |a|
+        next if a.certified_by.nil? && a.job.staffing?
+
         {
           id: a.applicant_id,
           job_id: a.job.id,
@@ -26,7 +28,7 @@ module Employers
           status: a.status,
           status_reasons: a.applicant_status_reasons.map(&:reason)
         }
-      end
+      end.compact
     end
 
     private

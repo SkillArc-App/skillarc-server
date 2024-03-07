@@ -22,6 +22,20 @@ RSpec.describe Employers::ApplicantService do
         status_as_of: Time.zone.now
       )
     end
+    let!(:uncertified_applicant) do
+      create(
+        :employers_applicant,
+        certified_by: nil,
+        job: staffing_job,
+        email: "hannah.block@skillarc.com",
+        first_name: "Hannah",
+        last_name: "Block",
+        phone_number: "123-456-7890",
+        status: Employers::Applicant::StatusTypes::NEW,
+        status_as_of: Time.zone.now
+      )
+    end
+
     let!(:applicant_status_reason) do
       create(
         :employers_applicant_status_reason,
@@ -38,11 +52,26 @@ RSpec.describe Employers::ApplicantService do
         employment_title: "Welder"
       )
     end
+    let(:staffing_job) do
+      create(
+        :employers_job,
+        category: Employers::Job::Categories::STAFFING,
+        employer:,
+        employment_title: "Welder"
+      )
+    end
     let!(:seeker) do
       create(
         :employers_seeker,
         certified_by: "chris@skillarc.com",
         seeker_id: applicant.seeker_id
+      )
+    end
+    let!(:uncertified_seeker) do
+      create(
+        :employers_seeker,
+        certified_by: nil,
+        seeker_id: uncertified_applicant.seeker_id
       )
     end
 

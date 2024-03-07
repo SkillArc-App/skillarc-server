@@ -5,7 +5,7 @@ module Events
         extend Messages::Payload
 
         schema do
-          name Hash
+          name Either(Hash, nil), default: nil
           experience Either(Hash, nil), default: nil
           education Either(Hash, nil), default: nil
           trainingProvider Either(Hash, nil), default: nil

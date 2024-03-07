@@ -52,5 +52,13 @@ module Employers
 
       ["chris@skillarc.com"]
     end
+
+    def marketplace?
+      category == Categories::MARKETPLACE
+    end
+
+    def staffing?
+      category == Categories::STAFFING
+    end
   end
 end

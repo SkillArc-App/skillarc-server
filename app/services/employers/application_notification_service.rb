@@ -3,10 +3,16 @@ module Employers
     def reset_for_replay; end
 
     on_message Events::ApplicantStatusUpdated::V5 do |message|
-      return unless message.data.status == Applicant::StatusTypes::NEW
-
       job = Job.find_by!(job_id: message.data.job_id)
       certified_by = Seeker.find_by(seeker_id: message.data.seeker_id)&.certified_by
+
+      return if job.staffing? && certified_by.nil?
+
+      send_email(message:, job:, certified_by:)
+    end
+
+    def send_email(message:, job:, certified_by:)
+      return unless message.data.status == Applicant::StatusTypes::NEW
 
       data = message.data
 

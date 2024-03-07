@@ -28,6 +28,7 @@
 module Employers
   class Applicant < ApplicationRecord
     belongs_to :job, class_name: "Employers::Job", foreign_key: "employers_job_id", inverse_of: :applicants
+
     has_many :applicant_status_reasons, class_name: "Employers::ApplicantStatusReason", foreign_key: "employers_applicant_id", inverse_of: :applicant, dependent: :destroy
 
     module StatusTypes
@@ -45,6 +46,9 @@ module Employers
 
     validates :status, inclusion: { in: StatusTypes::ALL }
     validates :seeker_id, uniqueness: { scope: :employers_job_id }
+
+    delegate :staffing?, to: :job
+    delegate :marketplace?, to: :job
 
     scope :active, -> { where.not(status: StatusTypes::TERMINAL) }
   end

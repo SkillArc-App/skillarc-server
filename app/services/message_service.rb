@@ -41,6 +41,10 @@ class MessageService
     message_schema
   end
 
+  def self.all_messages(schema)
+    Event.where(version: schema.version, event_type: schema.message_type).map(&:message)
+  end
+
   def self.migrate_event(message_schema:, &block)
     Event.where(event_type: message_schema.message_type, version: message_schema.version).find_each do |e|
       block.call(e.message)

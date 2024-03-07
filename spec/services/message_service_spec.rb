@@ -126,6 +126,43 @@ RSpec.describe MessageService do
     end
   end
 
+  describe ".all_messages" do
+    before do
+      Event.from_message!(message1)
+      Event.from_message!(message2)
+      Event.from_message!(message3)
+    end
+
+    let(:message1) do
+      build(
+        :message,
+        schema: Events::MetCareerCoachUpdated::V1,
+        data: Events::MetCareerCoachUpdated::Data::V1.new(
+          met_career_coach: false
+        )
+      )
+    end
+    let(:message2) do
+      build(
+        :message,
+        schema: Events::MetCareerCoachUpdated::V1,
+        data: Events::MetCareerCoachUpdated::Data::V1.new(
+          met_career_coach: false
+        )
+      )
+    end
+    let(:message3) do
+      build(
+        :message,
+        schema: Events::SessionStarted::V1
+      )
+    end
+
+    it "returns all the messages persisted for a schema" do
+      expect(described_class.all_messages(Events::MetCareerCoachUpdated::V1)).to contain_exactly(message1, message2)
+    end
+  end
+
   describe ".get_schema" do
     subject do
       described_class.get_schema(message_type:, version:)

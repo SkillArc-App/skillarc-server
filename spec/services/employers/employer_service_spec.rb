@@ -49,7 +49,7 @@ RSpec.describe Employers::EmployerService do
         aggregate_id: job_id,
         version: 3,
         data: Events::JobCreated::Data::V3.new(
-          category: Job::Categories::MARKETPLACE,
+          category: Job::Categories::STAFFING,
           employer_id:,
           employer_name: "employer_name",
           employment_title: "employment title",
@@ -70,7 +70,9 @@ RSpec.describe Employers::EmployerService do
         :message,
         :job_updated,
         aggregate_id: job_id,
-        data: Events::JobUpdated::Data::V1.new(
+        version: 2,
+        data: Events::JobUpdated::Data::V2.new(
+          category: Job::Categories::MARKETPLACE,
           employment_title: "employment title",
           benefits_description: "benefits description",
           responsibilities_description: "responsibilities description",
@@ -160,6 +162,7 @@ RSpec.describe Employers::EmployerService do
       )
 
       expect(Employers::Job.last_created).to have_attributes(
+        category: Job::Categories::MARKETPLACE,
         employment_title: "employment title",
         benefits_description: "benefits description",
         responsibilities_description: "responsibilities description",

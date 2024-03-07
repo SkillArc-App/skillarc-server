@@ -4,6 +4,7 @@
 #
 #  id                           :uuid             not null, primary key
 #  benefits_description         :string           not null
+#  category                     :string           default("marketplace")
 #  elevator_pitch               :text
 #  employment_title             :string           not null
 #  employment_type              :string           not null
@@ -29,9 +30,18 @@
 #
 module Employers
   class Job < ApplicationRecord
+    module Categories
+      ALL = [
+        MARKETPLACE = 'marketplace'.freeze,
+        STAFFING = 'staffing'.freeze
+      ].freeze
+    end
+
     belongs_to :employer, class_name: "Employers::Employer", foreign_key: "employers_employer_id", inverse_of: :jobs
     has_many :applicants, class_name: "Employers::Applicant", foreign_key: "employers_job_id", inverse_of: :job, dependent: :destroy
     has_many :job_owners, class_name: "Employers::JobOwner", foreign_key: "employers_job_id", inverse_of: :job, dependent: :destroy
+
+    validates :category, inclusion: { in: Categories::ALL }
 
     scope :active, -> { where(hide_job: false) }
 

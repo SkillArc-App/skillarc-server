@@ -79,6 +79,7 @@ module Employers
 
       Job.create!(
         employer:,
+        category: message.data.category,
         job_id: message.aggregate_id,
         employment_title: message.data.employment_title,
         benefits_description: message.data.benefits_description,
@@ -103,7 +104,7 @@ module Employers
       )
     end
 
-    on_message Events::JobUpdated::V1 do |message|
+    on_message Events::JobUpdated::V2 do |message|
       job = Job.find_by!(job_id: message.aggregate_id)
 
       job.update!(

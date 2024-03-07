@@ -11,5 +11,9 @@ FactoryBot.define do
     last_name { Faker::Name.last_name }
     phone_number { Faker::PhoneNumber.phone_number }
     status_as_of { Time.current }
+
+    trait :uncertified do
+      certified_by { nil }
+    end
   end
 end

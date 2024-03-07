@@ -50,6 +50,11 @@ module Employers
     delegate :staffing?, to: :job
     delegate :marketplace?, to: :job
 
-    scope :active, -> { where.not(status: StatusTypes::TERMINAL) }
+    scope :active,
+          lambda {
+            joins(:job)
+              .where.not(status: StatusTypes::TERMINAL)
+              .where.not("employers_jobs.category = ? AND employers_applicants.certified_by IS NULL", Job::Categories::STAFFING)
+          }
   end
 end

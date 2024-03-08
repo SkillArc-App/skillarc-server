@@ -1158,6 +1158,8 @@ components:
         id:
           type: string
           format: uuid
+        assignedCoach:
+          type: string
         email:
           type: string
           format: email
@@ -1227,7 +1229,6 @@ components:
           nullable: true
         assignedCoach:
           type: string
-          nullable: true
         barriers:
           type: array
           items:

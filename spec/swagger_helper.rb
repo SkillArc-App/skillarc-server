@@ -208,6 +208,9 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 type: :string,
                 format: :uuid
               },
+              assignedCoach: {
+                type: :string
+              },
               email: {
                 type: :string,
                 format: :email,
@@ -297,8 +300,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 nullable: true
               },
               assignedCoach: {
-                type: :string,
-                nullable: true
+                type: :string
               },
               barriers: {
                 type: :array,

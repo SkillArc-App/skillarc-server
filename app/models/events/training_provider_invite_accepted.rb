@@ -5,7 +5,7 @@ module Events
         extend Messages::Payload
 
         schema do
-          training_provider_invite_id Either(Uuid, nil)
+          training_provider_invite_id Either(Uuid, nil), default: nil
           invite_email String
           training_provider_id Uuid
           training_provider_name String

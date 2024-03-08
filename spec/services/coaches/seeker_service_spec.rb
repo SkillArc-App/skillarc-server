@@ -272,6 +272,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
         expected_lead = {
           id: "8628daea-7af8-41d1-b5b4-456336a7ed61",
           phone_number: "0987654321",
+          assigned_coach: 'none',
           first_name: "Not",
           last_name: "Converted",
           lead_captured_at: time1,

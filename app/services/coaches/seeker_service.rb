@@ -374,6 +374,7 @@ module Coaches
       {
         id: csc.context_id,
         email: csc.email,
+        assigned_coach: csc.assigned_coach || 'none',
         phone_number: csc.phone_number,
         first_name: csc.first_name,
         last_name: csc.last_name,

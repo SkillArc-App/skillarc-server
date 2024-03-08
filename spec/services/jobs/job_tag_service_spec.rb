@@ -41,10 +41,12 @@ RSpec.describe Jobs::JobTagService do
 
     it "publishes an event" do
       expect(EventService).to receive(:create!).with(
-        event_schema: Events::JobTagDestroyed::V1,
+        event_schema: Events::JobTagDestroyed::V2,
         job_id: job_tag.job_id,
-        data: Events::JobTagDestroyed::Data::V1.new(
-          job_tag_id: job_tag.id
+        data: Events::JobTagDestroyed::Data::V2.new(
+          tag_id: job_tag.tag_id,
+          job_tag_id: job_tag.id,
+          job_id: job_tag.job_id
         )
       ).and_call_original
 

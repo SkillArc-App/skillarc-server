@@ -10,7 +10,7 @@ module Events
           title Either(String, nil), default: nil
           lower_limit Either(String, nil), default: nil
           upper_limit Either(String, nil), default: nil
-          order Either(Integer, nil), default: nil
+          order Either(0.., nil), default: nil
         end
       end
     end

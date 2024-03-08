@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_07_151336) do
+
+ActiveRecord::Schema[7.1].define(version: 2024_03_07_170931) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -595,6 +596,54 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_07_151336) do
     t.index ["name"], name: "Role_name_key", unique: true
   end
 
+  create_table "search_applications", force: :cascade do |t|
+    t.string "status", null: false
+    t.uuid "application_id", null: false
+    t.uuid "seeker_id", null: false
+    t.uuid "job_id", null: false
+    t.text "elevator_pitch"
+    t.bigint "search_job_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["application_id"], name: "index_search_applications_on_application_id"
+    t.index ["search_job_id"], name: "index_search_applications_on_search_job_id"
+    t.index ["seeker_id"], name: "index_search_applications_on_seeker_id"
+  end
+
+  create_table "search_jobs", force: :cascade do |t|
+    t.uuid "job_id", null: false
+    t.boolean "hidden", default: false, null: false
+    t.string "employment_title", null: false
+    t.string "industries", default: [], array: true
+    t.string "category", null: false
+    t.text "location", null: false
+    t.string "employment_type", null: false
+    t.integer "starting_upper_pay"
+    t.integer "starting_lower_pay"
+    t.string "tags", default: [], array: true
+    t.uuid "employer_id", null: false
+    t.string "employer_name", null: false
+    t.text "employer_logo_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employer_name"], name: "index_search_jobs_on_employer_name"
+    t.index ["employment_title"], name: "index_search_jobs_on_employment_title"
+    t.index ["employment_type"], name: "index_search_jobs_on_employment_type"
+    t.index ["industries"], name: "index_search_jobs_on_industries"
+    t.index ["job_id"], name: "index_search_jobs_on_job_id", unique: true
+    t.index ["location"], name: "index_search_jobs_on_location"
+    t.index ["tags"], name: "index_search_jobs_on_tags"
+  end
+
+  create_table "search_saved_jobs", force: :cascade do |t|
+    t.bigint "search_job_id", null: false
+    t.uuid "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["search_job_id"], name: "index_search_saved_jobs_on_search_job_id"
+    t.index ["user_id"], name: "index_search_saved_jobs_on_user_id"
+  end
+
   create_table "seeker_barriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "coach_seeker_context_id", null: false
     t.uuid "barrier_id", null: false
@@ -817,6 +866,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_07_151336) do
   add_foreign_key "read_receipts", "users"
   add_foreign_key "recruiters", "employers", name: "Recruiter_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "recruiters", "users", name: "Recruiter_user_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "search_applications", "search_jobs"
+  add_foreign_key "search_saved_jobs", "search_jobs"
   add_foreign_key "seeker_barriers", "barriers"
   add_foreign_key "seeker_barriers", "coach_seeker_contexts"
   add_foreign_key "seeker_invites", "programs", name: "SeekerInvite_program_id_fkey", on_update: :cascade, on_delete: :restrict

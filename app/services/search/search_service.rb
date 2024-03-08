@@ -1,5 +1,5 @@
 module Search
-  class SearchService < MessageConsumer
+  class SearchService < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay
       SavedJob.delete_all
       Application.delete_all

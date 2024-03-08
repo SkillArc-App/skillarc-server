@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Search::SearchService do
-  describe "#search" do
+RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
+  describe "#search" do # rubocop:disable Metrics/BlockLength
     subject do
       instance.search(
         search_terms:,

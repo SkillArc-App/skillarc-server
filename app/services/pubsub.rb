@@ -8,7 +8,12 @@ class Pubsub
 
   def publish(message:)
     jobs = subscribers[message.schema]&.values&.map do |subscriber|
-      resolve_event(message, subscriber)
+      if sync
+        subscriber.call(message:)
+        nil
+      else
+        ExecuteSubscriberJob.new(message:, subscriber_id: subscriber.id)
+      end
     end&.compact || []
 
     ActiveJob.perform_all_later(jobs)
@@ -31,13 +36,4 @@ class Pubsub
   private
 
   attr_reader :sync
-
-  def resolve_event(message, subscriber)
-    if sync
-      subscriber.call(message:)
-      nil
-    else
-      ExecuteSubscriberJob.new(message:, subscriber_id: subscriber.id)
-    end
-  end
 end

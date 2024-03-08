@@ -47,14 +47,14 @@ module Events
           employer_name String
           employer_id Uuid
           benefits_description String
-          responsibilities_description Either(String, nil)
+          responsibilities_description Either(String, nil), default: nil
           location String
           employment_type Either(*Job::EmploymentTypes::ALL)
           hide_job Bool()
-          schedule Either(String, nil)
-          work_days Either(String, nil)
-          requirements_description Either(String, nil)
-          industry Either(ArrayOf(Either(*Job::Industries::ALL)), nil)
+          schedule Either(String, nil), default: nil
+          work_days Either(String, nil), default: nil
+          requirements_description Either(String, nil), default: nil
+          industry Either(ArrayOf(Either(*Job::Industries::ALL)), nil), default: nil
         end
       end
     end

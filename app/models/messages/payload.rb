@@ -9,7 +9,7 @@ module Messages
       hash = {}
 
       self.class.value_semantics.attributes.each do |attr|
-        value = to_h_value(attr.validator, send(attr.name))
+        value = to_h_value(send(attr.name))
         hash[attr.name] = value unless value == Messages::UNDEFINED
       end
 
@@ -32,14 +32,16 @@ module Messages
 
     private
 
-    def to_h_value(validator, value)
-      if validator.is_a?(ValueSemantics::ArrayOf)
-        if validator.element_validator.respond_to?(:to_h)
+    def to_h_value(value)
+      if value.is_a?(Array)
+        if value.first&.respond_to?(:to_h)
           value.map(&:to_h)
         else
           value
         end
-      elsif validator.respond_to?(:to_h)
+      elsif value.nil?
+        nil
+      elsif value.respond_to?(:to_h)
         value.to_h
       else
         value

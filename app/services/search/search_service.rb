@@ -143,12 +143,11 @@ module Search
       job.update!(tags: job.tags.to_set.add(tag.name).to_a)
     end
 
-    on_message Events::JobTagDestroyed::V1 do |message|
-      # TODO: the current event can't support this
-      # job = Job.find_by!(job_id: message.aggregate.job_id)
-      # tag = Tag.find(message.data.tag_id)
+    on_message Events::JobTagDestroyed::V2 do |message|
+      job = Job.find_by!(job_id: message.aggregate.job_id)
+      tag = Tag.find(message.data.tag_id)
 
-      # job.update!(tags: job.tags.to_set.delete(tag).to_a)
+      job.update!(tags: job.tags.to_set.delete(tag).to_a)
     end
 
     on_message Events::CareerPathCreated::V1 do |message|

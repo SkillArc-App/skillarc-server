@@ -145,9 +145,11 @@ RSpec.describe Search::SearchService do
       build(
         :message,
         aggregate_id: job_id2,
-        schema: Events::JobTagDestroyed::V1,
-        data: Events::JobTagDestroyed::Data::V1.new(
-          job_tag_id: SecureRandom.uuid
+        schema: Events::JobTagDestroyed::V2,
+        data: Events::JobTagDestroyed::Data::V2.new(
+          job_id: job_id1,
+          job_tag_id: SecureRandom.uuid,
+          tag_id: tag1.id
         )
       )
     end

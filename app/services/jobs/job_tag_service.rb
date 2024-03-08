@@ -23,9 +23,9 @@ module Jobs
       job_tag.destroy!
 
       EventService.create!(
-        event_schema: Events::JobTagDestroyed::V1,
+        event_schema: Events::JobTagDestroyed::V2,
         job_id: job_tag.job_id,
-        data: Events::JobTagDestroyed::Data::V1.new(
+        data: Events::JobTagDestroyed::Data::V2.new(
           job_tag_id: job_tag.id
         )
       )

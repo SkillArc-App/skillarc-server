@@ -72,6 +72,7 @@ module PubSubInitializer
 
     [
       DbStreamAggregator.build(Coaches::SeekerService.new, "coach_seekers"),
+      DbStreamAggregator.build(Search::SearchService.new, "search"),
       DbStreamAggregator.build(Coaches::CoachService.new, "coaches"),
       DbStreamAggregator.build(Coaches::BarrierService.new, "barriers"),
       DbStreamAggregator.build(Coaches::JobService.new, "coaches_jobs"),

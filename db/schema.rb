@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema[7.1].define(version: 2024_03_07_170931) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_11_153224) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -637,7 +636,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_07_170931) do
 
   create_table "search_saved_jobs", force: :cascade do |t|
     t.bigint "search_job_id", null: false
-    t.uuid "user_id", null: false
+    t.string "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["search_job_id"], name: "index_search_saved_jobs_on_search_job_id"

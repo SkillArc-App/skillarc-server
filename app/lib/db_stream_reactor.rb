@@ -3,8 +3,8 @@ class DbStreamReactor < DbStreamListener
     StreamListener::Kind::REACTOR
   end
 
-  def self.build(consumer, listener_name, now: Time.zone.now)
-    reactor = new(consumer, listener_name, now)
+  def self.build(consumer:, listener_name:, message_service:, now: Time.zone.now)
+    reactor = new(consumer:, listener_name:, message_service:, now:)
     StreamListener.register(listener_name, reactor)
     reactor
   end
@@ -13,8 +13,8 @@ class DbStreamReactor < DbStreamListener
 
   private
 
-  def initialize(consumer, listener_name, now)
-    super(consumer, listener_name)
+  def initialize(consumer:, listener_name:, message_service:, now:)
+    super(consumer:, listener_name:, message_service:)
     @now = now
   end
 

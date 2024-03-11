@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe CommandService do
   describe ".create!" do
     subject do
-      described_class.create!(
+      instance.create!(
         id:,
         command_schema:,
         aggregate_id:,
@@ -14,6 +14,8 @@ RSpec.describe CommandService do
       )
     end
 
+    let(:instance) { described_class.new(message_service: MessageService.new) }
+
     let(:aggregate_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
     let(:data) { Commands::SendSms::Data::V1.new(phone_number: "1234567890", message: "cool") }
@@ -22,8 +24,8 @@ RSpec.describe CommandService do
     let(:metadata) { Messages::Nothing }
     let(:id) { SecureRandom.uuid }
 
-    it "calls EventService.create! with the same data" do
-      expect(MessageService)
+    it "calls MessageService.create! with the same data" do
+      expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
           id:,

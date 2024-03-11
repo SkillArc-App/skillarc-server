@@ -4,6 +4,8 @@ RSpec.describe Jobs::JobTagService do
   describe ".create" do
     subject { described_class.create(job, tag) }
 
+    include_context "event emitter"
+
     let(:job) { create(:job) }
     let!(:tag) { create(:tag) }
 
@@ -17,7 +19,7 @@ RSpec.describe Jobs::JobTagService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::JobTagCreated::V1,
         job_id: be_present,
         data: Events::JobTagCreated::Data::V1.new(
@@ -33,6 +35,8 @@ RSpec.describe Jobs::JobTagService do
   describe ".destroy" do
     subject { described_class.destroy(job_tag) }
 
+    include_context "event emitter"
+
     let!(:job_tag) { create(:job_tag) }
 
     it "destroys the job tag" do
@@ -40,7 +44,7 @@ RSpec.describe Jobs::JobTagService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::JobTagDestroyed::V2,
         job_id: job_tag.job_id,
         data: Events::JobTagDestroyed::Data::V2.new(

@@ -170,7 +170,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
         response '202', 'saves a job' do
           before do
-            expect(EventService)
+            expect_any_instance_of(EventService)
               .to receive(:create!)
               .with(
                 event_schema: Events::JobSaved::V1,
@@ -210,7 +210,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
         response '202', 'saves a job' do
           before do
-            expect(EventService)
+            expect_any_instance_of(EventService)
               .to receive(:create!)
               .with(
                 event_schema: Events::JobUnsaved::V1,

@@ -2,52 +2,65 @@ module Coaches
   class ContextsController < ApplicationController
     include Secured
     include CoachAuth
+    include EventEmitter
 
     before_action :authorize
     before_action :coach_authorize
     before_action :set_coach, only: %i[recommend_job certify]
 
     def index
-      render json: SeekerService.new.all_seekers
+      with_event_service do
+        render json: SeekerService.new(event_service:).all_seekers
+      end
     end
 
     def show
-      render json: SeekerService.new.find_context(params[:id])
+      with_event_service do
+        render json: SeekerService.new(event_service:).find_context(params[:id])
+      end
     end
 
     def assign
       coach = Coach.find_by!(coach_id: params[:coach_id])
 
-      SeekerService.new.assign_coach(
-        context_id: params[:context_id],
-        coach_id: coach.coach_id,
-        coach_email: coach.email
-      )
+      with_event_service do
+        SeekerService.new(event_service:).assign_coach(
+          context_id: params[:context_id],
+          coach_id: coach.coach_id,
+          coach_email: coach.email
+        )
+      end
 
       head :accepted
     end
 
     def recommend_job
-      SeekerService.new.recommend_job(
-        context_id: params[:context_id],
-        job_id: params[:job_id],
-        coach:
-      )
+      with_event_service do
+        SeekerService.new(event_service:).recommend_job(
+          context_id: params[:context_id],
+          job_id: params[:job_id],
+          coach:
+        )
+      end
 
       head :accepted
     end
 
     def certify
-      SeekerService.new.certify(context_id: params[:context_id], coach:)
+      with_event_service do
+        SeekerService.new(event_service:).certify(context_id: params[:context_id], coach:)
+      end
 
       head :accepted
     end
 
     def update_skill_level
-      SeekerService.new.update_skill_level(
-        context_id: params[:context_id],
-        skill_level: params[:level]
-      )
+      with_event_service do
+        SeekerService.new(event_service:).update_skill_level(
+          context_id: params[:context_id],
+          skill_level: params[:level]
+        )
+      end
 
       head :accepted
     end

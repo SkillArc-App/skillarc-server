@@ -6,6 +6,8 @@ RSpec.describe SeekerChats do
   describe "#send_message" do
     subject { described_class.new(user).send_message(applicant_id: applicant.id, message:) }
 
+    include_context "event emitter"
+
     let(:message) { "This is a message" }
     let!(:applicant) { create(:applicant, job:, seeker:) }
     let(:seeker) { create(:seeker, user:) }
@@ -27,7 +29,7 @@ RSpec.describe SeekerChats do
     end
 
     it "creates a chat message event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::ChatMessageSent::V1,
         job_id: job.id,
         data: Events::ChatMessageSent::Data::V1.new(
@@ -46,6 +48,8 @@ RSpec.describe SeekerChats do
 
   describe "#get" do
     subject { described_class.new(user).get }
+
+    include_context "event emitter"
 
     let!(:applicant) { create(:applicant, job:, seeker:) }
     let(:job) { create(:job, employment_title: "Welder", employer:) }
@@ -90,6 +94,8 @@ RSpec.describe SeekerChats do
 
   describe "#mark_read" do
     subject { described_class.new(user).mark_read(applicant_id: applicant.id) }
+
+    include_context "event emitter"
 
     let!(:applicant_chat) { create(:applicant_chat, applicant:) }
     let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }

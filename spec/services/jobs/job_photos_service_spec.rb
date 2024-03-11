@@ -4,6 +4,8 @@ RSpec.describe Jobs::JobPhotosService do
   describe ".create" do
     subject { described_class.create(job, photo_url) }
 
+    include_context "event emitter"
+
     let(:job) { create(:job) }
     let(:photo_url) { "https://example.com/photo.jpg" }
 
@@ -23,7 +25,7 @@ RSpec.describe Jobs::JobPhotosService do
         photo_url:
       ).and_call_original
 
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::JobPhotoCreated::V1,
         job_id: be_present,
         data: be_a(Events::JobPhotoCreated::Data::V1)
@@ -36,6 +38,8 @@ RSpec.describe Jobs::JobPhotosService do
   describe ".destroy" do
     subject { described_class.destroy(job_photo) }
 
+    include_context "event emitter"
+
     let!(:job_photo) { create(:job_photo) }
 
     it "destroys the job photo" do
@@ -43,7 +47,7 @@ RSpec.describe Jobs::JobPhotosService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::JobPhotoDestroyed::V1,
         job_id: job_photo.job_id,
         data: Events::JobPhotoDestroyed::Data::V1.new(

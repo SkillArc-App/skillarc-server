@@ -1,5 +1,7 @@
 module Admin
   class JobsController < AdminController
+    include EventEmitter
+
     def index
       jobs = Job.includes(
         :applicants,
@@ -17,33 +19,8 @@ module Admin
     end
 
     def create
-      job = Jobs::JobService.new.create(
-        **params.require(:job).permit(
-          :category,
-          :employment_title,
-          :employer_id,
-          :benefits_description,
-          :responsibilities_description,
-          :employment_title,
-          :location,
-          :employment_type,
-          :hide_job,
-          :schedule,
-          :work_days,
-          :requirements_description,
-          industry: []
-        ).to_h.symbolize_keys
-      )
-
-      render json: serialize_job(job)
-    end
-
-    def update
-      job = Job.find(params[:id])
-
-      render json: serialize_job(
-        Jobs::JobService.new.update(
-          job,
+      with_event_service do
+        job = Jobs::JobService.new.create(
           **params.require(:job).permit(
             :category,
             :employment_title,
@@ -55,12 +32,41 @@ module Admin
             :employment_type,
             :hide_job,
             :schedule,
-            :work_day,
+            :work_days,
             :requirements_description,
             industry: []
           ).to_h.symbolize_keys
         )
-      )
+
+        render json: serialize_job(job)
+      end
+    end
+
+    def update
+      job = Job.find(params[:id])
+
+      with_event_service do
+        render json: serialize_job(
+          Jobs::JobService.new.update(
+            job,
+            **params.require(:job).permit(
+              :category,
+              :employment_title,
+              :employer_id,
+              :benefits_description,
+              :responsibilities_description,
+              :employment_title,
+              :location,
+              :employment_type,
+              :hide_job,
+              :schedule,
+              :work_day,
+              :requirements_description,
+              industry: []
+            ).to_h.symbolize_keys
+          )
+        )
+      end
     end
   end
 

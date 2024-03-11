@@ -1,6 +1,8 @@
 module Contact
   module CalDotCom
     class WebhooksController < ApplicationController
+      include EventEmitter
+
       def create
         key = ENV.fetch('CAL_COM_WEBHOOK_SECRET_KEY', "not-provided")
 
@@ -13,7 +15,10 @@ module Contact
         end
 
         params.permit!
-        WebhookService.handle_webhook(params.to_h)
+
+        with_event_service do
+          WebhookService.handle_webhook(params.to_h)
+        end
 
         head :accepted
       end

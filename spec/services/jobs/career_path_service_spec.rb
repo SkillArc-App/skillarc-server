@@ -4,6 +4,8 @@ RSpec.describe Jobs::CareerPathService do
   describe ".create" do
     subject { described_class.create(job, title:, lower_limit:, upper_limit:) }
 
+    include_context "event emitter"
+
     let(:job) { create(:job) }
     let(:title) { "title" }
     let(:lower_limit) { "1" }
@@ -30,7 +32,7 @@ RSpec.describe Jobs::CareerPathService do
         order: 0
       ).and_call_original
 
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::CareerPathCreated::V1,
         job_id: job.id,
         data: be_a(Events::CareerPathCreated::Data::V1)
@@ -42,6 +44,8 @@ RSpec.describe Jobs::CareerPathService do
 
   describe ".up" do
     subject { described_class.up(career_path) }
+
+    include_context "event emitter"
 
     let!(:career_path) { create(:career_path, order:) }
     let!(:upper_career_path) { create(:career_path, job: career_path.job, order: career_path.order - 1) }
@@ -59,7 +63,7 @@ RSpec.describe Jobs::CareerPathService do
       end
 
       it "does not publish events" do
-        expect(EventService).not_to receive(:create!)
+        expect_any_instance_of(EventService).not_to receive(:create!)
       end
     end
 
@@ -77,7 +81,7 @@ RSpec.describe Jobs::CareerPathService do
         order: 1
       ).and_call_original
 
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::CareerPathUpdated::V1,
         job_id: upper_career_path.job_id,
         data: be_a(Events::CareerPathUpdated::Data::V1)
@@ -88,7 +92,7 @@ RSpec.describe Jobs::CareerPathService do
         order: 0
       ).and_call_original
 
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::CareerPathUpdated::V1,
         job_id: career_path.job_id,
         data: be_a(Events::CareerPathUpdated::Data::V1)
@@ -101,6 +105,8 @@ RSpec.describe Jobs::CareerPathService do
   describe ".down" do
     subject { described_class.down(career_path) }
 
+    include_context "event emitter"
+
     let!(:career_path) { create(:career_path) }
 
     context "career path is already at the bottom" do
@@ -109,7 +115,7 @@ RSpec.describe Jobs::CareerPathService do
       end
 
       it "does not publish events" do
-        expect(EventService).not_to receive(:create!)
+        expect_any_instance_of(EventService).not_to receive(:create!)
       end
     end
 
@@ -130,7 +136,7 @@ RSpec.describe Jobs::CareerPathService do
           order: 0
         ).and_call_original
 
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::CareerPathUpdated::V1,
           job_id: lower_career_path.job_id,
           data: be_a(Events::CareerPathUpdated::Data::V1)
@@ -141,7 +147,7 @@ RSpec.describe Jobs::CareerPathService do
           order: 1
         ).and_call_original
 
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::CareerPathUpdated::V1,
           job_id: career_path.job_id,
           data: be_a(Events::CareerPathUpdated::Data::V1)
@@ -155,6 +161,8 @@ RSpec.describe Jobs::CareerPathService do
   describe ".destroy" do
     subject { described_class.destroy(career_path) }
 
+    include_context "event emitter"
+
     let!(:career_path) { create(:career_path) }
     let!(:higher_career_path) { create(:career_path, job: career_path.job, order: career_path.order + 1) }
 
@@ -167,7 +175,7 @@ RSpec.describe Jobs::CareerPathService do
     end
 
     it "publishes events" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::CareerPathUpdated::V1,
         job_id: higher_career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
@@ -180,7 +188,7 @@ RSpec.describe Jobs::CareerPathService do
         )
       ).and_call_original
 
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::CareerPathDestroyed::V1,
         job_id: career_path.job_id,
         data: Events::CareerPathDestroyed::Data::V1.new(

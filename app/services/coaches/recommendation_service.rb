@@ -8,7 +8,7 @@ module Coaches
       csc = CoachSeekerContext.find_by(seeker_id: message.aggregate_id)
       return if csc&.phone_number.nil?
 
-      CommandService.create!(
+      command_service.create!(
         command_schema: Commands::SendSms::V1,
         seeker_id: csc.seeker_id,
         trace_id: message.trace_id,

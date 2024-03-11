@@ -25,6 +25,7 @@ require "shared_examples/employer_secure_endpoint"
 require "shared_examples/seeker_secure_endpoint"
 require "shared_examples/default_headers_context"
 require "shared_examples/event_consumer"
+require "shared_examples/event_emitter"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

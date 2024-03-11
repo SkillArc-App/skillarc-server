@@ -31,7 +31,7 @@ RSpec.describe ApplicationController, type: :controller do
         .to receive(:build)
         .and_return(auth_client)
 
-      expect(EventService)
+      expect_any_instance_of(EventService)
         .to receive(:create!)
         .with(
           user_id: be_a(String),

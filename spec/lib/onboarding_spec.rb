@@ -4,6 +4,8 @@ require 'rails_helper'
 RSpec.describe Onboarding do
   subject { described_class.new(onboarding_session:) }
 
+  include_context "event emitter"
+
   let!(:onboarding_session) do
     user.onboarding_session
   end
@@ -62,8 +64,8 @@ RSpec.describe Onboarding do
       end
 
       it "publishes a seeker created event" do
-        allow(EventService).to receive(:create!)
-        expect(EventService)
+        allow_any_instance_of(EventService).to receive(:create!)
+        expect_any_instance_of(EventService)
           .to receive(:create!)
           .with(
             user_id: user.id,
@@ -82,8 +84,8 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(EventService).to receive(:create!)
-        expect(EventService)
+        allow_any_instance_of(EventService).to receive(:create!)
+        expect_any_instance_of(EventService)
           .to receive(:create!)
           .with(
             user_id: user.id,
@@ -140,8 +142,8 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(EventService).to receive(:create!)
-        expect(EventService)
+        allow_any_instance_of(EventService).to receive(:create!)
+        expect_any_instance_of(EventService)
           .to receive(:create!)
           .with(
             user_id: user.id,
@@ -222,7 +224,7 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(EventService).to receive(:create!)
+        allow_any_instance_of(EventService).to receive(:create!)
         expect(Events::EducationExperienceCreated::Data::V1)
           .to receive(:new)
           .with(
@@ -234,7 +236,7 @@ RSpec.describe Onboarding do
             gpa: "4.0",
             seeker_id: be_present # TODO: Come up with a way to check the profile id as well
           ).and_call_original
-        expect(EventService)
+        expect_any_instance_of(EventService)
           .to receive(:create!)
           .with(
             user_id: user.id,
@@ -294,8 +296,8 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(EventService).to receive(:create!)
-        expect(EventService)
+        allow_any_instance_of(EventService).to receive(:create!)
+        expect_any_instance_of(EventService)
           .to receive(:create!)
           .with(
             user_id: user.id,
@@ -394,8 +396,8 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow(EventService).to receive(:create!)
-        expect(EventService)
+        allow_any_instance_of(EventService).to receive(:create!)
+        expect_any_instance_of(EventService)
           .to receive(:create!)
           .with(
             user_id: user.id,
@@ -540,8 +542,8 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
-          allow(EventService).to receive(:create!)
-          expect(EventService)
+          allow_any_instance_of(EventService).to receive(:create!)
+          expect_any_instance_of(EventService)
             .to receive(:create!)
             .with(
               user_id: user.id,
@@ -646,8 +648,8 @@ RSpec.describe Onboarding do
       end
 
       it "does not duplicate job calls" do
-        allow(EventService).to receive(:create!)
-        expect(EventService)
+        allow_any_instance_of(EventService).to receive(:create!)
+        expect_any_instance_of(EventService)
           .to receive(:create!)
           .with(
             user_id: user.id,

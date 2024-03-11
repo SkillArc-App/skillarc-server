@@ -4,6 +4,8 @@ RSpec.describe Seekers::UserService do
   describe ".update" do
     subject { described_class.new(user_id).update(about:, first_name:, last_name:, phone_number:, zip_code:) }
 
+    include_context "event emitter"
+
     let(:user_id) { user.id }
     let(:user) { create(:user) }
     let!(:seeker) { create(:seeker, user:) }
@@ -22,7 +24,8 @@ RSpec.describe Seekers::UserService do
     end
 
     it "publishes a user_updated event" do
-      expect(EventService).to receive(:create!).with(
+      allow_any_instance_of(EventService).to receive(:create!)
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::UserUpdated::V1,
         user_id:,
         data: Events::UserUpdated::Data::V1.new(
@@ -34,7 +37,7 @@ RSpec.describe Seekers::UserService do
         occurred_at: be_a(Time)
       ).and_call_original
 
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::SeekerUpdated::V1,
         seeker_id: seeker.id,
         data: Events::SeekerUpdated::Data::V1.new(

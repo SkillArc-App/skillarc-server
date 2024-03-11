@@ -2,8 +2,8 @@ module Contact
   class SmsService < MessageConsumer
     def reset_for_replay; end
 
-    def initialize(sms_service: Sms::Gateway.build)
-      super()
+    def initialize(sms_service: Sms::Gateway.build, **params)
+      super(**params)
       @sms_service = sms_service
     end
 
@@ -13,7 +13,7 @@ module Contact
         message: message.data.message
       )
 
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::SmsSent::V1,
         aggregate_id: message.data.phone_number,
         trace_id: message.trace_id,

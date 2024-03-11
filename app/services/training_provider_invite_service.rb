@@ -1,10 +1,12 @@
 class TrainingProviderInviteService
+  include EventEmitter
+
   def initialize(invite)
     @invite = invite
   end
 
   def accept
-    EventService.create!(
+    event_service.create!(
       event_schema: Events::TrainingProviderInviteAccepted::V1,
       training_provider_id: invite.training_provider_id,
       data: Events::TrainingProviderInviteAccepted::Data::V1.new(

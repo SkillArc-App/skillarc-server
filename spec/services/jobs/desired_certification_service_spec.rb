@@ -4,6 +4,8 @@ RSpec.describe Jobs::DesiredCertificationService do
   describe ".create" do
     subject { described_class.create(job, master_certification_id) }
 
+    include_context "event emitter"
+
     let(:job) { create(:job) }
     let(:master_certification_id) { create(:master_certification).id }
 
@@ -18,7 +20,7 @@ RSpec.describe Jobs::DesiredCertificationService do
         master_certification_id:
       ).and_call_original
 
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::DesiredCertificationCreated::V1,
         job_id: job.id,
         data: be_a(Events::DesiredCertificationCreated::Data::V1)
@@ -31,6 +33,8 @@ RSpec.describe Jobs::DesiredCertificationService do
   describe ".destroy" do
     subject { described_class.destroy(desired_certification) }
 
+    include_context "event emitter"
+
     let!(:desired_certification) { create(:desired_certification) }
 
     it "destroys the desired certification" do
@@ -38,7 +42,7 @@ RSpec.describe Jobs::DesiredCertificationService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::DesiredCertificationDestroyed::V1,
         job_id: desired_certification.job_id,
         data: Events::DesiredCertificationDestroyed::Data::V1.new(

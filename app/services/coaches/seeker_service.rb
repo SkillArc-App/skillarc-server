@@ -27,7 +27,7 @@ module Coaches
     end
 
     def add_lead(coach:, lead_id:, phone_number:, first_name:, last_name:, email: nil, now: Time.zone.now) # rubocop:disable Metrics/ParameterLists
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::LeadAdded::V1,
         coach_id: coach.id,
         data: Events::LeadAdded::Data::V1.new(
@@ -43,7 +43,7 @@ module Coaches
     end
 
     def add_note(context_id:, coach:, note:, note_id:, now: Time.zone.now)
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::NoteAdded::V2,
         context_id:,
         data: Events::NoteAdded::Data::V1.new(
@@ -57,7 +57,7 @@ module Coaches
     end
 
     def delete_note(context_id:, coach:, note_id:, now: Time.zone.now)
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::NoteDeleted::V2,
         context_id:,
         data: Events::NoteDeleted::Data::V1.new(
@@ -70,7 +70,7 @@ module Coaches
     end
 
     def modify_note(context_id:, coach:, note_id:, note:, now: Time.zone.now)
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::NoteModified::V2,
         context_id:,
         data: Events::NoteModified::Data::V1.new(
@@ -86,7 +86,7 @@ module Coaches
     def certify(context_id:, coach:, now: Time.zone.now)
       user = User.find(coach.user_id)
 
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::SeekerCertified::V1,
         seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
         data: Events::SeekerCertified::Data::V1.new(
@@ -100,7 +100,7 @@ module Coaches
     end
 
     def recommend_job(context_id:, job_id:, coach:, now: Time.zone.now)
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::JobRecommended::V2,
         context_id:,
         data: Events::JobRecommended::Data::V1.new(
@@ -112,7 +112,7 @@ module Coaches
     end
 
     def update_barriers(context_id:, barriers:, now: Time.zone.now)
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::BarrierUpdated::V2,
         context_id:,
         data: Events::BarrierUpdated::Data::V1.new(
@@ -123,7 +123,7 @@ module Coaches
     end
 
     def assign_coach(context_id:, coach_id:, coach_email:, now: Time.zone.now)
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::CoachAssigned::V2,
         context_id:,
         data: Events::CoachAssigned::Data::V1.new(
@@ -135,7 +135,7 @@ module Coaches
     end
 
     def update_skill_level(context_id:, skill_level:, now: Time.zone.now)
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::SkillLevelUpdated::V2,
         context_id:,
         data: Events::SkillLevelUpdated::Data::V1.new(

@@ -1,6 +1,10 @@
 class CommandService
-  def self.create!(command_schema:, data:, trace_id:, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
-    MessageService.create!(
+  def initialize(message_service: MessageService.new)
+    @message_service = message_service
+  end
+
+  def create!(command_schema:, data:, trace_id:, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    message_service.create!(
       message_schema: command_schema,
       trace_id:,
       id:,
@@ -10,4 +14,8 @@ class CommandService
       **
     )
   end
+
+  private
+
+  attr_reader :message_service
 end

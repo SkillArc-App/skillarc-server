@@ -1,13 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe DbStreamAggregator do
-  let(:consumer) { double(:consumer, handle_message: nil, reset_for_replay: nil) }
+  let(:consumer) do
+    mc = MessageConsumer.new
+    allow(mc).to receive(:handle_message).and_return(nil)
+    allow(mc).to receive(:reset_for_replay)
+    mc
+  end
 
   let!(:event) { create(:event, :user_created, occurred_at: event_occurred_at) }
   let!(:event2) { create(:event, :user_created, occurred_at: event_occurred_at + 2.days) }
 
   let(:event_occurred_at) { Date.new(2020, 1, 1) }
-  let(:instance) { described_class.build(consumer, "listener_name") }
+  let(:instance) { described_class.build(consumer:, listener_name: "listener_name", message_service:) }
+  let(:message_service) { MessageService.new }
 
   describe "#play" do
     subject { instance.play }
@@ -18,6 +24,49 @@ RSpec.describe DbStreamAggregator do
       expect { subject }.to change {
         ListenerBookmark.find_by(consumer_name: "listener_name")&.event_id
       }.from(nil).to(event2.id)
+    end
+
+    it "publishes the new events" do
+      id = SecureRandom.uuid
+      trace_id = SecureRandom.uuid
+      occurred_at = Time.zone.local(2020, 1, 1)
+
+      event_lambda = lambda do
+        EventService.new(message_service:).create!(
+          day: "day",
+          event_schema: Events::DayElapsed::V1,
+          message_service:,
+          id:,
+          trace_id:,
+          occurred_at:,
+          data: Events::DayElapsed::Data::V1.new(
+            date: Time.zone.today,
+            day_of_week: Time.zone.today.strftime("%A").downcase
+          )
+        )
+      end
+
+      allow(consumer).to receive(:handle_message).with(
+        event.message
+      ).and_return(event_lambda.call)
+
+      expected_message = Message.new(
+        id:,
+        trace_id:,
+        aggregate: Aggregates::Day.new(day: "day"),
+        schema: Events::DayElapsed::V1,
+        data: Events::DayElapsed::Data::V1.new(
+          date: Time.zone.today,
+          day_of_week: Time.zone.today.strftime("%A").downcase
+        ),
+        metadata: Messages::Nothing,
+        occurred_at:
+      )
+
+      expect_any_instance_of(Pubsub).to receive(:publish).with(message: expected_message).and_call_original
+      expect(BroadcastEventJob).to receive(:perform_later).with(expected_message)
+
+      subject
     end
 
     context "when the first event raises an error" do
@@ -151,7 +200,7 @@ RSpec.describe DbStreamAggregator do
 
   describe ".get_listener" do
     it "retrieves a listener if created" do
-      described_class.build(consumer, "example")
+      described_class.build(consumer:, listener_name: "example", message_service: double)
 
       expect(StreamListener.get_listener("example")).to be_a(described_class)
       expect(StreamListener.get_listener(SecureRandom.uuid)).to eq(nil)

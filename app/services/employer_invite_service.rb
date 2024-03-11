@@ -1,10 +1,12 @@
 class EmployerInviteService
+  include EventEmitter
+
   def initialize(employer_invite)
     @employer_invite = employer_invite
   end
 
   def accept
-    EventService.create!(
+    event_service.create!(
       event_schema: Events::EmployerInviteAccepted::V1,
       employer_id: employer_invite.employer_id,
       data: Events::EmployerInviteAccepted::Data::V1.new(

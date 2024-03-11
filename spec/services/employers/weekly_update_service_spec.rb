@@ -4,7 +4,7 @@ RSpec.describe Employers::WeeklyUpdateService do
   it_behaves_like "an event consumer"
 
   describe "day elapsed" do
-    subject { described_class.new.handle_message(message) }
+    subject { described_class.new(command_service: CommandService.new).handle_message(message) }
 
     let(:message) do
       build(
@@ -52,7 +52,7 @@ RSpec.describe Employers::WeeklyUpdateService do
           )
         ]
 
-        expect(CommandService)
+        expect_any_instance_of(CommandService)
           .to receive(:create!)
           .with(
             command_schema: Commands::SendWeeklyEmployerUpdate::V1,
@@ -66,7 +66,7 @@ RSpec.describe Employers::WeeklyUpdateService do
             )
           ).and_call_original
 
-        expect(CommandService)
+        expect_any_instance_of(CommandService)
           .to receive(:create!)
           .with(
             command_schema: Commands::SendWeeklyEmployerUpdate::V1,
@@ -88,7 +88,7 @@ RSpec.describe Employers::WeeklyUpdateService do
       let(:date) { Date.new(2024, 2, 21) }
 
       it "does not call SmtpService#send_weekly_employer_update" do
-        expect(CommandService).not_to receive(:create!)
+        expect_any_instance_of(CommandService).not_to receive(:create!)
 
         subject
       end

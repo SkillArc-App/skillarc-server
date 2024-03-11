@@ -11,6 +11,8 @@ RSpec.describe HookService do
       )
     end
 
+    include_context "event emitter"
+
     let(:email) { user.email }
     let(:title) { Faker::Lorem.sentence }
     let(:body) { Faker::Lorem.paragraph }
@@ -19,7 +21,7 @@ RSpec.describe HookService do
     let(:user) { create(:user) }
 
     it "enqueues a notification created event job" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::NotificationCreated::V1,
         user_id: user.id,
         data: Events::NotificationCreated::Data::V1.new(

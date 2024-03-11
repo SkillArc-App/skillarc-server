@@ -1,5 +1,7 @@
 module Jobs
   class TestimonialService
+    extend EventEmitter
+
     def self.create(job_id:, name:, title:, testimonial:, photo_url:)
       t = Testimonial.create!(
         id: SecureRandom.uuid,
@@ -10,7 +12,7 @@ module Jobs
         photo_url:
       )
 
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::TestimonialCreated::V1,
         job_id:,
         data: Events::TestimonialCreated::Data::V1.new(
@@ -30,7 +32,7 @@ module Jobs
     def self.destroy(testimonial)
       testimonial.destroy!
 
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::TestimonialDestroyed::V1,
         job_id: testimonial.job_id,
         data: Events::TestimonialDestroyed::Data::V1.new(

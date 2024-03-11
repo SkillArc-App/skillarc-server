@@ -6,6 +6,8 @@ RSpec.describe EducationExperienceService do
   describe "#create" do
     subject { described_class.new(seeker).create(organization_name:, title:, graduation_date:, gpa:, activities:) }
 
+    include_context "event emitter"
+
     let(:organization_name) { "University of Cincinnati" }
     let(:title) { "Student" }
     let(:graduation_date) { Date.new(2019, 5, 1).to_s }
@@ -29,7 +31,7 @@ RSpec.describe EducationExperienceService do
           seeker_id: seeker.id
         ).and_call_original
 
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::EducationExperienceCreated::V1,
         user_id: seeker.user.id,
         data: be_a(Events::EducationExperienceCreated::Data::V1),
@@ -42,6 +44,8 @@ RSpec.describe EducationExperienceService do
 
   describe "#update" do
     subject { described_class.new(seeker).update(id:, organization_name:, title:, graduation_date:, gpa:, activities:) }
+
+    include_context "event emitter"
 
     let!(:education_experience) do
       create(
@@ -71,7 +75,7 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::EducationExperienceUpdated::V1,
         user_id: seeker.user.id,
         data: Events::EducationExperienceUpdated::Data::V1.new(
@@ -93,6 +97,8 @@ RSpec.describe EducationExperienceService do
   describe "#destroy" do
     subject { described_class.new(seeker).destroy(id:) }
 
+    include_context "event emitter"
+
     let!(:education_experience) { create(:education_experience, seeker:) }
 
     let(:id) { education_experience.id }
@@ -102,7 +108,7 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::EducationExperienceDeleted::V1,
         seeker_id: seeker.id,
         data: Events::EducationExperienceDeleted::Data::V1.new(

@@ -137,7 +137,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:updated_note) { "This note was updated" }
   let(:employer_name1) { "Cool company" }
   let(:employer_name2) { "Fun company" }
-  let(:consumer) { described_class.new }
+  let(:consumer) { described_class.new(event_service: EventService.new) }
 
   it_behaves_like "an event consumer"
 
@@ -512,7 +512,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       let(:now) { Time.zone.local(2020, 1, 1) }
 
       it "creates an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::LeadAdded::V1,
           coach_id: coach.id,
           data: Events::LeadAdded::Data::V1.new(
@@ -539,7 +539,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       let(:context_id) { user_id }
 
       it "creates an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::NoteAdded::V2,
           context_id:,
           data: Events::NoteAdded::Data::V1.new(
@@ -564,7 +564,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       let(:context_id) { user_id }
 
       it "creates an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::NoteDeleted::V2,
           context_id:,
           data: Events::NoteDeleted::Data::V1.new(
@@ -587,7 +587,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       let(:context_id) { user_id }
 
       it "creates an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::NoteModified::V2,
           context_id:,
           data: Events::NoteModified::Data::V1.new(
@@ -612,7 +612,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       let(:context_id) { user_id }
 
       it "creates an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::JobRecommended::V2,
           context_id:,
           data: Events::JobRecommended::Data::V1.new(
@@ -635,7 +635,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       let(:context_id) { user_id }
 
       it "creates an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::SeekerCertified::V1,
           seeker_id:,
           data: Events::SeekerCertified::Data::V1.new(
@@ -664,10 +664,9 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
           .with(
             barriers: [barrier.barrier_id]
           )
-          .twice
           .and_call_original
 
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::BarrierUpdated::V2,
           context_id:,
           data: be_a(Events::BarrierUpdated::Data::V1),
@@ -686,7 +685,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       let(:context_id) { user_id }
 
       it "creates an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::CoachAssigned::V2,
           context_id:,
           data: Events::CoachAssigned::Data::V1.new(
@@ -707,7 +706,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
       let(:context_id) { user_id }
 
       it "creates an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::SkillLevelUpdated::V2,
           context_id:,
           data: Events::SkillLevelUpdated::Data::V1.new(

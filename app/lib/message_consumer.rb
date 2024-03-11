@@ -2,6 +2,13 @@ class MessageConsumer
   NotSchemaError = Class.new(StandardError)
   NotValidSubscriberType = Class.new(StandardError)
 
+  def initialize(event_service: nil, command_service: nil)
+    @command_service = command_service
+    @event_service = event_service
+  end
+
+  attr_writer :command_service, :event_service
+
   def call(message:)
     handle_message(message)
   end
@@ -51,4 +58,8 @@ class MessageConsumer
   def self.handled_messages_sync
     @handled_messages_sync ||= []
   end
+
+  private
+
+  attr_reader :event_service, :command_service
 end

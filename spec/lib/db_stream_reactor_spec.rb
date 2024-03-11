@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe DbStreamReactor do
-  let(:consumer) { double(:consumer, handle_message: nil, reset_for_replay: nil) }
+  let(:consumer) { MessageConsumer.new }
 
   let!(:event) { create(:event, :user_created, occurred_at: event_occurred_at) }
   let!(:event2) { create(:event, :user_created, occurred_at: event_occurred_at + 2.days) }
 
   let(:event_occurred_at) { Date.new(2020, 1, 1) }
-  let(:instance) { described_class.build(consumer, "listener_name", now:) }
+  let(:instance) { described_class.build(consumer:, listener_name: "listener_name", message_service: MessageService.new, now:) }
   let(:now) { Time.zone.now }
 
   describe "#play" do
@@ -177,7 +177,7 @@ RSpec.describe DbStreamReactor do
 
   describe ".get_listener" do
     it "retrieves a listener if created" do
-      described_class.build(consumer, "example")
+      described_class.build(consumer:, listener_name: "example", message_service: MessageService.new)
 
       expect(StreamListener.get_listener("example")).to be_a(described_class)
       expect(StreamListener.get_listener(SecureRandom.uuid)).to eq(nil)

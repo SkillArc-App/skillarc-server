@@ -1,8 +1,10 @@
 module Contact
   module CalDotCom
     class WebhookService
+      extend EventEmitter
+
       def self.handle_webhook(webhook)
-        EventService.create!(
+        event_service.create!(
           event_schema: Events::CalWebhookRecieved::V1,
           integration: "cal.com",
           data: Events::CalWebhookRecieved::Data::V1.new(

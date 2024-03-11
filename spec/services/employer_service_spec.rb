@@ -4,6 +4,8 @@ RSpec.describe EmployerService do
   describe "#create" do
     subject { described_class.new.create(params) }
 
+    include_context "event emitter"
+
     let(:params) do
       {
         name: "Blocktrain",
@@ -25,7 +27,7 @@ RSpec.describe EmployerService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::EmployerCreated::V1,
         employer_id: be_present,
         data: Events::EmployerCreated::Data::V1.new(
@@ -42,6 +44,8 @@ RSpec.describe EmployerService do
 
   describe "#update" do
     subject { described_class.new.update(employer_id: employer.id, params:) }
+
+    include_context "event emitter"
 
     let!(:employer) do
       create(
@@ -76,7 +80,7 @@ RSpec.describe EmployerService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::EmployerUpdated::V1,
         employer_id: employer.id,
         data: Events::EmployerUpdated::Data::V1.new(

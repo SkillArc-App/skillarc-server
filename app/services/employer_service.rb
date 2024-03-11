@@ -1,8 +1,10 @@
 class EmployerService
+  include EventEmitter
+
   def create(params)
     e = Employer.create!(**params, id: SecureRandom.uuid)
 
-    EventService.create!(
+    event_service.create!(
       event_schema: Events::EmployerCreated::V1,
       employer_id: e.id,
       data: Events::EmployerCreated::Data::V1.new(
@@ -21,7 +23,7 @@ class EmployerService
 
     e.update!(**params)
 
-    EventService.create!(
+    event_service.create!(
       event_schema: Events::EmployerUpdated::V1,
       employer_id: e.id,
       data: Events::EmployerUpdated::Data::V1.new(

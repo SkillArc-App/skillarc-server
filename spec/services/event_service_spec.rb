@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe EventService do
   describe ".create!" do
     subject do
-      described_class.create!(
+      instance.create!(
         id:,
         event_schema:,
         aggregate_id:,
@@ -14,6 +14,8 @@ RSpec.describe EventService do
       )
     end
 
+    let(:instance) { described_class.new(message_service: MessageService.new) }
+
     let(:aggregate_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
     let(:data) { Events::UserCreated::Data::V1.new }
@@ -22,8 +24,8 @@ RSpec.describe EventService do
     let(:metadata) { Messages::Nothing }
     let(:id) { SecureRandom.uuid }
 
-    it "calls EventService.create! with the same data" do
-      expect(MessageService)
+    it "calls MessageService.create! with the same data" do
+      expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
           id:,

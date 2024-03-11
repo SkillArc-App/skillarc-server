@@ -1,3 +1,5 @@
+event_service = EventService.new
+
 turner_employer = Employer.create!(
   id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
   name: 'Turner Construction Company',
@@ -40,7 +42,7 @@ recruiter_user = User.create!(
   sub: 'recruitersub'
 )
 
-EventService.create!(
+event_service.create!(
   user_id: recruiter_user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
@@ -753,7 +755,7 @@ trained_seeker_with_reference = Seeker.create!(
   )
 )
 
-EventService.create!(
+event_service.create!(
   user_id: trained_seeker_with_reference.user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
@@ -776,7 +778,7 @@ trained_seeker = Seeker.create!(
   )
 )
 
-EventService.create!(
+event_service.create!(
   user_id: trained_seeker.user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
@@ -799,7 +801,7 @@ seeker_with_profile = Seeker.create!(
   )
 )
 
-EventService.create!(
+event_service.create!(
   user_id: seeker_with_profile.user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
@@ -863,7 +865,7 @@ trainer = User.create!(
   sub: 'megsub'
 )
 
-EventService.create!(
+event_service.create!(
   user_id: trainer.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
@@ -890,7 +892,7 @@ trainer_with_reference = User.create!(
   sub: 'billsub'
 )
 
-EventService.create!(
+event_service.create!(
   user_id: trainer_with_reference.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
@@ -910,7 +912,7 @@ admin_user = User.create!(
   sub: 'jakesub'
 )
 
-EventService.create!(
+event_service.create!(
   user_id: admin_user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
@@ -1028,7 +1030,7 @@ coach_user = User.create!(
   sub: 'coachsub'
 )
 
-EventService.create!(
+event_service.create!(
   user_id: coach_user.id,
   event_schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Contact::SmtpService do
   describe "#handle_message" do
-    subject { described_class.new.handle_message(message) }
+    subject { described_class.new(event_service: EventService.new).handle_message(message) }
 
     context "when the message is Commands::NotifyEmployerOfApplicant::V1" do
       let(:message) do
@@ -36,7 +36,7 @@ RSpec.describe Contact::SmtpService do
       end
 
       it "publishes an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::SmtpSent::V1,
           contact: "recruiter@skillarc.com",
           trace_id: message.trace_id,
@@ -99,7 +99,7 @@ RSpec.describe Contact::SmtpService do
       end
 
       it "publishes an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::SmtpSent::V1,
           contact: "foo@bar.baz",
           trace_id: message.trace_id,

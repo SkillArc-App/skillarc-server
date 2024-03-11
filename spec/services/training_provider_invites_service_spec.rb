@@ -3,12 +3,14 @@ require 'rails_helper'
 RSpec.describe TrainingProviderInviteService do
   subject { described_class.new(training_provider_invite) }
 
+  include_context "event emitter"
+
   let(:training_provider_invite) { create(:training_provider_invite, email: user.email) }
   let!(:user) { create(:user) }
 
   describe "#accept" do
     it "creates an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::TrainingProviderInviteAccepted::V1,
         training_provider_id: training_provider_invite.training_provider_id,
         data: Events::TrainingProviderInviteAccepted::Data::V1.new(

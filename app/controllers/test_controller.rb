@@ -91,6 +91,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     job = FactoryBot.create(:job, employer: recruiter.employer)
     employers_job = FactoryBot.create(:employers_job, job_id: job.id, employer: employers_employer, employment_title: job.employment_title)
+    search_job = FactoryBot.create(:search__job, job_id: job.id, employment_title: job.employment_title, employer_id: employer.id, employer_name: employer.name)
 
     applicant = FactoryBot.create(:applicant, job:)
     FactoryBot.create(
@@ -104,6 +105,14 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       phone_number: applicant.seeker.user.phone_number,
       status: applicant.status.status,
       status_as_of: Time.zone.now
+    )
+    FactoryBot.create(
+      :search__application,
+      search_job:,
+      status: applicant.status.status,
+      application_id: applicant.id,
+      seeker_id: applicant.seeker.id,
+      job_id: job.id
     )
 
     Coaches::CoachSeekerContext.create!(
@@ -198,6 +207,8 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     job = FactoryBot.create(:job, employment_title: SecureRandom.uuid, employer:)
     FactoryBot.create(:employers_job, job_id: job.id, employer: employers_employer, employment_title: job.employment_title)
 
+    FactoryBot.create(:search__job, job_id: job.id, employment_title: job.employment_title, employer_id: employer.id, employer_name: employer.name)
+
     render json: job
   end
 
@@ -229,6 +240,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     job = FactoryBot.create(:job, employer:)
     FactoryBot.create(:employers_job, job_id: job.id, employer: employers_employer, employment_title: job.employment_title)
+    FactoryBot.create(:search__job, job_id: job.id, employment_title: job.employment_title, employer_id: employer.id, employer_name: employer.name)
 
     FactoryBot.create(:desired_skill, job:)
 

@@ -10,6 +10,8 @@ class DbStreamListener < StreamListener
   end
 
   def play
+    error = nil
+
     bookmark.with_lock do
       events = unplayed_events
 
@@ -23,11 +25,13 @@ class DbStreamListener < StreamListener
           last_handled_event = event
         end
       rescue StandardError => e
-        Sentry.capture_exception(e)
+        error = e
       ensure
         update_bookmark(last_handled_event) if last_handled_event
       end
     end
+
+    raise error if error.present?
   end
 
   def next_event

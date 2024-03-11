@@ -166,7 +166,7 @@ module Search
       data = message.data
       return unless data.order&.zero?
 
-      job = Job.find_by!(job_id: message.job_id)
+      job = Job.find_by!(job_id: message.aggregate.job_id)
 
       job.update!(
         starting_lower_pay: data.lower_limit.to_i,

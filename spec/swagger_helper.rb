@@ -495,6 +495,81 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
+          search_job: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              category: {
+                type: :string,
+                enum: Job::Categories::ALL
+              },
+              employmentTitle: {
+                type: :string
+              },
+              industries: {
+                type: :array,
+                items: {
+                  type: :string,
+                  enum: Job::Industries::ALL
+                }
+              },
+              startingPay: {
+                type: :object,
+                properties: {
+                  employmentType: {
+                    type: :string,
+                    enum: Job::EmploymentTypes::ALL
+                  },
+                  upperLimit: {
+                    type: :integer,
+                    nullable: true
+                  },
+                  lowerLimit: {
+                    type: :integer,
+                    nullable: true
+                  }
+                }
+              },
+              tags: {
+                type: :array,
+                item: {
+                  type: :string
+                }
+              },
+              applicationStatus: {
+                type: :string,
+                enum: ApplicantStatus::StatusTypes::ALL,
+                nullable: true
+              },
+              elevatorPitch: {
+                type: :string,
+                nullable: true
+              },
+              saved: {
+                type: :boolean,
+                nullable: true
+              },
+              employer: {
+                type: :object,
+                properties: {
+                  id: {
+                    type: :string,
+                    format: :uuid
+                  },
+                  name: {
+                    type: :string
+                  },
+                  logoUrl: {
+                    type: :string,
+                    nullable: true
+                  }
+                }
+              }
+            }
+          },
           user: {
             type: :object,
             additionalProperties: true,

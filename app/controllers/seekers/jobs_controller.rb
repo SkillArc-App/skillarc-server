@@ -26,7 +26,7 @@ module Seekers
         )
       )
 
-      render json: { success: true }
+      head :accepted
     end
 
     def unsave
@@ -40,7 +40,7 @@ module Seekers
         )
       )
 
-      render json: { success: true }
+      head :accepted
     end
 
     private

@@ -56,6 +56,29 @@ RSpec.shared_examples "a seeker secured endpoint" do
   end
 end
 
+RSpec.shared_context "seeker authenticated openapi" do
+  let!(:user) do
+    User.find_or_create_by!(
+      id: '1a7d78bd-ae41-4d09-95d5-0b417efbcb7f',
+      first_name: 'Jake',
+      last_name: 'Not-Onboard',
+      email: 'jake@statefarm.com',
+      sub: 'jakesub'
+    )
+  end
+  let!(:seeker) { create(:seeker, user:) }
+  let(:Authorization) { "Bearer #{user.sub}" }
+
+  around do |example|
+    original = ENV.fetch("MOCK_AUTH", nil)
+    ENV["MOCK_AUTH"] = "true"
+
+    example.run
+
+    ENV["MOCK_AUTH"] = original
+  end
+end
+
 RSpec.shared_examples "seeker spec unauthenticated openapi" do
   let(:Authorization) { nil }
 

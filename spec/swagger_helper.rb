@@ -506,6 +506,9 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 type: :string,
                 enum: Job::Categories::ALL
               },
+              location: {
+                type: :string
+              },
               employmentTitle: {
                 type: :string
               },

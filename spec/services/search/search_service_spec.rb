@@ -296,6 +296,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         category: Job::Categories::MARKETPLACE,
         employment_title: "Senior Plumber",
         industries: nil,
+        location: "Columbus, OH",
         starting_pay: {
           employment_type: Job::EmploymentTypes::FULLTIME,
           lower_limit: 17,
@@ -318,6 +319,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         category: Job::Categories::STAFFING,
         employment_title: "Mechanic",
         industries: [Job::Industries::CONSTRUCTION, Job::Industries::MANUFACTURING],
+        location: "Columbus, OH",
         starting_pay: {
           employment_type: Job::EmploymentTypes::PARTTIME,
           lower_limit: 12,
@@ -427,6 +429,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               category: Job::Categories::STAFFING,
               employment_title: "Mechanic",
               industries: [Job::Industries::CONSTRUCTION, Job::Industries::MANUFACTURING],
+              location: "Columbus, OH",
               starting_pay: {
                 employment_type: Job::EmploymentTypes::PARTTIME,
                 lower_limit: 12,
@@ -447,6 +450,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               category: Job::Categories::MARKETPLACE,
               employment_title: "Senior Plumber",
               industries: nil,
+              location: "Columbus, OH",
               starting_pay: {
                 employment_type: Job::EmploymentTypes::FULLTIME,
                 lower_limit: 17,
@@ -479,6 +483,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               category: Job::Categories::STAFFING,
               employment_title: "Mechanic",
               industries: [Job::Industries::CONSTRUCTION, Job::Industries::MANUFACTURING],
+              location: "Columbus, OH",
               starting_pay: {
                 employment_type: Job::EmploymentTypes::PARTTIME,
                 lower_limit: 12,
@@ -499,6 +504,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               category: Job::Categories::MARKETPLACE,
               employment_title: "Senior Plumber",
               industries: nil,
+              location: "Columbus, OH",
               starting_pay: {
                 employment_type: Job::EmploymentTypes::FULLTIME,
                 lower_limit: 17,

@@ -1484,6 +1484,8 @@ components:
           enum:
           - marketplace
           - staffing
+        location:
+          type: string
         employmentTitle:
           type: string
         industries:

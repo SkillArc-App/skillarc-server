@@ -85,6 +85,7 @@ module Search
           category: job.category,
           employment_title: job.employment_title,
           industries: job.industries,
+          location: job.location,
           starting_pay: {
             employment_type: job.employment_type,
             upper_limit: job.starting_upper_pay,

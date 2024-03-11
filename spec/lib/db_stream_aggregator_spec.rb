@@ -26,9 +26,7 @@ RSpec.describe DbStreamAggregator do
           event.message
         ).and_raise(StandardError)
 
-        expect(Sentry).to receive(:capture_exception).with(StandardError)
-
-        subject
+        expect { subject }.to raise_error(StandardError)
 
         expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(nil)
       end
@@ -44,9 +42,7 @@ RSpec.describe DbStreamAggregator do
           event2.message
         ).and_raise(StandardError)
 
-        expect(Sentry).to receive(:capture_exception).with(StandardError)
-
-        subject
+        expect { subject }.to raise_error(StandardError)
 
         expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(event.id)
       end

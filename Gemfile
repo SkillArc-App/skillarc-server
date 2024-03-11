@@ -3,7 +3,6 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.2.2"
 
-gem 'blueprinter'
 gem "bootsnap", require: false
 gem 'e164'
 gem "importmap-rails"

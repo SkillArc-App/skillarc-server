@@ -89,7 +89,7 @@ earthwork_job = Job.create!(
   employment_title: 'Earthwork Journeyman',
   industry: ['construction'],
   location: 'Dublin, OH',
-  employment_type: 'FULLTIME',
+  employment_type: 'PARTTIME',
   hide_job: false,
   schedule: '40 hours weekly',
   work_days: 'Weekdays, flexible',
@@ -687,6 +687,60 @@ LearnedSkill.create!([
                          master_skill_id: '731e5aa5-e8d4-4a4e-9acb-3de414a17773'
                        },
                      ])
+
+Search::Job.create!(
+  job_id: mechanic_job.id,
+  employment_title: mechanic_job.employment_title,
+  location: mechanic_job.location,
+  employment_type: mechanic_job.employment_type,
+  industries: mechanic_job.industry,
+  hidden: mechanic_job.hide_job,
+  category: mechanic_job.category,
+  tags: [],
+
+  starting_upper_pay: '60000',
+  starting_lower_pay: '55000',
+
+  employer_id: turner_employer.id,
+  employer_name: turner_employer.name,
+  employer_logo_url: turner_employer.logo_url
+)
+
+Search::Job.create!(
+  job_id: earthwork_job.id,
+  employment_title: earthwork_job.employment_title,
+  location: earthwork_job.location,
+  employment_type: earthwork_job.employment_type,
+  industries: earthwork_job.industry,
+  hidden: earthwork_job.hide_job,
+  category: earthwork_job.category,
+  tags: [tag.name],
+
+  starting_upper_pay: '50',
+  starting_lower_pay: '45',
+
+  employer_id: sg_employer.id,
+  employer_name: sg_employer.name,
+  employer_logo_url: sg_employer.logo_url
+)
+
+Search::Job.create!(
+  job_id: contractor.id,
+  employment_title: contractor.employment_title,
+  location: contractor.location,
+  employment_type: contractor.employment_type,
+  industries: contractor.industry,
+  hidden: contractor.hide_job,
+  category: contractor.category,
+  tags: [],
+
+  starting_upper_pay: '65000',
+  starting_lower_pay: '60000',
+
+  employer_id: sg_employer.id,
+  employer_name: sg_employer.name,
+  employer_logo_url: sg_employer.logo_url
+)
 
 trained_seeker_with_reference = Seeker.create!(
   bio: "I learn stuff",

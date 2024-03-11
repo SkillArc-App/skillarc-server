@@ -6,41 +6,24 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
     let(:params) { {} }
 
-    let(:search_service) do
-      Jobs::SearchService.new(
-        search_terms: params[:utm_term],
-        industries: params[:industries],
-        tags: params[:tags]
-      )
-    end
+    let(:search_service) { Search::SearchService.new }
 
     context "when unauthenticated" do
       context "When called without parameters" do
         it "Creates a search service and sets the source params" do
-          expect(Jobs::SearchService)
+          expect(Search::SearchService)
             .to receive(:new)
-            .with(
-              search_terms: nil,
-              industries: nil,
-              tags: nil
-            )
             .and_return(search_service)
 
           expect(search_service)
-            .to receive(:relevant_jobs)
+            .to receive(:search)
             .with(
+              search_terms: nil,
+              industries: nil,
+              tags: nil,
               user: nil,
               utm_source: nil
             ).and_call_original
-
-          expect(Jobs::JobBlueprint)
-            .to receive(:render)
-            .with(
-              be_a(ActiveRecord::Relation),
-              view: :seeker,
-              user: nil
-            )
-            .and_call_original
 
           subject
         end
@@ -57,30 +40,19 @@ RSpec.describe "Seekers::JobsController", type: :request do
         end
 
         it "Creates a search service and sets the source params" do
-          expect(Jobs::SearchService)
+          expect(Search::SearchService)
             .to receive(:new)
-            .with(
-              search_terms: "Best Job",
-              industries: ["Clowning"],
-              tags: ["Funny clowns only"]
-            )
             .and_return(search_service)
 
           expect(search_service)
-            .to receive(:relevant_jobs)
+            .to receive(:search)
             .with(
+              search_terms: "Best Job",
+              industries: ["Clowning"],
+              tags: ["Funny clowns only"],
               user: nil,
               utm_source: params[:utm_source]
             ).and_call_original
-
-          expect(Jobs::JobBlueprint)
-            .to receive(:render)
-            .with(
-              be_a(ActiveRecord::Relation),
-              view: :seeker,
-              user: nil
-            )
-            .and_call_original
 
           subject
         end
@@ -94,30 +66,19 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
       context "When called without parameters" do
         it "Creates a search service and sets the source params" do
-          expect(Jobs::SearchService)
+          expect(Search::SearchService)
             .to receive(:new)
-            .with(
-              search_terms: nil,
-              industries: nil,
-              tags: nil
-            )
             .and_return(search_service)
 
           expect(search_service)
-            .to receive(:relevant_jobs)
+            .to receive(:search)
             .with(
+              search_terms: nil,
+              industries: nil,
+              tags: nil,
               user:,
               utm_source: nil
             ).and_call_original
-
-          expect(Jobs::JobBlueprint)
-            .to receive(:render)
-            .with(
-              be_a(ActiveRecord::Relation),
-              view: :seeker,
-              user:
-            )
-            .and_call_original
 
           subject
         end
@@ -134,52 +95,22 @@ RSpec.describe "Seekers::JobsController", type: :request do
         end
 
         it "Creates a search service and sets the source params" do
-          expect(Jobs::SearchService)
+          expect(Search::SearchService)
             .to receive(:new)
-            .with(
-              search_terms: "Best Job",
-              industries: ["Clowning"],
-              tags: ["Funny clowns only"]
-            )
             .and_return(search_service)
 
           expect(search_service)
-            .to receive(:relevant_jobs)
+            .to receive(:search)
             .with(
+              search_terms: "Best Job",
+              industries: ["Clowning"],
+              tags: ["Funny clowns only"],
               user:,
               utm_source: params[:utm_source]
             ).and_call_original
 
-          expect(Jobs::JobBlueprint)
-            .to receive(:render)
-            .with(
-              be_a(ActiveRecord::Relation),
-              view: :seeker,
-              user:
-            )
-            .and_call_original
-
           subject
         end
-      end
-    end
-
-    context "when authenticated" do
-      include_context "authenticated"
-
-      let!(:seeker) { create(:seeker, user:) }
-
-      it "calls the blueprint with a seekers" do
-        expect(Jobs::JobBlueprint)
-          .to receive(:render)
-          .with(
-            be_a(ActiveRecord::Relation),
-            view: :seeker,
-            user:
-          )
-          .and_call_original
-
-        subject
       end
     end
   end

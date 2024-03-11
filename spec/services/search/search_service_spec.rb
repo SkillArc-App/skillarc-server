@@ -187,8 +187,8 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
       build(
         :message,
         aggregate_id: job_id2,
-        schema: Events::CareerPathCreated::V1,
-        data: Events::CareerPathCreated::Data::V1.new(
+        schema: Events::CareerPathUpdated::V1,
+        data: Events::CareerPathUpdated::Data::V1.new(
           id: SecureRandom.uuid,
           job_id: job_id2,
           title: "Top Grunt",

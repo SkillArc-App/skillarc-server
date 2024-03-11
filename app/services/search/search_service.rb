@@ -174,7 +174,7 @@ module Search
       )
     end
 
-    on_message Events::ApplicantStatusUpdated::V5 do |message|
+    on_message Events::ApplicantStatusUpdated::V5, :sync do |message|
       data = message.data
       job = Job.find_by!(job_id: data.job_id)
       application = Application.find_or_initialize_by(application_id: data.applicant_id, search_job: job)
@@ -186,7 +186,7 @@ module Search
       )
     end
 
-    on_message Events::ElevatorPitchCreated::V1 do |message|
+    on_message Events::ElevatorPitchCreated::V1, :sync do |message|
       data = message.data
       application = Application.find_by(job_id: data.job_id, seeker_id: message.aggregate.seeker_id)
       return unless application
@@ -194,13 +194,13 @@ module Search
       application.update!(elevator_pitch: data.pitch)
     end
 
-    on_message Events::JobSaved::V1 do |message|
+    on_message Events::JobSaved::V1, :sync do |message|
       data = message.data
       job = Job.find_by!(job_id: data.job_id)
       SavedJob.find_or_create_by(search_job_id: job.id, user_id: message.aggregate.user_id)
     end
 
-    on_message Events::JobUnsaved::V1 do |message|
+    on_message Events::JobUnsaved::V1, :sync do |message|
       data = message.data
       job = Job.find_by!(job_id: data.job_id)
       SavedJob.find_by(search_job_id: job.id, user_id: message.aggregate.user_id)&.destroy

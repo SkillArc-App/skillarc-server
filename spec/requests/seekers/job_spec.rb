@@ -96,7 +96,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
         context "when authenticated" do
           before do
             create(:search__saved_job, user_id: user.id)
-            create(:search__applications, seeker_id: seeker.id)
+            create(:search__application, seeker_id: seeker.id)
           end
 
           include_context "seeker authenticated openapi"
@@ -160,6 +160,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
       include_context "olive branch camelcasing"
 
       let(:job) { create(:job) }
+      let!(:search_job) { create(:search__job, job_id: job.id) }
       let(:id) { job.id }
 
       it_behaves_like "seeker spec unauthenticated openapi"
@@ -199,6 +200,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
       include_context "olive branch camelcasing"
 
       let(:job) { create(:job) }
+      let!(:search_job) { create(:search__job, job_id: job.id) }
       let(:id) { job.id }
 
       it_behaves_like "seeker spec unauthenticated openapi"

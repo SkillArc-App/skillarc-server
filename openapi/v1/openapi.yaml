@@ -1499,6 +1499,7 @@ components:
             - logistics
         startingPay:
           type: object
+          nullable: true
           properties:
             employmentType:
               type: string
@@ -1507,10 +1508,8 @@ components:
               - hourly
             upperLimit:
               type: integer
-              nullable: true
             lowerLimit:
               type: integer
-              nullable: true
         tags:
           type: array
           item:

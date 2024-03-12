@@ -521,18 +521,17 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               },
               startingPay: {
                 type: :object,
+                nullable: true,
                 properties: {
                   employmentType: {
                     type: :string,
                     enum: %w[salary hourly]
                   },
                   upperLimit: {
-                    type: :integer,
-                    nullable: true
+                    type: :integer
                   },
                   lowerLimit: {
-                    type: :integer,
-                    nullable: true
+                    type: :integer
                   }
                 }
               },

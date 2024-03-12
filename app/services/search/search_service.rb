@@ -86,7 +86,7 @@ module Search
           employment_title: job.employment_title,
           industries: job.industries,
           location: job.location,
-          starting_pay: {
+          starting_pay: job.starting_upper_pay && {
             employment_type: job.starting_lower_pay.to_i > 1000 ? "salary" : "hourly",
             upper_limit: job.starting_upper_pay,
             lower_limit: job.starting_lower_pay

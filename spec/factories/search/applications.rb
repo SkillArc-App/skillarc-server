@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :search__applications, class: "Search::Application" do
+  factory :search__application, class: "Search::Application" do
     association :search_job, factory: :search__job
 
     status { ApplicantStatus::StatusTypes::NEW }

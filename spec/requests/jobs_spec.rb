@@ -23,6 +23,7 @@ RSpec.describe "Jobs", type: :request do
     include_context "authenticated"
 
     let(:job) { create(:job) }
+    let!(:search__job) { create(:search__job, job_id: job.id) }
     let!(:seeker) { create(:seeker, user:) }
 
     it "returns a 200" do

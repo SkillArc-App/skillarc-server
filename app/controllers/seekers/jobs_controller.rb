@@ -6,13 +6,13 @@ module Seekers
     before_action :authorize, only: %i[save unsave]
 
     def index
-      jobs = Jobs::SearchService.new(
+      render json: Search::SearchService.new.search(
         search_terms: params[:search_terms] || params[:utm_term],
         industries: params[:industries],
-        tags: params[:tags]
-      ).relevant_jobs(user: current_user, utm_source: params[:utm_source])
-
-      render json: Jobs::JobBlueprint.render(jobs, view: :seeker, user: current_user)
+        tags: params[:tags],
+        user: current_user,
+        utm_source: params[:utm_source]
+      )
     end
 
     def save
@@ -26,7 +26,7 @@ module Seekers
         )
       )
 
-      render json: { success: true }
+      head :accepted
     end
 
     def unsave
@@ -40,7 +40,7 @@ module Seekers
         )
       )
 
-      render json: { success: true }
+      head :accepted
     end
 
     private

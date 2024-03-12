@@ -639,6 +639,114 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/seeker"
+  "/seekers/jobs":
+    get:
+      summary: Search jobs
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: utm_term
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: utm_source
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: industries[]
+        in: query
+        style: form
+        explode: true
+        items:
+          type: string
+        required: false
+        schema:
+          type: array
+      - name: tags[]
+        in: query
+        style: form
+        explode: true
+        items:
+          type: string
+        required: false
+        schema:
+          type: array
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: search executed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/search_job"
+  "/seekers/jobs/{id}/save":
+    post:
+      summary: Save a job
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: saves a job
+  "/seekers/jobs/{id}/unsave":
+    post:
+      summary: Save a job
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: saves a job
   "/session":
     post:
       summary: Indicate a new session started
@@ -1365,6 +1473,75 @@ components:
           enum:
           - TECHNICAL
           - PERSONAL
+    search_job:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        category:
+          type: string
+          enum:
+          - marketplace
+          - staffing
+        location:
+          type: string
+        employmentTitle:
+          type: string
+        industries:
+          type: array
+          items:
+            type: string
+            enum:
+            - manufacturing
+            - construction
+            - healthcare
+            - logistics
+        startingPay:
+          type: object
+          properties:
+            employmentType:
+              type: string
+              enum:
+              - salary
+              - hourly
+            upperLimit:
+              type: integer
+              nullable: true
+            lowerLimit:
+              type: integer
+              nullable: true
+        tags:
+          type: array
+          item:
+            type: string
+        applicationStatus:
+          type: string
+          enum:
+          - new
+          - pending intro
+          - intro made
+          - interviewing
+          - hire
+          - pass
+          nullable: true
+        elevatorPitch:
+          type: string
+          nullable: true
+        saved:
+          type: boolean
+          nullable: true
+        employer:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            logoUrl:
+              type: string
+              nullable: true
     user:
       type: object
       additionalProperties: true

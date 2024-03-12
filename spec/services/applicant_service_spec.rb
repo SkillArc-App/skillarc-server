@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ApplicantService do
   let(:applicant) { create(:applicant) }
+  let!(:search_job) { create(:search__job, job_id: applicant.job.id) }
 
   describe "#update_status" do
     subject { described_class.new(applicant).update_status(status:, user_id:, reasons:) }

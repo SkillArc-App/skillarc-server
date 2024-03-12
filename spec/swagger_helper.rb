@@ -524,7 +524,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 properties: {
                   employmentType: {
                     type: :string,
-                    enum: Job::EmploymentTypes::ALL
+                    enum: %w[salary hourly]
                   },
                   upperLimit: {
                     type: :integer,

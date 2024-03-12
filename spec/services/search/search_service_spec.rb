@@ -162,8 +162,8 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
           id: SecureRandom.uuid,
           job_id: job_id1,
           title: "Entry Level",
-          lower_limit: "17",
-          upper_limit: "23",
+          lower_limit: "17000",
+          upper_limit: "23000",
           order: 0
         )
       )
@@ -298,9 +298,9 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         industries: nil,
         location: "Columbus, OH",
         starting_pay: {
-          employment_type: Job::EmploymentTypes::FULLTIME,
-          lower_limit: 17,
-          upper_limit: 23
+          employment_type: "salary",
+          lower_limit: 17_000,
+          upper_limit: 23_000
         },
         tags: ["Tag1"],
         application_status: nil,
@@ -321,7 +321,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         industries: [Job::Industries::CONSTRUCTION, Job::Industries::MANUFACTURING],
         location: "Columbus, OH",
         starting_pay: {
-          employment_type: Job::EmploymentTypes::PARTTIME,
+          employment_type: "hourly",
           lower_limit: 12,
           upper_limit: 17
         },
@@ -431,7 +431,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               industries: [Job::Industries::CONSTRUCTION, Job::Industries::MANUFACTURING],
               location: "Columbus, OH",
               starting_pay: {
-                employment_type: Job::EmploymentTypes::PARTTIME,
+                employment_type: "hourly",
                 lower_limit: 12,
                 upper_limit: 17
               },
@@ -452,9 +452,9 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               industries: nil,
               location: "Columbus, OH",
               starting_pay: {
-                employment_type: Job::EmploymentTypes::FULLTIME,
-                lower_limit: 17,
-                upper_limit: 23
+                employment_type: "salary",
+                lower_limit: 17_000,
+                upper_limit: 23_000
               },
               tags: ["Tag1"],
               application_status: nil,
@@ -485,7 +485,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               industries: [Job::Industries::CONSTRUCTION, Job::Industries::MANUFACTURING],
               location: "Columbus, OH",
               starting_pay: {
-                employment_type: Job::EmploymentTypes::PARTTIME,
+                employment_type: "hourly",
                 lower_limit: 12,
                 upper_limit: 17
               },
@@ -506,9 +506,9 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               industries: nil,
               location: "Columbus, OH",
               starting_pay: {
-                employment_type: Job::EmploymentTypes::FULLTIME,
-                lower_limit: 17,
-                upper_limit: 23
+                employment_type: "salary",
+                lower_limit: 17_000,
+                upper_limit: 23_000
               },
               tags: ["Tag1"],
               application_status: nil,

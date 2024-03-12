@@ -1503,8 +1503,8 @@ components:
             employmentType:
               type: string
               enum:
-              - FULLTIME
-              - PARTTIME
+              - salary
+              - hourly
             upperLimit:
               type: integer
               nullable: true

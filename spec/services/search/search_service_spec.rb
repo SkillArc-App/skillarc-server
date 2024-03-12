@@ -23,6 +23,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
     before do
       instance.handle_message(job_created1)
       instance.handle_message(job_created2)
+      instance.handle_message(job_created3)
       instance.handle_message(job_updated1)
       instance.handle_message(job_tag_created1_for_job2)
       instance.handle_message(job_tag_created2_for_job2)
@@ -43,6 +44,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
     let(:applicant_id2) { "b3f5fe09-e227-4d2a-b47a-bba51b33c23b" }
     let(:job_id1) { "516efc70-a246-4692-9b61-5321dcd2291b" }
     let(:job_id2) { "d2104dff-f8eb-4122-acdb-48369b0ecc4e" }
+    let(:job_id3) { "f20f2134-fea2-46bd-a280-004e0f41a045" }
     let(:user_id1) { "f24fd7b6-e4ca-441e-b207-f3ad8684a02b" }
     let(:user_id2) { "915816cb-4ea9-4a6e-b48d-5162ce12f786" }
     let(:seeker_id1) { "6c535506-3289-4ffe-9767-a258f760de35" }
@@ -89,6 +91,24 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
           employment_type: Job::EmploymentTypes::PARTTIME,
           hide_job: false,
           industry: [Job::Industries::CONSTRUCTION, Job::Industries::MANUFACTURING]
+        )
+      )
+    end
+    let(:job_created3) do
+      build(
+        :message,
+        aggregate_id: job_id3,
+        schema: Events::JobCreated::V3,
+        data: Events::JobCreated::Data::V3.new(
+          category: Job::Categories::MARKETPLACE,
+          employment_title: "Silly Job",
+          employer_name: "Good Employer",
+          employer_id: employer_id1,
+          benefits_description: "Great Benifits",
+          location: "Columbus, OH",
+          employment_type: Job::EmploymentTypes::PARTTIME,
+          hide_job: false,
+          industry: [Job::Industries::LOGISTICS]
         )
       )
     end
@@ -336,6 +356,25 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         }
       }
     end
+    let(:expected_job3_no_user) do
+      {
+        id: job_id3,
+        category: Job::Categories::MARKETPLACE,
+        employment_title: "Silly Job",
+        industries: [Job::Industries::LOGISTICS],
+        location: "Columbus, OH",
+        starting_pay: nil,
+        tags: [],
+        application_status: nil,
+        elevator_pitch: nil,
+        saved: nil,
+        employer: {
+          id: employer_id1,
+          name: "Good Employer",
+          logo_url: employer1.logo_url
+        }
+      }
+    end
 
     context "search source" do
       context "when user is nil" do
@@ -415,7 +454,8 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
     context "when no constraints are provided" do
       context "when no user is provided" do
         it "returns all jobs" do
-          expect(subject).to eq([expected_job2_no_user, expected_job1_no_user])
+          expect(subject[0]).to eq(expected_job2_no_user)
+          expect(subject).to contain_exactly(expected_job2_no_user, expected_job3_no_user, expected_job1_no_user)
         end
       end
 
@@ -446,6 +486,23 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               }
             },
             {
+              id: job_id3,
+              category: Job::Categories::MARKETPLACE,
+              employment_title: "Silly Job",
+              industries: [Job::Industries::LOGISTICS],
+              location: "Columbus, OH",
+              starting_pay: nil,
+              tags: [],
+              application_status: nil,
+              elevator_pitch: nil,
+              saved: false,
+              employer: {
+                id: employer_id1,
+                name: "Good Employer",
+                logo_url: employer1.logo_url
+              }
+            },
+            {
               id: job_id1,
               category: Job::Categories::MARKETPLACE,
               employment_title: "Senior Plumber",
@@ -468,7 +525,8 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
             }
           ]
 
-          expect(subject).to eq(expected_result)
+          expect(subject[0]).to eq(expected_result[0])
+          expect(subject).to contain_exactly(*expected_result)
         end
       end
 
@@ -500,6 +558,23 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               }
             },
             {
+              id: job_id3,
+              category: Job::Categories::MARKETPLACE,
+              employment_title: "Silly Job",
+              industries: [Job::Industries::LOGISTICS],
+              location: "Columbus, OH",
+              starting_pay: nil,
+              tags: [],
+              application_status: nil,
+              elevator_pitch: nil,
+              saved: false,
+              employer: {
+                id: employer_id1,
+                name: "Good Employer",
+                logo_url: employer1.logo_url
+              }
+            },
+            {
               id: job_id1,
               category: Job::Categories::MARKETPLACE,
               employment_title: "Senior Plumber",
@@ -522,7 +597,8 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
             }
           ]
 
-          expect(subject).to eq(expected_result)
+          expect(subject[0]).to eq(expected_result[0])
+          expect(subject).to contain_exactly(*expected_result)
         end
       end
     end
@@ -540,7 +616,8 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         let(:search_terms) { "a" }
 
         it "is ignored and returns all jobs" do
-          expect(subject).to eq([expected_job2_no_user, expected_job1_no_user])
+          expect(subject[0]).to eq(expected_job2_no_user)
+          expect(subject).to contain_exactly(expected_job2_no_user, expected_job3_no_user, expected_job1_no_user)
         end
       end
 
@@ -582,7 +659,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         let(:industries) { [Job::Industries::CONSTRUCTION, Job::Industries::LOGISTICS] }
 
         it "returns all jobs with overlapping industries" do
-          expect(subject).to eq([expected_job2_no_user])
+          expect(subject).to eq([expected_job2_no_user, expected_job3_no_user])
         end
       end
     end

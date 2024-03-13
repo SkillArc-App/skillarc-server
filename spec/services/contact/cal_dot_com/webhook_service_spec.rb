@@ -8,9 +8,20 @@ RSpec.describe Contact::CalDotCom::WebhookService do
     let(:webhook) { JSON.parse(webhook_string) }
 
     it "creates a Webhook record" do
-      expect(subject.occurred_at).to eq(Time.zone.parse('2024-03-13T17:33:05.126Z'))
-      expect(subject.cal_dot_com_event_type).to eq("BOOKING_CREATED")
-      expect(subject.payload).to be_a(Hash)
+      expect(EventService)
+        .to receive(:create!)
+        .with(
+          event_schema: Events::CalWebhookRecieved::V1,
+          integration: "cal.com",
+          data: Events::CalWebhookRecieved::Data::V1.new(
+            cal_trigger_event_type: webhook["triggerEvent"],
+            payload: webhook["payload"]
+          ),
+          occurred_at: webhook["createdAt"]
+        )
+        .and_call_original
+
+      subject
     end
   end
 end

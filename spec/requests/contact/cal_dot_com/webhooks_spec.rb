@@ -103,35 +103,6 @@ RSpec.describe "Contact::CalDotCom::WebhooksController", type: :request do
           run_test!
         end
       end
-
-      # context "when authenticated" do
-      #   include_context "coach authenticated openapi"
-
-      #   response '200', 'retrieve all seekers' do
-      #     schema type: :array,
-      #            items: {
-      #              '$ref' => '#/components/schemas/coach_seeker'
-      #            }
-
-      #     context "when are no seekers" do
-      #       run_test!
-      #     end
-
-      #     context "when there are many seekers" do
-      #       before do
-      #         csc1 = create(:coaches__coach_seeker_context)
-      #         csc2 = create(:coaches__coach_seeker_context)
-
-      #         create(:coaches__seeker_note, coach_seeker_context: csc1)
-      #         create(:coaches__seeker_barrier, coach_seeker_context: csc1)
-      #         create(:coaches__seeker_application, coach_seeker_context: csc2)
-      #         create(:coaches__seeker_job_recommendation, coach_seeker_context: csc2)
-      #       end
-
-      #       run_test!
-      #     end
-      #   end
-      # end
     end
   end
 end

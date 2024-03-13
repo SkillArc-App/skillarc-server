@@ -12,6 +12,9 @@ module Contact
           return
         end
 
+        params.permit!
+        WebhookService.handle_webhook(params.to_h)
+
         head :accepted
       end
     end

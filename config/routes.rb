@@ -28,6 +28,12 @@ Rails.application.routes.draw do
     end
   end
 
+  scope module: 'contact', path: 'contact' do
+    scope module: 'cal_dot_com', path: 'cal_dot_com' do
+      resources :webhooks, only: [:create]
+    end
+  end
+
   resources :employers
   resources :session, only: [:create]
 

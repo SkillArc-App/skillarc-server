@@ -696,7 +696,7 @@ Search::Job.create!(
   industries: mechanic_job.industry,
   hidden: mechanic_job.hide_job,
   category: mechanic_job.category,
-  tags: [],
+  tags: [tag.name],
 
   starting_upper_pay: '60000',
   starting_lower_pay: '55000',
@@ -714,7 +714,7 @@ Search::Job.create!(
   industries: earthwork_job.industry,
   hidden: earthwork_job.hide_job,
   category: earthwork_job.category,
-  tags: [tag.name],
+  tags: [],
 
   starting_upper_pay: '50',
   starting_lower_pay: '45',

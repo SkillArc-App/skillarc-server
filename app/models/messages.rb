@@ -72,7 +72,8 @@ module Messages
     module Contact
       EVENTS = [
         SMS_SENT = 'sms_sent'.freeze,
-        SMTP_SENT = 'smtp_sent'.freeze
+        SMTP_SENT = 'smtp_sent'.freeze,
+        CAL_WEBHOOK_RECIEVED = 'cal_webhook_recieved'.freeze
       ].freeze
 
       COMMANDS = [

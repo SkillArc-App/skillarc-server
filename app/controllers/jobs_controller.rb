@@ -1,5 +1,6 @@
 class JobsController < ApplicationController
   include Secured
+  include CommandEmitter
   include EventEmitter
 
   before_action :authorize, only: %i[apply elevator_pitch]
@@ -7,15 +8,20 @@ class JobsController < ApplicationController
   def apply
     job = Job.find(params[:job_id])
 
-    with_event_service do
-      applicant = Applicant.find_or_initialize_by(seeker_id: current_user.seeker.id, job_id: job.id) do |a|
-        a.id = SecureRandom.uuid
-        a.save!
-        ApplicantService.new(a).update_status(status: ApplicantStatus::StatusTypes::NEW, user_id: current_user.id)
-      end
+    message_service = MessageService.new
 
-      render json: { applicant: }
+    command_service = CommandService.new(message_service:)
+    event_service = EventService.new(message_service:)
+
+    with_command_service(command_service) do
+      with_event_service(event_service) do
+        seeker = current_user.seeker
+
+        Seekers::ApplicantService.new(seeker).apply(job)
+      end
     end
+
+    head :ok
   end
 
   def elevator_pitch

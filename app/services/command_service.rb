@@ -1,4 +1,6 @@
 class CommandService
+  delegate :flush, to: :message_service
+
   def initialize(message_service: MessageService.new)
     @message_service = message_service
   end

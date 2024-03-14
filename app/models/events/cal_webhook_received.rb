@@ -1,5 +1,5 @@
 module Events
-  module CalWebhookRecieved
+  module CalWebhookReceived
     module CalTriggerEventTypes
       ALL = [
         BOOKING_CREATED = 'BOOKING_CREATED'.freeze,
@@ -31,7 +31,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Integration,
-      message_type: Messages::Types::Contact::CAL_WEBHOOK_RECIEVED,
+      message_type: Messages::Types::Contact::CAL_WEBHOOK_RECEIVED,
       version: 1
     )
   end

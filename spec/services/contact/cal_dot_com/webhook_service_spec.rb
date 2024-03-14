@@ -13,9 +13,9 @@ RSpec.describe Contact::CalDotCom::WebhookService do
       expect_any_instance_of(EventService)
         .to receive(:create!)
         .with(
-          event_schema: Events::CalWebhookRecieved::V1,
+          event_schema: Events::CalWebhookReceived::V1,
           integration: "cal.com",
-          data: Events::CalWebhookRecieved::Data::V1.new(
+          data: Events::CalWebhookReceived::Data::V1.new(
             cal_trigger_event_type: webhook["triggerEvent"],
             payload: webhook["payload"]
           ),

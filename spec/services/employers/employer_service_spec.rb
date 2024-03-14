@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Employers::EmployerService do
-  it_behaves_like "an event consumer"
+  it_behaves_like "a message consumer"
 
   describe "application created" do
     let(:employer_created) do

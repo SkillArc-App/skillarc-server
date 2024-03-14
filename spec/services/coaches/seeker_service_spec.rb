@@ -139,7 +139,7 @@ RSpec.describe Coaches::SeekerService do # rubocop:disable Metrics/BlockLength
   let(:employer_name2) { "Fun company" }
   let(:consumer) { described_class.new(event_service: EventService.new) }
 
-  it_behaves_like "an event consumer"
+  it_behaves_like "a message consumer"
 
   context "queries" do
     before do

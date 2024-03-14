@@ -15,7 +15,7 @@ RSpec.describe Coaches::BarrierService do
   let(:barrier_id) { SecureRandom.uuid }
   let(:consumer) { described_class.new }
 
-  it_behaves_like "an event consumer"
+  it_behaves_like "a message consumer"
 
   before do
     consumer.handle_message(barrier_added)

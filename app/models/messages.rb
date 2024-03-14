@@ -127,6 +127,7 @@ module Messages
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted',
       USER_CREATED = 'user_created',
       USER_UPDATED = 'user_updated',
+      *Applications::EVENTS,
       *Coaches::EVENTS,
       *Jobs::EVENTS,
       *Employers::EVENTS,
@@ -136,6 +137,7 @@ module Messages
     ].freeze
 
     COMMANDS = [
+      *Applications::COMMANDS,
       *Contact::COMMANDS,
       *Coaches::COMMANDS
     ].freeze

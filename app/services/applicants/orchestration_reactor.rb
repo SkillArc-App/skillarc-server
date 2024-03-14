@@ -37,10 +37,8 @@ module Applicants
     end
 
     on_message Commands::ScreenApplicant::V1, :sync do |event|
-      applicant = Applicant.find(event.aggregate.applicant_id)
-
       event_service.create!(
-        applicant_id: applicant.id,
+        applicant_id: event.aggregate.applicant_id,
         event_schema: Events::ApplicantScreened::V1,
         data: Messages::Nothing,
         metadata: Messages::Nothing,
@@ -50,10 +48,10 @@ module Applicants
     end
 
     on_message Events::SeekerApplied::V1, :sync do |event|
-      seeker = Seeker.find(event.aggregate.seeker_id)
-      job = Job.find(event.data.job_id)
+      seeker_id = event.aggregate.seeker_id
+      job_id = event.data.job_id
 
-      applicant = Applicant.find_or_initialize_by(seeker:, job_id: job.id) do |a|
+      applicant = Applicant.find_or_initialize_by(seeker_id:, job_id:) do |a|
         a.id = SecureRandom.uuid
         a.save!
       end

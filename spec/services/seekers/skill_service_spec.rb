@@ -4,6 +4,8 @@ RSpec.describe Seekers::SkillService do
   describe "#create" do
     subject { described_class.new(seeker).create(master_skill_id:, description:) }
 
+    include_context "event emitter"
+
     let(:seeker) { create(:seeker) }
     let(:description) { "This is a description" }
     let(:master_skill_id) { master_skill.id }
@@ -20,7 +22,7 @@ RSpec.describe Seekers::SkillService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::SeekerSkillCreated::V1,
         seeker_id: seeker.id,
         data: Events::SeekerSkillCreated::Data::V1.new(
@@ -38,6 +40,8 @@ RSpec.describe Seekers::SkillService do
   describe "#update" do
     subject { described_class.new(seeker).update(skill, description:) }
 
+    include_context "event emitter"
+
     let(:seeker) { create(:seeker) }
     let(:skill) { create(:profile_skill, seeker:) }
     let(:description) { "This is a new description" }
@@ -49,7 +53,7 @@ RSpec.describe Seekers::SkillService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::SeekerSkillUpdated::V1,
         seeker_id: seeker.id,
         data: Events::SeekerSkillUpdated::Data::V1.new(
@@ -67,6 +71,8 @@ RSpec.describe Seekers::SkillService do
   describe "#destroy" do
     subject { described_class.new(seeker).destroy(skill) }
 
+    include_context "event emitter"
+
     let(:seeker) { create(:seeker) }
     let!(:skill) { create(:profile_skill, seeker:) }
 
@@ -75,7 +81,7 @@ RSpec.describe Seekers::SkillService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::SeekerSkillDestroyed::V1,
         seeker_id: seeker.id,
         data: Events::SeekerSkillDestroyed::Data::V1.new(

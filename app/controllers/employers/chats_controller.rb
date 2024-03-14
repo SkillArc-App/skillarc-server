@@ -2,6 +2,7 @@ module Employers
   class ChatsController < ApplicationController
     include Secured
     include EmployerAuth
+    include EventEmitter
 
     before_action :authorize
     before_action :employer_authorize
@@ -12,24 +13,30 @@ module Employers
     end
 
     def mark_read
-      EmployerChats.new(r).mark_read(
-        applicant_id: params[:applicant_id]
-      )
+      with_event_service do
+        EmployerChats.new(r).mark_read(
+          applicant_id: params[:applicant_id]
+        )
+      end
 
       render json: { success: true }
     end
 
     def send_message
-      EmployerChats.new(r).send_message(
-        applicant_id: params[:applicant_id],
-        message: params[:message]
-      )
+      with_event_service do
+        EmployerChats.new(r).send_message(
+          applicant_id: params[:applicant_id],
+          message: params[:message]
+        )
+      end
 
       render json: { message: "Message sent" }
     end
 
     def create
-      EmployerChats.new(r).create(applicant_id: params[:applicant_id])
+      with_event_service do
+        EmployerChats.new(r).create(applicant_id: params[:applicant_id])
+      end
 
       render json: { message: "Chat created" }
     end

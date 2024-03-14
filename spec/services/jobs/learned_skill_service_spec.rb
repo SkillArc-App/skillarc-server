@@ -4,6 +4,8 @@ RSpec.describe Jobs::LearnedSkillService do
   describe ".create" do
     subject { described_class.create(job, master_skill_id) }
 
+    include_context "event emitter"
+
     let(:job) { create(:job) }
     let(:master_skill_id) { create(:master_skill).id }
 
@@ -23,7 +25,7 @@ RSpec.describe Jobs::LearnedSkillService do
         master_skill_id:
       ).and_call_original
 
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::LearnedSkillCreated::V1,
         job_id: job.id,
         data: be_a(Events::LearnedSkillCreated::Data::V1)
@@ -36,6 +38,8 @@ RSpec.describe Jobs::LearnedSkillService do
   describe ".destroy" do
     subject { described_class.destroy(learned_skill) }
 
+    include_context "event emitter"
+
     let!(:learned_skill) { create(:learned_skill) }
 
     it "destroys the desired skill" do
@@ -43,7 +47,7 @@ RSpec.describe Jobs::LearnedSkillService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::LearnedSkillDestroyed::V1,
         job_id: learned_skill.job_id,
         data: Events::LearnedSkillDestroyed::Data::V1.new(

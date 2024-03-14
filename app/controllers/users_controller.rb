@@ -1,13 +1,16 @@
 class UsersController < ApplicationController
   include Secured
   include CoachAuth
+  include EventEmitter
 
   before_action :authorize
   before_action :authorize_is_user_or_coach
   before_action :set_user, only: [:update]
 
   def update
-    render json: Seekers::UserService.new(user.id).update(**user_params.to_h.symbolize_keys)
+    with_event_service do
+      render json: Seekers::UserService.new(user.id).update(**user_params.to_h.symbolize_keys)
+    end
   end
 
   private

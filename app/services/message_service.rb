@@ -4,7 +4,7 @@ class MessageService
   SchemaAlreadyDefinedError = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
 
-  def self.create!(message_schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+  def create!(message_schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     raise NotEventSchemaError unless message_schema.is_a?(Messages::Schema)
 
     aggregate = message_schema.aggregate.new(**)
@@ -21,9 +21,16 @@ class MessageService
 
     Event.from_message!(message)
 
-    PUBSUB_SYNC.publish(message:)
-    BroadcastEventJob.perform_later(message)
+    messages_to_publish << message
+
     message
+  end
+
+  def flush
+    while (message = messages_to_publish.shift)
+      PUBSUB_SYNC.publish(message:)
+      BroadcastEventJob.perform_later(message)
+    end
   end
 
   def self.register(message_schema:)
@@ -57,6 +64,12 @@ class MessageService
         event_schema
       end
     end.flatten
+  end
+
+  private
+
+  def messages_to_publish
+    @messages_to_publish ||= []
   end
 
   class << self

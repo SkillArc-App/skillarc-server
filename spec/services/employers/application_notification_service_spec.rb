@@ -4,7 +4,7 @@ RSpec.describe Employers::ApplicationNotificationService do
   it_behaves_like "an event consumer"
 
   describe "application created" do
-    subject { described_class.new.handle_message(applicant_status_updated) }
+    subject { described_class.new(command_service: CommandService.new).handle_message(applicant_status_updated) }
 
     let(:applicant_status_updated) { build(:message, :applicant_status_updated, version: 5, data:, metadata:) }
     let(:data) do
@@ -36,7 +36,7 @@ RSpec.describe Employers::ApplicationNotificationService do
 
     context "when the seeker isn't certified" do
       it "sends an email to the employer" do
-        expect(CommandService)
+        expect_any_instance_of(CommandService)
           .to receive(:create!)
           .with(
             command_schema: Commands::NotifyEmployerOfApplicant::V1,
@@ -63,7 +63,7 @@ RSpec.describe Employers::ApplicationNotificationService do
       let!(:employers_seeker) { create(:employers_seeker, seeker_id: applicant.seeker_id) }
 
       it "sends an email to the employer" do
-        expect(CommandService)
+        expect_any_instance_of(CommandService)
           .to receive(:create!)
           .with(
             command_schema: Commands::NotifyEmployerOfApplicant::V1,

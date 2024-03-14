@@ -1,5 +1,7 @@
 module Jobs
   class JobTagService
+    extend EventEmitter
+
     def self.create(job, tag)
       job_tag = JobTag.create!(
         id: SecureRandom.uuid,
@@ -7,7 +9,7 @@ module Jobs
         tag:
       )
 
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::JobTagCreated::V1,
         job_id: job.id,
         data: Events::JobTagCreated::Data::V1.new(
@@ -22,7 +24,7 @@ module Jobs
     def self.destroy(job_tag)
       job_tag.destroy!
 
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::JobTagDestroyed::V2,
         job_id: job_tag.job_id,
         data: Events::JobTagDestroyed::Data::V2.new(

@@ -9,6 +9,8 @@ RSpec.describe EmployerChats do
   describe "#get" do
     subject { described_class.new(recruiter).get }
 
+    include_context "event emitter"
+
     let!(:applicant) { create(:applicant, job:, seeker:) }
     let!(:seeker) { create(:seeker, user:) }
     let(:user) { create(:user, first_name: "Hannah", last_name: "Block") }
@@ -51,6 +53,8 @@ RSpec.describe EmployerChats do
   describe "#mark_read" do
     subject { described_class.new(recruiter).mark_read(applicant_id: applicant.id) }
 
+    include_context "event emitter"
+
     let!(:applicant_chat) { create(:applicant_chat, applicant:) }
     let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }
     let!(:chat_message2) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant") }
@@ -66,6 +70,8 @@ RSpec.describe EmployerChats do
 
   describe "#send_message" do
     subject { described_class.new(recruiter).send_message(applicant_id: applicant.id, message:) }
+
+    include_context "event emitter"
 
     let(:message) { "This is a message" }
 
@@ -87,7 +93,7 @@ RSpec.describe EmployerChats do
     end
 
     it "enqueues an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::ChatMessageSent::V1,
         job_id: job.id,
         data: Events::ChatMessageSent::Data::V1.new(
@@ -107,6 +113,8 @@ RSpec.describe EmployerChats do
   describe "#create" do
     subject { described_class.new(recruiter).create(applicant_id: applicant.id) }
 
+    include_context "event emitter"
+
     let!(:applicant) { create(:applicant) }
 
     it "creates an applicant chat" do
@@ -118,7 +126,7 @@ RSpec.describe EmployerChats do
     end
 
     it "enqueues an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::ChatCreated::V1,
         job_id: applicant.job.id,
         data: Events::ChatCreated::Data::V1.new(

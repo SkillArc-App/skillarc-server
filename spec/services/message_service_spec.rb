@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe MessageService do
-  describe ".create!" do
+  describe "#create!" do
     subject do
-      described_class.create!(
+      described_class.new.create!(
         id:,
         message_schema:,
         user_id:,
@@ -63,21 +63,7 @@ RSpec.describe MessageService do
       context "when data and metadata type check" do
         let(:version) { 3 }
 
-        it "enqueues a BroadcastEvent job, persists and event and returns the produced event message" do
-          expect(BroadcastEventJob)
-            .to receive(:perform_later)
-            .with(
-              Message.new(
-                id:,
-                trace_id:,
-                aggregate: Aggregates::User.new(user_id:),
-                data:,
-                occurred_at:,
-                metadata:,
-                schema: message_schema
-              )
-            )
-
+        it "persists and event and returns the produced event message" do
           expect { subject }.to change(Event, :count).by(1)
           expect(subject.id).to eq(Event.last_created.message.id)
           expect(subject.aggregate_id).to eq(Event.last_created.message.aggregate_id)
@@ -86,7 +72,70 @@ RSpec.describe MessageService do
           expect(subject.metadata).to eq(Event.last_created.message.metadata)
           expect(subject.occurred_at).to eq(Event.last_created.message.occurred_at)
         end
+
+        context "events to publish" do
+          subject do
+            described_class.new
+          end
+
+          before do
+            subject
+              .create!(
+                id:,
+                message_schema:,
+                user_id:,
+                trace_id:,
+                data:,
+                occurred_at:,
+                metadata:
+              )
+          end
+        end
       end
+    end
+  end
+
+  describe "#flush" do
+    subject { instance.flush }
+
+    let(:instance) { described_class.new }
+
+    let(:message_type) { Messages::Types::CHAT_CREATED }
+    let!(:message_schema) do
+      Messages::Schema.build(
+        data: Messages::Nothing,
+        metadata: Messages::Nothing,
+        aggregate: Aggregates::User,
+        message_type:,
+        version:
+      )
+    end
+    let(:user_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+    let(:data) { Messages::Nothing }
+    let(:occurred_at) { DateTime.new(2000, 1, 1) }
+    let(:metadata) { Messages::Nothing }
+    let(:version) { 4 }
+    let(:id) { SecureRandom.uuid }
+
+    before do
+      instance
+        .create!(
+          id:,
+          message_schema:,
+          user_id:,
+          trace_id:,
+          data:,
+          occurred_at:,
+          metadata:
+        )
+    end
+
+    it "calls pubsub" do
+      expect(PUBSUB_SYNC).to receive(:publish)
+      expect(BroadcastEventJob).to receive(:perform_later)
+
+      subject
     end
   end
 

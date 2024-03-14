@@ -1,5 +1,6 @@
 class SeekerService
   include Cereal
+  include EventEmitter
 
   def initialize(seeker)
     @seeker = seeker
@@ -9,7 +10,7 @@ class SeekerService
     industry_interests = seeker.user.onboarding_session&.responses&.dig("opportunityInterests", "response") || []
 
     if user_id.present? && user_id != seeker.user.id
-      EventService.create!(
+      event_service.create!(
         event_schema: Events::SeekerViewed::V1,
         user_id:,
         data: Events::SeekerViewed::Data::V1.new(

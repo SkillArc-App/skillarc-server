@@ -28,7 +28,7 @@ module Employers
         end
 
         employer.recruiters.each do |recruiter|
-          CommandService.create!(
+          command_service.create!(
             command_schema: Commands::SendWeeklyEmployerUpdate::V1,
             employer_id: employer.id,
             trace_id: SecureRandom.uuid,

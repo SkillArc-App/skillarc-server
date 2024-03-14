@@ -13,7 +13,7 @@ RSpec.describe Coaches::RecommendationService do
 
   context "JobRecommended" do
     it "does emit an SEND_SMS command" do
-      expect(CommandService)
+      expect_any_instance_of(CommandService)
         .to receive(:create!)
         .with(
           command_schema: Commands::SendSms::V1,
@@ -26,14 +26,14 @@ RSpec.describe Coaches::RecommendationService do
         )
         .and_call_original
 
-      described_class.new.handle_message(job_recommended)
+      described_class.new(command_service: CommandService.new).handle_message(job_recommended)
     end
 
     context "when the phone number is not on the coach seekers context" do
       let!(:coach_seeker_context) { create(:coaches__coach_seeker_context, phone_number: nil, seeker_id:) }
 
       it "does not emit an SEND_SMS command" do
-        expect(CommandService)
+        expect_any_instance_of(CommandService)
           .not_to receive(:create!)
 
         described_class.new.handle_message(job_recommended)

@@ -1,4 +1,6 @@
 class EducationExperienceService
+  include EventEmitter
+
   def initialize(seeker)
     @seeker = seeker
   end
@@ -14,7 +16,7 @@ class EducationExperienceService
       seeker_id: seeker.id
     )
 
-    EventService.create!(
+    event_service.create!(
       event_schema: Events::EducationExperienceCreated::V1,
       user_id: seeker.user.id,
       data: Events::EducationExperienceCreated::Data::V1.new(
@@ -35,7 +37,7 @@ class EducationExperienceService
 
     education_experience.update!(**params)
 
-    EventService.create!(
+    event_service.create!(
       event_schema: Events::EducationExperienceUpdated::V1,
       user_id: seeker.user.id,
       data: Events::EducationExperienceUpdated::Data::V1.new(
@@ -51,7 +53,7 @@ class EducationExperienceService
 
     education_experience.destroy!
 
-    EventService.create!(
+    event_service.create!(
       event_schema: Events::EducationExperienceDeleted::V1,
       seeker_id: seeker.id,
       data: Events::EducationExperienceDeleted::Data::V1.new(

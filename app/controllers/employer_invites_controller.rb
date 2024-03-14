@@ -1,6 +1,7 @@
 class EmployerInvitesController < ApplicationController
   include Secured
   include Admin
+  include EventEmitter
 
   before_action :authorize
   before_action :admin_authorize, only: %i[index create]
@@ -10,17 +11,21 @@ class EmployerInvitesController < ApplicationController
   end
 
   def create
-    invite = EmployerInvite.create!(**params.require(:employer_invite).permit(:email, :first_name, :last_name, :employer_id), id: SecureRandom.uuid)
+    with_event_service do
+      invite = EmployerInvite.create!(**params.require(:employer_invite).permit(:email, :first_name, :last_name, :employer_id), id: SecureRandom.uuid)
 
-    render json: invite
+      render json: invite
+    end
   end
 
   def used
-    invite = EmployerInvite.find(params[:employer_invite_id])
+    with_event_service do
+      invite = EmployerInvite.find(params[:employer_invite_id])
 
-    EmployerInviteService.new(invite).accept
+      EmployerInviteService.new(invite).accept
 
-    render json: invite
+      render json: invite
+    end
   end
 
   private

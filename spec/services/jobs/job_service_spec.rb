@@ -4,6 +4,8 @@ RSpec.describe Jobs::JobService do
   describe "#create" do
     subject { described_class.new.create(params) }
 
+    include_context "event emitter"
+
     let(:params) do
       {
         category:,
@@ -56,7 +58,7 @@ RSpec.describe Jobs::JobService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::JobCreated::V3,
         job_id: be_present,
         data: Events::JobCreated::Data::V3.new(
@@ -83,6 +85,8 @@ RSpec.describe Jobs::JobService do
 
   describe "#update" do
     subject { described_class.new.update(job, params) }
+
+    include_context "event emitter"
 
     let(:job) { create(:job) }
     let(:params) do
@@ -133,7 +137,7 @@ RSpec.describe Jobs::JobService do
     end
 
     it "publishes an event" do
-      expect(EventService).to receive(:create!).with(
+      expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::JobUpdated::V2,
         job_id: job.id,
         data: Events::JobUpdated::Data::V2.new(

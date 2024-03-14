@@ -3,8 +3,8 @@ class DbStreamAggregator < DbStreamListener
     StreamListener::Kind::AGGREAGTOR
   end
 
-  def self.build(consumer, listener_name)
-    aggreagtor = new(consumer, listener_name)
+  def self.build(consumer:, listener_name:, message_service: MessageService.new)
+    aggreagtor = new(consumer:, listener_name:, message_service:)
     StreamListener.register(listener_name, aggreagtor)
     aggreagtor
   end

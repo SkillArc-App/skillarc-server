@@ -28,6 +28,8 @@ class DbStreamListener < StreamListener
         error = e
       ensure
         update_bookmark(last_handled_event) if last_handled_event
+
+        message_service.flush
       end
     end
 
@@ -52,9 +54,13 @@ class DbStreamListener < StreamListener
     Event.where("occurred_at > ?", bookmark_timestamp).order(:occurred_at)
   end
 
-  def initialize(consumer, listener_name) # rubocop:disable Lint/MissingSuper
+  def initialize(consumer:, listener_name:, message_service: MessageService.new) # rubocop:disable Lint/MissingSuper
     @consumer = consumer
+    @consumer.event_service = EventService.new(message_service:)
+    @consumer.command_service = CommandService.new(message_service:)
+
     @listener_name = listener_name
+    @message_service = message_service
   end
 
   def bookmark_timestamp
@@ -78,5 +84,5 @@ class DbStreamListener < StreamListener
     raise NoMethodError
   end
 
-  attr_reader :consumer
+  attr_reader :consumer, :message_service
 end

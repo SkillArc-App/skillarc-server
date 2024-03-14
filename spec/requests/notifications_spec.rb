@@ -19,7 +19,7 @@ RSpec.describe "Notifications", type: :request do
       end
 
       it "publishes an event" do
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::NotificationMarkedRead::V1,
           user_id: user.id,
           data: Events::NotificationMarkedRead::Data::V1.new(
@@ -27,7 +27,7 @@ RSpec.describe "Notifications", type: :request do
           )
         ).and_call_original
 
-        expect(EventService).to receive(:create!).with(
+        expect_any_instance_of(EventService).to receive(:create!).with(
           event_schema: Events::NotificationMarkedRead::V1,
           user_id: user.id,
           data: Events::NotificationMarkedRead::Data::V1.new(

@@ -1,6 +1,7 @@
 class TrainingProviderInvitesController < ApplicationController
   include Secured
   include Admin
+  include EventEmitter
 
   before_action :authorize
   before_action :admin_authorize, only: %i[index create]
@@ -10,17 +11,21 @@ class TrainingProviderInvitesController < ApplicationController
   end
 
   def create
-    invite = TrainingProviderInvite.create!(**params.require(:training_provider_invite).permit(:email, :first_name, :last_name, :role_description, :training_provider_id), id: SecureRandom.uuid)
+    with_event_service do
+      invite = TrainingProviderInvite.create!(**params.require(:training_provider_invite).permit(:email, :first_name, :last_name, :role_description, :training_provider_id), id: SecureRandom.uuid)
 
-    render json: invite
+      render json: invite
+    end
   end
 
   def accept
-    invite = TrainingProviderInvite.find(params[:id])
+    with_event_service do
+      invite = TrainingProviderInvite.find(params[:id])
 
-    TrainingProviderInviteService.new(invite).accept
+      TrainingProviderInviteService.new(invite).accept
 
-    render json: serialize_invite(invite)
+      render json: serialize_invite(invite)
+    end
   end
 
   private

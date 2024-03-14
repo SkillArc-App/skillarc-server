@@ -1,6 +1,7 @@
 class OnboardingSessionsController < ApplicationController
   include Secured
   include Cereal
+  include EventEmitter
 
   before_action :authorize
 
@@ -11,12 +12,14 @@ class OnboardingSessionsController < ApplicationController
   end
 
   def create
-    onboarding_session = OnboardingSession.find_or_create_by!(user_id: current_user.id) do |os|
-      os.id = SecureRandom.uuid
-      os.started_at = Time.zone.now
-    end
+    with_event_service do
+      onboarding_session = OnboardingSession.find_or_create_by!(user_id: current_user.id) do |os|
+        os.id = SecureRandom.uuid
+        os.started_at = Time.zone.now
+      end
 
-    render json: deep_transform_keys(onboarding_session.as_json) { |key| to_camel_case(key) }
+      render json: deep_transform_keys(onboarding_session.as_json) { |key| to_camel_case(key) }
+    end
   end
 
   def update
@@ -74,7 +77,9 @@ class OnboardingSessionsController < ApplicationController
 
     responses = filtered[:responses]
 
-    Onboarding.new(onboarding_session: os).update(responses:)
+    with_event_service do
+      Onboarding.new(onboarding_session: os).update(responses:)
+    end
 
     render json: deep_transform_keys(os.as_json) { |key| to_camel_case(key) }
   end

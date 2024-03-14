@@ -1,4 +1,6 @@
 class SeekerChats
+  include EventEmitter
+
   def initialize(user)
     @user = user
   end
@@ -8,7 +10,7 @@ class SeekerChats
 
     applicant_chat.messages.create!(user:, message:)
 
-    EventService.create!(
+    event_service.create!(
       event_schema: Events::ChatMessageSent::V1,
       job_id: applicant_chat.applicant.job.id,
       data: Events::ChatMessageSent::Data::V1.new(

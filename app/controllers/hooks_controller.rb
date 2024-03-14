@@ -1,4 +1,6 @@
 class HooksController < ApplicationController
+  include EventEmitter
+
   before_action :set_webhook, only: [:event]
 
   def event
@@ -8,12 +10,14 @@ class HooksController < ApplicationController
       return
     end
 
-    HookService.new.create_notification(
-      email: params[:email],
-      title: params[:title],
-      body: params[:body],
-      url: params[:url]
-    )
+    with_event_service do
+      HookService.new.create_notification(
+        email: params[:email],
+        title: params[:title],
+        body: params[:body],
+        url: params[:url]
+      )
+    end
 
     render json: { success: true }
   end

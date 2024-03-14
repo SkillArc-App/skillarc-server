@@ -11,7 +11,7 @@ module Employers
       data = message.data
 
       job.owner_emails.each do |owner_email|
-        CommandService.create!(
+        command_service.create!(
           command_schema: Commands::NotifyEmployerOfApplicant::V1,
           applicant_id: data.applicant_id,
           trace_id: message.trace_id,

@@ -1,22 +1,27 @@
 class TestimonialsController < ApplicationController
   include Secured
   include Admin
+  include EventEmitter
 
   before_action :authorize
   before_action :admin_authorize, only: %i[create destroy]
   before_action :set_job
 
   def create
-    render json: Jobs::TestimonialService.create(
-      job_id: job.id,
-      **params.permit(:name, :title, :testimonial, :photo_url).to_h.symbolize_keys
-    )
+    with_event_service do
+      render json: Jobs::TestimonialService.create(
+        job_id: job.id,
+        **params.permit(:name, :title, :testimonial, :photo_url).to_h.symbolize_keys
+      )
+    end
   end
 
   def destroy
     testimonial = job.testimonials.find(params[:id])
 
-    Jobs::TestimonialService.destroy(testimonial)
+    with_event_service do
+      Jobs::TestimonialService.destroy(testimonial)
+    end
 
     render json: { success: true }
   end

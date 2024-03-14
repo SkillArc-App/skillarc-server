@@ -4,6 +4,8 @@ RSpec.describe SeekerService do
   describe "#get" do
     subject { described_class.new(seeker).get(user_id:, seeker_editor: true) }
 
+    include_context "event emitter"
+
     let(:user_id) { SecureRandom.uuid }
     let(:seeker) { create(:seeker, user:) }
     let(:user) do
@@ -170,7 +172,7 @@ RSpec.describe SeekerService do
       let(:user_id) { nil }
 
       it "does not emits a SeekerViewed event" do
-        expect(EventService)
+        expect_any_instance_of(EventService)
           .not_to receive(:create!)
 
         subject
@@ -181,7 +183,7 @@ RSpec.describe SeekerService do
       let(:user_id) { seeker.user.id }
 
       it "does not emits a SeekerViewed event" do
-        expect(EventService)
+        expect_any_instance_of(EventService)
           .not_to receive(:create!)
 
         subject
@@ -192,7 +194,7 @@ RSpec.describe SeekerService do
       let(:user_id) { SecureRandom.uuid }
 
       it "emits a SeekerViewed event" do
-        expect(EventService)
+        expect_any_instance_of(EventService)
           .to receive(:create!)
           .with(
             event_schema: Events::SeekerViewed::V1,

@@ -1,37 +1,44 @@
 class EducationExperiencesController < ApplicationController
   include Secured
   include SeekerAuth
+  include EventEmitter
 
   before_action :authorize
   before_action :set_seeker
   before_action :seeker_editor_authorize
 
   def create
-    ee = EducationExperienceService.new(seeker).create(
-      **education_experience_params
-    )
+    with_event_service do
+      ee = EducationExperienceService.new(seeker).create(
+        **education_experience_params
+      )
 
-    render json: ee
+      render json: ee
+    end
   rescue StandardError => e
     render json: { error: e.message }, status: :bad_request
   end
 
   def update
-    ee = EducationExperienceService.new(seeker).update(
-      **education_experience_params.merge(id: params[:id])
-    )
+    with_event_service do
+      ee = EducationExperienceService.new(seeker).update(
+        **education_experience_params.merge(id: params[:id])
+      )
 
-    render json: ee
+      render json: ee
+    end
   rescue StandardError => e
     render json: { error: e.message }, status: :bad_request
   end
 
   def destroy
-    ee = EducationExperienceService.new(seeker).destroy(
-      id: params[:id]
-    )
+    with_event_service do
+      ee = EducationExperienceService.new(seeker).destroy(
+        id: params[:id]
+      )
 
-    render json: ee
+      render json: ee
+    end
   rescue StandardError => e
     render json: { error: e.message }, status: :bad_request
   end

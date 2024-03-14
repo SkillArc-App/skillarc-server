@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ElapseDayJob do
   it "creates a day elapse event" do
-    expect(EventService)
+    expect_any_instance_of(EventService)
       .to receive(:create!)
       .with(
         day: "day",

@@ -1,15 +1,18 @@
 class SessionController < ApplicationController
+  include EventEmitter
   include Secured
 
   before_action :authorize
 
   def create
-    EventService.create!(
-      event_schema: Events::SessionStarted::V1,
-      user_id: current_user.id,
-      data: Messages::Nothing
-    )
+    with_event_service do
+      event_service.create!(
+        event_schema: Events::SessionStarted::V1,
+        user_id: current_user.id,
+        data: Messages::Nothing
+      )
 
-    head :accepted
+      head :accepted
+    end
   end
 end

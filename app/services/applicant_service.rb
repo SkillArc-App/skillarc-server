@@ -1,4 +1,6 @@
 class ApplicantService
+  include EventEmitter
+
   def initialize(applicant)
     @applicant = applicant
   end
@@ -18,7 +20,7 @@ class ApplicantService
       )
     end
 
-    EventService.create!(
+    event_service.create!(
       event_schema: Events::ApplicantStatusUpdated::V5,
       job_id: applicant.job.id,
       data: Events::ApplicantStatusUpdated::Data::V4.new(

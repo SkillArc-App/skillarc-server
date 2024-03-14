@@ -44,7 +44,7 @@ RSpec.describe "Coaches::SeekerBarriersController", type: :request do
           before do
             expect_any_instance_of(Coaches::SeekerReactor)
               .to receive(:update_barriers)
-              .with(context_id: id, barriers:)
+              .with(context_id: id, barriers:, trace_id: be_a(String))
               .and_call_original
           end
 

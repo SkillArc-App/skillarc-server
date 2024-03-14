@@ -14,7 +14,8 @@ module Coaches
           originator: coach.email,
           context_id: params[:context_id],
           note: params[:note],
-          note_id: params[:note_id] || SecureRandom.uuid
+          note_id: params[:note_id] || SecureRandom.uuid,
+          trace_id: request.request_id
         )
       end
 
@@ -27,7 +28,8 @@ module Coaches
           context_id: params[:context_id],
           originator: coach.email,
           note_id: params[:id],
-          note: params[:note]
+          note: params[:note],
+          trace_id: request.request_id
         )
       end
 
@@ -39,7 +41,8 @@ module Coaches
         SeekerReactor.new(event_service:).delete_note(
           originator: coach.email,
           context_id: params[:context_id],
-          note_id: params[:id]
+          note_id: params[:id],
+          trace_id: request.request_id
         )
       end
 

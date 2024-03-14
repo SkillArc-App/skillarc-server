@@ -25,7 +25,8 @@ RSpec.describe "Coaches::Seekers", type: :request do
               .to receive(:certify)
               .with(
                 seeker_id: id,
-                coach:
+                coach:,
+                trace_id: be_a(String)
               ).and_call_original
           end
 

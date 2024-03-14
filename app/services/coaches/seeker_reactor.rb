@@ -2,10 +2,11 @@ module Coaches
   class SeekerReactor < MessageConsumer
     def reset_for_replay; end
 
-    def add_lead(lead_captured_by:, lead_id:, phone_number:, first_name:, last_name:, email: nil) # rubocop:disable Metrics/ParameterLists
+    def add_lead(lead_captured_by:, lead_id:, phone_number:, first_name:, last_name:, trace_id:, email: nil) # rubocop:disable Metrics/ParameterLists
       event_service.create!(
         event_schema: Events::LeadAdded::V2,
         context_id: lead_id,
+        trace_id:,
         data: Events::LeadAdded::Data::V1.new(
           email:,
           lead_id:,
@@ -17,10 +18,11 @@ module Coaches
       )
     end
 
-    def add_note(context_id:, originator:, note:, note_id:)
+    def add_note(context_id:, originator:, note:, note_id:, trace_id:)
       event_service.create!(
         event_schema: Events::NoteAdded::V3,
         context_id:,
+        trace_id:,
         data: Events::NoteAdded::Data::V2.new(
           originator:,
           note:,
@@ -29,10 +31,11 @@ module Coaches
       )
     end
 
-    def delete_note(context_id:, originator:, note_id:)
+    def delete_note(context_id:, originator:, note_id:, trace_id:)
       event_service.create!(
         event_schema: Events::NoteDeleted::V3,
         context_id:,
+        trace_id:,
         data: Events::NoteDeleted::Data::V2.new(
           originator:,
           note_id:
@@ -40,10 +43,11 @@ module Coaches
       )
     end
 
-    def modify_note(context_id:, originator:, note_id:, note:)
+    def modify_note(context_id:, originator:, note_id:, note:, trace_id:)
       event_service.create!(
         event_schema: Events::NoteModified::V3,
         context_id:,
+        trace_id:,
         data: Events::NoteModified::Data::V2.new(
           originator:,
           note_id:,
@@ -52,12 +56,13 @@ module Coaches
       )
     end
 
-    def certify(seeker_id:, coach:)
+    def certify(seeker_id:, coach:, trace_id:)
       user = User.find(coach.user_id)
 
       event_service.create!(
         event_schema: Events::SeekerCertified::V1,
         seeker_id:,
+        trace_id:,
         data: Events::SeekerCertified::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -67,10 +72,11 @@ module Coaches
       )
     end
 
-    def recommend_job(context_id:, job_id:, coach:)
+    def recommend_job(context_id:, job_id:, coach:, trace_id:)
       event_service.create!(
         event_schema: Events::JobRecommended::V2,
         context_id:,
+        trace_id:,
         data: Events::JobRecommended::Data::V1.new(
           coach_id: coach.coach_id,
           job_id:
@@ -78,20 +84,22 @@ module Coaches
       )
     end
 
-    def update_barriers(context_id:, barriers:)
+    def update_barriers(context_id:, barriers:, trace_id:)
       event_service.create!(
         event_schema: Events::BarrierUpdated::V2,
         context_id:,
+        trace_id:,
         data: Events::BarrierUpdated::Data::V1.new(
           barriers:
         )
       )
     end
 
-    def assign_coach(context_id:, coach_id:, coach_email:)
+    def assign_coach(context_id:, coach_id:, coach_email:, trace_id:)
       event_service.create!(
         event_schema: Events::CoachAssigned::V2,
         context_id:,
+        trace_id:,
         data: Events::CoachAssigned::Data::V1.new(
           coach_id:,
           email: coach_email
@@ -99,10 +107,11 @@ module Coaches
       )
     end
 
-    def update_skill_level(context_id:, skill_level:)
+    def update_skill_level(context_id:, skill_level:, trace_id:)
       event_service.create!(
         event_schema: Events::SkillLevelUpdated::V2,
         context_id:,
+        trace_id:,
         data: Events::SkillLevelUpdated::Data::V1.new(
           skill_level:
         )
@@ -117,7 +126,8 @@ module Coaches
         phone_number: data.phone_number,
         first_name: data.first_name,
         last_name: data.last_name,
-        email: data.email
+        email: data.email,
+        trace_id: message.trace_id
       )
     end
 
@@ -128,7 +138,8 @@ module Coaches
         context_id: message.aggregate.context_id,
         originator: data.originator,
         note: data.note,
-        note_id: data.note_id
+        note_id: data.note_id,
+        trace_id: message.trace_id
       )
     end
 
@@ -141,7 +152,8 @@ module Coaches
       assign_coach(
         context_id: message.aggregate.context_id,
         coach_id: coach.coach_id,
-        coach_email: data.coach_email
+        coach_email: data.coach_email,
+        trace_id: message.trace_id
       )
     end
   end

@@ -10,7 +10,7 @@ module Coaches
 
     def certify
       with_event_service do
-        SeekerReactor.new(event_service:).certify(seeker_id: params[:seeker_id], coach:)
+        SeekerReactor.new(event_service:).certify(seeker_id: params[:seeker_id], coach:, trace_id: request.request_id)
       end
 
       head :accepted

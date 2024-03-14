@@ -105,7 +105,8 @@ RSpec.describe "Leads", type: :request do
                 phone_number: "333-333-3333",
                 first_name: "john",
                 last_name: "Chabot",
-                lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5"
+                lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5",
+                trace_id: be_a(String)
               )
               .and_call_original
           end

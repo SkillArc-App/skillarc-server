@@ -11,7 +11,8 @@ module Coaches
       with_event_service do
         SeekerReactor.new(event_service:).update_barriers(
           context_id: params[:context_id],
-          barriers: params[:barriers]
+          barriers: params[:barriers],
+          trace_id: request.request_id
         )
       end
 

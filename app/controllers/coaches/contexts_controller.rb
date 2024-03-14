@@ -27,7 +27,8 @@ module Coaches
         SeekerReactor.new(event_service:).assign_coach(
           context_id: params[:context_id],
           coach_id: coach.coach_id,
-          coach_email: coach.email
+          coach_email: coach.email,
+          trace_id: request.request_id
         )
       end
 
@@ -39,7 +40,8 @@ module Coaches
         SeekerReactor.new(event_service:).recommend_job(
           context_id: params[:context_id],
           job_id: params[:job_id],
-          coach:
+          coach:,
+          trace_id: request.request_id
         )
       end
 
@@ -55,7 +57,7 @@ module Coaches
 
         seeker_id = params[:context_id]
         seeker_id = coach_seekers_context.seeker_id if coach_seekers_context
-        SeekerReactor.new(event_service:).certify(seeker_id:, coach:)
+        SeekerReactor.new(event_service:).certify(seeker_id:, coach:, trace_id: request.request_id)
       end
 
       head :accepted
@@ -65,7 +67,8 @@ module Coaches
       with_event_service do
         SeekerReactor.new(event_service:).update_skill_level(
           context_id: params[:context_id],
-          skill_level: params[:level]
+          skill_level: params[:level],
+          trace_id: request.request_id
         )
       end
 

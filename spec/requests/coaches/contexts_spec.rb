@@ -125,7 +125,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
           before do
             expect_any_instance_of(Coaches::SeekerReactor)
               .to receive(:update_skill_level)
-              .with(context_id: id, skill_level: update[:level])
+              .with(context_id: id, skill_level: update[:level], trace_id: be_a(String))
               .and_call_original
           end
 
@@ -180,7 +180,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
           before do
             expect_any_instance_of(Coaches::SeekerReactor)
               .to receive(:assign_coach)
-              .with(context_id: id, coach_id:, coach_email: coach.email)
+              .with(context_id: id, coach_id:, coach_email: coach.email, trace_id: be_a(String))
           end
 
           run_test!
@@ -231,7 +231,8 @@ RSpec.describe "Coaches::Contexts", type: :request do
               .with(
                 context_id: id,
                 job_id:,
-                coach:
+                coach:,
+                trace_id: be_a(String)
               ).and_call_original
           end
 
@@ -265,7 +266,8 @@ RSpec.describe "Coaches::Contexts", type: :request do
               .to receive(:certify)
               .with(
                 seeker_id:,
-                coach:
+                coach:,
+                trace_id: be_a(String)
               ).and_call_original
           end
 

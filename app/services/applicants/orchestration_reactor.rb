@@ -1,5 +1,5 @@
 module Applicants
-  class OrchestrationService < MessageConsumer
+  class OrchestrationReactor < MessageConsumer
     include EventEmitter
     include CommandEmitter
 

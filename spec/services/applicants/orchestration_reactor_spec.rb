@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Applicants::OrchestrationService do
+RSpec.describe Applicants::OrchestrationReactor do
   describe "applicant screened" do
     subject { described_class.new.handle_message(applicant_screened) }
 

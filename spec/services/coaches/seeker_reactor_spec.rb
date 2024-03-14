@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Coaches::SeekerReactor do
   let(:user_id) { "9f769972-c41c-4b58-a056-bffb714ea24d" }
   let(:seeker_id) { "75372772-49dc-4884-b4ae-1d408e030aa4" }
-  let(:note_id1) { "78f22f6c-a770-46fc-a83c-1ad6cda4b8f9" }
+  let(:note_id) { "78f22f6c-a770-46fc-a83c-1ad6cda4b8f9" }
   let(:updated_note) { "This note was updated" }
   let(:consumer) { described_class.new(event_service: EventService.new) }
 
@@ -40,9 +40,9 @@ RSpec.describe Coaches::SeekerReactor do
   end
 
   describe ".add_note" do
-    subject { consumer.add_note(context_id:, coach:, note: "This is a new note", note_id: note_id1, now:) }
+    subject { consumer.add_note(context_id:, originator:, note: "This is a new note", note_id:, now:) }
 
-    let(:coach) { create(:coaches__coach) }
+    let(:originator) { "someone" }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
     let(:context_id) { user_id }
@@ -52,9 +52,9 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::NoteAdded::V3,
         context_id:,
         data: Events::NoteAdded::Data::V2.new(
-          originator: coach.email,
+          originator:,
           note: "This is a new note",
-          note_id: note_id1
+          note_id:
         ),
         occurred_at: now
       ).and_call_original
@@ -64,10 +64,9 @@ RSpec.describe Coaches::SeekerReactor do
   end
 
   describe ".delete_note" do
-    subject { consumer.delete_note(coach:, context_id:, note_id: note.note_id, now:) }
+    subject { consumer.delete_note(originator:, context_id:, note_id:, now:) }
 
-    let(:note) { create(:coaches__seeker_note, note_id: note_id1) }
-    let(:coach) { create(:coaches__coach) }
+    let(:originator) { "someone" }
     let(:now) { Time.zone.local(2020, 1, 1) }
     let(:context_id) { user_id }
 
@@ -76,8 +75,8 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::NoteDeleted::V3,
         context_id:,
         data: Events::NoteDeleted::Data::V2.new(
-          originator: coach.email,
-          note_id: note_id1
+          originator:,
+          note_id:
         ),
         occurred_at: now
       ).and_call_original
@@ -87,9 +86,9 @@ RSpec.describe Coaches::SeekerReactor do
   end
 
   describe ".modify_note" do
-    subject { consumer.modify_note(context_id:, coach:, note_id: note_id1, note: updated_note, now:) }
+    subject { consumer.modify_note(context_id:, originator:, note_id:, note: updated_note, now:) }
 
-    let(:coach) { create(:coaches__coach) }
+    let(:originator) { "someone" }
     let(:now) { Time.zone.local(2020, 1, 1) }
     let(:context_id) { user_id }
 
@@ -98,8 +97,8 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::NoteModified::V3,
         context_id:,
         data: Events::NoteModified::Data::V2.new(
-          originator: coach.email,
-          note_id: note_id1,
+          originator:,
+          note_id:,
           note: updated_note
         ),
         occurred_at: now

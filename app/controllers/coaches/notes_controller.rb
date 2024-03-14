@@ -11,7 +11,7 @@ module Coaches
     def create
       with_event_service do
         SeekerReactor.new(event_service:).add_note(
-          coach:,
+          originator: coach.email,
           context_id: params[:context_id],
           note: params[:note],
           note_id: params[:note_id] || SecureRandom.uuid
@@ -25,7 +25,7 @@ module Coaches
       with_event_service do
         SeekerReactor.new(event_service:).modify_note(
           context_id: params[:context_id],
-          coach:,
+          originator: coach.email,
           note_id: params[:id],
           note: params[:note]
         )
@@ -37,7 +37,7 @@ module Coaches
     def destroy
       with_event_service do
         SeekerReactor.new(event_service:).delete_note(
-          coach:,
+          originator: coach.email,
           context_id: params[:context_id],
           note_id: params[:id]
         )

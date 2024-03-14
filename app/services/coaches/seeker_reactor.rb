@@ -18,12 +18,12 @@ module Coaches
       )
     end
 
-    def add_note(context_id:, coach:, note:, note_id:, now: Time.zone.now)
+    def add_note(context_id:, originator:, note:, note_id:, now: Time.zone.now)
       event_service.create!(
         event_schema: Events::NoteAdded::V3,
         context_id:,
         data: Events::NoteAdded::Data::V2.new(
-          originator: coach.email,
+          originator:,
           note:,
           note_id:
         ),
@@ -31,24 +31,24 @@ module Coaches
       )
     end
 
-    def delete_note(context_id:, coach:, note_id:, now: Time.zone.now)
+    def delete_note(context_id:, originator:, note_id:, now: Time.zone.now)
       event_service.create!(
         event_schema: Events::NoteDeleted::V3,
         context_id:,
         data: Events::NoteDeleted::Data::V2.new(
-          originator: coach.email,
+          originator:,
           note_id:
         ),
         occurred_at: now
       )
     end
 
-    def modify_note(context_id:, coach:, note_id:, note:, now: Time.zone.now)
+    def modify_note(context_id:, originator:, note_id:, note:, now: Time.zone.now)
       event_service.create!(
         event_schema: Events::NoteModified::V3,
         context_id:,
         data: Events::NoteModified::Data::V2.new(
-          originator: coach.email,
+          originator: originator,
           note_id:,
           note:
         ),
@@ -119,7 +119,13 @@ module Coaches
     end
 
     on_message Commands::AddLead::V1 do |_message|
-      puts "bro"
+      add_note(
+        context_id:,
+        coach:,
+        note:,
+        note_id:,
+        now: Time.zone.now
+      )
     end
 
     on_message Commands::AddNote::V1 do |_message|

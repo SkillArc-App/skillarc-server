@@ -32,8 +32,18 @@ RSpec.describe "Jobs", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it "creates an applicant" do
-      expect { subject }.to change(Applicant, :count).by(1)
+    it "calls the Seekers::ApplicantService" do
+      expect(Seekers::ApplicantService)
+        .to receive(:new)
+        .with(an_instance_of(Seeker))
+        .and_call_original
+
+      expect_any_instance_of(Seekers::ApplicantService)
+        .to receive(:apply)
+        .with(job)
+        .and_call_original
+
+      subject
     end
   end
 

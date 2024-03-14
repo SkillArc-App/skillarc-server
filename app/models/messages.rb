@@ -4,6 +4,16 @@ module Messages
   UNDEFINED = Messages::Undefined.new
 
   module Types
+    module Applications
+      COMMANDS = [
+        SCREEN_APPLICANT = 'screen_applicant'
+      ].freeze
+
+      EVENTS = [
+        APPLICANT_SCREENED = 'applicant_screened'
+      ].freeze
+    end
+
     module Coaches
       EVENTS = [
         BARRIER_ADDED = 'barrier_added',
@@ -68,6 +78,7 @@ module Messages
         JOB_UNSAVED = 'job_unsaved',
         ONBOARDING_COMPLETED = 'onboarding_completed',
         PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created',
+        SEEKER_APPLIED = 'seeker_applied',
         SEEKER_CREATED = 'profile_created',
         SEEKER_SKILL_CREATED = 'seeker_skill_created',
         SEEKER_SKILL_UPDATED = 'seeker_skill_updated',
@@ -116,6 +127,7 @@ module Messages
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted',
       USER_CREATED = 'user_created',
       USER_UPDATED = 'user_updated',
+      *Applications::EVENTS,
       *Coaches::EVENTS,
       *Jobs::EVENTS,
       *Employers::EVENTS,
@@ -125,6 +137,7 @@ module Messages
     ].freeze
 
     COMMANDS = [
+      *Applications::COMMANDS,
       *Contact::COMMANDS,
       *Coaches::COMMANDS
     ].freeze

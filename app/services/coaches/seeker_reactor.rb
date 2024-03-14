@@ -20,11 +20,10 @@ module Coaches
 
     def add_note(context_id:, coach:, note:, note_id:, now: Time.zone.now)
       event_service.create!(
-        event_schema: Events::NoteAdded::V2,
+        event_schema: Events::NoteAdded::V3,
         context_id:,
-        data: Events::NoteAdded::Data::V1.new(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
+        data: Events::NoteAdded::Data::V2.new(
+          originator: coach.email,
           note:,
           note_id:
         ),
@@ -34,11 +33,10 @@ module Coaches
 
     def delete_note(context_id:, coach:, note_id:, now: Time.zone.now)
       event_service.create!(
-        event_schema: Events::NoteDeleted::V2,
+        event_schema: Events::NoteDeleted::V3,
         context_id:,
-        data: Events::NoteDeleted::Data::V1.new(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
+        data: Events::NoteDeleted::Data::V2.new(
+          originator: coach.email,
           note_id:
         ),
         occurred_at: now
@@ -47,11 +45,10 @@ module Coaches
 
     def modify_note(context_id:, coach:, note_id:, note:, now: Time.zone.now)
       event_service.create!(
-        event_schema: Events::NoteModified::V2,
+        event_schema: Events::NoteModified::V3,
         context_id:,
-        data: Events::NoteModified::Data::V1.new(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
+        data: Events::NoteModified::Data::V2.new(
+          originator: coach.email,
           note_id:,
           note:
         ),

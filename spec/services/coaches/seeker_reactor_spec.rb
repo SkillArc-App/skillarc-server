@@ -49,11 +49,10 @@ RSpec.describe Coaches::SeekerReactor do
 
     it "creates an event" do
       expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::NoteAdded::V2,
+        event_schema: Events::NoteAdded::V3,
         context_id:,
-        data: Events::NoteAdded::Data::V1.new(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
+        data: Events::NoteAdded::Data::V2.new(
+          originator: coach.email,
           note: "This is a new note",
           note_id: note_id1
         ),
@@ -74,11 +73,10 @@ RSpec.describe Coaches::SeekerReactor do
 
     it "creates an event" do
       expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::NoteDeleted::V2,
+        event_schema: Events::NoteDeleted::V3,
         context_id:,
-        data: Events::NoteDeleted::Data::V1.new(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
+        data: Events::NoteDeleted::Data::V2.new(
+          originator: coach.email,
           note_id: note_id1
         ),
         occurred_at: now
@@ -97,11 +95,10 @@ RSpec.describe Coaches::SeekerReactor do
 
     it "creates an event" do
       expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::NoteModified::V2,
+        event_schema: Events::NoteModified::V3,
         context_id:,
-        data: Events::NoteModified::Data::V1.new(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
+        data: Events::NoteModified::Data::V2.new(
+          originator: coach.email,
           note_id: note_id1,
           note: updated_note
         ),

@@ -98,22 +98,22 @@ module Coaches
       )
     end
 
-    on_message Events::NoteDeleted::V2, :sync do |message|
+    on_message Events::NoteDeleted::V3, :sync do |message|
       SeekerNote.find_by!(note_id: message.data.note_id).destroy
     end
 
-    on_message Events::NoteModified::V2, :sync do |message|
+    on_message Events::NoteModified::V3, :sync do |message|
       SeekerNote.find_by!(note_id: message.data.note_id).update!(note: message.data.note)
     end
 
-    on_message Events::NoteAdded::V2, :sync do |message|
+    on_message Events::NoteAdded::V3, :sync do |message|
       csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.update!(last_contacted_at: message.occurred_at)
       csc.seeker_notes << SeekerNote.create!(
         coach_seeker_context: csc,
         note_taken_at: message.occurred_at,
-        note_taken_by: message.data.coach_email,
+        note_taken_by: message.data.originator,
         note_id: message.data.note_id,
         note: message.data.note
       )

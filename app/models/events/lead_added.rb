@@ -22,5 +22,12 @@ module Events
       message_type: Messages::Types::Coaches::LEAD_ADDED,
       version: 1
     )
+    V2 = Messages::Schema.build(
+      data: Data::V1,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Coaches::SeekerContext,
+      message_type: Messages::Types::Coaches::LEAD_ADDED,
+      version: 2
+    )
   end
 end

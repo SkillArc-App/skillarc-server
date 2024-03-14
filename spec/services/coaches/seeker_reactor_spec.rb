@@ -10,9 +10,9 @@ RSpec.describe Coaches::SeekerReactor do
   it_behaves_like "a message consumer"
 
   describe ".add_lead" do
-    subject { consumer.add_lead(coach:, first_name:, last_name:, lead_id:, phone_number:, now:) }
+    subject { consumer.add_lead(lead_captured_by:, first_name:, last_name:, lead_id:, phone_number:, now:) }
 
-    let(:coach) { create(:coaches__coach) }
+    let(:lead_captured_by) { "someone@cool.com" }
     let(:first_name) { "John" }
     let(:last_name) { "Chabot" }
     let(:phone_number) { "333-333-3333" }
@@ -22,15 +22,15 @@ RSpec.describe Coaches::SeekerReactor do
 
     it "creates an event" do
       expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::LeadAdded::V1,
-        coach_id: coach.id,
+        event_schema: Events::LeadAdded::V2,
+        context_id: lead_id,
         data: Events::LeadAdded::Data::V1.new(
           first_name:,
           last_name:,
           phone_number:,
           lead_id:,
           email: nil,
-          lead_captured_by: coach.email
+          lead_captured_by:
         ),
         occurred_at: now
       ).and_call_original

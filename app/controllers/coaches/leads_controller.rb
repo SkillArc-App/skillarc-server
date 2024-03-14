@@ -23,7 +23,7 @@ module Coaches
             :first_name,
             :last_name
           ).to_h.symbolize_keys,
-          coach:
+          lead_captured_by: coach.email
         )
       end
 

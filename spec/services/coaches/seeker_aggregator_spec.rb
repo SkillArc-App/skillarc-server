@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Coaches::SeekerAggregator do
-  let(:lead_added1) { build(:message, :lead_added, aggregate_id: coach_id, data: lead1, occurred_at: time1) }
-  let(:lead_added2) { build(:message, :lead_added, aggregate_id: coach_id, data: lead2, occurred_at: time1) }
+  let(:lead_added1) { build(:message, :lead_added, version: 2, aggregate_id: lead1.lead_id, data: lead1, occurred_at: time1) }
+  let(:lead_added2) { build(:message, :lead_added, version: 2, aggregate_id: lead2.lead_id, data: lead2, occurred_at: time1) }
   let(:non_seeker_user_created) { build(:message, :user_created, aggregate_id: coach_user_id, data: Events::UserCreated::Data::V1.new(email: "f@f.f")) }
   let(:user_without_email) { build(:message, :user_created, aggregate_id: user_without_email_id, data: Events::UserCreated::Data::V1.new(first_name: "Hannah", last_name: "Block")) }
   let(:seeker_without_email) { build(:message, :profile_created, aggregate_id: user_without_email_id, data: Events::SeekerCreated::Data::V1.new(id: seeker_without_email_id, user_id: user_without_email_id)) }

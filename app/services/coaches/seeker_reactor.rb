@@ -1,18 +1,18 @@
 module Coaches
-  class SeekerReactor < MessageConsumer # rubocop:disable Metrics/ClassLength
+  class SeekerReactor < MessageConsumer
     def reset_for_replay; end
 
-    def add_lead(coach:, lead_id:, phone_number:, first_name:, last_name:, email: nil, now: Time.zone.now) # rubocop:disable Metrics/ParameterLists
+    def add_lead(lead_captured_by:, lead_id:, phone_number:, first_name:, last_name:, email: nil, now: Time.zone.now) # rubocop:disable Metrics/ParameterLists
       event_service.create!(
-        event_schema: Events::LeadAdded::V1,
-        coach_id: coach.id,
+        event_schema: Events::LeadAdded::V2,
+        context_id: lead_id,
         data: Events::LeadAdded::Data::V1.new(
           email:,
           lead_id:,
           phone_number:,
           first_name:,
           last_name:,
-          lead_captured_by: coach.email
+          lead_captured_by:
         ),
         occurred_at: now
       )
@@ -116,6 +116,18 @@ module Coaches
         ),
         occurred_at: now
       )
+    end
+
+    on_message Commands::AddLead::V1 do |_message|
+      puts "bro"
+    end
+
+    on_message Commands::AddNote::V1 do |_message|
+      puts "bro"
+    end
+
+    on_message Commands::AssignCoach::V1 do |_message|
+      puts "bro"
     end
   end
 end

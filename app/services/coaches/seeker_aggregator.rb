@@ -82,7 +82,7 @@ module Coaches
       )
     end
 
-    on_message Events::LeadAdded::V1, :sync do |message|
+    on_message Events::LeadAdded::V2, :sync do |message|
       return if message.data.email.present? && CoachSeekerContext.find_by(email: message.data.email)
       return if CoachSeekerContext.find_by(phone_number: message.data.phone_number)
 

@@ -100,7 +100,7 @@ RSpec.describe "Leads", type: :request do
             expect_any_instance_of(Coaches::SeekerReactor)
               .to receive(:add_lead)
               .with(
-                coach:,
+                lead_captured_by: coach.email,
                 email: "john.chabot@blocktrainapp.com",
                 phone_number: "333-333-3333",
                 first_name: "john",

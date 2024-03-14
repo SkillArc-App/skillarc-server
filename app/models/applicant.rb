@@ -3,6 +3,7 @@
 # Table name: applicants
 #
 #  id             :text             not null, primary key
+#  certified_by   :string
 #  elevator_pitch :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null

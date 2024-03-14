@@ -23,7 +23,7 @@ RSpec.describe Coaches::CoachService do
     consumer.handle_message(other_role_added)
   end
 
-  it_behaves_like "a message consuemr"
+  it_behaves_like "a message consumer"
 
   describe ".all" do
     subject { consumer.all }

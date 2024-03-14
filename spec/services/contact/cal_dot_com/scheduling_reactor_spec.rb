@@ -4,6 +4,8 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
   describe "#handle_message" do
     subject { described_class.new(command_service:).handle_message(message) }
 
+    it_behaves_like "a message consumer"
+
     context "the event is a cal.com webhook recieved event" do
       let(:message) do
         build(
@@ -74,7 +76,7 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
                   context_id: dummie_uuid,
                   command_schema: Commands::AssignCoach::V1,
                   data: Commands::AssignCoach::Data::V1.new(
-                    email: "katina@skillarc.com"
+                    coach_email: "katina@skillarc.com"
                   )
                 )
 
@@ -125,7 +127,7 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
                   context_id: dummie_uuid,
                   command_schema: Commands::AssignCoach::V1,
                   data: Commands::AssignCoach::Data::V1.new(
-                    email: "katina@skillarc.com"
+                    coach_email: "katina@skillarc.com"
                   )
                 )
 

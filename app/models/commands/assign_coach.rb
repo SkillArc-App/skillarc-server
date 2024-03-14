@@ -5,7 +5,7 @@ module Commands
         extend Messages::Payload
 
         schema do
-          email String
+          coach_email String
         end
       end
     end

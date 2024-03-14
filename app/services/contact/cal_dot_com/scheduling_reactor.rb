@@ -35,7 +35,7 @@ module Contact
         )
 
         assign_coach_data = Commands::AssignCoach::Data::V1.new(
-          email: coach_email
+          coach_email:
         )
 
         command_service.create!(

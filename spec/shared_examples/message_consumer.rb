@@ -1,4 +1,4 @@
-RSpec.shared_examples "a message consuemr" do
+RSpec.shared_examples "a message consumer" do
   describe ".reset_for_replay" do
     subject { described_class.new.reset_for_replay }
 

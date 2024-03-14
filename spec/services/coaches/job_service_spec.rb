@@ -57,7 +57,7 @@ RSpec.describe Coaches::JobService do
     consumer.handle_message(job_created2)
   end
 
-  it_behaves_like "a message consuemr"
+  it_behaves_like "a message consumer"
 
   describe ".all" do
     subject { consumer.all }

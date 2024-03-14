@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Employers::WeeklyUpdateService do
-  it_behaves_like "a message consuemr"
+  it_behaves_like "a message consumer"
 
   describe "day elapsed" do
     subject { described_class.new(command_service: CommandService.new).handle_message(message) }

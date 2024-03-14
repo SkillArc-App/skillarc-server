@@ -97,7 +97,7 @@ RSpec.describe "Leads", type: :request do
 
         response '201', 'lead created' do
           before do
-            expect_any_instance_of(Coaches::SeekerService)
+            expect_any_instance_of(Coaches::SeekerReactor)
               .to receive(:add_lead)
               .with(
                 coach:,

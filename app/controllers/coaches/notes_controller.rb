@@ -10,7 +10,7 @@ module Coaches
 
     def create
       with_event_service do
-        SeekerService.new(event_service:).add_note(
+        SeekerReactor.new(event_service:).add_note(
           coach:,
           context_id: params[:context_id],
           note: params[:note],
@@ -23,7 +23,7 @@ module Coaches
 
     def update
       with_event_service do
-        SeekerService.new(event_service:).modify_note(
+        SeekerReactor.new(event_service:).modify_note(
           context_id: params[:context_id],
           coach:,
           note_id: params[:id],
@@ -36,7 +36,7 @@ module Coaches
 
     def destroy
       with_event_service do
-        SeekerService.new(event_service:).delete_note(
+        SeekerReactor.new(event_service:).delete_note(
           coach:,
           context_id: params[:context_id],
           note_id: params[:id]

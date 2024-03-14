@@ -10,13 +10,13 @@ module Coaches
 
     def index
       with_event_service do
-        render json: SeekerService.new(event_service:).all_seekers
+        render json: SeekerAggregator.new(event_service:).all_seekers
       end
     end
 
     def show
       with_event_service do
-        render json: SeekerService.new(event_service:).find_context(params[:id])
+        render json: SeekerAggregator.new(event_service:).find_context(params[:id])
       end
     end
 
@@ -24,7 +24,7 @@ module Coaches
       coach = Coach.find_by!(coach_id: params[:coach_id])
 
       with_event_service do
-        SeekerService.new(event_service:).assign_coach(
+        SeekerReactor.new(event_service:).assign_coach(
           context_id: params[:context_id],
           coach_id: coach.coach_id,
           coach_email: coach.email
@@ -36,7 +36,7 @@ module Coaches
 
     def recommend_job
       with_event_service do
-        SeekerService.new(event_service:).recommend_job(
+        SeekerReactor.new(event_service:).recommend_job(
           context_id: params[:context_id],
           job_id: params[:job_id],
           coach:
@@ -48,7 +48,7 @@ module Coaches
 
     def certify
       with_event_service do
-        SeekerService.new(event_service:).certify(context_id: params[:context_id], coach:)
+        SeekerReactor.new(event_service:).certify(context_id: params[:context_id], coach:)
       end
 
       head :accepted
@@ -56,7 +56,7 @@ module Coaches
 
     def update_skill_level
       with_event_service do
-        SeekerService.new(event_service:).update_skill_level(
+        SeekerReactor.new(event_service:).update_skill_level(
           context_id: params[:context_id],
           skill_level: params[:level]
         )

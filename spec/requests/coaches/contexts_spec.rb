@@ -77,7 +77,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
             create(:coaches__seeker_application, coach_seeker_context:)
             create(:coaches__seeker_job_recommendation, coach_seeker_context:)
 
-            expect_any_instance_of(Coaches::SeekerService)
+            expect_any_instance_of(Coaches::SeekerAggregator)
               .to receive(:find_context)
               .with(id)
               .and_call_original
@@ -123,7 +123,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
         response '202', 'retrieve all seekers' do
           before do
-            expect_any_instance_of(Coaches::SeekerService)
+            expect_any_instance_of(Coaches::SeekerReactor)
               .to receive(:update_skill_level)
               .with(context_id: id, skill_level: update[:level])
               .and_call_original
@@ -178,7 +178,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
         response '202', 'retrieve all seekers' do
           before do
-            expect_any_instance_of(Coaches::SeekerService)
+            expect_any_instance_of(Coaches::SeekerReactor)
               .to receive(:assign_coach)
               .with(context_id: id, coach_id:, coach_email: coach.email)
           end
@@ -226,7 +226,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
         response '202', 'retrieve all seekers' do
           before do
-            expect_any_instance_of(Coaches::SeekerService)
+            expect_any_instance_of(Coaches::SeekerReactor)
               .to receive(:recommend_job)
               .with(
                 context_id: id,
@@ -260,7 +260,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
         response '202', 'retrieve all seekers' do
           before do
-            expect_any_instance_of(Coaches::SeekerService)
+            expect_any_instance_of(Coaches::SeekerReactor)
               .to receive(:certify)
               .with(
                 context_id: id,

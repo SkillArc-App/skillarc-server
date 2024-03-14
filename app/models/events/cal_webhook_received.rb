@@ -16,6 +16,12 @@ module Events
       ].freeze
     end
 
+    module KnownBookingTypes
+      ALL = [
+        CAREER_CONSULTATION = 'career-consultation'.freeze
+      ].freeze
+    end
+
     module Data
       class V1
         extend Messages::Payload

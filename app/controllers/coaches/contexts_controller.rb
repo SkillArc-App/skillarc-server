@@ -48,7 +48,14 @@ module Coaches
 
     def certify
       with_event_service do
-        SeekerReactor.new(event_service:).certify(context_id: params[:context_id], coach:)
+        # These lines are here as a shim in case I don't update the client before I leave
+        # if we're still passing context_id to this endpoint we should still be good
+        # We'll need to move this to a separate seekers controller once we're good
+        coach_seekers_context = CoachSeekerContext.find_by(context_id: params[:context_id])
+
+        seeker_id = params[:context_id]
+        seeker_id = coach_seekers_context.seeker_id if coach_seekers_context
+        SeekerReactor.new(event_service:).certify(seeker_id:, coach:)
       end
 
       head :accepted

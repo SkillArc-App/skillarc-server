@@ -132,14 +132,12 @@ RSpec.describe Coaches::SeekerReactor do
   end
 
   describe ".certify" do
-    subject { consumer.certify(context_id:, coach:, now:) }
+    subject { consumer.certify(seeker_id:, coach:, now:) }
 
     let(:now) { Time.zone.local(2020, 1, 1) }
     let(:coach) { create(:coaches__coach, user_id: user.id) }
     let(:user) { create(:user) }
-    let(:context_id) { SecureRandom.uuid }
     let(:seeker_id) { SecureRandom.uuid }
-    let!(:csc) { create(:coaches__coach_seeker_context, context_id:, seeker_id:) }
 
     it "creates an event" do
       expect_any_instance_of(EventService).to receive(:create!).with(

@@ -56,12 +56,12 @@ module Coaches
       )
     end
 
-    def certify(context_id:, coach:, now: Time.zone.now)
+    def certify(seeker_id:, coach:, now: Time.zone.now)
       user = User.find(coach.user_id)
 
       event_service.create!(
         event_schema: Events::SeekerCertified::V1,
-        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
+        seeker_id:,
         data: Events::SeekerCertified::Data::V1.new(
           coach_id: coach.coach_id,
           coach_email: coach.email,

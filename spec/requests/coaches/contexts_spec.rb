@@ -254,16 +254,17 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
       let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
       let(:id) { coach_seeker_context.context_id }
+      let(:seeker_id) { coach_seeker_context.seeker_id }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
 
-        response '202', 'retrieve all seekers' do
+        response '202', 'certifies a seeker' do
           before do
             expect_any_instance_of(Coaches::SeekerReactor)
               .to receive(:certify)
               .with(
-                context_id: id,
+                seeker_id:,
                 coach:
               ).and_call_original
           end

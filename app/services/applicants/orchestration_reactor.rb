@@ -36,7 +36,29 @@ module Applicants
       )
     end
 
+    on_message Events::SeekerCertified::V1, :sync do |event|
+      applicants = Applicant.joins(:job).where(seeker_id: event.aggregate.seeker_id)
+
+      applicants.each do |applicant|
+        next unless applicant.job.staffing?
+
+        event_service.create!(
+          applicant_id: applicant.id,
+          event_schema: Events::ApplicantScreened::V1,
+          data: Messages::Nothing,
+          metadata: Messages::Nothing,
+          trace_id: event.trace_id,
+          version: 1
+        )
+      end
+    end
+
     on_message Commands::ScreenApplicant::V1, :sync do |event|
+      applicant = Applicant.find(event.aggregate.applicant_id)
+      result = Applicants::ScreeningService.new(applicant).screen
+
+      return unless result == Applicants::ScreeningService::ScreeningResults::APPROVED
+
       event_service.create!(
         applicant_id: event.aggregate.applicant_id,
         event_schema: Events::ApplicantScreened::V1,

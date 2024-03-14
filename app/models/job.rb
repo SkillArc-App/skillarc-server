@@ -97,6 +97,14 @@ class Job < ApplicationRecord
     )
   end
 
+  def marketplace?
+    category == Categories::MARKETPLACE
+  end
+
+  def staffing?
+    category == Categories::STAFFING
+  end
+
   private
 
   def industry_values_must_be_in_industries_all

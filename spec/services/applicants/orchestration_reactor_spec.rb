@@ -45,6 +45,65 @@ RSpec.describe Applicants::OrchestrationReactor do
     end
   end
 
+  describe "seeker certified" do
+    subject { described_class.new.handle_message(seeker_certified) }
+
+    include_context "event emitter", false
+
+    let(:seeker_certified) { build(:message, schema: Events::SeekerCertified::V1, data:, aggregate_id: seeker.id) }
+    let(:data) do
+      Events::SeekerCertified::Data::V1.new(
+        coach_first_name: "Katina",
+        coach_last_name: "Hall",
+        coach_email: "khall@skillarc.com",
+        coach_id: "123e4567-e89b-12d3-a456-426614174000"
+      )
+    end
+
+    let(:seeker) { create(:seeker) }
+    let(:applicant) { create(:applicant, seeker:, job:) }
+    let(:job) { create(:job, category:) }
+
+    context "when the job is a marketplace job" do
+      let(:category) { Job::Categories::MARKETPLACE }
+
+      it "does not publish an event" do
+        expect_any_instance_of(EventService)
+          .not_to receive(:create!)
+          .with(
+            applicant_id: applicant.id,
+            event_schema: Events::ApplicantScreened::V1,
+            data: Messages::Nothing,
+            metadata: Messages::Nothing,
+            trace_id: seeker_certified.trace_id,
+            version: 1
+          )
+
+        subject
+      end
+    end
+
+    context "when the job is a staffing job" do
+      let(:category) { Job::Categories::STAFFING }
+
+      it "publishes an event" do
+        expect_any_instance_of(EventService)
+          .to receive(:create!)
+          .with(
+            applicant_id: applicant.id,
+            event_schema: Events::ApplicantScreened::V1,
+            data: Messages::Nothing,
+            metadata: Messages::Nothing,
+            trace_id: seeker_certified.trace_id,
+            version: 1
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+  end
+
   describe "screen applicant" do
     subject { described_class.new.handle_message(screen_applicant) }
 
@@ -53,20 +112,43 @@ RSpec.describe Applicants::OrchestrationReactor do
     let(:screen_applicant) { build(:message, schema: Commands::ScreenApplicant::V1, aggregate_id: applicant.id) }
     let(:applicant) { create(:applicant) }
 
-    it "publishes an event" do
-      expect_any_instance_of(EventService)
-        .to receive(:create!)
-        .with(
-          applicant_id: applicant.id,
-          event_schema: Events::ApplicantScreened::V1,
-          data: Messages::Nothing,
-          metadata: Messages::Nothing,
-          trace_id: screen_applicant.trace_id,
-          version: 1
-        )
-        .and_call_original
+    context "when the applicant is not approved" do
+      before do
+        allow_any_instance_of(Applicants::ScreeningService)
+          .to receive(:screen)
+          .and_return(Applicants::ScreeningService::ScreeningResults::NOT_APPROVED)
+      end
 
-      subject
+      it "does not publish an event" do
+        expect_any_instance_of(EventService)
+          .not_to receive(:create!)
+
+        subject
+      end
+    end
+
+    context "when the applicant is approved" do
+      before do
+        allow_any_instance_of(Applicants::ScreeningService)
+          .to receive(:screen)
+          .and_return(Applicants::ScreeningService::ScreeningResults::APPROVED)
+      end
+
+      it "publishes an event" do
+        expect_any_instance_of(EventService)
+          .to receive(:create!)
+          .with(
+            applicant_id: applicant.id,
+            event_schema: Events::ApplicantScreened::V1,
+            data: Messages::Nothing,
+            metadata: Messages::Nothing,
+            trace_id: screen_applicant.trace_id,
+            version: 1
+          )
+          .and_call_original
+
+        subject
+      end
     end
   end
 

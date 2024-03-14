@@ -3,6 +3,8 @@ FactoryBot.define do
     id { SecureRandom.uuid }
     employer
 
+    category { Job::Categories::MARKETPLACE }
+
     benefits_description { "We have benefits." }
     employment_title { "Welder" }
     industry { ["manufacturing"] }

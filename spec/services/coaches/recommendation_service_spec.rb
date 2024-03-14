@@ -9,7 +9,7 @@ RSpec.describe Coaches::RecommendationService do
   let!(:coach_seeker_context) { create(:coaches__coach_seeker_context, phone_number: "1234567890", seeker_id:) }
   let(:seeker_id) { SecureRandom.uuid }
 
-  it_behaves_like "an event consumer"
+  it_behaves_like "a message consuemr"
 
   context "JobRecommended" do
     it "does emit an SEND_SMS command" do

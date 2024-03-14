@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Employers::ApplicationNotificationService do
-  it_behaves_like "an event consumer"
+  it_behaves_like "a message consuemr"
 
   describe "application created" do
     subject { described_class.new(command_service: CommandService.new).handle_message(applicant_status_updated) }

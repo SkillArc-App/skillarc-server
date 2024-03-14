@@ -24,7 +24,7 @@ require "shared_examples/coach_secure_endpoint"
 require "shared_examples/employer_secure_endpoint"
 require "shared_examples/seeker_secure_endpoint"
 require "shared_examples/default_headers_context"
-require "shared_examples/event_consumer"
+require "shared_examples/message_consumer"
 require "shared_examples/event_emitter"
 
 RSpec.configure do |config|

@@ -9,7 +9,7 @@ module Coaches
 
     def update_all
       with_event_service do
-        SeekerService.new(event_service:).update_barriers(
+        SeekerReactor.new(event_service:).update_barriers(
           context_id: params[:context_id],
           barriers: params[:barriers]
         )

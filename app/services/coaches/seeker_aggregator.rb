@@ -1,5 +1,5 @@
 module Coaches
-  class SeekerService < MessageConsumer # rubocop:disable Metrics/ClassLength
+  class SeekerAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay
       SeekerNote.delete_all
       SeekerApplication.delete_all
@@ -24,125 +24,6 @@ module Coaches
       csc = CoachSeekerContext.find_by!(context_id: id)
 
       serialize_coach_seeker_context(csc)
-    end
-
-    def add_lead(coach:, lead_id:, phone_number:, first_name:, last_name:, email: nil, now: Time.zone.now) # rubocop:disable Metrics/ParameterLists
-      event_service.create!(
-        event_schema: Events::LeadAdded::V1,
-        coach_id: coach.id,
-        data: Events::LeadAdded::Data::V1.new(
-          email:,
-          lead_id:,
-          phone_number:,
-          first_name:,
-          last_name:,
-          lead_captured_by: coach.email
-        ),
-        occurred_at: now
-      )
-    end
-
-    def add_note(context_id:, coach:, note:, note_id:, now: Time.zone.now)
-      event_service.create!(
-        event_schema: Events::NoteAdded::V2,
-        context_id:,
-        data: Events::NoteAdded::Data::V1.new(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
-          note:,
-          note_id:
-        ),
-        occurred_at: now
-      )
-    end
-
-    def delete_note(context_id:, coach:, note_id:, now: Time.zone.now)
-      event_service.create!(
-        event_schema: Events::NoteDeleted::V2,
-        context_id:,
-        data: Events::NoteDeleted::Data::V1.new(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
-          note_id:
-        ),
-        occurred_at: now
-      )
-    end
-
-    def modify_note(context_id:, coach:, note_id:, note:, now: Time.zone.now)
-      event_service.create!(
-        event_schema: Events::NoteModified::V2,
-        context_id:,
-        data: Events::NoteModified::Data::V1.new(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
-          note_id:,
-          note:
-        ),
-        occurred_at: now
-      )
-    end
-
-    def certify(context_id:, coach:, now: Time.zone.now)
-      user = User.find(coach.user_id)
-
-      event_service.create!(
-        event_schema: Events::SeekerCertified::V1,
-        seeker_id: CoachSeekerContext.find_by!(context_id:).seeker_id,
-        data: Events::SeekerCertified::Data::V1.new(
-          coach_id: coach.coach_id,
-          coach_email: coach.email,
-          coach_first_name: user.first_name,
-          coach_last_name: user.last_name
-        ),
-        occurred_at: now
-      )
-    end
-
-    def recommend_job(context_id:, job_id:, coach:, now: Time.zone.now)
-      event_service.create!(
-        event_schema: Events::JobRecommended::V2,
-        context_id:,
-        data: Events::JobRecommended::Data::V1.new(
-          coach_id: coach.coach_id,
-          job_id:
-        ),
-        occurred_at: now
-      )
-    end
-
-    def update_barriers(context_id:, barriers:, now: Time.zone.now)
-      event_service.create!(
-        event_schema: Events::BarrierUpdated::V2,
-        context_id:,
-        data: Events::BarrierUpdated::Data::V1.new(
-          barriers:
-        ),
-        occurred_at: now
-      )
-    end
-
-    def assign_coach(context_id:, coach_id:, coach_email:, now: Time.zone.now)
-      event_service.create!(
-        event_schema: Events::CoachAssigned::V2,
-        context_id:,
-        data: Events::CoachAssigned::Data::V1.new(
-          coach_id:,
-          email: coach_email
-        ),
-        occurred_at: now
-      )
-    end
-
-    def update_skill_level(context_id:, skill_level:, now: Time.zone.now)
-      event_service.create!(
-        event_schema: Events::SkillLevelUpdated::V2,
-        context_id:,
-        data: Events::SkillLevelUpdated::Data::V1.new(
-          skill_level:
-        ),
-        occurred_at: now
-      )
     end
 
     on_message Events::ApplicantStatusUpdated::V5 do |message|
@@ -201,7 +82,7 @@ module Coaches
       )
     end
 
-    on_message Events::LeadAdded::V1, :sync do |message|
+    on_message Events::LeadAdded::V2, :sync do |message|
       return if message.data.email.present? && CoachSeekerContext.find_by(email: message.data.email)
       return if CoachSeekerContext.find_by(phone_number: message.data.phone_number)
 
@@ -217,22 +98,22 @@ module Coaches
       )
     end
 
-    on_message Events::NoteDeleted::V2, :sync do |message|
+    on_message Events::NoteDeleted::V3, :sync do |message|
       SeekerNote.find_by!(note_id: message.data.note_id).destroy
     end
 
-    on_message Events::NoteModified::V2, :sync do |message|
+    on_message Events::NoteModified::V3, :sync do |message|
       SeekerNote.find_by!(note_id: message.data.note_id).update!(note: message.data.note)
     end
 
-    on_message Events::NoteAdded::V2, :sync do |message|
+    on_message Events::NoteAdded::V3, :sync do |message|
       csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.update!(last_contacted_at: message.occurred_at)
       csc.seeker_notes << SeekerNote.create!(
         coach_seeker_context: csc,
         note_taken_at: message.occurred_at,
-        note_taken_by: message.data.coach_email,
+        note_taken_by: message.data.originator,
         note_id: message.data.note_id,
         note: message.data.note
       )

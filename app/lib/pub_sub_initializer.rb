@@ -71,7 +71,8 @@ module PubSubInitializer
     all_schemas = MessageService.all_schemas
 
     [
-      DbStreamAggregator.build(consumer: Coaches::SeekerService.new, listener_name: "coach_seekers"),
+      DbStreamAggregator.build(consumer: Coaches::SeekerAggregator.new, listener_name: "coach_seekers"),
+      DbStreamReactor.build(consumer: Coaches::SeekerReactor.new, listener_name: "coach_seekers_reactor"),
       DbStreamAggregator.build(consumer: Search::SearchService.new, listener_name: "search"),
       DbStreamAggregator.build(consumer: Coaches::CoachService.new, listener_name: "coaches"),
       DbStreamAggregator.build(consumer: Coaches::BarrierService.new, listener_name: "barriers"),

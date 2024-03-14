@@ -9,12 +9,12 @@ module Coaches
     before_action :set_coach
 
     def index
-      render json: SeekerService.new.all_leads
+      render json: SeekerAggregator.new.all_leads
     end
 
     def create
       with_event_service do
-        SeekerService.new(event_service:).add_lead(
+        SeekerReactor.new(event_service:).add_lead(
           lead_id: SecureRandom.uuid,
           **params.require(:lead).permit(
             :lead_id,
@@ -23,7 +23,7 @@ module Coaches
             :first_name,
             :last_name
           ).to_h.symbolize_keys,
-          coach:
+          lead_captured_by: coach.email
         )
       end
 

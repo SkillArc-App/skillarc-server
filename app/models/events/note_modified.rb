@@ -11,6 +11,16 @@ module Events
           note String
         end
       end
+
+      class V2
+        extend Messages::Payload
+
+        schema do
+          originator String
+          note_id Uuid
+          note String
+        end
+      end
     end
 
     V1 = Messages::Schema.build(
@@ -26,6 +36,13 @@ module Events
       aggregate: Aggregates::Coaches::SeekerContext,
       message_type: Messages::Types::Coaches::NOTE_MODIFIED,
       version: 2
+    )
+    V3 = Messages::Schema.build(
+      data: Data::V2,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Coaches::SeekerContext,
+      message_type: Messages::Types::Coaches::NOTE_MODIFIED,
+      version: 3
     )
   end
 end

@@ -182,7 +182,7 @@ paths:
               - jobId
   "/coaches/contexts/{id}/certify":
     post:
-      summary: Update a skill level
+      summary: Certify a seeker
       tags:
       - Seekers
       parameters:
@@ -206,7 +206,7 @@ paths:
         '401':
           description: unauthenticated
         '202':
-          description: retrieve all seekers
+          description: certifies a seeker
   "/coaches/leads":
     get:
       summary: Retrieve all leads
@@ -446,6 +446,61 @@ paths:
                     type: string
               required:
               - barriers
+  "/coaches/seekers/{id}/certify":
+    post:
+      summary: Certify a seeker
+      tags:
+      - Seekers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: certifies a seeker
+  "/contact/cal_dot_com/webhooks":
+    post:
+      summary: Consume webhook
+      tags:
+      - Contact
+      parameters:
+      - name: X-Cal-Signature-256
+        in: header
+        schema:
+          type: string
+      responses:
+        '403':
+          description: Forbidden
+        '202':
+          description: Accepted
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                triggerEvent:
+                  type: string
+                createdAt:
+                  type: string
+                  format: datetime
+                payload:
+                  type: object
   "/employers/applicants/{id}":
     put:
       summary: Update an applicants status

@@ -242,7 +242,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
   end
 
   path '/coaches/contexts/{id}/certify' do
-    post "Update a skill level" do
+    post "Certify a seeker" do
       tags 'Seekers'
       parameter name: :id, in: :path, type: :string
       security [bearer_auth: []]

@@ -27,29 +27,10 @@ class MessageService
   end
 
   def flush
-    while peek_messages_to_publish
-      shift_messages_to_publish do |message|
-        PUBSUB_SYNC.publish(message:)
-        BroadcastEventJob.perform_later(message)
-      end
+    while (message = messages_to_publish.shift)
+      PUBSUB_SYNC.publish(message:)
+      BroadcastEventJob.perform_later(message)
     end
-  end
-
-  def peek_messages_to_publish
-    messages_to_publish.first
-  end
-
-  def shift_messages_to_publish
-    message = messages_to_publish.shift
-
-    begin
-      yield(message) if block_given?
-    rescue StandardError => e
-      messages_to_publish.unshift(message)
-      raise e
-    end
-
-    message
   end
 
   def self.register(message_schema:)

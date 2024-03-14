@@ -71,18 +71,18 @@ module PubSubInitializer
     all_schemas = MessageService.all_schemas
 
     [
-      DbStreamAggregator.build(consumer: Coaches::SeekerService.new, listener_name: "coach_seekers", message_service: MessageService.new),
-      DbStreamAggregator.build(consumer: Search::SearchService.new, listener_name: "search", message_service: MessageService.new),
-      DbStreamAggregator.build(consumer: Coaches::CoachService.new, listener_name: "coaches", message_service: MessageService.new),
-      DbStreamAggregator.build(consumer: Coaches::BarrierService.new, listener_name: "barriers", message_service: MessageService.new),
-      DbStreamAggregator.build(consumer: Coaches::JobService.new, listener_name: "coaches_jobs", message_service: MessageService.new),
-      DbStreamReactor.build(consumer: Contact::SmsService.new, listener_name: "contact_sms", message_service: MessageService.new),
-      DbStreamReactor.build(consumer: Contact::SmtpService.new, listener_name: "contact_smtp", message_service: MessageService.new),
-      DbStreamReactor.build(consumer: Coaches::RecommendationService.new, listener_name: "coaches_recommendations", message_service: MessageService.new),
-      DbStreamAggregator.build(consumer: Employers::EmployerService.new, listener_name: "employers", message_service: MessageService.new),
-      DbStreamAggregator.build(consumer: Employers::ApplicationNotificationService.new, listener_name: "employers_application_notification_service", message_service: MessageService.new),
-      DbStreamReactor.build(consumer: Employers::WeeklyUpdateService.new, listener_name: "employers_weekly_update_service", message_service: MessageService.new),
-      DbStreamAggregator.build(consumer: Seekers::SeekerService.new, listener_name: "seekers", message_service: MessageService.new)
+      DbStreamAggregator.build(consumer: Coaches::SeekerService.new, listener_name: "coach_seekers"),
+      DbStreamAggregator.build(consumer: Search::SearchService.new, listener_name: "search"),
+      DbStreamAggregator.build(consumer: Coaches::CoachService.new, listener_name: "coaches"),
+      DbStreamAggregator.build(consumer: Coaches::BarrierService.new, listener_name: "barriers"),
+      DbStreamAggregator.build(consumer: Coaches::JobService.new, listener_name: "coaches_jobs"),
+      DbStreamReactor.build(consumer: Contact::SmsService.new, listener_name: "contact_sms"),
+      DbStreamReactor.build(consumer: Contact::SmtpService.new, listener_name: "contact_smtp"),
+      DbStreamReactor.build(consumer: Coaches::RecommendationService.new, listener_name: "coaches_recommendations"),
+      DbStreamAggregator.build(consumer: Employers::EmployerService.new, listener_name: "employers"),
+      DbStreamAggregator.build(consumer: Employers::ApplicationNotificationService.new, listener_name: "employers_application_notification_service"),
+      DbStreamReactor.build(consumer: Employers::WeeklyUpdateService.new, listener_name: "employers_weekly_update_service"),
+      DbStreamAggregator.build(consumer: Seekers::SeekerService.new, listener_name: "seekers")
     ].each do |listener|
       listener.handled_messages.each do |message_schema|
         PUBSUB.subscribe(

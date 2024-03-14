@@ -1097,3 +1097,5 @@ FactoryBot.create(:barrier, name: "Background")
 FactoryBot.create(:barrier, name: "Unable to Drive")
 
 FactoryBot.create(:coaches__job, job_id: contractor.id, employer_name: contractor.employer.name, employment_title: contractor.employment_title)
+
+event_service.flush

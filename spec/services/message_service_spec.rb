@@ -90,21 +90,6 @@ RSpec.describe MessageService do
                 metadata:
               )
           end
-
-          it "pushes the event to messages to publish" do
-            expect(subject.shift_messages_to_publish).to eq(Event.last_created.message)
-            expect(subject.shift_messages_to_publish).to be_nil
-          end
-
-          it "doesn't persist the shift if the block raises" do
-            expect do
-              subject.shift_messages_to_publish do |_message|
-                raise "error"
-              end
-            end.to raise_error("error")
-
-            expect(subject.shift_messages_to_publish).to eq(Event.last_created.message)
-          end
         end
       end
     end

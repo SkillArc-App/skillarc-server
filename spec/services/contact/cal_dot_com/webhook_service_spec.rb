@@ -17,7 +17,7 @@ RSpec.describe Contact::CalDotCom::WebhookService do
           integration: "cal.com",
           data: Events::CalWebhookReceived::Data::V1.new(
             cal_trigger_event_type: webhook["triggerEvent"],
-            payload: webhook["payload"]
+            payload: webhook["payload"].deep_symbolize_keys
           ),
           occurred_at: webhook["createdAt"]
         )

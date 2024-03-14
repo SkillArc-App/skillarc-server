@@ -37,17 +37,17 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
           context "when the leads provides additional notes" do
             let(:payload) do
               {
-                "type" => Events::CalWebhookReceived::KnownBookingTypes::CAREER_CONSULTATION,
-                "attendees" => [
+                type: Events::CalWebhookReceived::KnownBookingTypes::CAREER_CONSULTATION,
+                attendees: [
                   {
-                    "email" => "john@skillarc.com",
-                    "firstName" => "John",
-                    "lastName" => "Chabot"
+                    email: "john@skillarc.com",
+                    firstName: "John",
+                    lastName: "Chabot"
                   }
                 ],
-                "location" => "+17403573931",
-                "organizer" => {
-                  "email" => "katina@skillarc.com"
+                location: "+17403573931",
+                organizer: {
+                  email: "katina@skillarc.com"
                 }
               }
             end
@@ -87,19 +87,19 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
           context "when the leads doesn't provides additional notes" do
             let(:payload) do
               {
-                "type" => Events::CalWebhookReceived::KnownBookingTypes::CAREER_CONSULTATION,
-                "attendees" => [
+                type: Events::CalWebhookReceived::KnownBookingTypes::CAREER_CONSULTATION,
+                attendees: [
                   {
-                    "email" => "john@skillarc.com",
-                    "firstName" => "John",
-                    "lastName" => "Chabot"
+                    email: "john@skillarc.com",
+                    firstName: "John",
+                    lastName: "Chabot"
                   }
                 ],
-                "location" => "+17403573931",
-                "organizer" => {
-                  "email" => "katina@skillarc.com"
+                location: "+17403573931",
+                organizer: {
+                  email: "katina@skillarc.com"
                 },
-                "additionalNotes" => "This seems like a cool place!"
+                additionalNotes: "This seems like a cool place!"
               }
             end
 
@@ -151,7 +151,7 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
 
         context "when the payload type is anything else" do
           let(:payload) do
-            { "type" => "some other meeting" }
+            { type: "some other meeting" }
           end
 
           it "does not emit a command and reports an error to sentry" do

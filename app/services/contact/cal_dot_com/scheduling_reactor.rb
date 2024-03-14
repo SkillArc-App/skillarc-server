@@ -8,29 +8,29 @@ module Contact
       on_message Events::CalWebhookReceived::V1 do |message|
         return unless message.data.cal_trigger_event_type == Events::CalWebhookReceived::CalTriggerEventTypes::BOOKING_CREATED
 
-        case message.data.payload["type"]
+        case message.data.payload[:type]
         when Events::CalWebhookReceived::KnownBookingTypes::CAREER_CONSULTATION
           handle_career_consolutation(message.trace_id, message.data.payload)
         else
-          Sentry.capture_exception(UnknownMeetingType.new(message.data.payload["type"]))
+          Sentry.capture_exception(UnknownMeetingType.new(message.data.payload[:type]))
         end
       end
 
       private
 
       def handle_career_consolutation(trace_id, payload)
-        attendee = payload.dig("attendees", 0)
-        coach_email = payload.dig("organizer", "email")
-        phone_number = payload["location"]
+        attendee = payload.dig(:attendees, 0)
+        coach_email = payload.dig(:organizer, :email)
+        phone_number = payload[:location]
 
         lead_id = SecureRandom.uuid
 
         add_lead_data = Commands::AddLead::Data::V1.new(
-          email: attendee["email"],
+          email: attendee[:email],
           lead_id:,
           phone_number:,
-          first_name: attendee["firstName"],
-          last_name: attendee["lastName"],
+          first_name: attendee[:firstName],
+          last_name: attendee[:lastName],
           lead_captured_by: "cal.com"
         )
 
@@ -52,11 +52,11 @@ module Contact
           data: assign_coach_data
         )
 
-        return if payload['additionalNotes'].blank?
+        return if payload[:additionalNotes].blank?
 
         add_note_data = Commands::AddNote::Data::V1.new(
           originator: "cal.com",
-          note: "From #{attendee['firstName']} #{attendee['lastName']} on the meeting invite: #{payload['additionalNotes']}",
+          note: "From #{attendee[:firstName]} #{attendee[:lastName]} on the meeting invite: #{payload[:additionalNotes]}",
           note_id: SecureRandom.uuid
         )
 

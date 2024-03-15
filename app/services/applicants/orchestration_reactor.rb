@@ -56,6 +56,12 @@ module Applicants
         a.save!
       end
 
+      ApplicantStatus.create!(
+        id: SecureRandom.uuid,
+        applicant:,
+        status: ApplicantStatus::StatusTypes::NEW
+      )
+
       command_service.create!(
         applicant_id: applicant.id,
         trace_id: event.trace_id,

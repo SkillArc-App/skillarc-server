@@ -84,7 +84,10 @@ module Messages
         SEEKER_SKILL_UPDATED = 'seeker_skill_updated',
         SEEKER_SKILL_DESTROYED = 'seeker_skill_destroyed',
         SEEKER_UPDATED = 'seeker_updated',
-        SEEKER_VIEWED = 'seeker_viewed'
+        SEEKER_VIEWED = 'seeker_viewed',
+        STORY_CREATED = 'story_created',
+        STORY_DESTROYED = 'story_destroyed',
+        STORY_UPDATED = 'story_updated'
       ].freeze
     end
 

@@ -92,7 +92,11 @@ RSpec.describe Applicants::OrchestrationReactor do
     let(:job) { create(:job, employment_title: "Welder") }
 
     it "creates an applicant" do
-      expect { subject }.to change(Applicant, :count).by(1)
+      expect { subject }
+        .to change(Applicant, :count).by(1)
+        .and change(ApplicantStatus, :count).by(1)
+
+      expect(ApplicantStatus.last_created.status).to eq(ApplicantStatus::StatusTypes::NEW)
     end
 
     it "requests an application screen" do

@@ -1,61 +1,192 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "Stories", type: :request do
-  describe "POST /create" do
-    subject { post profile_stories_path(seeker), params:, headers: }
+  let(:seeker) { create(:seeker, user: user_to_edit) }
+  let(:user_to_edit) { create(:user) }
 
-    include_context "authenticated"
+  path '/profiles/{profile_id}/stories/{story_id}' do
+    delete 'Deletes a story' do
+      tags 'Seekers'
+      consumes 'application/json'
+      produces 'application/json'
+      security [bearer_auth: []]
+      parameter name: :profile_id, in: :path, type: :string, format: :uuid
+      parameter name: :story_id, in: :path, type: :string, format: :uuid
 
-    let(:params) do
-      {
-        story: {
-          prompt: "This is a prompt",
-          response: "This is a response"
-        }
-      }
-    end
-    let(:user) { create(:user) }
-    let(:seeker) { create(:seeker, user:) }
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    it "returns a 200" do
-      subject
+      let(:profile_id) { seeker.id }
+      let(:story_id) { story.id }
+      let(:story) { create(:story, seeker:) }
 
-      expect(response).to have_http_status(:ok)
-    end
+      it_behaves_like "seeker spec unauthenticated openapi"
 
-    it "creates a story" do
-      expect { subject }.to change(Story, :count).by(1)
-    end
-  end
+      context "when authenticated" do
+        include_context "profile owner openapi"
 
-  describe "UPDATE /update" do
-    subject { patch profile_story_path(seeker, story), params:, headers: }
+        response '200', 'story deleted' do
+          schema type: :object, properties: {
+            id: { type: :string, format: :uuid },
+            prompt: { type: :string },
+            response: { type: :string },
+            createdAt: { type: :string, format: :datetime },
+            updatedAt: { type: :string, format: :datetime },
+            seekerId: { type: :string, format: :uuid }
+          }
 
-    include_context "authenticated"
+          before do
+            expect(Seekers::StoriesService).to receive(:new).with(seeker).and_call_original
 
-    let(:user) { create(:user) }
-    let(:seeker) { create(:seeker, user:) }
+            expect_any_instance_of(Seekers::StoriesService).to receive(:destroy).with(story:).and_call_original
+          end
 
-    let(:params) do
-      {
-        story: {
-          prompt: "This is a new prompt",
-          response: "This is a response"
-        }
-      }
-    end
-    let!(:story) { create(:story, seeker:) }
-
-    it "returns a 200" do
-      subject
-
-      expect(response).to have_http_status(:ok)
-    end
-
-    it "updates the story" do
-      expect { subject }.to change { story.reload.prompt }.to("This is a new prompt")
+          run_test!
+        end
+      end
     end
   end
 
-  describe "DELETE /destroy"
+  path '/profiles/{profile_id}/stories/{story_id}' do
+    put 'Updates a story' do
+      tags 'Seekers'
+      consumes 'application/json'
+      produces 'application/json'
+      security [bearer_auth: []]
+      parameter name: :profile_id, in: :path, type: :string, format: :uuid
+      parameter name: :story_id, in: :path, type: :string, format: :uuid
+      parameter name: :update_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          story: {
+            type: :object,
+            required: %w[prompt response],
+            properties: {
+              prompt: {
+                type: :string
+              },
+              response: {
+                type: :string
+              }
+            }
+          }
+        },
+        required: %w[story]
+      }
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      let(:profile_id) { seeker.id }
+      let(:story_id) { story.id }
+      let(:story) { create(:story, seeker:) }
+      let(:update_params) do
+        {
+          story: {
+            prompt: "This is a new prompt",
+            response: "This is a response"
+          }
+        }
+      end
+
+      it_behaves_like "seeker spec unauthenticated openapi"
+
+      context "when authenticated" do
+        include_context "profile owner openapi"
+
+        response '200', 'story updated' do
+          schema type: :object, properties: {
+            id: { type: :string, format: :uuid },
+            prompt: { type: :string },
+            response: { type: :string },
+            createdAt: { type: :string, format: :datetime },
+            updatedAt: { type: :string, format: :datetime },
+            seekerId: { type: :string, format: :uuid }
+          }
+
+          before do
+            expect(Seekers::StoriesService).to receive(:new).with(seeker).and_call_original
+
+            expect_any_instance_of(Seekers::StoriesService).to receive(:update).with(
+              story:,
+              prompt: "This is a new prompt",
+              response: "This is a response"
+            ).and_call_original
+          end
+
+          run_test!
+        end
+      end
+    end
+  end
+
+  path '/profiles/{profile_id}/stories' do
+    post 'Creates a story' do
+      tags 'Seekers'
+      consumes 'application/json'
+      produces 'application/json'
+      security [bearer_auth: []]
+      parameter name: :profile_id, in: :path, type: :string, format: :uuid
+      parameter name: :create_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          story: {
+            type: :object,
+            required: %w[prompt response],
+            properties: {
+              prompt: {
+                type: :string
+              },
+              response: {
+                type: :string
+              }
+            }
+          }
+        },
+        required: %w[story]
+      }
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      let(:profile_id) { seeker.id }
+      let(:create_params) do
+        {
+          story: {
+            prompt: "This is a prompt",
+            response: "This is a response"
+          }
+        }
+      end
+
+      it_behaves_like "seeker spec unauthenticated openapi"
+
+      context "when authenticated" do
+        include_context "profile owner openapi"
+
+        response '201', 'story created' do
+          schema type: :object, properties: {
+            id: { type: :string, format: :uuid },
+            prompt: { type: :string },
+            response: { type: :string },
+            createdAt: { type: :string, format: :datetime },
+            updatedAt: { type: :string, format: :datetime },
+            seekerId: { type: :string, format: :uuid }
+          }
+
+          before do
+            expect(Seekers::StoriesService).to receive(:new).with(seeker).and_call_original
+
+            expect_any_instance_of(Seekers::StoriesService).to receive(:create).with(
+              prompt: "This is a prompt",
+              response: "This is a response"
+            ).and_call_original
+          end
+
+          run_test!
+        end
+      end
+    end
+  end
 end

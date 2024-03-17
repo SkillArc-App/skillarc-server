@@ -16,7 +16,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Seekers::STORY_DESTROYED,
+      message_type: Messages::Types::Seekers::STORY_UPDATED,
       version: 1
     )
   end

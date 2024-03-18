@@ -1,8 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe Applicants::OrchestrationReactor do
+  let(:instance) do
+    orchestration_reactor = described_class.new
+    message_service = MessageService.new
+
+    orchestration_reactor.event_service = EventService.new(message_service:)
+    orchestration_reactor.command_service = CommandService.new(message_service:)
+
+    orchestration_reactor
+  end
+
   describe "applicant screened" do
-    subject { described_class.new.handle_message(applicant_screened) }
+    subject { instance.handle_message(applicant_screened) }
 
     include_context "event emitter", false
 
@@ -46,7 +56,7 @@ RSpec.describe Applicants::OrchestrationReactor do
   end
 
   describe "screen applicant" do
-    subject { described_class.new.handle_message(screen_applicant) }
+    subject { instance.handle_message(screen_applicant) }
 
     include_context "event emitter", false
 
@@ -71,9 +81,7 @@ RSpec.describe Applicants::OrchestrationReactor do
   end
 
   describe "seeker applied" do
-    subject { described_class.new.handle_message(seeker_applied) }
-
-    include_context "command emitter", false
+    subject { instance.handle_message(seeker_applied) }
 
     let(:seeker_applied) { build(:message, :seeker_applied, data:, aggregate_id: seeker.id) }
     let(:seeker) { create(:seeker) }

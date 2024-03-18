@@ -1,8 +1,5 @@
 module Applicants
   class OrchestrationReactor < MessageConsumer
-    include EventEmitter
-    include CommandEmitter
-
     def reset_for_replay
       # Can't do this yet because the applications are not totally event sourced yet
     end

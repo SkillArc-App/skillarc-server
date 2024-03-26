@@ -15,7 +15,7 @@ module Contact
 
       event_service.create!(
         event_schema: Events::SmsSent::V1,
-        aggregate_id: message.data.phone_number,
+        phone_number: message.data.phone_number,
         trace_id: message.trace_id,
         data: Events::SmsSent::Data::V1.new(
           phone_number: message.data.phone_number,

@@ -7,7 +7,7 @@ RSpec.describe Coaches::RecommendationService do
   let(:coach_id) { SecureRandom.uuid }
 
   let!(:coach_seeker_context) { create(:coaches__coach_seeker_context, phone_number: "1234567890", seeker_id:) }
-  let(:seeker_context_id) { coach_seeker_context.id }
+  let(:seeker_context_id) { coach_seeker_context.context_id }
   let(:seeker_id) { SecureRandom.uuid }
 
   it_behaves_like "a message consumer"

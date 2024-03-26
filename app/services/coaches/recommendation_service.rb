@@ -5,7 +5,7 @@ module Coaches
     on_message Events::JobRecommended::V2 do |message|
       job_id = message.data.job_id
 
-      csc = CoachSeekerContext.find(message.aggregate_id)
+      csc = CoachSeekerContext.find_by(context_id: message.aggregate_id)
       return if csc&.phone_number.nil?
 
       command_service.create!(

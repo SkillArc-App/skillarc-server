@@ -31,13 +31,15 @@ RSpec.describe Contact::SmsService do
     it "publishes an event" do
       expect_any_instance_of(EventService).to receive(:create!).with(
         event_schema: Events::SmsSent::V1,
-        aggregate_id: phone_number,
+        phone_number:,
         trace_id: message.trace_id,
         data: Events::SmsSent::Data::V1.new(
           phone_number:,
           message: sms_message
         )
-      )
+      ).and_call_original
+
+      expect(Sentry).not_to receive(:capture_exception)
 
       subject
     end

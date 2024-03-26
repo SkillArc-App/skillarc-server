@@ -2,7 +2,7 @@
 #
 # Table name: coaches_feed_events
 #
-#  id           :bigint           not null, primary key
+#  id           :uuid             not null, primary key
 #  description  :text             not null
 #  occurred_at  :datetime         not null
 #  seeker_email :string           not null

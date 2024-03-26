@@ -1,6 +1,6 @@
 class CreateCoachesFeedEvents < ActiveRecord::Migration[7.1]
   def change
-    create_table :coaches_feed_events do |t|
+    create_table :coaches_feed_events, id: :uuid do |t|
       t.string :context_id, null: false
       t.string :seeker_email, null: false
 

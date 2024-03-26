@@ -1,12 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Coaches::RecommendationService do
-  let(:job_recommended) { build(:message, :job_recommended, aggregate_id: seeker_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id:)) }
+  let(:job_recommended) { build(:message, :job_recommended, version: 2, aggregate_id: seeker_context_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id:)) }
 
   let(:job_id) { SecureRandom.uuid }
   let(:coach_id) { SecureRandom.uuid }
 
   let!(:coach_seeker_context) { create(:coaches__coach_seeker_context, phone_number: "1234567890", seeker_id:) }
+  let(:seeker_context_id) { coach_seeker_context.id }
   let(:seeker_id) { SecureRandom.uuid }
 
   it_behaves_like "a message consumer"
@@ -17,7 +18,7 @@ RSpec.describe Coaches::RecommendationService do
         .to receive(:create!)
         .with(
           command_schema: Commands::SendSms::V1,
-          seeker_id: coach_seeker_context.seeker_id,
+          seeker_id:,
           trace_id: job_recommended.trace_id,
           data: Commands::SendSms::Data::V1.new(
             phone_number: "1234567890",

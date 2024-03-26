@@ -2,10 +2,10 @@ module Coaches
   class RecommendationService < MessageConsumer
     def reset_for_replay; end
 
-    on_message Events::JobRecommended::V1 do |message|
+    on_message Events::JobRecommended::V2 do |message|
       job_id = message.data.job_id
 
-      csc = CoachSeekerContext.find_by(seeker_id: message.aggregate_id)
+      csc = CoachSeekerContext.find(message.aggregate_id)
       return if csc&.phone_number.nil?
 
       command_service.create!(

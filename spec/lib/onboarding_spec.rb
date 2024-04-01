@@ -548,14 +548,14 @@ RSpec.describe Onboarding do
             .with(
               user_id: user.id,
               event_schema: Events::OnboardingCompleted::V1,
-              data: Events::OnboardingCompleted::Data::V1.new(
+              data: {
                 name: responses["name"],
                 experience: responses["experience"],
                 education: responses["education"],
                 trainingProvider: responses["trainingProvider"],
                 other: responses["other"],
                 opportunityInterests: responses["opportunityInterests"]
-              ),
+              },
               occurred_at: be_present
             ).and_call_original
 

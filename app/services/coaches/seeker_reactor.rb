@@ -7,14 +7,14 @@ module Coaches
         event_schema: Events::LeadAdded::V2,
         context_id: lead_id,
         trace_id:,
-        data: Events::LeadAdded::Data::V1.new(
+        data: {
           email:,
           lead_id:,
           phone_number:,
           first_name:,
           last_name:,
           lead_captured_by:
-        )
+        }
       )
     end
 
@@ -23,11 +23,11 @@ module Coaches
         event_schema: Events::NoteAdded::V3,
         context_id:,
         trace_id:,
-        data: Events::NoteAdded::Data::V2.new(
+        data: {
           originator:,
           note:,
           note_id:
-        )
+        }
       )
     end
 
@@ -36,10 +36,10 @@ module Coaches
         event_schema: Events::NoteDeleted::V3,
         context_id:,
         trace_id:,
-        data: Events::NoteDeleted::Data::V2.new(
+        data: {
           originator:,
           note_id:
-        )
+        }
       )
     end
 
@@ -48,11 +48,11 @@ module Coaches
         event_schema: Events::NoteModified::V3,
         context_id:,
         trace_id:,
-        data: Events::NoteModified::Data::V2.new(
+        data: {
           originator:,
           note_id:,
           note:
-        )
+        }
       )
     end
 
@@ -63,12 +63,12 @@ module Coaches
         event_schema: Events::SeekerCertified::V1,
         seeker_id:,
         trace_id:,
-        data: Events::SeekerCertified::Data::V1.new(
+        data: {
           coach_id: coach.coach_id,
           coach_email: coach.email,
           coach_first_name: user.first_name,
           coach_last_name: user.last_name
-        )
+        }
       )
     end
 
@@ -77,10 +77,10 @@ module Coaches
         event_schema: Events::JobRecommended::V2,
         context_id:,
         trace_id:,
-        data: Events::JobRecommended::Data::V1.new(
+        data: {
           coach_id: coach.coach_id,
           job_id:
-        )
+        }
       )
     end
 
@@ -89,9 +89,9 @@ module Coaches
         event_schema: Events::BarrierUpdated::V2,
         context_id:,
         trace_id:,
-        data: Events::BarrierUpdated::Data::V1.new(
+        data: {
           barriers:
-        )
+        }
       )
     end
 
@@ -100,10 +100,10 @@ module Coaches
         event_schema: Events::CoachAssigned::V2,
         context_id:,
         trace_id:,
-        data: Events::CoachAssigned::Data::V1.new(
+        data: {
           coach_id:,
           email: coach_email
-        )
+        }
       )
     end
 
@@ -112,9 +112,9 @@ module Coaches
         event_schema: Events::SkillLevelUpdated::V2,
         context_id:,
         trace_id:,
-        data: Events::SkillLevelUpdated::Data::V1.new(
+        data: {
           skill_level:
-        )
+        }
       )
     end
 

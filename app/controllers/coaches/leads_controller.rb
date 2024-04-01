@@ -3,6 +3,7 @@ module Coaches
     include Secured
     include CoachAuth
     include EventEmitter
+    include CommandEmitter
 
     before_action :authorize
     before_action :coach_authorize
@@ -14,18 +15,23 @@ module Coaches
 
     def create
       with_event_service do
-        SeekerReactor.new(event_service:).add_lead(
-          lead_id: SecureRandom.uuid,
-          **params.require(:lead).permit(
-            :lead_id,
-            :email,
-            :phone_number,
-            :first_name,
-            :last_name
-          ).to_h.symbolize_keys,
-          lead_captured_by: coach.email,
-          trace_id: request.request_id
-        )
+        with_command_service do
+          seeker_reactor = SeekerReactor.new(event_service:, command_service:)
+          lead = lead_hash
+
+          seeker_reactor.add_lead(
+            **lead,
+            lead_captured_by: coach.email,
+            trace_id: request.request_id
+          )
+
+          seeker_reactor.assign_coach(
+            context_id: lead[:lead_id],
+            coach_id: coach.coach_id,
+            coach_email: coach.email,
+            trace_id: request.request_id
+          )
+        end
       end
 
       head :created
@@ -34,6 +40,19 @@ module Coaches
     private
 
     attr_reader :coach
+
+    def lead_hash
+      lead = params.require(:lead).permit(
+        :lead_id,
+        :email,
+        :phone_number,
+        :first_name,
+        :last_name
+      ).to_h.symbolize_keys
+      lead[:lead_id] ||= SecureRandom.uuid
+
+      lead
+    end
 
     def set_coach
       @coach = Coach.find_by(user_id: current_user.id)

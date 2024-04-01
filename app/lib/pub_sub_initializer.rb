@@ -68,8 +68,6 @@ module PubSubInitializer
       subscriber: Slack::ChatMessage.new
     )
 
-    all_schemas = MessageService.all_schemas
-
     [
       DbStreamAggregator.build(consumer: Coaches::FeedAggregator.new, listener_name: "coach_feed"),
       DbStreamAggregator.build(consumer: Coaches::SeekerAggregator.new, listener_name: "coach_seekers"),
@@ -95,7 +93,7 @@ module PubSubInitializer
         )
       end
 
-      (all_schemas - listener.handled_messages_sync).each do |message_schema|
+      listener.handled_messages.each do |message_schema|
         PUBSUB.subscribe(
           message_schema:,
           subscriber: listener

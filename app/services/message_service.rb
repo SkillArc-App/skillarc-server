@@ -9,6 +9,9 @@ class MessageService
 
     aggregate = message_schema.aggregate.new(**)
 
+    data = message_schema.data.new(**data) if data.is_a?(Hash)
+    metadata = message_schema.metadata.new(**metadata) if metadata.is_a?(Hash)
+
     message = Message.new(
       id:,
       aggregate:,

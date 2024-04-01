@@ -6,8 +6,9 @@ RSpec.describe Coaches::SeekerReactor do
   let(:note_id) { "78f22f6c-a770-46fc-a83c-1ad6cda4b8f9" }
   let(:trace_id) { "42000038-7e82-48ca-ac18-72ebc08bdbeb" }
   let(:updated_note) { "This note was updated" }
-  let(:consumer) { described_class.new(event_service:) }
+  let(:consumer) { described_class.new(event_service:, command_service:) }
   let(:event_service) { EventService.new }
+  let(:command_service) { CommandService.new }
 
   it_behaves_like "a message consumer"
 
@@ -37,14 +38,14 @@ RSpec.describe Coaches::SeekerReactor do
             event_schema: Events::LeadAdded::V2,
             context_id: message.data.lead_id,
             trace_id: message.trace_id,
-            data: Events::LeadAdded::Data::V1.new(
+            data: {
               lead_captured_by: message.data.lead_captured_by,
               lead_id: message.data.lead_id,
               phone_number: message.data.phone_number,
               first_name: message.data.first_name,
               last_name: message.data.last_name,
               email: message.data.email
-            )
+            }
           ).and_call_original
 
         subject
@@ -71,11 +72,11 @@ RSpec.describe Coaches::SeekerReactor do
             event_schema: Events::NoteAdded::V3,
             context_id: message.aggregate.context_id,
             trace_id: message.trace_id,
-            data: Events::NoteAdded::Data::V2.new(
+            data: {
               originator: message.data.originator,
               note: message.data.note,
               note_id: message.data.note_id
-            )
+            }
           ).and_call_original
 
         subject
@@ -103,10 +104,10 @@ RSpec.describe Coaches::SeekerReactor do
               event_schema: Events::CoachAssigned::V2,
               context_id: message.aggregate.context_id,
               trace_id: message.trace_id,
-              data: Events::CoachAssigned::Data::V1.new(
+              data: {
                 coach_id: coach.coach_id,
                 email: coach.email
-              )
+              }
             ).and_call_original
 
           subject
@@ -138,14 +139,14 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::LeadAdded::V2,
         context_id: lead_id,
         trace_id:,
-        data: Events::LeadAdded::Data::V1.new(
+        data: {
           first_name:,
           last_name:,
           phone_number:,
           lead_id:,
           email: nil,
           lead_captured_by:
-        )
+        }
       ).and_call_original
 
       subject
@@ -163,11 +164,11 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::NoteAdded::V3,
         context_id:,
         trace_id:,
-        data: Events::NoteAdded::Data::V2.new(
+        data: {
           originator:,
           note: "This is a new note",
           note_id:
-        )
+        }
       ).and_call_original
 
       subject
@@ -185,10 +186,10 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::NoteDeleted::V3,
         context_id:,
         trace_id:,
-        data: Events::NoteDeleted::Data::V2.new(
+        data: {
           originator:,
           note_id:
-        )
+        }
       ).and_call_original
 
       subject
@@ -206,11 +207,11 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::NoteModified::V3,
         context_id:,
         trace_id:,
-        data: Events::NoteModified::Data::V2.new(
+        data: {
           originator:,
           note_id:,
           note: updated_note
-        )
+        }
       ).and_call_original
 
       subject
@@ -229,10 +230,10 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::JobRecommended::V2,
         context_id:,
         trace_id:,
-        data: Events::JobRecommended::Data::V1.new(
+        data: {
           job_id:,
           coach_id: coach.coach_id
-        )
+        }
       ).and_call_original
 
       subject
@@ -251,12 +252,12 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::SeekerCertified::V1,
         seeker_id:,
         trace_id:,
-        data: Events::SeekerCertified::Data::V1.new(
+        data: {
           coach_id: coach.coach_id,
           coach_email: coach.email,
           coach_first_name: user.first_name,
           coach_last_name: user.last_name
-        )
+        }
       ).and_call_original
 
       subject
@@ -270,18 +271,13 @@ RSpec.describe Coaches::SeekerReactor do
     let(:context_id) { user_id }
 
     it "creates an event" do
-      expect(Events::BarrierUpdated::Data::V1)
-        .to receive(:new)
-        .with(
-          barriers: [barrier.barrier_id]
-        )
-        .and_call_original
-
       expect(event_service).to receive(:create!).with(
         event_schema: Events::BarrierUpdated::V2,
         context_id:,
         trace_id:,
-        data: be_a(Events::BarrierUpdated::Data::V1)
+        data: {
+          barriers: [barrier.barrier_id]
+        }
       ).and_call_original
 
       subject
@@ -299,10 +295,10 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::CoachAssigned::V2,
         context_id:,
         trace_id:,
-        data: Events::CoachAssigned::Data::V1.new(
+        data: {
           coach_id:,
           email: "coach@blocktrainapp.com"
-        )
+        }
       ).and_call_original
 
       subject
@@ -319,9 +315,9 @@ RSpec.describe Coaches::SeekerReactor do
         event_schema: Events::SkillLevelUpdated::V2,
         context_id:,
         trace_id:,
-        data: Events::SkillLevelUpdated::Data::V1.new(
+        data: {
           skill_level: "advanced"
-        )
+        }
       ).and_call_original
 
       subject

@@ -1,5 +1,5 @@
 module Coaches
-  class SeekerReactor < MessageConsumer
+  class CoachesReactor < MessageConsumer
     def reset_for_replay; end
 
     def add_lead(lead_captured_by:, lead_id:, phone_number:, first_name:, last_name:, trace_id:, email: nil) # rubocop:disable Metrics/ParameterLists

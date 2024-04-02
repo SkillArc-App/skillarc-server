@@ -1,5 +1,5 @@
 module Coaches
-  class SeekerAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
+  class CoachesAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay
       SeekerNote.delete_all
       SeekerApplication.delete_all

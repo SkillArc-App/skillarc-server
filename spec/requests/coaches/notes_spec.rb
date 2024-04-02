@@ -43,7 +43,7 @@ RSpec.describe "Notes", type: :request do
 
         response '202', 'Creates a note' do
           before do
-            expect_any_instance_of(Coaches::SeekerReactor)
+            expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:add_note)
               .with(originator: coach.email, context_id: id, note:, note_id:, trace_id: be_a(String))
               .and_call_original
@@ -96,7 +96,7 @@ RSpec.describe "Notes", type: :request do
 
         response '202', 'Creates a note' do
           before do
-            expect_any_instance_of(Coaches::SeekerReactor)
+            expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:modify_note)
               .with(originator: coach.email, context_id: id, note:, note_id:, trace_id: be_a(String))
               .and_call_original
@@ -147,7 +147,7 @@ RSpec.describe "Notes", type: :request do
 
         response '202', 'Creates a note' do
           before do
-            expect_any_instance_of(Coaches::SeekerReactor)
+            expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:delete_note)
               .with(
                 context_id: id,

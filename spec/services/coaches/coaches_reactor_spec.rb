@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Coaches::SeekerReactor do
+RSpec.describe Coaches::CoachesReactor do
   let(:user_id) { "9f769972-c41c-4b58-a056-bffb714ea24d" }
   let(:seeker_id) { "75372772-49dc-4884-b4ae-1d408e030aa4" }
   let(:note_id) { "78f22f6c-a770-46fc-a83c-1ad6cda4b8f9" }

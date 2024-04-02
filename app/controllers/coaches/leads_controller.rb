@@ -16,7 +16,7 @@ module Coaches
     def create
       with_event_service do
         with_command_service do
-          SeekerReactor.new(event_service:, command_service:).add_lead(
+          CoachesReactor.new(event_service:, command_service:).add_lead(
             **lead_hash,
             lead_captured_by: coach.email,
             trace_id: request.request_id

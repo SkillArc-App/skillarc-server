@@ -14,11 +14,6 @@ RSpec.describe ElapseDayJob do
         occurred_at: Time.zone.local(2020, 1, 1)
       ).and_call_original
 
-    expect(ActiveJob)
-      .to receive(:perform_all_later)
-      .twice
-      .and_call_original
-
     described_class.new.perform(Time.zone.local(2020, 1, 1))
   end
 end

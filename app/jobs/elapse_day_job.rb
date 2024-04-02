@@ -15,11 +15,5 @@ class ElapseDayJob < ApplicationJob
         occurred_at: now
       )
     end
-
-    play_stream_jobs = StreamListener.all_listener.map do |listener_name|
-      PlayStreamJob.new(listener_name:)
-    end
-
-    ActiveJob.perform_all_later(play_stream_jobs)
   end
 end

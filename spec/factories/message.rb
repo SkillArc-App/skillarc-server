@@ -23,6 +23,25 @@ FactoryBot.define do
 
     chat_message_sent
 
-    initialize_with { Message.new(**attributes) }
+    initialize_with do
+      data =
+        if attributes[:data].is_a?(Hash)
+          attributes[:schema].data.new(**attributes[:data])
+        else
+          attributes[:data]
+        end
+      metadata =
+        if attributes[:metadata].is_a?(Hash)
+          attributes[:schema].metadata.new(**attributes[:metadata])
+        else
+          attributes[:metadata]
+        end
+
+      Message.new(
+        **attributes,
+        data:,
+        metadata:
+      )
+    end
   end
 end

@@ -99,6 +99,8 @@ module PubSubInitializer
           subscriber: listener
         )
       end
+
+      PlayStreamJob.perform_later(listener_name: listener.listener_name) if ENV.fetch("RUN_ENVIRONMENT", nil) == "server"
     end
   end
 end

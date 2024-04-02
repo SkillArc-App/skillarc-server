@@ -123,6 +123,40 @@ RSpec.describe Coaches::SeekerReactor do
         end
       end
     end
+
+    context "when the message is a lead_added event" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::LeadAdded::V2,
+          data: {
+            email: "john@skillarc.com",
+            lead_id: SecureRandom.uuid,
+            phone_number: "333-333-3333",
+            first_name: "John",
+            last_name: "Chabot",
+            lead_captured_by: "cal.com"
+          }
+        )
+      end
+
+      context "when there is a coach for that email" do
+        it "fires off a assign_coach command" do
+          expect(command_service)
+            .to receive(:create!)
+            .with(
+              command_schema: Commands::AssignCoach::V1,
+              context_id: message.aggregate.context_id,
+              trace_id: message.trace_id,
+              data: {
+                coach_email: message.data.lead_captured_by
+              }
+            ).and_call_original
+
+          subject
+        end
+      end
+    end
   end
 
   describe "#add_lead" do

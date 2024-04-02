@@ -2,25 +2,26 @@
 #
 # Table name: coach_seeker_contexts
 #
-#  id                :uuid             not null, primary key
-#  assigned_coach    :string
-#  certified_by      :string
-#  email             :string
-#  first_name        :string
-#  kind              :string           not null
-#  last_active_on    :datetime
-#  last_contacted_at :datetime
-#  last_name         :string
-#  lead_captured_at  :datetime
-#  lead_captured_by  :string
-#  phone_number      :string
-#  skill_level       :string
-#  stage             :string
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  context_id        :string           not null
-#  seeker_id         :uuid
-#  user_id           :string
+#  id                 :uuid             not null, primary key
+#  assigned_coach     :string
+#  certified_by       :string
+#  email              :string
+#  first_name         :string
+#  kind               :string           not null
+#  last_active_on     :datetime
+#  last_contacted_at  :datetime
+#  last_name          :string
+#  lead_captured_at   :datetime
+#  lead_captured_by   :string
+#  phone_number       :string
+#  seeker_captured_at :datetime
+#  skill_level        :string
+#  stage              :string
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  context_id         :string           not null
+#  seeker_id          :uuid
+#  user_id            :string
 #
 # Indexes
 #
@@ -42,6 +43,7 @@ module Coaches
 
     validates :kind, allow_nil: true, inclusion: { in: Kind::ALL }
     validates :context_id, presence: true
+    validates :seeker_captured_at, presence: true, on: :create
 
     scope :leads, -> { where(kind: Kind::LEAD) }
     scope :seekers, -> { where(kind: Kind::SEEKER) }

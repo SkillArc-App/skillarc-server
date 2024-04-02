@@ -2,12 +2,13 @@
 #
 # Table name: coaches
 #
-#  id         :uuid             not null, primary key
-#  email      :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  coach_id   :uuid
-#  user_id    :string           not null
+#  id                :uuid             not null, primary key
+#  assignment_weight :float            default(1.0), not null
+#  email             :string           not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  coach_id          :uuid
+#  user_id           :string           not null
 #
 module Coaches
   class Coach < ApplicationRecord

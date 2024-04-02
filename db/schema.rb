@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_22_181458) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_02_161017) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -147,6 +147,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_181458) do
     t.datetime "lead_captured_at"
     t.string "lead_captured_by"
     t.string "context_id", null: false
+    t.datetime "seeker_captured_at"
     t.index ["context_id"], name: "index_coach_seeker_contexts_on_context_id", unique: true
   end
 
@@ -156,6 +157,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_181458) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "coach_id"
+    t.float "assignment_weight", default: 1.0, null: false
   end
 
   create_table "coaches_feed_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -168,6 +168,44 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(barrier.name).to eq("A lame barrier")
       end
     end
+
+    context "when the message is role_added" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::RoleAdded::V1,
+          data: {
+            role:,
+            email: "some@email.com",
+            coach_id: id
+          }
+        )
+      end
+
+      context "when the role is not 'coach'" do
+        let(:role) { Role::Types::EMPLOYER_ADMIN }
+
+        it "does nothing" do
+          expect { subject }.not_to(change do
+                                      Coaches::Coach.count
+                                    end)
+        end
+      end
+
+      context "when the role is 'coach'" do
+        let(:role) { Role::Types::COACH }
+
+        it "Creates a coach record" do
+          expect { subject }.to change {
+            Coaches::Coach.count
+          }.from(0).to(1)
+
+          coach = Coaches::Coach.last_created
+          expect(coach.email).to eq("some@email.com")
+          expect(coach.coach_id).to eq(id)
+        end
+      end
+    end
   end
 
   describe "existing tests" do
@@ -208,6 +246,7 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(Coaches::SeekerJobRecommendation.count).not_to eq(0)
         expect(Coaches::SeekerBarrier.count).not_to eq(0)
         expect(Barrier.count).not_to eq(0)
+        expect(Coaches::Coach.count).not_to eq(0)
 
         subject
 
@@ -217,6 +256,7 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(Coaches::SeekerJobRecommendation.count).to eq(0)
         expect(Coaches::SeekerBarrier.count).to eq(0)
         expect(Barrier.count).to eq(0)
+        expect(Coaches::Coach.count).to eq(0)
       end
     end
 

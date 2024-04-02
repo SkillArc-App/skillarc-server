@@ -74,7 +74,6 @@ module PubSubInitializer
       DbStreamReactor.build(consumer: Coaches::CoachesReactor.new, listener_name: "coach_seekers_reactor"),
       DbStreamReactor.build(consumer: Applicants::OrchestrationReactor.new, listener_name: "applicants_orchestration_reactor"),
       DbStreamAggregator.build(consumer: Search::SearchService.new, listener_name: "search"),
-      DbStreamAggregator.build(consumer: Coaches::CoachService.new, listener_name: "coaches"),
       DbStreamAggregator.build(consumer: Coaches::JobService.new, listener_name: "coaches_jobs"),
       DbStreamReactor.build(consumer: Contact::SmsService.new, listener_name: "contact_sms"),
       DbStreamReactor.build(consumer: Contact::SmtpService.new, listener_name: "contact_smtp"),

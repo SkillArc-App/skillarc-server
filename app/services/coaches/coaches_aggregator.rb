@@ -7,6 +7,7 @@ module Coaches
       SeekerBarrier.delete_all
       CoachSeekerContext.delete_all
       Barrier.delete_all
+      Coach.delete_all
     end
 
     def all_leads
@@ -31,6 +32,16 @@ module Coaches
       Barrier.create!(
         barrier_id: message.data.barrier_id,
         name: message.data.name
+      )
+    end
+
+    on_message Events::RoleAdded::V1, :sync do |message|
+      return unless message.data.role == "coach"
+
+      Coach.create!(
+        coach_id: message.data.coach_id,
+        user_id: message.aggregate_id,
+        email: message.data.email
       )
     end
 

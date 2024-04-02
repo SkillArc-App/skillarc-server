@@ -6,6 +6,7 @@ module Coaches
       SeekerJobRecommendation.delete_all
       SeekerBarrier.delete_all
       CoachSeekerContext.delete_all
+      Barrier.delete_all
     end
 
     def all_leads
@@ -24,6 +25,13 @@ module Coaches
       csc = CoachSeekerContext.find_by!(context_id: id)
 
       serialize_coach_seeker_context(csc)
+    end
+
+    on_message Events::BarrierAdded::V1, :sync do |message|
+      Barrier.create!(
+        barrier_id: message.data.barrier_id,
+        name: message.data.name
+      )
     end
 
     on_message Events::ApplicantStatusUpdated::V5 do |message|

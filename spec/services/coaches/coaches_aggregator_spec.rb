@@ -139,7 +139,36 @@ RSpec.describe Coaches::CoachesAggregator do
   let(:employer_name2) { "Fun company" }
   let(:consumer) { described_class.new(event_service: EventService.new) }
 
+  let(:id) { SecureRandom.uuid }
+
   it_behaves_like "a message consumer"
+
+  describe "#handle_message" do
+    subject { consumer.handle_message(message) }
+
+    context "when the message is barrier_added" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::BarrierAdded::V1,
+          data: {
+            barrier_id: id,
+            name: "A lame barrier"
+          }
+        )
+      end
+
+      it "Creates a barrier record" do
+        expect { subject }.to change {
+          Barrier.count
+        }.from(0).to(1)
+
+        barrier = Barrier.last_created
+        expect(barrier.barrier_id).to eq(id)
+        expect(barrier.name).to eq("A lame barrier")
+      end
+    end
+  end
 
   describe "existing tests" do
     before do
@@ -178,6 +207,7 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(Coaches::SeekerNote.count).not_to eq(0)
         expect(Coaches::SeekerJobRecommendation.count).not_to eq(0)
         expect(Coaches::SeekerBarrier.count).not_to eq(0)
+        expect(Barrier.count).not_to eq(0)
 
         subject
 
@@ -186,6 +216,7 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(Coaches::SeekerNote.count).to eq(0)
         expect(Coaches::SeekerJobRecommendation.count).to eq(0)
         expect(Coaches::SeekerBarrier.count).to eq(0)
+        expect(Barrier.count).to eq(0)
       end
     end
 

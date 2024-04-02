@@ -20,7 +20,6 @@ module Contact
 
       def handle_career_consolutation(trace_id, payload)
         attendee = payload.dig(:attendees, 0)
-        coach_email = payload.dig(:organizer, :email)
         phone_number = payload[:location]
 
         lead_id = SecureRandom.uuid
@@ -32,10 +31,6 @@ module Contact
           first_name: attendee[:firstName],
           last_name: attendee[:lastName],
           lead_captured_by: "cal.com"
-        )
-
-        assign_coach_data = Commands::AssignCoach::Data::V1.new(
-          coach_email:
         )
 
         command_service.create!(

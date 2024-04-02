@@ -20,9 +20,11 @@ RSpec.describe DbStreamReactor do
         expect(consumer).to receive(:handle_message).with(
           event.message
         ).and_raise(StandardError)
+        expect(instance.last_error).to eq(nil)
 
         expect { subject }.to raise_error(StandardError)
 
+        expect(instance.last_error).to be_a(StandardError)
         expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(nil)
       end
     end
@@ -38,9 +40,11 @@ RSpec.describe DbStreamReactor do
         expect(consumer).to receive(:handle_message).with(
           event2.message
         ).and_raise(StandardError)
+        expect(instance.last_error).to eq(nil)
 
         expect { subject }.to raise_error(StandardError)
 
+        expect(instance.last_error).to be_a(StandardError)
         expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(event.id)
       end
     end

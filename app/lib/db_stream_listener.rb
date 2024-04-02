@@ -3,7 +3,7 @@ class DbStreamListener < StreamListener
   delegate :handled_messages, to: :consumer
   delegate :handled_messages_sync, to: :consumer
 
-  attr_reader :listener_name
+  attr_reader :listener_name, :last_error
 
   def id
     "db-stream-#{kind}-#{listener_name}"
@@ -25,6 +25,7 @@ class DbStreamListener < StreamListener
           last_handled_event = event
         end
       rescue StandardError => e
+        @last_error = e
         error = e
       ensure
         update_bookmark(last_handled_event) if last_handled_event
@@ -61,6 +62,7 @@ class DbStreamListener < StreamListener
 
     @listener_name = listener_name
     @message_service = message_service
+    @last_error = nil
   end
 
   def bookmark_timestamp

@@ -12,24 +12,6 @@ module Coaches
       FeedEvent.delete_all
     end
 
-    def all_leads
-      CoachSeekerContext.leads.with_everything.map do |csc|
-        serialize_seeker_lead(csc)
-      end
-    end
-
-    def all_seekers
-      CoachSeekerContext.seekers.with_everything.map do |csc|
-        serialize_coach_seeker_context(csc)
-      end
-    end
-
-    def find_context(id)
-      csc = CoachSeekerContext.find_by!(context_id: id)
-
-      serialize_coach_seeker_context(csc)
-    end
-
     on_message Events::BarrierAdded::V1, :sync do |message|
       Barrier.create!(
         barrier_id: message.data.barrier_id,
@@ -259,56 +241,6 @@ module Coaches
       csc.update!(
         last_active_on: message.occurred_at
       )
-    end
-
-    def serialize_coach_seeker_context(csc)
-      {
-        id: csc.context_id,
-        kind: csc.kind,
-        seeker_id: csc.seeker_id,
-        first_name: csc.first_name,
-        last_name: csc.last_name,
-        email: csc.email,
-        phone_number: csc.phone_number,
-        certified_by: csc.certified_by,
-        skill_level: csc.skill_level || 'beginner',
-        last_active_on: csc.last_active_on,
-        last_contacted: csc.last_contacted_at || "Never",
-        assigned_coach: csc.assigned_coach || 'none',
-        barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } },
-        notes: csc.seeker_notes.map do |note|
-          {
-            note: note.note,
-            note_id: note.note_id,
-            note_taken_by: note.note_taken_by,
-            date: note.note_taken_at
-          }
-        end,
-        applications: csc.seeker_applications.map do |application|
-          {
-            status: application.status,
-            employer_name: application.employer_name,
-            job_id: application.job_id,
-            employment_title: application.employment_title
-          }
-        end,
-        job_recommendations: csc.seeker_job_recommendations.map(&:job).map(&:job_id)
-      }
-    end
-
-    def serialize_seeker_lead(csc)
-      {
-        id: csc.context_id,
-        email: csc.email,
-        assigned_coach: csc.assigned_coach || 'none',
-        phone_number: csc.phone_number,
-        first_name: csc.first_name,
-        last_name: csc.last_name,
-        lead_captured_at: csc.seeker_captured_at,
-        lead_captured_by: csc.lead_captured_by,
-        kind: csc.kind,
-        status: "new"
-      }
     end
   end
 end

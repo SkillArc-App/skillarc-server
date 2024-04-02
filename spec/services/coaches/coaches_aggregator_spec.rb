@@ -378,7 +378,7 @@ RSpec.describe Coaches::CoachesAggregator do
     end
 
     describe ".all_seekers" do
-      subject { consumer.all_seekers }
+      subject { Coaches::CoachesQuery.all_seekers }
 
       it "returns all profiles" do
         expected_profile = {
@@ -454,7 +454,7 @@ RSpec.describe Coaches::CoachesAggregator do
     end
 
     describe ".all_leads" do
-      subject { consumer.all_leads }
+      subject { Coaches::CoachesQuery.all_leads }
 
       it "returns all non-coverted leads" do
         expected_lead = {
@@ -475,7 +475,7 @@ RSpec.describe Coaches::CoachesAggregator do
     end
 
     describe ".find_context" do
-      subject { consumer.find_context(lead1.lead_id) }
+      subject { Coaches::CoachesQuery.find_context(lead1.lead_id) }
 
       it "returns the seeker" do
         expected_profile = {

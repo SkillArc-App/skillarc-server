@@ -31,7 +31,7 @@ RSpec.describe Klayvio::ChatMessageReceived do
       let(:sender_id) { applicant.seeker.user.id }
 
       it "does not call the Klayvio API" do
-        expect_any_instance_of(Klayvio::Klayvio).not_to receive(:chat_message_received)
+        expect_any_instance_of(Klayvio::FakeGateway).not_to receive(:chat_message_received)
 
         subject
       end
@@ -42,7 +42,7 @@ RSpec.describe Klayvio::ChatMessageReceived do
       let(:sender_user) { create(:user) }
 
       it "calls the Klayvio API" do
-        expect_any_instance_of(Klayvio::Klayvio).to receive(:chat_message_received).with(
+        expect_any_instance_of(Klayvio::FakeGateway).to receive(:chat_message_received).with(
           email:,
           event_id: message.id,
           occurred_at:,

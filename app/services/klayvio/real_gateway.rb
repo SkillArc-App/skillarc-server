@@ -1,5 +1,9 @@
 module Klayvio
-  class Klayvio
+  class RealGateway
+    def initialize(api_key:)
+      @api_key = api_key
+    end
+
     def application_status_updated(application_id:, email:, event_id:, employment_title:, employer_name:, occurred_at:, status:) # rubocop:disable Metrics/ParameterLists
       data = event_data(
         event_type: 'Application Status Updated',
@@ -142,7 +146,7 @@ module Klayvio
 
     private
 
-    attr_reader :base_url
+    attr_reader :api_key
 
     def event_data(event_type:, email:, time:, event_id:, event_properties: {}, profile_properties: {}, profile_attributes: {}) # rubocop:disable Metrics/ParameterLists
       {
@@ -187,7 +191,7 @@ module Klayvio
       request["accept"] = 'application/json'
       request["revision"] = '2023-10-15'
       request["content-type"] = 'application/json'
-      request["Authorization"] = "Klaviyo-API-Key #{ENV.fetch('KLAVIYO_API_KEY', nil)}"
+      request["Authorization"] = "Klaviyo-API-Key #{api_key}"
 
       request.body = data.to_json
 

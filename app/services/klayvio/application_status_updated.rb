@@ -6,7 +6,7 @@ module Klayvio
       applicant = Applicant.find(message.data[:applicant_id])
       user = applicant.seeker.user
 
-      Klayvio.new.application_status_updated(
+      Gateway.build.application_status_updated(
         application_id: message.data[:applicant_id],
         email: user.email,
         employment_title: applicant.job.employment_title,

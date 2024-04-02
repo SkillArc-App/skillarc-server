@@ -3,7 +3,7 @@ module Klayvio
     include DefaultStreamId
 
     def call(message:)
-      Klayvio.new.employer_invite_accepted(
+      Gateway.build.employer_invite_accepted(
         event_id: message.id,
         email: message.data[:invite_email],
         profile_properties: {

@@ -29,7 +29,7 @@ RSpec.describe Klayvio::ApplicationStatusUpdated do
     let(:user) { create(:user, email: "tom@blocktrainapp.com") }
 
     it "calls the Klayvio API" do
-      expect_any_instance_of(Klayvio::Klayvio).to receive(:application_status_updated).with(
+      expect_any_instance_of(Klayvio::FakeGateway).to receive(:application_status_updated).with(
         application_id: applicant.id,
         email: user.email,
         employment_title: job.employment_title,

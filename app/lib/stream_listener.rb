@@ -50,6 +50,10 @@ class StreamListener
     registry[listener_name]
   end
 
+  def self.all_listener
+    registry.keys
+  end
+
   class << self
     private
 

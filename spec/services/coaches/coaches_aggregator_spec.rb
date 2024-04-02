@@ -141,349 +141,351 @@ RSpec.describe Coaches::CoachesAggregator do
 
   it_behaves_like "a message consumer"
 
-  before do
-    consumer.handle_message(lead_added1)
-    consumer.handle_message(lead_added2)
-    consumer.handle_message(non_seeker_user_created)
-    consumer.handle_message(user_without_email)
-    consumer.handle_message(seeker_without_email)
-    consumer.handle_message(user_created)
-    consumer.handle_message(user_updated)
-    consumer.handle_message(other_user_created)
-    consumer.handle_message(seeker_created)
-    consumer.handle_message(other_seeker_created)
-    consumer.handle_message(note_with_id_added1)
-    consumer.handle_message(note_with_id_added2)
-    consumer.handle_message(note_deleted)
-    consumer.handle_message(note_modified)
-    consumer.handle_message(skill_level_updated)
-    consumer.handle_message(coach_assigned)
-    consumer.handle_message(applicant_status_updated1)
-    consumer.handle_message(applicant_status_updated2)
-    consumer.handle_message(applicant_status_updated3)
-    consumer.handle_message(applicant_status_updated4)
-    consumer.handle_message(barriers_updated1)
-    consumer.handle_message(barriers_updated2)
-    consumer.handle_message(job_recommended)
-    consumer.handle_message(seeker_certified)
-  end
-
-  describe ".reset_for_replay" do
-    subject { consumer.reset_for_replay }
-
-    it "destroys all records" do
-      expect(Coaches::CoachSeekerContext.count).not_to eq(0)
-      expect(Coaches::SeekerApplication.count).not_to eq(0)
-      expect(Coaches::SeekerNote.count).not_to eq(0)
-      expect(Coaches::SeekerJobRecommendation.count).not_to eq(0)
-      expect(Coaches::SeekerBarrier.count).not_to eq(0)
-
-      subject
-
-      expect(Coaches::CoachSeekerContext.count).to eq(0)
-      expect(Coaches::SeekerApplication.count).to eq(0)
-      expect(Coaches::SeekerNote.count).to eq(0)
-      expect(Coaches::SeekerJobRecommendation.count).to eq(0)
-      expect(Coaches::SeekerBarrier.count).to eq(0)
-    end
-  end
-
-  describe ".all_seekers" do
-    subject { consumer.all_seekers }
-
-    it "returns all profiles" do
-      expected_profile = {
-        id: lead1.lead_id,
-        seeker_id:,
-        first_name: "Hannah",
-        last_name: "Block",
-        kind: 'seeker',
-        email: "hannah@blocktrainapp.com",
-        phone_number: "1234567890",
-        skill_level: 'advanced',
-        last_active_on: applicant_status_updated3.occurred_at,
-        last_contacted: note_with_id_added1.occurred_at,
-        assigned_coach: "coach@blocktrainapp.com",
-        certified_by: coach.email,
-        barriers: [{
-          id: barrier2.barrier_id,
-          name: "barrier2"
-        }],
-        notes: [
-          {
-            note: "This note was updated",
-            note_id: note_id2,
-            note_taken_by: "coach@blocktrainapp.com",
-            date: Time.utc(2020, 1, 1)
-          }
-        ],
-        applications: [
-          {
-            job_id:,
-            employer_name: employer_name2,
-            status: status1,
-            employment_title: employment_title2
-          }
-        ],
-        job_recommendations: [job_id]
-      }
-      expected_other_profile = {
-        id: other_user_id,
-        seeker_id: other_seeker_id,
-        first_name: "Katina",
-        last_name: "Hall",
-        kind: 'seeker',
-        email: "katina@gmail.com",
-        phone_number: nil,
-        skill_level: 'beginner',
-        last_active_on: applicant_status_updated4.occurred_at,
-        last_contacted: "Never",
-        assigned_coach: 'none',
-        certified_by: nil,
-        barriers: [],
-        notes: [],
-        applications: [
-          {
-            job_id:,
-            employer_name: employer_name1,
-            status: status2,
-            employment_title: employment_title1
-          },
-          {
-            job_id:,
-            employer_name: employer_name2,
-            status: status1,
-            employment_title: employment_title2
-          }
-        ],
-        job_recommendations: []
-      }
-
-      expect(subject).to include(expected_profile)
-      expect(subject).to include(expected_other_profile)
-    end
-  end
-
-  describe ".all_leads" do
-    subject { consumer.all_leads }
-
-    it "returns all non-coverted leads" do
-      expected_lead = {
-        id: "8628daea-7af8-41d1-b5b4-456336a7ed61",
-        phone_number: "0987654321",
-        assigned_coach: 'none',
-        first_name: "Not",
-        last_name: "Converted",
-        lead_captured_at: time1,
-        email: nil,
-        lead_captured_by: "someone@skillarc.com",
-        kind: Coaches::CoachSeekerContext::Kind::LEAD,
-        status: "new"
-      }
-
-      expect(subject).to contain_exactly(expected_lead)
-    end
-  end
-
-  describe ".find_context" do
-    subject { consumer.find_context(lead1.lead_id) }
-
-    it "returns the seeker" do
-      expected_profile = {
-        id: lead1.lead_id,
-        seeker_id:,
-        first_name: "Hannah",
-        last_name: "Block",
-        kind: 'seeker',
-        email: "hannah@blocktrainapp.com",
-        phone_number: "1234567890",
-        skill_level: 'advanced',
-        last_active_on: applicant_status_updated3.occurred_at,
-        last_contacted: note_with_id_added1.occurred_at,
-        assigned_coach: "coach@blocktrainapp.com",
-        certified_by: coach.email,
-        barriers: [{
-          id: barrier2.barrier_id,
-          name: "barrier2"
-        }],
-        notes: [
-          {
-            note: "This note was updated",
-            note_taken_by: "coach@blocktrainapp.com",
-            date: Time.utc(2020, 1, 1),
-            note_id: note_id2
-          }
-        ],
-        applications: [
-          {
-            status: status1,
-            job_id:,
-            employment_title: employment_title2,
-            employer_name: employer_name2
-          }
-        ],
-        job_recommendations: [job_id]
-      }
-
-      expect(subject).to eq(expected_profile)
+  describe "existing tests" do
+    before do
+      consumer.handle_message(lead_added1)
+      consumer.handle_message(lead_added2)
+      consumer.handle_message(non_seeker_user_created)
+      consumer.handle_message(user_without_email)
+      consumer.handle_message(seeker_without_email)
+      consumer.handle_message(user_created)
+      consumer.handle_message(user_updated)
+      consumer.handle_message(other_user_created)
+      consumer.handle_message(seeker_created)
+      consumer.handle_message(other_seeker_created)
+      consumer.handle_message(note_with_id_added1)
+      consumer.handle_message(note_with_id_added2)
+      consumer.handle_message(note_deleted)
+      consumer.handle_message(note_modified)
+      consumer.handle_message(skill_level_updated)
+      consumer.handle_message(coach_assigned)
+      consumer.handle_message(applicant_status_updated1)
+      consumer.handle_message(applicant_status_updated2)
+      consumer.handle_message(applicant_status_updated3)
+      consumer.handle_message(applicant_status_updated4)
+      consumer.handle_message(barriers_updated1)
+      consumer.handle_message(barriers_updated2)
+      consumer.handle_message(job_recommended)
+      consumer.handle_message(seeker_certified)
     end
 
-    context "when another events occur which update last active on" do
-      context "when a onboarding complete version 1 occurs for a seeker" do
-        it "updates the last active to when the event occured" do
-          message = build(
-            :message,
-            message_type: Events::OnboardingCompleted::V1.message_type,
-            version: Events::OnboardingCompleted::V1.version,
-            data: Events::OnboardingCompleted::Data::V1.new(
-              name: {},
-              experience: nil,
-              education: nil,
-              trainingProvider: nil,
-              other: nil,
-              opportunityInterests: nil
-            ),
-            aggregate_id: user_id,
-            occurred_at: time2
-          )
+    describe ".reset_for_replay" do
+      subject { consumer.reset_for_replay }
 
-          consumer.handle_message(message)
+      it "destroys all records" do
+        expect(Coaches::CoachSeekerContext.count).not_to eq(0)
+        expect(Coaches::SeekerApplication.count).not_to eq(0)
+        expect(Coaches::SeekerNote.count).not_to eq(0)
+        expect(Coaches::SeekerJobRecommendation.count).not_to eq(0)
+        expect(Coaches::SeekerBarrier.count).not_to eq(0)
 
-          expect(subject[:last_active_on]).to eq(time2)
-        end
+        subject
+
+        expect(Coaches::CoachSeekerContext.count).to eq(0)
+        expect(Coaches::SeekerApplication.count).to eq(0)
+        expect(Coaches::SeekerNote.count).to eq(0)
+        expect(Coaches::SeekerJobRecommendation.count).to eq(0)
+        expect(Coaches::SeekerBarrier.count).to eq(0)
+      end
+    end
+
+    describe ".all_seekers" do
+      subject { consumer.all_seekers }
+
+      it "returns all profiles" do
+        expected_profile = {
+          id: lead1.lead_id,
+          seeker_id:,
+          first_name: "Hannah",
+          last_name: "Block",
+          kind: 'seeker',
+          email: "hannah@blocktrainapp.com",
+          phone_number: "1234567890",
+          skill_level: 'advanced',
+          last_active_on: applicant_status_updated3.occurred_at,
+          last_contacted: note_with_id_added1.occurred_at,
+          assigned_coach: "coach@blocktrainapp.com",
+          certified_by: coach.email,
+          barriers: [{
+            id: barrier2.barrier_id,
+            name: "barrier2"
+          }],
+          notes: [
+            {
+              note: "This note was updated",
+              note_id: note_id2,
+              note_taken_by: "coach@blocktrainapp.com",
+              date: Time.utc(2020, 1, 1)
+            }
+          ],
+          applications: [
+            {
+              job_id:,
+              employer_name: employer_name2,
+              status: status1,
+              employment_title: employment_title2
+            }
+          ],
+          job_recommendations: [job_id]
+        }
+        expected_other_profile = {
+          id: other_user_id,
+          seeker_id: other_seeker_id,
+          first_name: "Katina",
+          last_name: "Hall",
+          kind: 'seeker',
+          email: "katina@gmail.com",
+          phone_number: nil,
+          skill_level: 'beginner',
+          last_active_on: applicant_status_updated4.occurred_at,
+          last_contacted: "Never",
+          assigned_coach: 'none',
+          certified_by: nil,
+          barriers: [],
+          notes: [],
+          applications: [
+            {
+              job_id:,
+              employer_name: employer_name1,
+              status: status2,
+              employment_title: employment_title1
+            },
+            {
+              job_id:,
+              employer_name: employer_name2,
+              status: status1,
+              employment_title: employment_title2
+            }
+          ],
+          job_recommendations: []
+        }
+
+        expect(subject).to include(expected_profile)
+        expect(subject).to include(expected_other_profile)
+      end
+    end
+
+    describe ".all_leads" do
+      subject { consumer.all_leads }
+
+      it "returns all non-coverted leads" do
+        expected_lead = {
+          id: "8628daea-7af8-41d1-b5b4-456336a7ed61",
+          phone_number: "0987654321",
+          assigned_coach: 'none',
+          first_name: "Not",
+          last_name: "Converted",
+          lead_captured_at: time1,
+          email: nil,
+          lead_captured_by: "someone@skillarc.com",
+          kind: Coaches::CoachSeekerContext::Kind::LEAD,
+          status: "new"
+        }
+
+        expect(subject).to contain_exactly(expected_lead)
+      end
+    end
+
+    describe ".find_context" do
+      subject { consumer.find_context(lead1.lead_id) }
+
+      it "returns the seeker" do
+        expected_profile = {
+          id: lead1.lead_id,
+          seeker_id:,
+          first_name: "Hannah",
+          last_name: "Block",
+          kind: 'seeker',
+          email: "hannah@blocktrainapp.com",
+          phone_number: "1234567890",
+          skill_level: 'advanced',
+          last_active_on: applicant_status_updated3.occurred_at,
+          last_contacted: note_with_id_added1.occurred_at,
+          assigned_coach: "coach@blocktrainapp.com",
+          certified_by: coach.email,
+          barriers: [{
+            id: barrier2.barrier_id,
+            name: "barrier2"
+          }],
+          notes: [
+            {
+              note: "This note was updated",
+              note_taken_by: "coach@blocktrainapp.com",
+              date: Time.utc(2020, 1, 1),
+              note_id: note_id2
+            }
+          ],
+          applications: [
+            {
+              status: status1,
+              job_id:,
+              employment_title: employment_title2,
+              employer_name: employer_name2
+            }
+          ],
+          job_recommendations: [job_id]
+        }
+
+        expect(subject).to eq(expected_profile)
       end
 
-      context "when a job_saved version 1 occurs for a seeker" do
-        it "updates the last active to when the event occured" do
-          message = build(
-            :message,
-            message_type: Events::JobSaved::V1.message_type,
-            version: Events::JobSaved::V1.version,
-            data: Events::JobSaved::Data::V1.new(
-              job_id: SecureRandom.uuid,
-              employment_title: "A",
-              employer_name: "B"
-            ),
-            aggregate_id: user_id,
-            occurred_at: time2
-          )
+      context "when another events occur which update last active on" do
+        context "when a onboarding complete version 1 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :message,
+              message_type: Events::OnboardingCompleted::V1.message_type,
+              version: Events::OnboardingCompleted::V1.version,
+              data: Events::OnboardingCompleted::Data::V1.new(
+                name: {},
+                experience: nil,
+                education: nil,
+                trainingProvider: nil,
+                other: nil,
+                opportunityInterests: nil
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
 
-          consumer.handle_message(message)
+            consumer.handle_message(message)
 
-          expect(subject[:last_active_on]).to eq(time2)
+            expect(subject[:last_active_on]).to eq(time2)
+          end
         end
-      end
 
-      context "when a job_unsaved version 1 occurs for a seeker" do
-        it "updates the last active to when the event occured" do
-          message = build(
-            :message,
-            message_type: Events::JobUnsaved::V1.message_type,
-            version: Events::JobUnsaved::V1.version,
-            data: Events::JobUnsaved::Data::V1.new(
-              job_id: SecureRandom.uuid,
-              employment_title: "A",
-              employer_name: "B"
-            ),
-            aggregate_id: user_id,
-            occurred_at: time2
-          )
+        context "when a job_saved version 1 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :message,
+              message_type: Events::JobSaved::V1.message_type,
+              version: Events::JobSaved::V1.version,
+              data: Events::JobSaved::Data::V1.new(
+                job_id: SecureRandom.uuid,
+                employment_title: "A",
+                employer_name: "B"
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
 
-          consumer.handle_message(message)
+            consumer.handle_message(message)
 
-          expect(subject[:last_active_on]).to eq(time2)
+            expect(subject[:last_active_on]).to eq(time2)
+          end
         end
-      end
 
-      context "when a education_experience_created version 1 occurs for a seeker" do
-        it "updates the last active to when the event occured" do
-          message = build(
-            :message,
-            message_type: Events::EducationExperienceCreated::V1.message_type,
-            version: Events::EducationExperienceCreated::V1.version,
-            data: Events::EducationExperienceCreated::Data::V1.new(
-              id: SecureRandom.uuid,
-              organization_name: "Org",
-              title: "A title",
-              activities: nil,
-              graduation_date: Time.zone.now.to_s,
-              gpa: "1.9",
-              seeker_id: SecureRandom.uuid
-            ),
-            aggregate_id: user_id,
-            occurred_at: time2
-          )
+        context "when a job_unsaved version 1 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :message,
+              message_type: Events::JobUnsaved::V1.message_type,
+              version: Events::JobUnsaved::V1.version,
+              data: Events::JobUnsaved::Data::V1.new(
+                job_id: SecureRandom.uuid,
+                employment_title: "A",
+                employer_name: "B"
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
 
-          consumer.handle_message(message)
+            consumer.handle_message(message)
 
-          expect(subject[:last_active_on]).to eq(time2)
+            expect(subject[:last_active_on]).to eq(time2)
+          end
         end
-      end
 
-      context "when a seeker_updated version 1 occurs for a seeker" do
-        it "updates the last active to when the event occured" do
-          message = build(
-            :message,
-            message_type: Events::SeekerUpdated::V1.message_type,
-            version: Events::SeekerUpdated::V1.version,
-            data: Events::SeekerUpdated::Data::V1.new(
-              about: "A new about"
-            ),
-            aggregate_id: seeker_id,
-            occurred_at: time2
-          )
+        context "when a education_experience_created version 1 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :message,
+              message_type: Events::EducationExperienceCreated::V1.message_type,
+              version: Events::EducationExperienceCreated::V1.version,
+              data: Events::EducationExperienceCreated::Data::V1.new(
+                id: SecureRandom.uuid,
+                organization_name: "Org",
+                title: "A title",
+                activities: nil,
+                graduation_date: Time.zone.now.to_s,
+                gpa: "1.9",
+                seeker_id: SecureRandom.uuid
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
 
-          consumer.handle_message(message)
+            consumer.handle_message(message)
 
-          expect(subject[:last_active_on]).to eq(time2)
+            expect(subject[:last_active_on]).to eq(time2)
+          end
         end
-      end
 
-      context "when a personal_experience_created version 1 occurs for a seeker" do
-        it "updates the last active to when the event occured" do
-          message = build(
-            :message,
-            message_type: Events::PersonalExperienceCreated::V1.message_type,
-            version: Events::PersonalExperienceCreated::V1.version,
-            data: Events::PersonalExperienceCreated::Data::V1.new(
-              id: SecureRandom.uuid,
-              activity: "something",
-              description: "A description",
-              start_date: Time.zone.now.to_s,
-              end_date: Time.zone.now.to_s,
-              seeker_id: SecureRandom.uuid
-            ),
-            aggregate_id: user_id,
-            occurred_at: time2
-          )
+        context "when a seeker_updated version 1 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :message,
+              message_type: Events::SeekerUpdated::V1.message_type,
+              version: Events::SeekerUpdated::V1.version,
+              data: Events::SeekerUpdated::Data::V1.new(
+                about: "A new about"
+              ),
+              aggregate_id: seeker_id,
+              occurred_at: time2
+            )
 
-          consumer.handle_message(message)
+            consumer.handle_message(message)
 
-          expect(subject[:last_active_on]).to eq(time2)
+            expect(subject[:last_active_on]).to eq(time2)
+          end
         end
-      end
 
-      context "when a job_search version 2 occurs for a seeker" do
-        it "updates the last active to when the event occured" do
-          message = build(
-            :message,
-            message_type: Events::JobSearch::V2.message_type,
-            version: Events::JobSearch::V2.version,
-            data: Events::JobSearch::Data::V1.new(
-              search_terms: "A search",
-              industries: [],
-              tags: nil
-            ),
-            metadata: Events::JobSearch::MetaData::V2.new(
-              source: "seeker"
-            ),
-            aggregate_id: user_id,
-            occurred_at: time2
-          )
+        context "when a personal_experience_created version 1 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :message,
+              message_type: Events::PersonalExperienceCreated::V1.message_type,
+              version: Events::PersonalExperienceCreated::V1.version,
+              data: Events::PersonalExperienceCreated::Data::V1.new(
+                id: SecureRandom.uuid,
+                activity: "something",
+                description: "A description",
+                start_date: Time.zone.now.to_s,
+                end_date: Time.zone.now.to_s,
+                seeker_id: SecureRandom.uuid
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
 
-          consumer.handle_message(message)
+            consumer.handle_message(message)
 
-          expect(subject[:last_active_on]).to eq(time2)
+            expect(subject[:last_active_on]).to eq(time2)
+          end
+        end
+
+        context "when a job_search version 2 occurs for a seeker" do
+          it "updates the last active to when the event occured" do
+            message = build(
+              :message,
+              message_type: Events::JobSearch::V2.message_type,
+              version: Events::JobSearch::V2.version,
+              data: Events::JobSearch::Data::V1.new(
+                search_terms: "A search",
+                industries: [],
+                tags: nil
+              ),
+              metadata: Events::JobSearch::MetaData::V2.new(
+                source: "seeker"
+              ),
+              aggregate_id: user_id,
+              occurred_at: time2
+            )
+
+            consumer.handle_message(message)
+
+            expect(subject[:last_active_on]).to eq(time2)
+          end
         end
       end
     end

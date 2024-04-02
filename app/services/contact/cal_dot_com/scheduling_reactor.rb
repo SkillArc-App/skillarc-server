@@ -45,13 +45,6 @@ module Contact
           data: add_lead_data
         )
 
-        command_service.create!(
-          trace_id:,
-          context_id: lead_id,
-          command_schema: Commands::AssignCoach::V1,
-          data: assign_coach_data
-        )
-
         return if payload[:additionalNotes].blank?
 
         add_note_data = Commands::AddNote::Data::V1.new(

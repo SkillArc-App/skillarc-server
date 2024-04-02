@@ -109,16 +109,6 @@ RSpec.describe "Leads", type: :request do
                 trace_id: be_a(String)
               )
               .and_call_original
-
-            expect_any_instance_of(Coaches::SeekerReactor)
-              .to receive(:assign_coach)
-              .with(
-                context_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5",
-                coach_id: coach.coach_id,
-                coach_email: coach.email,
-                trace_id: be_a(String)
-              )
-              .and_call_original
           end
 
           run_test!

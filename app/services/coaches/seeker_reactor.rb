@@ -156,5 +156,16 @@ module Coaches
         trace_id: message.trace_id
       )
     end
+
+    on_message Events::LeadAdded::V2 do |message|
+      command_service.create!(
+        trace_id: message.trace_id,
+        context_id: message.aggregate.context_id,
+        command_schema: Commands::AssignCoach::V1,
+        data: {
+          coach_email: message.data.lead_captured_by
+        }
+      )
+    end
   end
 end

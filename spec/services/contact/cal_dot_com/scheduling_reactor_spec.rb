@@ -52,7 +52,7 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
               }
             end
 
-            it "emits a ADD_LEAD command and an ASSIGN_COACH command" do
+            it "emits a ADD_LEAD command" do
               expect(command_service)
                 .to receive(:create!)
                 .with(
@@ -68,18 +68,6 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
                     lead_captured_by: "cal.com"
                   )
                 )
-
-              expect(command_service)
-                .to receive(:create!)
-                .with(
-                  trace_id:,
-                  context_id: dummie_uuid,
-                  command_schema: Commands::AssignCoach::V1,
-                  data: Commands::AssignCoach::Data::V1.new(
-                    coach_email: "katina@skillarc.com"
-                  )
-                )
-
               subject
             end
           end
@@ -103,7 +91,7 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
               }
             end
 
-            it "emits ADD_LEAD, ASSIGN_COACH and ADD_NOTE commands" do
+            it "emits ADD_LEAD and ADD_NOTE commands" do
               expect(command_service)
                 .to receive(:create!)
                 .with(
@@ -117,17 +105,6 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
                     first_name: "John",
                     last_name: "Chabot",
                     lead_captured_by: "cal.com"
-                  )
-                )
-
-              expect(command_service)
-                .to receive(:create!)
-                .with(
-                  trace_id:,
-                  context_id: dummie_uuid,
-                  command_schema: Commands::AssignCoach::V1,
-                  data: Commands::AssignCoach::Data::V1.new(
-                    coach_email: "katina@skillarc.com"
                   )
                 )
 

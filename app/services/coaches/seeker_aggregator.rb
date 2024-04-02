@@ -91,7 +91,6 @@ module Coaches
         context_id: message.data.lead_id,
         phone_number: message.data.phone_number,
         lead_captured_by: message.data.lead_captured_by,
-        lead_captured_at: message.occurred_at,
         seeker_captured_at: message.occurred_at,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
@@ -261,7 +260,7 @@ module Coaches
         phone_number: csc.phone_number,
         first_name: csc.first_name,
         last_name: csc.last_name,
-        lead_captured_at: csc.lead_captured_at,
+        lead_captured_at: csc.seeker_captured_at,
         lead_captured_by: csc.lead_captured_by,
         kind: csc.kind,
         status: "new"

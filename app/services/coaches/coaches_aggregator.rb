@@ -8,6 +8,7 @@ module Coaches
       CoachSeekerContext.delete_all
       Barrier.delete_all
       Coach.delete_all
+      Job.delete_all
     end
 
     def all_leads
@@ -42,6 +43,15 @@ module Coaches
         coach_id: message.data.coach_id,
         user_id: message.aggregate_id,
         email: message.data.email
+      )
+    end
+
+    on_message Events::JobCreated::V3 do |message|
+      Job.create!(
+        job_id: message.aggregate_id,
+        employment_title: message.data.employment_title,
+        employer_name: message.data.employer_name,
+        hide_job: message.data.hide_job
       )
     end
 

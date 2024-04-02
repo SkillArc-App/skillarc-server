@@ -206,6 +206,43 @@ RSpec.describe Coaches::CoachesAggregator do
         end
       end
     end
+
+    context "when the message is job_created" do
+      let(:message) do
+        build(
+          :message,
+          aggregate_id: id,
+          schema: Events::JobCreated::V3,
+          data: {
+            category: Job::Categories::MARKETPLACE,
+            employment_title: "Laborer",
+            employer_name: "Employer",
+            employer_id: SecureRandom.uuid,
+            benefits_description: "Benefits",
+            responsibilities_description: "Responsibilities",
+            location: "Columbus, OH",
+            employment_type: "FULLTIME",
+            hide_job: false,
+            schedule: "9-5",
+            work_days: "M-F",
+            requirements_description: "Requirements",
+            industry: [Job::Industries::MANUFACTURING]
+          }
+        )
+      end
+
+      it "Creates a job record" do
+        expect { subject }.to change {
+          Coaches::Job.count
+        }.from(0).to(1)
+
+        job = Coaches::Job.last_created
+        expect(job.job_id).to eq(id)
+        expect(job.employment_title).to eq("Laborer")
+        expect(job.employer_name).to eq("Employer")
+        expect(job.hide_job).to eq(false)
+      end
+    end
   end
 
   describe "existing tests" do
@@ -247,6 +284,7 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(Coaches::SeekerBarrier.count).not_to eq(0)
         expect(Barrier.count).not_to eq(0)
         expect(Coaches::Coach.count).not_to eq(0)
+        expect(Coaches::Job.count).not_to eq(0)
 
         subject
 
@@ -256,7 +294,7 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(Coaches::SeekerJobRecommendation.count).to eq(0)
         expect(Coaches::SeekerBarrier.count).to eq(0)
         expect(Barrier.count).to eq(0)
-        expect(Coaches::Coach.count).to eq(0)
+        expect(Coaches::Job.count).to eq(0)
       end
     end
 

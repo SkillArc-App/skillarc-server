@@ -5,7 +5,7 @@ module Klayvio
     def call(message:)
       user = User.find(message.aggregate_id)
 
-      Klayvio.new.job_saved(
+      Gateway.build.job_saved(
         email: user.email,
         event_id: message.id,
         event_properties: {

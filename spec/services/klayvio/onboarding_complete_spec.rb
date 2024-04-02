@@ -17,7 +17,7 @@ RSpec.describe Klayvio::OnboardingComplete do
     let(:occurred_at) { Date.new(2020, 1, 1) }
 
     it "calls the Klayvio API" do
-      expect_any_instance_of(Klayvio::Klayvio).to receive(:onboarding_complete).with(
+      expect_any_instance_of(Klayvio::FakeGateway).to receive(:onboarding_complete).with(
         email:,
         event_id: message.id,
         occurred_at: message.occurred_at

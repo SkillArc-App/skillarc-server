@@ -5,7 +5,7 @@ module Klayvio
     def call(message:)
       data = message.data.to_h
 
-      Klayvio.new.user_updated(
+      Gateway.build.user_updated(
         email: data[:email],
         event_id: message.id,
         occurred_at: message.occurred_at,

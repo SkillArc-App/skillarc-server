@@ -21,7 +21,7 @@ RSpec.describe Klayvio::JobSaved do
     let(:job_id) { SecureRandom.uuid }
 
     it "calls the Klayvio API" do
-      expect_any_instance_of(Klayvio::Klayvio).to receive(:job_saved).with(
+      expect_any_instance_of(Klayvio::FakeGateway).to receive(:job_saved).with(
         email: user.email,
         event_id: message.id,
         event_properties: {

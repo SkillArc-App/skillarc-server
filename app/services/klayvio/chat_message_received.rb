@@ -10,7 +10,7 @@ module Klayvio
 
       return if user == recipient_user
 
-      Klayvio.new.chat_message_received(
+      Gateway.build.chat_message_received(
         applicant_id: message.data[:applicant_id],
         email: recipient_user.email,
         employment_title: applicant.job.employment_title,

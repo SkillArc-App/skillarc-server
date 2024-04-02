@@ -3,7 +3,7 @@ module Klayvio
     include DefaultStreamId
 
     def call(message:)
-      Klayvio.new.user_signup(
+      Gateway.build.user_signup(
         email: message.data[:email],
         event_id: message.id,
         occurred_at: message.occurred_at

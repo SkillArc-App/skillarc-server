@@ -14,7 +14,7 @@ RSpec.describe Klayvio::EmployerInviteAccepted do
     let(:employer_invite_id) { SecureRandom.uuid }
 
     it "calls the Klayvio API" do
-      expect_any_instance_of(Klayvio::Klayvio).to receive(:employer_invite_accepted).with(
+      expect_any_instance_of(Klayvio::FakeGateway).to receive(:employer_invite_accepted).with(
         email: "sbf@crook.com",
         event_id: message.id,
         profile_properties: {

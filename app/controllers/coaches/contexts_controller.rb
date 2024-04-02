@@ -9,15 +9,11 @@ module Coaches
     before_action :set_coach, only: %i[recommend_job certify]
 
     def index
-      with_event_service do
-        render json: SeekerAggregator.new(event_service:).all_seekers
-      end
+      render json: CoachesQuery.all_seekers
     end
 
     def show
-      with_event_service do
-        render json: SeekerAggregator.new(event_service:).find_context(params[:id])
-      end
+      render json: CoachesQuery.find_context(params[:id])
     end
 
     def assign

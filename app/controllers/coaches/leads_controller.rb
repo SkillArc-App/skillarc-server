@@ -10,7 +10,7 @@ module Coaches
     before_action :set_coach
 
     def index
-      render json: SeekerAggregator.new.all_leads
+      render json: CoachesQuery.all_leads
     end
 
     def create

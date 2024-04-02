@@ -8,7 +8,7 @@ module Coaches
     before_action :set_coach
 
     def index
-      render json: JobService.new.all
+      render json: CoachesQuery.all_jobs
     end
 
     private

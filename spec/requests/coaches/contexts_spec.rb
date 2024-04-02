@@ -77,7 +77,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
             create(:coaches__seeker_application, coach_seeker_context:)
             create(:coaches__seeker_job_recommendation, coach_seeker_context:)
 
-            expect_any_instance_of(Coaches::SeekerAggregator)
+            expect(Coaches::CoachesQuery)
               .to receive(:find_context)
               .with(id)
               .and_call_original

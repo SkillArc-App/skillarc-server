@@ -157,6 +157,67 @@ RSpec.describe Coaches::CoachesReactor do
         end
       end
     end
+
+    context "when the message is a job_recommended event" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobRecommended::V2,
+          aggregate_id:,
+          data: {
+            job_id:,
+            coach_id:
+          }
+        )
+      end
+
+      let(:job_id) { SecureRandom.uuid }
+      let(:coach_id) { SecureRandom.uuid }
+
+      context "when there isn't a cooreponding coach seekers context" do
+        let(:aggregate_id) { SecureRandom.uuid }
+
+        it "does nothing" do
+          expect(command_service)
+            .not_to receive(:create!)
+
+          subject
+        end
+      end
+
+      context "when there isn't a phone number on the coach seekers context" do
+        let(:coach_seeker_context) { create(:coaches__coach_seeker_context, phone_number: nil) }
+        let(:aggregate_id) { coach_seeker_context.context_id }
+
+        it "does nothing" do
+          expect(command_service)
+            .not_to receive(:create!)
+
+          subject
+        end
+      end
+
+      context "when there isn't a phone number on the coach seekers context" do
+        let(:coach_seeker_context) { create(:coaches__coach_seeker_context, phone_number: "1234567890") }
+        let(:aggregate_id) { coach_seeker_context.context_id }
+
+        it "does nothing" do
+          expect(command_service)
+            .to receive(:create!)
+            .with(
+              command_schema: Commands::SendSms::V1,
+              seeker_id: coach_seeker_context.seeker_id,
+              trace_id: message.trace_id,
+              data: {
+                phone_number: "1234567890",
+                message: "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
+              }
+            ).and_call_original
+
+          subject
+        end
+      end
+    end
   end
 
   describe "#add_lead" do

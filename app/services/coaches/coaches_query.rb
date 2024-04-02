@@ -18,6 +18,34 @@ module Coaches
       serialize_coach_seeker_context(csc)
     end
 
+    def self.all_barriers
+      Barrier.all.map do |barrier|
+        {
+          id: barrier.barrier_id,
+          name: barrier.name
+        }
+      end
+    end
+
+    def self.all_coaches
+      Coach.all.map do |coach|
+        {
+          id: coach.coach_id,
+          email: coach.email
+        }
+      end
+    end
+
+    def self.all_jobs
+      Job.visible.map do |job|
+        {
+          id: job.job_id,
+          employer_name: job.employer_name,
+          employment_title: job.employment_title
+        }
+      end
+    end
+
     class << self
       private
 

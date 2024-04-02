@@ -320,4 +320,80 @@ RSpec.describe Coaches::CoachesQuery do
       expect(subject).to eq(expected_profile)
     end
   end
+
+  describe ".all_barriers" do
+    subject { described_class.all_barriers }
+
+    before do
+      create(
+        :barrier,
+        barrier_id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
+        name: "barrier1"
+      )
+    end
+
+    it "returns all barriers" do
+      expected_barriers = [
+        {
+          id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
+          name: "barrier1"
+        }
+      ]
+
+      expect(subject).to eq(expected_barriers)
+    end
+  end
+
+  describe ".all_coaches" do
+    subject { described_class.all_coaches }
+
+    before do
+      create(
+        :coaches__coach,
+        coach_id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
+        email: "an@email.com"
+      )
+    end
+
+    it "returns all coaches" do
+      expected_coaches = [
+        {
+          id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
+          email: "an@email.com"
+        }
+      ]
+
+      expect(subject).to eq(expected_coaches)
+    end
+  end
+
+  describe ".all_jobs" do
+    subject { described_class.all_jobs }
+
+    before do
+      create(
+        :coaches__job,
+        job_id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
+        employer_name: "SkillArc",
+        employment_title: "First Engineer"
+      )
+
+      create(
+        :coaches__job,
+        hide_job: true
+      )
+    end
+
+    it "returns all visible jobs" do
+      expected_jobs = [
+        {
+          id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
+          employer_name: "SkillArc",
+          employment_title: "First Engineer"
+        }
+      ]
+
+      expect(subject).to eq(expected_jobs)
+    end
+  end
 end

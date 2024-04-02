@@ -2,6 +2,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   def create_test_user
     user = FactoryBot.create(:user)
 
+    now = Time.zone.now
     Coaches::CoachSeekerContext.create!(
       user_id: user.id,
       context_id: user.id,
@@ -13,8 +14,9 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       kind: Coaches::CoachSeekerContext::Kind::SEEKER,
       skill_level: "beginner",
       stage: "Profile Created",
-      last_contacted_at: Time.zone.now,
-      last_active_on: Time.zone.now
+      seeker_captured_at: now,
+      last_contacted_at: now,
+      last_active_on: now
     )
 
     render json: user
@@ -39,6 +41,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       email: user.email
     )
 
+    now = Time.zone.now
     Coaches::CoachSeekerContext.create!(
       user_id: user.id,
       context_id: user.id,
@@ -50,8 +53,9 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       phone_number: user.phone_number,
       skill_level: "beginner",
       stage: "Profile Created",
-      last_contacted_at: Time.zone.now,
-      last_active_on: Time.zone.now
+      seeker_captured_at: now,
+      last_contacted_at: now,
+      last_active_on: now
     )
 
     render json: coach
@@ -61,6 +65,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     user = FactoryBot.create(:user, onboarding_sessions: [FactoryBot.build(:onboarding_session, completed_at: Time.zone.now)])
     seeker = FactoryBot.create(:seeker, user:)
 
+    now = Time.zone.now
     Coaches::CoachSeekerContext.create!(
       user_id: user.id,
       context_id: user.id,
@@ -72,8 +77,9 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       phone_number: user.phone_number,
       skill_level: "beginner",
       stage: "Profile Created",
-      last_contacted_at: Time.zone.now,
-      last_active_on: Time.zone.now
+      seeker_captured_at: now,
+      last_contacted_at: now,
+      last_active_on: now
     )
 
     render json: {
@@ -115,6 +121,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       job_id: job.id
     )
 
+    now = Time.zone.now
     Coaches::CoachSeekerContext.create!(
       user_id: recruiter.user.id,
       context_id: recruiter.user.id,
@@ -126,8 +133,9 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       phone_number: recruiter.user.phone_number,
       skill_level: "beginner",
       stage: "Profile Created",
-      last_contacted_at: Time.zone.now,
-      last_active_on: Time.zone.now
+      seeker_captured_at: now,
+      last_contacted_at: now,
+      last_active_on: now
     )
 
     Coaches::CoachSeekerContext.create!(
@@ -141,8 +149,9 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       phone_number: applicant.seeker.user.phone_number,
       skill_level: "beginner",
       stage: "Profile Created",
-      last_contacted_at: Time.zone.now,
-      last_active_on: Time.zone.now
+      seeker_captured_at: now,
+      last_contacted_at: now,
+      last_active_on: now
     )
 
     render json: {
@@ -160,6 +169,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     trainer = FactoryBot.create(:training_provider_profile, training_provider:)
     student = FactoryBot.create(:seeker_training_provider, training_provider:, program:)
 
+    now = Time.zone.now
     Coaches::CoachSeekerContext.create!(
       user_id: trainer.user.id,
       context_id: trainer.user.id,
@@ -171,8 +181,9 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       phone_number: trainer.user.phone_number,
       skill_level: "beginner",
       stage: "Profile Created",
-      last_contacted_at: Time.zone.now,
-      last_active_on: Time.zone.now
+      seeker_captured_at: now,
+      last_contacted_at: now,
+      last_active_on: now
     )
 
     Coaches::CoachSeekerContext.create!(
@@ -186,8 +197,9 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       phone_number: student.user.phone_number,
       skill_level: "beginner",
       stage: "Profile Created",
-      last_contacted_at: Time.zone.now,
-      last_active_on: Time.zone.now
+      seeker_captured_at: now,
+      last_contacted_at: now,
+      last_active_on: now
     )
 
     FactoryBot.create(:seeker, user: student.user)
@@ -220,10 +232,12 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     user = FactoryBot.create(:user)
     seeker = FactoryBot.create(:seeker, user:)
 
+    now = Time.zone.now
     csc = Coaches::CoachSeekerContext.create!(
       user_id: user.id,
       context_id: user.id,
       seeker_id: seeker.id,
+      seeker_captured_at: now,
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
@@ -231,8 +245,8 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       kind: Coaches::CoachSeekerContext::Kind::SEEKER,
       skill_level: "beginner",
       stage: "Profile Created",
-      last_contacted_at: Time.zone.now,
-      last_active_on: Time.zone.now
+      last_contacted_at: now,
+      last_active_on: now
     )
 
     employer = FactoryBot.create(:employer)

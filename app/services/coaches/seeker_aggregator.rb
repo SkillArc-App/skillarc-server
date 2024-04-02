@@ -92,6 +92,7 @@ module Coaches
         phone_number: message.data.phone_number,
         lead_captured_by: message.data.lead_captured_by,
         lead_captured_at: message.occurred_at,
+        seeker_captured_at: message.occurred_at,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
         kind: CoachSeekerContext::Kind::LEAD
@@ -136,6 +137,7 @@ module Coaches
           user_id: message.aggregate_id,
           context_id: message.aggregate_id,
           email: message.data.email,
+          seeker_captured_at: message.occurred_at,
           first_name: message.data.first_name,
           last_name: message.data.last_name,
           last_active_on: message.occurred_at,

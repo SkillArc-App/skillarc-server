@@ -3,6 +3,7 @@ FactoryBot.define do
     user_id { SecureRandom.uuid }
     seeker_id { SecureRandom.uuid }
     kind { Coaches::CoachSeekerContext::Kind::SEEKER }
+    seeker_captured_at { Time.zone.local(2020, 1, 1) }
     context_id { SecureRandom.uuid }
     assigned_coach { SecureRandom.uuid }
     certified_by { "jim@cool.com" }

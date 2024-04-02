@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Coaches::CoachesAggregator do
+RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLength
   let(:lead_added1) { build(:message, :lead_added, version: 2, aggregate_id: lead1.lead_id, data: lead1, occurred_at: time1) }
   let(:lead_added2) { build(:message, :lead_added, version: 2, aggregate_id: lead2.lead_id, data: lead2, occurred_at: time1) }
   let(:non_seeker_user_created) { build(:message, :user_created, aggregate_id: coach_user_id, data: Events::UserCreated::Data::V1.new(email: "f@f.f")) }

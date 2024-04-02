@@ -11,10 +11,9 @@
 #  last_active_on     :datetime
 #  last_contacted_at  :datetime
 #  last_name          :string
-#  lead_captured_at   :datetime
 #  lead_captured_by   :string
 #  phone_number       :string
-#  seeker_captured_at :datetime
+#  seeker_captured_at :datetime         not null
 #  skill_level        :string
 #  stage              :string
 #  created_at         :datetime         not null

@@ -1065,6 +1065,7 @@ coach_seeker_context = Coaches::CoachSeekerContext.create!(
   last_name: seeker_with_profile.user.last_name,
   email: seeker_with_profile.user.email,
   phone_number: seeker_with_profile.user.phone_number,
+  seeker_captured_at: Time.zone.local(2000, 1, 1),
   stage: 'profile_created',
   assigned_coach: coach.id
 )

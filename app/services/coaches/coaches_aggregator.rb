@@ -9,6 +9,7 @@ module Coaches
       Barrier.delete_all
       Coach.delete_all
       Job.delete_all
+      FeedEvent.delete_all
     end
 
     def all_leads
@@ -56,19 +57,33 @@ module Coaches
     end
 
     on_message Events::ApplicantStatusUpdated::V5 do |message|
-      csc = CoachSeekerContext.find_by!(user_id: message.data.user_id)
+      data = message.data
+      csc = CoachSeekerContext.find_by!(user_id: data.user_id)
       csc.update!(last_active_on: message.occurred_at)
+
+      first_name = data.applicant_first_name
+      last_name = data.applicant_last_name
+      email = data.applicant_email
+      status = data.status
 
       application = SeekerApplication.find_or_create_by(
         coach_seeker_context: csc,
-        application_id: message.data.applicant_id
+        application_id: data.applicant_id
       )
 
       application.update!(
-        status: message.data.status,
-        employer_name: message.data.employer_name,
-        job_id: message.data.job_id,
-        employment_title: message.data.employment_title
+        status: data.status,
+        employer_name: data.employer_name,
+        job_id: data.job_id,
+        employment_title: data.employment_title
+      )
+
+      FeedEvent.create!(
+        context_id: csc.context_id,
+        occurred_at: message.occurred_at,
+        seeker_email: email,
+        description:
+          "#{first_name} #{last_name}'s application for #{data.employment_title} at #{data.employer_name} has been updated to #{status}."
       )
     end
 

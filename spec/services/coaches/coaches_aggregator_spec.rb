@@ -243,6 +243,83 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(job.hide_job).to eq(false)
       end
     end
+
+    context "for coach seekers context" do
+      let!(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+
+      context "when the message is applicant_status_updated" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::ApplicantStatusUpdated::V5,
+            data: {
+              job_id:,
+              applicant_id:,
+              applicant_first_name: "Hannah",
+              applicant_last_name: "Block",
+              applicant_email: "hannah@hannah.com",
+              applicant_phone_number: "1234567890",
+              employer_name: "Employer",
+              seeker_id: coach_seeker_context.seeker_id,
+              user_id: coach_seeker_context.user_id,
+              employment_title: "Software Engineer",
+              status: ApplicantStatus::StatusTypes::NEW
+            },
+            metadata: {}
+          )
+        end
+        let(:job_id) { SecureRandom.uuid }
+        let(:applicant_id) { SecureRandom.uuid }
+
+        it "Creates a feed event" do
+          expect { subject }.to change {
+            Coaches::FeedEvent.count
+          }.from(0).to(1)
+
+          feed_event = Coaches::FeedEvent.last_created
+          expect(feed_event.context_id).to eq(coach_seeker_context.context_id)
+          expect(feed_event.occurred_at).to eq(message.occurred_at)
+          expect(feed_event.seeker_email).to eq("hannah@hannah.com")
+          expect(feed_event.description).to eq("Hannah Block's application for Software Engineer at Employer has been updated to new.")
+        end
+
+        context "when there is an existing seeker application" do
+          before do
+            create(
+              :coaches__seeker_application,
+              coach_seeker_context:,
+              application_id: applicant_id
+            )
+          end
+
+          it "Update the seeker application" do
+            expect { subject }.not_to(change do
+              Coaches::SeekerApplication.count
+            end)
+
+            seeker_applications = Coaches::SeekerApplication.last_created
+            expect(seeker_applications.status).to eq(ApplicantStatus::StatusTypes::NEW)
+            expect(seeker_applications.employer_name).to eq("Employer")
+            expect(seeker_applications.job_id).to eq(job_id)
+            expect(seeker_applications.employment_title).to eq("Software Engineer")
+          end
+        end
+
+        context "when there isn't an existing seeker application" do
+          it "Creates the seeker application" do
+            expect { subject }.to change {
+                                    Coaches::SeekerApplication.count
+                                  }.from(0).to(1)
+
+            seeker_applications = Coaches::SeekerApplication.last_created
+            expect(seeker_applications.status).to eq(ApplicantStatus::StatusTypes::NEW)
+            expect(seeker_applications.employer_name).to eq("Employer")
+            expect(seeker_applications.job_id).to eq(job_id)
+            expect(seeker_applications.employment_title).to eq("Software Engineer")
+          end
+        end
+      end
+    end
   end
 
   describe "existing tests" do
@@ -285,6 +362,7 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(Barrier.count).not_to eq(0)
         expect(Coaches::Coach.count).not_to eq(0)
         expect(Coaches::Job.count).not_to eq(0)
+        expect(Coaches::FeedEvent.count).not_to eq(0)
 
         subject
 
@@ -295,6 +373,7 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(Coaches::SeekerBarrier.count).to eq(0)
         expect(Barrier.count).to eq(0)
         expect(Coaches::Job.count).to eq(0)
+        expect(Coaches::FeedEvent.count).to eq(0)
       end
     end
 

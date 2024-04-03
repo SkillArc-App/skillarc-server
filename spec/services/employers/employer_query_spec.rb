@@ -14,6 +14,7 @@ RSpec.describe Employers::EmployerQuery do
       create(
         :employers_applicant,
         job:,
+        application_submit_at: Time.zone.local(2023, 2, 2),
         email: "hannah.block@skillarc.com",
         first_name: "Hannah",
         last_name: "Block",
@@ -53,7 +54,7 @@ RSpec.describe Employers::EmployerQuery do
             id: applicant.applicant_id,
             job_id: job.id,
             chat_enabled: true,
-            created_at: applicant.created_at,
+            created_at: Time.zone.local(2023, 2, 2),
             certified_by: "chris@skillarc.com",
             job_name: "Welder",
             first_name: "Hannah",

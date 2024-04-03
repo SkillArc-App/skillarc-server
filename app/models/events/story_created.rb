@@ -12,7 +12,7 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.build(
+    V1 = Messages::Schema.active(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,

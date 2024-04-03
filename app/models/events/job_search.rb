@@ -33,14 +33,14 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.build(
+    V1 = Messages::Schema.deprecated(
       data: Data::V1,
       metadata: MetaData::V1,
       aggregate: Aggregates::User,
       message_type: Messages::Types::Seekers::JOB_SEARCH,
       version: 1
     )
-    V2 = Messages::Schema.build(
+    V2 = Messages::Schema.active(
       data: Data::V1,
       metadata: MetaData::V2,
       aggregate: Aggregates::Search,

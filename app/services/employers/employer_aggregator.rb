@@ -1,5 +1,5 @@
 module Employers
-  class EmployerService < MessageConsumer
+  class EmployerAggregator < MessageConsumer
     def reset_for_replay
       JobOwner.delete_all
       ApplicantStatusReason.delete_all

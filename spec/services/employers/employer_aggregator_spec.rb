@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Employers::EmployerService do
+RSpec.describe Employers::EmployerAggregator do
   it_behaves_like "a message consumer"
 
   describe "application created" do

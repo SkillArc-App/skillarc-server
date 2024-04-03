@@ -165,7 +165,7 @@ RSpec.describe "Test", type: :request do
         run_test!
       end
 
-      response '500', 'failed jobs' do
+      response '200', 'failed jobs' do
         schema type: :object,
                properties: {
                  exception: {

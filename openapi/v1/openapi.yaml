@@ -1530,7 +1530,7 @@ paths:
       responses:
         '204':
           description: No failed jobs
-        '500':
+        '200':
           description: failed jobs
 servers:
 - url: https://{defaultHost}

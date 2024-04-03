@@ -283,7 +283,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
       Resque::Failure.clear
 
-      render json: { exception: failure["exception"], message: failure["error"], backtrace: failure["backtrace"] }, status: :internal_server_error
+      render json: { exception: failure["exception"], message: failure["error"], backtrace: failure["backtrace"] }, status: :ok
     end
   end
 

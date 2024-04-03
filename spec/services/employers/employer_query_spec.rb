@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe Employers::ApplicantService do
-  describe "#all" do
-    subject { described_class.new(employers: [employer]).all }
+RSpec.describe Employers::EmployerQuery do
+  describe "#all_applicants" do
+    subject { described_class.new(employers: [employer]).all_applicants }
 
     let(:employer) do
       create(
@@ -66,6 +66,36 @@ RSpec.describe Employers::ApplicantService do
             email: "hannah.block@skillarc.com"
           }
         ]
+      )
+    end
+  end
+
+  describe "#all_jobs" do
+    subject { described_class.new(employers: [employer]).all_jobs }
+
+    let(:employer) do
+      create(
+        :employers_employer,
+        name: "Employer"
+      )
+    end
+    let!(:job) do
+      create(
+        :employers_job,
+        employer:,
+        employment_title: "Welder"
+      )
+    end
+
+    it "returns all jobs for the employer" do
+      expect(subject).to eq(
+        [{
+          id: job.id,
+          description: "descriptions don't exist yet",
+          employer_id: employer.employer_id,
+          name: "Welder",
+          employer_name: "Employer"
+        }]
       )
     end
   end

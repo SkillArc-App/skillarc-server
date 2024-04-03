@@ -6,36 +6,36 @@ class JobsController < ApplicationController
   before_action :authorize, only: %i[apply elevator_pitch]
 
   def apply
-    job = Job.find(params[:job_id])
+    if_visible(Job.find(params[:job_id])) do |job|
+      message_service = MessageService.new
 
-    message_service = MessageService.new
+      command_service = CommandService.new(message_service:)
+      event_service = EventService.new(message_service:)
 
-    command_service = CommandService.new(message_service:)
-    event_service = EventService.new(message_service:)
+      with_command_service(command_service) do
+        with_event_service(event_service) do
+          seeker = current_user.seeker
 
-    with_command_service(command_service) do
-      with_event_service(event_service) do
-        seeker = current_user.seeker
-
-        Seekers::ApplicantService.new(seeker).apply(job)
+          Seekers::ApplicantService.new(seeker).apply(job)
+        end
       end
-    end
 
-    head :ok
+      head :ok
+    end
   end
 
   def elevator_pitch
-    job = Job.find(params[:job_id])
+    if_visible(Job.find(params[:job_id])) do |job|
+      with_event_service do
+        Seekers::JobService.new(job:, seeker: current_user.seeker).add_elevator_pitch(params[:elevator_pitch])
+      end
 
-    with_event_service do
-      Seekers::JobService.new(job:, seeker: current_user.seeker).add_elevator_pitch(params[:elevator_pitch])
+      head :accepted
     end
-
-    head :accepted
   end
 
   def show
-    job = Job.includes(
+    if_visible(Job.includes(
       :applicants,
       :career_paths,
       :employer,
@@ -45,46 +45,99 @@ class JobsController < ApplicationController
       desired_skills: :master_skill,
       learned_skills: :master_skill,
       desired_certifications: :master_certification
-    ).find(params[:id])
-
-    render json: serialize_job(job)
+    ).find(params[:id])) do |job|
+      render json: serialize_job(job)
+    end
   end
 
   private
 
+  def if_visible(job, &)
+    if job.hide_job
+      render json: { error: 'Resource not found' }, status: :not_found
+    else
+      yield job
+    end
+  end
+
   def serialize_job(j)
     {
-      **j.as_json,
+      **j.slice(
+        :id,
+        :benefits_description,
+        :responsibilities_description,
+        :employment_title,
+        :location,
+        :employment_type,
+        :hide_job,
+        :schedule,
+        :work_days,
+        :requirements_description,
+        :created_at,
+        :category
+      ).as_json,
+      employer: {
+        **j.employer.slice(
+          :id,
+          :name,
+          :location,
+          :bio,
+          :logo_url,
+          :created_at
+        ).as_json
+      },
       industry: j.industry || [],
-      employer: j.employer.as_json,
-      learnedSkills: j.learned_skills.map do |ls|
+      learned_skills: j.learned_skills.map do |ls|
         {
-          **ls.as_json,
-          masterSkill: ls.master_skill.as_json
+          id: ls.id,
+          master_skill: serialize_master_skill(ls.master_skill)
         }
       end.as_json,
-      desiredSkills: j.desired_skills.map do |ds|
+      desired_skills: j.desired_skills.map do |ds|
         {
-          **ds.as_json,
-          masterSkill: ds.master_skill.as_json
+          id: ds.id,
+          master_skill: serialize_master_skill(ds.master_skill)
         }
       end.as_json,
-      desiredCertifications: j.desired_certifications.map do |dc|
+      desired_certifications: j.desired_certifications.map do |dc|
         {
-          **dc.as_json,
-          masterCertification: dc.master_certification.as_json
+          id: dc.id,
+          master_certification: serialize_master_certification(dc.master_certification)
         }
       end,
-      careerPaths: j.career_paths.as_json,
-      jobPhotos: j.job_photos.as_json,
-      jobTag: j.job_tags.map do |jt|
+      career_paths: j.career_paths.map { |cp| serialize_career_path(cp) },
+      job_photos: j.job_photos.map { |jp| serialize_job_photo(jp) },
+      job_tag: j.job_tags.map do |jt|
         {
-          **jt.as_json,
-          tag: jt.tag.as_json
+          id: jt.id,
+          tag: {
+            id: jt.tag.id,
+            name: jt.tag.name
+          }
         }
-      end.as_json,
-      numberOfApplicants: j.applicants.length,
-      testimonials: j.testimonials.as_json
+      end,
+      number_of_applicants: j.applicants.length,
+      testimonials: j.testimonials.map { |t| serialize_testimonial(t) }
     }
+  end
+
+  def serialize_master_skill(master_skill)
+    master_skill.slice(:id, :skill, :type)
+  end
+
+  def serialize_master_certification(master_certification)
+    master_certification.slice(:id, :certification)
+  end
+
+  def serialize_career_path(career_paths)
+    career_paths.slice(:id, :title, :upper_limit, :lower_limit, :order)
+  end
+
+  def serialize_job_photo(job_photo)
+    job_photo.slice(:id, :photo_url, :job_id)
+  end
+
+  def serialize_testimonial(testimonial)
+    testimonial.slice(:id, :name, :title, :testimonial, :photo_url)
   end
 end

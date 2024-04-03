@@ -1,82 +1,194 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "Jobs", type: :request do
-  describe "GET /show" do
-    subject { get job_path(job), headers: }
+  path '/jobs/{id}' do
+    get "Show a job" do
+      tags 'Seeker'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :string
 
-    let(:job) { create(:job) }
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    it "returns a 200" do
-      subject
+      let(:job) { create(:job) }
+      let(:id) { job.id }
 
-      expect(response).to have_http_status(:ok)
+      response '200', 'Retreives a job' do
+        schema '$ref' => '#/components/schemas/job'
+
+        context "when job is basically empty" do
+          let(:job) { create(:job) }
+          let(:id) { job.id }
+
+          run_test!
+        end
+
+        context "when job is fully loaded" do
+          before do
+            create(:career_path, job:)
+            create(:learned_skill, job:)
+            create(:desired_skill, job:)
+            create(:desired_certification, job:)
+            create(:job_photo, job:)
+            create(:testimonial, job:)
+            create(:job_tag, job:)
+          end
+
+          let(:job) { create(:job) }
+          let(:id) { job.id }
+
+          run_test!
+        end
+      end
+
+      response '404', 'Job not found' do
+        schema '$ref' => '#/components/schemas/not_found'
+
+        context "when the job doesn't exist" do
+          let(:id) { SecureRandom.uuid }
+
+          run_test!
+        end
+
+        context "when the job is hidden" do
+          let(:job) { create(:job, hide_job: true) }
+          let(:id) { job.id }
+
+          run_test!
+        end
+      end
     end
   end
 
-  describe "POST /apply" do
-    subject { post job_apply_path(job), headers: }
+  path '/jobs/{id}/apply' do
+    post "Apply to a job" do
+      tags 'Seeker'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+      security [bearer_auth: []]
 
-    before do
-      allow_any_instance_of(Employers::EmployerService).to receive(:handle_message)
-    end
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    include_context "authenticated"
+      it_behaves_like "spec unauthenticated openapi"
 
-    let(:job) { create(:job) }
-    let!(:search__job) { create(:search__job, job_id: job.id) }
-    let!(:seeker) { create(:seeker, user:) }
+      let(:job) { create(:job) }
+      let(:id) { job.id }
 
-    it "returns a 200" do
-      subject
+      context "when authenticated" do
+        include_context "authenticated openapi"
 
-      expect(response).to have_http_status(:ok)
-    end
+        response '200', 'Applies to a job' do
+          before do
+            seeker = create(:seeker, user:)
+            create(:search__job, job_id: id)
+            create(:employers_job, job_id: id)
 
-    it "calls the Seekers::ApplicantService" do
-      expect(Seekers::ApplicantService)
-        .to receive(:new)
-        .with(an_instance_of(Seeker))
-        .and_call_original
+            expect(Seekers::ApplicantService)
+              .to receive(:new)
+              .with(seeker)
+              .and_call_original
 
-      expect_any_instance_of(Seekers::ApplicantService)
-        .to receive(:apply)
-        .with(job)
-        .and_call_original
+            expect_any_instance_of(Seekers::ApplicantService)
+              .to receive(:apply)
+              .with(job)
+              .and_call_original
+          end
 
-      subject
+          let(:job) { create(:job) }
+          let(:id) { job.id }
+
+          run_test!
+        end
+
+        response '404', 'Job not found job' do
+          schema '$ref' => '#/components/schemas/not_found'
+
+          context "when the job doesn't exist" do
+            let(:id) { SecureRandom.uuid }
+
+            run_test!
+          end
+
+          context "when the job is hidden" do
+            let(:job) { create(:job, hide_job: true) }
+            let(:id) { job.id }
+
+            run_test!
+          end
+        end
+      end
     end
   end
 
-  describe "POST /elevator_pitch" do
-    subject { post job_elevator_pitch_path(job), params:, headers: }
+  path '/jobs/{id}/elevator_pitch' do
+    post "Provide an elevator pitch for an application" do
+      tags 'Seeker'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :string
+      parameter name: :pitch_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          elevator_pitch: {
+            type: :string
+          }
+        },
+        required: %w[elevator_pitch]
+      }
+      security [bearer_auth: []]
 
-    let(:job) { create(:job) }
-    let(:params) { { elevator_pitch: "New Elevator Pitch" } }
-    let!(:seeker) { create(:seeker) }
-    let!(:applicant) { create(:applicant, job:, seeker:) }
-    let(:user) { nil }
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    before do
-      seeker.update(user:) if user
-    end
+      it_behaves_like "spec unauthenticated openapi"
 
-    it_behaves_like "a secured endpoint"
+      let(:job) { create(:job) }
+      let(:id) { job.id }
+      let(:pitch_params) { { elevator_pitch: } }
+      let(:elevator_pitch) { "A great pitch" }
 
-    context "authenticated" do
-      include_context "authenticated"
+      context "when authenticated" do
+        include_context "authenticated openapi"
 
-      it "calls the Seekers::JobService" do
-        expect(Seekers::JobService)
-          .to receive(:new)
-          .with(job:, seeker:)
-          .and_call_original
+        response '202', 'Add elevator pitch' do
+          before do
+            seeker = create(:seeker, user:)
+            create(:applicant, seeker:, job:)
 
-        expect_any_instance_of(Seekers::JobService)
-          .to receive(:add_elevator_pitch)
-          .with("New Elevator Pitch")
-          .and_call_original
+            expect(Seekers::JobService)
+              .to receive(:new)
+              .with(job:, seeker:)
+              .and_call_original
 
-        subject
+            expect_any_instance_of(Seekers::JobService)
+              .to receive(:add_elevator_pitch)
+              .with(elevator_pitch)
+              .and_call_original
+          end
+
+          let(:job) { create(:job) }
+          let(:id) { job.id }
+
+          run_test!
+        end
+
+        response '404', 'Job not found job' do
+          schema '$ref' => '#/components/schemas/not_found'
+
+          context "when the job doesn't exist" do
+            let(:id) { SecureRandom.uuid }
+
+            run_test!
+          end
+
+          context "when the job is hidden" do
+            let(:job) { create(:job, hide_job: true) }
+            let(:id) { job.id }
+
+            run_test!
+          end
+        end
       end
     end
   end

@@ -87,8 +87,8 @@ RSpec.describe Employers::EmployerAggregator do
     end
     let(:applicant_status_updated) do
       build(:message,
-            :applicant_status_updated,
-            version: 5,
+            schema: Events::ApplicantStatusUpdated::V5,
+            occurred_at: Time.zone.local(2019, 1, 1),
             data: Events::ApplicantStatusUpdated::Data::V4.new(
               applicant_id: SecureRandom.uuid,
               applicant_first_name: "first_name",
@@ -149,6 +149,7 @@ RSpec.describe Employers::EmployerAggregator do
         email: "email",
         phone_number: "phone_number",
         status:,
+        application_submit_at: Time.zone.local(2019, 1, 1),
         job: Employers::Job.last_created,
         seeker_id: applicant_status_updated.data.seeker_id,
         status_as_of: applicant_status_updated.occurred_at

@@ -15,7 +15,7 @@ module Employers
           job_id: a.job.id,
           chat_enabled: true,
           certified_by: seekers.detect { |s| s.seeker_id == a.seeker_id }&.certified_by,
-          created_at: a.created_at,
+          created_at: a.application_submit_at,
           job_name: a.job.employment_title,
           first_name: a.first_name,
           last_name: a.last_name,

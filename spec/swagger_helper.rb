@@ -555,20 +555,250 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 nullable: true
               },
               employer: {
+                '$ref' => '#/components/schemas/search_employer'
+              }
+            }
+          },
+          search_employer: {
+            type: :object,
+            additionalProperties: true,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              name: {
+                type: :string
+              },
+              logoUrl: {
+                type: :string,
+                nullable: true
+              }
+            }
+          },
+          employer: {
+            allOf: [
+              { '$ref' => '#/components/schemas/search_employer' },
+              {
                 type: :object,
+                additionalProperties: true,
                 properties: {
+                  location: {
+                    type: :string,
+                    nullable: true
+                  },
+                  bio: {
+                    type: :string
+                  },
+                  createdAt: {
+                    type: :string,
+                    format: 'date-time'
+                  }
+                }
+              }
+            ]
+          },
+          job: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              benefitsDescription: {
+                type: :string
+              },
+              responsibilitiesDescription: {
+                type: :string,
+                nullable: true
+              },
+              employmentTitle: {
+                type: :string
+              },
+              location: {
+                type: :string
+              },
+              employmentType: {
+                type: :string,
+                enum: Job::EmploymentTypes::ALL
+              },
+              hideJob: {
+                type: :boolean
+              },
+              schedule: {
+                type: :string,
+                nullable: true
+              },
+              workDays: {
+                type: :string,
+                nullable: true
+              },
+              requirementsDescription: {
+                type: :string,
+                nullable: true
+              },
+              createdAt: {
+                type: :string,
+                format: 'date-time'
+              },
+              category: {
+                type: :string
+              },
+              employer: {
+                '$ref' => '#/components/schemas/employer'
+              },
+              industry: {
+                type: :array,
+                items: {
+                  type: :string
+                }
+              },
+              learnedSkills: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: {
+                      type: :string,
+                      format: :uuid
+                    },
+                    masterSkill: {
+                      '$ref' => '#/components/schemas/master_skill'
+                    }
+                  }
+                }
+              },
+              desiredSkills: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: {
+                      type: :string,
+                      format: :uuid
+                    },
+                    masterSkill: {
+                      '$ref' => '#/components/schemas/master_skill'
+                    }
+                  }
+                }
+              },
+              desiredCertifications: {
+                id: {
+                  type: :string,
+                  format: :uuid
+                },
+                masterCertification: {
+                  '$ref' => '#/components/schemas/master_certification'
+                }
+              },
+              careerPaths: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/career_path'
+                }
+              },
+              jobPhotos: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: {
+                      type: :string,
+                      format: :uuid
+                    },
+                    photoUrl: {
+                      type: :string
+                    },
+                    jobId: {
+                      type: :string
+                    }
+                  }
+                }
+              },
+              jobTag: {
+                type: :array,
+                items: {
                   id: {
                     type: :string,
                     format: :uuid
                   },
-                  name: {
-                    type: :string
-                  },
-                  logoUrl: {
-                    type: :string,
-                    nullable: true
+                  tag: {
+                    type: :object,
+                    properties: {
+                      id: {
+                        type: :string,
+                        format: :uuid
+                      },
+                      name: {
+                        type: :string
+                      }
+                    }
                   }
                 }
+              },
+              numberOfApplicants: {
+                type: :integer
+              },
+              testimonials: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/testimonial'
+                }
+              }
+            }
+          },
+          master_certification: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              certification: {
+                type: :string
+              }
+            }
+          },
+          career_path: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              title: {
+                type: :string
+              },
+              upperLimit: {
+                type: :string
+              },
+              lowerLimit: {
+                type: :string
+              },
+              order: {
+                type: :integer
+              }
+            }
+          },
+          testimonial: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              name: {
+                type: :string
+              },
+              title: {
+                type: :string
+              },
+              testimonial: {
+                type: :string
+              },
+              photoUrl: {
+                type: :string
               }
             }
           },
@@ -670,6 +900,15 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 }
               }
             ]
+          },
+          not_found: {
+            type: :object,
+            properties: {
+              error: {
+                type: :string,
+                enum: ['Resource not found']
+              }
+            }
           }
         }
       }

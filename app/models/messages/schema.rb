@@ -25,6 +25,10 @@ module Messages
       MessageService.all_messages(self)
     end
 
+    def active?
+      active
+    end
+
     private
 
     def initialize(data:, metadata:, message_type:, version:, aggregate:, active:) # rubocop:disable Metrics/ParameterLists

@@ -69,17 +69,12 @@ module PubSubInitializer
     )
 
     [
-      DbStreamAggregator.build(consumer: Coaches::FeedAggregator.new, listener_name: "coach_feed"),
-      DbStreamAggregator.build(consumer: Coaches::SeekerAggregator.new, listener_name: "coach_seekers"),
-      DbStreamReactor.build(consumer: Coaches::SeekerReactor.new, listener_name: "coach_seekers_reactor"),
+      DbStreamAggregator.build(consumer: Coaches::CoachesAggregator.new, listener_name: "coach_seekers"),
+      DbStreamReactor.build(consumer: Coaches::CoachesReactor.new, listener_name: "coach_seekers_reactor"),
       DbStreamReactor.build(consumer: Applicants::OrchestrationReactor.new, listener_name: "applicants_orchestration_reactor"),
       DbStreamAggregator.build(consumer: Search::SearchService.new, listener_name: "search"),
-      DbStreamAggregator.build(consumer: Coaches::CoachService.new, listener_name: "coaches"),
-      DbStreamAggregator.build(consumer: Coaches::BarrierService.new, listener_name: "barriers"),
-      DbStreamAggregator.build(consumer: Coaches::JobService.new, listener_name: "coaches_jobs"),
       DbStreamReactor.build(consumer: Contact::SmsService.new, listener_name: "contact_sms"),
       DbStreamReactor.build(consumer: Contact::SmtpService.new, listener_name: "contact_smtp"),
-      DbStreamReactor.build(consumer: Coaches::RecommendationService.new, listener_name: "coaches_recommendations"),
       DbStreamReactor.build(consumer: Contact::CalDotCom::SchedulingReactor.new, listener_name: "cal_com_scheduling"),
       DbStreamAggregator.build(consumer: Employers::EmployerService.new, listener_name: "employers"),
       DbStreamAggregator.build(consumer: Employers::ApplicationNotificationService.new, listener_name: "employers_application_notification_service"),

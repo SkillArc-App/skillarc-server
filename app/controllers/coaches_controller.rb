@@ -6,6 +6,6 @@ class CoachesController < ApplicationController
   before_action :coach_authorize
 
   def index
-    render json: Coaches::CoachService.new.all
+    render json: Coaches::CoachesQuery.all_coaches
   end
 end

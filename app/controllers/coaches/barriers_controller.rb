@@ -7,7 +7,7 @@ module Coaches
     before_action :coach_authorize
 
     def index
-      render json: BarrierService.new.all
+      render json: CoachesQuery.all_barriers
     end
   end
 end

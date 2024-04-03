@@ -1,5 +1,5 @@
 module Coaches
-  class SeekerReactor < MessageConsumer
+  class CoachesReactor < MessageConsumer
     def reset_for_replay; end
 
     def add_lead(lead_captured_by:, lead_id:, phone_number:, first_name:, last_name:, trace_id:, email: nil) # rubocop:disable Metrics/ParameterLists
@@ -164,6 +164,23 @@ module Coaches
         command_schema: Commands::AssignCoach::V1,
         data: {
           coach_email: message.data.lead_captured_by
+        }
+      )
+    end
+
+    on_message Events::JobRecommended::V2 do |message|
+      job_id = message.data.job_id
+
+      csc = CoachSeekerContext.find_by(context_id: message.aggregate_id)
+      return if csc&.phone_number.nil?
+
+      command_service.create!(
+        command_schema: Commands::SendSms::V1,
+        seeker_id: csc.seeker_id,
+        trace_id: message.trace_id,
+        data: {
+          phone_number: csc.phone_number,
+          message: "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
         }
       )
     end

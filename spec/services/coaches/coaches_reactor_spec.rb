@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Coaches::SeekerReactor do
+RSpec.describe Coaches::CoachesReactor do
   let(:user_id) { "9f769972-c41c-4b58-a056-bffb714ea24d" }
   let(:seeker_id) { "75372772-49dc-4884-b4ae-1d408e030aa4" }
   let(:note_id) { "78f22f6c-a770-46fc-a83c-1ad6cda4b8f9" }
@@ -150,6 +150,67 @@ RSpec.describe Coaches::SeekerReactor do
               trace_id: message.trace_id,
               data: {
                 coach_email: message.data.lead_captured_by
+              }
+            ).and_call_original
+
+          subject
+        end
+      end
+    end
+
+    context "when the message is a job_recommended event" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobRecommended::V2,
+          aggregate_id:,
+          data: {
+            job_id:,
+            coach_id:
+          }
+        )
+      end
+
+      let(:job_id) { SecureRandom.uuid }
+      let(:coach_id) { SecureRandom.uuid }
+
+      context "when there isn't a cooreponding coach seekers context" do
+        let(:aggregate_id) { SecureRandom.uuid }
+
+        it "does nothing" do
+          expect(command_service)
+            .not_to receive(:create!)
+
+          subject
+        end
+      end
+
+      context "when there isn't a phone number on the coach seekers context" do
+        let(:coach_seeker_context) { create(:coaches__coach_seeker_context, phone_number: nil) }
+        let(:aggregate_id) { coach_seeker_context.context_id }
+
+        it "does nothing" do
+          expect(command_service)
+            .not_to receive(:create!)
+
+          subject
+        end
+      end
+
+      context "when there isn't a phone number on the coach seekers context" do
+        let(:coach_seeker_context) { create(:coaches__coach_seeker_context, phone_number: "1234567890") }
+        let(:aggregate_id) { coach_seeker_context.context_id }
+
+        it "does nothing" do
+          expect(command_service)
+            .to receive(:create!)
+            .with(
+              command_schema: Commands::SendSms::V1,
+              seeker_id: coach_seeker_context.seeker_id,
+              trace_id: message.trace_id,
+              data: {
+                phone_number: "1234567890",
+                message: "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
               }
             ).and_call_original
 

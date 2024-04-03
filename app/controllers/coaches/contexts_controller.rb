@@ -9,22 +9,18 @@ module Coaches
     before_action :set_coach, only: %i[recommend_job certify]
 
     def index
-      with_event_service do
-        render json: SeekerAggregator.new(event_service:).all_seekers
-      end
+      render json: CoachesQuery.all_seekers
     end
 
     def show
-      with_event_service do
-        render json: SeekerAggregator.new(event_service:).find_context(params[:id])
-      end
+      render json: CoachesQuery.find_context(params[:id])
     end
 
     def assign
       coach = Coach.find_by!(coach_id: params[:coach_id])
 
       with_event_service do
-        SeekerReactor.new(event_service:).assign_coach(
+        CoachesReactor.new(event_service:).assign_coach(
           context_id: params[:context_id],
           coach_id: coach.coach_id,
           coach_email: coach.email,
@@ -37,7 +33,7 @@ module Coaches
 
     def recommend_job
       with_event_service do
-        SeekerReactor.new(event_service:).recommend_job(
+        CoachesReactor.new(event_service:).recommend_job(
           context_id: params[:context_id],
           job_id: params[:job_id],
           coach:,
@@ -57,7 +53,7 @@ module Coaches
 
         seeker_id = params[:context_id]
         seeker_id = coach_seekers_context.seeker_id if coach_seekers_context
-        SeekerReactor.new(event_service:).certify(seeker_id:, coach:, trace_id: request.request_id)
+        CoachesReactor.new(event_service:).certify(seeker_id:, coach:, trace_id: request.request_id)
       end
 
       head :accepted
@@ -65,7 +61,7 @@ module Coaches
 
     def update_skill_level
       with_event_service do
-        SeekerReactor.new(event_service:).update_skill_level(
+        CoachesReactor.new(event_service:).update_skill_level(
           context_id: params[:context_id],
           skill_level: params[:level],
           trace_id: request.request_id

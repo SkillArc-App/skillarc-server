@@ -270,13 +270,20 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   end
 
   def assert_no_failed_jobs
-    failure_count = Resque::Failure.count
-    Resque::Failure.clear
-
-    if failure_count.zero?
+    if Resque::Failure.count.zero?
       head :no_content
     else
-      render json: { message: 'Failed resque jobs' }, status: :internal_server_error
+      failures = Resque::Failure.all
+
+      failure = if failures.is_a?(Hash)
+                  failures
+                else
+                  failures[0]
+                end
+
+      Resque::Failure.clear
+
+      render json: { exception: failure["exception"], message: failure["error"], backtrace: failure["backtrace"] }, status: :internal_server_error
     end
   end
 

@@ -1,5 +1,5 @@
 module Employers
-  class EmployerService < MessageConsumer
+  class EmployerAggregator < MessageConsumer
     def reset_for_replay
       JobOwner.delete_all
       ApplicantStatusReason.delete_all
@@ -80,6 +80,7 @@ module Employers
       Job.create!(
         employer:,
         job_id: message.aggregate_id,
+        category: message.data.category,
         employment_title: message.data.employment_title,
         benefits_description: message.data.benefits_description,
         responsibilities_description: message.data.responsibilities_description,
@@ -103,7 +104,7 @@ module Employers
       )
     end
 
-    on_message Events::JobUpdated::V1 do |message|
+    on_message Events::JobUpdated::V2 do |message|
       job = Job.find_by!(job_id: message.aggregate_id)
 
       job.update!(

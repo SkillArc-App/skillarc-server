@@ -1,5 +1,6 @@
 class MessageConsumer
   NotSchemaError = Class.new(StandardError)
+  NotActiveSchemaError = Class.new(StandardError)
   NotValidSubscriberType = Class.new(StandardError)
 
   def initialize(event_service: nil, command_service: nil)
@@ -27,6 +28,7 @@ class MessageConsumer
 
   def self.on_message(schema, subscribe_type = :async, &)
     raise NotSchemaError unless schema.is_a?(Messages::Schema)
+    raise NotActiveSchemaError unless schema.active?
     raise NotValidSubscriberType unless subscribe_type.in?(%i[async sync])
 
     if subscribe_type == :sync

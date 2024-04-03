@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Employers::EmployerService do
+RSpec.describe Employers::EmployerAggregator do
   it_behaves_like "a message consumer"
 
   describe "application created" do
@@ -68,20 +68,21 @@ RSpec.describe Employers::EmployerService do
     let(:job_updated) do
       build(
         :message,
-        :job_updated,
+        schema: Events::JobUpdated::V2,
         aggregate_id: job_id,
-        data: Events::JobUpdated::Data::V1.new(
+        data: {
           employment_title: "employment title",
           benefits_description: "benefits description",
           responsibilities_description: "responsibilities description",
           location: "location",
+          category: Job::Categories::STAFFING,
           employment_type: Job::EmploymentTypes::FULLTIME,
           hide_job: false,
           schedule: "9-5",
           work_days: "M-F",
           requirements_description: "requirements description",
           industry: [Job::Industries::MANUFACTURING]
-        )
+        }
       )
     end
     let(:applicant_status_updated) do
@@ -160,6 +161,7 @@ RSpec.describe Employers::EmployerService do
       )
 
       expect(Employers::Job.last_created).to have_attributes(
+        category: Job::Categories::STAFFING,
         employment_title: "employment title",
         benefits_description: "benefits description",
         responsibilities_description: "responsibilities description",

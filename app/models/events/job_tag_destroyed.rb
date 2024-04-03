@@ -20,14 +20,14 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.build(
+    V1 = Messages::Schema.deprecated(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Job,
       message_type: Messages::Types::Jobs::JOB_TAG_DELETED,
       version: 1
     )
-    V2 = Messages::Schema.build(
+    V2 = Messages::Schema.active(
       data: Data::V2,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Job,

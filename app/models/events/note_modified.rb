@@ -23,21 +23,21 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.build(
+    V1 = Messages::Schema.deprecated(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
       message_type: Messages::Types::Coaches::NOTE_MODIFIED,
       version: 1
     )
-    V2 = Messages::Schema.build(
+    V2 = Messages::Schema.deprecated(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,
       message_type: Messages::Types::Coaches::NOTE_MODIFIED,
       version: 2
     )
-    V3 = Messages::Schema.build(
+    V3 = Messages::Schema.active(
       data: Data::V2,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,

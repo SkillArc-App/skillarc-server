@@ -70,22 +70,17 @@ RSpec.describe "Employers::Jobs", type: :request do
                  required: %w[jobs applicants]
 
           before do
-            expect(Employers::JobService)
+            expect(Employers::EmployerQuery)
               .to receive(:new)
               .with(employers: [employers_employer])
               .and_call_original
 
-            expect(Employers::ApplicantService)
-              .to receive(:new)
-              .with(employers: [employers_employer])
+            expect_any_instance_of(Employers::EmployerQuery)
+              .to receive(:all_jobs)
               .and_call_original
 
-            expect_any_instance_of(Employers::JobService)
-              .to receive(:all)
-              .and_call_original
-
-            expect_any_instance_of(Employers::ApplicantService)
-              .to receive(:all)
+            expect_any_instance_of(Employers::EmployerQuery)
+              .to receive(:all_applicants)
               .and_call_original
           end
 

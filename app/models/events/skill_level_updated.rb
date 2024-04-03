@@ -10,14 +10,14 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.build(
+    V1 = Messages::Schema.deprecated(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
       message_type: Messages::Types::Coaches::SKILL_LEVEL_UPDATED,
       version: 1
     )
-    V2 = Messages::Schema.build(
+    V2 = Messages::Schema.active(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,

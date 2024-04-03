@@ -1,6 +1,6 @@
 module Commands
   module ScreenApplicant
-    V1 = Messages::Schema.build(
+    V1 = Messages::Schema.active(
       data: Messages::Nothing,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Applicant,

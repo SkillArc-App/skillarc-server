@@ -1,10 +1,10 @@
 module Employers
-  class ApplicantService
+  class EmployerQuery
     def initialize(employers:)
       @employers = employers
     end
 
-    def all
+    def all_applicants
       jobs = employers.map(&:jobs).flatten
       applicants = Applicant.includes(:applicant_status_reasons).where(job: jobs)
       seekers = Seeker.where(seeker_id: applicants.select(:seeker_id))
@@ -25,6 +25,18 @@ module Employers
           programs: [], # TODO
           status: a.status,
           status_reasons: a.applicant_status_reasons.map(&:reason)
+        }
+      end
+    end
+
+    def all_jobs
+      Job.where(employer: employers).map do |job|
+        {
+          id: job.id,
+          employer_id: job.employer.employer_id,
+          name: job.employment_title,
+          employer_name: job.employer.name,
+          description: "descriptions don't exist yet"
         }
       end
     end

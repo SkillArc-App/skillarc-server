@@ -59,7 +59,7 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.build(
+    V1 = Messages::Schema.deprecated(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Job,
@@ -67,7 +67,7 @@ module Events
       version: 1
     )
 
-    V2 = Messages::Schema.build(
+    V2 = Messages::Schema.deprecated(
       data: Data::V2,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Job,
@@ -75,7 +75,7 @@ module Events
       version: 2
     )
 
-    V3 = Messages::Schema.build(
+    V3 = Messages::Schema.active(
       data: Data::V3,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Job,

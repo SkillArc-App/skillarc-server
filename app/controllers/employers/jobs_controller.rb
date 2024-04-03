@@ -12,8 +12,9 @@ class Employers::JobsController < ApplicationController
                   [Employers::Recruiter.find_by!(email: current_user.email).employer]
                 end
 
-    jobs = Employers::JobService.new(employers:).all
-    applicants = Employers::ApplicantService.new(employers:).all
+    employer_query = Employers::EmployerQuery.new(employers:)
+    jobs = employer_query.all_jobs
+    applicants = employer_query.all_applicants
 
     render json: { jobs:, applicants: }
   end

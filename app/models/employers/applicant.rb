@@ -2,19 +2,20 @@
 #
 # Table name: employers_applicants
 #
-#  id               :uuid             not null, primary key
-#  certified_by     :string
-#  email            :string           not null
-#  first_name       :string           not null
-#  last_name        :string           not null
-#  phone_number     :string
-#  status           :string           not null
-#  status_as_of     :datetime
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  applicant_id     :string           not null
-#  employers_job_id :uuid             not null
-#  seeker_id        :uuid             not null
+#  id                    :uuid             not null, primary key
+#  application_submit_at :datetime
+#  certified_by          :string
+#  email                 :string           not null
+#  first_name            :string           not null
+#  last_name             :string           not null
+#  phone_number          :string
+#  status                :string           not null
+#  status_as_of          :datetime
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  applicant_id          :string           not null
+#  employers_job_id      :uuid             not null
+#  seeker_id             :uuid             not null
 #
 # Indexes
 #

@@ -77,8 +77,7 @@ module PubSubInitializer
       DbStreamReactor.build(consumer: Contact::SmtpService.new, listener_name: "contact_smtp"),
       DbStreamReactor.build(consumer: Contact::CalDotCom::SchedulingReactor.new, listener_name: "cal_com_scheduling"),
       DbStreamAggregator.build(consumer: Employers::EmployerAggregator.new, listener_name: "employers"),
-      DbStreamAggregator.build(consumer: Employers::ApplicationNotificationService.new, listener_name: "employers_application_notification_service"),
-      DbStreamReactor.build(consumer: Employers::WeeklyUpdateService.new, listener_name: "employers_weekly_update_service"),
+      DbStreamReactor.build(consumer: Employers::EmployerReactor.new, listener_name: "employers_application_notification_service"),
       DbStreamAggregator.build(consumer: Seekers::SeekerService.new, listener_name: "seekers")
     ].each do |listener|
       listener.handled_messages_sync.each do |message_schema|

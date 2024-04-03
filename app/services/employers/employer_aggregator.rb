@@ -17,13 +17,20 @@ module Employers
         job:
       )
 
+      application_submit_at = if message.data.status == Applicant::StatusTypes::NEW
+                                message.occurred_at
+                              else
+                                applicant.application_submit_at
+                              end
+
       applicant.update!(
         first_name: message.data.applicant_first_name,
         last_name: message.data.applicant_last_name,
         email: message.data.applicant_email,
         phone_number: message.data.applicant_phone_number,
         status: message.data.status,
-        status_as_of: message.occurred_at
+        status_as_of: message.occurred_at,
+        application_submit_at:
       )
 
       applicant.applicant_status_reasons.destroy_all

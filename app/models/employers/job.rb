@@ -4,6 +4,7 @@
 #
 #  id                           :uuid             not null, primary key
 #  benefits_description         :string           not null
+#  category                     :string           default("marketplace"), not null
 #  elevator_pitch               :text
 #  employment_title             :string           not null
 #  employment_type              :string           not null

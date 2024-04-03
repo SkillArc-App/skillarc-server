@@ -33,7 +33,7 @@ RSpec.describe MessageService do
 
     context "when event_schema is a Messages::Schema" do
       let!(:message_schema) do
-        Messages::Schema.build(
+        Messages::Schema.active(
           data: Events::SeekerViewed::Data::V1,
           metadata: Events::ApplicantStatusUpdated::MetaData::V1,
           aggregate: Aggregates::User,
@@ -130,7 +130,7 @@ RSpec.describe MessageService do
 
     let(:message_type) { Messages::Types::CHAT_CREATED }
     let!(:message_schema) do
-      Messages::Schema.build(
+      Messages::Schema.active(
         data: Messages::Nothing,
         metadata: Messages::Nothing,
         aggregate: Aggregates::User,
@@ -189,7 +189,7 @@ RSpec.describe MessageService do
     subject { described_class.all_schemas }
 
     let!(:schema) do
-      Messages::Schema.build(
+      Messages::Schema.active(
         data: Array,
         metadata: Array,
         aggregate: Aggregates::User,
@@ -256,7 +256,7 @@ RSpec.describe MessageService do
 
     context "when the schema exists" do
       let!(:schema) do
-        Messages::Schema.build(
+        Messages::Schema.active(
           data: Array,
           metadata: Array,
           aggregate: Aggregates::User,

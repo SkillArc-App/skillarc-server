@@ -6,36 +6,36 @@ class JobsController < ApplicationController
   before_action :authorize, only: %i[apply elevator_pitch]
 
   def apply
-    job = Job.find(params[:job_id])
+    if_visible(Job.find(params[:job_id])) do |job|
+      message_service = MessageService.new
 
-    message_service = MessageService.new
+      command_service = CommandService.new(message_service:)
+      event_service = EventService.new(message_service:)
 
-    command_service = CommandService.new(message_service:)
-    event_service = EventService.new(message_service:)
+      with_command_service(command_service) do
+        with_event_service(event_service) do
+          seeker = current_user.seeker
 
-    with_command_service(command_service) do
-      with_event_service(event_service) do
-        seeker = current_user.seeker
-
-        Seekers::ApplicantService.new(seeker).apply(job)
+          Seekers::ApplicantService.new(seeker).apply(job)
+        end
       end
-    end
 
-    head :ok
+      head :ok
+    end
   end
 
   def elevator_pitch
-    job = Job.find(params[:job_id])
+    if_visible(Job.find(params[:job_id])) do |job|
+      with_event_service do
+        Seekers::JobService.new(job:, seeker: current_user.seeker).add_elevator_pitch(params[:elevator_pitch])
+      end
 
-    with_event_service do
-      Seekers::JobService.new(job:, seeker: current_user.seeker).add_elevator_pitch(params[:elevator_pitch])
+      head :accepted
     end
-
-    head :accepted
   end
 
   def show
-    job = Job.includes(
+    if_visible(Job.includes(
       :applicants,
       :career_paths,
       :employer,
@@ -45,9 +45,19 @@ class JobsController < ApplicationController
       desired_skills: :master_skill,
       learned_skills: :master_skill,
       desired_certifications: :master_certification
-    ).find(params[:id])
+    ).find(params[:id])) do |job|
+      render json: serialize_job(job)
+    end
+  end
 
-    render json: serialize_job(job)
+  private
+
+  def if_visible(job, &)
+    if job.hide_job
+      render json: { error: 'Resource not found' }, status: :not_found
+    else
+      yield job
+    end
   end
 
   private

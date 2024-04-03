@@ -4,12 +4,19 @@ module Messages
       data
       metadata
       version Integer
+      active Bool()
       message_type Either(*Messages::Types::ALL)
       aggregate SubClass.Of(Aggregate)
     end)
 
-    def self.build(data:, metadata:, message_type:, version:, aggregate:)
-      message_schema = new(data:, metadata:, message_type:, version:, aggregate:)
+    def self.active(data:, metadata:, message_type:, version:, aggregate:)
+      message_schema = new(data:, metadata:, message_type:, version:, aggregate:, active: true)
+      MessageService.register(message_schema:)
+      message_schema
+    end
+
+    def self.deprecated(data:, metadata:, message_type:, version:, aggregate:)
+      message_schema = new(data:, metadata:, message_type:, version:, aggregate:, active: false)
       MessageService.register(message_schema:)
       message_schema
     end
@@ -20,8 +27,8 @@ module Messages
 
     private
 
-    def initialize(data:, metadata:, message_type:, version:, aggregate:)
-      super(data:, metadata:, message_type:, version:, aggregate:)
+    def initialize(data:, metadata:, message_type:, version:, aggregate:, active:) # rubocop:disable Metrics/ParameterLists
+      super(data:, metadata:, message_type:, version:, aggregate:, active:)
     end
   end
 end

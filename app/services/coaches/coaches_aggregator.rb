@@ -38,6 +38,15 @@ module Coaches
       )
     end
 
+    on_message Events::JobUpdated::V2 do |message|
+      job = Job.find_by!(job_id: message.aggregate_id)
+
+      job.update!(
+        employment_title: message.data.employment_title,
+        hide_job: message.data.hide_job
+      )
+    end
+
     on_message Events::ApplicantStatusUpdated::V5 do |message|
       data = message.data
       csc = CoachSeekerContext.find_by!(user_id: data.user_id)

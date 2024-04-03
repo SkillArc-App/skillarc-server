@@ -244,6 +244,42 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
       end
     end
 
+    context "when the message is job_updated" do
+      let(:message) do
+        build(
+          :message,
+          aggregate_id: id,
+          schema: Events::JobUpdated::V2,
+          data: {
+            category: Job::Categories::MARKETPLACE,
+            employment_title: "Laborer",
+            benefits_description: "Benefits",
+            responsibilities_description: "Responsibilities",
+            location: "Columbus, OH",
+            employment_type: "FULLTIME",
+            hide_job: false,
+            schedule: "9-5",
+            work_days: "M-F",
+            requirements_description: "Requirements",
+            industry: [Job::Industries::MANUFACTURING]
+          }
+        )
+      end
+
+      let!(:job) { create(:coaches__job, job_id: id) }
+
+      it "Updates a job record" do
+        expect { subject }.not_to(change do
+          Coaches::Job.count
+        end)
+
+        job.reload
+        expect(job.job_id).to eq(id)
+        expect(job.employment_title).to eq("Laborer")
+        expect(job.hide_job).to eq(false)
+      end
+    end
+
     context "for coach seekers context" do
       let!(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
 

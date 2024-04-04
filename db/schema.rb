@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_04_122625) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_04_140319) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,6 +45,60 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_04_122625) do
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.index ["provider", "provider_account_id"], name: "Account_provider_provider_account_id_key", unique: true
+  end
+
+  create_table "analytics_dim_jobs", force: :cascade do |t|
+    t.datetime "job_created_at", null: false
+    t.uuid "job_id", null: false
+    t.string "category", null: false
+    t.string "employment_type", null: false
+    t.string "employment_title", null: false
+    t.index ["employment_type"], name: "index_analytics_dim_jobs_on_employment_type"
+    t.index ["job_id"], name: "index_analytics_dim_jobs_on_job_id"
+  end
+
+  create_table "analytics_dim_people", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "phone_number"
+    t.string "email"
+    t.string "kind", null: false
+    t.datetime "user_created_at"
+    t.datetime "lead_created_at"
+    t.datetime "onboarding_completed_at"
+    t.datetime "last_active_at"
+    t.uuid "lead_id"
+    t.uuid "user_id"
+    t.uuid "seeker_id"
+    t.uuid "coach_id"
+    t.index ["coach_id"], name: "index_analytics_dim_people_on_coach_id"
+    t.index ["email"], name: "index_analytics_dim_people_on_email"
+    t.index ["kind"], name: "index_analytics_dim_people_on_kind"
+    t.index ["lead_id"], name: "index_analytics_dim_people_on_lead_id"
+    t.index ["phone_number"], name: "index_analytics_dim_people_on_phone_number"
+    t.index ["seeker_id"], name: "index_analytics_dim_people_on_seeker_id"
+    t.index ["user_id"], name: "index_analytics_dim_people_on_user_id"
+  end
+
+  create_table "analytics_fact_applications", force: :cascade do |t|
+    t.bigint "analytics_dim_job_id", null: false
+    t.bigint "analytics_dim_person_id", null: false
+    t.uuid "application_id", null: false
+    t.datetime "application_opened_at", null: false
+    t.string "status", null: false
+    t.integer "application_number", null: false
+    t.index ["analytics_dim_job_id"], name: "index_analytics_fact_applications_on_analytics_dim_job_id"
+    t.index ["analytics_dim_person_id"], name: "index_analytics_fact_applications_on_analytics_dim_person_id"
+    t.index ["application_id"], name: "index_analytics_fact_applications_on_application_id"
+    t.index ["application_number"], name: "index_analytics_fact_applications_on_application_number"
+    t.index ["status"], name: "index_analytics_fact_applications_on_status"
+  end
+
+  create_table "analytics_fact_job_visibilities", force: :cascade do |t|
+    t.bigint "analytics_dim_job_id", null: false
+    t.datetime "visible_starting_at", null: false
+    t.datetime "visible_ending_at"
+    t.index ["analytics_dim_job_id"], name: "index_analytics_fact_job_visibilities_on_analytics_dim_job_id"
   end
 
   create_table "applicant_analytics", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -824,6 +878,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_04_122625) do
   end
 
   add_foreign_key "accounts", "users", name: "Account_user_id_fkey", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "analytics_fact_applications", "analytics_dim_jobs"
+  add_foreign_key "analytics_fact_applications", "analytics_dim_people"
+  add_foreign_key "analytics_fact_job_visibilities", "analytics_dim_jobs"
   add_foreign_key "applicant_analytics", "applicants"
   add_foreign_key "applicant_analytics", "employers"
   add_foreign_key "applicant_analytics", "jobs"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_04_140319) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_04_205932) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,9 +68,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_04_140319) do
     t.datetime "onboarding_completed_at"
     t.datetime "last_active_at"
     t.uuid "lead_id"
-    t.uuid "user_id"
     t.uuid "seeker_id"
     t.uuid "coach_id"
+    t.text "user_id"
     t.index ["coach_id"], name: "index_analytics_dim_people_on_coach_id"
     t.index ["email"], name: "index_analytics_dim_people_on_email"
     t.index ["kind"], name: "index_analytics_dim_people_on_kind"

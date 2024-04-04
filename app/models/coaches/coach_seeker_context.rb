@@ -19,6 +19,7 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  context_id         :string           not null
+#  lead_id            :uuid
 #  seeker_id          :uuid
 #  user_id            :string
 #

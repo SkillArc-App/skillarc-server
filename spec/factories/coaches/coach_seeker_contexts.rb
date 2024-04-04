@@ -8,6 +8,7 @@ FactoryBot.define do
     assigned_coach { SecureRandom.uuid }
     certified_by { "jim@cool.com" }
     email { Faker::Internet.email }
+    lead_id { nil }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
 

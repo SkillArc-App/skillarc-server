@@ -158,8 +158,9 @@ module Coaches
     end
 
     on_message Events::LeadAdded::V2 do |message|
-      # We might need to add a lead_id to the CSC table
-      # So we can do the same deduplicating like we do with user
+      csc = Coaches::CoachSeekerContext.find_by(lead_id: message.aggregate.context_id)
+      return if csc&.assigned_coach.present?
+
       coach = Coach.find_by(email: message.data.lead_captured_by)
       coach ||= CoachAssignmentService.round_robin_assignment
 

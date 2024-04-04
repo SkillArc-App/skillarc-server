@@ -129,6 +129,7 @@ RSpec.describe Coaches::CoachesReactor do
         build(
           :message,
           schema: Events::LeadAdded::V2,
+          aggregate_id: context_id,
           data: {
             email: "john@skillarc.com",
             lead_id: SecureRandom.uuid,
@@ -138,6 +139,25 @@ RSpec.describe Coaches::CoachesReactor do
             lead_captured_by:
           }
         )
+      end
+      let(:context_id) { SecureRandom.uuid }
+
+      context "when there is already a coach seeker context with an assigned coach" do
+        before do
+          create(:coaches__coach_seeker_context, lead_id: context_id)
+        end
+
+        let(:lead_captured_by) { "cal.com" }
+
+        it "does nothing" do
+          expect(Coaches::CoachAssignmentService)
+            .not_to receive(:round_robin_assignment)
+
+          expect(command_service)
+            .not_to receive(:create!)
+
+          subject
+        end
       end
 
       context "when there is not a coach for that email" do

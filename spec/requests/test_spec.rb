@@ -158,28 +158,46 @@ RSpec.describe "Test", type: :request do
       include_context "olive branch camelcasing"
 
       before do
-        expect(Resque::Failure)
-          .to receive(:clear)
+        Resque::Failure.clear
       end
 
       response '204', 'No failed jobs' do
-        before do
-          allow(Resque::Failure)
-            .to receive(:count)
-            .and_return(0)
-        end
-
         run_test!
       end
 
-      response '500', 'failed jobs' do
-        before do
-          allow(Resque::Failure)
-            .to receive(:count)
-            .and_return(1)
+      response '200', 'failed jobs' do
+        schema type: :object,
+               properties: {
+                 exception: {
+                   type: :string
+                 },
+                 message: {
+                   type: :string
+                 },
+                 backtrace: {
+                   type: :array,
+                   items: {
+                     type: :string
+                   }
+                 }
+               }
+
+        context "when there is one failure" do
+          before do
+            Resque::Failure.create(exception: StandardError.new)
+          end
+
+          run_test!
         end
 
-        run_test!
+        context "when there is multiple failures" do
+          before do
+            Resque::Failure.create(exception: StandardError.new)
+            Resque::Failure.create(exception: StandardError.new)
+          end
+
+          run_test!
+        end
       end
     end
   end

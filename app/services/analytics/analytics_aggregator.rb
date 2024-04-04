@@ -116,7 +116,7 @@ module Analytics
       dim_job.update!(
         category: message.data.category,
         employment_title: message.data.employment_title,
-        employment_type: message.data.employment_type,
+        employment_type: message.data.employment_type
       )
 
       job_visibility = Analytics::FactJobVisibility.find_by(dim_job:, visible_ending_at: nil)

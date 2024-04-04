@@ -1,5 +1,5 @@
 module Coaches
-  class CoachesReactor < MessageConsumer
+  class CoachesReactor < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay; end
 
     def add_lead(lead_captured_by:, lead_id:, phone_number:, first_name:, last_name:, trace_id:, email: nil) # rubocop:disable Metrics/ParameterLists
@@ -158,12 +158,33 @@ module Coaches
     end
 
     on_message Events::LeadAdded::V2 do |message|
+      # We might need to add a lead_id to the CSC table
+      # So we can do the same deduplicating like we do with user
+      coach = Coach.find_by(email: message.data.lead_captured_by)
+      coach ||= CoachAssignmentService.round_robin_assignment
+
       command_service.create!(
         trace_id: message.trace_id,
         context_id: message.aggregate.context_id,
         command_schema: Commands::AssignCoach::V1,
         data: {
-          coach_email: message.data.lead_captured_by
+          coach_email: coach.email
+        }
+      )
+    end
+
+    on_message Events::UserCreated::V1 do |message|
+      csc = Coaches::CoachSeekerContext.find_by(user_id: message.aggregate.user_id)
+      return if csc&.assigned_coach.present?
+
+      coach = CoachAssignmentService.round_robin_assignment
+
+      command_service.create!(
+        trace_id: message.trace_id,
+        context_id: message.aggregate.user_id,
+        command_schema: Commands::AssignCoach::V1,
+        data: {
+          coach_email: coach.email
         }
       )
     end

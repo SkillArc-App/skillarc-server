@@ -129,6 +129,7 @@ module Coaches
         seeker_captured_at: message.occurred_at,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
+        lead_id: message.data.lead_id,
         kind: CoachSeekerContext::Kind::LEAD
       )
     end

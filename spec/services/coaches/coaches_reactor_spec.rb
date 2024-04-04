@@ -129,18 +129,68 @@ RSpec.describe Coaches::CoachesReactor do
         build(
           :message,
           schema: Events::LeadAdded::V2,
+          aggregate_id: context_id,
           data: {
             email: "john@skillarc.com",
             lead_id: SecureRandom.uuid,
             phone_number: "333-333-3333",
             first_name: "John",
             last_name: "Chabot",
-            lead_captured_by: "cal.com"
+            lead_captured_by:
           }
         )
       end
+      let(:context_id) { SecureRandom.uuid }
+
+      context "when there is already a coach seeker context with an assigned coach" do
+        before do
+          create(:coaches__coach_seeker_context, lead_id: context_id)
+        end
+
+        let(:lead_captured_by) { "cal.com" }
+
+        it "does nothing" do
+          expect(Coaches::CoachAssignmentService)
+            .not_to receive(:round_robin_assignment)
+
+          expect(command_service)
+            .not_to receive(:create!)
+
+          subject
+        end
+      end
+
+      context "when there is not a coach for that email" do
+        let!(:coach) { create(:coaches__coach) }
+        let(:lead_captured_by) { "cal.com" }
+
+        it "call round robin service and gets a coach" do
+          expect(Coaches::CoachAssignmentService)
+            .to receive(:round_robin_assignment)
+            .and_return(coach)
+
+          expect(command_service)
+            .to receive(:create!)
+            .with(
+              command_schema: Commands::AssignCoach::V1,
+              context_id: message.aggregate.context_id,
+              trace_id: message.trace_id,
+              data: {
+                coach_email: coach.email
+              }
+            ).and_call_original
+
+          subject
+        end
+      end
 
       context "when there is a coach for that email" do
+        before do
+          create(:coaches__coach, email: lead_captured_by)
+        end
+
+        let(:lead_captured_by) { "an@email.com" }
+
         it "fires off a assign_coach command" do
           expect(command_service)
             .to receive(:create!)
@@ -150,6 +200,58 @@ RSpec.describe Coaches::CoachesReactor do
               trace_id: message.trace_id,
               data: {
                 coach_email: message.data.lead_captured_by
+              }
+            ).and_call_original
+
+          subject
+        end
+      end
+    end
+
+    context "when the message is a user created event" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::UserCreated::V1,
+          aggregate_id: user_id,
+          data: {}
+        )
+      end
+
+      let(:user_id) { SecureRandom.uuid }
+
+      context "when there is already a coach seeker context with an assigned coach" do
+        before do
+          create(:coaches__coach_seeker_context, user_id:)
+        end
+
+        it "does nothing" do
+          expect(Coaches::CoachAssignmentService)
+            .not_to receive(:round_robin_assignment)
+
+          expect(command_service)
+            .not_to receive(:create!)
+
+          subject
+        end
+      end
+
+      context "when there isn't an assigned coach to the coach seekers context" do
+        let(:coach) { create(:coaches__coach) }
+
+        it "does nothing" do
+          expect(Coaches::CoachAssignmentService)
+            .to receive(:round_robin_assignment)
+            .and_return(coach)
+
+          expect(command_service)
+            .to receive(:create!)
+            .with(
+              command_schema: Commands::AssignCoach::V1,
+              context_id: message.aggregate.user_id,
+              trace_id: message.trace_id,
+              data: {
+                coach_email: coach.email
               }
             ).and_call_original
 

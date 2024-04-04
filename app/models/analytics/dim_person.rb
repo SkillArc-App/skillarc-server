@@ -15,7 +15,7 @@
 #  coach_id                :uuid
 #  lead_id                 :uuid
 #  seeker_id               :uuid
-#  user_id                 :uuid
+#  user_id                 :text
 #
 # Indexes
 #

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Analytics::AnalyticsAggregator do
-  describe "#handle_message" do
+RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/BlockLength
+  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { described_class.new.handle_message(message) }
 
     describe "when the message is lead_added" do

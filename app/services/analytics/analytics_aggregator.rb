@@ -29,6 +29,7 @@ module Analytics
       person.kind = DimPerson::Kind::USER
       person.last_active_at = message.occurred_at
       person.user_created_at = message.occurred_at
+      person.user_id = message.aggregate.user_id
       person.first_name = data.first_name if data.first_name.present?
       person.last_name = data.last_name if data.last_name.present?
       person.email = data.email if data.email.present?

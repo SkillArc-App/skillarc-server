@@ -68,6 +68,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::UserCreated::V1,
+          aggregate_id: user_id,
           data: {
             email: "an@email.com",
             first_name: "John",
@@ -75,6 +76,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
           }
         )
       end
+      let(:user_id) { SecureRandom.uuid }
 
       context "when there is an existing dim person for the user email" do
         before do
@@ -92,6 +94,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
 
           expect(person.last_active_at).to eq(message.occurred_at)
           expect(person.user_created_at).to eq(message.occurred_at)
+          expect(person.user_id).to eq(user_id)
           expect(person.email).to eq(message.data.email)
           expect(person.first_name).to eq(message.data.first_name)
           expect(person.last_name).to eq(message.data.last_name)

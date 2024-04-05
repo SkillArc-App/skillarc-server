@@ -19,6 +19,16 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       last_active_on: now
     )
 
+    Analytics::DimPerson.create!(
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      phone_number: user.phone_number,
+      user_id: user.id,
+      user_created_at: user.created_at,
+      kind: Analytics::DimPerson::Kind::USER
+    )
+
     render json: user
   end
 
@@ -58,6 +68,16 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       last_active_on: now
     )
 
+    Analytics::DimPerson.create!(
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      phone_number: user.phone_number,
+      user_id: user.id,
+      user_created_at: user.created_at,
+      kind: Analytics::DimPerson::Kind::COACH
+    )
+
     render json: coach
   end
 
@@ -82,6 +102,16 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       last_active_on: now
     )
 
+    Analytics::DimPerson.create!(
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      phone_number: user.phone_number,
+      user_id: user.id,
+      user_created_at: user.created_at,
+      kind: Analytics::DimPerson::Kind::SEEKER
+    )
+
     render json: {
       user:,
       seeker:
@@ -96,6 +126,14 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     FactoryBot.create(:employers_recruiter, employer: employers_employer, email: recruiter.user.email)
 
     job = FactoryBot.create(:job, employer: recruiter.employer)
+    dim_job = Analytics::DimJob.create!(
+      category: job.category,
+      employment_title: job.employment_title,
+      employment_type: job.employment_type,
+      job_id: job.id,
+      job_created_at: job.created_at
+    )
+
     employers_job = FactoryBot.create(:employers_job, job_id: job.id, employer: employers_employer, employment_title: job.employment_title)
     search_job = FactoryBot.create(:search__job, job_id: job.id, employment_title: job.employment_title, employer_id: employer.id, employer_name: employer.name)
 
@@ -120,6 +158,23 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       seeker_id: applicant.seeker.id,
       job_id: job.id
     )
+    dim_person = Analytics::DimPerson.create!(
+      first_name: applicant.seeker.user.first_name,
+      last_name: applicant.seeker.user.last_name,
+      email: applicant.seeker.user.email,
+      phone_number: applicant.seeker.user.phone_number,
+      user_id: applicant.seeker.user.id,
+      user_created_at: applicant.seeker.user.created_at,
+      kind: Analytics::DimPerson::Kind::SEEKER
+    )
+    Analytics::FactApplication.create!(
+      application_id: applicant.id,
+      application_number: 1,
+      application_opened_at: applicant.created_at,
+      status: applicant.status.status,
+      dim_job:,
+      dim_person:
+    )
 
     now = Time.zone.now
     Coaches::CoachSeekerContext.create!(
@@ -136,6 +191,16 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       seeker_captured_at: now,
       last_contacted_at: now,
       last_active_on: now
+    )
+
+    Analytics::DimPerson.create!(
+      first_name: recruiter.user.first_name,
+      last_name: recruiter.user.last_name,
+      email: recruiter.user.email,
+      phone_number: recruiter.user.phone_number,
+      user_id: recruiter.user.id,
+      user_created_at: recruiter.user.created_at,
+      kind: Analytics::DimPerson::Kind::RECRUITER
     )
 
     Coaches::CoachSeekerContext.create!(
@@ -186,6 +251,16 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       last_active_on: now
     )
 
+    Analytics::DimPerson.create!(
+      first_name: trainer.user.first_name,
+      last_name: trainer.user.last_name,
+      email: trainer.user.email,
+      phone_number: trainer.user.phone_number,
+      user_id: trainer.user.id,
+      user_created_at: trainer.user.created_at,
+      kind: Analytics::DimPerson::Kind::TRAINING_PROVIDER
+    )
+
     Coaches::CoachSeekerContext.create!(
       user_id: student.user.id,
       context_id: student.user.id,
@@ -200,6 +275,16 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       seeker_captured_at: now,
       last_contacted_at: now,
       last_active_on: now
+    )
+
+    Analytics::DimPerson.create!(
+      first_name: student.user.first_name,
+      last_name: student.user.last_name,
+      email: student.user.email,
+      phone_number: student.user.phone_number,
+      user_id: student.user.id,
+      user_created_at: student.user.created_at,
+      kind: Analytics::DimPerson::Kind::SEEKER
     )
 
     FactoryBot.create(:seeker, user: student.user)
@@ -220,6 +305,14 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     FactoryBot.create(:employers_job, job_id: job.id, employer: employers_employer, employment_title: job.employment_title)
 
     FactoryBot.create(:search__job, job_id: job.id, employment_title: job.employment_title, employer_id: employer.id, employer_name: employer.name)
+
+    Analytics::DimJob.create!(
+      category: job.category,
+      employment_title: job.employment_title,
+      employment_type: job.employment_type,
+      job_id: job.id,
+      job_created_at: job.created_at
+    )
 
     render json: job
   end

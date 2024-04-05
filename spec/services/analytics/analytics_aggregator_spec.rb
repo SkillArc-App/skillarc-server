@@ -159,7 +159,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
             aggregate_id: user_id,
             schema: Events::UserUpdated::V1,
             data: {
-              email: "some@email.com",
+              email:,
               first_name: "John",
               last_name: "Chabot",
               phone_number: "333-333-444"
@@ -167,16 +167,36 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           )
         end
 
-        it "updates a dim person from the message" do
-          expect { subject }.not_to change(Analytics::DimPerson, :count)
+        context "when email is defined" do
+          let(:email) { "some@email.com" }
 
-          person = Analytics::DimPerson.take(1).first
+          it "updates a dim person from the message" do
+            expect { subject }.not_to change(Analytics::DimPerson, :count)
 
-          expect(person.last_active_at).to eq(message.occurred_at)
-          expect(person.email).to eq(message.data.email)
-          expect(person.phone_number).to eq(message.data.phone_number)
-          expect(person.first_name).to eq(message.data.first_name)
-          expect(person.last_name).to eq(message.data.last_name)
+            person = Analytics::DimPerson.take(1).first
+
+            expect(person.last_active_at).to eq(message.occurred_at)
+            expect(person.email).to eq(message.data.email)
+            expect(person.phone_number).to eq(message.data.phone_number)
+            expect(person.first_name).to eq(message.data.first_name)
+            expect(person.last_name).to eq(message.data.last_name)
+          end
+        end
+
+        context "when email is undefined" do
+          let(:email) { Messages::UNDEFINED }
+
+          it "updates a dim person from the message" do
+            expect { subject }.not_to change(Analytics::DimPerson, :count)
+
+            person = Analytics::DimPerson.take(1).first
+
+            expect(person.last_active_at).to eq(message.occurred_at)
+            expect(person.email).not_to eq(message.data.email)
+            expect(person.phone_number).to eq(message.data.phone_number)
+            expect(person.first_name).to eq(message.data.first_name)
+            expect(person.last_name).to eq(message.data.last_name)
+          end
         end
       end
 

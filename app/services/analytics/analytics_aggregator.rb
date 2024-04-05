@@ -24,7 +24,8 @@ module Analytics
 
     on_message Events::UserCreated::V1 do |message|
       data = message.data
-      person = DimPerson.find_or_initialize_by(email: data.email)
+      person = DimPerson.find_by(email: data.email) if data.email.present?
+      person ||= DimPerson.new(email: data.email)
 
       person.kind = DimPerson::Kind::USER
       person.last_active_at = message.occurred_at

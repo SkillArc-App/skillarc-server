@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Analytics::AnalyticsAggregator do
-  describe "#handle_message" do
+RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/BlockLength
+  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { described_class.new.handle_message(message) }
 
     describe "when the message is lead_added" do
@@ -78,31 +78,9 @@ RSpec.describe Analytics::AnalyticsAggregator do
       end
       let(:user_id) { SecureRandom.uuid }
 
-      context "when there is an existing dim person for the user email" do
-        before do
-          create(
-            :analytics__dim_person,
-            :user,
-            email: message.data.email
-          )
-        end
+      context "when the user is created without an email" do
+        let(:email) { nil }
 
-        it "updates a dim person from the message" do
-          expect { subject }.not_to change(Analytics::DimPerson, :count)
-
-          person = Analytics::DimPerson.take(1).first
-
-          expect(person.last_active_at).to eq(message.occurred_at)
-          expect(person.user_created_at).to eq(message.occurred_at)
-          expect(person.user_id).to eq(user_id)
-          expect(person.email).to eq(message.data.email)
-          expect(person.first_name).to eq(message.data.first_name)
-          expect(person.last_name).to eq(message.data.last_name)
-          expect(person.kind).to eq(Analytics::DimPerson::Kind::USER)
-        end
-      end
-
-      context "when there is not an existing lead for the provided info" do
         it "creates a dim person from the message" do
           expect { subject }.to change(Analytics::DimPerson, :count).from(0).to(1)
 
@@ -114,6 +92,49 @@ RSpec.describe Analytics::AnalyticsAggregator do
           expect(person.first_name).to eq(message.data.first_name)
           expect(person.last_name).to eq(message.data.last_name)
           expect(person.kind).to eq(Analytics::DimPerson::Kind::USER)
+        end
+      end
+
+      context "when the user is created with an email" do
+        let(:email) { "an@email.com" }
+
+        context "when there is an existing dim person for the user email" do
+          before do
+            create(
+              :analytics__dim_person,
+              :user,
+              email: message.data.email
+            )
+          end
+
+          it "updates a dim person from the message" do
+            expect { subject }.not_to change(Analytics::DimPerson, :count)
+
+            person = Analytics::DimPerson.take(1).first
+
+            expect(person.last_active_at).to eq(message.occurred_at)
+            expect(person.user_created_at).to eq(message.occurred_at)
+            expect(person.user_id).to eq(user_id)
+            expect(person.email).to eq(message.data.email)
+            expect(person.first_name).to eq(message.data.first_name)
+            expect(person.last_name).to eq(message.data.last_name)
+            expect(person.kind).to eq(Analytics::DimPerson::Kind::USER)
+          end
+        end
+
+        context "when there is not an existing lead for the provided info" do
+          it "creates a dim person from the message" do
+            expect { subject }.to change(Analytics::DimPerson, :count).from(0).to(1)
+
+            person = Analytics::DimPerson.take(1).first
+
+            expect(person.last_active_at).to eq(message.occurred_at)
+            expect(person.user_created_at).to eq(message.occurred_at)
+            expect(person.email).to eq(message.data.email)
+            expect(person.first_name).to eq(message.data.first_name)
+            expect(person.last_name).to eq(message.data.last_name)
+            expect(person.kind).to eq(Analytics::DimPerson::Kind::USER)
+          end
         end
       end
     end

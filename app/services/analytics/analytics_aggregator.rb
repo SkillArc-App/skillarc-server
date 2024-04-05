@@ -41,13 +41,13 @@ module Analytics
     on_message Events::UserUpdated::V1 do |message|
       person = DimPerson.find_by!(user_id: message.aggregate_id)
 
-      person.update!(
-        last_active_at: message.occurred_at,
-        first_name: message.data.first_name,
-        last_name: message.data.last_name,
-        phone_number: message.data.phone_number,
-        email: message.data.email
-      )
+      person.last_active_at = message.occurred_at
+      person.first_name = message.data.first_name
+      person.last_name = message.data.last_name
+      person.phone_number = message.data.phone_number
+      person.email = message.data.email if message.data.email != Messages::UNDEFINED
+
+      person.save!
     end
 
     on_message Events::SeekerCreated::V1 do |message|

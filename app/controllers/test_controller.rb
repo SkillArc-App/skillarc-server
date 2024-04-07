@@ -108,6 +108,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       email: user.email,
       phone_number: user.phone_number,
       user_id: user.id,
+      seeker_id: seeker.id,
       user_created_at: user.created_at,
       kind: Analytics::DimPerson::Kind::SEEKER
     )
@@ -118,7 +119,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     }
   end
 
-  def create_test_recruiter_with_applicant
+  def create_test_recruiter_with_applicant # rubocop:disable Metrics/AbcSize
     recruiter = FactoryBot.create(:recruiter)
     employer = recruiter.employer
 
@@ -318,7 +319,16 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   end
 
   def create_seeker_lead
-    render json: FactoryBot.create(:coaches__coach_seeker_context, :lead, phone_number: Faker::PhoneNumber.phone_number)
+    lead = FactoryBot.create(:coaches__coach_seeker_context, :lead, phone_number: Faker::PhoneNumber.phone_number)
+    Analytics::DimPerson.create!(
+      first_name: lead.first_name,
+      last_name: lead.last_name,
+      email: lead.email,
+      phone_number: lead.phone_number,
+      lead_id: lead.lead_id,
+      kind: Analytics::DimPerson::Kind::LEAD
+    )
+    render json: lead
   end
 
   def create_active_seeker
@@ -341,6 +351,17 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       last_contacted_at: now,
       last_active_on: now
     )
+    Analytics::DimPerson.create!(
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      phone_number: user.phone_number,
+      user_id: user.id,
+      seeker_id: seeker.id,
+      onboarding_completed_at: seeker.created_at,
+      user_created_at: user.created_at,
+      kind: Analytics::DimPerson::Kind::SEEKER
+    )
 
     employer = FactoryBot.create(:employer)
     employers_employer = FactoryBot.create(:employers_employer, employer_id: employer.id)
@@ -348,6 +369,13 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     job = FactoryBot.create(:job, employer:)
     FactoryBot.create(:employers_job, job_id: job.id, employer: employers_employer, employment_title: job.employment_title)
     FactoryBot.create(:search__job, job_id: job.id, employment_title: job.employment_title, employer_id: employer.id, employer_name: employer.name)
+    Analytics::DimJob.create!(
+      category: job.category,
+      employment_title: job.employment_title,
+      employment_type: job.employment_type,
+      job_id: job.id,
+      job_created_at: job.created_at
+    )
 
     FactoryBot.create(:desired_skill, job:)
 

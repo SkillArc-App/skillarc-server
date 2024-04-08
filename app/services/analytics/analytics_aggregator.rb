@@ -1,5 +1,5 @@
 module Analytics
-  class AnalyticsAggregator < MessageConsumer
+  class AnalyticsAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay
       Analytics::FactApplication.delete_all
       Analytics::FactJobVisibility.delete_all
@@ -12,7 +12,7 @@ module Analytics
       return if message.data.email.present? && DimPerson.find_by(email: message.data.email)
       return if DimPerson.find_by(phone_number: message.data.phone_number)
 
-      DimPerson.create!(
+      dim_person_target = DimPerson.create!(
         lead_id: message.data.lead_id,
         lead_created_at: message.occurred_at,
         phone_number: message.data.phone_number,
@@ -20,6 +20,16 @@ module Analytics
         first_name: message.data.first_name,
         last_name: message.data.last_name,
         kind: DimPerson::Kind::LEAD
+      )
+
+      dim_person_executor = DimPerson.find_by(email: message.data.lead_captured_by)
+      return if dim_person_executor.blank?
+
+      Analytics::FactCoachAction.create!(
+        dim_person_target:,
+        dim_person_executor:,
+        action: Analytics::FactCoachAction::Actions::LEAD_ADDED,
+        action_taken_at: message.occurred_at
       )
     end
 
@@ -171,6 +181,85 @@ module Analytics
         dim_person_viewed:,
         viewed_at: message.occurred_at
       )
+    end
+
+    on_message Events::NoteAdded::V3 do |message|
+      note_action(
+        context_id: message.aggregate.context_id,
+        originator: message.data.originator,
+        action: Analytics::FactCoachAction::Actions::NOTE_ADDED,
+        occurred_at: message.occurred_at
+      )
+    end
+
+    on_message Events::NoteModified::V3 do |message|
+      note_action(
+        context_id: message.aggregate.context_id,
+        originator: message.data.originator,
+        action: Analytics::FactCoachAction::Actions::NOTE_MODIFIED,
+        occurred_at: message.occurred_at
+      )
+    end
+
+    on_message Events::NoteDeleted::V3 do |message|
+      note_action(
+        context_id: message.aggregate.context_id,
+        originator: message.data.originator,
+        action: Analytics::FactCoachAction::Actions::NOTE_DELETED,
+        occurred_at: message.occurred_at
+      )
+    end
+
+    on_message Events::JobRecommended::V2 do |message|
+      dim_person_executor = Analytics::DimPerson.find_by!(coach_id: message.data.coach_id)
+      dim_person_target = find_dim_person_by_context_id!(message.aggregate.context_id)
+
+      Analytics::FactCoachAction.create!(
+        dim_person_executor:,
+        dim_person_target:,
+        action: Analytics::FactCoachAction::Actions::JOB_RECOMMENDED,
+        action_taken_at: message.occurred_at
+      )
+    end
+
+    on_message Events::SeekerCertified::V1 do |message|
+      dim_person_executor = Analytics::DimPerson.find_by!(coach_id: message.data.coach_id)
+      dim_person_target = Analytics::DimPerson.find_by!(seeker_id: message.aggregate.seeker_id)
+
+      Analytics::FactCoachAction.create!(
+        dim_person_executor:,
+        dim_person_target:,
+        action: Analytics::FactCoachAction::Actions::SEEKER_CERTIFIED,
+        action_taken_at: message.occurred_at
+      )
+    end
+
+    private
+
+    def note_action(context_id:, originator:, action:, occurred_at:)
+      dim_person_executor = Analytics::DimPerson.find_by(email: originator)
+      return if dim_person_executor.blank?
+
+      dim_person_target = find_dim_person_by_context_id!(context_id)
+      return if dim_person_target.blank?
+
+      Analytics::FactCoachAction.create!(
+        dim_person_executor:,
+        dim_person_target:,
+        action:,
+        action_taken_at: occurred_at
+      )
+    end
+
+    def find_dim_person_by_context_id(context_id)
+      Analytics::DimPerson.where(user_id: context_id).or(Analytics::DimPerson.where(lead_id: context_id)).first
+    end
+
+    def find_dim_person_by_context_id!(context_id)
+      dim_person_target = find_dim_person_by_context_id(context_id)
+      raise ActiveRecord::RecordNotFound if dim_person_target.blank?
+
+      dim_person_target
     end
   end
 end

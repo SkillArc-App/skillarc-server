@@ -161,6 +161,30 @@ Employers::Job.create!(
   requirements_description: contractor.requirements_description
 )
 
+Analytics::DimJob.create!(
+  category: mechanic_job.category,
+  employment_title: mechanic_job.employment_title,
+  employment_type: mechanic_job.employment_type,
+  job_id: mechanic_job.id,
+  job_created_at: mechanic_job.created_at
+)
+
+Analytics::DimJob.create!(
+  category: earthwork_job.category,
+  employment_title: earthwork_job.employment_title,
+  employment_type: earthwork_job.employment_type,
+  job_id: earthwork_job.id,
+  job_created_at: earthwork_job.created_at
+)
+
+Analytics::DimJob.create!(
+  category: contractor.category,
+  employment_title: contractor.employment_title,
+  employment_type: contractor.employment_type,
+  job_id: contractor.id,
+  job_created_at: contractor.created_at
+)
+
 tag = Tag.create!(
   id: SecureRandom.uuid,
   name: 'No experience needed'

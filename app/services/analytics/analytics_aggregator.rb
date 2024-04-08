@@ -3,6 +3,7 @@ module Analytics
     def reset_for_replay
       Analytics::FactApplication.delete_all
       Analytics::FactJobVisibility.delete_all
+      Analytics::FactPersonViewed.delete_all
       Analytics::DimPerson.delete_all
       Analytics::DimJob.delete_all
     end

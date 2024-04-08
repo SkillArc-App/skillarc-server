@@ -3,6 +3,7 @@ module Analytics
     def reset_for_replay
       Analytics::FactApplication.delete_all
       Analytics::FactJobVisibility.delete_all
+      Analytics::FactPersonViewed.delete_all
       Analytics::DimPerson.delete_all
       Analytics::DimJob.delete_all
     end
@@ -159,6 +160,17 @@ module Analytics
           application_id: data.applicant_id
         )
       end
+    end
+
+    on_message Events::SeekerViewed::V1 do |message|
+      dim_person_viewer = Analytics::DimPerson.find_by!(user_id: message.aggregate.user_id)
+      dim_person_viewed = Analytics::DimPerson.find_by!(seeker_id: message.data.seeker_id)
+
+      Analytics::FactPersonViewed.create!(
+        dim_person_viewer:,
+        dim_person_viewed:,
+        viewed_at: message.occurred_at
+      )
     end
   end
 end

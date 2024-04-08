@@ -591,5 +591,34 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         end
       end
     end
+
+    context "when the message is seeker_viewed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::SeekerViewed::V1,
+          aggregate_id: user_id,
+          data: {
+            seeker_id:
+          }
+        )
+      end
+
+      let(:user_id) { SecureRandom.uuid }
+      let(:seeker_id) { SecureRandom.uuid }
+
+      let!(:dim_person_viewer) { create(:analytics__dim_person, user_id:) }
+      let!(:dim_person_viewed) { create(:analytics__dim_person, seeker_id:) }
+
+      it "creates a fact person viewed record" do
+        expect { subject }.to change(Analytics::FactPersonViewed, :count).from(0).to(1)
+
+        fact_person_viewed = Analytics::FactPersonViewed.take(1).first
+
+        expect(fact_person_viewed.dim_person_viewed).to eq(dim_person_viewed)
+        expect(fact_person_viewed.dim_person_viewer).to eq(dim_person_viewer)
+        expect(fact_person_viewed.viewed_at).to eq(message.occurred_at)
+      end
+    end
   end
 end

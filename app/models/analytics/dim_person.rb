@@ -44,5 +44,8 @@ module Analytics
 
     validates :kind, presence: true, inclusion: { in: Kind::ALL }
     has_many :fact_applications, class_name: "Analytics::FactApplication", foreign_key: "analytics_dim_person_id", inverse_of: :dim_person, dependent: :delete_all
+
+    has_many :fact_people_viewers, class_name: "Analytics::FactPersonViewed", foreign_key: "analyitics_dim_person_viewer_id", inverse_of: :dim_person_viewer, dependent: :delete_all
+    has_many :fact_people_viewed, class_name: "Analytics::FactPersonViewed", foreign_key: "analyitics_dim_person_viewed_id", inverse_of: :dim_person_viewed, dependent: :delete_all
   end
 end

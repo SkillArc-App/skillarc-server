@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_09_140744) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_09_173045) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -95,13 +95,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_140744) do
   end
 
   create_table "analytics_fact_coach_actions", force: :cascade do |t|
-    t.bigint "analyitics_dim_person_executor_id", null: false
-    t.bigint "analyitics_dim_person_target_id"
+    t.bigint "analytics_dim_person_executor_id", null: false
+    t.bigint "analytics_dim_person_target_id"
     t.string "action", null: false
     t.datetime "action_taken_at", null: false
     t.index ["action"], name: "index_analytics_fact_coach_actions_on_action"
-    t.index ["analyitics_dim_person_executor_id"], name: "idx_on_analyitics_dim_person_executor_id_f217adc13b"
-    t.index ["analyitics_dim_person_target_id"], name: "idx_on_analyitics_dim_person_target_id_33c67e4abe"
+    t.index ["analytics_dim_person_executor_id"], name: "idx_on_analytics_dim_person_executor_id_59e17d9678"
+    t.index ["analytics_dim_person_target_id"], name: "idx_on_analytics_dim_person_target_id_a665f20399"
   end
 
   create_table "analytics_fact_job_visibilities", force: :cascade do |t|
@@ -112,12 +112,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_140744) do
   end
 
   create_table "analytics_fact_person_vieweds", force: :cascade do |t|
-    t.bigint "analyitics_dim_person_viewed_id", null: false
-    t.bigint "analyitics_dim_person_viewer_id", null: false
+    t.bigint "analytics_dim_person_viewed_id", null: false
+    t.bigint "analytics_dim_person_viewer_id", null: false
     t.datetime "viewed_at", null: false
     t.string "viewing_context"
-    t.index ["analyitics_dim_person_viewed_id"], name: "idx_on_analyitics_dim_person_viewed_id_cf74b9a9aa"
-    t.index ["analyitics_dim_person_viewer_id"], name: "idx_on_analyitics_dim_person_viewer_id_e359f9a979"
+    t.index ["analytics_dim_person_viewed_id"], name: "idx_on_analytics_dim_person_viewed_id_15c412a0ed"
+    t.index ["analytics_dim_person_viewer_id"], name: "idx_on_analytics_dim_person_viewer_id_856d86a762"
   end
 
   create_table "applicant_analytics", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -899,11 +899,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_140744) do
   add_foreign_key "accounts", "users", name: "Account_user_id_fkey", on_update: :cascade, on_delete: :cascade
   add_foreign_key "analytics_fact_applications", "analytics_dim_jobs"
   add_foreign_key "analytics_fact_applications", "analytics_dim_people"
-  add_foreign_key "analytics_fact_coach_actions", "analytics_dim_people", column: "analyitics_dim_person_executor_id"
-  add_foreign_key "analytics_fact_coach_actions", "analytics_dim_people", column: "analyitics_dim_person_target_id"
+  add_foreign_key "analytics_fact_coach_actions", "analytics_dim_people", column: "analytics_dim_person_executor_id"
+  add_foreign_key "analytics_fact_coach_actions", "analytics_dim_people", column: "analytics_dim_person_target_id"
   add_foreign_key "analytics_fact_job_visibilities", "analytics_dim_jobs"
-  add_foreign_key "analytics_fact_person_vieweds", "analytics_dim_people", column: "analyitics_dim_person_viewed_id"
-  add_foreign_key "analytics_fact_person_vieweds", "analytics_dim_people", column: "analyitics_dim_person_viewer_id"
+  add_foreign_key "analytics_fact_person_vieweds", "analytics_dim_people", column: "analytics_dim_person_viewed_id"
+  add_foreign_key "analytics_fact_person_vieweds", "analytics_dim_people", column: "analytics_dim_person_viewer_id"
   add_foreign_key "applicant_analytics", "applicants"
   add_foreign_key "applicant_analytics", "employers"
   add_foreign_key "applicant_analytics", "jobs"

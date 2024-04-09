@@ -33,10 +33,10 @@ module Contact
           lead_captured_by: "cal.com"
         )
 
-        command_service.create!(
+        message_service.create!(
           trace_id:,
           context_id: lead_id,
-          command_schema: Commands::AddLead::V1,
+          schema: Commands::AddLead::V1,
           data: add_lead_data
         )
 
@@ -48,10 +48,10 @@ module Contact
           note_id: SecureRandom.uuid
         )
 
-        command_service.create!(
+        message_service.create!(
           trace_id:,
           context_id: lead_id,
-          command_schema: Commands::AddNote::V1,
+          schema: Commands::AddNote::V1,
           data: add_note_data
         )
       end

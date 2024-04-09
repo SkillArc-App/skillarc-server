@@ -93,8 +93,8 @@ RSpec.describe EmployerChats do
     end
 
     it "enqueues an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::ChatMessageSent::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::ChatMessageSent::V1,
         job_id: job.id,
         data: Events::ChatMessageSent::Data::V1.new(
           applicant_id: applicant.id,
@@ -126,8 +126,8 @@ RSpec.describe EmployerChats do
     end
 
     it "enqueues an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::ChatCreated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::ChatCreated::V1,
         job_id: applicant.job.id,
         data: Events::ChatCreated::Data::V1.new(
           applicant_id: applicant.id,

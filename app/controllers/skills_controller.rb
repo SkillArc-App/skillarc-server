@@ -1,7 +1,7 @@
 class SkillsController < ApplicationController
   include Secured
   include SeekerAuth
-  include EventEmitter
+  include MessageEmitter
 
   before_action :authorize
   before_action :set_seeker
@@ -9,7 +9,7 @@ class SkillsController < ApplicationController
   before_action :set_skill, only: %i[update destroy]
 
   def create
-    with_event_service do
+    with_message_service do
       skill = Seekers::SkillService.new(seeker).create(
         **params.require(:skill).permit(:description, :master_skill_id).to_h.symbolize_keys
       )
@@ -19,13 +19,13 @@ class SkillsController < ApplicationController
   end
 
   def update
-    with_event_service do
+    with_message_service do
       render json: Seekers::SkillService.new(seeker).update(skill, description: params[:skill][:description])
     end
   end
 
   def destroy
-    with_event_service do
+    with_message_service do
       Seekers::SkillService.new(seeker).destroy(skill)
     end
 

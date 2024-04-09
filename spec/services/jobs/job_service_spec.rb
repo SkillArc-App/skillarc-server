@@ -58,8 +58,8 @@ RSpec.describe Jobs::JobService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::JobCreated::V3,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::JobCreated::V3,
         job_id: be_present,
         data: Events::JobCreated::Data::V3.new(
           category:,
@@ -137,8 +137,8 @@ RSpec.describe Jobs::JobService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::JobUpdated::V2,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::JobUpdated::V2,
         job_id: job.id,
         data: Events::JobUpdated::Data::V2.new(
           category:,

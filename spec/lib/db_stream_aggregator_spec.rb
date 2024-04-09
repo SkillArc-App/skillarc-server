@@ -32,10 +32,9 @@ RSpec.describe DbStreamAggregator do
       occurred_at = Time.zone.local(2020, 1, 1)
 
       event_lambda = lambda do
-        EventService.new(message_service:).create!(
+        message_service.create!(
           day: "day",
-          event_schema: Events::DayElapsed::V1,
-          message_service:,
+          schema: Events::DayElapsed::V1,
           id:,
           trace_id:,
           occurred_at:,

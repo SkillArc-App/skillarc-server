@@ -1,7 +1,7 @@
 module Seekers
   class ChatsController < ApplicationController
     include Secured
-    include EventEmitter
+    include MessageEmitter
 
     before_action :authorize
 
@@ -10,7 +10,7 @@ module Seekers
     end
 
     def mark_read
-      with_event_service do
+      with_message_service do
         SeekerChats.new(current_user).mark_read(
           applicant_id: params[:applicant_id]
         )
@@ -20,7 +20,7 @@ module Seekers
     end
 
     def send_message
-      with_event_service do
+      with_message_service do
         SeekerChats.new(current_user).send_message(
           applicant_id: params[:applicant_id],
           message: params[:message]

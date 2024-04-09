@@ -1,11 +1,11 @@
 class EmployerService
-  include EventEmitter
+  include MessageEmitter
 
   def create(params)
     e = Employer.create!(**params, id: SecureRandom.uuid)
 
-    event_service.create!(
-      event_schema: Events::EmployerCreated::V1,
+    message_service.create!(
+      schema: Events::EmployerCreated::V1,
       employer_id: e.id,
       data: Events::EmployerCreated::Data::V1.new(
         name: e.name,
@@ -23,8 +23,8 @@ class EmployerService
 
     e.update!(**params)
 
-    event_service.create!(
-      event_schema: Events::EmployerUpdated::V1,
+    message_service.create!(
+      schema: Events::EmployerUpdated::V1,
       employer_id: e.id,
       data: Events::EmployerUpdated::Data::V1.new(
         name: e.name,

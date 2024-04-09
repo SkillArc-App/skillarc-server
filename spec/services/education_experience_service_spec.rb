@@ -31,8 +31,8 @@ RSpec.describe EducationExperienceService do
           seeker_id: seeker.id
         ).and_call_original
 
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::EducationExperienceCreated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::EducationExperienceCreated::V1,
         user_id: seeker.user.id,
         data: be_a(Events::EducationExperienceCreated::Data::V1),
         occurred_at: be_a(Time)
@@ -75,8 +75,8 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::EducationExperienceUpdated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::EducationExperienceUpdated::V1,
         user_id: seeker.user.id,
         data: Events::EducationExperienceUpdated::Data::V1.new(
           id: education_experience.id,
@@ -108,8 +108,8 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::EducationExperienceDeleted::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::EducationExperienceDeleted::V1,
         seeker_id: seeker.id,
         data: Events::EducationExperienceDeleted::Data::V1.new(
           id: education_experience.id

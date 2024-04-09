@@ -1,6 +1,6 @@
 module Seekers
   class UserService
-    include EventEmitter
+    include MessageEmitter
 
     def initialize(user_id)
       @user = User.find(user_id)
@@ -14,8 +14,8 @@ module Seekers
         zip_code:
       )
 
-      event_service.create!(
-        event_schema: Events::UserUpdated::V1,
+      message_service.create!(
+        schema: Events::UserUpdated::V1,
         user_id: user.id,
         data: Events::UserUpdated::Data::V1.new(
           first_name:,
@@ -34,8 +34,8 @@ module Seekers
         about:
       )
 
-      event_service.create!(
-        event_schema: Events::SeekerUpdated::V1,
+      message_service.create!(
+        schema: Events::SeekerUpdated::V1,
         seeker_id: seeker.id,
         data: Events::SeekerUpdated::Data::V1.new(
           about:

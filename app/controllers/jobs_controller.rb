@@ -1,23 +1,15 @@
 class JobsController < ApplicationController
   include Secured
-  include CommandEmitter
-  include EventEmitter
+  include MessageEmitter
 
   before_action :authorize, only: %i[apply elevator_pitch]
 
   def apply
     if_visible(Job.find(params[:job_id])) do |job|
-      message_service = MessageService.new
+      with_message_service do
+        seeker = current_user.seeker
 
-      command_service = CommandService.new(message_service:)
-      event_service = EventService.new(message_service:)
-
-      with_command_service(command_service) do
-        with_event_service(event_service) do
-          seeker = current_user.seeker
-
-          Seekers::ApplicantService.new(seeker).apply(job)
-        end
+        Seekers::ApplicantService.new(seeker).apply(job)
       end
 
       head :ok
@@ -26,7 +18,7 @@ class JobsController < ApplicationController
 
   def elevator_pitch
     if_visible(Job.find(params[:job_id])) do |job|
-      with_event_service do
+      with_message_service do
         Seekers::JobService.new(job:, seeker: current_user.seeker).add_elevator_pitch(params[:elevator_pitch])
       end
 

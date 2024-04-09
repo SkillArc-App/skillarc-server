@@ -1,15 +1,15 @@
 module Seekers
   class ApplicantService
-    include EventEmitter
+    include MessageEmitter
 
     def initialize(seeker)
       @seeker = seeker
     end
 
     def apply(job)
-      event_service.create!(
+      message_service.create!(
         seeker_id: seeker.id,
-        event_schema: Events::SeekerApplied::V1,
+        schema: Events::SeekerApplied::V1,
         data: Events::SeekerApplied::Data::V1.new(
           seeker_first_name: seeker.first_name,
           seeker_last_name: seeker.last_name,

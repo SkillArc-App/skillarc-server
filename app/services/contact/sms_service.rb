@@ -13,8 +13,8 @@ module Contact
         message: message.data.message
       )
 
-      event_service.create!(
-        event_schema: Events::SmsSent::V1,
+      message_service.create!(
+        schema: Events::SmsSent::V1,
         phone_number: message.data.phone_number,
         trace_id: message.trace_id,
         data: Events::SmsSent::Data::V1.new(

@@ -2,15 +2,15 @@ module Coaches
   class SeekersController < ApplicationController
     include Secured
     include CoachAuth
-    include EventEmitter
+    include MessageEmitter
 
     before_action :authorize
     before_action :coach_authorize
     before_action :set_coach, only: %i[certify]
 
     def certify
-      with_event_service do
-        CoachesReactor.new(event_service:).certify(seeker_id: params[:seeker_id], coach:, trace_id: request.request_id)
+      with_message_service do
+        CoachesReactor.new(message_service:).certify(seeker_id: params[:seeker_id], coach:, trace_id: request.request_id)
       end
 
       head :accepted

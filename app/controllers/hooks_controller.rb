@@ -1,5 +1,5 @@
 class HooksController < ApplicationController
-  include EventEmitter
+  include MessageEmitter
 
   before_action :set_webhook, only: [:event]
 
@@ -10,7 +10,7 @@ class HooksController < ApplicationController
       return
     end
 
-    with_event_service do
+    with_message_service do
       HookService.new.create_notification(
         email: params[:email],
         title: params[:title],

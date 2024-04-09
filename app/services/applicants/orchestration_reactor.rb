@@ -8,9 +8,9 @@ module Applicants
       applicant = Applicant.find(event.aggregate.applicant_id)
       seeker = applicant.seeker
 
-      event_service.create!(
+      message_service.create!(
         job_id: applicant.job_id,
-        event_schema: Events::ApplicantStatusUpdated::V5,
+        schema: Events::ApplicantStatusUpdated::V5,
         data: Events::ApplicantStatusUpdated::Data::V4.new(
           applicant_id: applicant.id,
           applicant_first_name: seeker.first_name,
@@ -34,9 +34,9 @@ module Applicants
     end
 
     on_message Commands::ScreenApplicant::V1, :sync do |event|
-      event_service.create!(
+      message_service.create!(
         applicant_id: event.aggregate.applicant_id,
-        event_schema: Events::ApplicantScreened::V1,
+        schema: Events::ApplicantScreened::V1,
         data: Messages::Nothing,
         metadata: Messages::Nothing,
         trace_id: event.trace_id,
@@ -59,10 +59,10 @@ module Applicants
         status: ApplicantStatus::StatusTypes::NEW
       )
 
-      command_service.create!(
+      message_service.create!(
         applicant_id: applicant.id,
         trace_id: event.trace_id,
-        command_schema: Commands::ScreenApplicant::V1,
+        schema: Commands::ScreenApplicant::V1,
         data: Messages::Nothing
       )
     end

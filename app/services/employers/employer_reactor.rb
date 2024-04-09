@@ -11,8 +11,8 @@ module Employers
       data = message.data
 
       job.owner_emails.each do |owner_email|
-        command_service.create!(
-          command_schema: Commands::NotifyEmployerOfApplicant::V1,
+        message_service.create!(
+          schema: Commands::NotifyEmployerOfApplicant::V1,
           applicant_id: data.applicant_id,
           trace_id: message.trace_id,
           data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
@@ -55,8 +55,8 @@ module Employers
         end
 
         employer.recruiters.each do |recruiter|
-          command_service.create!(
-            command_schema: Commands::SendWeeklyEmployerUpdate::V1,
+          message_service.create!(
+            schema: Commands::SendWeeklyEmployerUpdate::V1,
             employer_id: employer.id,
             trace_id: SecureRandom.uuid,
             data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(

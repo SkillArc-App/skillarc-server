@@ -2,15 +2,15 @@ module Coaches
   class NotesController < ApplicationController
     include Secured
     include CoachAuth
-    include EventEmitter
+    include MessageEmitter
 
     before_action :authorize
     before_action :coach_authorize
     before_action :set_coach
 
     def create
-      with_event_service do
-        CoachesReactor.new(event_service:).add_note(
+      with_message_service do
+        CoachesReactor.new(message_service:).add_note(
           originator: coach.email,
           context_id: params[:context_id],
           note: params[:note],
@@ -23,8 +23,8 @@ module Coaches
     end
 
     def update
-      with_event_service do
-        CoachesReactor.new(event_service:).modify_note(
+      with_message_service do
+        CoachesReactor.new(message_service:).modify_note(
           context_id: params[:context_id],
           originator: coach.email,
           note_id: params[:id],
@@ -37,8 +37,8 @@ module Coaches
     end
 
     def destroy
-      with_event_service do
-        CoachesReactor.new(event_service:).delete_note(
+      with_message_service do
+        CoachesReactor.new(message_service:).delete_note(
           originator: coach.email,
           context_id: params[:context_id],
           note_id: params[:id],

@@ -1,6 +1,6 @@
 module Seekers
   class SkillService
-    include EventEmitter
+    include MessageEmitter
 
     def initialize(seeker)
       @seeker = seeker
@@ -16,8 +16,8 @@ module Seekers
         seeker:
       )
 
-      event_service.create!(
-        event_schema: Events::SeekerSkillCreated::V1,
+      message_service.create!(
+        schema: Events::SeekerSkillCreated::V1,
         seeker_id: seeker.id,
         data: Events::SeekerSkillCreated::Data::V1.new(
           description:,
@@ -33,8 +33,8 @@ module Seekers
     def update(skill, description:)
       skill.update!(description:)
 
-      event_service.create!(
-        event_schema: Events::SeekerSkillUpdated::V1,
+      message_service.create!(
+        schema: Events::SeekerSkillUpdated::V1,
         seeker_id: seeker.id,
         data: Events::SeekerSkillUpdated::Data::V1.new(
           description:,
@@ -50,8 +50,8 @@ module Seekers
     def destroy(skill)
       skill.destroy!
 
-      event_service.create!(
-        event_schema: Events::SeekerSkillDestroyed::V1,
+      message_service.create!(
+        schema: Events::SeekerSkillDestroyed::V1,
         seeker_id: seeker.id,
         data: Events::SeekerSkillDestroyed::Data::V1.new(
           description: skill.description,

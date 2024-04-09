@@ -1,6 +1,6 @@
 module Search
   class SearchService < MessageConsumer # rubocop:disable Metrics/ClassLength
-    include EventEmitter
+    include MessageEmitter
 
     def reset_for_replay
       SavedJob.delete_all
@@ -47,9 +47,9 @@ module Search
         )
       end
 
-      with_event_service do
-        event_service.create!(
-          event_schema: Events::JobSearch::V2,
+      with_message_service do
+        message_service.create!(
+          schema: Events::JobSearch::V2,
           data: Events::JobSearch::Data::V1.new(
             search_terms:,
             industries:,

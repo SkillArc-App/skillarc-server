@@ -13,8 +13,8 @@ module Contact
     private
 
     def emit_smtp_sent_event(message)
-      event_service.create!(
-        event_schema: Events::SmtpSent::V1,
+      message_service.create!(
+        schema: Events::SmtpSent::V1,
         contact: message.data.recepent_email,
         trace_id: message.trace_id,
         data: Events::SmtpSent::Data::V1.new(

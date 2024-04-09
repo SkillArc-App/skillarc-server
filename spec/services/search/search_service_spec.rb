@@ -12,7 +12,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
       )
     end
 
-    let(:instance) { described_class.new(event_service: EventService.new) }
+    let(:instance) { described_class.new(message_service: MessageService.new) }
 
     let(:search_terms) { nil }
     let(:industries) { nil }
@@ -379,10 +379,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
     context "search source" do
       context "when user is nil" do
         it "emits a search event for unauthenticated" do
-          expect_any_instance_of(EventService)
+          expect_any_instance_of(MessageService)
             .to receive(:create!)
             .with(
-              event_schema: Events::JobSearch::V2,
+              schema: Events::JobSearch::V2,
               data: Events::JobSearch::Data::V1.new(
                 search_terms:,
                 industries:,
@@ -403,10 +403,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         let(:user) { create(:user) }
 
         it "emits a search event for a non-seeker" do
-          expect_any_instance_of(EventService)
+          expect_any_instance_of(MessageService)
             .to receive(:create!)
             .with(
-              event_schema: Events::JobSearch::V2,
+              schema: Events::JobSearch::V2,
               data: Events::JobSearch::Data::V1.new(
                 search_terms:,
                 industries:,
@@ -429,10 +429,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         let(:seeker) { create(:seeker) }
 
         it "emits a search event for a non-seeker" do
-          expect_any_instance_of(EventService)
+          expect_any_instance_of(MessageService)
             .to receive(:create!)
             .with(
-              event_schema: Events::JobSearch::V2,
+              schema: Events::JobSearch::V2,
               data: Events::JobSearch::Data::V1.new(
                 search_terms:,
                 industries:,

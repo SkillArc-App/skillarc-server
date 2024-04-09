@@ -1,7 +1,7 @@
 class JobTagsController < ApplicationController
   include Secured
   include Admin
-  include EventEmitter
+  include MessageEmitter
 
   before_action :authorize
   before_action :admin_authorize
@@ -10,7 +10,7 @@ class JobTagsController < ApplicationController
   def create
     tag = Tag.find_by!(name: params[:tag])
 
-    with_event_service do
+    with_message_service do
       render json: Jobs::JobTagService.create(job, tag)
     end
   end
@@ -18,7 +18,7 @@ class JobTagsController < ApplicationController
   def destroy
     tag = job.job_tags.find(params[:id])
 
-    with_event_service do
+    with_message_service do
       Jobs::JobTagService.destroy(tag)
     end
 

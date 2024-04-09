@@ -170,10 +170,10 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
         response '202', 'saves a job' do
           before do
-            expect_any_instance_of(EventService)
+            expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                event_schema: Events::JobSaved::V1,
+                schema: Events::JobSaved::V1,
                 user_id: user.id,
                 data: Events::JobSaved::Data::V1.new(
                   job_id: job.id,
@@ -210,10 +210,10 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
         response '202', 'saves a job' do
           before do
-            expect_any_instance_of(EventService)
+            expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                event_schema: Events::JobUnsaved::V1,
+                schema: Events::JobUnsaved::V1,
                 user_id: user.id,
                 data: Events::JobUnsaved::Data::V1.new(
                   job_id: job.id,

@@ -23,8 +23,8 @@ RSpec.describe ApplicantService do
     end
 
     it "creates an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::ApplicantStatusUpdated::V5,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::ApplicantStatusUpdated::V5,
         job_id: applicant.job.id,
         data: Events::ApplicantStatusUpdated::Data::V4.new(
           applicant_id: applicant.id,

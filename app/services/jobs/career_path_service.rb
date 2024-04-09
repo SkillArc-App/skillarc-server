@@ -1,14 +1,14 @@
 module Jobs
   class CareerPathService
-    extend EventEmitter
+    extend MessageEmitter
 
     def self.create(job, title:, lower_limit:, upper_limit:)
       order = job.career_paths.count
 
       career_path = job.career_paths.create!(id: SecureRandom.uuid, title:, lower_limit:, upper_limit:, order:)
 
-      event_service.create!(
-        event_schema: Events::CareerPathCreated::V1,
+      message_service.create!(
+        schema: Events::CareerPathCreated::V1,
         job_id: job.id,
         data: Events::CareerPathCreated::Data::V1.new(
           id: career_path.id,
@@ -31,8 +31,8 @@ module Jobs
       career_path.update!(order: career_path.order - 1)
       upper_career_path.update!(order: upper_career_path.order + 1)
 
-      event_service.create!(
-        event_schema: Events::CareerPathUpdated::V1,
+      message_service.create!(
+        schema: Events::CareerPathUpdated::V1,
         job_id: upper_career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: upper_career_path.id,
@@ -40,8 +40,8 @@ module Jobs
         )
       )
 
-      event_service.create!(
-        event_schema: Events::CareerPathUpdated::V1,
+      message_service.create!(
+        schema: Events::CareerPathUpdated::V1,
         job_id: career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: career_path.id,
@@ -58,8 +58,8 @@ module Jobs
       career_path.update!(order: career_path.order + 1)
       lower_career_path.update!(order: lower_career_path.order - 1)
 
-      event_service.create!(
-        event_schema: Events::CareerPathUpdated::V1,
+      message_service.create!(
+        schema: Events::CareerPathUpdated::V1,
         job_id: lower_career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: lower_career_path.id,
@@ -67,8 +67,8 @@ module Jobs
         )
       )
 
-      event_service.create!(
-        event_schema: Events::CareerPathUpdated::V1,
+      message_service.create!(
+        schema: Events::CareerPathUpdated::V1,
         job_id: career_path.job_id,
         data: Events::CareerPathUpdated::Data::V1.new(
           id: career_path.id,
@@ -85,8 +85,8 @@ module Jobs
       paths.each do |path|
         path.update!(order: path.order - 1)
 
-        event_service.create!(
-          event_schema: Events::CareerPathUpdated::V1,
+        message_service.create!(
+          schema: Events::CareerPathUpdated::V1,
           job_id: path.job_id,
           data: Events::CareerPathUpdated::Data::V1.new(
             id: path.id,
@@ -99,8 +99,8 @@ module Jobs
         )
       end
 
-      event_service.create!(
-        event_schema: Events::CareerPathDestroyed::V1,
+      message_service.create!(
+        schema: Events::CareerPathDestroyed::V1,
         job_id: career_path.job_id,
         data: Events::CareerPathDestroyed::Data::V1.new(
           id: career_path.id

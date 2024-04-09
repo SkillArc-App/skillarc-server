@@ -1,7 +1,7 @@
 class OnboardingSessionsController < ApplicationController
   include Secured
   include Cereal
-  include EventEmitter
+  include MessageEmitter
 
   before_action :authorize
 
@@ -12,7 +12,7 @@ class OnboardingSessionsController < ApplicationController
   end
 
   def create
-    with_event_service do
+    with_message_service do
       onboarding_session = OnboardingSession.find_or_create_by!(user_id: current_user.id) do |os|
         os.id = SecureRandom.uuid
         os.started_at = Time.zone.now
@@ -77,7 +77,7 @@ class OnboardingSessionsController < ApplicationController
 
     responses = filtered[:responses]
 
-    with_event_service do
+    with_message_service do
       Onboarding.new(onboarding_session: os).update(responses:)
     end
 

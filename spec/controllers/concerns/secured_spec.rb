@@ -31,11 +31,11 @@ RSpec.describe ApplicationController, type: :controller do
         .to receive(:build)
         .and_return(auth_client)
 
-      expect_any_instance_of(EventService)
+      expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
           user_id: be_a(String),
-          event_schema: Events::UserCreated::V1,
+          schema: Events::UserCreated::V1,
           data: Events::UserCreated::Data::V1.new(
             email:,
             sub: token

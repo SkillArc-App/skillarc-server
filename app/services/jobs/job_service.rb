@@ -1,6 +1,6 @@
 module Jobs
   class JobService
-    include EventEmitter
+    include MessageEmitter
 
     def create(params)
       job = Job.create!(
@@ -8,8 +8,8 @@ module Jobs
         id: SecureRandom.uuid
       )
 
-      event_service.create!(
-        event_schema: Events::JobCreated::V3,
+      message_service.create!(
+        schema: Events::JobCreated::V3,
         job_id: job.id,
         data: Events::JobCreated::Data::V3.new(
           category: job.category,
@@ -35,8 +35,8 @@ module Jobs
     def update(job, params)
       job.update!(**params)
 
-      event_service.create!(
-        event_schema: Events::JobUpdated::V2,
+      message_service.create!(
+        schema: Events::JobUpdated::V2,
         job_id: job.id,
         data: Events::JobUpdated::Data::V2.new(
           category: job.category,

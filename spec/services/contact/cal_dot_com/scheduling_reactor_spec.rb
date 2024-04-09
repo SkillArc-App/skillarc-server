@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Contact::CalDotCom::SchedulingReactor do
   describe "#handle_message" do
-    subject { described_class.new(command_service:).handle_message(message) }
+    subject { described_class.new(message_service:).handle_message(message) }
 
     it_behaves_like "a message consumer"
 
@@ -18,7 +18,7 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
           )
         )
       end
-      let(:command_service) { CommandService.new }
+      let(:message_service) { MessageService.new }
       let(:trace_id) { "78476f14-3e1a-4191-9f61-feed9a44951d" }
       let(:payload) { {} }
 
@@ -53,12 +53,12 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
             end
 
             it "emits a ADD_LEAD command" do
-              expect(command_service)
+              expect(message_service)
                 .to receive(:create!)
                 .with(
                   trace_id:,
                   context_id: dummie_uuid,
-                  command_schema: Commands::AddLead::V1,
+                  schema: Commands::AddLead::V1,
                   data: Commands::AddLead::Data::V1.new(
                     email: "john@skillarc.com",
                     lead_id: dummie_uuid,
@@ -92,12 +92,12 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
             end
 
             it "emits ADD_LEAD and ADD_NOTE commands" do
-              expect(command_service)
+              expect(message_service)
                 .to receive(:create!)
                 .with(
                   trace_id:,
                   context_id: dummie_uuid,
-                  command_schema: Commands::AddLead::V1,
+                  schema: Commands::AddLead::V1,
                   data: Commands::AddLead::Data::V1.new(
                     email: "john@skillarc.com",
                     lead_id: dummie_uuid,
@@ -108,12 +108,12 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
                   )
                 )
 
-              expect(command_service)
+              expect(message_service)
                 .to receive(:create!)
                 .with(
                   trace_id:,
                   context_id: dummie_uuid,
-                  command_schema: Commands::AddNote::V1,
+                  schema: Commands::AddNote::V1,
                   data: Commands::AddNote::Data::V1.new(
                     originator: "cal.com",
                     note: "From John Chabot on the meeting invite: This seems like a cool place!",
@@ -132,7 +132,7 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
           end
 
           it "does not emit a command and reports an error to sentry" do
-            expect(command_service)
+            expect(message_service)
               .not_to receive(:create!)
 
             expect(Sentry)
@@ -148,7 +148,7 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
         let(:cal_trigger_event_type) { Events::CalWebhookReceived::CalTriggerEventTypes::FORM_SUBMITTED }
 
         it "does nothing" do
-          expect(command_service)
+          expect(message_service)
             .not_to receive(:create!)
 
           subject

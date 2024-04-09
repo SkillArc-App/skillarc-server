@@ -57,8 +57,7 @@ class DbStreamListener < StreamListener
 
   def initialize(consumer:, listener_name:, message_service: MessageService.new) # rubocop:disable Lint/MissingSuper
     @consumer = consumer
-    @consumer.event_service = EventService.new(message_service:)
-    @consumer.command_service = CommandService.new(message_service:)
+    @consumer.message_service = message_service
 
     @listener_name = listener_name
     @message_service = message_service

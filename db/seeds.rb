@@ -1,4 +1,4 @@
-event_service = EventService.new
+message_service = MessageService.new
 
 turner_employer = Employer.create!(
   id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
@@ -42,9 +42,9 @@ recruiter_user = User.create!(
   sub: 'recruitersub'
 )
 
-event_service.create!(
+message_service.create!(
   user_id: recruiter_user.id,
-  event_schema: Events::UserCreated::V1,
+  schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: recruiter_user.first_name,
     last_name: recruiter_user.last_name,
@@ -779,9 +779,9 @@ trained_seeker_with_reference = Seeker.create!(
   )
 )
 
-event_service.create!(
+message_service.create!(
   user_id: trained_seeker_with_reference.user.id,
-  event_schema: Events::UserCreated::V1,
+  schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: trained_seeker_with_reference.user.first_name,
     last_name: trained_seeker_with_reference.user.last_name,
@@ -802,9 +802,9 @@ trained_seeker = Seeker.create!(
   )
 )
 
-event_service.create!(
+message_service.create!(
   user_id: trained_seeker.user.id,
-  event_schema: Events::UserCreated::V1,
+  schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: trained_seeker.user.first_name,
     last_name: trained_seeker.user.last_name,
@@ -825,9 +825,9 @@ seeker_with_profile = Seeker.create!(
   )
 )
 
-event_service.create!(
+message_service.create!(
   user_id: seeker_with_profile.user.id,
-  event_schema: Events::UserCreated::V1,
+  schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: seeker_with_profile.user.first_name,
     last_name: seeker_with_profile.user.last_name,
@@ -898,9 +898,9 @@ trainer = User.create!(
   sub: 'megsub'
 )
 
-event_service.create!(
+message_service.create!(
   user_id: trainer.id,
-  event_schema: Events::UserCreated::V1,
+  schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: trainer.first_name,
     last_name: trainer.last_name,
@@ -925,9 +925,9 @@ trainer_with_reference = User.create!(
   sub: 'billsub'
 )
 
-event_service.create!(
+message_service.create!(
   user_id: trainer_with_reference.id,
-  event_schema: Events::UserCreated::V1,
+  schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: trainer_with_reference.first_name,
     last_name: trainer_with_reference.last_name,
@@ -945,9 +945,9 @@ admin_user = User.create!(
   sub: 'jakesub'
 )
 
-event_service.create!(
+message_service.create!(
   user_id: admin_user.id,
-  event_schema: Events::UserCreated::V1,
+  schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: admin_user.first_name,
     last_name: admin_user.last_name,
@@ -1063,9 +1063,9 @@ coach_user = User.create!(
   sub: 'coachsub'
 )
 
-event_service.create!(
+message_service.create!(
   user_id: coach_user.id,
-  event_schema: Events::UserCreated::V1,
+  schema: Events::UserCreated::V1,
   data: Events::UserCreated::Data::V1.new(
     first_name: coach_user.first_name,
     last_name: coach_user.last_name,
@@ -1137,4 +1137,4 @@ FactoryBot.create(:barrier, name: "Unable to Drive")
 
 FactoryBot.create(:coaches__job, job_id: contractor.id, employer_name: contractor.employer.name, employment_title: contractor.employment_title)
 
-event_service.flush
+message_service.flush

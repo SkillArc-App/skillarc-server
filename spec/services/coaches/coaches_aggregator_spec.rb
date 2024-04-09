@@ -137,7 +137,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
   let(:updated_note) { "This note was updated" }
   let(:employer_name1) { "Cool company" }
   let(:employer_name2) { "Fun company" }
-  let(:consumer) { described_class.new(event_service: EventService.new) }
+  let(:consumer) { described_class.new(message_service: MessageService.new) }
 
   let(:id) { SecureRandom.uuid }
 

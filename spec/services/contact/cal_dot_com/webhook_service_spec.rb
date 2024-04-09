@@ -10,10 +10,10 @@ RSpec.describe Contact::CalDotCom::WebhookService do
     let(:webhook) { JSON.parse(webhook_string) }
 
     it "creates a Webhook record" do
-      expect_any_instance_of(EventService)
+      expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          event_schema: Events::CalWebhookReceived::V1,
+          schema: Events::CalWebhookReceived::V1,
           integration: "cal.com",
           data: Events::CalWebhookReceived::Data::V1.new(
             cal_trigger_event_type: webhook["triggerEvent"],

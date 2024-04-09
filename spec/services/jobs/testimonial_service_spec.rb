@@ -34,8 +34,8 @@ RSpec.describe Jobs::TestimonialService do
         photo_url:
       ).and_call_original
 
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::TestimonialCreated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::TestimonialCreated::V1,
         job_id: job.id,
         data: be_a(Events::TestimonialCreated::Data::V1),
         occurred_at: be_present
@@ -57,8 +57,8 @@ RSpec.describe Jobs::TestimonialService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::TestimonialDestroyed::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::TestimonialDestroyed::V1,
         job_id: testimonial.job_id,
         data: Events::TestimonialDestroyed::Data::V1.new(
           id: testimonial.id

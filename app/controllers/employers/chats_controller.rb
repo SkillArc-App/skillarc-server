@@ -2,7 +2,7 @@ module Employers
   class ChatsController < ApplicationController
     include Secured
     include EmployerAuth
-    include EventEmitter
+    include MessageEmitter
 
     before_action :authorize
     before_action :employer_authorize
@@ -13,7 +13,7 @@ module Employers
     end
 
     def mark_read
-      with_event_service do
+      with_message_service do
         EmployerChats.new(r).mark_read(
           applicant_id: params[:applicant_id]
         )
@@ -23,7 +23,7 @@ module Employers
     end
 
     def send_message
-      with_event_service do
+      with_message_service do
         EmployerChats.new(r).send_message(
           applicant_id: params[:applicant_id],
           message: params[:message]
@@ -34,7 +34,7 @@ module Employers
     end
 
     def create
-      with_event_service do
+      with_message_service do
         EmployerChats.new(r).create(applicant_id: params[:applicant_id])
       end
 

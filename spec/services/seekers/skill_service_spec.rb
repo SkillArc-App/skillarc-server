@@ -22,8 +22,8 @@ RSpec.describe Seekers::SkillService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::SeekerSkillCreated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::SeekerSkillCreated::V1,
         seeker_id: seeker.id,
         data: Events::SeekerSkillCreated::Data::V1.new(
           skill_id: master_skill.id,
@@ -53,8 +53,8 @@ RSpec.describe Seekers::SkillService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::SeekerSkillUpdated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::SeekerSkillUpdated::V1,
         seeker_id: seeker.id,
         data: Events::SeekerSkillUpdated::Data::V1.new(
           skill_id: skill.master_skill.id,
@@ -81,8 +81,8 @@ RSpec.describe Seekers::SkillService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::SeekerSkillDestroyed::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::SeekerSkillDestroyed::V1,
         seeker_id: seeker.id,
         data: Events::SeekerSkillDestroyed::Data::V1.new(
           skill_id: skill.master_skill.id,

@@ -1,5 +1,5 @@
 class EducationExperienceService
-  include EventEmitter
+  include MessageEmitter
 
   def initialize(seeker)
     @seeker = seeker
@@ -16,8 +16,8 @@ class EducationExperienceService
       seeker_id: seeker.id
     )
 
-    event_service.create!(
-      event_schema: Events::EducationExperienceCreated::V1,
+    message_service.create!(
+      schema: Events::EducationExperienceCreated::V1,
       user_id: seeker.user.id,
       data: Events::EducationExperienceCreated::Data::V1.new(
         id: ee.id,
@@ -37,8 +37,8 @@ class EducationExperienceService
 
     education_experience.update!(**params)
 
-    event_service.create!(
-      event_schema: Events::EducationExperienceUpdated::V1,
+    message_service.create!(
+      schema: Events::EducationExperienceUpdated::V1,
       user_id: seeker.user.id,
       data: Events::EducationExperienceUpdated::Data::V1.new(
         seeker_id: seeker.id,
@@ -53,8 +53,8 @@ class EducationExperienceService
 
     education_experience.destroy!
 
-    event_service.create!(
-      event_schema: Events::EducationExperienceDeleted::V1,
+    message_service.create!(
+      schema: Events::EducationExperienceDeleted::V1,
       seeker_id: seeker.id,
       data: Events::EducationExperienceDeleted::Data::V1.new(
         id: education_experience.id

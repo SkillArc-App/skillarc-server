@@ -1,5 +1,5 @@
 class Onboarding # rubocop:disable Metrics/ClassLength
-  include EventEmitter
+  include MessageEmitter
 
   attr_reader :onboarding_session
 
@@ -23,9 +23,9 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
     onboarding_session.update!(completed_at:)
 
-    event_service.create!(
+    message_service.create!(
       user_id: user.id,
-      event_schema: Events::OnboardingCompleted::V1,
+      schema: Events::OnboardingCompleted::V1,
       data: {
         name: responses["name"],
         experience: responses["experience"],
@@ -50,9 +50,9 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         phone_number: name_response["phoneNumber"]
       )
 
-      event_service.create!(
+      message_service.create!(
         user_id: user.id,
-        event_schema: Events::UserUpdated::V1,
+        schema: Events::UserUpdated::V1,
         data: Events::UserUpdated::Data::V1.new(
           email: user.email,
           first_name: user.first_name,
@@ -68,9 +68,9 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
     seeker = Seeker.create!(user:)
 
-    event_service.create!(
+    message_service.create!(
       user_id: user.id,
-      event_schema: Events::SeekerCreated::V1,
+      schema: Events::SeekerCreated::V1,
       data: Events::SeekerCreated::Data::V1.new(
         id: seeker.id,
         user_id: user.id
@@ -99,9 +99,9 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         other_experience.id = SecureRandom.uuid
         other_experience.save!
 
-        event_service.create!(
+        message_service.create!(
           user_id: user.id,
-          event_schema: Events::ExperienceCreated::V1,
+          schema: Events::ExperienceCreated::V1,
           data: Events::ExperienceCreated::Data::V1.new(
             id: other_experience.id,
             organization_name: other_experience.organization_name,
@@ -137,9 +137,9 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         ee.id = SecureRandom.uuid
         ee.save!
 
-        event_service.create!(
+        message_service.create!(
           user_id: user.id,
-          event_schema: Events::EducationExperienceCreated::V1,
+          schema: Events::EducationExperienceCreated::V1,
           data: Events::EducationExperienceCreated::Data::V1.new(
             id: ee.id,
             organization_name: ee.organization_name,
@@ -164,9 +164,9 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         stp.id = SecureRandom.uuid
         stp.save!
 
-        event_service.create!(
+        message_service.create!(
           user_id: user.id,
-          event_schema: Events::SeekerTrainingProviderCreated::V1,
+          schema: Events::SeekerTrainingProviderCreated::V1,
           data: Events::SeekerTrainingProviderCreated::Data::V1.new(
             id: stp.id,
             user_id: stp.user_id,
@@ -196,9 +196,9 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       pe.id = SecureRandom.uuid
       pe.save!
 
-      event_service.create!(
+      message_service.create!(
         user_id: user.id,
-        event_schema: Events::PersonalExperienceCreated::V1,
+        schema: Events::PersonalExperienceCreated::V1,
         data: Events::PersonalExperienceCreated::Data::V1.new(
           id: pe.id,
           activity: pe.activity,

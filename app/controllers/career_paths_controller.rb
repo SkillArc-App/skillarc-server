@@ -1,7 +1,7 @@
 class CareerPathsController < ApplicationController
   include Secured
   include Admin
-  include EventEmitter
+  include MessageEmitter
 
   before_action :authorize
   before_action :admin_authorize, only: %i[create destroy]
@@ -9,7 +9,7 @@ class CareerPathsController < ApplicationController
   before_action :set_path, only: %i[destroy up down]
 
   def up
-    with_event_service do
+    with_message_service do
       Jobs::CareerPathService.up(path)
     end
 
@@ -17,7 +17,7 @@ class CareerPathsController < ApplicationController
   end
 
   def down
-    with_event_service do
+    with_message_service do
       Jobs::CareerPathService.down(path)
     end
 
@@ -25,7 +25,7 @@ class CareerPathsController < ApplicationController
   end
 
   def create
-    with_event_service do
+    with_message_service do
       render json: Jobs::CareerPathService.create(
         job,
         **params.require(:career_path).permit(:title, :lower_limit, :upper_limit).to_h.symbolize_keys
@@ -34,7 +34,7 @@ class CareerPathsController < ApplicationController
   end
 
   def destroy
-    with_event_service do
+    with_message_service do
       Jobs::CareerPathService.destroy(path)
 
       render json: { success: true }

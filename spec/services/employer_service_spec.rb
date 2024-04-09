@@ -27,8 +27,8 @@ RSpec.describe EmployerService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::EmployerCreated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::EmployerCreated::V1,
         employer_id: be_present,
         data: Events::EmployerCreated::Data::V1.new(
           name: "Blocktrain",
@@ -80,8 +80,8 @@ RSpec.describe EmployerService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::EmployerUpdated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::EmployerUpdated::V1,
         employer_id: employer.id,
         data: Events::EmployerUpdated::Data::V1.new(
           name: "Portiko",

@@ -1,6 +1,6 @@
 module Admin # rubocop:disable Metrics/ModuleLength
   class JobsController < AdminController
-    include EventEmitter
+    include MessageEmitter
 
     def index
       jobs = Job.includes(
@@ -25,7 +25,7 @@ module Admin # rubocop:disable Metrics/ModuleLength
     end
 
     def create
-      with_event_service do
+      with_message_service do
         job = Jobs::JobService.new.create(
           **params.require(:job).permit(
             :category,
@@ -51,7 +51,7 @@ module Admin # rubocop:disable Metrics/ModuleLength
     def update
       job = Job.find(params[:id])
 
-      with_event_service do
+      with_message_service do
         render json: serialize_job(
           Jobs::JobService.new.update(
             job,

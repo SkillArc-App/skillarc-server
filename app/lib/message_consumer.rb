@@ -3,12 +3,11 @@ class MessageConsumer
   NotActiveSchemaError = Class.new(StandardError)
   NotValidSubscriberType = Class.new(StandardError)
 
-  def initialize(event_service: nil, command_service: nil)
-    @command_service = command_service
-    @event_service = event_service
+  def initialize(message_service: nil)
+    @message_service = message_service
   end
 
-  attr_writer :command_service, :event_service
+  attr_writer :message_service
 
   def call(message:)
     handle_message(message)
@@ -63,5 +62,5 @@ class MessageConsumer
 
   private
 
-  attr_reader :event_service, :command_service
+  attr_reader :message_service, :message_service
 end

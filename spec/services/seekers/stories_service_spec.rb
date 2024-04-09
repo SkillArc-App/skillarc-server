@@ -22,8 +22,8 @@ RSpec.describe Seekers::StoriesService do
         response: "This is a response"
       ).and_call_original
 
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::StoryCreated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::StoryCreated::V1,
         seeker_id: seeker.id,
         data: kind_of(Events::StoryCreated::Data::V1)
       ).and_call_original
@@ -53,8 +53,8 @@ RSpec.describe Seekers::StoriesService do
         response: "This is a new response"
       ).and_call_original
 
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::StoryUpdated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::StoryUpdated::V1,
         seeker_id: seeker.id,
         data: kind_of(Events::StoryUpdated::Data::V1)
       ).and_call_original
@@ -73,8 +73,8 @@ RSpec.describe Seekers::StoriesService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::StoryDestroyed::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::StoryDestroyed::V1,
         seeker_id: seeker.id,
         data: Events::StoryDestroyed::Data::V1.new(
           id: story.id

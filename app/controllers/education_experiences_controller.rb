@@ -1,14 +1,14 @@
 class EducationExperiencesController < ApplicationController
   include Secured
   include SeekerAuth
-  include EventEmitter
+  include MessageEmitter
 
   before_action :authorize
   before_action :set_seeker
   before_action :seeker_editor_authorize
 
   def create
-    with_event_service do
+    with_message_service do
       ee = EducationExperienceService.new(seeker).create(
         **education_experience_params
       )
@@ -20,7 +20,7 @@ class EducationExperiencesController < ApplicationController
   end
 
   def update
-    with_event_service do
+    with_message_service do
       ee = EducationExperienceService.new(seeker).update(
         **education_experience_params.merge(id: params[:id])
       )
@@ -32,7 +32,7 @@ class EducationExperiencesController < ApplicationController
   end
 
   def destroy
-    with_event_service do
+    with_message_service do
       ee = EducationExperienceService.new(seeker).destroy(
         id: params[:id]
       )

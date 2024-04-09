@@ -2,11 +2,11 @@ require 'rails_helper'
 
 RSpec.describe ElapseDayJob do
   it "creates a day elapse event" do
-    expect_any_instance_of(EventService)
+    expect_any_instance_of(MessageService)
       .to receive(:create!)
       .with(
         day: "day",
-        event_schema: Events::DayElapsed::V1,
+        schema: Events::DayElapsed::V1,
         data: Events::DayElapsed::Data::V1.new(
           date: Date.new(2020, 1, 1),
           day_of_week: Events::DayElapsed::Data::DaysOfWeek::WEDNESDAY

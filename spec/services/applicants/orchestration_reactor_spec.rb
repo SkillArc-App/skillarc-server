@@ -3,10 +3,8 @@ require 'rails_helper'
 RSpec.describe Applicants::OrchestrationReactor do
   let(:instance) do
     orchestration_reactor = described_class.new
-    message_service = MessageService.new
 
-    orchestration_reactor.event_service = EventService.new(message_service:)
-    orchestration_reactor.command_service = CommandService.new(message_service:)
+    orchestration_reactor.message_service = MessageService.new
 
     orchestration_reactor
   end
@@ -24,11 +22,11 @@ RSpec.describe Applicants::OrchestrationReactor do
     let(:employer) { create(:employer, name: "Skillarc") }
 
     it "publishes an event" do
-      expect_any_instance_of(EventService)
+      expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
           job_id: job.id,
-          event_schema: Events::ApplicantStatusUpdated::V5,
+          schema: Events::ApplicantStatusUpdated::V5,
           data: Events::ApplicantStatusUpdated::Data::V4.new(
             applicant_id: applicant.id,
             applicant_first_name: "David",
@@ -64,11 +62,11 @@ RSpec.describe Applicants::OrchestrationReactor do
     let(:applicant) { create(:applicant) }
 
     it "publishes an event" do
-      expect_any_instance_of(EventService)
+      expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
           applicant_id: applicant.id,
-          event_schema: Events::ApplicantScreened::V1,
+          schema: Events::ApplicantScreened::V1,
           data: Messages::Nothing,
           metadata: Messages::Nothing,
           trace_id: screen_applicant.trace_id,
@@ -108,12 +106,12 @@ RSpec.describe Applicants::OrchestrationReactor do
     end
 
     it "requests an application screen" do
-      expect_any_instance_of(CommandService)
+      expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
           applicant_id: be_a(String),
           trace_id: seeker_applied.trace_id,
-          command_schema: Commands::ScreenApplicant::V1,
+          schema: Commands::ScreenApplicant::V1,
           data: Messages::Nothing
         ).and_call_original
 

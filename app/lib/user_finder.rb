@@ -1,5 +1,5 @@
 class UserFinder
-  include EventEmitter
+  include MessageEmitter
 
   def find_or_create(sub:, token:, auth_client:)
     u = User.find_by(sub:)
@@ -16,10 +16,10 @@ class UserFinder
       sub:
     )
 
-    with_event_service do
-      event_service.create!(
+    with_message_service do
+      message_service.create!(
         user_id: new_user.id,
-        event_schema: Events::UserCreated::V1,
+        schema: Events::UserCreated::V1,
         data: Events::UserCreated::Data::V1.new(
           first_name: new_user.first_name,
           last_name: new_user.last_name,

@@ -1,6 +1,6 @@
 module Seekers
   class JobService
-    include EventEmitter
+    include MessageEmitter
 
     def initialize(job:, seeker:)
       @job = job
@@ -8,8 +8,8 @@ module Seekers
     end
 
     def add_elevator_pitch(elevator_pitch)
-      event_service.create!(
-        event_schema: Events::ElevatorPitchCreated::V1,
+      message_service.create!(
+        schema: Events::ElevatorPitchCreated::V1,
         seeker_id: seeker.id,
         data: Events::ElevatorPitchCreated::Data::V1.new(
           job_id: job.id,

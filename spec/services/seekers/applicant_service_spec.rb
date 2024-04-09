@@ -25,11 +25,11 @@ RSpec.describe Seekers::ApplicantService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService)
+      expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
           seeker_id: seeker.id,
-          event_schema: Events::SeekerApplied::V1,
+          schema: Events::SeekerApplied::V1,
           data: Events::SeekerApplied::Data::V1.new(
             seeker_first_name: "Katina",
             seeker_last_name: "Hall",

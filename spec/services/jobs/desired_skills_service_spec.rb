@@ -25,8 +25,8 @@ RSpec.describe Jobs::DesiredSkillService do
         master_skill_id:
       ).and_call_original
 
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::DesiredSkillCreated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::DesiredSkillCreated::V1,
         job_id: job.id,
         data: be_a(Events::DesiredSkillCreated::Data::V1)
       ).and_call_original
@@ -47,8 +47,8 @@ RSpec.describe Jobs::DesiredSkillService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::DesiredSkillDestroyed::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::DesiredSkillDestroyed::V1,
         job_id: desired_skill.job_id,
         data: Events::DesiredSkillDestroyed::Data::V1.new(
           id: desired_skill.id

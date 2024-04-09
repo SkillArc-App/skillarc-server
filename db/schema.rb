@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_09_173045) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_09_174232) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -115,7 +115,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_173045) do
     t.bigint "analytics_dim_person_viewed_id", null: false
     t.bigint "analytics_dim_person_viewer_id", null: false
     t.datetime "viewed_at", null: false
-    t.string "viewing_context"
+    t.string "viewing_context", null: false
     t.index ["analytics_dim_person_viewed_id"], name: "idx_on_analytics_dim_person_viewed_id_15c412a0ed"
     t.index ["analytics_dim_person_viewer_id"], name: "idx_on_analytics_dim_person_viewer_id_856d86a762"
   end

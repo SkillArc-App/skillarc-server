@@ -179,7 +179,20 @@ module Analytics
       Analytics::FactPersonViewed.create!(
         dim_person_viewer:,
         dim_person_viewed:,
-        viewed_at: message.occurred_at
+        viewed_at: message.occurred_at,
+        viewing_context: Analytics::FactPersonViewed::Contexts::PUBLIC_PROFILE
+      )
+    end
+
+    on_message Events::SeekerContextViewed::V1 do |message|
+      dim_person_viewer = Analytics::DimPerson.find_by!(coach_id: message.aggregate.coach_id)
+      dim_person_viewed = find_dim_person_by_context_id!(message.data.context_id)
+
+      Analytics::FactPersonViewed.create!(
+        dim_person_viewer:,
+        dim_person_viewed:,
+        viewed_at: message.occurred_at,
+        viewing_context: Analytics::FactPersonViewed::Contexts::COACHES_DASHBOARD
       )
     end
 

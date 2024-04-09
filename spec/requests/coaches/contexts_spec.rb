@@ -77,6 +77,16 @@ RSpec.describe "Coaches::Contexts", type: :request do
             create(:coaches__seeker_application, coach_seeker_context:)
             create(:coaches__seeker_job_recommendation, coach_seeker_context:)
 
+            expect_any_instance_of(EventService)
+              .to receive(:create!)
+              .with(
+                event_schema: Events::SeekerContextViewed::V1,
+                coach_id: coach.id,
+                data: {
+                  context_id: id
+                }
+              )
+
             expect(Coaches::CoachesQuery)
               .to receive(:find_context)
               .with(id)

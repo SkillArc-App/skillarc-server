@@ -6,14 +6,26 @@ module Coaches
 
     before_action :authorize
     before_action :coach_authorize
-    before_action :set_coach, only: %i[recommend_job certify]
+    before_action :set_coach, only: %i[recommend_job certify show]
 
     def index
       render json: CoachesQuery.all_seekers
     end
 
     def show
-      render json: CoachesQuery.find_context(params[:id])
+      context = CoachesQuery.find_context(params[:id])
+
+      with_event_service do
+        event_service.create!(
+          event_schema: Events::SeekerContextViewed::V1,
+          coach_id: coach.id,
+          data: {
+            context_id: params[:id]
+          }
+        )
+      end
+
+      render json: context
     end
 
     def assign

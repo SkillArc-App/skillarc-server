@@ -12,6 +12,8 @@ StrongMigrations.statement_timeout = 1.hour
 # Outdated statistics can sometimes hurt performance
 StrongMigrations.auto_analyze = true
 
+StrongMigrations.disable_check(:rename_column)
+
 # Set the version of the production database
 # so the right checks are run in development
 # StrongMigrations.target_version = 10

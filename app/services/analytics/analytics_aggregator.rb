@@ -4,6 +4,7 @@ module Analytics
       Analytics::FactApplication.delete_all
       Analytics::FactJobVisibility.delete_all
       Analytics::FactPersonViewed.delete_all
+      Analytics::FactCoachAction.delete_all
       Analytics::DimPerson.delete_all
       Analytics::DimJob.delete_all
     end

@@ -22,6 +22,14 @@ module Analytics
   class FactPersonViewed < ApplicationRecord
     self.table_name = "analytics_fact_person_vieweds"
 
+    module Contexts
+      ALL = [
+        PUBLIC_PROFILE = 'public_profile'.freeze,
+        COACHES_DASHBOARD = "coaches_dashboard".freeze
+      ].freeze
+    end
+
+    validates :viewing_context, presence: true, on: :create
     belongs_to :dim_person_viewed, class_name: "Analytics::DimPerson", foreign_key: "analyitics_dim_person_viewed_id", inverse_of: :fact_applications
     belongs_to :dim_person_viewer, class_name: "Analytics::DimPerson", foreign_key: "analyitics_dim_person_viewer_id", inverse_of: :fact_applications
   end

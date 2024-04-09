@@ -18,6 +18,7 @@
 #  index_events_on_aggregate_id            (aggregate_id)
 #  index_events_on_event_type              (event_type)
 #  index_events_on_event_type_and_version  (event_type,version)
+#  index_events_on_occurred_at             (occurred_at)
 #  index_events_on_trace_id                (trace_id)
 #
 class Event < ApplicationRecord

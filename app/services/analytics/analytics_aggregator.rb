@@ -91,7 +91,10 @@ module Analytics
 
       person = DimPerson.find_by!(user_id: message.aggregate_id)
 
-      person.update!(kind: DimPerson::Kind::COACH)
+      person.update!(
+        kind: DimPerson::Kind::COACH,
+        coach_id: message.data.coach_id
+      )
     end
 
     on_message Events::EmployerInviteAccepted::V1 do |message|

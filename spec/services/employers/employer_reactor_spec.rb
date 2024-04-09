@@ -43,7 +43,7 @@ RSpec.describe Employers::EmployerReactor do
               schema: Commands::NotifyEmployerOfApplicant::V1,
               applicant_id: data.applicant_id,
               trace_id: message.trace_id,
-              data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
+              data: {
                 employment_title: data.employment_title,
                 recepent_email: recruiter.email,
                 certified_by: nil,
@@ -52,7 +52,7 @@ RSpec.describe Employers::EmployerReactor do
                 applicant_seeker_id: data.seeker_id,
                 applicant_email: data.applicant_email,
                 applicant_phone_number: data.applicant_phone_number
-              )
+              }
             )
             .and_call_original
 
@@ -70,7 +70,7 @@ RSpec.describe Employers::EmployerReactor do
               schema: Commands::NotifyEmployerOfApplicant::V1,
               applicant_id: data.applicant_id,
               trace_id: message.trace_id,
-              data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
+              data: {
                 employment_title: data.employment_title,
                 recepent_email: recruiter.email,
                 certified_by: employers_seeker.certified_by,
@@ -79,7 +79,7 @@ RSpec.describe Employers::EmployerReactor do
                 applicant_seeker_id: data.seeker_id,
                 applicant_email: data.applicant_email,
                 applicant_phone_number: data.applicant_phone_number
-              )
+              }
             )
             .and_call_original
 
@@ -93,10 +93,10 @@ RSpec.describe Employers::EmployerReactor do
         build(
           :message,
           :day_elapsed,
-          data: Events::DayElapsed::Data::V1.new(
+          data: {
             date:,
             day_of_week:
-          )
+          }
         )
       end
       let(:day_of_week) { date.strftime("%A").downcase }
@@ -141,12 +141,12 @@ RSpec.describe Employers::EmployerReactor do
               schema: Commands::SendWeeklyEmployerUpdate::V1,
               employer_id: employer.id,
               trace_id: be_a(String),
-              data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+              data: {
                 employer_name: employer.name,
                 recepent_email: recruiter.email,
                 new_applicants:,
                 pending_applicants:
-              )
+              }
             ).and_call_original
 
           expect_any_instance_of(MessageService)
@@ -155,12 +155,12 @@ RSpec.describe Employers::EmployerReactor do
               schema: Commands::SendWeeklyEmployerUpdate::V1,
               employer_id: employer.id,
               trace_id: be_a(String),
-              data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+              data: {
                 employer_name: employer.name,
                 recepent_email: second_recruiter.email,
                 new_applicants:,
                 pending_applicants:
-              )
+              }
             ).and_call_original
 
           subject

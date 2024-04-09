@@ -22,10 +22,10 @@ RSpec.describe Jobs::JobTagService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::JobTagCreated::V1,
         job_id: be_present,
-        data: Events::JobTagCreated::Data::V1.new(
+        data: {
           job_id: job.id,
           tag_id: tag.id
-        )
+        }
       ).and_call_original
 
       subject
@@ -47,11 +47,11 @@ RSpec.describe Jobs::JobTagService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::JobTagDestroyed::V2,
         job_id: job_tag.job_id,
-        data: Events::JobTagDestroyed::Data::V2.new(
+        data: {
           tag_id: job_tag.tag_id,
           job_tag_id: job_tag.id,
           job_id: job_tag.job_id
-        )
+        }
       ).and_call_original
 
       subject

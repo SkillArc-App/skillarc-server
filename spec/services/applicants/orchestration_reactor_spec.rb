@@ -27,7 +27,7 @@ RSpec.describe Applicants::OrchestrationReactor do
         .with(
           job_id: job.id,
           schema: Events::ApplicantStatusUpdated::V5,
-          data: Events::ApplicantStatusUpdated::Data::V4.new(
+          data: {
             applicant_id: applicant.id,
             applicant_first_name: "David",
             applicant_last_name: "Helm",
@@ -40,10 +40,10 @@ RSpec.describe Applicants::OrchestrationReactor do
             employment_title: "Welder",
             status: ApplicantStatus::StatusTypes::NEW,
             reasons: []
-          ),
-          metadata: Events::ApplicantStatusUpdated::MetaData::V1.new(
+          },
+          metadata: {
             user_id: user.id
-          ),
+          },
           trace_id: applicant_screened.trace_id,
           version: 5
         )

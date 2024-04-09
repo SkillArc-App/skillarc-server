@@ -9,10 +9,10 @@ RSpec.describe Contact::SmsService do
       build(
         :message,
         :send_sms,
-        data: Commands::SendSms::Data::V1.new(
+        data: {
           phone_number:,
           message: sms_message
-        )
+    }
       )
     end
 
@@ -33,10 +33,10 @@ RSpec.describe Contact::SmsService do
         schema: Events::SmsSent::V1,
         phone_number:,
         trace_id: message.trace_id,
-        data: Events::SmsSent::Data::V1.new(
+        data: {
           phone_number:,
           message: sms_message
-        )
+    }
       ).and_call_original
 
       expect(Sentry).not_to receive(:capture_exception)

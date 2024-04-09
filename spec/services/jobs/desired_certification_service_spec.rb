@@ -14,16 +14,14 @@ RSpec.describe Jobs::DesiredCertificationService do
     end
 
     it "publishes an event" do
-      expect(Events::DesiredCertificationCreated::Data::V1).to receive(:new).with(
-        id: be_present,
-        job_id: job.id,
-        master_certification_id:
-      ).and_call_original
-
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::DesiredCertificationCreated::V1,
         job_id: job.id,
-        data: be_a(Events::DesiredCertificationCreated::Data::V1)
+        data: {
+          id: be_present,
+          job_id: job.id,
+          master_certification_id:
+        }
       ).and_call_original
 
       subject
@@ -45,9 +43,9 @@ RSpec.describe Jobs::DesiredCertificationService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::DesiredCertificationDestroyed::V1,
         job_id: desired_certification.job_id,
-        data: Events::DesiredCertificationDestroyed::Data::V1.new(
+        data: {
           id: desired_certification.id
-        )
+        }
       )
 
       subject

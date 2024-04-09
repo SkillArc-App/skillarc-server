@@ -199,9 +199,9 @@ RSpec.describe SeekerService do
           .with(
             schema: Events::SeekerViewed::V1,
             user_id:,
-            data: Events::SeekerViewed::Data::V1.new(
+            data: {
               seeker_id: seeker.id
-            )
+      }
           )
 
         subject

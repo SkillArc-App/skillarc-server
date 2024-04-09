@@ -7,7 +7,7 @@ RSpec.describe Klayvio::ExperienceEntered do
         :message,
         :experience_created,
         aggregate_id: user.id,
-        data: Events::ExperienceCreated::Data::V1.new(
+        data: {
           id: SecureRandom.uuid,
           organization_name: "A name",
           position: "A position",
@@ -17,7 +17,7 @@ RSpec.describe Klayvio::ExperienceEntered do
           is_current: false,
           profile_id: SecureRandom.uuid,
           seeker_id: SecureRandom.uuid
-        )
+        }
       )
     end
     let(:user) { create(:user, email:) }

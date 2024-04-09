@@ -214,18 +214,18 @@ RSpec.describe MessageService do
       build(
         :message,
         schema: Events::MetCareerCoachUpdated::V1,
-        data: Events::MetCareerCoachUpdated::Data::V1.new(
+        data: {
           met_career_coach: false
-        )
+        }
       )
     end
     let(:message2) do
       build(
         :message,
         schema: Events::MetCareerCoachUpdated::V1,
-        data: Events::MetCareerCoachUpdated::Data::V1.new(
+        data: {
           met_career_coach: false
-        )
+        }
       )
     end
     let(:message3) do

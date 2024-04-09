@@ -10,14 +10,14 @@ module Jobs
       message_service.create!(
         schema: Events::CareerPathCreated::V1,
         job_id: job.id,
-        data: Events::CareerPathCreated::Data::V1.new(
+        data: {
           id: career_path.id,
           job_id: job.id,
           title: career_path.title,
           lower_limit: career_path.lower_limit,
           upper_limit: career_path.upper_limit,
           order: career_path.order
-        )
+        }
       )
 
       career_path
@@ -34,19 +34,19 @@ module Jobs
       message_service.create!(
         schema: Events::CareerPathUpdated::V1,
         job_id: upper_career_path.job_id,
-        data: Events::CareerPathUpdated::Data::V1.new(
+        data: {
           id: upper_career_path.id,
           order: upper_career_path.order
-        )
+        }
       )
 
       message_service.create!(
         schema: Events::CareerPathUpdated::V1,
         job_id: career_path.job_id,
-        data: Events::CareerPathUpdated::Data::V1.new(
+        data: {
           id: career_path.id,
           order: career_path.order
-        )
+        }
       )
     end
 
@@ -61,19 +61,19 @@ module Jobs
       message_service.create!(
         schema: Events::CareerPathUpdated::V1,
         job_id: lower_career_path.job_id,
-        data: Events::CareerPathUpdated::Data::V1.new(
+        data: {
           id: lower_career_path.id,
           order: lower_career_path.order
-        )
+        }
       )
 
       message_service.create!(
         schema: Events::CareerPathUpdated::V1,
         job_id: career_path.job_id,
-        data: Events::CareerPathUpdated::Data::V1.new(
+        data: {
           id: career_path.id,
           order: career_path.order
-        )
+        }
       )
     end
 
@@ -88,23 +88,23 @@ module Jobs
         message_service.create!(
           schema: Events::CareerPathUpdated::V1,
           job_id: path.job_id,
-          data: Events::CareerPathUpdated::Data::V1.new(
+          data: {
             id: path.id,
             job_id: path.job_id,
             title: path.title,
             lower_limit: path.lower_limit,
             upper_limit: path.upper_limit,
             order: path.order
-          )
+          }
         )
       end
 
       message_service.create!(
         schema: Events::CareerPathDestroyed::V1,
         job_id: career_path.job_id,
-        data: Events::CareerPathDestroyed::Data::V1.new(
+        data: {
           id: career_path.id
-        )
+        }
       )
     end
   end

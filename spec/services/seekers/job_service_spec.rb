@@ -16,10 +16,10 @@ RSpec.describe Seekers::JobService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::ElevatorPitchCreated::V1,
         seeker_id: seeker.id,
-        data: Events::ElevatorPitchCreated::Data::V1.new(
+        data: {
           job_id: job.id,
           pitch: elevator_pitch
-        )
+    }
       )
 
       subject

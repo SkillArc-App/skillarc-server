@@ -17,10 +17,10 @@ module Contact
         schema: Events::SmsSent::V1,
         phone_number: message.data.phone_number,
         trace_id: message.trace_id,
-        data: Events::SmsSent::Data::V1.new(
+        data: {
           phone_number: message.data.phone_number,
           message: message.data.message
-        )
+    }
       )
     rescue StandardError => e
       Sentry.capture_exception(e)

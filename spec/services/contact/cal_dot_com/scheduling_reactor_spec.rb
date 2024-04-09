@@ -12,10 +12,10 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
           :message,
           trace_id:,
           schema: Events::CalWebhookReceived::V1,
-          data: Events::CalWebhookReceived::Data::V1.new(
+          data: {
             cal_trigger_event_type:,
             payload:
-          )
+          }
         )
       end
       let(:message_service) { MessageService.new }
@@ -59,14 +59,14 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
                   trace_id:,
                   context_id: dummie_uuid,
                   schema: Commands::AddLead::V1,
-                  data: Commands::AddLead::Data::V1.new(
+                  data: {
                     email: "john@skillarc.com",
                     lead_id: dummie_uuid,
                     phone_number: "+17403573931",
                     first_name: "John",
                     last_name: "Chabot",
                     lead_captured_by: "cal.com"
-                  )
+                  }
                 )
               subject
             end
@@ -98,14 +98,14 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
                   trace_id:,
                   context_id: dummie_uuid,
                   schema: Commands::AddLead::V1,
-                  data: Commands::AddLead::Data::V1.new(
+                  data: {
                     email: "john@skillarc.com",
                     lead_id: dummie_uuid,
                     phone_number: "+17403573931",
                     first_name: "John",
                     last_name: "Chabot",
                     lead_captured_by: "cal.com"
-                  )
+                  }
                 )
 
               expect(message_service)
@@ -114,11 +114,11 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
                   trace_id:,
                   context_id: dummie_uuid,
                   schema: Commands::AddNote::V1,
-                  data: Commands::AddNote::Data::V1.new(
+                  data: {
                     originator: "cal.com",
                     note: "From John Chabot on the meeting invite: This seems like a cool place!",
                     note_id: dummie_uuid
-                  )
+                  }
                 )
 
               subject

@@ -24,11 +24,11 @@ RSpec.describe HookService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::NotificationCreated::V1,
         user_id: user.id,
-        data: Events::NotificationCreated::Data::V1.new(
+        data: {
           title:,
           body:,
           url:
-        )
+    }
       ).and_call_original
 
       subject

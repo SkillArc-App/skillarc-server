@@ -52,15 +52,15 @@ RSpec.describe Event do
         :message,
         version: Events::JobSearch::V1.version,
         message_type: Events::JobSearch::V1.message_type,
-        data: Events::JobSearch::Data::V1.new(
+        data: {
           search_terms: "Cool job",
           tags: nil,
           industries: ['Red Industry', 'Lame Industry']
-        ),
-        metadata: Events::JobSearch::MetaData::V1.new(
+        },
+        metadata: {
           id:,
           source: "seeker"
-        )
+        }
       )
     end
 

@@ -30,12 +30,12 @@ RSpec.describe EmployerService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::EmployerCreated::V1,
         employer_id: be_present,
-        data: Events::EmployerCreated::Data::V1.new(
+        data: {
           name: "Blocktrain",
           location: "Columbus, OH",
           bio: "We are a welding company",
           logo_url: "https://www.blocktrain.com/logo.png"
-        )
+    }
       ).and_call_original
 
       subject
@@ -83,12 +83,12 @@ RSpec.describe EmployerService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::EmployerUpdated::V1,
         employer_id: employer.id,
-        data: Events::EmployerUpdated::Data::V1.new(
+        data: {
           name: "Portiko",
           location: "Columbus, O-H-I-O",
           bio: "We are a really good welding company",
           logo_url: "https://www.blocktrain.com/logo.jpeg"
-        ),
+    },
         occurred_at: be_present
       ).and_call_original
 

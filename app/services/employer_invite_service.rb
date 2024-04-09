@@ -9,12 +9,12 @@ class EmployerInviteService
     message_service.create!(
       schema: Events::EmployerInviteAccepted::V1,
       employer_id: employer_invite.employer_id,
-      data: Events::EmployerInviteAccepted::Data::V1.new(
+      data: {
         employer_invite_id: employer_invite.id,
         invite_email: employer_invite.email,
         employer_id: employer_invite.employer_id,
         employer_name: employer_invite.employer.name
-      )
+  }
     )
 
     user = User.find_by!(email: employer_invite.email)

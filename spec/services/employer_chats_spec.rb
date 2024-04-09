@@ -96,14 +96,14 @@ RSpec.describe EmployerChats do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::ChatMessageSent::V1,
         job_id: job.id,
-        data: Events::ChatMessageSent::Data::V1.new(
+        data: {
           applicant_id: applicant.id,
           seeker_id: seeker.id,
           from_user_id: recruiter.user.id,
           employer_name: employer.name,
           employment_title: job.employment_title,
           message:
-        )
+    }
       ).and_call_original
 
       subject
@@ -129,12 +129,12 @@ RSpec.describe EmployerChats do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::ChatCreated::V1,
         job_id: applicant.job.id,
-        data: Events::ChatCreated::Data::V1.new(
+        data: {
           applicant_id: applicant.id,
           seeker_id: applicant.seeker.id,
           user_id: applicant.seeker.user.id,
           employment_title: applicant.job.employment_title
-        )
+    }
       ).and_call_original
 
       subject

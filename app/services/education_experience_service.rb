@@ -19,7 +19,7 @@ class EducationExperienceService
     message_service.create!(
       schema: Events::EducationExperienceCreated::V1,
       user_id: seeker.user.id,
-      data: Events::EducationExperienceCreated::Data::V1.new(
+      data: {
         id: ee.id,
         organization_name:,
         title:,
@@ -27,7 +27,7 @@ class EducationExperienceService
         gpa:,
         activities:,
         seeker_id: seeker.id
-      ),
+      },
       occurred_at: Time.zone.now
     )
   end
@@ -40,10 +40,10 @@ class EducationExperienceService
     message_service.create!(
       schema: Events::EducationExperienceUpdated::V1,
       user_id: seeker.user.id,
-      data: Events::EducationExperienceUpdated::Data::V1.new(
+      data: {
         seeker_id: seeker.id,
         **params.merge(id:)
-      ),
+      },
       occurred_at: Time.zone.now
     )
   end
@@ -56,9 +56,9 @@ class EducationExperienceService
     message_service.create!(
       schema: Events::EducationExperienceDeleted::V1,
       seeker_id: seeker.id,
-      data: Events::EducationExperienceDeleted::Data::V1.new(
+      data: {
         id: education_experience.id
-      ),
+      },
       occurred_at: Time.zone.now
     )
   end

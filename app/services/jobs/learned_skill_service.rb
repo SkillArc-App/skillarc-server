@@ -8,11 +8,11 @@ module Jobs
       message_service.create!(
         schema: Events::LearnedSkillCreated::V1,
         job_id: job.id,
-        data: Events::LearnedSkillCreated::Data::V1.new(
+        data: {
           id: learned_skill.id,
           job_id: job.id,
           master_skill_id:
-        )
+    }
       )
 
       learned_skill
@@ -24,9 +24,9 @@ module Jobs
       message_service.create!(
         schema: Events::LearnedSkillDestroyed::V1,
         job_id: learned_skill.job_id,
-        data: Events::LearnedSkillDestroyed::Data::V1.new(
+        data: {
           id: learned_skill.id
-        )
+    }
       )
     end
   end

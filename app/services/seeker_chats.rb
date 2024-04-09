@@ -13,14 +13,14 @@ class SeekerChats
     message_service.create!(
       schema: Events::ChatMessageSent::V1,
       job_id: applicant_chat.applicant.job.id,
-      data: Events::ChatMessageSent::Data::V1.new(
+      data: {
         applicant_id: applicant_chat.applicant.id,
         seeker_id: applicant_chat.applicant.seeker_id,
         from_user_id: applicant_chat.applicant.seeker.user.id,
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
-      )
+  }
     )
   end
 

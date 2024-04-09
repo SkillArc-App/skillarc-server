@@ -10,7 +10,7 @@ RSpec.describe Contact::SmtpService do
           :message,
           :notify_employer_of_applicant,
           version: 1,
-          data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
+          data: {
             employment_title: "Job Title",
             recepent_email: "recruiter@skillarc.com",
 
@@ -20,7 +20,7 @@ RSpec.describe Contact::SmtpService do
             applicant_email: "applicant@a.com",
             applicant_phone_number: "1 555 555 5555",
             applicant_seeker_id: "47407410-d0df-4045-b2d8-20c9f03b6b55"
-          )
+          }
         )
       end
 
@@ -40,7 +40,7 @@ RSpec.describe Contact::SmtpService do
           schema: Events::SmtpSent::V1,
           contact: "recruiter@skillarc.com",
           trace_id: message.trace_id,
-          data: Events::SmtpSent::Data::V1.new(
+          data: {
             email: "recruiter@skillarc.com",
             template: EmployerApplicantNotificationMailer.class.to_s,
             template_data: {
@@ -54,7 +54,7 @@ RSpec.describe Contact::SmtpService do
               applicant_phone_number: "1 555 555 5555",
               applicant_seeker_id: "47407410-d0df-4045-b2d8-20c9f03b6b55"
             }
-          )
+          }
         )
 
         subject
@@ -67,7 +67,7 @@ RSpec.describe Contact::SmtpService do
           :message,
           :send_weekly_employer_update,
           version: 1,
-          data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+          data: {
             employer_name: "Employer Name",
             recepent_email: "foo@bar.baz",
             new_applicants: [
@@ -83,7 +83,7 @@ RSpec.describe Contact::SmtpService do
                 certified_by: "chris@skillarc.com"
               )
             ]
-          )
+          }
         )
       end
 
@@ -103,7 +103,7 @@ RSpec.describe Contact::SmtpService do
           schema: Events::SmtpSent::V1,
           contact: "foo@bar.baz",
           trace_id: message.trace_id,
-          data: Events::SmtpSent::Data::V1.new(
+          data: {
             email: "foo@bar.baz",
             template: EmployerWeeklyMailer.class.to_s,
             template_data: {
@@ -124,7 +124,7 @@ RSpec.describe Contact::SmtpService do
                 }
               ]
             }
-          )
+          }
         )
 
         subject

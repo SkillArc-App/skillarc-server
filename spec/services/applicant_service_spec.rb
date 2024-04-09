@@ -26,7 +26,7 @@ RSpec.describe ApplicantService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::ApplicantStatusUpdated::V5,
         job_id: applicant.job.id,
-        data: Events::ApplicantStatusUpdated::Data::V4.new(
+        data: {
           applicant_id: applicant.id,
           applicant_first_name: applicant.seeker.user.first_name,
           applicant_last_name: applicant.seeker.user.last_name,
@@ -45,10 +45,10 @@ RSpec.describe ApplicantService do
               reason_description: "This is a description"
             )
           ]
-        ),
-        metadata: Events::ApplicantStatusUpdated::MetaData::V1.new(
+        },
+        metadata: {
           user_id:
-        ),
+        },
         occurred_at: anything
       ).and_call_original
 

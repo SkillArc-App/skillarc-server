@@ -30,7 +30,7 @@ RSpec.describe Seekers::ApplicantService do
         .with(
           seeker_id: seeker.id,
           schema: Events::SeekerApplied::V1,
-          data: Events::SeekerApplied::Data::V1.new(
+          data: {
             seeker_first_name: "Katina",
             seeker_last_name: "Hall",
             seeker_email: "katina.hall@skillarc.com",
@@ -39,7 +39,7 @@ RSpec.describe Seekers::ApplicantService do
             job_id: job.id,
             employer_name: "Skillarc",
             employment_title: "Welder"
-          ),
+          },
           metadata: Messages::Nothing,
           version: 1
         ).and_call_original

@@ -34,27 +34,27 @@ module Search
                  end
 
         search_id = user.id
-        metadata = Events::JobSearch::MetaData::V2.new(
+        metadata = {
           source:,
           id: user.id,
           utm_source:
-        )
+        }
       else
         search_id = "unauthenticated"
-        metadata = Events::JobSearch::MetaData::V2.new(
+        metadata = {
           source: "unauthenticated",
           utm_source:
-        )
+        }
       end
 
       with_message_service do
         message_service.create!(
           schema: Events::JobSearch::V2,
-          data: Events::JobSearch::Data::V1.new(
+          data: {
             search_terms:,
             industries:,
             tags:
-          ),
+          },
           search_id:,
           metadata:
         )

@@ -38,10 +38,10 @@ RSpec.describe DbStreamAggregator do
           id:,
           trace_id:,
           occurred_at:,
-          data: Events::DayElapsed::Data::V1.new(
+          data: {
             date: Time.zone.today,
             day_of_week: Time.zone.today.strftime("%A").downcase
-          )
+          }
         )
       end
 

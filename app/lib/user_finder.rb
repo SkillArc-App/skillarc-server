@@ -20,12 +20,12 @@ class UserFinder
       message_service.create!(
         user_id: new_user.id,
         schema: Events::UserCreated::V1,
-        data: Events::UserCreated::Data::V1.new(
+        data: {
           first_name: new_user.first_name,
           last_name: new_user.last_name,
           email: new_user.email,
           sub: new_user.sub
-        ),
+        },
         occurred_at: new_user.created_at
       )
     end

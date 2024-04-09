@@ -23,11 +23,11 @@ module Seekers
         message_service.create!(
           schema: Events::JobSaved::V1,
           user_id: current_user.id,
-          data: Events::JobSaved::Data::V1.new(
+          data: {
             job_id: job.id,
             employment_title: job.employment_title,
             employer_name: job.employer.name
-          )
+          }
         )
       end
 
@@ -39,11 +39,11 @@ module Seekers
         message_service.create!(
           schema: Events::JobUnsaved::V1,
           user_id: current_user.id,
-          data: Events::JobUnsaved::Data::V1.new(
+          data: {
             job_id: job.id,
             employment_title: job.employment_title,
             employer_name: job.employer.name
-          )
+          }
         )
       end
 

@@ -10,7 +10,7 @@ module Seekers
       message_service.create!(
         seeker_id: seeker.id,
         schema: Events::SeekerApplied::V1,
-        data: Events::SeekerApplied::Data::V1.new(
+        data: {
           seeker_first_name: seeker.first_name,
           seeker_last_name: seeker.last_name,
           seeker_email: seeker.email,
@@ -19,7 +19,7 @@ module Seekers
           job_id: job.id,
           employer_name: job.employer.name,
           employment_title: job.employment_title
-        ),
+        },
         metadata: Messages::Nothing,
         version: 1
       )

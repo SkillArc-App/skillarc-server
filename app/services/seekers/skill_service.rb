@@ -19,12 +19,12 @@ module Seekers
       message_service.create!(
         schema: Events::SeekerSkillCreated::V1,
         seeker_id: seeker.id,
-        data: Events::SeekerSkillCreated::Data::V1.new(
+        data: {
           description:,
           skill_id: master_skill.id,
           name: master_skill.skill,
           type: master_skill.type
-        )
+    }
       )
 
       skill
@@ -36,12 +36,12 @@ module Seekers
       message_service.create!(
         schema: Events::SeekerSkillUpdated::V1,
         seeker_id: seeker.id,
-        data: Events::SeekerSkillUpdated::Data::V1.new(
+        data: {
           description:,
           skill_id: skill.master_skill_id,
           name: skill.master_skill.skill,
           type: skill.master_skill.type
-        )
+    }
       )
 
       skill
@@ -53,12 +53,12 @@ module Seekers
       message_service.create!(
         schema: Events::SeekerSkillDestroyed::V1,
         seeker_id: seeker.id,
-        data: Events::SeekerSkillDestroyed::Data::V1.new(
+        data: {
           description: skill.description,
           skill_id: skill.master_skill_id,
           name: skill.master_skill.skill,
           type: skill.master_skill.type
-        )
+    }
       )
 
       skill

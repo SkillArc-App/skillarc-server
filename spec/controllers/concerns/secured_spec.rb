@@ -36,10 +36,12 @@ RSpec.describe ApplicationController, type: :controller do
         .with(
           user_id: be_a(String),
           schema: Events::UserCreated::V1,
-          data: Events::UserCreated::Data::V1.new(
+          data: {
             email:,
+            first_name: nil,
+            last_name: nil,
             sub: token
-          ),
+          },
           occurred_at: anything
         ).and_call_original
 

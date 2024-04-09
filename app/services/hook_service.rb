@@ -7,11 +7,11 @@ class HookService
     message_service.create!(
       schema: Events::NotificationCreated::V1,
       user_id: user.id,
-      data: Events::NotificationCreated::Data::V1.new(
+      data: {
         title:,
         body:,
         url:
-      )
+  }
     )
   end
 end

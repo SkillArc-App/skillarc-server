@@ -12,11 +12,11 @@ module Seekers
       message_service.create!(
         schema: Events::StoryCreated::V1,
         seeker_id: seeker.id,
-        data: Events::StoryCreated::Data::V1.new(
+        data: {
           id: story.id,
           prompt:,
           response:
-        )
+    }
       )
 
       story
@@ -28,11 +28,11 @@ module Seekers
       message_service.create!(
         schema: Events::StoryUpdated::V1,
         seeker_id: seeker.id,
-        data: Events::StoryUpdated::Data::V1.new(
+        data: {
           id: story.id,
           prompt:,
           response:
-        )
+    }
       )
 
       story
@@ -44,9 +44,9 @@ module Seekers
       message_service.create!(
         schema: Events::StoryDestroyed::V1,
         seeker_id: seeker.id,
-        data: Events::StoryDestroyed::Data::V1.new(
+        data: {
           id: story.id
-        )
+    }
       )
     end
 

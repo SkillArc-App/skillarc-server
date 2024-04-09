@@ -13,9 +13,9 @@ class SeekerService
       message_service.create!(
         schema: Events::SeekerViewed::V1,
         user_id:,
-        data: Events::SeekerViewed::Data::V1.new(
+        data: {
           seeker_id: seeker.id
-        )
+    }
       )
     end
 

@@ -5,7 +5,7 @@ class EmployerWeeklyPreview < ActionMailer::Preview
       :message,
       :send_weekly_employer_update,
       version: 1,
-      data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+      data: {
         employer_name: Faker::Company.name,
         recepent_email: Faker::Internet.email,
         new_applicants: [
@@ -30,7 +30,7 @@ class EmployerWeeklyPreview < ActionMailer::Preview
             last_name: Faker::Name.last_name
           )
         ]
-      )
+      }
     )
 
     EmployerWeeklyMailer.with(message:).applicants

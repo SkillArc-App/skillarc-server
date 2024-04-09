@@ -20,14 +20,14 @@ RSpec.describe Coaches::CoachesReactor do
         build(
           :message,
           schema: Commands::AddLead::V1,
-          data: Commands::AddLead::Data::V1.new(
+          data: {
             email: "an@email.com",
             lead_id: SecureRandom.uuid,
             phone_number: "+1740-333-5555",
             first_name: "Chris",
             last_name: "Brauns",
             lead_captured_by: "a computer"
-          )
+      }
         )
       end
 
@@ -57,11 +57,11 @@ RSpec.describe Coaches::CoachesReactor do
         build(
           :message,
           schema: Commands::AddNote::V1,
-          data: Commands::AddNote::Data::V1.new(
+          data: {
             originator: "Cool Person",
             note: "This is a note",
             note_id: SecureRandom.uuid
-          )
+      }
         )
       end
 
@@ -88,9 +88,9 @@ RSpec.describe Coaches::CoachesReactor do
         build(
           :message,
           schema: Commands::AssignCoach::V1,
-          data: Commands::AssignCoach::Data::V1.new(
+          data: {
             coach_email: "katina@skillarc.com"
-          )
+      }
         )
       end
 

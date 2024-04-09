@@ -63,7 +63,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         schema: Events::JobCreated::V3,
         aggregate_id: job_id1,
-        data: Events::JobCreated::Data::V3.new(
+        data: {
           category: Job::Categories::STAFFING,
           employment_title: "Plumber",
           employer_name: "Good Employer",
@@ -73,7 +73,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
           employment_type: Job::EmploymentTypes::FULLTIME,
           hide_job: false,
           industry: nil
-        )
+        }
       )
     end
     let(:job_created2) do
@@ -81,7 +81,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id2,
         schema: Events::JobCreated::V3,
-        data: Events::JobCreated::Data::V3.new(
+        data: {
           category: Job::Categories::STAFFING,
           employment_title: "Mechanic",
           employer_name: "Joe's Mechanic's shop",
@@ -91,7 +91,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
           employment_type: Job::EmploymentTypes::PARTTIME,
           hide_job: false,
           industry: [Job::Industries::CONSTRUCTION, Job::Industries::MANUFACTURING]
-        )
+        }
       )
     end
     let(:job_created3) do
@@ -99,7 +99,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id3,
         schema: Events::JobCreated::V3,
-        data: Events::JobCreated::Data::V3.new(
+        data: {
           category: Job::Categories::MARKETPLACE,
           employment_title: "Silly Job",
           employer_name: "Good Employer",
@@ -109,7 +109,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
           employment_type: Job::EmploymentTypes::PARTTIME,
           hide_job: false,
           industry: [Job::Industries::LOGISTICS]
-        )
+        }
       )
     end
     let(:job_updated1) do
@@ -117,7 +117,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id1,
         schema: Events::JobUpdated::V2,
-        data: Events::JobUpdated::Data::V2.new(
+        data: {
           category: Job::Categories::MARKETPLACE,
           employment_title: "Senior Plumber",
           benefits_description: "Great Benifits",
@@ -125,7 +125,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
           employment_type: Job::EmploymentTypes::FULLTIME,
           hide_job: false,
           industry: nil
-        )
+        }
       )
     end
     let(:job_tag_created1_for_job2) do
@@ -133,10 +133,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id2,
         schema: Events::JobTagCreated::V1,
-        data: Events::JobTagCreated::Data::V1.new(
+        data: {
           job_id: job_id2,
           tag_id: tag1.id
-        )
+        }
       )
     end
     let(:job_tag_created2_for_job2) do
@@ -144,10 +144,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id2,
         schema: Events::JobTagCreated::V1,
-        data: Events::JobTagCreated::Data::V1.new(
+        data: {
           job_id: job_id2,
           tag_id: tag2.id
-        )
+        }
       )
     end
     let(:job_tag_created1_for_job1) do
@@ -155,10 +155,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id1,
         schema: Events::JobTagCreated::V1,
-        data: Events::JobTagCreated::Data::V1.new(
+        data: {
           job_id: job_id1,
           tag_id: tag1.id
-        )
+        }
       )
     end
     let(:job_tag_destroyed1_for_job2) do
@@ -166,11 +166,11 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id2,
         schema: Events::JobTagDestroyed::V2,
-        data: Events::JobTagDestroyed::Data::V2.new(
+        data: {
           job_id: job_id1,
           job_tag_id: SecureRandom.uuid,
           tag_id: tag1.id
-        )
+        }
       )
     end
     let(:career_paths_created_for_job1) do
@@ -178,14 +178,14 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id1,
         schema: Events::CareerPathCreated::V1,
-        data: Events::CareerPathCreated::Data::V1.new(
+        data: {
           id: SecureRandom.uuid,
           job_id: job_id1,
           title: "Entry Level",
           lower_limit: "17000",
           upper_limit: "23000",
           order: 0
-        )
+        }
       )
     end
     let(:career_paths_created_for_job2) do
@@ -193,14 +193,14 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id2,
         schema: Events::CareerPathCreated::V1,
-        data: Events::CareerPathCreated::Data::V1.new(
+        data: {
           id: SecureRandom.uuid,
           job_id: job_id2,
           title: "Grunt",
           lower_limit: "10",
           upper_limit: "15",
           order: 0
-        )
+        }
       )
     end
     let(:career_paths_updated_for_job2) do
@@ -208,14 +208,14 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id2,
         schema: Events::CareerPathUpdated::V1,
-        data: Events::CareerPathUpdated::Data::V1.new(
+        data: {
           id: SecureRandom.uuid,
           job_id: job_id2,
           title: "Top Grunt",
           lower_limit: "12",
           upper_limit: "17",
           order: 0
-        )
+        }
       )
     end
     let(:application1_for_job1_for_seeker1) do
@@ -223,7 +223,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id1,
         schema: Events::ApplicantStatusUpdated::V5,
-        data: Events::ApplicantStatusUpdated::Data::V4.new(
+        data: {
           applicant_id: applicant_id1,
           applicant_first_name: "John",
           applicant_last_name: "Chabot",
@@ -234,10 +234,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
           employer_name: "Good Employer",
           employment_title: "Plumber",
           status: ApplicantStatus::StatusTypes::INTERVIEWING
-        ),
-        metadata: Events::ApplicantStatusUpdated::MetaData::V1.new(
+        },
+        metadata: {
           user_id: user_id1
-        )
+        }
       )
     end
     let(:application2_for_job2_for_seeker2) do
@@ -245,7 +245,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: job_id2,
         schema: Events::ApplicantStatusUpdated::V5,
-        data: Events::ApplicantStatusUpdated::Data::V4.new(
+        data: {
           applicant_id: applicant_id2,
           applicant_first_name: "Chris",
           applicant_last_name: "Brauns",
@@ -256,10 +256,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
           employer_name: "Good Employer",
           employment_title: "Plumber",
           status: ApplicantStatus::StatusTypes::INTERVIEWING
-        ),
-        metadata: Events::ApplicantStatusUpdated::MetaData::V1.new(
+        },
+        metadata: {
           user_id: user_id1
-        )
+        }
       )
     end
     let(:elevator_pitch_created_for_application2) do
@@ -267,10 +267,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: seeker_id2,
         schema: Events::ElevatorPitchCreated::V1,
-        data: Events::ElevatorPitchCreated::Data::V1.new(
+        data: {
           job_id: job_id2,
           pitch: "I'm going to be the very best"
-        )
+        }
       )
     end
     let(:job_saved_job1_user1) do
@@ -278,11 +278,11 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: user_id1,
         schema: Events::JobSaved::V1,
-        data: Events::JobSaved::Data::V1.new(
+        data: {
           job_id: job_id1,
           employment_title: "A Job",
           employer_name: "Employer"
-        )
+        }
       )
     end
     let(:job_saved_job2_user1) do
@@ -290,11 +290,11 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: user_id1,
         schema: Events::JobSaved::V1,
-        data: Events::JobSaved::Data::V1.new(
+        data: {
           job_id: job_id2,
           employment_title: "A Job",
           employer_name: "Employer"
-        )
+        }
       )
     end
     let(:job_unsaved_job2_user1) do
@@ -302,11 +302,11 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: user_id1,
         schema: Events::JobUnsaved::V1,
-        data: Events::JobUnsaved::Data::V1.new(
+        data: {
           job_id: job_id2,
           employment_title: "A Job",
           employer_name: "Employer"
-        )
+        }
       )
     end
 
@@ -383,16 +383,16 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
             .to receive(:create!)
             .with(
               schema: Events::JobSearch::V2,
-              data: Events::JobSearch::Data::V1.new(
+              data: {
                 search_terms:,
                 industries:,
                 tags:
-              ),
+              },
               search_id: 'unauthenticated',
-              metadata: Events::JobSearch::MetaData::V2.new(
+              metadata: {
                 source: "unauthenticated",
                 utm_source:
-              )
+              }
             )
 
           subject
@@ -407,17 +407,17 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
             .to receive(:create!)
             .with(
               schema: Events::JobSearch::V2,
-              data: Events::JobSearch::Data::V1.new(
+              data: {
                 search_terms:,
                 industries:,
                 tags:
-              ),
+              },
               search_id: user.id,
-              metadata: Events::JobSearch::MetaData::V2.new(
+              metadata: {
                 source: "user",
                 id: user.id,
                 utm_source:
-              )
+              }
             )
 
           subject
@@ -433,17 +433,17 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
             .to receive(:create!)
             .with(
               schema: Events::JobSearch::V2,
-              data: Events::JobSearch::Data::V1.new(
+              data: {
                 search_terms:,
                 industries:,
                 tags:
-              ),
+              },
               search_id: user.id,
-              metadata: Events::JobSearch::MetaData::V2.new(
+              metadata: {
                 source: "seeker",
                 id: user.id,
                 utm_source:
-              )
+              }
             )
 
           subject

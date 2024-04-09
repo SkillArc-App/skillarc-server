@@ -32,14 +32,14 @@ RSpec.describe SeekerChats do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::ChatMessageSent::V1,
         job_id: job.id,
-        data: Events::ChatMessageSent::Data::V1.new(
+        data: {
           applicant_id: applicant.id,
           seeker_id: seeker.id,
           from_user_id: user.id,
           employer_name: employer.name,
           employment_title: job.employment_title,
           message:
-        )
+    }
       ).and_call_original
 
       subject

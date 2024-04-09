@@ -11,11 +11,11 @@ module Jobs
       message_service.create!(
         schema: Events::JobPhotoCreated::V1,
         job_id: job.id,
-        data: Events::JobPhotoCreated::Data::V1.new(
+        data: {
           id: job_photo.id,
           job_id: job.id,
           photo_url:
-        )
+    }
       )
 
       job_photo
@@ -27,9 +27,9 @@ module Jobs
       message_service.create!(
         schema: Events::JobPhotoDestroyed::V1,
         job_id: job_photo.job_id,
-        data: Events::JobPhotoDestroyed::Data::V1.new(
+        data: {
           id: job_photo.id
-        )
+    }
       )
     end
   end

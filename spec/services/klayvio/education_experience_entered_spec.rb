@@ -7,7 +7,7 @@ RSpec.describe Klayvio::EducationExperienceEntered do
         :message,
         :education_experience_created,
         aggregate_id: user.id,
-        data: Events::EducationExperienceCreated::Data::V1.new(
+        data: {
           id: SecureRandom.uuid,
           organization_name: "A organization",
           title: "A title",
@@ -16,7 +16,7 @@ RSpec.describe Klayvio::EducationExperienceEntered do
           gpa: "1.89",
           profile_id: SecureRandom.uuid,
           seeker_id: SecureRandom.uuid
-        )
+        }
       )
     end
     let(:user) { create(:user, email:) }

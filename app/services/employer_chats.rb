@@ -51,14 +51,14 @@ class EmployerChats
     message_service.create!(
       schema: Events::ChatMessageSent::V1,
       job_id: applicant_chat.applicant.job_id,
-      data: Events::ChatMessageSent::Data::V1.new(
+      data: {
         applicant_id: applicant_chat.applicant.id,
         seeker_id: applicant_chat.applicant.seeker_id,
         from_user_id: recruiter.user.id,
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
-      )
+  }
     )
   end
 
@@ -68,12 +68,12 @@ class EmployerChats
     message_service.create!(
       schema: Events::ChatCreated::V1,
       job_id: applicant_chat.applicant.job.id,
-      data: Events::ChatCreated::Data::V1.new(
+      data: {
         applicant_id: applicant_chat.applicant.id,
         seeker_id: applicant_chat.applicant.seeker_id,
         user_id: applicant_chat.applicant.seeker.user.id,
         employment_title: applicant_chat.applicant.job.employment_title
-      )
+  }
     )
   end
 

@@ -11,7 +11,7 @@ module Applicants
       message_service.create!(
         job_id: applicant.job_id,
         schema: Events::ApplicantStatusUpdated::V5,
-        data: Events::ApplicantStatusUpdated::Data::V4.new(
+        data: {
           applicant_id: applicant.id,
           applicant_first_name: seeker.first_name,
           applicant_last_name: seeker.last_name,
@@ -24,10 +24,10 @@ module Applicants
           employment_title: applicant.job.employment_title,
           status: ApplicantStatus::StatusTypes::NEW,
           reasons: []
-        ),
-        metadata: Events::ApplicantStatusUpdated::MetaData::V1.new(
+        },
+        metadata: {
           user_id: seeker.user_id
-        ),
+      },
         trace_id: event.trace_id,
         version: 5
       )

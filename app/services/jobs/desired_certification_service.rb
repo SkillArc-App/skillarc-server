@@ -8,11 +8,11 @@ module Jobs
       message_service.create!(
         schema: Events::DesiredCertificationCreated::V1,
         job_id: job.id,
-        data: Events::DesiredCertificationCreated::Data::V1.new(
+        data: {
           id: desired_certification.id,
           job_id: job.id,
           master_certification_id:
-        )
+    }
       )
 
       desired_certification
@@ -24,9 +24,9 @@ module Jobs
       message_service.create!(
         schema: Events::DesiredCertificationDestroyed::V1,
         job_id: desired_certification.job_id,
-        data: Events::DesiredCertificationDestroyed::Data::V1.new(
+        data: {
           id: desired_certification.id
-        )
+    }
       )
     end
   end

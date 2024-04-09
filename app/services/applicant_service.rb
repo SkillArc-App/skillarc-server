@@ -23,7 +23,7 @@ class ApplicantService
     message_service.create!(
       schema: Events::ApplicantStatusUpdated::V5,
       job_id: applicant.job.id,
-      data: Events::ApplicantStatusUpdated::Data::V4.new(
+      data: {
         applicant_id: applicant.id,
         applicant_first_name: applicant.seeker.user.first_name,
         applicant_last_name: applicant.seeker.user.last_name,
@@ -42,10 +42,10 @@ class ApplicantService
             reason_description: asr.reason.description
           )
         end
-      ),
-      metadata: Events::ApplicantStatusUpdated::MetaData::V1.new(
+      },
+      metadata: {
         user_id:
-      ),
+      },
       occurred_at: applicant_status.created_at
     )
   end

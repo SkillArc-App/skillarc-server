@@ -19,16 +19,14 @@ RSpec.describe Jobs::LearnedSkillService do
     end
 
     it "publishes an event" do
-      expect(Events::LearnedSkillCreated::Data::V1).to receive(:new).with(
-        id: be_present,
-        job_id: job.id,
-        master_skill_id:
-      ).and_call_original
-
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::LearnedSkillCreated::V1,
         job_id: job.id,
-        data: be_a(Events::LearnedSkillCreated::Data::V1)
+        data: {
+          id: be_present,
+          job_id: job.id,
+          master_skill_id:
+        }
       ).and_call_original
 
       subject
@@ -50,9 +48,9 @@ RSpec.describe Jobs::LearnedSkillService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::LearnedSkillDestroyed::V1,
         job_id: learned_skill.job_id,
-        data: Events::LearnedSkillDestroyed::Data::V1.new(
+        data: {
           id: learned_skill.id
-        )
+        }
       )
 
       subject

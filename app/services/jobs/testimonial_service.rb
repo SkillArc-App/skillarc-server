@@ -15,15 +15,14 @@ module Jobs
       message_service.create!(
         schema: Events::TestimonialCreated::V1,
         job_id:,
-        data: Events::TestimonialCreated::Data::V1.new(
+        data: {
           id: t.id,
           job_id:,
           name:,
           title:,
           testimonial:,
           photo_url:
-        ),
-        occurred_at: Time.current
+        }
       )
 
       t
@@ -35,10 +34,9 @@ module Jobs
       message_service.create!(
         schema: Events::TestimonialDestroyed::V1,
         job_id: testimonial.job_id,
-        data: Events::TestimonialDestroyed::Data::V1.new(
+        data: {
           id: testimonial.id
-        ),
-        occurred_at: Time.current
+        }
       )
     end
   end

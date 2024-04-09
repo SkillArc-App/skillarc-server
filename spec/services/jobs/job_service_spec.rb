@@ -61,7 +61,7 @@ RSpec.describe Jobs::JobService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::JobCreated::V3,
         job_id: be_present,
-        data: Events::JobCreated::Data::V3.new(
+        data: {
           category:,
           employment_title:,
           employer_name:,
@@ -75,7 +75,7 @@ RSpec.describe Jobs::JobService do
           work_days:,
           requirements_description:,
           industry:
-        ),
+        },
         occurred_at: be_present
       ).and_call_original
 
@@ -140,7 +140,7 @@ RSpec.describe Jobs::JobService do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::JobUpdated::V2,
         job_id: job.id,
-        data: Events::JobUpdated::Data::V2.new(
+        data: {
           category:,
           employment_title:,
           benefits_description:,
@@ -152,7 +152,7 @@ RSpec.describe Jobs::JobService do
           work_days:,
           requirements_description:,
           industry:
-        ),
+        },
         occurred_at: be_present
       ).and_call_original
 

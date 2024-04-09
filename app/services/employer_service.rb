@@ -7,12 +7,12 @@ class EmployerService
     message_service.create!(
       schema: Events::EmployerCreated::V1,
       employer_id: e.id,
-      data: Events::EmployerCreated::Data::V1.new(
+      data: {
         name: e.name,
         location: e.location,
         bio: e.bio,
         logo_url: e.logo_url
-      )
+  }
     )
 
     e
@@ -26,12 +26,12 @@ class EmployerService
     message_service.create!(
       schema: Events::EmployerUpdated::V1,
       employer_id: e.id,
-      data: Events::EmployerUpdated::Data::V1.new(
+      data: {
         name: e.name,
         location: e.location,
         bio: e.bio,
         logo_url: e.logo_url
-      ),
+  },
       occurred_at: e.updated_at
     )
 

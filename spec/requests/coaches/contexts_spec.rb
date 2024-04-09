@@ -81,7 +81,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
               .to receive(:create!)
               .with(
                 event_schema: Events::SeekerContextViewed::V1,
-                coach_id: coach.id,
+                coach_id: coach.coach_id,
                 data: {
                   context_id: id
                 }

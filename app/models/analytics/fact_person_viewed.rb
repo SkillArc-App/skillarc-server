@@ -4,6 +4,7 @@
 #
 #  id                              :bigint           not null, primary key
 #  viewed_at                       :datetime         not null
+#  viewing_context                 :string
 #  analyitics_dim_person_viewed_id :bigint           not null
 #  analyitics_dim_person_viewer_id :bigint           not null
 #

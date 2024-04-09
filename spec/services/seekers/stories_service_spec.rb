@@ -16,16 +16,14 @@ RSpec.describe Seekers::StoriesService do
     end
 
     it "publishes an event" do
-      expect(Events::StoryCreated::Data::V1).to receive(:new).with(
-        id: kind_of(String),
-        prompt: "This is a prompt",
-        response: "This is a response"
-      ).and_call_original
-
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::StoryCreated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::StoryCreated::V1,
         seeker_id: seeker.id,
-        data: kind_of(Events::StoryCreated::Data::V1)
+        data: {
+          id: kind_of(String),
+          prompt: "This is a prompt",
+          response: "This is a response"
+        }
       ).and_call_original
 
       subject
@@ -47,16 +45,14 @@ RSpec.describe Seekers::StoriesService do
     end
 
     it "publishes an event" do
-      expect(Events::StoryUpdated::Data::V1).to receive(:new).with(
-        id: story.id,
-        prompt: "This is a new prompt",
-        response: "This is a new response"
-      ).and_call_original
-
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::StoryUpdated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::StoryUpdated::V1,
         seeker_id: seeker.id,
-        data: kind_of(Events::StoryUpdated::Data::V1)
+        data: {
+          id: story.id,
+          prompt: "This is a new prompt",
+          response: "This is a new response"
+        }
       ).and_call_original
 
       subject
@@ -73,12 +69,12 @@ RSpec.describe Seekers::StoriesService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::StoryDestroyed::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::StoryDestroyed::V1,
         seeker_id: seeker.id,
-        data: Events::StoryDestroyed::Data::V1.new(
+        data: {
           id: story.id
-        )
+        }
       ).and_call_original
 
       subject

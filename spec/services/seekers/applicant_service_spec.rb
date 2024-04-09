@@ -25,12 +25,12 @@ RSpec.describe Seekers::ApplicantService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService)
+      expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
           seeker_id: seeker.id,
-          event_schema: Events::SeekerApplied::V1,
-          data: Events::SeekerApplied::Data::V1.new(
+          schema: Events::SeekerApplied::V1,
+          data: {
             seeker_first_name: "Katina",
             seeker_last_name: "Hall",
             seeker_email: "katina.hall@skillarc.com",
@@ -39,7 +39,7 @@ RSpec.describe Seekers::ApplicantService do
             job_id: job.id,
             employer_name: "Skillarc",
             employment_title: "Welder"
-          ),
+          },
           metadata: Messages::Nothing,
           version: 1
         ).and_call_original

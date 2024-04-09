@@ -172,7 +172,7 @@ RSpec.describe SeekerService do
       let(:user_id) { nil }
 
       it "does not emits a SeekerViewed event" do
-        expect_any_instance_of(EventService)
+        expect_any_instance_of(MessageService)
           .not_to receive(:create!)
 
         subject
@@ -183,7 +183,7 @@ RSpec.describe SeekerService do
       let(:user_id) { seeker.user.id }
 
       it "does not emits a SeekerViewed event" do
-        expect_any_instance_of(EventService)
+        expect_any_instance_of(MessageService)
           .not_to receive(:create!)
 
         subject
@@ -194,14 +194,14 @@ RSpec.describe SeekerService do
       let(:user_id) { SecureRandom.uuid }
 
       it "emits a SeekerViewed event" do
-        expect_any_instance_of(EventService)
+        expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
-            event_schema: Events::SeekerViewed::V1,
+            schema: Events::SeekerViewed::V1,
             user_id:,
-            data: Events::SeekerViewed::Data::V1.new(
+            data: {
               seeker_id: seeker.id
-            )
+            }
           )
 
         subject

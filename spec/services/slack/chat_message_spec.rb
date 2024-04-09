@@ -6,14 +6,14 @@ RSpec.describe Slack::ChatMessage do
       build(
         :message,
         :chat_message_sent,
-        data: Events::ChatMessageSent::Data::V1.new(
+        data: {
           applicant_id: applicant.id,
           seeker_id: seeker.id,
           employer_name: "A name",
           employment_title: "A title",
           message: "A message",
           from_user_id:
-        )
+        }
       )
     end
     let(:applicant) { create(:applicant, seeker:) }

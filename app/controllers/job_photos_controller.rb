@@ -1,14 +1,14 @@
 class JobPhotosController < ApplicationController
   include Secured
   include Admin
-  include EventEmitter
+  include MessageEmitter
 
   before_action :authorize
   before_action :admin_authorize, only: %i[create destroy]
   before_action :set_job
 
   def create
-    with_event_service do
+    with_message_service do
       photo = Jobs::JobPhotosService.create(job, params[:job_photo][:photo_url])
 
       render json: photo
@@ -18,7 +18,7 @@ class JobPhotosController < ApplicationController
   def destroy
     photo = job.job_photos.find(params[:id])
 
-    with_event_service do
+    with_message_service do
       Jobs::JobPhotosService.destroy(photo)
     end
 

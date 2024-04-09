@@ -1,14 +1,14 @@
 class StoriesController < ApplicationController
   include Secured
   include SeekerAuth
-  include EventEmitter
+  include MessageEmitter
 
   before_action :authorize
   before_action :set_seeker
   before_action :seeker_editor_authorize
 
   def create
-    with_event_service do
+    with_message_service do
       story = Seekers::StoriesService.new(seeker).create(
         **params.require(:story).permit(:prompt, :response).to_h.symbolize_keys
       )
@@ -22,7 +22,7 @@ class StoriesController < ApplicationController
   def update
     story = Story.find(params[:id])
 
-    with_event_service do
+    with_message_service do
       story = Seekers::StoriesService.new(seeker).update(
         story:,
         **params.require(:story).permit(:prompt, :response).to_h.symbolize_keys
@@ -37,7 +37,7 @@ class StoriesController < ApplicationController
   def destroy
     story = Story.find(params[:id])
 
-    with_event_service do
+    with_message_service do
       Seekers::StoriesService.new(seeker).destroy(story:)
     end
 

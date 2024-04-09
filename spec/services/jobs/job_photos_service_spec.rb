@@ -19,16 +19,14 @@ RSpec.describe Jobs::JobPhotosService do
     end
 
     it "publishes an event" do
-      expect(Events::JobPhotoCreated::Data::V1).to receive(:new).with(
-        id: be_a(String),
-        job_id: job.id,
-        photo_url:
-      ).and_call_original
-
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::JobPhotoCreated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::JobPhotoCreated::V1,
         job_id: be_present,
-        data: be_a(Events::JobPhotoCreated::Data::V1)
+        data: {
+          id: be_a(String),
+          job_id: job.id,
+          photo_url:
+        }
       ).and_call_original
 
       subject
@@ -47,12 +45,12 @@ RSpec.describe Jobs::JobPhotosService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::JobPhotoDestroyed::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::JobPhotoDestroyed::V1,
         job_id: job_photo.job_id,
-        data: Events::JobPhotoDestroyed::Data::V1.new(
+        data: {
           id: job_photo.id
-        )
+        }
       ).and_call_original
 
       subject

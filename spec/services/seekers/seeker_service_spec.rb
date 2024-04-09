@@ -6,10 +6,10 @@ RSpec.describe Seekers::SeekerService do
       :message,
       :elevator_pitch_created,
       aggregate_id: seeker.id,
-      data: Events::ElevatorPitchCreated::Data::V1.new(
+      data: {
         job_id:,
         pitch: "pitch"
-      )
+      }
     )
   end
   let(:job) { create(:job) }

@@ -1,6 +1,6 @@
 module Seekers
   class StoriesService
-    include EventEmitter
+    include MessageEmitter
 
     def initialize(seeker)
       @seeker = seeker
@@ -9,14 +9,14 @@ module Seekers
     def create(prompt:, response:)
       story = seeker.stories.create!(id: SecureRandom.uuid, prompt:, response:)
 
-      event_service.create!(
-        event_schema: Events::StoryCreated::V1,
+      message_service.create!(
+        schema: Events::StoryCreated::V1,
         seeker_id: seeker.id,
-        data: Events::StoryCreated::Data::V1.new(
+        data: {
           id: story.id,
           prompt:,
           response:
-        )
+        }
       )
 
       story
@@ -25,14 +25,14 @@ module Seekers
     def update(story:, prompt:, response:)
       story.update!(prompt:, response:)
 
-      event_service.create!(
-        event_schema: Events::StoryUpdated::V1,
+      message_service.create!(
+        schema: Events::StoryUpdated::V1,
         seeker_id: seeker.id,
-        data: Events::StoryUpdated::Data::V1.new(
+        data: {
           id: story.id,
           prompt:,
           response:
-        )
+        }
       )
 
       story
@@ -41,12 +41,12 @@ module Seekers
     def destroy(story:)
       story.destroy!
 
-      event_service.create!(
-        event_schema: Events::StoryDestroyed::V1,
+      message_service.create!(
+        schema: Events::StoryDestroyed::V1,
         seeker_id: seeker.id,
-        data: Events::StoryDestroyed::Data::V1.new(
+        data: {
           id: story.id
-        )
+        }
       )
     end
 

@@ -4,7 +4,7 @@ RSpec.describe Employers::EmployerReactor do
   it_behaves_like "a message consumer"
 
   describe "#handle_message" do
-    subject { described_class.new(command_service: CommandService.new).handle_message(message) }
+    subject { described_class.new(message_service: MessageService.new).handle_message(message) }
 
     describe "when message is application status updated" do
       let(:message) { build(:message, schema: Events::ApplicantStatusUpdated::V5, data:, metadata:) }
@@ -37,13 +37,13 @@ RSpec.describe Employers::EmployerReactor do
 
       context "when the seeker isn't certified" do
         it "sends an email to the employer" do
-          expect_any_instance_of(CommandService)
+          expect_any_instance_of(MessageService)
             .to receive(:create!)
             .with(
-              command_schema: Commands::NotifyEmployerOfApplicant::V1,
+              schema: Commands::NotifyEmployerOfApplicant::V1,
               applicant_id: data.applicant_id,
               trace_id: message.trace_id,
-              data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
+              data: {
                 employment_title: data.employment_title,
                 recepent_email: recruiter.email,
                 certified_by: nil,
@@ -52,7 +52,7 @@ RSpec.describe Employers::EmployerReactor do
                 applicant_seeker_id: data.seeker_id,
                 applicant_email: data.applicant_email,
                 applicant_phone_number: data.applicant_phone_number
-              )
+              }
             )
             .and_call_original
 
@@ -64,13 +64,13 @@ RSpec.describe Employers::EmployerReactor do
         let!(:employers_seeker) { create(:employers_seeker, seeker_id: applicant.seeker_id) }
 
         it "sends an email to the employer" do
-          expect_any_instance_of(CommandService)
+          expect_any_instance_of(MessageService)
             .to receive(:create!)
             .with(
-              command_schema: Commands::NotifyEmployerOfApplicant::V1,
+              schema: Commands::NotifyEmployerOfApplicant::V1,
               applicant_id: data.applicant_id,
               trace_id: message.trace_id,
-              data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
+              data: {
                 employment_title: data.employment_title,
                 recepent_email: recruiter.email,
                 certified_by: employers_seeker.certified_by,
@@ -79,7 +79,7 @@ RSpec.describe Employers::EmployerReactor do
                 applicant_seeker_id: data.seeker_id,
                 applicant_email: data.applicant_email,
                 applicant_phone_number: data.applicant_phone_number
-              )
+              }
             )
             .and_call_original
 
@@ -93,10 +93,10 @@ RSpec.describe Employers::EmployerReactor do
         build(
           :message,
           :day_elapsed,
-          data: Events::DayElapsed::Data::V1.new(
+          data: {
             date:,
             day_of_week:
-          )
+          }
         )
       end
       let(:day_of_week) { date.strftime("%A").downcase }
@@ -135,32 +135,32 @@ RSpec.describe Employers::EmployerReactor do
             )
           ]
 
-          expect_any_instance_of(CommandService)
+          expect_any_instance_of(MessageService)
             .to receive(:create!)
             .with(
-              command_schema: Commands::SendWeeklyEmployerUpdate::V1,
+              schema: Commands::SendWeeklyEmployerUpdate::V1,
               employer_id: employer.id,
               trace_id: be_a(String),
-              data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+              data: {
                 employer_name: employer.name,
                 recepent_email: recruiter.email,
                 new_applicants:,
                 pending_applicants:
-              )
+              }
             ).and_call_original
 
-          expect_any_instance_of(CommandService)
+          expect_any_instance_of(MessageService)
             .to receive(:create!)
             .with(
-              command_schema: Commands::SendWeeklyEmployerUpdate::V1,
+              schema: Commands::SendWeeklyEmployerUpdate::V1,
               employer_id: employer.id,
               trace_id: be_a(String),
-              data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+              data: {
                 employer_name: employer.name,
                 recepent_email: second_recruiter.email,
                 new_applicants:,
                 pending_applicants:
-              )
+              }
             ).and_call_original
 
           subject
@@ -171,7 +171,7 @@ RSpec.describe Employers::EmployerReactor do
         let(:date) { Date.new(2024, 2, 21) }
 
         it "does not call SmtpService#send_weekly_employer_update" do
-          expect_any_instance_of(CommandService).not_to receive(:create!)
+          expect_any_instance_of(MessageService).not_to receive(:create!)
 
           subject
         end

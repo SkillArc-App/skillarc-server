@@ -8,7 +8,7 @@ RSpec.describe Klayvio::ApplicationStatusUpdated do
         :applicant_status_updated,
         version: 3,
         aggregate_id: job.id,
-        data: Events::ApplicantStatusUpdated::Data::V3.new(
+        data: {
           applicant_id: applicant.id,
           applicant_first_name: "John",
           applicant_last_name: "Chabot",
@@ -20,7 +20,7 @@ RSpec.describe Klayvio::ApplicationStatusUpdated do
           employer_name: "A employer",
           employment_title: "A title",
           status: "new"
-        )
+        }
       )
     end
     let(:job) { create(:job) }

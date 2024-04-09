@@ -2,8 +2,8 @@ module Coaches
   class LeadsController < ApplicationController
     include Secured
     include CoachAuth
-    include EventEmitter
-    include CommandEmitter
+    include MessageEmitter
+    include MessageEmitter
 
     before_action :authorize
     before_action :coach_authorize
@@ -14,14 +14,12 @@ module Coaches
     end
 
     def create
-      with_event_service do
-        with_command_service do
-          CoachesReactor.new(event_service:, command_service:).add_lead(
-            **lead_hash,
-            lead_captured_by: coach.email,
-            trace_id: request.request_id
-          )
-        end
+      with_message_service do
+        CoachesReactor.new(message_service:).add_lead(
+          **lead_hash,
+          lead_captured_by: coach.email,
+          trace_id: request.request_id
+        )
       end
 
       head :created

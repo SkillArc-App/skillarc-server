@@ -22,7 +22,7 @@ RSpec.describe Messages::Schema do
       expect(MessageService)
         .to receive(:register)
         .with(
-          message_schema: be_a(described_class)
+          schema: be_a(described_class)
         ).and_call_original
 
       expect(subject.data).to eq(data)
@@ -55,7 +55,7 @@ RSpec.describe Messages::Schema do
       expect(MessageService)
         .to receive(:register)
         .with(
-          message_schema: be_a(described_class)
+          schema: be_a(described_class)
         ).and_call_original
 
       expect(subject.data).to eq(data)

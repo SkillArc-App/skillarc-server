@@ -3,8 +3,8 @@ module Coaches
     def reset_for_replay; end
 
     def add_lead(lead_captured_by:, lead_id:, phone_number:, first_name:, last_name:, trace_id:, email: nil) # rubocop:disable Metrics/ParameterLists
-      event_service.create!(
-        event_schema: Events::LeadAdded::V2,
+      message_service.create!(
+        schema: Events::LeadAdded::V2,
         context_id: lead_id,
         trace_id:,
         data: {
@@ -19,8 +19,8 @@ module Coaches
     end
 
     def add_note(context_id:, originator:, note:, note_id:, trace_id:)
-      event_service.create!(
-        event_schema: Events::NoteAdded::V3,
+      message_service.create!(
+        schema: Events::NoteAdded::V3,
         context_id:,
         trace_id:,
         data: {
@@ -32,8 +32,8 @@ module Coaches
     end
 
     def delete_note(context_id:, originator:, note_id:, trace_id:)
-      event_service.create!(
-        event_schema: Events::NoteDeleted::V3,
+      message_service.create!(
+        schema: Events::NoteDeleted::V3,
         context_id:,
         trace_id:,
         data: {
@@ -44,8 +44,8 @@ module Coaches
     end
 
     def modify_note(context_id:, originator:, note_id:, note:, trace_id:)
-      event_service.create!(
-        event_schema: Events::NoteModified::V3,
+      message_service.create!(
+        schema: Events::NoteModified::V3,
         context_id:,
         trace_id:,
         data: {
@@ -59,8 +59,8 @@ module Coaches
     def certify(seeker_id:, coach:, trace_id:)
       user = User.find(coach.user_id)
 
-      event_service.create!(
-        event_schema: Events::SeekerCertified::V1,
+      message_service.create!(
+        schema: Events::SeekerCertified::V1,
         seeker_id:,
         trace_id:,
         data: {
@@ -73,8 +73,8 @@ module Coaches
     end
 
     def recommend_job(context_id:, job_id:, coach:, trace_id:)
-      event_service.create!(
-        event_schema: Events::JobRecommended::V2,
+      message_service.create!(
+        schema: Events::JobRecommended::V2,
         context_id:,
         trace_id:,
         data: {
@@ -85,8 +85,8 @@ module Coaches
     end
 
     def update_barriers(context_id:, barriers:, trace_id:)
-      event_service.create!(
-        event_schema: Events::BarrierUpdated::V2,
+      message_service.create!(
+        schema: Events::BarrierUpdated::V2,
         context_id:,
         trace_id:,
         data: {
@@ -96,8 +96,8 @@ module Coaches
     end
 
     def assign_coach(context_id:, coach_id:, coach_email:, trace_id:)
-      event_service.create!(
-        event_schema: Events::CoachAssigned::V2,
+      message_service.create!(
+        schema: Events::CoachAssigned::V2,
         context_id:,
         trace_id:,
         data: {
@@ -108,8 +108,8 @@ module Coaches
     end
 
     def update_skill_level(context_id:, skill_level:, trace_id:)
-      event_service.create!(
-        event_schema: Events::SkillLevelUpdated::V2,
+      message_service.create!(
+        schema: Events::SkillLevelUpdated::V2,
         context_id:,
         trace_id:,
         data: {
@@ -164,10 +164,10 @@ module Coaches
       coach = Coach.find_by(email: message.data.lead_captured_by)
       coach ||= CoachAssignmentService.round_robin_assignment
 
-      command_service.create!(
+      message_service.create!(
         trace_id: message.trace_id,
         context_id: message.aggregate.context_id,
-        command_schema: Commands::AssignCoach::V1,
+        schema: Commands::AssignCoach::V1,
         data: {
           coach_email: coach.email
         }
@@ -180,10 +180,10 @@ module Coaches
 
       coach = CoachAssignmentService.round_robin_assignment
 
-      command_service.create!(
+      message_service.create!(
         trace_id: message.trace_id,
         context_id: message.aggregate.user_id,
-        command_schema: Commands::AssignCoach::V1,
+        schema: Commands::AssignCoach::V1,
         data: {
           coach_email: coach.email
         }
@@ -196,8 +196,8 @@ module Coaches
       csc = CoachSeekerContext.find_by(context_id: message.aggregate_id)
       return if csc&.phone_number.nil?
 
-      command_service.create!(
-        command_schema: Commands::SendSms::V1,
+      message_service.create!(
+        schema: Commands::SendSms::V1,
         seeker_id: csc.seeker_id,
         trace_id: message.trace_id,
         data: {

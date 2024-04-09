@@ -3,7 +3,7 @@ class ProfilesController < ApplicationController
   include Admin
   include Cereal
   include SeekerAuth
-  include EventEmitter
+  include MessageEmitter
 
   before_action :authorize, only: %i[index]
   before_action :admin_authorize, only: %i[index]
@@ -31,7 +31,7 @@ class ProfilesController < ApplicationController
   end
 
   def show
-    with_event_service do
+    with_message_service do
       render json: SeekerService.new(seeker).get(user_id: current_user&.id, seeker_editor: seeker_editor?)
     end
   end

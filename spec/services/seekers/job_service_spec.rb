@@ -13,13 +13,13 @@ RSpec.describe Seekers::JobService do
     let(:elevator_pitch) { "New Elevator Pitch" }
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::ElevatorPitchCreated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::ElevatorPitchCreated::V1,
         seeker_id: seeker.id,
-        data: Events::ElevatorPitchCreated::Data::V1.new(
+        data: {
           job_id: job.id,
           pitch: elevator_pitch
-        )
+        }
       )
 
       subject

@@ -5,7 +5,7 @@ class EmployerApplicantNotificationMailerPreview < ActionMailer::Preview
       :message,
       :notify_employer_of_applicant,
       version: 1,
-      data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
+      data: {
         employment_title: Faker::Job.title,
         recepent_email: Faker::Internet.email,
 
@@ -15,7 +15,7 @@ class EmployerApplicantNotificationMailerPreview < ActionMailer::Preview
         applicant_seeker_id: SecureRandom.uuid,
         applicant_email: "applicant@skillarc.com",
         applicant_phone_number: "1 555 555 5555"
-      )
+      }
     )
 
     EmployerApplicantNotificationMailer.with(message:).notify_employer

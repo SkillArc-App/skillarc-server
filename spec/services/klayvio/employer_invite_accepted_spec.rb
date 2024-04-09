@@ -3,12 +3,12 @@ require 'rails_helper'
 RSpec.describe Klayvio::EmployerInviteAccepted do
   describe "#call" do
     let(:message) do
-      build(:message, :employer_invite_accepted, data: Events::EmployerInviteAccepted::Data::V1.new(
-        employer_invite_id:,
-        invite_email: "sbf@crook.com",
-        employer_id:,
-        employer_name: "FTX"
-      ))
+      build(:message, :employer_invite_accepted, data: {
+              employer_invite_id:,
+              invite_email: "sbf@crook.com",
+              employer_id:,
+              employer_name: "FTX"
+            })
     end
     let(:employer_id) { SecureRandom.uuid }
     let(:employer_invite_id) { SecureRandom.uuid }

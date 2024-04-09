@@ -4,13 +4,13 @@ class MessageService
   SchemaAlreadyDefinedError = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
 
-  def create!(message_schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
-    raise NotEventSchemaError unless message_schema.is_a?(Messages::Schema)
+  def create!(schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    raise NotEventSchemaError unless schema.is_a?(Messages::Schema)
 
-    aggregate = message_schema.aggregate.new(**)
+    aggregate = schema.aggregate.new(**)
 
-    data = message_schema.data.new(**data) if data.is_a?(Hash)
-    metadata = message_schema.metadata.new(**metadata) if metadata.is_a?(Hash)
+    data = schema.data.new(**data) if data.is_a?(Hash)
+    metadata = schema.metadata.new(**metadata) if metadata.is_a?(Hash)
 
     message = Message.new(
       id:,
@@ -19,7 +19,7 @@ class MessageService
       data:,
       trace_id:,
       metadata:,
-      schema: message_schema
+      schema:
     )
 
     Event.from_message!(message)
@@ -36,27 +36,27 @@ class MessageService
     end
   end
 
-  def self.register(message_schema:)
-    raise NotSchemaError unless message_schema.is_a?(Messages::Schema)
+  def self.register(schema:)
+    raise NotSchemaError unless schema.is_a?(Messages::Schema)
 
-    registry[message_schema.message_type] ||= {}
-    Rails.logger.debug { "[Event Registry] the event_type #{message_schema.message_type} version: #{message_schema.version} was overritten" } if registry[message_schema.message_type][message_schema.version].present?
-    registry[message_schema.message_type][message_schema.version] = message_schema
+    registry[schema.message_type] ||= {}
+    Rails.logger.debug { "[Message Registry] the event_type #{schema.message_type} version: #{schema.version} was overritten" } if registry[schema.message_type][schema.version].present?
+    registry[schema.message_type][schema.version] = schema
   end
 
   def self.get_schema(message_type:, version:)
-    message_schema = registry.dig(message_type, version)
-    raise SchemaNotFoundError, "event_type: #{message_type} version: #{version}" if message_schema.blank?
+    schema = registry.dig(message_type, version)
+    raise SchemaNotFoundError, "event_type: #{message_type} version: #{version}" if schema.blank?
 
-    message_schema
+    schema
   end
 
   def self.all_messages(schema)
     Event.where(version: schema.version, event_type: schema.message_type).map(&:message)
   end
 
-  def self.migrate_event(message_schema:, &block)
-    Event.where(event_type: message_schema.message_type, version: message_schema.version).find_each do |e|
+  def self.migrate_event(schema:, &block)
+    Event.where(event_type: schema.message_type, version: schema.version).find_each do |e|
       block.call(e.message)
     end
   end

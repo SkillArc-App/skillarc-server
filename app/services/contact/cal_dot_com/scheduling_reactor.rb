@@ -24,35 +24,31 @@ module Contact
 
         lead_id = SecureRandom.uuid
 
-        add_lead_data = Commands::AddLead::Data::V1.new(
-          email: attendee[:email],
-          lead_id:,
-          phone_number:,
-          first_name: attendee[:firstName],
-          last_name: attendee[:lastName],
-          lead_captured_by: "cal.com"
-        )
-
-        command_service.create!(
+        message_service.create!(
           trace_id:,
           context_id: lead_id,
-          command_schema: Commands::AddLead::V1,
-          data: add_lead_data
+          schema: Commands::AddLead::V1,
+          data: {
+            email: attendee[:email],
+            lead_id:,
+            phone_number:,
+            first_name: attendee[:firstName],
+            last_name: attendee[:lastName],
+            lead_captured_by: "cal.com"
+          }
         )
 
         return if payload[:additionalNotes].blank?
 
-        add_note_data = Commands::AddNote::Data::V1.new(
-          originator: "cal.com",
-          note: "From #{attendee[:firstName]} #{attendee[:lastName]} on the meeting invite: #{payload[:additionalNotes]}",
-          note_id: SecureRandom.uuid
-        )
-
-        command_service.create!(
+        message_service.create!(
           trace_id:,
           context_id: lead_id,
-          command_schema: Commands::AddNote::V1,
-          data: add_note_data
+          schema: Commands::AddNote::V1,
+          data: {
+            originator: "cal.com",
+            note: "From #{attendee[:firstName]} #{attendee[:lastName]} on the meeting invite: #{payload[:additionalNotes]}",
+            note_id: SecureRandom.uuid
+          }
         )
       end
     end

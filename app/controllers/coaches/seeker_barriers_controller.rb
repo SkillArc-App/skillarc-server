@@ -2,14 +2,14 @@ module Coaches
   class SeekerBarriersController < ApplicationController
     include Secured
     include CoachAuth
-    include EventEmitter
+    include MessageEmitter
 
     before_action :authorize
     before_action :coach_authorize
 
     def update_all
-      with_event_service do
-        CoachesReactor.new(event_service:).update_barriers(
+      with_message_service do
+        CoachesReactor.new(message_service:).update_barriers(
           context_id: params[:context_id],
           barriers: params[:barriers],
           trace_id: request.request_id

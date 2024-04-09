@@ -5,7 +5,7 @@ RSpec.describe MessageService do
     subject do
       described_class.new.create!(
         id:,
-        message_schema:,
+        schema:,
         user_id:,
         trace_id:,
         data:,
@@ -24,7 +24,7 @@ RSpec.describe MessageService do
     let(:id) { SecureRandom.uuid }
 
     context "when the event_schema is not a Messages::Schema" do
-      let(:message_schema) { 10 }
+      let(:schema) { 10 }
 
       it "raises a NotEventSchemaError" do
         expect { subject }.to raise_error(described_class::NotEventSchemaError)
@@ -32,7 +32,7 @@ RSpec.describe MessageService do
     end
 
     context "when event_schema is a Messages::Schema" do
-      let!(:message_schema) do
+      let!(:schema) do
         Messages::Schema.active(
           data: Events::SeekerViewed::Data::V1,
           metadata: Events::ApplicantStatusUpdated::MetaData::V1,
@@ -110,7 +110,7 @@ RSpec.describe MessageService do
             subject
               .create!(
                 id:,
-                message_schema:,
+                schema:,
                 user_id:,
                 trace_id:,
                 data:,
@@ -129,7 +129,7 @@ RSpec.describe MessageService do
     let(:instance) { described_class.new }
 
     let(:message_type) { Messages::Types::CHAT_CREATED }
-    let!(:message_schema) do
+    let!(:schema) do
       Messages::Schema.active(
         data: Messages::Nothing,
         metadata: Messages::Nothing,
@@ -150,7 +150,7 @@ RSpec.describe MessageService do
       instance
         .create!(
           id:,
-          message_schema:,
+          schema:,
           user_id:,
           trace_id:,
           data:,
@@ -169,11 +169,11 @@ RSpec.describe MessageService do
 
   describe ".register" do
     subject do
-      described_class.register(message_schema:)
+      described_class.register(schema:)
     end
 
     context "passed something other than a Event::Schema" do
-      let(:message_schema) { { not: "a schema" } }
+      let(:schema) { { not: "a schema" } }
 
       it "raises a NotSchemaError" do
         expect { subject }.to raise_error(described_class::NotSchemaError)
@@ -214,18 +214,18 @@ RSpec.describe MessageService do
       build(
         :message,
         schema: Events::MetCareerCoachUpdated::V1,
-        data: Events::MetCareerCoachUpdated::Data::V1.new(
+        data: {
           met_career_coach: false
-        )
+        }
       )
     end
     let(:message2) do
       build(
         :message,
         schema: Events::MetCareerCoachUpdated::V1,
-        data: Events::MetCareerCoachUpdated::Data::V1.new(
+        data: {
           met_career_coach: false
-        )
+        }
       )
     end
     let(:message3) do
@@ -274,14 +274,14 @@ RSpec.describe MessageService do
   end
 
   describe ".migrate_event" do
-    let(:message_schema) { Events::UserCreated::V1 }
+    let(:schema) { Events::UserCreated::V1 }
 
     let!(:message1) do
       Message.new(
         id: SecureRandom.uuid,
         aggregate: Aggregates::User.new(user_id: SecureRandom.uuid),
         trace_id: SecureRandom.uuid,
-        schema: message_schema,
+        schema:,
         occurred_at: Time.zone.parse('2000-1-1'),
         data: Events::UserCreated::Data::V1.new(first_name: "John"),
         metadata: Messages::Nothing
@@ -292,7 +292,7 @@ RSpec.describe MessageService do
         id: SecureRandom.uuid,
         aggregate: Aggregates::User.new(user_id: SecureRandom.uuid),
         trace_id: SecureRandom.uuid,
-        schema: message_schema,
+        schema:,
         occurred_at: Time.zone.parse('2000-1-1'),
         data: Events::UserCreated::Data::V1.new(first_name: "Chris"),
         metadata: Messages::Nothing
@@ -302,7 +302,7 @@ RSpec.describe MessageService do
     let!(:event2) { Event.from_message!(message2) }
 
     it "passes each message for the schema to the provided block" do
-      described_class.migrate_event(message_schema:) do |message|
+      described_class.migrate_event(schema:) do |message|
         expect([message1, message2]).to include(message)
       end
     end

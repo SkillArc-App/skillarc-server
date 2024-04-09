@@ -29,7 +29,7 @@ RSpec.describe User do
     end
 
     context "when there is a job saved event" do
-      let!(:event) { create(:event, :job_saved, aggregate_id: subject.id, data: Events::JobSaved::Data::V1.new(job_id: job.id, employment_title: "A", employer_name: "B").to_h) }
+      let!(:event) { create(:event, :job_saved, aggregate_id: subject.id, data: { job_id: job.id, employment_title: "A", employer_name: "B" }) }
       let(:job) { create(:job) }
 
       it "returns an array with the job" do
@@ -42,7 +42,7 @@ RSpec.describe User do
             :event,
             :job_unsaved,
             aggregate_id: subject.id,
-            data: Events::JobSaved::Data::V1.new(job_id: job.id, employment_title: "A", employer_name: "B").to_h,
+            data: { job_id: job.id, employment_title: "A", employer_name: "B" },
             occurred_at: event.message.occurred_at + 1.second
           )
         end

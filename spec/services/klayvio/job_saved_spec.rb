@@ -9,11 +9,11 @@ RSpec.describe Klayvio::JobSaved do
         :message,
         :job_saved,
         aggregate_id: user.id,
-        data: Events::JobSaved::Data::V1.new(
+        data: {
           job_id:,
           employment_title: "Welder",
           employer_name: "Acme Inc."
-        )
+        }
       )
     end
 

@@ -1,6 +1,6 @@
 module Jobs
   class JobTagService
-    extend EventEmitter
+    extend MessageEmitter
 
     def self.create(job, tag)
       job_tag = JobTag.create!(
@@ -9,13 +9,13 @@ module Jobs
         tag:
       )
 
-      event_service.create!(
-        event_schema: Events::JobTagCreated::V1,
+      message_service.create!(
+        schema: Events::JobTagCreated::V1,
         job_id: job.id,
-        data: Events::JobTagCreated::Data::V1.new(
+        data: {
           job_id: job.id,
           tag_id: tag.id
-        )
+        }
       )
 
       job_tag
@@ -24,14 +24,14 @@ module Jobs
     def self.destroy(job_tag)
       job_tag.destroy!
 
-      event_service.create!(
-        event_schema: Events::JobTagDestroyed::V2,
+      message_service.create!(
+        schema: Events::JobTagDestroyed::V2,
         job_id: job_tag.job_id,
-        data: Events::JobTagDestroyed::Data::V2.new(
+        data: {
           job_id: job_tag.job_id,
           job_tag_id: job_tag.id,
           tag_id: job_tag.tag_id
-        )
+        }
       )
     end
   end

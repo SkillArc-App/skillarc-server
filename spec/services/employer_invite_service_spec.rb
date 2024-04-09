@@ -10,15 +10,15 @@ RSpec.describe EmployerInviteService do
 
   describe "#accept" do
     it "creates an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::EmployerInviteAccepted::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::EmployerInviteAccepted::V1,
         employer_id: employer_invite.employer_id,
-        data: Events::EmployerInviteAccepted::Data::V1.new(
+        data: {
           employer_invite_id: employer_invite.id,
           invite_email: employer_invite.email,
           employer_id: employer_invite.employer_id,
           employer_name: employer_invite.employer.name
-        )
+        }
       ).and_call_original
 
       subject.accept

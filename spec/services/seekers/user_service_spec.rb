@@ -24,25 +24,25 @@ RSpec.describe Seekers::UserService do
     end
 
     it "publishes a user_updated event" do
-      allow_any_instance_of(EventService).to receive(:create!)
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::UserUpdated::V1,
+      allow_any_instance_of(MessageService).to receive(:create!)
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::UserUpdated::V1,
         user_id:,
-        data: Events::UserUpdated::Data::V1.new(
+        data: {
           first_name:,
           last_name:,
           phone_number:,
           zip_code:
-        ),
+        },
         occurred_at: be_a(Time)
       ).and_call_original
 
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::SeekerUpdated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::SeekerUpdated::V1,
         seeker_id: seeker.id,
-        data: Events::SeekerUpdated::Data::V1.new(
+        data: {
           about:
-        ),
+        },
         occurred_at: be_a(Time)
       ).and_call_original
 

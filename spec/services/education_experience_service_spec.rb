@@ -19,9 +19,10 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
-      expect(Events::EducationExperienceCreated::Data::V1)
-        .to receive(:new)
-        .with(
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::EducationExperienceCreated::V1,
+        user_id: seeker.user.id,
+        data: {
           id: be_present,
           organization_name: "University of Cincinnati",
           title: "Student",
@@ -29,12 +30,7 @@ RSpec.describe EducationExperienceService do
           gpa: "3.5",
           activities: "Activities",
           seeker_id: seeker.id
-        ).and_call_original
-
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::EducationExperienceCreated::V1,
-        user_id: seeker.user.id,
-        data: be_a(Events::EducationExperienceCreated::Data::V1),
+        },
         occurred_at: be_a(Time)
       )
 
@@ -75,10 +71,10 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::EducationExperienceUpdated::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::EducationExperienceUpdated::V1,
         user_id: seeker.user.id,
-        data: Events::EducationExperienceUpdated::Data::V1.new(
+        data: {
           id: education_experience.id,
           organization_name: "University of Cincinnati",
           title: "Student",
@@ -86,7 +82,7 @@ RSpec.describe EducationExperienceService do
           gpa: "3.5",
           activities: "Activities",
           seeker_id: seeker.id
-        ),
+        },
         occurred_at: be_a(Time)
       )
 
@@ -108,12 +104,12 @@ RSpec.describe EducationExperienceService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(EventService).to receive(:create!).with(
-        event_schema: Events::EducationExperienceDeleted::V1,
+      expect_any_instance_of(MessageService).to receive(:create!).with(
+        schema: Events::EducationExperienceDeleted::V1,
         seeker_id: seeker.id,
-        data: Events::EducationExperienceDeleted::Data::V1.new(
+        data: {
           id: education_experience.id
-        ),
+        },
         occurred_at: be_a(Time)
       )
 

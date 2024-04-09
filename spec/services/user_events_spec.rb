@@ -13,7 +13,7 @@ RSpec.describe UserEvents do
         :education_experience_created,
         occurred_at:,
         aggregate_id: user.id,
-        data: Events::EducationExperienceCreated::Data::V1.new(
+        data: {
           organization_name: "Test University",
           id: SecureRandom.uuid,
           title: "A title",
@@ -22,7 +22,7 @@ RSpec.describe UserEvents do
           gpa: "1.8",
           profile_id: SecureRandom.uuid,
           seeker_id: SecureRandom.uuid
-        ).to_h
+        }
       )
     end
     let!(:work_experience) do
@@ -31,7 +31,7 @@ RSpec.describe UserEvents do
         :experience_created,
         occurred_at:,
         aggregate_id: user.id,
-        data: Events::ExperienceCreated::Data::V1.new(
+        data: {
           id: SecureRandom.uuid,
           organization_name: "Test Company",
           position: "Test Position",
@@ -41,7 +41,7 @@ RSpec.describe UserEvents do
           is_current: false,
           profile_id: SecureRandom.uuid,
           seeker_id: SecureRandom.uuid
-        ).to_h
+        }
       )
     end
     let!(:onboarding_complete_event) do
@@ -50,14 +50,14 @@ RSpec.describe UserEvents do
         :onboarding_completed,
         occurred_at:,
         aggregate_id: user.id,
-        data: Events::OnboardingCompleted::Data::V1.new(
+        data: {
           name: {},
           experience: nil,
           education: nil,
           trainingProvider: nil,
           other: nil,
           opportunityInterests: nil
-        ).to_h
+        }
       )
     end
     let!(:job_saved_event) do
@@ -66,11 +66,11 @@ RSpec.describe UserEvents do
         :job_saved,
         occurred_at:,
         aggregate_id: user.id,
-        data: Events::JobSaved::Data::V1.new(
+        data: {
           employment_title: "Test Job",
           job_id: SecureRandom.uuid,
           employer_name: "A"
-        ).to_h
+        }
       )
     end
 
@@ -81,7 +81,7 @@ RSpec.describe UserEvents do
         occurred_at:,
         aggregate_id: job.id,
         version: 5,
-        data: Events::ApplicantStatusUpdated::Data::V3.new(
+        data: {
           applicant_id: SecureRandom.uuid,
           applicant_first_name: "John",
           applicant_last_name: "Chabot",
@@ -94,7 +94,7 @@ RSpec.describe UserEvents do
           employer_name: "Test Employer",
           status: "new",
           reasons: []
-        ).to_h
+        }
       )
     end
 

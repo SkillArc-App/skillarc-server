@@ -9,12 +9,12 @@ RSpec.describe Employers::EmployerAggregator do
         :message,
         :employer_created,
         aggregate_id: employer_id,
-        data: Events::EmployerCreated::Data::V1.new(
+        data: {
           name: "name",
           location: "location",
           bio: "bio",
           logo_url: "logo_url"
-        )
+        }
       )
     end
     let(:employer_updated) do
@@ -22,24 +22,24 @@ RSpec.describe Employers::EmployerAggregator do
         :message,
         :employer_updated,
         aggregate_id: employer_id,
-        data: Events::EmployerUpdated::Data::V1.new(
+        data: {
           name: "name",
           location: "location",
           bio: "bio",
           logo_url: "logo_url"
-        )
+        }
       )
     end
     let(:employer_invite_accepted) do
       build(
         :message,
         :employer_invite_accepted,
-        data: Events::EmployerInviteAccepted::Data::V1.new(
+        data: {
           employer_invite_id: SecureRandom.uuid,
           invite_email: "invite_email",
           employer_id:,
           employer_name: "employer_name"
-        )
+        }
       )
     end
     let(:job_created) do
@@ -48,7 +48,7 @@ RSpec.describe Employers::EmployerAggregator do
         :job_created,
         aggregate_id: job_id,
         version: 3,
-        data: Events::JobCreated::Data::V3.new(
+        data: {
           category: Job::Categories::MARKETPLACE,
           employer_id:,
           employer_name: "employer_name",
@@ -62,7 +62,7 @@ RSpec.describe Employers::EmployerAggregator do
           work_days: "M-F",
           requirements_description: "requirements description",
           industry: [Job::Industries::MANUFACTURING]
-        )
+        }
       )
     end
     let(:job_updated) do
@@ -89,7 +89,7 @@ RSpec.describe Employers::EmployerAggregator do
       build(:message,
             schema: Events::ApplicantStatusUpdated::V5,
             occurred_at: Time.zone.local(2019, 1, 1),
-            data: Events::ApplicantStatusUpdated::Data::V4.new(
+            data: {
               applicant_id: SecureRandom.uuid,
               applicant_first_name: "first_name",
               applicant_last_name: "last_name",
@@ -109,14 +109,14 @@ RSpec.describe Employers::EmployerAggregator do
                   reason_description: "reason_description"
                 )
               ]
-            ),
+            },
             metadata: Events::ApplicantStatusUpdated::MetaData::V1.new)
     end
     let(:seeker_certified) do
-      build(:message, :seeker_certified, version: 1, data: Events::SeekerCertified::Data::V1.new(
-        coach_email: "hannah@skillarc.com",
-        coach_id: SecureRandom.uuid
-      ))
+      build(:message, :seeker_certified, version: 1, data: {
+              coach_email: "hannah@skillarc.com",
+              coach_id: SecureRandom.uuid
+            })
     end
 
     let(:employer_id) { SecureRandom.uuid }
@@ -196,10 +196,10 @@ RSpec.describe Employers::EmployerAggregator do
           build(
             :message,
             :job_owner_assigned,
-            data: Events::JobOwnerAssigned::Data::V1.new(
+            data: {
               job_id:,
               owner_email: recruiter.email
-            )
+            }
           )
         )
       end.to change { Employers::JobOwner.count }.by(1)

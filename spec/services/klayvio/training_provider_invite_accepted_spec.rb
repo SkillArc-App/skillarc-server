@@ -7,12 +7,12 @@ RSpec.describe Klayvio::TrainingProviderInviteAccepted do
         :message,
         message_type: Events::TrainingProviderInviteAccepted::V1.message_type,
         version: Events::TrainingProviderInviteAccepted::V1.version,
-        data: Events::TrainingProviderInviteAccepted::Data::V1.new(
+        data: {
           training_provider_invite_id: SecureRandom.uuid,
           invite_email: "sfb@crook.com",
           training_provider_id:,
           training_provider_name: "FTX"
-        )
+        }
       )
     end
     let(:training_provider_id) { SecureRandom.uuid }

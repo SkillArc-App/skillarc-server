@@ -1,14 +1,14 @@
 class LearnedSkillsController < ApplicationController
   include Secured
   include Admin
-  include EventEmitter
+  include MessageEmitter
 
   before_action :authorize
   before_action :admin_authorize, only: %i[create destroy]
   before_action :set_job
 
   def create
-    with_event_service do
+    with_message_service do
       render json: Jobs::LearnedSkillService.create(job, params[:master_skill_id])
     end
   end
@@ -16,7 +16,7 @@ class LearnedSkillsController < ApplicationController
   def destroy
     learned_skill = job.learned_skills.find(params[:id])
 
-    with_event_service do
+    with_message_service do
       Jobs::LearnedSkillService.destroy(learned_skill)
     end
 

@@ -9,14 +9,14 @@ RSpec.describe Klayvio::ChatMessageReceived do
         :message,
         :chat_message_sent,
         aggregate_id: job.id,
-        data: Events::ChatMessageSent::Data::V1.new(
+        data: {
           applicant_id: applicant.id,
           seeker_id: applicant.seeker.id,
           employer_name: "Employer name",
           employment_title: "Employment title",
           message: "A message",
           from_user_id: sender_id
-        ),
+        },
         occurred_at:
       )
     end

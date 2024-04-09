@@ -38,10 +38,10 @@ RSpec.describe Message do
         build(
           :message,
           schema: Events::DayElapsed::V1,
-          data: Events::DayElapsed::Data::V1.new(
+          data: {
             date: Date.new(2000, 1, 1),
             day_of_week: Events::DayElapsed::Data::DaysOfWeek::WEDNESDAY
-          ),
+          },
           occurred_at:
         )
       end
@@ -88,10 +88,10 @@ RSpec.describe Message do
           version: Commands::SendSms::V1.version,
           message_type: Commands::SendSms::V1.message_type,
           trace_id:,
-          data: Commands::SendSms::Data::V1.new(
+          data: {
             phone_number: "1234567890",
             message: "Hello!"
-          )
+          }
         )
 
         message2 = build(
@@ -99,10 +99,10 @@ RSpec.describe Message do
           version: Commands::SendSms::V1.version,
           message_type: Commands::SendSms::V1.message_type,
           trace_id:,
-          data: Commands::SendSms::Data::V1.new(
+          data: {
             phone_number: "1234567890",
             message: "Hello!"
-          )
+          }
         )
 
         expect(message1.checksum).to eq("f20b3447-b411-3932-9f27-ceb788c712b8")
@@ -120,10 +120,10 @@ RSpec.describe Message do
           version: Commands::SendSms::V1.version,
           message_type: Commands::SendSms::V1.message_type,
           trace_id: trace_id1,
-          data: Commands::SendSms::Data::V1.new(
+          data: {
             phone_number: "1234567890",
             message: "Hello!"
-          )
+          }
         )
 
         message2 = build(
@@ -131,10 +131,10 @@ RSpec.describe Message do
           version: Commands::SendSms::V1.version,
           message_type: Commands::SendSms::V1.message_type,
           trace_id: trace_id2,
-          data: Commands::SendSms::Data::V1.new(
+          data: {
             phone_number: "1234567890",
             message: "Hello!"
-          )
+          }
         )
 
         expect(message1.checksum).to eq("f20b3447-b411-3932-9f27-ceb788c712b8")
@@ -151,10 +151,10 @@ RSpec.describe Message do
           version: Commands::SendSms::V1.version,
           message_type: Commands::SendSms::V1.message_type,
           trace_id:,
-          data: Commands::SendSms::Data::V1.new(
+          data: {
             phone_number: "1234567890",
             message: "Hello!"
-          )
+          }
         )
 
         message2 = build(
@@ -162,10 +162,10 @@ RSpec.describe Message do
           version: Commands::SendSms::V1.version,
           message_type: Commands::SendSms::V1.message_type,
           trace_id:,
-          data: Commands::SendSms::Data::V1.new(
+          data: {
             phone_number: "1234567890",
             message: "Hi!"
-          )
+          }
         )
 
         expect(message1.checksum).to eq("f20b3447-b411-3932-9f27-ceb788c712b8")

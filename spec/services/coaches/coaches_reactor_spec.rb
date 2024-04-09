@@ -6,9 +6,9 @@ RSpec.describe Coaches::CoachesReactor do
   let(:note_id) { "78f22f6c-a770-46fc-a83c-1ad6cda4b8f9" }
   let(:trace_id) { "42000038-7e82-48ca-ac18-72ebc08bdbeb" }
   let(:updated_note) { "This note was updated" }
-  let(:consumer) { described_class.new(event_service:, command_service:) }
-  let(:event_service) { EventService.new }
-  let(:command_service) { CommandService.new }
+  let(:consumer) { described_class.new(message_service:) }
+  let(:message_service) { MessageService.new }
+  let(:message_service) { MessageService.new }
 
   it_behaves_like "a message consumer"
 
@@ -20,22 +20,22 @@ RSpec.describe Coaches::CoachesReactor do
         build(
           :message,
           schema: Commands::AddLead::V1,
-          data: Commands::AddLead::Data::V1.new(
+          data: {
             email: "an@email.com",
             lead_id: SecureRandom.uuid,
             phone_number: "+1740-333-5555",
             first_name: "Chris",
             last_name: "Brauns",
             lead_captured_by: "a computer"
-          )
+          }
         )
       end
 
       it "fires off a lead_added event" do
-        expect(event_service)
+        expect(message_service)
           .to receive(:create!)
           .with(
-            event_schema: Events::LeadAdded::V2,
+            schema: Events::LeadAdded::V2,
             context_id: message.data.lead_id,
             trace_id: message.trace_id,
             data: {
@@ -57,19 +57,19 @@ RSpec.describe Coaches::CoachesReactor do
         build(
           :message,
           schema: Commands::AddNote::V1,
-          data: Commands::AddNote::Data::V1.new(
+          data: {
             originator: "Cool Person",
             note: "This is a note",
             note_id: SecureRandom.uuid
-          )
+          }
         )
       end
 
       it "fires off a noted_added event" do
-        expect(event_service)
+        expect(message_service)
           .to receive(:create!)
           .with(
-            event_schema: Events::NoteAdded::V3,
+            schema: Events::NoteAdded::V3,
             context_id: message.aggregate.context_id,
             trace_id: message.trace_id,
             data: {
@@ -88,9 +88,9 @@ RSpec.describe Coaches::CoachesReactor do
         build(
           :message,
           schema: Commands::AssignCoach::V1,
-          data: Commands::AssignCoach::Data::V1.new(
+          data: {
             coach_email: "katina@skillarc.com"
-          )
+          }
         )
       end
 
@@ -98,10 +98,10 @@ RSpec.describe Coaches::CoachesReactor do
         let!(:coach) { create(:coaches__coach, email: "katina@skillarc.com") }
 
         it "fires off a lead_added event" do
-          expect(event_service)
+          expect(message_service)
             .to receive(:create!)
             .with(
-              event_schema: Events::CoachAssigned::V2,
+              schema: Events::CoachAssigned::V2,
               context_id: message.aggregate.context_id,
               trace_id: message.trace_id,
               data: {
@@ -116,7 +116,7 @@ RSpec.describe Coaches::CoachesReactor do
 
       context "when there isn't a coach for that email" do
         it "does not fire off an event" do
-          expect(event_service)
+          expect(message_service)
             .not_to receive(:create!)
 
           subject
@@ -153,7 +153,7 @@ RSpec.describe Coaches::CoachesReactor do
           expect(Coaches::CoachAssignmentService)
             .not_to receive(:round_robin_assignment)
 
-          expect(command_service)
+          expect(message_service)
             .not_to receive(:create!)
 
           subject
@@ -169,10 +169,10 @@ RSpec.describe Coaches::CoachesReactor do
             .to receive(:round_robin_assignment)
             .and_return(coach)
 
-          expect(command_service)
+          expect(message_service)
             .to receive(:create!)
             .with(
-              command_schema: Commands::AssignCoach::V1,
+              schema: Commands::AssignCoach::V1,
               context_id: message.aggregate.context_id,
               trace_id: message.trace_id,
               data: {
@@ -192,10 +192,10 @@ RSpec.describe Coaches::CoachesReactor do
         let(:lead_captured_by) { "an@email.com" }
 
         it "fires off a assign_coach command" do
-          expect(command_service)
+          expect(message_service)
             .to receive(:create!)
             .with(
-              command_schema: Commands::AssignCoach::V1,
+              schema: Commands::AssignCoach::V1,
               context_id: message.aggregate.context_id,
               trace_id: message.trace_id,
               data: {
@@ -229,7 +229,7 @@ RSpec.describe Coaches::CoachesReactor do
           expect(Coaches::CoachAssignmentService)
             .not_to receive(:round_robin_assignment)
 
-          expect(command_service)
+          expect(message_service)
             .not_to receive(:create!)
 
           subject
@@ -244,10 +244,10 @@ RSpec.describe Coaches::CoachesReactor do
             .to receive(:round_robin_assignment)
             .and_return(coach)
 
-          expect(command_service)
+          expect(message_service)
             .to receive(:create!)
             .with(
-              command_schema: Commands::AssignCoach::V1,
+              schema: Commands::AssignCoach::V1,
               context_id: message.aggregate.user_id,
               trace_id: message.trace_id,
               data: {
@@ -280,7 +280,7 @@ RSpec.describe Coaches::CoachesReactor do
         let(:aggregate_id) { SecureRandom.uuid }
 
         it "does nothing" do
-          expect(command_service)
+          expect(message_service)
             .not_to receive(:create!)
 
           subject
@@ -292,7 +292,7 @@ RSpec.describe Coaches::CoachesReactor do
         let(:aggregate_id) { coach_seeker_context.context_id }
 
         it "does nothing" do
-          expect(command_service)
+          expect(message_service)
             .not_to receive(:create!)
 
           subject
@@ -304,10 +304,10 @@ RSpec.describe Coaches::CoachesReactor do
         let(:aggregate_id) { coach_seeker_context.context_id }
 
         it "does nothing" do
-          expect(command_service)
+          expect(message_service)
             .to receive(:create!)
             .with(
-              command_schema: Commands::SendSms::V1,
+              schema: Commands::SendSms::V1,
               seeker_id: coach_seeker_context.seeker_id,
               trace_id: message.trace_id,
               data: {
@@ -332,8 +332,8 @@ RSpec.describe Coaches::CoachesReactor do
     let(:lead_id) { "ffc354f5-e1c3-4859-b9f0-1e94106ddc96" }
 
     it "creates an event" do
-      expect(event_service).to receive(:create!).with(
-        event_schema: Events::LeadAdded::V2,
+      expect(message_service).to receive(:create!).with(
+        schema: Events::LeadAdded::V2,
         context_id: lead_id,
         trace_id:,
         data: {
@@ -357,8 +357,8 @@ RSpec.describe Coaches::CoachesReactor do
     let(:context_id) { user_id }
 
     it "creates an event" do
-      expect(event_service).to receive(:create!).with(
-        event_schema: Events::NoteAdded::V3,
+      expect(message_service).to receive(:create!).with(
+        schema: Events::NoteAdded::V3,
         context_id:,
         trace_id:,
         data: {
@@ -379,8 +379,8 @@ RSpec.describe Coaches::CoachesReactor do
     let(:context_id) { user_id }
 
     it "creates an event" do
-      expect(event_service).to receive(:create!).with(
-        event_schema: Events::NoteDeleted::V3,
+      expect(message_service).to receive(:create!).with(
+        schema: Events::NoteDeleted::V3,
         context_id:,
         trace_id:,
         data: {
@@ -400,8 +400,8 @@ RSpec.describe Coaches::CoachesReactor do
     let(:context_id) { user_id }
 
     it "creates an event" do
-      expect(event_service).to receive(:create!).with(
-        event_schema: Events::NoteModified::V3,
+      expect(message_service).to receive(:create!).with(
+        schema: Events::NoteModified::V3,
         context_id:,
         trace_id:,
         data: {
@@ -423,8 +423,8 @@ RSpec.describe Coaches::CoachesReactor do
     let(:context_id) { user_id }
 
     it "creates an event" do
-      expect(event_service).to receive(:create!).with(
-        event_schema: Events::JobRecommended::V2,
+      expect(message_service).to receive(:create!).with(
+        schema: Events::JobRecommended::V2,
         context_id:,
         trace_id:,
         data: {
@@ -445,8 +445,8 @@ RSpec.describe Coaches::CoachesReactor do
     let(:seeker_id) { SecureRandom.uuid }
 
     it "creates an event" do
-      expect(event_service).to receive(:create!).with(
-        event_schema: Events::SeekerCertified::V1,
+      expect(message_service).to receive(:create!).with(
+        schema: Events::SeekerCertified::V1,
         seeker_id:,
         trace_id:,
         data: {
@@ -468,8 +468,8 @@ RSpec.describe Coaches::CoachesReactor do
     let(:context_id) { user_id }
 
     it "creates an event" do
-      expect(event_service).to receive(:create!).with(
-        event_schema: Events::BarrierUpdated::V2,
+      expect(message_service).to receive(:create!).with(
+        schema: Events::BarrierUpdated::V2,
         context_id:,
         trace_id:,
         data: {
@@ -488,8 +488,8 @@ RSpec.describe Coaches::CoachesReactor do
     let(:context_id) { user_id }
 
     it "creates an event" do
-      expect(event_service).to receive(:create!).with(
-        event_schema: Events::CoachAssigned::V2,
+      expect(message_service).to receive(:create!).with(
+        schema: Events::CoachAssigned::V2,
         context_id:,
         trace_id:,
         data: {
@@ -508,8 +508,8 @@ RSpec.describe Coaches::CoachesReactor do
     let(:context_id) { user_id }
 
     it "creates an event" do
-      expect(event_service).to receive(:create!).with(
-        event_schema: Events::SkillLevelUpdated::V2,
+      expect(message_service).to receive(:create!).with(
+        schema: Events::SkillLevelUpdated::V2,
         context_id:,
         trace_id:,
         data: {

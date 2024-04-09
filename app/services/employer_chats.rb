@@ -1,5 +1,5 @@
 class EmployerChats
-  include EventEmitter
+  include MessageEmitter
 
   Recruiter = Struct.new(:user, :employer_id)
 
@@ -48,32 +48,32 @@ class EmployerChats
 
     applicant_chat.messages.create!(user: recruiter.user, message:)
 
-    event_service.create!(
-      event_schema: Events::ChatMessageSent::V1,
+    message_service.create!(
+      schema: Events::ChatMessageSent::V1,
       job_id: applicant_chat.applicant.job_id,
-      data: Events::ChatMessageSent::Data::V1.new(
+      data: {
         applicant_id: applicant_chat.applicant.id,
         seeker_id: applicant_chat.applicant.seeker_id,
         from_user_id: recruiter.user.id,
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
-      )
+      }
     )
   end
 
   def create(applicant_id:)
     applicant_chat = ApplicantChat.find_or_create_by!(applicant_id:)
 
-    event_service.create!(
-      event_schema: Events::ChatCreated::V1,
+    message_service.create!(
+      schema: Events::ChatCreated::V1,
       job_id: applicant_chat.applicant.job.id,
-      data: Events::ChatCreated::Data::V1.new(
+      data: {
         applicant_id: applicant_chat.applicant.id,
         seeker_id: applicant_chat.applicant.seeker_id,
         user_id: applicant_chat.applicant.seeker.user.id,
         employment_title: applicant_chat.applicant.job.employment_title
-      )
+      }
     )
   end
 

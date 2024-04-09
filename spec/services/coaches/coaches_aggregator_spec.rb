@@ -3,28 +3,28 @@ require 'rails_helper'
 RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLength
   let(:lead_added1) { build(:message, :lead_added, version: 2, aggregate_id: lead1.lead_id, data: lead1, occurred_at: time1) }
   let(:lead_added2) { build(:message, :lead_added, version: 2, aggregate_id: lead2.lead_id, data: lead2, occurred_at: time1) }
-  let(:non_seeker_user_created) { build(:message, :user_created, aggregate_id: coach_user_id, data: Events::UserCreated::Data::V1.new(email: "f@f.f")) }
-  let(:user_without_email) { build(:message, :user_created, aggregate_id: user_without_email_id, data: Events::UserCreated::Data::V1.new(first_name: "Hannah", last_name: "Block")) }
-  let(:seeker_without_email) { build(:message, :profile_created, aggregate_id: user_without_email_id, data: Events::SeekerCreated::Data::V1.new(id: seeker_without_email_id, user_id: user_without_email_id)) }
-  let(:user_created) { build(:message, :user_created, aggregate_id: user_id, data: Events::UserCreated::Data::V1.new(email: "hannah@blocktrainapp.com")) }
-  let(:user_updated) { build(:message, :user_updated, aggregate_id: user_id, data: Events::UserUpdated::Data::V1.new(first_name: "Hannah", last_name: "Block", phone_number: "1234567890")) }
-  let(:other_user_created) { build(:message, :user_created, aggregate_id: other_user_id, data: Events::UserCreated::Data::V1.new(email: "katina@gmail.com", first_name: "Katina", last_name: "Hall")) }
-  let(:seeker_created) { build(:message, :profile_created, aggregate_id: user_id, data: Events::SeekerCreated::Data::V1.new(id: seeker_id, user_id:)) }
-  let(:other_seeker_created) { build(:message, :profile_created, aggregate_id: other_user_id, data: Events::SeekerCreated::Data::V1.new(id: other_seeker_id, user_id: other_user_id)) }
-  let(:note_with_id_added1) { build(:message, :note_added, version: 3, aggregate_id: lead1.lead_id, data: Events::NoteAdded::Data::V2.new(note: "This is a note with an id 1", note_id: note_id1, originator: "coach@blocktrainapp.com"), occurred_at: time1) }
-  let(:note_with_id_added2) { build(:message, :note_added, version: 3, aggregate_id: lead1.lead_id, data: Events::NoteAdded::Data::V2.new(note: "This is a note with an id 2", note_id: note_id2, originator: "coach@blocktrainapp.com"), occurred_at: time1) }
+  let(:non_seeker_user_created) { build(:message, :user_created, aggregate_id: coach_user_id, data: { email: "f@f.f" }) }
+  let(:user_without_email) { build(:message, :user_created, aggregate_id: user_without_email_id, data: { first_name: "Hannah", last_name: "Block" }) }
+  let(:seeker_without_email) { build(:message, :profile_created, aggregate_id: user_without_email_id, data: { id: seeker_without_email_id, user_id: user_without_email_id }) }
+  let(:user_created) { build(:message, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com" }) }
+  let(:user_updated) { build(:message, :user_updated, aggregate_id: user_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890" }) }
+  let(:other_user_created) { build(:message, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
+  let(:seeker_created) { build(:message, :profile_created, aggregate_id: user_id, data: { id: seeker_id, user_id: }) }
+  let(:other_seeker_created) { build(:message, :profile_created, aggregate_id: other_user_id, data: { id: other_seeker_id, user_id: other_user_id }) }
+  let(:note_with_id_added1) { build(:message, :note_added, version: 3, aggregate_id: lead1.lead_id, data: { note: "This is a note with an id 1", note_id: note_id1, originator: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:note_with_id_added2) { build(:message, :note_added, version: 3, aggregate_id: lead1.lead_id, data: { note: "This is a note with an id 2", note_id: note_id2, originator: "coach@blocktrainapp.com" }, occurred_at: time1) }
   let(:applicant_status_updated1) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated1, metadata: status_metadata, occurred_at: time2) }
   let(:applicant_status_updated2) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated2, metadata: status_metadata, occurred_at: time2) }
   let(:applicant_status_updated3) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated3, metadata: status_metadata, occurred_at: time2) }
   let(:applicant_status_updated4) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated4, metadata: status_metadata, occurred_at: time2) }
-  let(:note_deleted) { build(:message, :note_deleted, version: 3, aggregate_id: lead1.lead_id, data: Events::NoteDeleted::Data::V2.new(note_id: note_id1, originator: coach.email), occurred_at: time1) }
-  let(:note_modified) { build(:message, :note_modified, version: 3, aggregate_id: lead1.lead_id, data: Events::NoteModified::Data::V2.new(note: updated_note, note_id: note_id2, originator: coach.email), occurred_at: time1) }
-  let(:skill_level_updated) { build(:message, :skill_level_updated, version: 2, aggregate_id: lead1.lead_id, data: Events::SkillLevelUpdated::Data::V1.new(skill_level: "advanced"), occurred_at: time1) }
-  let(:coach_assigned) { build(:message, :coach_assigned, version: 2, aggregate_id: lead1.lead_id, data: Events::CoachAssigned::Data::V1.new(coach_id:, email: "coach@blocktrainapp.com"), occurred_at: time1) }
-  let(:barriers_updated1) { build(:message, :barriers_updated, version: 2, aggregate_id: lead1.lead_id, data: Events::BarrierUpdated::Data::V1.new(barriers: [barrier1.barrier_id]), occurred_at: time1) }
-  let(:barriers_updated2) { build(:message, :barriers_updated, version: 2, aggregate_id: lead1.lead_id, data: Events::BarrierUpdated::Data::V1.new(barriers: [barrier2.barrier_id]), occurred_at: time1) }
-  let(:job_recommended) { build(:message, :job_recommended, version: 2, aggregate_id: lead1.lead_id, data: Events::JobRecommended::Data::V1.new(job_id:, coach_id:), occurred_at: time1) }
-  let(:seeker_certified) { build(:message, :seeker_certified, aggregate_id: seeker_id, data: Events::SeekerCertified::Data::V1.new(coach_id:, coach_email: coach.email), occurred_at: time1) }
+  let(:note_deleted) { build(:message, :note_deleted, version: 3, aggregate_id: lead1.lead_id, data: { note_id: note_id1, originator: coach.email }, occurred_at: time1) }
+  let(:note_modified) { build(:message, :note_modified, version: 3, aggregate_id: lead1.lead_id, data: { note: updated_note, note_id: note_id2, originator: coach.email }, occurred_at: time1) }
+  let(:skill_level_updated) { build(:message, :skill_level_updated, version: 2, aggregate_id: lead1.lead_id, data: { skill_level: "advanced" }, occurred_at: time1) }
+  let(:coach_assigned) { build(:message, :coach_assigned, version: 2, aggregate_id: lead1.lead_id, data: { coach_id:, email: "coach@blocktrainapp.com" }, occurred_at: time1) }
+  let(:barriers_updated1) { build(:message, :barriers_updated, version: 2, aggregate_id: lead1.lead_id, data: { barriers: [barrier1.barrier_id] }, occurred_at: time1) }
+  let(:barriers_updated2) { build(:message, :barriers_updated, version: 2, aggregate_id: lead1.lead_id, data: { barriers: [barrier2.barrier_id] }, occurred_at: time1) }
+  let(:job_recommended) { build(:message, :job_recommended, version: 2, aggregate_id: lead1.lead_id, data: { job_id:, coach_id: }, occurred_at: time1) }
+  let(:seeker_certified) { build(:message, :seeker_certified, aggregate_id: seeker_id, data: { coach_id:, coach_email: coach.email }, occurred_at: time1) }
 
   let(:lead1) do
     Events::LeadAdded::Data::V1.new(
@@ -137,7 +137,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
   let(:updated_note) { "This note was updated" }
   let(:employer_name1) { "Cool company" }
   let(:employer_name2) { "Fun company" }
-  let(:consumer) { described_class.new(event_service: EventService.new) }
+  let(:consumer) { described_class.new(message_service: MessageService.new) }
 
   let(:id) { SecureRandom.uuid }
 
@@ -560,14 +560,14 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
               :message,
               message_type: Events::OnboardingCompleted::V1.message_type,
               version: Events::OnboardingCompleted::V1.version,
-              data: Events::OnboardingCompleted::Data::V1.new(
+              data: {
                 name: {},
                 experience: nil,
                 education: nil,
                 trainingProvider: nil,
                 other: nil,
                 opportunityInterests: nil
-              ),
+              },
               aggregate_id: user_id,
               occurred_at: time2
             )
@@ -584,11 +584,11 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
               :message,
               message_type: Events::JobSaved::V1.message_type,
               version: Events::JobSaved::V1.version,
-              data: Events::JobSaved::Data::V1.new(
+              data: {
                 job_id: SecureRandom.uuid,
                 employment_title: "A",
                 employer_name: "B"
-              ),
+              },
               aggregate_id: user_id,
               occurred_at: time2
             )
@@ -605,11 +605,11 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
               :message,
               message_type: Events::JobUnsaved::V1.message_type,
               version: Events::JobUnsaved::V1.version,
-              data: Events::JobUnsaved::Data::V1.new(
+              data: {
                 job_id: SecureRandom.uuid,
                 employment_title: "A",
                 employer_name: "B"
-              ),
+              },
               aggregate_id: user_id,
               occurred_at: time2
             )
@@ -626,7 +626,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
               :message,
               message_type: Events::EducationExperienceCreated::V1.message_type,
               version: Events::EducationExperienceCreated::V1.version,
-              data: Events::EducationExperienceCreated::Data::V1.new(
+              data: {
                 id: SecureRandom.uuid,
                 organization_name: "Org",
                 title: "A title",
@@ -634,7 +634,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
                 graduation_date: Time.zone.now.to_s,
                 gpa: "1.9",
                 seeker_id: SecureRandom.uuid
-              ),
+              },
               aggregate_id: user_id,
               occurred_at: time2
             )
@@ -651,9 +651,9 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
               :message,
               message_type: Events::SeekerUpdated::V1.message_type,
               version: Events::SeekerUpdated::V1.version,
-              data: Events::SeekerUpdated::Data::V1.new(
+              data: {
                 about: "A new about"
-              ),
+              },
               aggregate_id: seeker_id,
               occurred_at: time2
             )
@@ -670,14 +670,14 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
               :message,
               message_type: Events::PersonalExperienceCreated::V1.message_type,
               version: Events::PersonalExperienceCreated::V1.version,
-              data: Events::PersonalExperienceCreated::Data::V1.new(
+              data: {
                 id: SecureRandom.uuid,
                 activity: "something",
                 description: "A description",
                 start_date: Time.zone.now.to_s,
                 end_date: Time.zone.now.to_s,
                 seeker_id: SecureRandom.uuid
-              ),
+              },
               aggregate_id: user_id,
               occurred_at: time2
             )
@@ -694,14 +694,14 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
               :message,
               message_type: Events::JobSearch::V2.message_type,
               version: Events::JobSearch::V2.version,
-              data: Events::JobSearch::Data::V1.new(
+              data: {
                 search_terms: "A search",
                 industries: [],
                 tags: nil
-              ),
-              metadata: Events::JobSearch::MetaData::V2.new(
+              },
+              metadata: {
                 source: "seeker"
-              ),
+              },
               aggregate_id: user_id,
               occurred_at: time2
             )

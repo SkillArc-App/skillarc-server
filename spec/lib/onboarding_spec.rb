@@ -64,39 +64,36 @@ RSpec.describe Onboarding do
       end
 
       it "publishes a seeker created event" do
-        allow_any_instance_of(EventService).to receive(:create!)
-        expect_any_instance_of(EventService)
+        allow_any_instance_of(MessageService).to receive(:create!)
+        expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
             user_id: user.id,
-            event_schema: Events::SeekerCreated::V1,
-            data: be_a(Events::SeekerCreated::Data::V1),
+            schema: Events::SeekerCreated::V1,
+            data: {
+              id: be_present,
+              user_id: user.id
+            },
             occurred_at: be_present
-          ).and_call_original
-        expect(Events::SeekerCreated::Data::V1)
-          .to receive(:new)
-          .with(
-            id: be_present,
-            user_id: user.id
           ).and_call_original
 
         subject
       end
 
       it "publishes an event" do
-        allow_any_instance_of(EventService).to receive(:create!)
-        expect_any_instance_of(EventService)
+        allow_any_instance_of(MessageService).to receive(:create!)
+        expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
             user_id: user.id,
-            event_schema: Events::UserUpdated::V1,
-            data: Events::UserUpdated::Data::V1.new(
+            schema: Events::UserUpdated::V1,
+            data: {
               email: user.email,
               first_name: "John",
               last_name: "Doe",
               phone_number: "1234567890",
               date_of_birth: Date.new(2000, 1, 1)
-            ),
+            },
             occurred_at: be_present
           ).and_call_original
 
@@ -142,26 +139,23 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow_any_instance_of(EventService).to receive(:create!)
-        expect_any_instance_of(EventService)
+        allow_any_instance_of(MessageService).to receive(:create!)
+        expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
             user_id: user.id,
-            event_schema: Events::ExperienceCreated::V1,
-            data: be_a(Events::ExperienceCreated::Data::V1),
+            schema: Events::ExperienceCreated::V1,
+            data: {
+              id: be_present,
+              organization_name: "Company",
+              position: "Position",
+              start_date: "01/01/2000",
+              is_current: true,
+              end_date: nil,
+              description: "Description",
+              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
+            },
             occurred_at: be_present
-          ).and_call_original
-        expect(Events::ExperienceCreated::Data::V1)
-          .to receive(:new)
-          .with(
-            id: be_present,
-            organization_name: "Company",
-            position: "Position",
-            start_date: "01/01/2000",
-            is_current: true,
-            end_date: nil,
-            description: "Description",
-            seeker_id: be_present # TODO: Come up with a way to check the profile id as well
           ).and_call_original
 
         subject
@@ -224,24 +218,23 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow_any_instance_of(EventService).to receive(:create!)
-        expect(Events::EducationExperienceCreated::Data::V1)
-          .to receive(:new)
-          .with(
-            id: be_present,
-            activities: "Football",
-            organization_name: "School",
-            title: "Title",
-            graduation_date: "2000",
-            gpa: "4.0",
-            seeker_id: be_present # TODO: Come up with a way to check the profile id as well
-          ).and_call_original
-        expect_any_instance_of(EventService)
+        allow_any_instance_of(MessageService)
+          .to receive(:create!)
+          .and_call_original
+        expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
             user_id: user.id,
-            event_schema: Events::EducationExperienceCreated::V1,
-            data: be_a(Events::EducationExperienceCreated::Data::V1),
+            schema: Events::EducationExperienceCreated::V1,
+            data: {
+              id: be_present,
+              activities: "Football",
+              organization_name: "School",
+              title: "Title",
+              graduation_date: "2000",
+              gpa: "4.0",
+              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
+            },
             occurred_at: be_present
           ).and_call_original
 
@@ -296,21 +289,18 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow_any_instance_of(EventService).to receive(:create!)
-        expect_any_instance_of(EventService)
+        allow_any_instance_of(MessageService).to receive(:create!)
+        expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
             user_id: user.id,
-            event_schema: Events::SeekerTrainingProviderCreated::V1,
-            data: be_a(Events::SeekerTrainingProviderCreated::Data::V1),
+            schema: Events::SeekerTrainingProviderCreated::V1,
+            data: {
+              id: be_present,
+              user_id: user.id,
+              training_provider_id: training_provider.id
+            },
             occurred_at: be_present
-          ).and_call_original
-        allow(Events::SeekerTrainingProviderCreated::Data::V1)
-          .to receive(:new)
-          .with(
-            id: be_present,
-            user_id: user.id,
-            training_provider_id: training_provider.id
           ).and_call_original
 
         subject
@@ -396,26 +386,22 @@ RSpec.describe Onboarding do
       end
 
       it "publishes an event" do
-        allow_any_instance_of(EventService).to receive(:create!)
-        expect_any_instance_of(EventService)
+        allow_any_instance_of(MessageService).to receive(:create!)
+        expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
             user_id: user.id,
-            event_schema: Events::PersonalExperienceCreated::V1,
-            data: be_a(Events::PersonalExperienceCreated::Data::V1),
+            schema: Events::PersonalExperienceCreated::V1,
+            data: {
+              id: be_present,
+              activity: "Activity",
+              start_date: "01/01/2000",
+              end_date: "01/01/2001",
+              description: "Learning",
+              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
+            },
             occurred_at: be_present
           ).and_call_original
-        expect(Events::PersonalExperienceCreated::Data::V1)
-          .to receive(:new)
-          .with(
-            id: be_present,
-            activity: "Activity",
-            start_date: "01/01/2000",
-            end_date: "01/01/2001",
-            description: "Learning",
-            seeker_id: be_present # TODO: Come up with a way to check the profile id as well
-          )
-          .and_call_original
 
         subject
       end
@@ -542,12 +528,12 @@ RSpec.describe Onboarding do
         end
 
         it "enqueues a job to create a onboarding complete event" do
-          allow_any_instance_of(EventService).to receive(:create!)
-          expect_any_instance_of(EventService)
+          allow_any_instance_of(MessageService).to receive(:create!)
+          expect_any_instance_of(MessageService)
             .to receive(:create!)
             .with(
               user_id: user.id,
-              event_schema: Events::OnboardingCompleted::V1,
+              schema: Events::OnboardingCompleted::V1,
               data: {
                 name: responses["name"],
                 experience: responses["experience"],
@@ -648,19 +634,19 @@ RSpec.describe Onboarding do
       end
 
       it "does not duplicate job calls" do
-        allow_any_instance_of(EventService).to receive(:create!)
-        expect_any_instance_of(EventService)
+        allow_any_instance_of(MessageService).to receive(:create!)
+        expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
             user_id: user.id,
-            event_schema: Events::UserUpdated::V1,
-            data: Events::UserUpdated::Data::V1.new(
+            schema: Events::UserUpdated::V1,
+            data: {
               email: user.email,
               first_name: "John",
               last_name: "Doe",
               phone_number: "1234567890",
               date_of_birth: Date.new(2000, 1, 1)
-            ),
+            },
             occurred_at: be_present
           ).and_call_original
 

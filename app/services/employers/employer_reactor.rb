@@ -11,11 +11,11 @@ module Employers
       data = message.data
 
       job.owner_emails.each do |owner_email|
-        command_service.create!(
-          command_schema: Commands::NotifyEmployerOfApplicant::V1,
+        message_service.create!(
+          schema: Commands::NotifyEmployerOfApplicant::V1,
           applicant_id: data.applicant_id,
           trace_id: message.trace_id,
-          data: Commands::NotifyEmployerOfApplicant::Data::V1.new(
+          data: {
             employment_title: data.employment_title,
             recepent_email: owner_email,
             certified_by:,
@@ -24,7 +24,7 @@ module Employers
             applicant_seeker_id: data.seeker_id,
             applicant_email: data.applicant_email,
             applicant_phone_number: data.applicant_phone_number
-          )
+          }
         )
       end
     end
@@ -55,16 +55,16 @@ module Employers
         end
 
         employer.recruiters.each do |recruiter|
-          command_service.create!(
-            command_schema: Commands::SendWeeklyEmployerUpdate::V1,
+          message_service.create!(
+            schema: Commands::SendWeeklyEmployerUpdate::V1,
             employer_id: employer.id,
             trace_id: SecureRandom.uuid,
-            data: Commands::SendWeeklyEmployerUpdate::Data::V1.new(
+            data: {
               employer_name: employer.name,
               recepent_email: recruiter.email,
               new_applicants:,
               pending_applicants:
-            )
+            }
           )
         end
       end

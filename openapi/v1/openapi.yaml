@@ -4,6 +4,35 @@ info:
   title: API V1
   version: v1
 paths:
+  "/admin/jobs/{id}":
+    get:
+      summary: Show a job
+      tags:
+      - Admin
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: Retreives a job
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/job"
   "/coaches/contexts":
     get:
       summary: Retrieve all contexts

@@ -1,10 +1,51 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "Admin::Jobs", type: :request do
   describe "GET /index" do
     subject { get admin_jobs_path, headers: }
 
     it_behaves_like "admin secured endpoint"
+  end
+
+  path '/admin/jobs/{id}' do
+    get "Show a job" do
+      tags 'Admin'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :string
+      security [bearer_auth: []]
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      let(:job) { create(:job) }
+      let(:id) { job.id }
+
+      context "when authenticated" do
+        include_context "admin authenticated openapi"
+
+        response '200', 'Retreives a job' do
+          schema '$ref' => '#/components/schemas/job'
+
+          context "when job is fully loaded" do
+            before do
+              create(:career_path, job:)
+              create(:learned_skill, job:)
+              create(:desired_skill, job:)
+              create(:desired_certification, job:)
+              create(:job_photo, job:)
+              create(:testimonial, job:)
+              create(:job_tag, job:)
+            end
+
+            let(:job) { create(:job) }
+            let(:id) { job.id }
+
+            run_test!
+          end
+        end
+      end
+    end
   end
 
   describe "POST /create" do

@@ -837,6 +837,15 @@ event_service.create!(
   occurred_at: seeker_with_profile.user.created_at
 )
 
+event_service.create!(
+  user_id: seeker_with_profile.user.id,
+  event_schema: Events::SeekerCreated::V1,
+  data: {
+    id: seeker_with_profile.id,
+    user_id: seeker_with_profile.user.id
+  }
+)
+
 applicant = Applicant.create!(
   id: SecureRandom.uuid,
   seeker: seeker_with_profile,
@@ -1066,18 +1075,23 @@ event_service.create!(
   occurred_at: coach_user.created_at
 )
 
+coach_id = SecureRandom.uuid
+
+event_service.create!(
+  user_id: coach_user.id,
+  event_schema: Events::RoleAdded::V1,
+  data: {
+    role: "coach",
+    email: coach_user.email,
+    coach_id:
+  }
+)
 coach = Role.create!(id: SecureRandom.uuid, name: Role::Types::COACH)
 
 UserRole.create!(
   id: SecureRandom.uuid,
   role_id: coach.id,
   user_id: coach_user.id
-)
-
-coach = Coaches::Coach.create!(
-  coach_id: SecureRandom.uuid,
-  user_id: coach_user.id,
-  email: coach_user.email
 )
 
 coach_seeker_context = Coaches::CoachSeekerContext.create!(
@@ -1091,7 +1105,7 @@ coach_seeker_context = Coaches::CoachSeekerContext.create!(
   phone_number: seeker_with_profile.user.phone_number,
   seeker_captured_at: Time.zone.local(2000, 1, 1),
   stage: 'profile_created',
-  assigned_coach: coach.id
+  assigned_coach: coach_user.email
 )
 
 Coaches::SeekerApplication.create!(

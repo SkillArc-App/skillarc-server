@@ -5,7 +5,7 @@ module Events
         extend Messages::Payload
 
         schema do
-          context_id Uuid
+          context_id String
         end
       end
     end

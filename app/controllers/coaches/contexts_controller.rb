@@ -18,7 +18,7 @@ module Coaches
       with_event_service do
         event_service.create!(
           event_schema: Events::SeekerContextViewed::V1,
-          coach_id: coach.id,
+          coach_id: coach.coach_id,
           data: {
             context_id: params[:id]
           }

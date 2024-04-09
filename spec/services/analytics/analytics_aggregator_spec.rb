@@ -303,6 +303,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
             person = Analytics::DimPerson.take(1).first
 
             expect(person.kind).to eq(Analytics::DimPerson::Kind::COACH)
+            expect(person.coach_id).to eq(message.data.coach_id)
           end
         end
 

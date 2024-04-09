@@ -50,7 +50,7 @@ message_service.create!(
     last_name: recruiter_user.last_name,
     email: recruiter_user.email,
     sub: recruiter_user.sub
-},
+  },
   occurred_at: recruiter_user.created_at
 )
 
@@ -787,7 +787,7 @@ message_service.create!(
     last_name: trained_seeker_with_reference.user.last_name,
     email: trained_seeker_with_reference.user.email,
     sub: trained_seeker_with_reference.user.sub
-                    },
+  },
   occurred_at: trained_seeker_with_reference.user.created_at
 )
 
@@ -810,7 +810,7 @@ message_service.create!(
     last_name: trained_seeker.user.last_name,
     email: trained_seeker.user.email,
     sub: trained_seeker.user.sub
-                  },
+  },
   occurred_at: trained_seeker.user.created_at
 )
 
@@ -833,7 +833,7 @@ message_service.create!(
     last_name: seeker_with_profile.user.last_name,
     email: seeker_with_profile.user.email,
     sub: seeker_with_profile.user.sub
-                },
+  },
   occurred_at: seeker_with_profile.user.created_at
 )
 
@@ -906,7 +906,7 @@ message_service.create!(
     last_name: trainer.last_name,
     email: trainer.email,
     sub: trainer.sub
-    },
+  },
   occurred_at: trainer.created_at
 )
 
@@ -953,7 +953,7 @@ message_service.create!(
     last_name: admin_user.last_name,
     email: admin_user.email,
     sub: admin_user.sub
-},
+  },
   occurred_at: admin_user.created_at
 )
 
@@ -1071,7 +1071,7 @@ message_service.create!(
     last_name: coach_user.last_name,
     email: coach_user.email,
     sub: coach_user.sub
-                    },
+  },
   occurred_at: coach_user.created_at
 )
 

@@ -24,7 +24,7 @@ module Seekers
           skill_id: master_skill.id,
           name: master_skill.skill,
           type: master_skill.type
-    }
+        }
       )
 
       skill
@@ -41,7 +41,7 @@ module Seekers
           skill_id: skill.master_skill_id,
           name: skill.master_skill.skill,
           type: skill.master_skill.type
-    }
+        }
       )
 
       skill
@@ -58,7 +58,7 @@ module Seekers
           skill_id: skill.master_skill_id,
           name: skill.master_skill.skill,
           type: skill.master_skill.type
-    }
+        }
       )
 
       skill

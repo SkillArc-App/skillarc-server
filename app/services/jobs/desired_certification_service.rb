@@ -12,7 +12,7 @@ module Jobs
           id: desired_certification.id,
           job_id: job.id,
           master_certification_id:
-    }
+        }
       )
 
       desired_certification
@@ -26,7 +26,7 @@ module Jobs
         job_id: desired_certification.job_id,
         data: {
           id: desired_certification.id
-    }
+        }
       )
     end
   end

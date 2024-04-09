@@ -12,7 +12,7 @@ RSpec.describe Contact::SmsService do
         data: {
           phone_number:,
           message: sms_message
-    }
+        }
       )
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Contact::SmsService do
         data: {
           phone_number:,
           message: sms_message
-    }
+        }
       ).and_call_original
 
       expect(Sentry).not_to receive(:capture_exception)

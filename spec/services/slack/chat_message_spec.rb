@@ -13,7 +13,7 @@ RSpec.describe Slack::ChatMessage do
           employment_title: "A title",
           message: "A message",
           from_user_id:
-    }
+        }
       )
     end
     let(:applicant) { create(:applicant, seeker:) }

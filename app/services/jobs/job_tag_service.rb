@@ -15,7 +15,7 @@ module Jobs
         data: {
           job_id: job.id,
           tag_id: tag.id
-    }
+        }
       )
 
       job_tag
@@ -31,7 +31,7 @@ module Jobs
           job_id: job_tag.job_id,
           job_tag_id: job_tag.id,
           tag_id: job_tag.tag_id
-    }
+        }
       )
     end
   end

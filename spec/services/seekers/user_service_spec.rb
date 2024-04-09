@@ -33,7 +33,7 @@ RSpec.describe Seekers::UserService do
           last_name:,
           phone_number:,
           zip_code:
-    },
+        },
         occurred_at: be_a(Time)
       ).and_call_original
 
@@ -42,7 +42,7 @@ RSpec.describe Seekers::UserService do
         seeker_id: seeker.id,
         data: {
           about:
-  },
+        },
         occurred_at: be_a(Time)
       ).and_call_original
 

@@ -11,9 +11,9 @@ RSpec.describe JobMatch::JobMatch do
   let(:applied_job) { create(:job) }
 
   before do
-    create(:event, :job_saved, aggregate_id: user.id, data: {job_id: saved_job.id, employment_title: "A", employer_name: "B"})
-    create(:event, :job_unsaved, aggregate_id: user.id, data: {job_id: saved_job.id, employment_title: "A", employer_name: "B"})
-    create(:event, :job_saved, aggregate_id: user.id, data: {job_id: saved_job.id, employment_title: "A", employer_name: "B"})
+    create(:event, :job_saved, aggregate_id: user.id, data: { job_id: saved_job.id, employment_title: "A", employer_name: "B" })
+    create(:event, :job_unsaved, aggregate_id: user.id, data: { job_id: saved_job.id, employment_title: "A", employer_name: "B" })
+    create(:event, :job_saved, aggregate_id: user.id, data: { job_id: saved_job.id, employment_title: "A", employer_name: "B" })
   end
   let!(:applicant) { create(:applicant, seeker:, job: applied_job, elevator_pitch: "pitch") }
 

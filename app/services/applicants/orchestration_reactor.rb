@@ -27,7 +27,7 @@ module Applicants
         },
         metadata: {
           user_id: seeker.user_id
-      },
+        },
         trace_id: event.trace_id,
         version: 5
       )

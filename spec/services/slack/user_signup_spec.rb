@@ -8,7 +8,7 @@ RSpec.describe Slack::UserSignup do
         :user_created,
         data: {
           email:
-    }
+        }
       )
     end
     let(:email) { Faker::Internet.email }

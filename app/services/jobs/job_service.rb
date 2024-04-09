@@ -25,7 +25,7 @@ module Jobs
           work_days: job.work_days,
           requirements_description: job.requirements_description,
           industry: job.industry
-    },
+        },
         occurred_at: job.created_at
       )
 
@@ -50,7 +50,7 @@ module Jobs
           work_days: job.work_days,
           requirements_description: job.requirements_description,
           industry: job.industry
-    },
+        },
         occurred_at: job.updated_at
       )
 

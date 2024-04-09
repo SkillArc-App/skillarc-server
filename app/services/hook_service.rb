@@ -11,7 +11,7 @@ class HookService
         title:,
         body:,
         url:
-  }
+      }
     )
   end
 end

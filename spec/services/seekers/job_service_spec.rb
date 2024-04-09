@@ -19,7 +19,7 @@ RSpec.describe Seekers::JobService do
         data: {
           job_id: job.id,
           pitch: elevator_pitch
-    }
+        }
       )
 
       subject

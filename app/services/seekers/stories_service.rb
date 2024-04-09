@@ -16,7 +16,7 @@ module Seekers
           id: story.id,
           prompt:,
           response:
-    }
+        }
       )
 
       story
@@ -32,7 +32,7 @@ module Seekers
           id: story.id,
           prompt:,
           response:
-    }
+        }
       )
 
       story
@@ -46,7 +46,7 @@ module Seekers
         seeker_id: seeker.id,
         data: {
           id: story.id
-    }
+        }
       )
     end
 

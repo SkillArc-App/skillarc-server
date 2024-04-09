@@ -22,7 +22,7 @@ module Seekers
           last_name:,
           phone_number:,
           zip_code:
-    },
+        },
         occurred_at: Time.zone.now
       )
 
@@ -39,7 +39,7 @@ module Seekers
         seeker_id: seeker.id,
         data: {
           about:
-  },
+        },
         occurred_at: Time.zone.now
       )
     end

@@ -15,7 +15,7 @@ class SeekerService
         user_id:,
         data: {
           seeker_id: seeker.id
-    }
+        }
       )
     end
 

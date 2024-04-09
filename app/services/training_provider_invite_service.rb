@@ -14,7 +14,7 @@ class TrainingProviderInviteService
         invite_email: invite.email,
         training_provider_id: invite.training_provider_id,
         training_provider_name: invite.training_provider.name
-  }
+      }
     )
 
     user = User.find_by!(email: invite.email)

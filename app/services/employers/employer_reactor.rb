@@ -24,7 +24,7 @@ module Employers
             applicant_seeker_id: data.seeker_id,
             applicant_email: data.applicant_email,
             applicant_phone_number: data.applicant_phone_number
-      }
+          }
         )
       end
     end
@@ -64,7 +64,7 @@ module Employers
               recepent_email: recruiter.email,
               new_applicants:,
               pending_applicants:
-        }
+            }
           )
         end
       end

@@ -111,7 +111,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             description: other_experience.description,
             is_current: other_experience.is_current,
             seeker_id: other_experience.seeker_id
-      },
+          },
           occurred_at: other_experience.created_at
         )
       end
@@ -148,7 +148,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             graduation_date: ee.graduation_date,
             gpa: ee.gpa,
             seeker_id: ee.seeker_id
-      },
+          },
           occurred_at: ee.created_at
         )
       end
@@ -171,7 +171,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             id: stp.id,
             user_id: stp.user_id,
             training_provider_id: stp.training_provider_id
-      },
+          },
           occurred_at: stp.created_at
         )
       end
@@ -206,7 +206,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
           start_date: pe.start_date,
           end_date: pe.end_date,
           seeker_id: pe.seeker_id
-    },
+        },
         occurred_at: pe.created_at
       )
     end

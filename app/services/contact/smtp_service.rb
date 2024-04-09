@@ -21,7 +21,7 @@ module Contact
           email: message.data.recepent_email,
           template: EmployerWeeklyMailer.class.to_s,
           template_data: message.data.to_h
-    }
+        }
       )
     end
   end

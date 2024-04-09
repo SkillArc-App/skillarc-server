@@ -9,7 +9,7 @@ RSpec.describe Seekers::SeekerService do
       data: {
         job_id:,
         pitch: "pitch"
-  }
+      }
     )
   end
   let(:job) { create(:job) }

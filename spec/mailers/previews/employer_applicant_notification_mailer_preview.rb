@@ -15,7 +15,7 @@ class EmployerApplicantNotificationMailerPreview < ActionMailer::Preview
         applicant_seeker_id: SecureRandom.uuid,
         applicant_email: "applicant@skillarc.com",
         applicant_phone_number: "1 555 555 5555"
-  }
+      }
     )
 
     EmployerApplicantNotificationMailer.with(message:).notify_employer

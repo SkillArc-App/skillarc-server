@@ -12,7 +12,7 @@ module Jobs
           id: desired_skill.id,
           job_id: job.id,
           master_skill_id:
-    }
+        }
       )
 
       desired_skill
@@ -26,7 +26,7 @@ module Jobs
         job_id: desired_skill.job_id,
         data: {
           id: desired_skill.id
-    }
+        }
       )
     end
   end

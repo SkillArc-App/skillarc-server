@@ -15,13 +15,11 @@ module Coaches
 
     def create
       with_message_service do
-        with_message_service do
-          CoachesReactor.new(message_service:, message_service:).add_lead(
-            **lead_hash,
-            lead_captured_by: coach.email,
-            trace_id: request.request_id
-          )
-        end
+        CoachesReactor.new(message_service:).add_lead(
+          **lead_hash,
+          lead_captured_by: coach.email,
+          trace_id: request.request_id
+        )
       end
 
       head :created

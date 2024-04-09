@@ -62,5 +62,5 @@ class MessageConsumer
 
   private
 
-  attr_reader :message_service, :message_service
+  attr_reader :message_service
 end

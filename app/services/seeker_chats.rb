@@ -20,7 +20,7 @@ class SeekerChats
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
-  }
+      }
     )
   end
 

@@ -20,7 +20,7 @@ RSpec.describe Klayvio::ApplicationStatusUpdated do
           employer_name: "A employer",
           employment_title: "A title",
           status: "new"
-    }
+        }
       )
     end
     let(:job) { create(:job) }

@@ -103,7 +103,7 @@ RSpec.describe EmployerChats do
           employer_name: employer.name,
           employment_title: job.employment_title,
           message:
-    }
+        }
       ).and_call_original
 
       subject
@@ -134,7 +134,7 @@ RSpec.describe EmployerChats do
           seeker_id: applicant.seeker.id,
           user_id: applicant.seeker.user.id,
           employment_title: applicant.job.employment_title
-    }
+        }
       ).and_call_original
 
       subject

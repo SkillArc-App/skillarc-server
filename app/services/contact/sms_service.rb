@@ -20,7 +20,7 @@ module Contact
         data: {
           phone_number: message.data.phone_number,
           message: message.data.message
-    }
+        }
       )
     rescue StandardError => e
       Sentry.capture_exception(e)

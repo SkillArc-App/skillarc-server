@@ -12,7 +12,7 @@ class EmployerService
         location: e.location,
         bio: e.bio,
         logo_url: e.logo_url
-  }
+      }
     )
 
     e
@@ -31,7 +31,7 @@ class EmployerService
         location: e.location,
         bio: e.bio,
         logo_url: e.logo_url
-  },
+      },
       occurred_at: e.updated_at
     )
 

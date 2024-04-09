@@ -58,7 +58,7 @@ class EmployerChats
         employer_name: applicant_chat.applicant.job.employer.name,
         employment_title: applicant_chat.applicant.job.employment_title,
         message:
-  }
+      }
     )
   end
 
@@ -73,7 +73,7 @@ class EmployerChats
         seeker_id: applicant_chat.applicant.seeker_id,
         user_id: applicant_chat.applicant.seeker.user.id,
         employment_title: applicant_chat.applicant.job.employment_title
-  }
+      }
     )
   end
 

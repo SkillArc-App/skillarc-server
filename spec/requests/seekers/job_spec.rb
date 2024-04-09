@@ -179,7 +179,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
                   job_id: job.id,
                   employment_title: job.employment_title,
                   employer_name: job.employer.name
-          }
+                }
               )
               .and_call_original
           end
@@ -219,7 +219,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
                   job_id: job.id,
                   employment_title: job.employment_title,
                   employer_name: job.employer.name
-          }
+                }
               )
               .and_call_original
           end

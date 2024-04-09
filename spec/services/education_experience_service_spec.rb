@@ -82,7 +82,7 @@ RSpec.describe EducationExperienceService do
           gpa: "3.5",
           activities: "Activities",
           seeker_id: seeker.id
-    },
+        },
         occurred_at: be_a(Time)
       )
 
@@ -109,7 +109,7 @@ RSpec.describe EducationExperienceService do
         seeker_id: seeker.id,
         data: {
           id: education_experience.id
-    },
+        },
         occurred_at: be_a(Time)
       )
 

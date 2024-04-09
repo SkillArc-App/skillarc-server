@@ -6,7 +6,7 @@ RSpec.describe Coaches::CoachesReactor do
   let(:note_id) { "78f22f6c-a770-46fc-a83c-1ad6cda4b8f9" }
   let(:trace_id) { "42000038-7e82-48ca-ac18-72ebc08bdbeb" }
   let(:updated_note) { "This note was updated" }
-  let(:consumer) { described_class.new(message_service:, message_service:) }
+  let(:consumer) { described_class.new(message_service:) }
   let(:message_service) { MessageService.new }
   let(:message_service) { MessageService.new }
 
@@ -27,7 +27,7 @@ RSpec.describe Coaches::CoachesReactor do
             first_name: "Chris",
             last_name: "Brauns",
             lead_captured_by: "a computer"
-      }
+          }
         )
       end
 
@@ -61,7 +61,7 @@ RSpec.describe Coaches::CoachesReactor do
             originator: "Cool Person",
             note: "This is a note",
             note_id: SecureRandom.uuid
-      }
+          }
         )
       end
 
@@ -90,7 +90,7 @@ RSpec.describe Coaches::CoachesReactor do
           schema: Commands::AssignCoach::V1,
           data: {
             coach_email: "katina@skillarc.com"
-      }
+          }
         )
       end
 

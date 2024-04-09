@@ -201,7 +201,7 @@ RSpec.describe SeekerService do
             user_id:,
             data: {
               seeker_id: seeker.id
-      }
+            }
           )
 
         subject

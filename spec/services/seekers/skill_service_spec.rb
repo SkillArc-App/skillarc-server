@@ -30,7 +30,7 @@ RSpec.describe Seekers::SkillService do
           name: "Skill",
           description: "This is a description",
           type: MasterSkill::SkillTypes::TECHNICAL
-    }
+        }
       ).and_call_original
 
       subject
@@ -61,7 +61,7 @@ RSpec.describe Seekers::SkillService do
           description: "This is a new description",
           type: skill.master_skill.type,
           name: skill.master_skill.skill
-    }
+        }
       ).and_call_original
 
       subject
@@ -89,7 +89,7 @@ RSpec.describe Seekers::SkillService do
           description: skill.description,
           type: skill.master_skill.type,
           name: skill.master_skill.skill
-    }
+        }
       ).and_call_original
 
       subject

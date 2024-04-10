@@ -837,9 +837,9 @@ message_service.create!(
   occurred_at: seeker_with_profile.user.created_at
 )
 
-event_service.create!(
+message_service.create!(
   user_id: seeker_with_profile.user.id,
-  event_schema: Events::SeekerCreated::V1,
+  schema: Events::SeekerCreated::V1,
   data: {
     id: seeker_with_profile.id,
     user_id: seeker_with_profile.user.id
@@ -1077,9 +1077,9 @@ message_service.create!(
 
 coach_id = SecureRandom.uuid
 
-event_service.create!(
+message_service.create!(
   user_id: coach_user.id,
-  event_schema: Events::RoleAdded::V1,
+  schema: Events::RoleAdded::V1,
   data: {
     role: "coach",
     email: coach_user.email,

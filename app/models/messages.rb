@@ -94,6 +94,7 @@ module Messages
 
     module Contact
       EVENTS = [
+        CONTACT_PREFERENCE_SET = "contact_preference_set",
         SMS_SENT = 'sms_sent',
         SMTP_SENT = 'smtp_sent',
         CAL_WEBHOOK_RECEIVED = 'cal_webhook_received'
@@ -101,6 +102,7 @@ module Messages
 
       COMMANDS = [
         SEND_SMS = 'send_sms',
+        SET_CONTACT_PREFERENCE = "set_contact_preference",
         NOTIFY_EMPLOYER_OF_APPLICANT = 'notify_employer_of_applicant',
         SEND_WEEKLY_EMPLOYER_UPDATE = 'send_weekly_employer_update'
       ].freeze

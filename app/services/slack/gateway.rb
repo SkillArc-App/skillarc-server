@@ -5,9 +5,9 @@ module Slack
     def self.build
       case ENV.fetch("SLACK_GATEWAY_STRATEGY", nil)
       when "real"
-        Slack::Notifier.new(ENV.fetch("SLACK_WEBHOOK_URL", nil))
+        Slack::Web::Client.new
       when "fake"
-        FakeSlackGateway.new
+        Slack::FakeClient.new
       else
         raise GatewayEnvvarNotSetError
       end

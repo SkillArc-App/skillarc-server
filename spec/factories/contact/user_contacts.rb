@@ -4,6 +4,6 @@ FactoryBot.define do
     email { Faker::Internet.email }
     phone_number { Faker::PhoneNumber.phone_number }
     slack_id { "123" }
-    preferred_contact { "email" }
+    preferred_contact { Contact::ContactPreference::EMAIL }
   end
 end

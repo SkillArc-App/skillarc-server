@@ -18,5 +18,7 @@
 module Contact
   class UserContact < ApplicationRecord
     self.table_name = "contact_user_contacts"
+
+    validates :preferred_contact, inclusion: { in: Contact::ContactPreference::ALL }
   end
 end

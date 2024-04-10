@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_09_202452) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_10_185414) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -274,6 +274,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_202452) do
     t.index ["coach_id"], name: "index_coaches_seeker_job_recommendations_on_coach_id"
     t.index ["coach_seeker_context_id"], name: "index_seeker_job_recommendations_on_coach_seeker_context_id"
     t.index ["job_id"], name: "index_coaches_seeker_job_recommendations_on_job_id"
+  end
+
+  create_table "contact_user_contacts", force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "preferred_contact", null: false
+    t.string "email"
+    t.string "phone_number"
+    t.string "slack_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_contact_user_contacts_on_user_id"
   end
 
   create_table "credentials", id: :text, force: :cascade do |t|

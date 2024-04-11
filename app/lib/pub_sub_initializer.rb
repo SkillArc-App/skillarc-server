@@ -19,11 +19,6 @@ module PubSubInitializer
     )
 
     PUBSUB.subscribe(
-      message_schema: Events::NotificationCreated::V1,
-      subscriber: NotificationService.new
-    )
-
-    PUBSUB.subscribe(
       message_schema: Events::EducationExperienceCreated::V1,
       subscriber: Klayvio::EducationExperienceEntered.new
     )

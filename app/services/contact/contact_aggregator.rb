@@ -2,6 +2,7 @@ module Contact
   class ContactAggregator < MessageConsumer
     def reset_for_replay
       Contact::UserContact.delete_all
+      Contact::Notification.delete_all
     end
 
     on_message Events::NotificationCreated::V2, :sync do |message|

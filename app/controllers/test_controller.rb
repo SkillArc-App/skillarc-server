@@ -29,6 +29,11 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       kind: Analytics::DimPerson::Kind::USER
     )
 
+    Contact::UserContact.create!(
+      user_id: user.id,
+      preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
+    )
+
     render json: user
   end
 
@@ -79,6 +84,11 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       kind: Analytics::DimPerson::Kind::COACH
     )
 
+    Contact::UserContact.create!(
+      user_id: user.id,
+      preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
+    )
+
     render json: coach
   end
 
@@ -112,6 +122,11 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       seeker_id: seeker.id,
       user_created_at: user.created_at,
       kind: Analytics::DimPerson::Kind::SEEKER
+    )
+
+    Contact::UserContact.create!(
+      user_id: user.id,
+      preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
     )
 
     render json: {
@@ -170,6 +185,12 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       user_created_at: applicant.seeker.user.created_at,
       kind: Analytics::DimPerson::Kind::SEEKER
     )
+
+    Contact::UserContact.create!(
+      user_id: applicant.seeker.user.id,
+      preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
+    )
+
     Analytics::FactApplication.create!(
       application_id: applicant.id,
       application_number: 1,
@@ -204,6 +225,11 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       user_id: recruiter.user.id,
       user_created_at: recruiter.user.created_at,
       kind: Analytics::DimPerson::Kind::RECRUITER
+    )
+
+    Contact::UserContact.create!(
+      user_id: recruiter.user.id,
+      preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
     )
 
     Coaches::CoachSeekerContext.create!(
@@ -266,6 +292,11 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
     seeker = FactoryBot.create(:seeker, user: student.user)
 
+    Contact::UserContact.create!(
+      user_id: trainer.user.id,
+      preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
+    )
+
     Coaches::CoachSeekerContext.create!(
       user_id: student.user.id,
       context_id: student.user.id,
@@ -281,6 +312,13 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       last_contacted_at: now,
       last_active_on: now
     )
+
+    Contact::UserContact.create!(
+      user_id: student.user.id,
+      preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
+    )
+
+    seeker = FactoryBot.create(:seeker, user: student.user)
 
     Analytics::DimPerson.create!(
       first_name: student.user.first_name,
@@ -331,6 +369,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       lead_id: lead.lead_id,
       kind: Analytics::DimPerson::Kind::LEAD
     )
+
     render json: lead
   end
 
@@ -364,6 +403,11 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       onboarding_completed_at: seeker.created_at,
       user_created_at: user.created_at,
       kind: Analytics::DimPerson::Kind::SEEKER
+    )
+
+    Contact::UserContact.create!(
+      user_id: user.id,
+      preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
     )
 
     employer = FactoryBot.create(:employer)

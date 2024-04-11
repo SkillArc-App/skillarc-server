@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_09_202452) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_11_143649) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -276,6 +276,28 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_202452) do
     t.index ["job_id"], name: "index_coaches_seeker_job_recommendations_on_job_id"
   end
 
+  create_table "contact_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "user_id", null: false
+    t.string "body"
+    t.string "title"
+    t.string "url"
+    t.datetime "read_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_contact_notifications_on_user_id"
+  end
+
+  create_table "contact_user_contacts", force: :cascade do |t|
+    t.text "user_id", null: false
+    t.string "preferred_contact", null: false
+    t.string "email"
+    t.string "phone_number"
+    t.string "slack_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_contact_user_contacts_on_user_id"
+  end
+
   create_table "credentials", id: :text, force: :cascade do |t|
     t.text "organization_id"
     t.text "name"
@@ -536,18 +558,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_202452) do
     t.enum "type", null: false, enum_type: "skill_type"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-  end
-
-  create_table "notifications", force: :cascade do |t|
-    t.string "type"
-    t.string "title"
-    t.string "body"
-    t.string "url"
-    t.text "user_id", null: false
-    t.datetime "read_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "onboarding_sessions", id: :text, force: :cascade do |t|
@@ -941,7 +951,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_202452) do
   add_foreign_key "jobs", "employers", name: "Job_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "learned_skills", "jobs", name: "LearnedSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "learned_skills", "master_skills", name: "LearnedSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "notifications", "users"
   add_foreign_key "onboarding_sessions", "users", name: "OnboardingSession_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "other_experiences", "organizations", name: "OtherExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "other_experiences", "seekers"

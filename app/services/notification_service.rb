@@ -2,10 +2,8 @@ class NotificationService
   include DefaultStreamId
 
   def call(message:)
-    user = User.find(message.aggregate_id)
-
-    Notification.create!(
-      user:,
+    Contact::Notification.create!(
+      user_id: message.aggregate_id,
       title: message.data[:title],
       body: message.data[:body],
       url: message.data[:url]

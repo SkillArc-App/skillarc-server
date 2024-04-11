@@ -7,7 +7,7 @@ class OneUserController < ApplicationController
   def index
     seeker = current_user.seeker
 
-    notifications = Notification.where(user: current_user).order(created_at: :desc).limit(10).map do |n|
+    notifications = Contact::Notification.where(user_id: current_user.id).order(created_at: :desc).limit(10).map do |n|
       {
         notificationTitle: n.title,
         notificationBody: n.body,

@@ -19,11 +19,6 @@ module PubSubInitializer
     )
 
     PUBSUB.subscribe(
-      message_schema: Events::NotificationCreated::V1,
-      subscriber: NotificationService.new
-    )
-
-    PUBSUB.subscribe(
       message_schema: Events::EducationExperienceCreated::V1,
       subscriber: Klayvio::EducationExperienceEntered.new
     )
@@ -60,6 +55,7 @@ module PubSubInitializer
       DbStreamReactor.build(consumer: Applicants::OrchestrationReactor.new, listener_name: "applicants_orchestration_reactor"),
       DbStreamReactor.build(consumer: Slack::SlackReactor.new, listener_name: "slack_reactor"),
       DbStreamAggregator.build(consumer: Search::SearchService.new, listener_name: "search"),
+      DbStreamAggregator.build(consumer: Contact::ContactAggregator.new, listener_name: "contact_aggregator"),
       DbStreamReactor.build(consumer: Contact::SmsService.new, listener_name: "contact_sms"),
       DbStreamReactor.build(consumer: Contact::SmtpService.new, listener_name: "contact_smtp"),
       DbStreamReactor.build(consumer: Contact::CalDotCom::SchedulingReactor.new, listener_name: "cal_com_scheduling"),

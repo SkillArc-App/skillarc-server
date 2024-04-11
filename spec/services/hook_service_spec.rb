@@ -22,9 +22,10 @@ RSpec.describe HookService do
 
     it "enqueues a notification created event job" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::NotificationCreated::V1,
+        schema: Events::NotificationCreated::V2,
         user_id: user.id,
         data: {
+          notification_id: be_a(String),
           title:,
           body:,
           url:

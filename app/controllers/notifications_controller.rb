@@ -5,20 +5,16 @@ class NotificationsController < ApplicationController
   before_action :authorize
 
   def mark_read
-    all_notifications = Notification.unread.where(user: current_user)
+    notification_ids = Contact::Notification.unread.where(user_id: current_user.id).pluck(:id)
 
     with_message_service do
-      all_notifications.update!(read_at: Time.now.utc.iso8601)
-
-      all_notifications.each do |n|
-        message_service.create!(
-          schema: Events::NotificationMarkedRead::V1,
-          user_id: current_user.id,
-          data: {
-            notification_id: n.id
-          }
-        )
-      end
+      message_service.create!(
+        schema: Events::NotificationMarkedRead::V2,
+        user_id: current_user.id,
+        data: {
+          notification_ids:
+        }
+      )
     end
 
     render json: { success: true }

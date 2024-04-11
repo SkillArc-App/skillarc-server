@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_10_204612) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_11_143649) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -288,7 +288,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_10_204612) do
   end
 
   create_table "contact_user_contacts", force: :cascade do |t|
-    t.uuid "user_id", null: false
+    t.text "user_id", null: false
     t.string "preferred_contact", null: false
     t.string "email"
     t.string "phone_number"

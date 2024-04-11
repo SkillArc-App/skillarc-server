@@ -9,7 +9,7 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  slack_id          :string
-#  user_id           :uuid             not null
+#  user_id           :text             not null
 #
 # Indexes
 #

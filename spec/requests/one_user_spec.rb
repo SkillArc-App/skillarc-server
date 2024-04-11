@@ -1,9 +1,40 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "OneUsers", type: :request do
-  describe "GET /index" do
-    subject { get one_user_index_path, headers: }
+  path '/one_user' do
+    get "The current user" do
+      tags 'Seeker'
+      produces 'application/json'
+      security [bearer_auth: []]
 
-    it_behaves_like "admin secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      it_behaves_like "spec unauthenticated openapi"
+
+      context "when authenticated" do
+        include_context "authenticated openapi"
+
+        response '200', 'Retrieve user' do
+          schema '$ref' => '#/components/schemas/one_user'
+
+          context "bare bones" do
+            run_test!
+          end
+
+          context "fully loaded" do
+            before do
+              create(:seeker, user:)
+              create(:onboarding_session, user:)
+              create(:recruiter, user:)
+              create(:training_provider_profile, user:)
+            end
+
+            run_test!
+          end
+        end
+      end
+    end
   end
 end

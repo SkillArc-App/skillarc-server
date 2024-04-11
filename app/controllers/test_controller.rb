@@ -264,10 +264,12 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       kind: Analytics::DimPerson::Kind::TRAINING_PROVIDER
     )
 
+    seeker = FactoryBot.create(:seeker, user: student.user)
+
     Coaches::CoachSeekerContext.create!(
       user_id: student.user.id,
       context_id: student.user.id,
-      seeker_id: nil,
+      seeker_id: seeker.id,
       first_name: student.user.first_name,
       kind: Coaches::CoachSeekerContext::Kind::SEEKER,
       last_name: student.user.last_name,
@@ -286,11 +288,10 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       email: student.user.email,
       phone_number: student.user.phone_number,
       user_id: student.user.id,
+      seeker_id: seeker.id,
       user_created_at: student.user.created_at,
       kind: Analytics::DimPerson::Kind::SEEKER
     )
-
-    FactoryBot.create(:seeker, user: student.user)
 
     render json: {
       trainer: trainer.user,

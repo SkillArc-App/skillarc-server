@@ -9,11 +9,6 @@ module PubSubInitializer
     )
 
     PUBSUB.subscribe(
-      message_schema: Events::UserCreated::V1,
-      subscriber: Slack::UserSignup.new
-    )
-
-    PUBSUB.subscribe(
       message_schema: Events::UserUpdated::V1,
       subscriber: Klayvio::UserUpdated.new
     )
@@ -54,18 +49,8 @@ module PubSubInitializer
     )
 
     PUBSUB.subscribe(
-      message_schema: Events::ApplicantStatusUpdated::V5,
-      subscriber: Slack::UserApplied.new
-    )
-
-    PUBSUB.subscribe(
       message_schema: Events::ChatMessageSent::V1,
       subscriber: Klayvio::ChatMessageReceived.new
-    )
-
-    PUBSUB.subscribe(
-      message_schema: Events::ChatMessageSent::V1,
-      subscriber: Slack::ChatMessage.new
     )
 
     [
@@ -73,6 +58,7 @@ module PubSubInitializer
       DbStreamAggregator.build(consumer: Coaches::CoachesAggregator.new, listener_name: "coach_seekers"),
       DbStreamReactor.build(consumer: Coaches::CoachesReactor.new, listener_name: "coach_seekers_reactor"),
       DbStreamReactor.build(consumer: Applicants::OrchestrationReactor.new, listener_name: "applicants_orchestration_reactor"),
+      DbStreamReactor.build(consumer: Slack::SlackReactor.new, listener_name: "slack_reactor"),
       DbStreamAggregator.build(consumer: Search::SearchService.new, listener_name: "search"),
       DbStreamReactor.build(consumer: Contact::SmsService.new, listener_name: "contact_sms"),
       DbStreamReactor.build(consumer: Contact::SmtpService.new, listener_name: "contact_smtp"),

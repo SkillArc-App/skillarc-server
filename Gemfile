@@ -22,7 +22,7 @@ gem 'rswag-ui'
 gem 'scout_apm'
 gem "sentry-rails"
 gem "sentry-ruby"
-gem "slack-notifier"
+gem 'slack-ruby-client'
 gem "sprockets-rails"
 gem "stimulus-rails"
 gem "strong_migrations"

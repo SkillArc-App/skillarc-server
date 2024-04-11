@@ -98,7 +98,7 @@ module Messages
         SMS_SENT = 'sms_sent',
         SMTP_SENT = 'smtp_sent',
         CAL_WEBHOOK_RECEIVED = 'cal_webhook_received',
-        SLACK_ID_ADDED = "slack_id_added",
+        SLACK_ID_ADDED = "slack_id_added"
       ].freeze
 
       COMMANDS = [

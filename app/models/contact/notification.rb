@@ -26,4 +26,3 @@ module Contact
     end
   end
 end
-

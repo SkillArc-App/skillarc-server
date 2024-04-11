@@ -127,6 +127,109 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
+          one_user: {
+            id: {
+              type: :string,
+              format: :uuid
+            },
+            firstName: {
+              type: :string,
+              nullable: true
+            },
+            lastName: {
+              type: :string,
+              nullable: true
+            },
+            email: {
+              type: :string,
+              nullable: true
+            },
+            onboarding_session: {
+              type: :object,
+              properties: {
+                completedAt: {
+                  type: :string,
+                  format: 'date-time',
+                  nullable: true
+                }
+              }
+            },
+            user_roles: {
+              type: :array,
+              items: {
+                type: :object,
+                properties: {
+                  role: {
+                    type: :object,
+                    properties: {
+                      type: :string,
+                      enum: Role::Types::ALL
+                    }
+                  }
+                }
+              }
+            },
+            notifications: {
+              type: :object,
+              properties: {
+                notificationTitle: {
+                  type: :string,
+                  nullable: true
+                },
+                notificationBody: {
+                  type: :string,
+                  nullable: true
+                },
+                read: {
+                  type: :boolean
+                },
+                url: {
+                  type: :boolean,
+                  nullable: true
+                }
+              }
+            },
+            profile: {
+              id: {
+                type: :string,
+                format: :uuid,
+                nullable: true
+              },
+              about: {
+                type: :string,
+                nullable: true
+              },
+              userId: {
+                type: :string,
+                format: :uuid,
+                nullable: true
+              },
+              missingProfileItems: {
+                type: :string,
+                enum: %w[education work]
+              },
+              recruiter: {
+                type: :object,
+                properties: {
+                  id: {
+                    type: :string,
+                    format: :uuid
+                  }
+                },
+                nullable: true
+              },
+              trainingProviderProfile: {
+                type: :object,
+                properties: {
+                  id: {
+                    type: :string,
+                    format: :uuid
+                  }
+                },
+                nullable: true
+              }
+            }
+          },
           seeker: {
             type: :object,
             properties: {

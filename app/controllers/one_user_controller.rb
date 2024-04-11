@@ -5,25 +5,7 @@ class OneUserController < ApplicationController
   before_action :authorize
 
   def index
-    user_ret = deep_transform_keys(current_user.slice(:id, :email, :first_name, :last_name, :zip_code, :phone_number)) { |key| to_camel_case(key) }
-    os_ret = (current_user.onboarding_session || {}).slice(:id, :started_at, :completed_at, :responses)
-
-    ActiveRecord::Associations::Preloader.new(
-      records: [current_user],
-      associations: {
-        seeker: {
-          profile_skills: [:master_skill]
-        }
-      }
-    ).call
-
-    seeker = current_user.seeker&.slice(
-      :id,
-      :image,
-      :bio
-    ) || {}
-
-    fast_track_tasks = FastTrackTasks.new(current_user)
+    seeker = current_user.seeker
 
     notifications = Notification.where(user: current_user).order(created_at: :desc).limit(10).map do |n|
       {
@@ -36,37 +18,34 @@ class OneUserController < ApplicationController
 
     roles = current_user.user_roles.map do |ur|
       {
-        **ur.as_json,
-        role: ur.role.as_json
+        role: {
+          name: ur.role.name
+        }
       }
     end || []
 
     render json: {
-      **user_ret,
-      onboardingSession: os_ret,
-      userRoles: roles,
-      fastTrackTasks: {
-        profile: fast_track_tasks.seeker,
-        career: fast_track_tasks.career
+      id: current_user.id,
+      first_name: current_user.first_name,
+      last_name: current_user.last_name,
+      email: current_user.email,
+      onboarding_session: {
+        completed_at: current_user.onboarding_session&.completed_at
       },
+      user_roles: roles,
       notifications:,
       profile: {
-        **seeker,
-        educationExperiences: current_user.seeker&.education_experiences || [],
-        profileCertifications: [],
-        profileSkills: current_user.seeker&.profile_skills&.map do |ps|
-          {
-            **ps.as_json,
-            masterSkill: ps.master_skill.as_json
-          }
-        end || [],
-        stories: current_user.seeker&.stories || [],
-        otherExperiences: current_user.seeker&.other_experiences || [],
-        personalExperience: current_user.seeker&.personal_experiences || [],
-        missingProfileItems: ProfileCompleteness.new(current_user.seeker).status.missing
+        id: seeker&.id,
+        about: seeker&.about,
+        userId: seeker&.user_id,
+        missingProfileItems: ProfileCompleteness.new(seeker).status.missing
       },
-      recruiter: current_user.recruiter&.as_json,
-      trainingProviderProfile: current_user.training_provider_profile&.as_json
+      recruiter: current_user.recruiter && {
+        id: current_user.recruiter&.id
+      },
+      training_provider_profile: current_user.training_provider_profile && {
+        id: current_user.training_provider_profile&.id
+      }
     }
   end
 end

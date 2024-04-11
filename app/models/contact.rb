@@ -3,7 +3,7 @@ module Contact
     ALL = [
       SLACK = "slack".freeze,
       EMAIL = "email".freeze,
-      PHONE = "phone".freeze,
+      SMS = "sms".freeze,
       IN_APP_NOTIFICATION = "in_app_notification".freeze
     ].freeze
   end

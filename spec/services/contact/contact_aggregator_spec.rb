@@ -152,7 +152,7 @@ RSpec.describe Contact::ContactAggregator do
           aggregate_id: user_contact.user_id,
           schema: Events::ContactPreferenceSet::V1,
           data: {
-            preference: Contact::ContactPreference::PHONE
+            preference: Contact::ContactPreference::SMS
           }
         )
       end
@@ -163,7 +163,7 @@ RSpec.describe Contact::ContactAggregator do
         subject
 
         user_contact.reload
-        expect(user_contact.preferred_contact).to eq(Contact::ContactPreference::PHONE)
+        expect(user_contact.preferred_contact).to eq(Contact::ContactPreference::SMS)
       end
     end
   end

@@ -165,6 +165,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       last_name: applicant.seeker.user.last_name,
       email: applicant.seeker.user.email,
       phone_number: applicant.seeker.user.phone_number,
+      seeker_id: applicant.seeker.id,
       user_id: applicant.seeker.user.id,
       user_created_at: applicant.seeker.user.created_at,
       kind: Analytics::DimPerson::Kind::SEEKER

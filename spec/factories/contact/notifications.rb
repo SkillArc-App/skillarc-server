@@ -1,6 +1,6 @@
 FactoryBot.define do
-  factory :notification do
-    user
+  factory :contact__notification, class: 'Contact::Notification' do
+    user_id { SecureRandom.uuid }
     title { Faker::Lorem.sentence }
     body { Faker::Lorem.paragraph }
     url { "/" }

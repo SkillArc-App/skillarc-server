@@ -9,8 +9,8 @@ RSpec.describe "Notifications", type: :request do
     context "when authenticated" do
       include_context "authenticated"
 
-      let!(:notification1) { create(:notification, user:) }
-      let!(:notification2) { create(:notification, user:) }
+      let!(:notification1) { create(:contact__notification, user_id: user.id) }
+      let!(:notification2) { create(:contact__notification, user_id: user.id) }
 
       it "marks all notifications as read" do
         expect { subject }
@@ -20,18 +20,10 @@ RSpec.describe "Notifications", type: :request do
 
       it "publishes an event" do
         expect_any_instance_of(MessageService).to receive(:create!).with(
-          schema: Events::NotificationMarkedRead::V1,
+          schema: Events::NotificationMarkedRead::V2,
           user_id: user.id,
           data: {
-            notification_id: notification1.id
-          }
-        ).and_call_original
-
-        expect_any_instance_of(MessageService).to receive(:create!).with(
-          schema: Events::NotificationMarkedRead::V1,
-          user_id: user.id,
-          data: {
-            notification_id: notification2.id
+            notification_ids: [notification1.id, notification2.id]
           }
         ).and_call_original
 

@@ -307,8 +307,8 @@ RSpec.describe Coaches::CoachesReactor do
           expect(message_service)
             .to receive(:create!)
             .with(
-              schema: Commands::SendSms::V1,
-              seeker_id: coach_seeker_context.seeker_id,
+              schema: Commands::SendSms::V2,
+              phone_number: "1234567890",
               trace_id: message.trace_id,
               data: {
                 phone_number: "1234567890",

@@ -8,7 +8,7 @@ RSpec.describe Contact::SmsService do
     let(:message) do
       build(
         :message,
-        :send_sms,
+        schema: Commands::SendSms::V2,
         data: {
           phone_number:,
           message: sms_message

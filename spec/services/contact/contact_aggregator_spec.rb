@@ -56,6 +56,26 @@ RSpec.describe Contact::ContactAggregator do
       end
     end
 
+    context "when the message is message enqueued" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::MessageEnqueued::V1,
+          data: Messages::Nothing
+        )
+      end
+
+      it "persists a message state record" do
+        subject
+
+        message_state = Contact::MessageState.last_created
+
+        expect(message_state.message_id).to eq(message.aggregate.message_id)
+        expect(message_state.state).to eq(Contact::MessageStates::ENQUEUED)
+        expect(message_state.message_enqueued_at).to eq(message.occurred_at)
+      end
+    end
+
     context "when the message is user created" do
       let(:message) do
         build(

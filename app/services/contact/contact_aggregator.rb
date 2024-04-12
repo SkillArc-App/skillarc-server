@@ -20,6 +20,14 @@ module Contact
       notification.update_all(read_at: message.occurred_at) # rubocop:disable Rails/SkipsModelValidations
     end
 
+    on_message Events::MessageEnqueued::V1, :sync do |message|
+      Contact::MessageState.create!(
+        message_enqueued_at: message.occurred_at,
+        state: Contact::MessageStates::ENQUEUED,
+        message_id: message.aggregate.message_id
+      )
+    end
+
     on_message Events::UserCreated::V1 do |message|
       Contact::UserContact.create!(
         user_id: message.aggregate.user_id,

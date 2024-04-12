@@ -10,6 +10,18 @@ module Contact
       emit_smtp_sent_event(message)
     end
 
+    on_message Commands::SendEmailMessage::V1 do |message|
+      MessageMailer.with(message:).send_message.deliver_now
+      message_service.create!(
+        schema: Events::EmailMessageSent::V1,
+        trace_id: message.trace_id,
+        message_id: message.aggregate.message_id,
+        data: message.data.to_h
+      )
+
+      emit_smtp_sent_event(message)
+    end
+
     private
 
     def emit_smtp_sent_event(message)

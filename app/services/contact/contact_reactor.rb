@@ -1,53 +1,78 @@
 module Contact
   class ContactReactor < MessageConsumer
-    on_message Events::NotificationCreated::V2, :sync do |message|
-      Contact::Notification.create!(
-        id: message.data.notification_id,
-        user_id: message.aggregate.user_id,
-        title: message.data.title,
-        body: message.data.body,
-        url: message.data.url
-      )
-    end
+    on_message Commands::SendMessage::V1 do |message|
+      user_contact = Contact::UserContact.find_by!(user_id: message.data.user_id)
 
-    on_message Events::NotificationMarkedRead::V2, :sync do |message|
-      notification = Contact::Notification.where(id: message.data.notification_ids)
-      notification.update_all(read_at: message.occurred_at) # rubocop:disable Rails/SkipsModelValidations
-    end
+      case user_contact.preferred_contact
+      when Contact::ContactPreference::SLACK
+        text = if message.data.url.present?
+                 "*#{message.data.title}*: #{message.data.body} <#{message.data.url}|Link>"
+               else
+                 "*#{message.data.title}*: #{message.data.body}"
+               end
 
-    on_message Events::UserCreated::V1 do |message|
-      Contact::UserContact.create!(
-        user_id: message.aggregate.user_id,
-        email: message.data.email,
-        preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
-      )
-    end
+        message_service.create!(
+          schema: Commands::SendSlackMessage::V1,
+          trace_id: message.trace_id,
+          message_id: message.aggregate.message_id,
+          data: {
+            channel: user_contact.slack_id,
+            text:
+          }
+        )
+      when Contact::ContactPreference::EMAIL
+        message_service.create!(
+          schema: Commands::SendEmailMessage::V1,
+          trace_id: message.trace_id,
+          message_id: message.aggregate.message_id,
+          data: {
+            recepent_email: user_contact.email,
+            title: message.data.title,
+            body: message.data.body,
+            url: message.data.url
+          }
+        )
+      when Contact::ContactPreference::SMS
+        text = if message.data.url.present?
+                 "#{message.data.title}: #{message.data.body} #{message.data.url}"
+               else
+                 "#{message.data.title}: #{message.data.body}"
+               end
 
-    on_message Events::UserUpdated::V1 do |message|
-      user_contact = Contact::UserContact.find_by!(user_id: message.aggregate.user_id)
-
-      data = message.data.serialize
-
-      user_contact.email = data[:email] if data.key?(:email)
-      user_contact.phone_number = data[:phone_number]
-
-      user_contact.save!
-    end
-
-    on_message Events::SlackIdAdded::V1 do |message|
-      user_contact = Contact::UserContact.find_by!(user_id: message.aggregate.user_id)
-
-      user_contact.update!(
-        slack_id: message.data.slack_id
-      )
-    end
-
-    on_message Events::ContactPreferenceSet::V1 do |message|
-      user_contact = Contact::UserContact.find_by!(user_id: message.aggregate.user_id)
-
-      user_contact.update!(
-        preferred_contact: message.data.preference
-      )
+        message_service.create!(
+          schema: Commands::SendSmsMessage::V3,
+          trace_id: message.trace_id,
+          message_id: message.aggregate.message_id,
+          data: {
+            phone_number: user_contact.phone_number,
+            message: text
+          }
+        )
+      when Contact::ContactPreference::IN_APP_NOTIFICATION
+        message_service.create!(
+          schema: Events::NotificationCreated::V3,
+          trace_id: message.trace_id,
+          message_id: message.aggregate.message_id,
+          data: {
+            title: message.data.title,
+            body: message.data.body,
+            url: message.data.url,
+            notification_id: SecureRandom.uuid,
+            user_id: message.data.user_id
+          }
+        )
+        message_service.create!(
+          schema: Events::MessageSent::V1,
+          trace_id: message.trace_id,
+          message_id: message.aggregate.message_id,
+          data: {
+            title: message.data.title,
+            body: message.data.body,
+            url: message.data.url,
+            user_id: message.data.user_id
+          }
+        )
+      end
     end
   end
 end

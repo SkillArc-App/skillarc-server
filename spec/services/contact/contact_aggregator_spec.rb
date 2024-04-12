@@ -8,8 +8,9 @@ RSpec.describe Contact::ContactAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::NotificationCreated::V2,
+          schema: Events::NotificationCreated::V3,
           data: {
+            user_id: SecureRandom.uuid,
             title: "A title",
             body: "A body",
             url: "A url",
@@ -23,7 +24,7 @@ RSpec.describe Contact::ContactAggregator do
 
         notification = Contact::Notification.last_created
         expect(notification.id).to eq(message.data.notification_id)
-        expect(notification.user_id).to eq(message.aggregate.user_id)
+        expect(notification.user_id).to eq(message.data.user_id)
         expect(notification.title).to eq(message.data.title)
         expect(notification.body).to eq(message.data.body)
         expect(notification.url).to eq(message.data.url)

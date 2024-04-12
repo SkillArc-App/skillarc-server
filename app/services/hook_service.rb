@@ -5,9 +5,10 @@ class HookService
     user = User.find_by!(email:)
 
     message_service.create!(
-      schema: Events::NotificationCreated::V2,
-      user_id: user.id,
+      schema: Events::NotificationCreated::V3,
+      message_id: SecureRandom.uuid,
       data: {
+        user_id: user.id,
         notification_id: SecureRandom.uuid,
         title:,
         body:,

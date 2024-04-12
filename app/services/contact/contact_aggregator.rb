@@ -5,10 +5,10 @@ module Contact
       Contact::Notification.delete_all
     end
 
-    on_message Events::NotificationCreated::V2, :sync do |message|
+    on_message Events::NotificationCreated::V3, :sync do |message|
       Contact::Notification.create!(
         id: message.data.notification_id,
-        user_id: message.aggregate.user_id,
+        user_id: message.data.user_id,
         title: message.data.title,
         body: message.data.body,
         url: message.data.url

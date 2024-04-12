@@ -12,7 +12,7 @@ class Message
     schema Messages::Schema
     data
     metadata
-    occurred_at ActiveSupport::TimeWithZone, coerce: true
+    occurred_at ActiveSupport::TimeWithZone, coerce: Messages::TimeZoneCoercer
   end)
 
   def initialize(**kwarg)
@@ -34,15 +34,5 @@ class Message
 
   def checksum
     Digest::UUID.uuid_v3(MESSAGE_UUID_NAMESPACE, data.to_json + trace_id + schema.message_type + schema.version.to_s)
-  end
-
-  def self.coerce_occurred_at(value)
-    if value.is_a?(DateTime) || value.is_a?(Time)
-      value.in_time_zone
-    elsif value.is_a?(String)
-      Time.zone.parse(value)
-    else
-      value
-    end
   end
 end

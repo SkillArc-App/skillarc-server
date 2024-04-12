@@ -1,5 +1,5 @@
 module Contact
-  class SmsService < MessageConsumer
+  class SmsReactor < MessageConsumer
     def reset_for_replay; end
 
     def initialize(sms_service: Sms::Gateway.build, **params)

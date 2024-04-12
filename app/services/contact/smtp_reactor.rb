@@ -1,5 +1,5 @@
 module Contact
-  class SmtpService < MessageConsumer
+  class SmtpReactor < MessageConsumer
     on_message Commands::NotifyEmployerOfApplicant::V1 do |message|
       EmployerApplicantNotificationMailer.with(message:).notify_employer.deliver_now
       emit_smtp_sent_event(message)

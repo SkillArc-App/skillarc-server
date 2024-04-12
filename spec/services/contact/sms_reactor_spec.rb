@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Contact::SmsService do
+RSpec.describe Contact::SmsReactor do
   describe "#handle_message" do
     subject { described_class.new(sms_service:, message_service: MessageService.new).handle_message(message) }
 

@@ -110,6 +110,16 @@ module Messages
       ].freeze
     end
 
+    module Infrastructure
+      EVENTS = [
+        COMMAND_SCHEDULED = 'command_scheduled'
+      ].freeze
+
+      COMMANDS = [
+        SCHEDULE_COMMAND = 'schedule_command'
+      ].freeze
+    end
+
     # Because our instance amount to singleton
     # if we want to test actual creating an event we need to
     # make it accurate as rspec stubing occurs _after_
@@ -141,13 +151,15 @@ module Messages
       *Employers::EVENTS,
       *Seekers::EVENTS,
       *Contact::EVENTS,
+      *Infrastructure::EVENTS,
       *TestingOnly::EVENTS
     ].freeze
 
     COMMANDS = [
       *Applications::COMMANDS,
       *Contact::COMMANDS,
-      *Coaches::COMMANDS
+      *Coaches::COMMANDS,
+      *Infrastructure::COMMANDS,
     ].freeze
 
     ALL = [

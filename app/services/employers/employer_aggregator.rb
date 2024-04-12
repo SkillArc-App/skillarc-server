@@ -67,7 +67,7 @@ module Employers
       e = Employer.find_by!(employer_id: message.aggregate_id)
 
       e.update!(
-        **message.data.to_h
+        **message.data.serialize
       )
     end
 
@@ -115,7 +115,7 @@ module Employers
       job = Job.find_by!(job_id: message.aggregate_id)
 
       job.update!(
-        **message.data.to_h
+        **message.data.serialize
       )
     end
   end

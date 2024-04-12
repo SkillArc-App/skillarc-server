@@ -29,8 +29,8 @@ class Message
       aggregate: aggregate.serialize,
       trace_id:,
       schema: schema.serialize,
-      data: data.to_h,
-      metadata: metadata.to_h,
+      data: data.serialize,
+      metadata: metadata.serialize,
       occurred_at:
     }
   end
@@ -43,8 +43,8 @@ class Message
       aggregate: schema.aggregate.deserialize(hash[:aggregate]),
       schema:,
       trace_id: hash[:trace_id],
-      data: schema.data.from_hash(hash[:data]),
-      metadata: schema.metadata.from_hash(hash[:metadata]),
+      data: schema.data.deserialize(hash[:data]),
+      metadata: schema.metadata.deserialize(hash[:metadata]),
       occurred_at: hash[:occurred_at]
     )
   end

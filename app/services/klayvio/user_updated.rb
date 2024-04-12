@@ -3,7 +3,7 @@ module Klayvio
     include DefaultStreamId
 
     def call(message:)
-      data = message.data.to_h
+      data = message.data.serialize
 
       Gateway.build.user_updated(
         email: data[:email],

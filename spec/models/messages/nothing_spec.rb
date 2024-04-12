@@ -7,9 +7,9 @@ RSpec.describe Messages::Nothing do
     end
   end
 
-  describe ".to_h" do
+  describe ".serialize" do
     subject do
-      described_class.to_h
+      described_class.serialize
     end
 
     it "returns a empty hash" do
@@ -17,9 +17,9 @@ RSpec.describe Messages::Nothing do
     end
   end
 
-  describe ".from_hash" do
+  describe ".deserialize" do
     subject do
-      described_class.from_hash(hash)
+      described_class.deserialize(hash)
     end
 
     let(:hash) { {} }

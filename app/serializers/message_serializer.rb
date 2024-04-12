@@ -7,24 +7,23 @@ class MessageSerializer < ActiveJob::Serializers::ObjectSerializer
     super(
       "id" => message.id,
       "trace_id" => message.trace_id,
-      "aggregate_id" => message.aggregate.id,
-      "message_type" => message.schema.message_type,
-      "data" => message.data.to_h,
-      "metadata" => message.metadata.to_h,
-      "version" => message.schema.version,
+      "aggregate" => message.aggregate.serialize,
+      "schema" => message.schema.serialize,
+      "data" => message.data.serialize,
+      "metadata" => message.metadata.serialize,
       "occurred_at" => message.occurred_at,
     )
   end
 
   def deserialize(hash)
-    schema = MessageService.get_schema(message_type: hash["message_type"], version: hash["version"])
+    schema = Messages::Schema.deserialize(hash["schema"])
 
     klass.new(
       id: hash["id"],
       trace_id: hash["trace_id"],
-      aggregate: schema.aggregate.new(**{ schema.aggregate.id => hash["aggregate_id"] }),
-      data: schema.data.from_hash(hash["data"].deep_symbolize_keys),
-      metadata: schema.metadata.from_hash(hash["metadata"].deep_symbolize_keys),
+      aggregate: schema.aggregate.deserialize(hash["aggregate"]),
+      data: schema.data.deserialize(hash["data"].deep_symbolize_keys),
+      metadata: schema.metadata.deserialize(hash["metadata"].deep_symbolize_keys),
       schema:,
       occurred_at: Time.zone.parse(hash["occurred_at"])
     )

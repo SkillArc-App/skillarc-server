@@ -20,7 +20,7 @@ module Contact
         data: {
           email: message.data.recepent_email,
           template: EmployerWeeklyMailer.class.to_s,
-          template_data: message.data.to_h
+          template_data: message.data.serialize
         }
       )
     end

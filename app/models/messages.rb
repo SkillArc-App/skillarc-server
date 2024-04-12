@@ -31,6 +31,7 @@ module Messages
       COMMANDS = [
         ADD_NOTE = "add_note",
         ADD_LEAD = "add_lead",
+        ADD_COACH_SEEKER_REMINDER = "add_coach_seeker_reminder",
         ASSIGN_COACH = "assign_coach"
       ].freeze
     end

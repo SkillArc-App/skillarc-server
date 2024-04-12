@@ -4,11 +4,11 @@ module Messages
       other == Nothing
     end
 
-    def self.to_h
+    def self.serialize
       {}
     end
 
-    def self.from_hash(_hash)
+    def self.deserialize(_hash)
       self
     end
   end

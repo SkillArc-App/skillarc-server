@@ -30,8 +30,8 @@ class Event < ApplicationRecord
       aggregate: schema.aggregate.new(**{ schema.aggregate.id => aggregate_id }),
       trace_id:,
       schema:,
-      data: schema.data.from_hash(data),
-      metadata: schema.metadata.from_hash(metadata),
+      data: schema.data.deserialize(data),
+      metadata: schema.metadata.deserialize(metadata),
       occurred_at:
     )
   end
@@ -42,8 +42,8 @@ class Event < ApplicationRecord
       aggregate_id: message.aggregate.id,
       trace_id: message.trace_id,
       event_type: message.schema.message_type,
-      data: message.data.to_h,
-      metadata: message.metadata.to_h,
+      data: message.data.serialize,
+      metadata: message.metadata.serialize,
       version: message.schema.version,
       occurred_at: message.occurred_at
     )

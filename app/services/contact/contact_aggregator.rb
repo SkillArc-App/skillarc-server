@@ -31,7 +31,7 @@ module Contact
     on_message Events::UserUpdated::V1 do |message|
       user_contact = Contact::UserContact.find_by!(user_id: message.aggregate.user_id)
 
-      data = message.data.to_h
+      data = message.data.serialize
 
       user_contact.email = data[:email] if data.key?(:email)
       user_contact.phone_number = data[:phone_number]

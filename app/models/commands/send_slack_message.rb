@@ -1,12 +1,12 @@
-module Events
-  module SmsSent
+module Commands
+  module SendSlackMessage
     module Data
       class V1
         extend Messages::Payload
 
         schema do
-          phone_number String
-          message String
+          channel String
+          text String
         end
       end
     end
@@ -14,8 +14,8 @@ module Events
     V1 = Messages::Schema.active(
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Phone,
-      message_type: Messages::Types::Contact::SMS_SENT,
+      aggregate: Aggregates::Message,
+      message_type: Messages::Types::Contact::SEND_SLACK_MESSAGE,
       version: 1
     )
   end

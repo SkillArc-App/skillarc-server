@@ -1,5 +1,5 @@
 module Commands
-  module SendSms
+  module SendSmsMessage
     module Data
       class V1
         extend Messages::Payload
@@ -15,14 +15,21 @@ module Commands
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Contact::SEND_SMS,
+      message_type: Messages::Types::Contact::SEND_SMS_MESSAGE,
       version: 1
     )
     V2 = Messages::Schema.active(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Phone,
-      message_type: Messages::Types::Contact::SEND_SMS,
+      message_type: Messages::Types::Contact::SEND_SMS_MESSAGE,
+      version: 2
+    )
+    V3 = Messages::Schema.active(
+      data: Data::V1,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Message,
+      message_type: Messages::Types::Contact::SEND_SMS_MESSAGE,
       version: 2
     )
   end

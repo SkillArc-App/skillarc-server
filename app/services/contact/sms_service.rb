@@ -7,7 +7,7 @@ module Contact
       @sms_service = sms_service
     end
 
-    on_message Commands::SendSms::V1 do |message|
+    on_message Commands::SendSms::V2 do |message|
       sms_service.send_message(
         phone_number: message.data.phone_number,
         message: message.data.message

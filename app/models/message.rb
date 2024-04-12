@@ -18,8 +18,35 @@ class Message
   def initialize(**kwarg)
     super(**kwarg)
 
+    raise InvalidSchemaError unless schema.aggregate === aggregate # rubocop:disable Style/CaseEquality
     raise InvalidSchemaError unless schema.data === data # rubocop:disable Style/CaseEquality
     raise InvalidSchemaError unless schema.metadata === metadata # rubocop:disable Style/CaseEquality
+  end
+
+  def serialize
+    {
+      id:,
+      aggregate: aggregate.serialize,
+      trace_id:,
+      schema: schema.serialize,
+      data: data.to_h,
+      metadata: metadata.to_h,
+      occurred_at:
+    }
+  end
+
+  def self.deserialize(hash)
+    schema = Messages::Schema.deserialize(hash[:schema])
+
+    new(
+      id: hash[:id],
+      aggregate: schema.aggregate.deserialize(hash[:aggregate]),
+      schema:,
+      trace_id: hash[:trace_id],
+      data: schema.data.from_hash(hash[:data]),
+      metadata: schema.metadata.from_hash(hash[:metadata]),
+      occurred_at: hash[:occurred_at]
+    )
   end
 
   def ==(other)

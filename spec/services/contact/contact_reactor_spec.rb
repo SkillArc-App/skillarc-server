@@ -48,6 +48,15 @@ RSpec.describe Contact::ContactReactor do
                 }
               )
 
+            expect(message_service)
+              .to receive(:create!)
+              .with(
+                schema: Events::MessageEnqueued::V1,
+                trace_id: message.trace_id,
+                message_id: message.aggregate.message_id,
+                data: Messages::Nothing
+              )
+
             subject
           end
         end
@@ -66,6 +75,15 @@ RSpec.describe Contact::ContactReactor do
                   channel: user_contact.slack_id,
                   text: "*A title*: A body"
                 }
+              )
+
+            expect(message_service)
+              .to receive(:create!)
+              .with(
+                schema: Events::MessageEnqueued::V1,
+                trace_id: message.trace_id,
+                message_id: message.aggregate.message_id,
+                data: Messages::Nothing
               )
 
             subject
@@ -92,6 +110,15 @@ RSpec.describe Contact::ContactReactor do
               }
             )
 
+          expect(message_service)
+            .to receive(:create!)
+            .with(
+              schema: Events::MessageEnqueued::V1,
+              trace_id: message.trace_id,
+              message_id: message.aggregate.message_id,
+              data: Messages::Nothing
+            )
+
           subject
         end
       end
@@ -115,6 +142,15 @@ RSpec.describe Contact::ContactReactor do
                 }
               )
 
+            expect(message_service)
+              .to receive(:create!)
+              .with(
+                schema: Events::MessageEnqueued::V1,
+                trace_id: message.trace_id,
+                message_id: message.aggregate.message_id,
+                data: Messages::Nothing
+              )
+
             subject
           end
         end
@@ -133,6 +169,15 @@ RSpec.describe Contact::ContactReactor do
                   phone_number: user_contact.phone_number,
                   message: "A title: A body"
                 }
+              )
+
+            expect(message_service)
+              .to receive(:create!)
+              .with(
+                schema: Events::MessageEnqueued::V1,
+                trace_id: message.trace_id,
+                message_id: message.aggregate.message_id,
+                data: Messages::Nothing
               )
 
             subject

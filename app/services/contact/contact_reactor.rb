@@ -20,6 +20,7 @@ module Contact
             text:
           }
         )
+        emit_message_enqueued(message)
       when Contact::ContactPreference::EMAIL
         message_service.create!(
           schema: Commands::SendEmailMessage::V1,
@@ -32,6 +33,7 @@ module Contact
             url: message.data.url
           }
         )
+        emit_message_enqueued(message)
       when Contact::ContactPreference::SMS
         text = if message.data.url.present?
                  "#{message.data.title}: #{message.data.body} #{message.data.url}"
@@ -48,6 +50,7 @@ module Contact
             message: text
           }
         )
+        emit_message_enqueued(message)
       when Contact::ContactPreference::IN_APP_NOTIFICATION
         message_service.create!(
           schema: Events::NotificationCreated::V3,
@@ -73,6 +76,17 @@ module Contact
           }
         )
       end
+    end
+
+    private
+
+    def emit_message_enqueued(message)
+      message_service.create!(
+        schema: Events::MessageEnqueued::V1,
+        trace_id: message.trace_id,
+        message_id: message.aggregate.message_id,
+        data: Messages::Nothing
+      )
     end
   end
 end

@@ -92,4 +92,48 @@ RSpec.describe Messages::Schema do
       instance.all_messages
     end
   end
+
+  describe "#serialize" do
+    let(:instance) do
+      described_class.active(
+        data:,
+        metadata:,
+        message_type:,
+        version:,
+        aggregate:
+      )
+    end
+
+    let(:data) { String }
+    let(:metadata) { Hash }
+    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:version) { 1 }
+    let(:aggregate) { Aggregates::User }
+
+    it "just returns the message_type and version" do
+      expect(instance.serialize).to eq({ version:, message_type: })
+    end
+  end
+
+  describe "#deserialize" do
+    let!(:instance) do
+      described_class.active(
+        data:,
+        metadata:,
+        message_type:,
+        version:,
+        aggregate:
+      )
+    end
+
+    let(:data) { String }
+    let(:metadata) { Hash }
+    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:version) { 1 }
+    let(:aggregate) { Aggregates::User }
+
+    it "just returns the message_type and version" do
+      expect(described_class.deserialize({ version:, message_type: })).to eq(instance)
+    end
+  end
 end

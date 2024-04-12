@@ -9,6 +9,17 @@ module Messages
       aggregate SubClass.Of(Aggregate)
     end)
 
+    def serialize
+      {
+        version:,
+        message_type:
+      }
+    end
+
+    def self.deserialize(hash)
+      MessageService.get_schema(message_type: hash[:message_type], version: hash[:version])
+    end
+
     def self.active(data:, metadata:, message_type:, version:, aggregate:)
       schema = new(data:, metadata:, message_type:, version:, aggregate:, active: true)
       MessageService.register(schema:)

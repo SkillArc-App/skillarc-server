@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_12_210733) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_15_135640) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -479,6 +479,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_210733) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+  end
+
+  create_table "infastructure_scheduled_commands", force: :cascade do |t|
+    t.uuid "task_id", null: false
+    t.datetime "execute_at", null: false
+    t.string "state", null: false
+    t.jsonb "message", null: false
+    t.index ["execute_at"], name: "index_infastructure_scheduled_commands_on_execute_at"
+    t.index ["state"], name: "index_infastructure_scheduled_commands_on_state"
+    t.index ["task_id"], name: "index_infastructure_scheduled_commands_on_task_id"
   end
 
   create_table "job_freshness_contexts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

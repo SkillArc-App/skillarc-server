@@ -28,22 +28,8 @@ module Infastructure
 
     scope :ready_to_execute, -> { where(state: State::ENQUEUED).where("execute_at < ?", Time.zone.now) }
 
-    def execute!(message_service = MessageService.new)
+    def execute!
       return unless state == State::ENQUEUED
-
-      command = message
-      schema = command.schema
-
-      message_service.create!(
-        **{
-          schema:,
-          data: command.data,
-          trace_id: command.trace_id,
-          id: command.id,
-          metadata: command.metadata,
-          schema.aggregate.id => message.aggregate.id
-        }
-      )
 
       update!(state: State::EXECUTED)
     end

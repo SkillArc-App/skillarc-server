@@ -41,6 +41,16 @@ RSpec.describe ExecuteScheduledCommandsJob do
     expect_any_instance_of(MessageService)
       .to receive(:create!)
       .with(
+        schema: Events::ScheduledCommandsExecuted::V1,
+        data: Messages::Nothing,
+        trace_id: message1.trace_id,
+        task_id: scheduled_command1.task_id
+      )
+      .and_call_original
+
+    expect_any_instance_of(MessageService)
+      .to receive(:create!)
+      .with(
         schema: message2.schema,
         data: message2.data,
         trace_id: message2.trace_id,
@@ -50,9 +60,16 @@ RSpec.describe ExecuteScheduledCommandsJob do
       )
       .and_call_original
 
-    described_class.new.perform
+    expect_any_instance_of(MessageService)
+      .to receive(:create!)
+      .with(
+        schema: Events::ScheduledCommandsExecuted::V1,
+        data: Messages::Nothing,
+        trace_id: message2.trace_id,
+        task_id: scheduled_command2.task_id
+      )
+      .and_call_original
 
-    expect(scheduled_command1.reload.state).to eq(Infastructure::ScheduledCommand::State::EXECUTED)
-    expect(scheduled_command2.reload.state).to eq(Infastructure::ScheduledCommand::State::EXECUTED)
+    described_class.new.perform
   end
 end

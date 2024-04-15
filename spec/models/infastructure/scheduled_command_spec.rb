@@ -49,25 +49,11 @@ RSpec.describe Infastructure::ScheduledCommand do
   end
 
   describe "#execute!" do
-    let(:message_service) { MessageService.new }
-
     context "when state is enqueued" do
       let(:state) { described_class::State::ENQUEUED }
 
       it "executes the command and sets the state to executed" do
-        expect(message_service)
-          .to receive(:create!)
-          .with(
-            schema: message.schema,
-            data: message.data,
-            trace_id: message.trace_id,
-            context_id: message.aggregate.id,
-            id: message.id,
-            metadata: message.metadata
-          )
-          .and_call_original
-
-        instance.execute!(message_service)
+        instance.execute!
         expect(instance.state).to eq(described_class::State::EXECUTED)
       end
     end
@@ -76,10 +62,7 @@ RSpec.describe Infastructure::ScheduledCommand do
       let(:state) { described_class::State::CANCELLED }
 
       it "does nothing" do
-        expect(message_service)
-          .not_to receive(:create!)
-
-        instance.execute!(message_service)
+        instance.execute!
         expect(instance.state).to eq(state)
       end
     end

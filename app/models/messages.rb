@@ -119,7 +119,8 @@ module Messages
 
     module Infrastructure
       EVENTS = [
-        COMMAND_SCHEDULED = 'command_scheduled'
+        COMMAND_SCHEDULED = 'command_scheduled',
+        SCHEDULED_COMMAND_EXECUTED = 'scheduled_command_executed'
       ].freeze
 
       COMMANDS = [

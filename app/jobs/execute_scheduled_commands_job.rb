@@ -15,13 +15,13 @@ class ExecuteScheduledCommandsJob < ApplicationJob
             data: command.data,
             trace_id: command.trace_id,
             id: command.id,
-            metadata: command.metadata,
+            metadatScheduledCommandExecuteda: command.metadata,
             schema.aggregate.id => command.aggregate.id
           }
         )
 
         message_service.create!(
-          schema: Events::ScheduledCommandsExecuted::V1,
+          schema: Events::ScheduledCommandExecuted::V1,
           data: Messages::Nothing,
           trace_id: command.trace_id,
           task_id: scheduled_command.task_id

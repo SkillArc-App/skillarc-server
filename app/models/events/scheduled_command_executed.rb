@@ -1,5 +1,5 @@
 module Events
-  module ScheduledCommandsExecuted
+  module ScheduledCommandExecuted
     V1 = Messages::Schema.active(
       data: Messages::Nothing,
       metadata: Messages::Nothing,

@@ -6,6 +6,7 @@ module Commands
 
         schema do
           execute_at ActiveSupport::TimeWithZone
+          task_id Uuid
           message Message
         end
       end

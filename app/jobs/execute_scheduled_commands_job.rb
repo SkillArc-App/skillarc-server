@@ -5,7 +5,7 @@ class ExecuteScheduledCommandsJob < ApplicationJob
 
   def perform
     with_message_service do
-      Infastructure::ScheduledCommand.ready_to_execute.each do |scheduled_command|
+      Infrastructure::ScheduledCommand.ready_to_execute.each do |scheduled_command|
         command = scheduled_command.message
         schema = command.schema
 
@@ -15,7 +15,7 @@ class ExecuteScheduledCommandsJob < ApplicationJob
             data: command.data,
             trace_id: command.trace_id,
             id: command.id,
-            metadatScheduledCommandExecuteda: command.metadata,
+            metadata: command.metadata,
             schema.aggregate.id => command.aggregate.id
           }
         )

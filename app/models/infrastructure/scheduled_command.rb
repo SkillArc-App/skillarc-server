@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: infastructure_scheduled_commands
+# Table name: infrastructure_scheduled_commands
 #
 #  id         :bigint           not null, primary key
 #  execute_at :datetime         not null
@@ -10,13 +10,13 @@
 #
 # Indexes
 #
-#  index_infastructure_scheduled_commands_on_execute_at  (execute_at)
-#  index_infastructure_scheduled_commands_on_state       (state)
-#  index_infastructure_scheduled_commands_on_task_id     (task_id)
+#  index_infrastructure_scheduled_commands_on_execute_at  (execute_at)
+#  index_infrastructure_scheduled_commands_on_state       (state)
+#  index_infrastructure_scheduled_commands_on_task_id     (task_id) UNIQUE
 #
-module Infastructure
+module Infrastructure
   class ScheduledCommand < ApplicationRecord
-    self.table_name = "infastructure_scheduled_commands"
+    self.table_name = "infrastructure_scheduled_commands"
 
     module State
       ALL = [

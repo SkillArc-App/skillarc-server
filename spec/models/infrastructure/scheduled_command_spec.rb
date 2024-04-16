@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Infastructure::ScheduledCommand do
+RSpec.describe Infrastructure::ScheduledCommand do
   let(:instance) do
     create(
-      :infastructure__scheduled_command,
+      :infrastructure__scheduled_command,
       state:,
       task_id:,
       message:

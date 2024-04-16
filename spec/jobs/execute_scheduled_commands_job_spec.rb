@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe ExecuteScheduledCommandsJob do
-  let!(:scheduled_command1) { create(:infastructure__scheduled_command, message: message1) }
-  let!(:scheduled_command2) { create(:infastructure__scheduled_command, message: message2) }
+  let!(:scheduled_command1) { create(:infrastructure__scheduled_command, message: message1) }
+  let!(:scheduled_command2) { create(:infrastructure__scheduled_command, message: message2) }
 
   let(:message1) do
     build(

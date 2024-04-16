@@ -11,12 +11,19 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
+    V1 = Messages::Schema.deprecated(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Phone,
       message_type: Messages::Types::Contact::SMS_MESSAGE_SENT,
       version: 1
+    )
+    V2 = Messages::Schema.active(
+      data: Data::V1,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Message,
+      message_type: Messages::Types::Contact::SMS_MESSAGE_SENT,
+      version: 2
     )
   end
 end

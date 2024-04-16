@@ -18,7 +18,7 @@ module Commands
       message_type: Messages::Types::Contact::SEND_SMS_MESSAGE,
       version: 1
     )
-    V2 = Messages::Schema.active(
+    V2 = Messages::Schema.deprecated(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Phone,
@@ -30,7 +30,7 @@ module Commands
       metadata: Messages::Nothing,
       aggregate: Aggregates::Message,
       message_type: Messages::Types::Contact::SEND_SMS_MESSAGE,
-      version: 2
+      version: 3
     )
   end
 end

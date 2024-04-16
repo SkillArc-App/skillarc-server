@@ -51,7 +51,11 @@ module Messages
     end
 
     def active?
-      status == Status::ACTIVE || status == Status::DEPRECATED
+      status == Status::ACTIVE
+    end
+
+    def inactive?
+      status == Status::INACTIVE
     end
 
     private

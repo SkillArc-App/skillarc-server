@@ -8,7 +8,7 @@ RSpec.describe Contact::SmsReactor do
     let(:message) do
       build(
         :message,
-        schema: Commands::SendSmsMessage::V2,
+        schema: Commands::SendSmsMessage::V3,
         data: {
           phone_number:,
           message: sms_message
@@ -30,8 +30,8 @@ RSpec.describe Contact::SmsReactor do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::SmsMessageSent::V1,
-        phone_number:,
+        schema: Events::SmsMessageSent::V2,
+        message_id: message.aggregate.message_id,
         trace_id: message.trace_id,
         data: {
           phone_number:,

@@ -180,8 +180,12 @@ RSpec.describe MessageService do
       end
     end
 
-    context "when passed an Event::Schema" do
-      # Can't directly test see the Messages::Schema spec
+    context "when passed an existing registered schema" do
+      let(:schema) { Events::UserCreated::V1 }
+
+      it "raises a SchemaAlreadyDefinedError" do
+        expect { subject }.to raise_error(described_class::SchemaAlreadyDefinedError)
+      end
     end
   end
 

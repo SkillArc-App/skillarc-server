@@ -40,7 +40,8 @@ class MessageService
     raise NotSchemaError unless schema.is_a?(Messages::Schema)
 
     registry[schema.message_type] ||= {}
-    Rails.logger.debug { "[Message Registry] the event_type #{schema.message_type} version: #{schema.version} was overritten" } if registry[schema.message_type][schema.version].present?
+    raise SchemaAlreadyDefinedError, "The event_type #{schema.message_type} version: #{schema.version} was overritten" if registry[schema.message_type][schema.version].present? && schema.message_type != Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST
+
     registry[schema.message_type][schema.version] = schema
   end
 

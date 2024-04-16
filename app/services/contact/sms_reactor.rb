@@ -7,15 +7,15 @@ module Contact
       @sms_service = sms_service
     end
 
-    on_message Commands::SendSmsMessage::V2 do |message|
+    on_message Commands::SendSmsMessage::V3 do |message|
       sms_service.send_message(
         phone_number: message.data.phone_number,
         message: message.data.message
       )
 
       message_service.create!(
-        schema: Events::SmsMessageSent::V1,
-        phone_number: message.data.phone_number,
+        schema: Events::SmsMessageSent::V2,
+        message_id: message.aggregate.message_id,
         trace_id: message.trace_id,
         data: {
           phone_number: message.data.phone_number,

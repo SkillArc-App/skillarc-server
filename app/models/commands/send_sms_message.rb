@@ -11,14 +11,14 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.deprecated(
+    V1 = Messages::Schema.inactive(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
       message_type: Messages::Types::Contact::SEND_SMS_MESSAGE,
       version: 1
     )
-    V2 = Messages::Schema.deprecated(
+    V2 = Messages::Schema.inactive(
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Phone,

@@ -27,7 +27,7 @@ RSpec.describe Messages::Schema do
 
       expect(subject.data).to eq(data)
       expect(subject.metadata).to eq(metadata)
-      expect(subject.active).to eq(true)
+      expect(subject.status).to eq(described_class::Status::ACTIVE)
       expect(subject.message_type).to eq(message_type)
       expect(subject.version).to eq(version)
       expect(subject.aggregate).to eq(aggregate)
@@ -60,7 +60,40 @@ RSpec.describe Messages::Schema do
 
       expect(subject.data).to eq(data)
       expect(subject.metadata).to eq(metadata)
-      expect(subject.active).to eq(false)
+      expect(subject.status).to eq(described_class::Status::DEPRECATED)
+      expect(subject.message_type).to eq(message_type)
+      expect(subject.version).to eq(version)
+      expect(subject.aggregate).to eq(aggregate)
+    end
+  end
+
+  describe ".inactive" do
+    subject do
+      described_class.inactive(
+        data:,
+        metadata:,
+        message_type:,
+        version:,
+        aggregate:
+      )
+    end
+
+    let(:data) { String }
+    let(:metadata) { Hash }
+    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:version) { 1 }
+    let(:aggregate) { Aggregates::User }
+
+    it "returns the schema and registers it" do
+      expect(MessageService)
+        .to receive(:register)
+        .with(
+          schema: be_a(described_class)
+        ).and_call_original
+
+      expect(subject.data).to eq(data)
+      expect(subject.metadata).to eq(metadata)
+      expect(subject.status).to eq(described_class::Status::INACTIVE)
       expect(subject.message_type).to eq(message_type)
       expect(subject.version).to eq(version)
       expect(subject.aggregate).to eq(aggregate)

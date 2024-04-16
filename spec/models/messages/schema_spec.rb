@@ -27,7 +27,7 @@ RSpec.describe Messages::Schema do
 
       expect(subject.data).to eq(data)
       expect(subject.metadata).to eq(metadata)
-      expect(subject.active).to eq(true)
+      expect(subject.status).to eq(described_class::Status::ACTIVE)
       expect(subject.message_type).to eq(message_type)
       expect(subject.version).to eq(version)
       expect(subject.aggregate).to eq(aggregate)
@@ -60,7 +60,7 @@ RSpec.describe Messages::Schema do
 
       expect(subject.data).to eq(data)
       expect(subject.metadata).to eq(metadata)
-      expect(subject.active).to eq(false)
+      expect(subject.status).to eq(described_class::Status::DEPRECATED)
       expect(subject.message_type).to eq(message_type)
       expect(subject.version).to eq(version)
       expect(subject.aggregate).to eq(aggregate)

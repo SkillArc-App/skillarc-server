@@ -4,9 +4,12 @@ class MessageService
   SchemaAlreadyDefinedError = Class.new(StandardError)
   MessageTypeHasMultipleActiveSchemas = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
+  InactiveSchemaError = Class.new(StandardError)
 
   def create!(schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     raise NotEventSchemaError unless schema.is_a?(Messages::Schema)
+
+    raise InactiveSchemaError, "Attempted to create message for #{schema}" if schema.inactive?
 
     aggregate = schema.aggregate.new(**)
 
@@ -43,7 +46,7 @@ class MessageService
     registry[schema.message_type] ||= {}
 
     if schema.message_type != Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST
-      raise SchemaAlreadyDefinedError, "The event_type #{schema.message_type} version: #{schema.version} was overritten" if registry[schema.message_type][schema.version].present?
+      raise SchemaAlreadyDefinedError, "The message #{schema} was overritten" if registry[schema.message_type][schema.version].present?
       raise MessageTypeHasMultipleActiveSchemas, "The message_type #{schema.message_type} has multiple active schemas" if schema.active? && registry[schema.message_type].values.any?(&:active?)
     end
 

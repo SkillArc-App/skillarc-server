@@ -29,7 +29,7 @@ module Events
           title String
           body String
           url String
-          user_id Uuid
+          user_id String
           notification_id Uuid
         end
       end

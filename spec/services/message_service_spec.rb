@@ -128,7 +128,7 @@ RSpec.describe MessageService do
 
     let(:instance) { described_class.new }
 
-    let(:message_type) { Messages::Types::CHAT_CREATED }
+    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let!(:schema) do
       Messages::Schema.active(
         data: Messages::Nothing,
@@ -185,6 +185,20 @@ RSpec.describe MessageService do
 
       it "raises a SchemaAlreadyDefinedError" do
         expect { subject }.to raise_error(described_class::SchemaAlreadyDefinedError)
+      end
+    end
+
+    context "when passed a 2nd active schema for the same message type" do
+      it "raise a MessageTypeHasMultipleActiveSchemas" do
+        expect do
+          Messages::Schema.active(
+            data: Messages::Nothing,
+            metadata: Messages::Nothing,
+            aggregate: Aggregates::User,
+            message_type: Messages::Types::USER_CREATED,
+            version: 2
+          )
+        end.to raise_error(described_class::MessageTypeHasMultipleActiveSchemas)
       end
     end
   end

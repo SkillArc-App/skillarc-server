@@ -13,19 +13,19 @@ RSpec.describe Messages::Payload do
     end
   end
 
-  describe "#to_h" do
+  describe "#serialize" do
     it "returns all defined properties" do
       id = SecureRandom.uuid
       instance = parent_klass.new(stringChild: ['cat'], child: [Events::ApplicantStatusUpdated::Reason::V1.new(id:, response: nil)])
 
-      expect(instance.to_h).to eq({ stringChild: ['cat'], child: [{ id:, response: nil }] })
+      expect(instance.serialize).to eq({ stringChild: ['cat'], child: [{ id:, response: nil }] })
     end
   end
 
-  describe ".from_hash" do
+  describe ".deserialize" do
     it "returns all defined properties" do
       id = SecureRandom.uuid
-      instance = parent_klass.from_hash({ stringChild: ['cat'], child: [{ id:, response: nil }] })
+      instance = parent_klass.deserialize({ stringChild: ['cat'], child: [{ id:, response: nil }] })
 
       expect(instance).to eq(parent_klass.new(
                                child: [Events::ApplicantStatusUpdated::Reason::V1.new(id:, response: nil)],

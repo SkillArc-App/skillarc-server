@@ -53,9 +53,23 @@ RSpec.describe Messages::Aggregate do
     end
   end
 
+  describe "#serialize" do
+    it "returns the id" do
+      expect(sub_klass.new(test_id: "1").serialize).to eq("1")
+    end
+  end
+
   describe "dynamic id method" do
     it "returns the id" do
       expect(sub_klass.new(test_id: "1").test_id).to eq("1")
+    end
+  end
+
+  describe ".deserialize" do
+    it "returns the aggregate from a string" do
+      result = sub_klass.deserialize("1")
+      expect(result).to be_a(sub_klass)
+      expect(result.id).to eq("1")
     end
   end
 

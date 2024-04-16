@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Contact::SmsService do
+RSpec.describe Contact::SmsReactor do
   describe "#handle_message" do
     subject { described_class.new(sms_service:, message_service: MessageService.new).handle_message(message) }
 
@@ -8,7 +8,7 @@ RSpec.describe Contact::SmsService do
     let(:message) do
       build(
         :message,
-        schema: Commands::SendSms::V2,
+        schema: Commands::SendSmsMessage::V2,
         data: {
           phone_number:,
           message: sms_message
@@ -30,7 +30,7 @@ RSpec.describe Contact::SmsService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::SmsSent::V1,
+        schema: Events::SmsMessageSent::V1,
         phone_number:,
         trace_id: message.trace_id,
         data: {

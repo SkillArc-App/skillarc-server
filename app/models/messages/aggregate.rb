@@ -32,6 +32,14 @@ module Messages
       id == other.id && self.class == other.class
     end
 
+    def serialize
+      id
+    end
+
+    def self.deserialize(hash)
+      new(**{ id => hash })
+    end
+
     attr_reader :id
   end
 end

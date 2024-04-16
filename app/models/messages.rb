@@ -31,6 +31,7 @@ module Messages
       COMMANDS = [
         ADD_NOTE = "add_note",
         ADD_LEAD = "add_lead",
+        ADD_COACH_SEEKER_REMINDER = "add_coach_seeker_reminder",
         ASSIGN_COACH = "assign_coach"
       ].freeze
     end
@@ -95,17 +96,35 @@ module Messages
     module Contact
       EVENTS = [
         CONTACT_PREFERENCE_SET = "contact_preference_set",
-        SMS_SENT = 'sms_sent',
+        MESSAGE_SENT = "message_sent",
+        MESSAGE_ENQUEUED = "message_enqueued",
+        SMS_MESSAGE_SENT = 'sms_sent',
+        SLACK_MESSAGE_SENT = "slack_message_sent",
+        EMAIL_MESSAGE_SENT = "email_message_sent",
         SMTP_SENT = 'smtp_sent',
         CAL_WEBHOOK_RECEIVED = 'cal_webhook_received',
         SLACK_ID_ADDED = "slack_id_added"
       ].freeze
 
       COMMANDS = [
-        SEND_SMS = 'send_sms',
+        SEND_SMS_MESSAGE = 'send_sms',
+        SEND_MESSAGE = "send_message",
+        SEND_SLACK_MESSAGE = "send_slack_message",
+        SEND_EMAIL_MESSAGE = "send_email_message",
         SET_CONTACT_PREFERENCE = "set_contact_preference",
         NOTIFY_EMPLOYER_OF_APPLICANT = 'notify_employer_of_applicant',
         SEND_WEEKLY_EMPLOYER_UPDATE = 'send_weekly_employer_update'
+      ].freeze
+    end
+
+    module Infrastructure
+      EVENTS = [
+        COMMAND_SCHEDULED = 'command_scheduled',
+        SCHEDULED_COMMAND_EXECUTED = 'scheduled_command_executed'
+      ].freeze
+
+      COMMANDS = [
+        SCHEDULE_COMMAND = 'schedule_command'
       ].freeze
     end
 
@@ -140,13 +159,15 @@ module Messages
       *Employers::EVENTS,
       *Seekers::EVENTS,
       *Contact::EVENTS,
+      *Infrastructure::EVENTS,
       *TestingOnly::EVENTS
     ].freeze
 
     COMMANDS = [
       *Applications::COMMANDS,
       *Contact::COMMANDS,
-      *Coaches::COMMANDS
+      *Coaches::COMMANDS,
+      *Infrastructure::COMMANDS
     ].freeze
 
     ALL = [

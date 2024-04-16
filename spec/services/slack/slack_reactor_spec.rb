@@ -2,9 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Slack::SlackReactor do
   describe "#handle_message" do
-    subject { described_class.new(client:).handle_message(message) }
+    subject { described_class.new(client:, message_service:).handle_message(message) }
 
     let(:client) { Slack::FakeClient.new }
+    let(:message_service) { MessageService.new }
 
     context "when the message is user_created" do
       let(:message) do
@@ -132,6 +133,43 @@ RSpec.describe Slack::SlackReactor do
 
           subject
         end
+      end
+    end
+
+    context "wehn the message is send slack message" do
+      let(:message) do
+        build(
+          :message,
+          schema: Commands::SendSlackMessage::V1,
+          data: {
+            channel: "#somechannel",
+            text: "*some text*"
+          }
+        )
+      end
+
+      it "sends a slack message to the provided channel and emits and event" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: Events::SlackMessageSent::V1,
+            trace_id: message.trace_id,
+            message_id: message.aggregate.message_id,
+            data: {
+              channel: "#somechannel",
+              text: "*some text*"
+            }
+          )
+
+        expect(client)
+          .to receive(:chat_postMessage)
+          .with(
+            channel: '#somechannel',
+            text: "*some text*",
+            as_user: true
+          )
+
+        subject
       end
     end
   end

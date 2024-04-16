@@ -5,6 +5,21 @@ module Slack
       @client = client
     end
 
+    on_message Commands::SendSlackMessage::V1 do |message|
+      client.chat_postMessage(
+        channel: message.data.channel,
+        text: message.data.text,
+        as_user: true
+      )
+
+      message_service.create!(
+        schema: ::Events::SlackMessageSent::V1,
+        trace_id: message.trace_id,
+        message_id: message.aggregate.message_id,
+        data: message.data.to_h
+      )
+    end
+
     on_message ::Events::ApplicantStatusUpdated::V5 do |message|
       data = message.data
       return unless data.status == ApplicantStatus::StatusTypes::NEW

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Contact::SmtpService do
+RSpec.describe Contact::SmtpReactor do
   describe "#handle_message" do
     subject { described_class.new(message_service: MessageService.new).handle_message(message) }
 
@@ -124,6 +124,64 @@ RSpec.describe Contact::SmtpService do
                 }
               ]
             }
+          }
+        )
+
+        subject
+      end
+    end
+
+    context "when the message is Commands::SendEmailMessage::V1" do
+      let(:message) do
+        build(
+          :message,
+          schema: Commands::SendEmailMessage::V1,
+          data: {
+            recepent_email: "foo@bar.baz",
+            title: "Reminder",
+            body: "Do this thing now",
+            url: nil
+          }
+        )
+      end
+
+      it "sends an email" do
+        expect(MessageMailer)
+          .to receive(:with)
+          .with(message:)
+          .and_call_original
+
+        expect_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now).and_call_original
+
+        subject
+      end
+
+      it "publishes events" do
+        expect_any_instance_of(MessageService).to receive(:create!).with(
+          schema: Events::SmtpSent::V1,
+          contact: "foo@bar.baz",
+          trace_id: message.trace_id,
+          data: {
+            email: "foo@bar.baz",
+            template: MessageMailer.class.to_s,
+            template_data: {
+              recepent_email: "foo@bar.baz",
+              title: "Reminder",
+              body: "Do this thing now",
+              url: nil
+            }
+          }
+        )
+
+        expect_any_instance_of(MessageService).to receive(:create!).with(
+          schema: Events::EmailMessageSent::V1,
+          message_id: message.aggregate.message_id,
+          trace_id: message.trace_id,
+          data: {
+            recepent_email: "foo@bar.baz",
+            title: "Reminder",
+            body: "Do this thing now",
+            url: nil
           }
         )
 

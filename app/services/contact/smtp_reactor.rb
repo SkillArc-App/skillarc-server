@@ -1,5 +1,5 @@
 module Contact
-  class SmtpService < MessageConsumer
+  class SmtpReactor < MessageConsumer
     on_message Commands::NotifyEmployerOfApplicant::V1 do |message|
       EmployerApplicantNotificationMailer.with(message:).notify_employer.deliver_now
       emit_smtp_sent_event(message)
@@ -7,6 +7,18 @@ module Contact
 
     on_message Commands::SendWeeklyEmployerUpdate::V1 do |message|
       EmployerWeeklyMailer.with(message:).applicants.deliver_now
+      emit_smtp_sent_event(message)
+    end
+
+    on_message Commands::SendEmailMessage::V1 do |message|
+      MessageMailer.with(message:).send_message.deliver_now
+      message_service.create!(
+        schema: Events::EmailMessageSent::V1,
+        trace_id: message.trace_id,
+        message_id: message.aggregate.message_id,
+        data: message.data.to_h
+      )
+
       emit_smtp_sent_event(message)
     end
 
@@ -20,7 +32,7 @@ module Contact
         data: {
           email: message.data.recepent_email,
           template: EmployerWeeklyMailer.class.to_s,
-          template_data: message.data.to_h
+          template_data: message.data.serialize
         }
       )
     end

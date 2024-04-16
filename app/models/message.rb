@@ -12,14 +12,41 @@ class Message
     schema Messages::Schema
     data
     metadata
-    occurred_at ActiveSupport::TimeWithZone, coerce: true
+    occurred_at ActiveSupport::TimeWithZone, coerce: Messages::TimeZoneCoercer
   end)
 
   def initialize(**kwarg)
     super(**kwarg)
 
+    raise InvalidSchemaError unless schema.aggregate === aggregate # rubocop:disable Style/CaseEquality
     raise InvalidSchemaError unless schema.data === data # rubocop:disable Style/CaseEquality
     raise InvalidSchemaError unless schema.metadata === metadata # rubocop:disable Style/CaseEquality
+  end
+
+  def serialize
+    {
+      id:,
+      aggregate: aggregate.serialize,
+      trace_id:,
+      schema: schema.serialize,
+      data: data.serialize,
+      metadata: metadata.serialize,
+      occurred_at:
+    }
+  end
+
+  def self.deserialize(hash)
+    schema = Messages::Schema.deserialize(hash[:schema])
+
+    new(
+      id: hash[:id],
+      aggregate: schema.aggregate.deserialize(hash[:aggregate]),
+      schema:,
+      trace_id: hash[:trace_id],
+      data: schema.data.deserialize(hash[:data]),
+      metadata: schema.metadata.deserialize(hash[:metadata]),
+      occurred_at: hash[:occurred_at]
+    )
   end
 
   def ==(other)
@@ -34,15 +61,5 @@ class Message
 
   def checksum
     Digest::UUID.uuid_v3(MESSAGE_UUID_NAMESPACE, data.to_json + trace_id + schema.message_type + schema.version.to_s)
-  end
-
-  def self.coerce_occurred_at(value)
-    if value.is_a?(DateTime) || value.is_a?(Time)
-      value.in_time_zone
-    elsif value.is_a?(String)
-      Time.zone.parse(value)
-    else
-      value
-    end
   end
 end

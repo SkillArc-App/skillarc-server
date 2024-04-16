@@ -197,7 +197,7 @@ module Coaches
       return if csc&.phone_number.nil?
 
       message_service.create!(
-        schema: Commands::SendSms::V2,
+        schema: Commands::SendSmsMessage::V2,
         phone_number: csc.phone_number,
         trace_id: message.trace_id,
         data: {

@@ -16,16 +16,17 @@ class MessageSerializer < ActiveJob::Serializers::ObjectSerializer
   end
 
   def deserialize(hash)
-    schema = Messages::Schema.deserialize(hash["schema"])
+    hash = hash.deep_symbolize_keys
+    schema = Messages::Schema.deserialize(hash[:schema])
 
     klass.new(
-      id: hash["id"],
-      trace_id: hash["trace_id"],
-      aggregate: schema.aggregate.deserialize(hash["aggregate"]),
-      data: schema.data.deserialize(hash["data"].deep_symbolize_keys),
-      metadata: schema.metadata.deserialize(hash["metadata"].deep_symbolize_keys),
+      id: hash[:id],
+      trace_id: hash[:trace_id],
+      aggregate: schema.aggregate.deserialize(hash[:aggregate]),
+      data: schema.data.deserialize(hash[:data]),
+      metadata: schema.metadata.deserialize(hash[:metadata]),
       schema:,
-      occurred_at: Time.zone.parse(hash["occurred_at"])
+      occurred_at: Time.zone.parse(hash[:occurred_at])
     )
   end
 

@@ -59,8 +59,12 @@ RSpec.describe Infrastructure::InfrastructureReactor do
               data: {
                 execute_at: message.data.execute_at,
                 message: message.data.message
+              },
+              metadata: {
+                requestor_type: message.metadata.requestor_type,
+                requestor_id: message.metadata.requestor_id
               }
-            )
+            ).and_call_original
 
           subject
         end

@@ -33,7 +33,7 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.deprecated(
+    V1 = Messages::Schema.inactive(
       data: Data::V1,
       metadata: MetaData::V1,
       aggregate: Aggregates::User,

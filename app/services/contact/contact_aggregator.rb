@@ -28,6 +28,10 @@ module Contact
       )
     end
 
+    on_message Events::MessageSent::V1, :sync do |message|
+      
+    end
+
     on_message Events::UserCreated::V1 do |message|
       Contact::UserContact.create!(
         user_id: message.aggregate.user_id,

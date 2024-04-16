@@ -54,8 +54,16 @@ module Messages
       status == Status::ACTIVE
     end
 
+    def deprecated?
+      status == Status::DEPRECATED
+    end
+
     def inactive?
       status == Status::INACTIVE
+    end
+
+    def to_s
+      "#<Messages::Schema message_type: #{message_type}, version: #{version}>"
     end
 
     private

@@ -30,6 +30,8 @@ class MessageConsumer
     raise NotActiveSchemaError if schema.inactive?
     raise NotValidSubscriberType unless subscribe_type.in?(%i[async sync])
 
+    Rails.logger.error { "#{name} is subscribed to deprecated message #{schema}" } if schema.deprecated?
+
     if subscribe_type == :sync
       handled_messages_sync << schema
     else

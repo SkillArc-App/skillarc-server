@@ -17,6 +17,26 @@ RSpec.describe MessageConsumer do
       sub_klass.new.handle_message(message)
     end
 
+    context "when on_message is subscribed to a deprecated message" do
+      let(:sub_klass) do
+        Class.new(described_class) do
+          on_message Messages::Schema.deprecated(data: Messages::Nothing,
+                                                 metadata: Messages::Nothing,
+                                                 aggregate: Aggregates::User,
+                                                 message_type: Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
+                                                 version: 1), &:checksum
+        end
+
+        it "prints an error to the console" do
+          expect(Rails.logger)
+            .to receive(:debug)
+            .and_call_original
+
+          sub_klass.new
+        end
+      end
+    end
+
     context "when on_message is sync" do
       let(:sub_klass) do
         Class.new(described_class) do

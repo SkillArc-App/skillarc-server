@@ -5,7 +5,7 @@ module Events
         extend Messages::Payload
 
         schema do
-          execute_at ActiveSupport::TimeWithZone
+          execute_at ActiveSupport::TimeWithZone, coerce: Messages::TimeZoneCoercer
           message Message
         end
       end

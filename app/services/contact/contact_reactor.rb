@@ -73,28 +73,7 @@ module Contact
       end
     end
 
-    on_message Events::SlackMessageSent::V1 do |message|
-      emit_message_sent(message)
-    end
-
-    on_message Events::EmailMessageSent::V1 do |message|
-      emit_message_sent(message)
-    end
-
-    on_message Events::SmsMessageSent::V2 do |message|
-      emit_message_sent(message)
-    end
-
     private
-
-    def emit_message_sent(message)
-      message_service.create!(
-        schema: Events::MessageSent::V1,
-        message_id: message.aggregate.message_id,
-        trace_id: message.trace_id,
-        data: Messages::Nothing
-      )
-    end
 
     def emit_message_enqueued(message)
       message_service.create!(

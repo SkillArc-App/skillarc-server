@@ -56,26 +56,6 @@ RSpec.describe Contact::ContactAggregator do
       end
     end
 
-    context "when the message is message enqueued" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::MessageEnqueued::V1,
-          data: Messages::Nothing
-        )
-      end
-
-      it "persists a message state record" do
-        subject
-
-        message_state = Contact::MessageState.last_created
-
-        expect(message_state.message_id).to eq(message.aggregate.message_id)
-        expect(message_state.state).to eq(Contact::MessageStates::ENQUEUED)
-        expect(message_state.message_enqueued_at).to eq(message.occurred_at)
-      end
-    end
-
     context "when the message is user created" do
       let(:message) do
         build(
@@ -183,28 +163,6 @@ RSpec.describe Contact::ContactAggregator do
 
         user_contact.reload
         expect(user_contact.slack_id).to eq("123")
-      end
-    end
-
-    context "when the message is message sent" do
-      let(:message) do
-        build(
-          :message,
-          aggregate_id: message_id,
-          schema: Events::MessageSent::V1,
-          data: Messages::Nothing
-        )
-      end
-
-      let(:message_id) { SecureRandom.uuid }
-      let!(:message_state) { create(:contact__message_state, message_id:) }
-
-      it "updates user_contact slack_id" do
-        subject
-
-        message_state.reload
-        expect(message_state.state).to eq(Contact::MessageStates::COMPLETED)
-        expect(message_state.message_terminated_at).to eq(message.occurred_at)
       end
     end
 

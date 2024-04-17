@@ -201,4 +201,34 @@ RSpec.describe "Test", type: :request do
       end
     end
   end
+
+  path '/test/jobs_settled' do
+    get "Asserts jobs have settled" do
+      tags 'Test'
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      response '200', 'settled status' do
+        schema type: :object,
+               properties: {
+                 settled: {
+                   type: :boolean
+                 }
+               }
+
+        context "when there are no running jobs" do
+          before do
+            # Remove queue to "empty" it
+            Resque.remove_queue(:default)
+          end
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            expect(data['settled']).to eq(true)
+          end
+        end
+      end
+    end
+  end
 end

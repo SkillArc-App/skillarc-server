@@ -455,6 +455,14 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     end
   end
 
+  def jobs_settled
+    if Resque.peek(:default).nil?
+      render json: { settled: true }, status: :ok
+    else
+      render json: { settled: false }, status: :ok
+    end
+  end
+
   def reset_test_database
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean

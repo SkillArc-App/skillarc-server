@@ -60,7 +60,7 @@ module Coaches
           last_active_on: csc.last_active_on,
           last_contacted: csc.last_contacted_at || "Never",
           assigned_coach: csc.assigned_coach || 'none',
-          barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } },
+          barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } }
         }
       end
 

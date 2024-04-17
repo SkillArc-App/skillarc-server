@@ -36,8 +36,12 @@ class MessageService
   def flush
     while (message = messages_to_publish.shift)
       PUBSUB_SYNC.publish(message:)
-      BroadcastEventJob.perform_later(message)
+      BroadcastEventJob.perform_later(message) if broadcast?
     end
+  end
+
+  def broadcast?
+    !Rails.env.test?
   end
 
   def self.register(schema:)

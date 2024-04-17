@@ -30,10 +30,16 @@ module Contact
     end
 
     on_message Events::UserCreated::V1 do |message|
+      preferred_contact = if message.data.email.nil?
+                            Contact::ContactPreference::IN_APP_NOTIFICATION
+                          else
+                            Contact::ContactPreference::EMAIL
+                          end
+
       Contact::UserContact.create!(
         user_id: message.aggregate.user_id,
         email: message.data.email,
-        preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
+        preferred_contact:
       )
     end
 
@@ -48,6 +54,7 @@ module Contact
 
       user_contact.email = data[:email] if data.key?(:email)
       user_contact.phone_number = data[:phone_number]
+      user_contact.preferred_contact = Contact::ContactPreference::SMS
 
       user_contact.save!
     end

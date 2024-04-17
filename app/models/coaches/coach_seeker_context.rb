@@ -47,6 +47,5 @@ module Coaches
 
     scope :leads, -> { where(kind: Kind::LEAD) }
     scope :seekers, -> { where(kind: Kind::SEEKER) }
-    scope :with_everything, -> { includes(:seeker_notes, :seeker_applications, :seeker_barriers, seeker_job_recommendations: :job) }
   end
 end

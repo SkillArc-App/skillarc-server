@@ -1,14 +1,14 @@
 module Coaches
   class CoachesQuery
     def self.all_leads
-      CoachSeekerContext.leads.with_everything.map do |csc|
+      CoachSeekerContext.leads.map do |csc|
         serialize_seeker_lead(csc)
       end
     end
 
     def self.all_seekers
-      CoachSeekerContext.seekers.with_everything.map do |csc|
-        serialize_coach_seeker_context(csc)
+      CoachSeekerContext.seekers.includes(:seeker_barriers).map do |csc|
+        serialize_coach_seeker_table_context(csc)
       end
     end
 
@@ -48,6 +48,21 @@ module Coaches
 
     class << self
       private
+
+      def serialize_coach_seeker_table_context(csc)
+        {
+          id: csc.context_id,
+          seeker_id: csc.seeker_id,
+          first_name: csc.first_name,
+          last_name: csc.last_name,
+          email: csc.email,
+          phone_number: csc.phone_number,
+          last_active_on: csc.last_active_on,
+          last_contacted: csc.last_contacted_at || "Never",
+          assigned_coach: csc.assigned_coach || 'none',
+          barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } }
+        }
+      end
 
       def serialize_coach_seeker_context(csc)
         {

@@ -19,7 +19,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
         response '200', 'retrieve all seekers' do
           schema type: :array,
                  items: {
-                   '$ref' => '#/components/schemas/coach_seeker'
+                   '$ref' => '#/components/schemas/coach_seeker_table'
                  }
 
           context "when are no seekers" do

@@ -349,8 +349,9 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
-          coach_seeker: {
+          coach_seeker_table: {
             type: :object,
+            additionalProperties: true,
             properties: {
               id: {
                 type: :string
@@ -373,14 +374,6 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 nullable: true
               },
               phoneNumber: {
-                type: :string,
-                nullable: true
-              },
-              certifiedBy: {
-                type: :string,
-                nullable: true
-              },
-              skillLevel: {
                 type: :string,
                 nullable: true
               },
@@ -410,31 +403,50 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 items: {
                   '$ref' => '#/components/schemas/seeker_barrier'
                 }
-              },
-              kind: {
-                type: :string,
-                enum: Coaches::CoachSeekerContext::Kind::ALL
-              },
-              notes: {
-                type: :array,
-                items: {
-                  '$ref' => '#/components/schemas/seeker_note'
-                }
-              },
-              applications: {
-                type: :array,
-                items: {
-                  '$ref' => '#/components/schemas/seeker_application'
-                }
-              },
-              jobRecommendations: {
-                type: :array,
-                items: {
-                  type: :string,
-                  format: :uuid
-                }
               }
             }
+          },
+          coach_seeker: {
+            allOf: [
+              { '$ref' => '#/components/schemas/coach_seeker_table' },
+              {
+                type: :object,
+                additionalProperties: true,
+                properties: {
+                  certifiedBy: {
+                    type: :string,
+                    nullable: true
+                  },
+                  skillLevel: {
+                    type: :string,
+                    nullable: true
+                  },
+                  applications: {
+                    type: :array,
+                    items: {
+                      '$ref' => '#/components/schemas/seeker_application'
+                    }
+                  },
+                  kind: {
+                    type: :string,
+                    enum: Coaches::CoachSeekerContext::Kind::ALL
+                  },
+                  notes: {
+                    type: :array,
+                    items: {
+                      '$ref' => '#/components/schemas/seeker_note'
+                    }
+                  },
+                  jobRecommendations: {
+                    type: :array,
+                    items: {
+                      type: :string,
+                      format: :uuid
+                    }
+                  }
+                }
+              }
+            ]
           },
           seeker_barrier: {
             type: :object,

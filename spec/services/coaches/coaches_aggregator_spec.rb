@@ -414,7 +414,11 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
     end
 
     describe ".all_seekers" do
-      subject { Coaches::CoachesQuery.all_seekers }
+      subject do
+        Coaches::CoachesQuery.all_seekers.map do |s|
+          Coaches::CoachesQuery.find_context(s[:id])
+        end
+      end
 
       it "returns all profiles" do
         expected_profile = {

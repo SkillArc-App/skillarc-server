@@ -117,66 +117,27 @@ RSpec.describe Coaches::CoachesQuery do
         seeker_id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
         first_name: "Hannah",
         last_name: "Block",
-        kind: 'seeker',
         email: "hannah@blocktrainapp.com",
         phone_number: "1234567890",
-        skill_level: 'advanced',
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted: Time.zone.local(2010, 1, 1),
         assigned_coach: "coach@blocktrainapp.com",
-        certified_by: "person@skillarc.com",
         barriers: [{
           id: "81f43abc-67b6-4531-af45-293d3fc053e5",
           name: "barrier2"
-        }],
-        notes: [
-          {
-            note: "This note was updated",
-            note_id: "a2dd7180-6c3d-46ad-9bd7-413314b7a849",
-            note_taken_by: "coach@blocktrainapp.com",
-            date: Time.utc(2020, 1, 1)
-          }
-        ],
-        applications: [
-          {
-            job_id: "2e6a7696-08e6-4e95-aa95-166fc2b43dcf",
-            employer_name: "Cool",
-            status: "Actively failing an interview",
-            employment_title: "A title"
-          }
-        ],
-        job_recommendations: ["d4cd7594-bc68-44cd-b22c-246979a9ea0f"]
+        }]
       }
       expected_other_profile = {
         id: "1a8d105a-6b9a-4842-ab02-8daf3fcb0c1f",
         seeker_id: "3e7cccaa-ec0e-4c59-a7ad-2b187b3acc4c",
         first_name: "Katina",
         last_name: "Hall",
-        kind: 'seeker',
         email: "katina@gmail.com",
         phone_number: nil,
-        skill_level: 'beginner',
         last_active_on: Time.zone.local(2008, 1, 1),
         last_contacted: "Never",
         assigned_coach: 'none',
-        certified_by: nil,
-        barriers: [],
-        notes: [],
-        applications: [
-          {
-            job_id: "23642aea-8f58-4a0c-8799-5d80591b84ad",
-            employer_name: "Not Cool",
-            status: "Actively failing an interview",
-            employment_title: "A title"
-          },
-          {
-            job_id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
-            employer_name: "Cool",
-            status: "Actively chillin at an interview",
-            employment_title: "A bad title"
-          }
-        ],
-        job_recommendations: []
+        barriers: []
       }
 
       expect(subject.length).to eq(2)

@@ -11,6 +11,7 @@
 #  phone_number          :string
 #  status                :string           not null
 #  status_as_of          :datetime
+#  status_reason         :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  applicant_id          :string           not null
@@ -29,7 +30,6 @@
 module Employers
   class Applicant < ApplicationRecord
     belongs_to :job, class_name: "Employers::Job", foreign_key: "employers_job_id", inverse_of: :applicants
-    has_many :applicant_status_reasons, class_name: "Employers::ApplicantStatusReason", foreign_key: "employers_applicant_id", inverse_of: :applicant, dependent: :destroy
 
     module StatusTypes
       ALL = [

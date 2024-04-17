@@ -6,7 +6,7 @@ module Employers
 
     def all_applicants
       jobs = employers.map(&:jobs).flatten
-      applicants = Applicant.includes(:applicant_status_reasons).where(job: jobs)
+      applicants = Applicant.where(job: jobs)
       seekers = Seeker.where(seeker_id: applicants.select(:seeker_id))
 
       Applicant.where(job: jobs).map do |a|
@@ -24,7 +24,7 @@ module Employers
           profile_link: "/profiles/#{a.seeker_id}",
           programs: [], # TODO
           status: a.status,
-          status_reasons: a.applicant_status_reasons.map(&:reason)
+          status_reason: a.status_reason
         }
       end
     end

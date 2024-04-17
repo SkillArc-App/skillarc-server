@@ -318,8 +318,6 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
     )
 
-    seeker = FactoryBot.create(:seeker, user: student.user)
-
     Analytics::DimPerson.create!(
       first_name: student.user.first_name,
       last_name: student.user.last_name,

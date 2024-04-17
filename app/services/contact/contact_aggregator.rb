@@ -3,7 +3,6 @@ module Contact
     def reset_for_replay
       Contact::UserContact.delete_all
       Contact::Notification.delete_all
-      Contact::MessageState.delete_all
     end
 
     on_message Events::NotificationCreated::V3, :sync do |message|
@@ -21,14 +20,6 @@ module Contact
       notification.update_all(read_at: message.occurred_at) # rubocop:disable Rails/SkipsModelValidations
     end
 
-    on_message Events::MessageEnqueued::V1, :sync do |message|
-      Contact::MessageState.create!(
-        message_enqueued_at: message.occurred_at,
-        state: Contact::MessageStates::ENQUEUED,
-        message_id: message.aggregate.message_id
-      )
-    end
-
     on_message Events::UserCreated::V1 do |message|
       preferred_contact = if message.data.email.nil?
                             Contact::ContactPreference::IN_APP_NOTIFICATION
@@ -41,10 +32,6 @@ module Contact
         email: message.data.email,
         preferred_contact:
       )
-    end
-
-    on_message Events::MessageSent::V1 do |message|
-      Contact::MessageState.find_by!(message_id: message.aggregate.message_id).complete!(message_terminated_at: message.occurred_at)
     end
 
     on_message Events::UserUpdated::V1 do |message|

@@ -1587,6 +1587,24 @@ paths:
           description: No failed jobs
         '200':
           description: failed jobs
+  "/test/jobs_settled":
+    get:
+      summary: Asserts jobs have settled
+      tags:
+      - Test
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: settled status
 servers:
 - url: https://{defaultHost}
   variables:
@@ -1858,6 +1876,9 @@ components:
             enum:
             - Never
           nullable: true
+        certifiedBy:
+          type: string
+          nullable: true
         assignedCoach:
           type: string
         barriers:
@@ -1870,9 +1891,6 @@ components:
       - type: object
         additionalProperties: true
         properties:
-          certifiedBy:
-            type: string
-            nullable: true
           skillLevel:
             type: string
             nullable: true

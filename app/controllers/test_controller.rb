@@ -318,8 +318,6 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       preferred_contact: Contact::ContactPreference::IN_APP_NOTIFICATION
     )
 
-    seeker = FactoryBot.create(:seeker, user: student.user)
-
     Analytics::DimPerson.create!(
       first_name: student.user.first_name,
       last_name: student.user.last_name,
@@ -452,6 +450,14 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       Resque::Failure.clear
 
       render json: { exception: failure["exception"], message: failure["error"], backtrace: failure["backtrace"] }, status: :ok
+    end
+  end
+
+  def jobs_settled
+    if Resque.peek(:default).nil?
+      render json: { settled: true }, status: :ok
+    else
+      render json: { settled: false }, status: :ok
     end
   end
 

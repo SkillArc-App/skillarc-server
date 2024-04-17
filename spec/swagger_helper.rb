@@ -395,6 +395,10 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 ],
                 nullable: true
               },
+              certifiedBy: {
+                type: :string,
+                nullable: true
+              },
               assignedCoach: {
                 type: :string
               },
@@ -413,10 +417,6 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 type: :object,
                 additionalProperties: true,
                 properties: {
-                  certifiedBy: {
-                    type: :string,
-                    nullable: true
-                  },
                   skillLevel: {
                     type: :string,
                     nullable: true

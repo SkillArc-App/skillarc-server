@@ -30,18 +30,9 @@ module Employers
         phone_number: message.data.applicant_phone_number,
         status: message.data.status,
         status_as_of: message.occurred_at,
+        status_reason: message.data.reasons.first&.reason_description,
         application_submit_at:
       )
-
-      applicant.applicant_status_reasons.destroy_all
-
-      message.data.reasons.each do |reason|
-        ApplicantStatusReason.create!(
-          applicant:,
-          reason: reason.reason_description,
-          response: reason.response
-        )
-      end
     end
 
     on_message Events::EmployerCreated::V1 do |message|

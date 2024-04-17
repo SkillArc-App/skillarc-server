@@ -1670,10 +1670,9 @@ components:
           type: string
         programs:
           type: array
-        statusReasons:
-          type: array
-          items:
-            type: string
+        statusReason:
+          type: string
+          nullable: true
         status:
           type: string
     one_user:

@@ -20,15 +20,8 @@ RSpec.describe Employers::EmployerQuery do
         last_name: "Block",
         phone_number: "123-456-7890",
         status: Employers::Applicant::StatusTypes::NEW,
-        status_as_of: Time.zone.now
-      )
-    end
-    let!(:applicant_status_reason) do
-      create(
-        :employers_applicant_status_reason,
-        applicant:,
-        reason: "reason_description",
-        response: "response"
+        status_as_of: Time.zone.now,
+        status_reason: "reason_description"
       )
     end
 
@@ -62,7 +55,7 @@ RSpec.describe Employers::EmployerQuery do
             phone_number: "123-456-7890",
             profile_link: "/profiles/#{applicant.seeker_id}",
             programs: [], # TODO
-            status_reasons: ["reason_description"],
+            status_reason: "reason_description",
             status: Employers::Applicant::StatusTypes::NEW,
             email: "hannah.block@skillarc.com"
           }

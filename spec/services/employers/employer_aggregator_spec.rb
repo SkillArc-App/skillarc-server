@@ -140,7 +140,6 @@ RSpec.describe Employers::EmployerAggregator do
         .and change { Employers::Employer.count }.by(1)
         .and change { Employers::Recruiter.count }.by(1)
         .and change { Employers::Applicant.count }.by(1)
-        .and change { Employers::ApplicantStatusReason.count }.by(1)
         .and change { Employers::Seeker.count }.by(1)
 
       expect(Employers::Applicant.last_created).to have_attributes(
@@ -153,12 +152,6 @@ RSpec.describe Employers::EmployerAggregator do
         job: Employers::Job.last_created,
         seeker_id: applicant_status_updated.data.seeker_id,
         status_as_of: applicant_status_updated.occurred_at
-      )
-
-      expect(Employers::ApplicantStatusReason.last_created).to have_attributes(
-        applicant: Employers::Applicant.last_created,
-        reason: "reason_description",
-        response: "response"
       )
 
       expect(Employers::Job.last_created).to have_attributes(

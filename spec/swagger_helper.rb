@@ -116,11 +116,9 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               programs: {
                 type: :array
               },
-              statusReasons: {
-                type: :array,
-                items: {
-                  type: :string
-                }
+              statusReason: {
+                type: :string,
+                nullable: true
               },
               status: {
                 type: :string

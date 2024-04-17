@@ -19,5 +19,11 @@ module Contact
     self.table_name = "contact_message_states"
 
     validates :state, inclusion: { in: Contact::MessageStates::ALL }
+
+    def complete!(message_terminated_at:)
+      return unless state == Contact::MessageStates::ENQUEUED
+
+      update(state: Contact::MessageStates::COMPLETED, message_terminated_at:)
+    end
   end
 end

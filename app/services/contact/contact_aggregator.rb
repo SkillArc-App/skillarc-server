@@ -36,6 +36,10 @@ module Contact
       )
     end
 
+    on_message Events::MessageSent::V1 do |message|
+      Contact::MessageState.find_by!(message_id: message.aggregate.message_id).complete!(message_terminated_at: message.occurred_at)
+    end
+
     on_message Events::UserUpdated::V1 do |message|
       user_contact = Contact::UserContact.find_by!(user_id: message.aggregate.user_id)
 

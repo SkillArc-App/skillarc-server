@@ -166,6 +166,28 @@ RSpec.describe Contact::ContactAggregator do
       end
     end
 
+    context "when the message is message sent" do
+      let(:message) do
+        build(
+          :message,
+          aggregate_id: message_id,
+          schema: Events::MessageSent::V1,
+          data: Messages::Nothing
+        )
+      end
+
+      let(:message_id) { SecureRandom.uuid }
+      let!(:message_state) { create(:contact__message_state, message_id:) }
+
+      it "updates user_contact slack_id" do
+        subject
+
+        message_state.reload
+        expect(message_state.state).to eq(Contact::MessageStates::COMPLETED)
+        expect(message_state.message_terminated_at).to eq(message.occurred_at)
+      end
+    end
+
     context "when the message is contact preference set" do
       let(:message) do
         build(

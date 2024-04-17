@@ -122,6 +122,7 @@ RSpec.describe Coaches::CoachesQuery do
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted: Time.zone.local(2010, 1, 1),
         assigned_coach: "coach@blocktrainapp.com",
+        certified_by: "person@skillarc.com",
         barriers: [{
           id: "81f43abc-67b6-4531-af45-293d3fc053e5",
           name: "barrier2"
@@ -137,6 +138,7 @@ RSpec.describe Coaches::CoachesQuery do
         last_active_on: Time.zone.local(2008, 1, 1),
         last_contacted: "Never",
         assigned_coach: 'none',
+        certified_by: nil,
         barriers: []
       }
 

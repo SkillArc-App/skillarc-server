@@ -46,7 +46,7 @@ RSpec.describe Contact::ContactReactor do
                   channel: user_contact.slack_id,
                   text: "*A title*: A body <www.google.com|Link>"
                 }
-              )
+              ).and_call_original
 
             expect(message_service)
               .to receive(:create!)
@@ -55,7 +55,7 @@ RSpec.describe Contact::ContactReactor do
                 trace_id: message.trace_id,
                 message_id: message.aggregate.message_id,
                 data: Messages::Nothing
-              )
+              ).and_call_original
 
             subject
           end
@@ -75,7 +75,7 @@ RSpec.describe Contact::ContactReactor do
                   channel: user_contact.slack_id,
                   text: "*A title*: A body"
                 }
-              )
+              ).and_call_original
 
             expect(message_service)
               .to receive(:create!)
@@ -84,7 +84,7 @@ RSpec.describe Contact::ContactReactor do
                 trace_id: message.trace_id,
                 message_id: message.aggregate.message_id,
                 data: Messages::Nothing
-              )
+              ).and_call_original
 
             subject
           end
@@ -108,7 +108,7 @@ RSpec.describe Contact::ContactReactor do
                 body: message.data.body,
                 url: message.data.url
               }
-            )
+            ).and_call_original
 
           expect(message_service)
             .to receive(:create!)
@@ -117,7 +117,7 @@ RSpec.describe Contact::ContactReactor do
               trace_id: message.trace_id,
               message_id: message.aggregate.message_id,
               data: Messages::Nothing
-            )
+            ).and_call_original
 
           subject
         end
@@ -140,7 +140,7 @@ RSpec.describe Contact::ContactReactor do
                   phone_number: user_contact.phone_number,
                   message: "A title: A body www.google.com"
                 }
-              )
+              ).and_call_original
 
             expect(message_service)
               .to receive(:create!)
@@ -149,7 +149,7 @@ RSpec.describe Contact::ContactReactor do
                 trace_id: message.trace_id,
                 message_id: message.aggregate.message_id,
                 data: Messages::Nothing
-              )
+              ).and_call_original
 
             subject
           end
@@ -169,7 +169,7 @@ RSpec.describe Contact::ContactReactor do
                   phone_number: user_contact.phone_number,
                   message: "A title: A body"
                 }
-              )
+              ).and_call_original
 
             expect(message_service)
               .to receive(:create!)
@@ -178,7 +178,7 @@ RSpec.describe Contact::ContactReactor do
                 trace_id: message.trace_id,
                 message_id: message.aggregate.message_id,
                 data: Messages::Nothing
-              )
+              ).and_call_original
 
             subject
           end
@@ -203,7 +203,7 @@ RSpec.describe Contact::ContactReactor do
                 notification_id: be_a(String),
                 user_id: message.data.user_id
               }
-            )
+            ).and_call_original
 
           expect(message_service)
             .to receive(:create!)
@@ -211,16 +211,91 @@ RSpec.describe Contact::ContactReactor do
               schema: Events::MessageSent::V1,
               trace_id: message.trace_id,
               message_id: message.aggregate.message_id,
-              data: {
-                title: message.data.title,
-                body: message.data.body,
-                url: message.data.url,
-                user_id: message.data.user_id
-              }
-            )
+              data: Messages::Nothing
+            ).and_call_original
 
           subject
         end
+      end
+    end
+
+    context "when the message is slack message sent" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::SlackMessageSent::V1,
+          data: {
+            channel: "coolChannel",
+            text: "Dude!"
+          }
+        )
+      end
+
+      it "fires off a send message sent event" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: Events::MessageSent::V1,
+            trace_id: message.trace_id,
+            message_id: message.aggregate.message_id,
+            data: Messages::Nothing
+          ).and_call_original
+
+        subject
+      end
+    end
+
+    context "when the message is email message sent" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::EmailMessageSent::V1,
+          data: {
+            recepent_email: "some@email.com",
+            title: "A title",
+            body: "A body",
+            url: nil
+          }
+        )
+      end
+
+      it "fires off a send message sent event" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: Events::MessageSent::V1,
+            trace_id: message.trace_id,
+            message_id: message.aggregate.message_id,
+            data: Messages::Nothing
+          ).and_call_original
+
+        subject
+      end
+    end
+
+    context "when the message is sms message sent" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::SmsMessageSent::V2,
+          data: {
+            phone_number: "3333333333",
+            message: "A message"
+          }
+        )
+      end
+
+      it "fires off a send message sent event" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: Events::MessageSent::V1,
+            trace_id: message.trace_id,
+            message_id: message.aggregate.message_id,
+            data: Messages::Nothing
+          ).and_call_original
+
+        subject
       end
     end
   end

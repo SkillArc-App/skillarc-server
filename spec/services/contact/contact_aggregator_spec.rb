@@ -82,19 +82,37 @@ RSpec.describe Contact::ContactAggregator do
           :message,
           schema: Events::UserCreated::V1,
           data: {
-            email: "An@email.com"
+            email:
           }
         )
       end
 
-      it "persists a user contact record" do
-        subject
+      context "when email is present" do
+        let(:email) { "An@email.com" }
 
-        user_contact = Contact::UserContact.last_created
+        it "persists a user contact record" do
+          subject
 
-        expect(user_contact.user_id).to eq(message.aggregate.user_id)
-        expect(user_contact.email).to eq(message.data.email)
-        expect(user_contact.preferred_contact).to eq(Contact::ContactPreference::IN_APP_NOTIFICATION)
+          user_contact = Contact::UserContact.last_created
+
+          expect(user_contact.user_id).to eq(message.aggregate.user_id)
+          expect(user_contact.email).to eq(message.data.email)
+          expect(user_contact.preferred_contact).to eq(Contact::ContactPreference::EMAIL)
+        end
+      end
+
+      context "when email is missing" do
+        let(:email) { nil }
+
+        it "persists a user contact record" do
+          subject
+
+          user_contact = Contact::UserContact.last_created
+
+          expect(user_contact.user_id).to eq(message.aggregate.user_id)
+          expect(user_contact.email).to eq(message.data.email)
+          expect(user_contact.preferred_contact).to eq(Contact::ContactPreference::IN_APP_NOTIFICATION)
+        end
       end
     end
 
@@ -128,6 +146,7 @@ RSpec.describe Contact::ContactAggregator do
           user_contact.reload
           expect(user_contact.phone_number).to eq("333-333-3333")
           expect(user_contact.email).to eq("an@email.com")
+          expect(user_contact.preferred_contact).to eq(Contact::ContactPreference::SMS)
         end
       end
 
@@ -140,6 +159,7 @@ RSpec.describe Contact::ContactAggregator do
           user_contact.reload
           expect(user_contact.phone_number).to eq("333-333-3333")
           expect(user_contact.email).to eq(og_email)
+          expect(user_contact.preferred_contact).to eq(Contact::ContactPreference::SMS)
         end
       end
     end
@@ -163,6 +183,28 @@ RSpec.describe Contact::ContactAggregator do
 
         user_contact.reload
         expect(user_contact.slack_id).to eq("123")
+      end
+    end
+
+    context "when the message is message sent" do
+      let(:message) do
+        build(
+          :message,
+          aggregate_id: message_id,
+          schema: Events::MessageSent::V1,
+          data: Messages::Nothing
+        )
+      end
+
+      let(:message_id) { SecureRandom.uuid }
+      let!(:message_state) { create(:contact__message_state, message_id:) }
+
+      it "updates user_contact slack_id" do
+        subject
+
+        message_state.reload
+        expect(message_state.state).to eq(Contact::MessageStates::COMPLETED)
+        expect(message_state.message_terminated_at).to eq(message.occurred_at)
       end
     end
 

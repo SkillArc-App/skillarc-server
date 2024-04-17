@@ -582,9 +582,12 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
           expect(fact_application.dim_job).to eq(dim_job)
           expect(fact_application.dim_person).to eq(dim_person)
+          expect(fact_application.employer_name).to eq("An employers")
+          expect(fact_application.employment_title).to eq("Best job")
           expect(fact_application.status).to eq(status)
           expect(fact_application.application_id).to eq(application_id)
           expect(fact_application.application_number).to eq(3)
+          expect(fact_application.application_updated_at).to eq(message.occurred_at)
         end
       end
 
@@ -605,6 +608,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           fact_application = Analytics::FactApplication.find_by!(application_id:)
 
           expect(fact_application.status).to eq(status)
+          expect(fact_application.application_updated_at).to eq(message.occurred_at)
         end
       end
     end

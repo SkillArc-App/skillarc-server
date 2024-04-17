@@ -5,6 +5,9 @@
 #  id                      :bigint           not null, primary key
 #  application_number      :integer          not null
 #  application_opened_at   :datetime         not null
+#  application_updated_at  :datetime
+#  employer_name           :string
+#  employment_title        :string
 #  status                  :string           not null
 #  analytics_dim_job_id    :bigint           not null
 #  analytics_dim_person_id :bigint           not null

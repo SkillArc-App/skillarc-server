@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_17_180303) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_17_183456) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -358,15 +358,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_17_180303) do
     t.boolean "chat_enabled", default: false, null: false
   end
 
-  create_table "employers_applicant_status_reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "employers_applicant_id", null: false
-    t.string "reason", null: false
-    t.string "response"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["employers_applicant_id"], name: "index_emp_applicant_status_reasons_on_emp_applicant_id"
-  end
-
   create_table "employers_applicants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "applicant_id", null: false
     t.uuid "seeker_id", null: false
@@ -381,6 +372,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_17_180303) do
     t.datetime "status_as_of"
     t.string "certified_by"
     t.datetime "application_submit_at"
+    t.string "status_reason"
     t.index ["employers_job_id"], name: "index_employers_applicants_on_employers_job_id"
     t.index ["seeker_id", "employers_job_id"], name: "index_employers_applicants_on_seeker_id_and_employers_job_id", unique: true
   end
@@ -952,7 +944,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_17_180303) do
   add_foreign_key "education_experiences", "organizations", name: "EducationExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "education_experiences", "seekers"
   add_foreign_key "employer_invites", "employers", name: "EmployerInvite_employer_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "employers_applicant_status_reasons", "employers_applicants"
   add_foreign_key "employers_applicants", "employers_jobs"
   add_foreign_key "employers_job_owners", "employers_jobs"
   add_foreign_key "employers_job_owners", "employers_recruiters"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_17_152901) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_17_180303) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -277,16 +277,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_17_152901) do
     t.index ["coach_id"], name: "index_coaches_seeker_job_recommendations_on_coach_id"
     t.index ["coach_seeker_context_id"], name: "index_seeker_job_recommendations_on_coach_seeker_context_id"
     t.index ["job_id"], name: "index_coaches_seeker_job_recommendations_on_job_id"
-  end
-
-  create_table "contact_message_states", force: :cascade do |t|
-    t.uuid "message_id", null: false
-    t.datetime "message_enqueued_at", null: false
-    t.datetime "message_terminated_at"
-    t.string "state", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["message_id"], name: "index_contact_message_states_on_message_id", unique: true
   end
 
   create_table "contact_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -3,6 +3,7 @@ module Contact
     def reset_for_replay
       Contact::UserContact.delete_all
       Contact::Notification.delete_all
+      Contact::MessageState.delete_all
     end
 
     on_message Events::NotificationCreated::V3, :sync do |message|

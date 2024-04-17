@@ -85,7 +85,7 @@ module PubSubInitializer
         )
       end
 
-      PlayStreamJob.perform_later(listener_name: listener.listener_name) if ENV.fetch("RUN_ENVIRONMENT", nil) == "server"
+      PlayStreamJob.perform_later(listener_name: listener.listener_name) if ENV.fetch("RUN_ENVIRONMENT", nil) == "server" && !Rails.env.test?
     end
   end
 end

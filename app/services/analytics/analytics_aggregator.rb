@@ -159,7 +159,7 @@ module Analytics
       fact_application = Analytics::FactApplication.find_by(application_id: data.applicant_id)
 
       if fact_application.present?
-        fact_application.update!(status: data.status)
+        fact_application.update!(status: data.status, application_updated_at: message.occurred_at)
       else
         dim_person = Analytics::DimPerson.find_by!(seeker_id: data.seeker_id)
         dim_job = Analytics::DimJob.find_by!(job_id: data.job_id)
@@ -168,10 +168,13 @@ module Analytics
         Analytics::FactApplication.create!(
           dim_job:,
           dim_person:,
+          employment_title: data.employment_title,
+          employer_name: data.employer_name,
           application_number:,
           status: data.status,
           application_opened_at: message.occurred_at,
-          application_id: data.applicant_id
+          application_id: data.applicant_id,
+          application_updated_at: message.occurred_at
         )
       end
     end

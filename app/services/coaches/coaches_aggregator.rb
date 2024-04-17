@@ -201,7 +201,7 @@ module Coaches
       )
     end
 
-    on_message Events::SkillLevelUpdated::V2 do |message|
+    on_message Events::SkillLevelUpdated::V2, :sync do |message|
       csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
 
       csc.update!(

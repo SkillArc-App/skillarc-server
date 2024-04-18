@@ -228,6 +228,31 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
+          reminder: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              note: {
+                type: :string
+              },
+              state: {
+                type: :string,
+                enum: Coaches::ReminderState::ALL
+              },
+              reminderAt: {
+                type: :string,
+                format: 'date-time'
+              },
+              contextId: {
+                type: :string,
+                format: :uuid,
+                nullable: true
+              }
+            }
+          },
           seeker: {
             type: :object,
             properties: {

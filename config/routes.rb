@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       post 'recommend_job' => 'contexts#recommend_job'
       put 'update_barriers' => 'seeker_barriers#update_all'
     end
+    resources :reminders, only: %i[create index update]
     resources :feeds
     resources :seekers do
       post 'certify' => 'seekers#certify'

@@ -20,6 +20,8 @@ module Messages
         BARRIERS_UPDATED = 'barriers_updated',
         COACH_ASSIGNED = 'coach_assigned',
         JOB_RECOMMENDED = 'job_recommended',
+        COACH_REMINDER_SCHEDULED = 'coach_reminder_scheduled',
+        COACH_REMINDER_COMPLETED = 'coach_reminder_completed',
         LEAD_ADDED = 'lead_added',
         NOTE_ADDED = 'note_added',
         NOTE_MODIFIED = 'note_modified',
@@ -120,11 +122,13 @@ module Messages
     module Infrastructure
       EVENTS = [
         COMMAND_SCHEDULED = 'command_scheduled',
-        SCHEDULED_COMMAND_EXECUTED = 'scheduled_command_executed'
+        SCHEDULED_COMMAND_EXECUTED = 'scheduled_command_executed',
+        SCHEDULED_COMMAND_CANCELLED = 'scheduled_command_cancelled'
       ].freeze
 
       COMMANDS = [
-        SCHEDULE_COMMAND = 'schedule_command'
+        SCHEDULE_COMMAND = 'schedule_command',
+        CANCEL_SCHEDULED_COMMAND = 'cancel_scheduled_command'
       ].freeze
     end
 

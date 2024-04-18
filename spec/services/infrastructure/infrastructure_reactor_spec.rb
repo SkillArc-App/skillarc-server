@@ -70,5 +70,66 @@ RSpec.describe Infrastructure::InfrastructureReactor do
         end
       end
     end
+
+    context "when the message is cancel scheduled command" do
+      let(:message) do
+        build(
+          :message,
+          schema: Commands::CancelScheduledCommand::V1,
+          aggregate_id: task_id,
+          data: Messages::Nothing,
+          metadata: {
+            requestor_type: Requestor::Kinds::USER,
+            requestor_id: SecureRandom.uuid
+          }
+        )
+      end
+      let(:task_id) { SecureRandom.uuid }
+
+      context "when there isn't an existing scheduled command" do
+        it "does nothing" do
+          expect(message_service)
+            .not_to receive(:create!)
+
+          subject
+        end
+      end
+
+      context "when there is an existing scheduled command" do
+        let!(:scheduled_command) { create(:infrastructure__scheduled_command, task_id:, state:) }
+
+        context "when the state is enqueued" do
+          let(:state) { Infrastructure::ScheduledCommand::State::ENQUEUED }
+
+          it "does nothing" do
+            expect(message_service)
+              .to receive(:create!)
+              .with(
+                schema: Events::ScheduledCommandCancelled::V1,
+                trace_id: message.trace_id,
+                task_id: message.aggregate.task_id,
+                data: Messages::Nothing,
+                metadata: {
+                  requestor_type: message.metadata.requestor_type,
+                  requestor_id: message.metadata.requestor_id
+                }
+              )
+
+            subject
+          end
+        end
+
+        context "when the state is not enqueued" do
+          let(:state) { Infrastructure::ScheduledCommand::State::EXECUTED }
+
+          it "does nothing" do
+            expect(message_service)
+              .not_to receive(:create!)
+
+            subject
+          end
+        end
+      end
+    end
   end
 end

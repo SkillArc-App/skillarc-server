@@ -12,5 +12,6 @@
 #
 module Coaches
   class Coach < ApplicationRecord
+    has_many :reminders, class_name: "Coaches::Reminder", dependent: :destroy
   end
 end

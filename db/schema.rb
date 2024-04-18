@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_17_183456) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_17_205926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -253,6 +253,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_17_183456) do
     t.string "employer_name"
     t.boolean "hide_job", default: false, null: false
     t.index ["job_id"], name: "index_coaches_jobs_on_job_id"
+  end
+
+  create_table "coaches_reminders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "coach_id", null: false
+    t.string "context_id"
+    t.string "note", null: false
+    t.string "state", null: false
+    t.uuid "message_task_id", null: false
+    t.datetime "reminder_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coach_id"], name: "index_coaches_reminders_on_coach_id"
   end
 
   create_table "coaches_seeker_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -932,6 +944,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_17_183456) do
   add_foreign_key "career_paths", "jobs", name: "CareerPath_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "chat_messages", "applicant_chats"
   add_foreign_key "chat_messages", "users"
+  add_foreign_key "coaches_reminders", "coaches"
   add_foreign_key "coaches_seeker_applications", "coach_seeker_contexts"
   add_foreign_key "coaches_seeker_job_recommendations", "coach_seeker_contexts"
   add_foreign_key "coaches_seeker_job_recommendations", "coaches"

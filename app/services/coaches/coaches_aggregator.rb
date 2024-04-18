@@ -5,6 +5,7 @@ module Coaches
       SeekerApplication.delete_all
       SeekerJobRecommendation.delete_all
       SeekerBarrier.delete_all
+      Reminder.delete_all
       CoachSeekerContext.delete_all
       Barrier.delete_all
       Coach.delete_all
@@ -26,6 +27,28 @@ module Coaches
         coach_id: message.data.coach_id,
         user_id: message.aggregate_id,
         email: message.data.email
+      )
+    end
+
+    on_message Events::CoachReminderScheduled::V1, :sync do |message|
+      coach = Coach.find_by!(coach_id: message.aggregate.coach_id)
+
+      Reminder.create!(
+        id: message.data.reminder_id,
+        coach:,
+        context_id: message.data.context_id,
+        note: message.data.note,
+        state: ReminderState::SET,
+        message_task_id: message.data.message_task_id,
+        reminder_at: message.data.reminder_at
+      )
+    end
+
+    on_message Events::CoachReminderCompleted::V1, :sync do |message|
+      reminder = Reminder.find(message.data.reminder_id)
+
+      reminder.update!(
+        state: ReminderState::COMPLETE
       )
     end
 

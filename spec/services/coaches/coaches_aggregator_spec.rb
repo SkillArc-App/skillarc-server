@@ -280,6 +280,42 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
       end
     end
 
+    context "for coaches" do
+      let!(:coach) { create(:coaches__coach) }
+
+      context "when the message is coach reminder" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::CoachReminderScheduled::V1,
+            aggregate_id: coach.coach_id,
+            data: {
+              reminder_id: SecureRandom.uuid,
+              context_id: nil,
+              note: "Remember to do this later",
+              message_task_id: SecureRandom.uuid,
+              reminder_at: Time.zone.local(2100, 1, 1)
+            }
+          )
+        end
+
+        it "Creates a reminder" do
+          expect { subject }.to change {
+            Coaches::Reminder.count
+          }.from(0).to(1)
+
+          reminder = Coaches::Reminder.last_created
+          expect(reminder.coach).to eq(coach)
+          expect(reminder.id).to eq(message.data.reminder_id)
+          expect(reminder.context_id).to eq(message.data.context_id)
+          expect(reminder.note).to eq(message.data.note)
+          expect(reminder.message_task_id).to eq(message.data.message_task_id)
+          expect(reminder.reminder_at).to eq(message.data.reminder_at)
+          expect(reminder.state).to eq(Coaches::ReminderState::SET)
+        end
+      end
+    end
+
     context "for coach seekers context" do
       let!(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
 

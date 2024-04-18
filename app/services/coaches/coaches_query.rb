@@ -72,6 +72,7 @@ module Coaches
       def serialize_coach_reminders(coach)
         coach.reminders.map do |reminder|
           {
+            id: reminder.id,
             note: reminder.note,
             state: reminder.state,
             reminder_at: reminder.reminder_at,

@@ -1849,6 +1849,9 @@ components:
     reminder:
       type: object
       properties:
+        id:
+          type: string
+          format: uuid
         note:
           type: string
         state:

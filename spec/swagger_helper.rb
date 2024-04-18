@@ -231,6 +231,10 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
           reminder: {
             type: :object,
             properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
               note: {
                 type: :string
               },

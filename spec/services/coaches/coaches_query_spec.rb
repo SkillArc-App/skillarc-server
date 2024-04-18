@@ -336,12 +336,14 @@ RSpec.describe Coaches::CoachesQuery do
     it "returns reminders for coaches" do
       expected_reminders = [
         {
+          id: reminder1.id,
           note: "Do the thing",
           state: Coaches::ReminderState::SET,
           reminder_at: Time.zone.local(2024, 1, 1),
           context_id: reminder1.context_id
         },
         {
+          id: reminder2.id,
           note: "Call X",
           state: Coaches::ReminderState::COMPLETE,
           reminder_at: Time.zone.local(2022, 1, 1),

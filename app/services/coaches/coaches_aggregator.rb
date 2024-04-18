@@ -30,7 +30,7 @@ module Coaches
       )
     end
 
-    on_message Events::CoachReminder::V1 do |message|
+    on_message Events::CoachReminder::V1, :sync do |message|
       coach = Coach.find_by!(coach_id: message.aggregate.coach_id)
 
       Reminder.create!(
@@ -44,8 +44,8 @@ module Coaches
       )
     end
 
-    on_message Events::CoachReminderCompleted::V1 do |message|
-      reminder = Reminder.find_by!(reminder_id: message.data.reminder_id)
+    on_message Events::CoachReminderCompleted::V1, :sync do |message|
+      reminder = Reminder.find(message.data.reminder_id)
 
       reminder.update!(
         state: ReminderState::COMPLETE

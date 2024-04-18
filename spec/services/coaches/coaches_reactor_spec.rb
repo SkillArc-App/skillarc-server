@@ -428,7 +428,7 @@ RSpec.describe Coaches::CoachesReactor do
       expect(message_service)
         .to receive(:create!).with(
           schema: Events::CoachReminder::V1,
-          coach_id: coach.id,
+          coach_id: coach.coach_id,
           trace_id:,
           data: {
             reminder_id: be_a(String),
@@ -525,7 +525,7 @@ RSpec.describe Coaches::CoachesReactor do
       expect(message_service)
         .to receive(:create!).with(
           schema: Events::CoachReminderCompleted::V1,
-          coach_id: coach.id,
+          coach_id: coach.coach_id,
           trace_id:,
           data: {
             reminder_id:

@@ -123,7 +123,7 @@ module Coaches
 
       message_service.create!(
         schema: Events::CoachReminder::V1,
-        coach_id: coach.id,
+        coach_id: coach.coach_id,
         trace_id:,
         data: {
           reminder_id: SecureRandom.uuid,
@@ -166,7 +166,7 @@ module Coaches
     def complete_reminder(coach:, reminder_id:, trace_id:)
       message_service.create!(
         schema: Events::CoachReminderCompleted::V1,
-        coach_id: coach.id,
+        coach_id: coach.coach_id,
         trace_id:,
         data: {
           reminder_id:

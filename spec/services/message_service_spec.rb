@@ -199,6 +199,10 @@ RSpec.describe MessageService do
     end
 
     it "queues the message to be published" do
+      allow(instance)
+        .to receive(:broadcast?)
+        .and_return(true)
+
       expect(PUBSUB_SYNC)
         .to receive(:publish)
         .with(message:)

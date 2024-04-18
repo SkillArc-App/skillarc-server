@@ -20,5 +20,22 @@ module Infrastructure
         }
       )
     end
+
+    on_message Commands::CancelScheduledCommand::V1, :sync do |message|
+      schedule_command = Infrastructure::ScheduledCommand.find_by(task_id: message.aggregate.task_id)
+      return if schedule_command.blank?
+      return if schedule_command.state != Infrastructure::ScheduledCommand::State::ENQUEUED
+
+      message_service.create!(
+        schema: Events::ScheduledCommandCancelled::V1,
+        trace_id: message.trace_id,
+        task_id: message.aggregate.task_id,
+        data: Messages::Nothing,
+        metadata: {
+          requestor_type: message.metadata.requestor_type,
+          requestor_id: message.metadata.requestor_id
+        }
+      )
+    end
   end
 end

@@ -1,5 +1,5 @@
 module Coaches
-  class RemindersController < ApplicationController
+  class TasksController < ApplicationController
     include Secured
     include CoachAuth
     include MessageEmitter
@@ -12,7 +12,7 @@ module Coaches
       render json: CoachesQuery.reminders(coach)
     end
 
-    def create
+    def create_reminder
       with_message_service do
         CoachesReactor.new(message_service:).create_reminder(
           coach:,
@@ -26,7 +26,7 @@ module Coaches
       head :accepted
     end
 
-    def update
+    def complete_reminder
       with_message_service do
         CoachesReactor.new(message_service:).complete_reminder(
           reminder_id: params[:id],

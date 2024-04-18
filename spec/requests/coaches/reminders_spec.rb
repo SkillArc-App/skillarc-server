@@ -1,9 +1,9 @@
 require 'rails_helper'
 require 'swagger_helper'
 
-RSpec.describe "Reminders", type: :request do
-  path '/coaches/reminders' do
-    get "get all coach reminders" do
+RSpec.describe "Tasks", type: :request do
+  path '/coaches/tasks' do
+    get "get all coach tasks" do
       tags 'Coaches'
       produces 'application/json'
       security [bearer_auth: []]
@@ -38,7 +38,9 @@ RSpec.describe "Reminders", type: :request do
         end
       end
     end
+  end
 
+  path '/coaches/tasks/reminders' do
     post "create a reminder" do
       tags 'Coaches'
       consumes 'application/json'
@@ -95,7 +97,7 @@ RSpec.describe "Reminders", type: :request do
     end
   end
 
-  path '/coaches/reminders/{id}' do
+  path '/coaches/tasks/reminders/{id}/complete' do
     put "complete a reminder" do
       tags 'Coaches'
       parameter name: :id, in: :path, type: :string

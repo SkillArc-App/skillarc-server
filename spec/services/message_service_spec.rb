@@ -1,9 +1,80 @@
 require 'rails_helper'
 
 RSpec.describe MessageService do
+  let(:instance) { described_class.new }
+
   describe "#create!" do
     subject do
-      described_class.new.create!(
+      instance.create!(
+        id:,
+        schema:,
+        user_id:,
+        trace_id:,
+        data:,
+        occurred_at:,
+        metadata:
+      )
+    end
+
+    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:user_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+    let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
+    let(:occurred_at) { DateTime.new(2000, 1, 1) }
+    let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
+    let(:version) { 4 }
+    let(:id) { SecureRandom.uuid }
+
+    let!(:schema) do
+      Messages::Schema.active(
+        data: Events::SeekerViewed::Data::V1,
+        metadata: Events::ApplicantStatusUpdated::MetaData::V1,
+        aggregate: Aggregates::User,
+        message_type:,
+        version:
+      )
+    end
+
+    context "when event_schema is a Messages::Schema" do
+      let(:version) { 3 }
+
+      it "calls build and save!" do
+        expect(instance)
+          .to receive(:build)
+          .with(
+            schema:,
+            data:,
+            trace_id:,
+            id:,
+            occurred_at:,
+            metadata:,
+            user_id:
+          )
+          .and_call_original
+
+        expect(instance)
+          .to receive(:save!)
+          .with(
+            Message.new(
+              schema:,
+              data:,
+              trace_id:,
+              id:,
+              occurred_at:,
+              metadata:,
+              aggregate: Aggregates::User.new(user_id:)
+            )
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+  end
+
+  describe "#build" do
+    subject do
+      instance.build(
         id:,
         schema:,
         user_id:,
@@ -63,70 +134,87 @@ RSpec.describe MessageService do
       context "when data and metadata type check" do
         let(:version) { 3 }
 
-        it "persists and event and returns the produced event message" do
-          expect { subject }.to change(Event, :count).by(1)
-          expect(subject.id).to eq(Event.last_created.message.id)
-          expect(subject.aggregate_id).to eq(Event.last_created.message.aggregate_id)
-          expect(subject.schema).to eq(Event.last_created.message.schema)
-          expect(subject.data).to eq(Event.last_created.message.data)
-          expect(subject.metadata).to eq(Event.last_created.message.metadata)
-          expect(subject.occurred_at).to eq(Event.last_created.message.occurred_at)
+        it "returns the produced message" do
+          expect(subject.id).to eq(id)
+          expect(subject.aggregate_id).to eq(user_id)
+          expect(subject.schema).to eq(schema)
+          expect(subject.data).to eq(data)
+          expect(subject.metadata).to eq(metadata)
+          expect(subject.occurred_at).to eq(occurred_at)
         end
 
         context "when data as a hash type checks" do
           let(:data) { { seeker_id: SecureRandom.uuid } }
 
-          it "persists and event and returns the produced event message" do
-            expect { subject }.to change(Event, :count).by(1)
-            expect(subject.id).to eq(Event.last_created.message.id)
-            expect(subject.aggregate_id).to eq(Event.last_created.message.aggregate_id)
-            expect(subject.schema).to eq(Event.last_created.message.schema)
-            expect(subject.data).to eq(Event.last_created.message.data)
-            expect(subject.metadata).to eq(Event.last_created.message.metadata)
-            expect(subject.occurred_at).to eq(Event.last_created.message.occurred_at)
+          it "returns the produced message" do
+            expect(subject.id).to eq(id)
+            expect(subject.aggregate_id).to eq(user_id)
+            expect(subject.schema).to eq(schema)
+            expect(subject.data).to eq(Events::SeekerViewed::Data::V1.new(seeker_id: data[:seeker_id]))
+            expect(subject.metadata).to eq(metadata)
+            expect(subject.occurred_at).to eq(occurred_at)
           end
         end
 
         context "when metadata as a hash type checks" do
           let(:metadata) { { user_id: SecureRandom.uuid } }
 
-          it "persists and event and returns the produced event message" do
-            expect { subject }.to change(Event, :count).by(1)
-            expect(subject.id).to eq(Event.last_created.message.id)
-            expect(subject.aggregate_id).to eq(Event.last_created.message.aggregate_id)
-            expect(subject.schema).to eq(Event.last_created.message.schema)
-            expect(subject.data).to eq(Event.last_created.message.data)
-            expect(subject.metadata).to eq(Event.last_created.message.metadata)
-            expect(subject.occurred_at).to eq(Event.last_created.message.occurred_at)
-          end
-        end
-
-        context "events to publish" do
-          subject do
-            described_class.new
-          end
-
-          before do
-            subject
-              .create!(
-                id:,
-                schema:,
-                user_id:,
-                trace_id:,
-                data:,
-                occurred_at:,
-                metadata:
-              )
+          it "returns the produced message" do
+            expect(subject.id).to eq(id)
+            expect(subject.aggregate_id).to eq(user_id)
+            expect(subject.schema).to eq(schema)
+            expect(subject.data).to eq(data)
+            expect(subject.metadata).to eq(Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: metadata[:user_id]))
+            expect(subject.occurred_at).to eq(occurred_at)
           end
         end
       end
     end
   end
 
+  describe "#save!" do
+    subject do
+      instance.save!(message)
+    end
+
+    let(:message) do
+      build(
+        :message,
+        schema: Commands::AssignCoach::V1,
+        aggregate_id: SecureRandom.uuid,
+        data: {
+          coach_email: "coach@skillarc.com"
+        }
+      )
+    end
+
+    it "persists the message" do
+      expect { subject }.to change(Event, :count).by(1)
+      expect(message.id).to eq(Event.last_created.message.id)
+      expect(message.aggregate_id).to eq(Event.last_created.message.aggregate_id)
+      expect(message.schema).to eq(Event.last_created.message.schema)
+      expect(message.data).to eq(Event.last_created.message.data)
+      expect(message.metadata).to eq(Event.last_created.message.metadata)
+      expect(message.occurred_at).to eq(Event.last_created.message.occurred_at)
+    end
+
+    it "queues the message to be published" do
+      expect(PUBSUB_SYNC)
+        .to receive(:publish)
+        .with(message:)
+
+      expect(BroadcastEventJob)
+        .to receive(:perform_later)
+        .with(message)
+
+      subject
+
+      instance.flush
+    end
+  end
+
   describe "#flush" do
     subject { instance.flush }
-
-    let(:instance) { described_class.new }
 
     let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let!(:schema) do

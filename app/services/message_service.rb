@@ -7,6 +7,13 @@ class MessageService
   InactiveSchemaError = Class.new(StandardError)
 
   def create!(schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, **)
+    save!(message)
+
+    message
+  end
+
+  def build(schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     raise NotEventSchemaError unless schema.is_a?(Messages::Schema)
 
     raise InactiveSchemaError, "Attempted to create message for #{schema}" if schema.inactive?
@@ -16,7 +23,7 @@ class MessageService
     data = schema.data.new(**data) if data.is_a?(Hash)
     metadata = schema.metadata.new(**metadata) if metadata.is_a?(Hash)
 
-    message = Message.new(
+    Message.new(
       id:,
       aggregate:,
       occurred_at:,
@@ -25,12 +32,12 @@ class MessageService
       metadata:,
       schema:
     )
+  end
 
+  def save!(message)
     Event.from_message!(message)
 
     messages_to_publish << message
-
-    message
   end
 
   def flush

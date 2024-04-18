@@ -427,7 +427,7 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
     it "creates an coach reminder event and schedules a future reminder message" do
       expect(message_service)
         .to receive(:create!).with(
-          schema: Events::CoachReminder::V1,
+          schema: Events::CoachReminderScheduled::V1,
           coach_id: coach.coach_id,
           trace_id:,
           data: {

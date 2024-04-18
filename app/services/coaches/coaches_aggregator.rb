@@ -30,7 +30,7 @@ module Coaches
       )
     end
 
-    on_message Events::CoachReminder::V1, :sync do |message|
+    on_message Events::CoachReminderScheduled::V1, :sync do |message|
       coach = Coach.find_by!(coach_id: message.aggregate.coach_id)
 
       Reminder.create!(

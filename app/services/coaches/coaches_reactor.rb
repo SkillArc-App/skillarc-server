@@ -122,7 +122,7 @@ module Coaches
       message_task_id = SecureRandom.uuid
 
       message_service.create!(
-        schema: Events::CoachReminder::V1,
+        schema: Events::CoachReminderScheduled::V1,
         coach_id: coach.coach_id,
         trace_id:,
         data: {

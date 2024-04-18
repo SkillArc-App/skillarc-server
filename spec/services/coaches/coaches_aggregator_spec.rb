@@ -287,7 +287,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         let(:message) do
           build(
             :message,
-            schema: Events::CoachReminder::V1,
+            schema: Events::CoachReminderScheduled::V1,
             aggregate_id: coach.coach_id,
             data: {
               reminder_id: SecureRandom.uuid,

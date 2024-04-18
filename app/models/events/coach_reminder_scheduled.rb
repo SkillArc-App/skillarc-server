@@ -1,5 +1,5 @@
 module Events
-  module CoachReminder
+  module CoachReminderScheduled
     module Data
       class V1
         extend Messages::Payload
@@ -18,7 +18,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Coach,
-      message_type: Messages::Types::Coaches::COACH_REMINDER,
+      message_type: Messages::Types::Coaches::COACH_REMINDER_SCHEDULED,
       version: 1
     )
   end

@@ -118,6 +118,62 @@ module Coaches
       )
     end
 
+    def create_reminder(coach:, note:, reminder_at:, trace_id:, context_id: nil)
+      message_task_id = SecureRandom.uuid
+
+      message_service.create!(
+        schema: Events::CoachReminder::V1,
+        coach_id: coach.id,
+        trace_id:,
+        data: {
+          reminder_id: SecureRandom.uuid,
+          context_id:,
+          note:,
+          message_task_id:,
+          reminder_at:
+        }
+      )
+
+      message_service.create!(
+        schema: Commands::ScheduleCommand::V1,
+        task_id: message_task_id,
+        trace_id:,
+        data: {
+          execute_at: reminder_at - 1.hour,
+          message: message_service.build(
+            schema: Commands::SendMessage::V1,
+            trace_id:,
+            message_id: SecureRandom.uuid,
+            data: {
+              user_id: coach.user_id,
+              title: "Reminder",
+              body: note,
+              url: context_id && "#{ENV.fetch('FRONTEND_URL', nil)}/coaches/contexts/#{context_id}"
+            },
+            metadata: {
+              requestor_type: Requestor::Kinds::USER,
+              requestor_id: coach.user_id
+            }
+          )
+        },
+        metadata: {
+          requestor_type: Requestor::Kinds::USER,
+          requestor_id: coach.user_id
+        }
+      )
+    end
+
+    def complete_reminder(coach:, reminder_id:, trace_id:)
+      message_service.create!(
+        schema: Events::CoachReminderCompleted::V1,
+        coach_id: coach.id,
+        trace_id:,
+        data: {
+          reminder_id:
+        }
+      )
+    end
+
     on_message Commands::AddLead::V1 do |message|
       data = message.data
       add_lead(

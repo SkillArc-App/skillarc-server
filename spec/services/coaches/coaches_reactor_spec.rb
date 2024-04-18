@@ -415,6 +415,127 @@ RSpec.describe Coaches::CoachesReactor do
     end
   end
 
+  describe "#create_reminder" do
+    subject { consumer.create_reminder(coach:, note:, reminder_at:, trace_id:, context_id:) }
+
+    let(:coach) { create(:coaches__coach) }
+    let(:note) { "Do this thing" }
+    let(:reminder_at) { 2.days.from_now }
+    let(:trace_id) { SecureRandom.uuid }
+    let(:context_id) { nil }
+
+    it "creates an coach reminder event and schedules a future reminder message" do
+      expect(message_service)
+        .to receive(:create!).with(
+          schema: Events::CoachReminder::V1,
+          coach_id: coach.id,
+          trace_id:,
+          data: {
+            reminder_id: be_a(String),
+            context_id:,
+            note:,
+            message_task_id: be_a(String),
+            reminder_at:
+          }
+        ).and_call_original
+
+      expect(message_service)
+        .to receive(:create!).with(
+          schema: Commands::ScheduleCommand::V1,
+          task_id: be_a(String),
+          trace_id:,
+          data: {
+            execute_at: reminder_at - 1.hour,
+            message: be_a(Message)
+          },
+          metadata: {
+            requestor_type: Requestor::Kinds::USER,
+            requestor_id: coach.user_id
+          }
+        ).and_call_original
+
+      subject
+    end
+
+    context "when context_id is nil" do
+      it "The message does not includes a link to the context page" do
+        allow(message_service)
+          .to receive(:build)
+          .and_call_original
+
+        expect(message_service)
+          .to receive(:build).with(
+            schema: Commands::SendMessage::V1,
+            trace_id:,
+            message_id: be_a(String),
+            data: {
+              user_id: coach.user_id,
+              title: "Reminder",
+              body: note,
+              url: nil
+            },
+            metadata: {
+              requestor_type: Requestor::Kinds::USER,
+              requestor_id: coach.user_id
+            }
+          ).and_call_original
+
+        subject
+      end
+    end
+
+    context "when context_id is present" do
+      let(:context_id) { SecureRandom.uuid }
+
+      it "The message includes a link to the context page" do
+        allow(message_service)
+          .to receive(:build)
+          .and_call_original
+
+        expect(message_service)
+          .to receive(:build).with(
+            schema: Commands::SendMessage::V1,
+            trace_id:,
+            message_id: be_a(String),
+            data: {
+              user_id: coach.user_id,
+              title: "Reminder",
+              body: note,
+              url: "#{ENV.fetch('FRONTEND_URL', nil)}/coaches/contexts/#{context_id}"
+            },
+            metadata: {
+              requestor_type: Requestor::Kinds::USER,
+              requestor_id: coach.user_id
+            }
+          ).and_call_original
+
+        subject
+      end
+    end
+  end
+
+  describe "#complete_reminder" do
+    subject { consumer.complete_reminder(coach:, reminder_id:, trace_id:) }
+
+    let(:coach) { create(:coaches__coach) }
+    let(:reminder_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+
+    it "fires off a coach reminder completed" do
+      expect(message_service)
+        .to receive(:create!).with(
+          schema: Events::CoachReminderCompleted::V1,
+          coach_id: coach.id,
+          trace_id:,
+          data: {
+            reminder_id:
+          }
+        ).and_call_original
+
+      subject
+    end
+  end
+
   describe "#recommend_job" do
     subject { consumer.recommend_job(context_id:, job_id:, coach:, trace_id:) }
 

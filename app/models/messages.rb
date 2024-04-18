@@ -20,6 +20,8 @@ module Messages
         BARRIERS_UPDATED = 'barriers_updated',
         COACH_ASSIGNED = 'coach_assigned',
         JOB_RECOMMENDED = 'job_recommended',
+        COACH_REMINDER = 'coach_reminder',
+        COACH_REMINDER_COMPLETED = 'coach_reminder_completed',
         LEAD_ADDED = 'lead_added',
         NOTE_ADDED = 'note_added',
         NOTE_MODIFIED = 'note_modified',

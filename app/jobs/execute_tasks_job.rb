@@ -1,12 +1,12 @@
-class ExecuteScheduledCommandsJob < ApplicationJob
+class ExecuteTasksJob < ApplicationJob
   queue_as :default
 
   include MessageEmitter
 
   def perform
     with_message_service do
-      Infrastructure::ScheduledCommand.ready_to_execute.each do |scheduled_command|
-        command = scheduled_command.message
+      Infrastructure::Task.ready_to_execute.each do |task|
+        command = task.command
         schema = command.schema
 
         message_service.create!(
@@ -21,10 +21,10 @@ class ExecuteScheduledCommandsJob < ApplicationJob
         )
 
         message_service.create!(
-          schema: Events::ScheduledCommandExecuted::V1,
+          schema: Events::TaskExecuted::V1,
           data: Messages::Nothing,
           trace_id: command.trace_id,
-          task_id: scheduled_command.task_id
+          task_id: task.id
         )
       end
     end

@@ -10,6 +10,6 @@ task update_streams: :environment do
   ActiveJob.perform_all_later(play_stream_jobs)
 end
 
-task execute_scheduled_jobs: :environment do
-  ExecuteScheduledCommandsJob.perform_later
+task execute_scheduled_tasks: :environment do
+  ExecuteTasksJob.perform_later
 end

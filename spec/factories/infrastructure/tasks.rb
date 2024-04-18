@@ -1,9 +1,9 @@
 FactoryBot.define do
-  factory :infrastructure__scheduled_command, class: "Infrastructure::ScheduledCommand" do
+  factory :infrastructure__task, class: "Infrastructure::Task" do
+    id { SecureRandom.uuid }
     execute_at { Time.zone.local(2020, 1, 1) }
-    state { Infrastructure::ScheduledCommand::State::ENQUEUED }
-    task_id { SecureRandom.uuid }
-    message do
+    state { Infrastructure::TaskStates::ENQUEUED }
+    command do
       build(
         :message,
         schema: Commands::AssignCoach::V1,

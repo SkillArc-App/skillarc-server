@@ -135,12 +135,12 @@ module Coaches
       )
 
       message_service.create!(
-        schema: Commands::ScheduleCommand::V1,
+        schema: Commands::ScheduleTask::V1,
         task_id: message_task_id,
         trace_id:,
         data: {
           execute_at: reminder_at - 1.hour,
-          message: message_service.build(
+          command: message_service.build(
             schema: Commands::SendMessage::V1,
             trace_id:,
             message_id: SecureRandom.uuid,

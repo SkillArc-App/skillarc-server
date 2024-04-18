@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe ExecuteScheduledCommandsJob do
-  let!(:scheduled_command1) { create(:infrastructure__scheduled_command, message: message1) }
-  let!(:scheduled_command2) { create(:infrastructure__scheduled_command, message: message2) }
+RSpec.describe ExecuteTasksJob do
+  let!(:task1) { create(:infrastructure__task, command: message1) }
+  let!(:task2) { create(:infrastructure__task, command: message2) }
 
   let(:message1) do
     build(
@@ -41,10 +41,10 @@ RSpec.describe ExecuteScheduledCommandsJob do
     expect_any_instance_of(MessageService)
       .to receive(:create!)
       .with(
-        schema: Events::ScheduledCommandExecuted::V1,
+        schema: Events::TaskExecuted::V1,
         data: Messages::Nothing,
         trace_id: message1.trace_id,
-        task_id: scheduled_command1.task_id
+        task_id: task1.id
       )
       .and_call_original
 
@@ -63,10 +63,10 @@ RSpec.describe ExecuteScheduledCommandsJob do
     expect_any_instance_of(MessageService)
       .to receive(:create!)
       .with(
-        schema: Events::ScheduledCommandExecuted::V1,
+        schema: Events::TaskExecuted::V1,
         data: Messages::Nothing,
         trace_id: message2.trace_id,
-        task_id: scheduled_command2.task_id
+        task_id: task2.id
       )
       .and_call_original
 

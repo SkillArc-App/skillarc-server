@@ -441,12 +441,12 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
 
       expect(message_service)
         .to receive(:create!).with(
-          schema: Commands::ScheduleCommand::V1,
+          schema: Commands::ScheduleTask::V1,
           task_id: be_a(String),
           trace_id:,
           data: {
             execute_at: reminder_at - 1.hour,
-            message: be_a(Message)
+            command: be_a(Message)
           },
           metadata: {
             requestor_type: Requestor::Kinds::USER,

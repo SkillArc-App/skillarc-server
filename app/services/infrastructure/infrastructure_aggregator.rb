@@ -1,21 +1,21 @@
 module Infrastructure
   class InfrastructureAggregator < MessageConsumer
     def reset_for_replay
-      ScheduledCommand.delete_all
+      Task.delete_all
     end
 
-    on_message Events::CommandScheduled::V1, :sync do |message|
-      Infrastructure::ScheduledCommand.create!(
+    on_message Events::TaskScheduled::V1, :sync do |message|
+      Infrastructure::Task.create!(
+        id: message.aggregate.task_id,
         execute_at: message.data.execute_at,
-        task_id: message.aggregate.task_id,
-        message: message.data.message,
-        state: Infrastructure::ScheduledCommand::State::ENQUEUED
+        command: message.data.command,
+        state: Infrastructure::TaskStates::ENQUEUED
       )
     end
 
-    on_message Events::ScheduledCommandExecuted::V1, :sync do |message|
-      schedule_command = Infrastructure::ScheduledCommand.find_by!(task_id: message.aggregate.task_id)
-      schedule_command.execute!
+    on_message Events::TaskExecuted::V1, :sync do |message|
+      task = Infrastructure::Task.find(message.aggregate.task_id)
+      task.execute!
     end
   end
 end

@@ -1,16 +1,5 @@
 module Commands
-  module ScheduleCommand
-    module Data
-      class V1
-        extend Messages::Payload
-
-        schema do
-          execute_at ActiveSupport::TimeWithZone, coerce: Messages::TimeZoneCoercer
-          message Message
-        end
-      end
-    end
-
+  module CancelTask
     module MetaData
       class V1
         extend Messages::Payload
@@ -23,10 +12,10 @@ module Commands
     end
 
     V1 = Messages::Schema.active(
-      data: Data::V1,
+      data: Messages::Nothing,
       metadata: MetaData::V1,
       aggregate: Aggregates::Task,
-      message_type: Messages::Types::Infrastructure::SCHEDULE_COMMAND,
+      message_type: Messages::Types::Infrastructure::CANCEL_TASK,
       version: 1
     )
   end

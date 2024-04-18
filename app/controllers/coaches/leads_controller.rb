@@ -3,7 +3,6 @@ module Coaches
     include Secured
     include CoachAuth
     include MessageEmitter
-    include MessageEmitter
 
     before_action :authorize
     before_action :coach_authorize

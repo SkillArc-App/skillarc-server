@@ -307,6 +307,52 @@ RSpec.describe Coaches::CoachesQuery do
     end
   end
 
+  describe ".reminders" do
+    subject { described_class.reminders(coach) }
+
+    let(:coach) { create(:coaches__coach) }
+
+    let!(:reminder1) do
+      create(
+        :coaches__reminder,
+        note: "Do the thing",
+        state: Coaches::ReminderState::SET,
+        reminder_at: Time.zone.local(2024, 1, 1),
+        context_id: SecureRandom.uuid,
+        coach:
+      )
+    end
+    let!(:reminder2) do
+      create(
+        :coaches__reminder,
+        note: "Call X",
+        state: Coaches::ReminderState::COMPLETE,
+        reminder_at: Time.zone.local(2022, 1, 1),
+        context_id: nil,
+        coach:
+      )
+    end
+
+    it "returns reminders for coaches" do
+      expected_reminders = [
+        {
+          note: "Do the thing",
+          state: Coaches::ReminderState::SET,
+          reminder_at: Time.zone.local(2024, 1, 1),
+          context_id: reminder1.context_id
+        },
+        {
+          note: "Call X",
+          state: Coaches::ReminderState::COMPLETE,
+          reminder_at: Time.zone.local(2022, 1, 1),
+          context_id: nil
+        }
+      ]
+
+      expect(subject).to eq(expected_reminders)
+    end
+  end
+
   describe ".all_coaches" do
     subject { described_class.all_coaches }
 

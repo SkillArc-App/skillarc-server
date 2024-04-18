@@ -18,6 +18,10 @@ module Coaches
       serialize_coach_seeker_context(csc)
     end
 
+    def self.reminders(coach)
+      serialize_coach_reminders(coach)
+    end
+
     def self.all_barriers
       Barrier.all.map do |barrier|
         {
@@ -63,6 +67,17 @@ module Coaches
           certified_by: csc.certified_by,
           barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } }
         }
+      end
+
+      def serialize_coach_reminders(coach)
+        coach.reminders.map do |reminder|
+          {
+            note: reminder.note,
+            state: reminder.state,
+            reminder_at: reminder.reminder_at,
+            context_id: reminder.context_id
+          }
+        end
       end
 
       def serialize_coach_seeker_context(csc)

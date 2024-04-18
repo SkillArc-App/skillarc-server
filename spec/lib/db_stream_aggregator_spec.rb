@@ -18,6 +18,12 @@ RSpec.describe DbStreamAggregator do
   describe "#play" do
     subject { instance.play }
 
+    before do
+      allow(message_service)
+        .to receive(:broadcast?)
+        .and_return(true)
+    end
+
     it "updates the bookmark" do
       expect_any_instance_of(ListenerBookmark).to receive(:update!).with(event_id: event2.id).and_call_original
 

@@ -147,6 +147,10 @@ RSpec.describe MessageService do
     let(:id) { SecureRandom.uuid }
 
     before do
+      allow(instance)
+        .to receive(:broadcast?)
+        .and_return(true)
+
       instance
         .create!(
           id:,

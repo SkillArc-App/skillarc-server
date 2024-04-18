@@ -1,5 +1,5 @@
 module Events
-  module ScheduledCommandCancelled
+  module TaskCancelled
     module MetaData
       class V1
         extend Messages::Payload
@@ -15,7 +15,7 @@ module Events
       data: Messages::Nothing,
       metadata: MetaData::V1,
       aggregate: Aggregates::Task,
-      message_type: Messages::Types::Infrastructure::SCHEDULED_COMMAND_CANCELLED,
+      message_type: Messages::Types::Infrastructure::TASK_CANCELLED,
       version: 1
     )
   end

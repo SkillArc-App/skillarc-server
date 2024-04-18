@@ -121,14 +121,14 @@ module Messages
 
     module Infrastructure
       EVENTS = [
-        COMMAND_SCHEDULED = 'command_scheduled',
-        SCHEDULED_COMMAND_EXECUTED = 'scheduled_command_executed',
-        SCHEDULED_COMMAND_CANCELLED = 'scheduled_command_cancelled'
+        TASK_SCHEDULED = 'task_scheduled',
+        TASK_EXECUTED = 'task_executed',
+        TASK_CANCELLED = 'task_cancelled'
       ].freeze
 
       COMMANDS = [
-        SCHEDULE_COMMAND = 'schedule_command',
-        CANCEL_SCHEDULED_COMMAND = 'cancel_scheduled_command'
+        SCHEDULE_TASK = 'schedule_task',
+        CANCEL_TASK = 'cancel_task'
       ].freeze
     end
 

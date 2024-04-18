@@ -8,7 +8,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
 
     let(:message_service) { MessageService.new }
 
-    context "when the message is schedule command" do
+    context "when the message is schedule task" do
       let(:inner_message) do
         build(
           :message,
@@ -21,11 +21,11 @@ RSpec.describe Infrastructure::InfrastructureReactor do
       let(:message) do
         build(
           :message,
-          schema: Commands::ScheduleCommand::V1,
+          schema: Commands::ScheduleTask::V1,
           aggregate_id: task_id,
           data: {
             execute_at: Time.zone.local(2000, 1, 1),
-            message: inner_message
+            command: inner_message
           },
           metadata: {
             requestor_type: Requestor::Kinds::USER,
@@ -37,7 +37,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
 
       context "if a task id already exists" do
         before do
-          create(:infrastructure__scheduled_command, task_id:)
+          create(:infrastructure__task, id: task_id)
         end
 
         it "does nothing" do
@@ -49,16 +49,16 @@ RSpec.describe Infrastructure::InfrastructureReactor do
       end
 
       context "if a task id doesn't already exists" do
-        it "fires off a command scheduled event" do
+        it "fires off a task scheduled event" do
           expect(message_service)
             .to receive(:create!)
             .with(
-              schema: Events::CommandScheduled::V1,
+              schema: Events::TaskScheduled::V1,
               trace_id: message.trace_id,
               task_id: message.aggregate.task_id,
               data: {
                 execute_at: message.data.execute_at,
-                message: message.data.message
+                command: message.data.command
               },
               metadata: {
                 requestor_type: message.metadata.requestor_type,
@@ -71,11 +71,11 @@ RSpec.describe Infrastructure::InfrastructureReactor do
       end
     end
 
-    context "when the message is cancel scheduled command" do
+    context "when the message is cancel task" do
       let(:message) do
         build(
           :message,
-          schema: Commands::CancelScheduledCommand::V1,
+          schema: Commands::CancelTask::V1,
           aggregate_id: task_id,
           data: Messages::Nothing,
           metadata: {
@@ -86,7 +86,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
       end
       let(:task_id) { SecureRandom.uuid }
 
-      context "when there isn't an existing scheduled command" do
+      context "when there isn't an existing task" do
         it "does nothing" do
           expect(message_service)
             .not_to receive(:create!)
@@ -95,17 +95,17 @@ RSpec.describe Infrastructure::InfrastructureReactor do
         end
       end
 
-      context "when there is an existing scheduled command" do
-        let!(:scheduled_command) { create(:infrastructure__scheduled_command, task_id:, state:) }
+      context "when there is an existing task" do
+        let!(:task) { create(:infrastructure__task, id: task_id, state:) }
 
         context "when the state is enqueued" do
-          let(:state) { Infrastructure::ScheduledCommand::State::ENQUEUED }
+          let(:state) { Infrastructure::TaskStates::ENQUEUED }
 
-          it "does nothing" do
+          it "emits the cancelled event" do
             expect(message_service)
               .to receive(:create!)
               .with(
-                schema: Events::ScheduledCommandCancelled::V1,
+                schema: Events::TaskCancelled::V1,
                 trace_id: message.trace_id,
                 task_id: message.aggregate.task_id,
                 data: Messages::Nothing,
@@ -120,7 +120,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
         end
 
         context "when the state is not enqueued" do
-          let(:state) { Infrastructure::ScheduledCommand::State::EXECUTED }
+          let(:state) { Infrastructure::TaskStates::EXECUTED }
 
           it "does nothing" do
             expect(message_service)

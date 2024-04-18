@@ -2,17 +2,17 @@ module Infrastructure
   class InfrastructureReactor < MessageConsumer
     def reset_for_replay; end
 
-    on_message Commands::ScheduleCommand::V1, :sync do |message|
-      schedule_command = Infrastructure::ScheduledCommand.find_by(task_id: message.aggregate.task_id)
-      return if schedule_command.present?
+    on_message Commands::ScheduleTask::V1, :sync do |message|
+      task = Infrastructure::Task.find_by(id: message.aggregate.task_id)
+      return if task.present?
 
       message_service.create!(
-        schema: Events::CommandScheduled::V1,
+        schema: Events::TaskScheduled::V1,
         trace_id: message.trace_id,
         task_id: message.aggregate.task_id,
         data: {
           execute_at: message.data.execute_at,
-          message: message.data.message
+          command: message.data.command
         },
         metadata: {
           requestor_type: message.metadata.requestor_type,
@@ -21,13 +21,13 @@ module Infrastructure
       )
     end
 
-    on_message Commands::CancelScheduledCommand::V1, :sync do |message|
-      schedule_command = Infrastructure::ScheduledCommand.find_by(task_id: message.aggregate.task_id)
-      return if schedule_command.blank?
-      return if schedule_command.state != Infrastructure::ScheduledCommand::State::ENQUEUED
+    on_message Commands::CancelTask::V1, :sync do |message|
+      task = Infrastructure::Task.find_by(id: message.aggregate.task_id)
+      return if task.blank?
+      return if task.state != Infrastructure::TaskStates::ENQUEUED
 
       message_service.create!(
-        schema: Events::ScheduledCommandCancelled::V1,
+        schema: Events::TaskCancelled::V1,
         trace_id: message.trace_id,
         task_id: message.aggregate.task_id,
         data: Messages::Nothing,

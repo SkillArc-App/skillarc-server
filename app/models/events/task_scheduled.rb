@@ -1,12 +1,12 @@
 module Events
-  module CommandScheduled
+  module TaskScheduled
     module Data
       class V1
         extend Messages::Payload
 
         schema do
           execute_at ActiveSupport::TimeWithZone, coerce: Messages::TimeZoneCoercer
-          message Message
+          command Message
         end
       end
     end
@@ -26,7 +26,7 @@ module Events
       data: Data::V1,
       metadata: MetaData::V1,
       aggregate: Aggregates::Task,
-      message_type: Messages::Types::Infrastructure::COMMAND_SCHEDULED,
+      message_type: Messages::Types::Infrastructure::TASK_SCHEDULED,
       version: 1
     )
   end

@@ -147,7 +147,7 @@ module Coaches
             data: {
               user_id: coach.user_id,
               title: "Reminder",
-              body: "At #{reminder_at.to_fs(:long)}: #{note}",
+              body: "At #{reminder_at.strftime('%I:%M %p %m/%d/%Y')}: #{note}",
               url: context_id && "#{ENV.fetch('FRONTEND_URL', nil)}/coaches/contexts/#{context_id}"
             },
             metadata: {

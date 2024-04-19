@@ -420,7 +420,7 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
 
     let(:coach) { create(:coaches__coach) }
     let(:note) { "Do this thing" }
-    let(:reminder_at) { Time.zone.local(2020, 1, 1) }
+    let(:reminder_at) { Time.zone.local(2020, 1, 1, 15) }
     let(:trace_id) { SecureRandom.uuid }
     let(:context_id) { nil }
 
@@ -471,7 +471,7 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
             data: {
               user_id: coach.user_id,
               title: "Reminder",
-              body: "At January 01, 2020 00:00: Do this thing",
+              body: "At 03:00 PM 01/01/2020: Do this thing",
               url: nil
             },
             metadata: {
@@ -500,7 +500,7 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
             data: {
               user_id: coach.user_id,
               title: "Reminder",
-              body: "At January 01, 2020 00:00: Do this thing",
+              body: "At 03:00 PM 01/01/2020: Do this thing",
               url: "#{ENV.fetch('FRONTEND_URL', nil)}/coaches/contexts/#{context_id}"
             },
             metadata: {

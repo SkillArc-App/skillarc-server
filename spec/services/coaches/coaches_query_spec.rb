@@ -307,8 +307,8 @@ RSpec.describe Coaches::CoachesQuery do
     end
   end
 
-  describe ".reminders" do
-    subject { described_class.reminders(coach) }
+  describe ".tasks" do
+    subject { described_class.tasks(coach:, context_id:) }
 
     let(:coach) { create(:coaches__coach) }
 
@@ -333,25 +333,47 @@ RSpec.describe Coaches::CoachesQuery do
       )
     end
 
-    it "returns reminders for coaches" do
-      expected_reminders = [
-        {
-          id: reminder1.id,
-          note: "Do the thing",
-          state: Coaches::ReminderState::SET,
-          reminder_at: Time.zone.local(2024, 1, 1),
-          context_id: reminder1.context_id
-        },
-        {
-          id: reminder2.id,
-          note: "Call X",
-          state: Coaches::ReminderState::COMPLETE,
-          reminder_at: Time.zone.local(2022, 1, 1),
-          context_id: nil
-        }
-      ]
+    context "when a context_id is not provided" do
+      let(:context_id) { nil }
 
-      expect(subject).to eq(expected_reminders)
+      it "returns tasks for the coach" do
+        expected_tasks = [
+          {
+            id: reminder1.id,
+            note: "Do the thing",
+            state: Coaches::ReminderState::SET,
+            reminder_at: Time.zone.local(2024, 1, 1),
+            context_id: reminder1.context_id
+          },
+          {
+            id: reminder2.id,
+            note: "Call X",
+            state: Coaches::ReminderState::COMPLETE,
+            reminder_at: Time.zone.local(2022, 1, 1),
+            context_id: nil
+          }
+        ]
+
+        expect(subject).to eq(expected_tasks)
+      end
+    end
+
+    context "when a context_id is provided" do
+      let(:context_id) { reminder1.context_id }
+
+      it "returns tasks for the coach" do
+        expected_tasks = [
+          {
+            id: reminder1.id,
+            note: "Do the thing",
+            state: Coaches::ReminderState::SET,
+            reminder_at: Time.zone.local(2024, 1, 1),
+            context_id: reminder1.context_id
+          }
+        ]
+
+        expect(subject).to eq(expected_tasks)
+      end
     end
   end
 

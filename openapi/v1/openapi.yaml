@@ -481,99 +481,6 @@ paths:
               required:
               - context_id
               - note
-  "/coaches/reminders":
-    get:
-      summary: get all coach reminders
-      tags:
-      - Coaches
-      security:
-      - bearer_auth: []
-      parameters:
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      responses:
-        '401':
-          description: unauthenticated
-        '200':
-          description: Creates a note
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  "$ref": "#/components/schemas/reminder"
-    post:
-      summary: create a reminder
-      tags:
-      - Coaches
-      security:
-      - bearer_auth: []
-      parameters:
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      responses:
-        '401':
-          description: unauthenticated
-        '202':
-          description: Creates a reminder
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                note:
-                  type: string
-                reminderAt:
-                  type: string
-                  format: date-time
-                contextId:
-                  type: string
-                  format: uuid
-              required:
-              - reminderAt
-              - note
-  "/coaches/reminders/{id}":
-    put:
-      summary: complete a reminder
-      tags:
-      - Coaches
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      security:
-      - bearer_auth: []
-      responses:
-        '401':
-          description: unauthenticated
-        '202':
-          description: Completes a reminder
   "/coaches/contexts/{id}/update_barriers":
     put:
       summary: update barriers
@@ -640,6 +547,105 @@ paths:
           description: unauthenticated
         '202':
           description: certifies a seeker
+  "/coaches/tasks":
+    get:
+      summary: get all coach tasks
+      tags:
+      - Coaches
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns all tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/reminder"
+  "/coaches/tasks/reminders":
+    post:
+      summary: create a reminder
+      tags:
+      - Coaches
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Creates a reminder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reminder:
+                  type: object
+                  properties:
+                    note:
+                      type: string
+                    reminderAt:
+                      type: string
+                      format: date-time
+                    contextId:
+                      type: string
+                      format: uuid
+                required:
+                - reminderAt
+                - note
+              required:
+              - reminder
+  "/coaches/tasks/reminders/{id}/complete":
+    put:
+      summary: complete a reminder
+      tags:
+      - Coaches
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Completes a reminder
   "/contact/cal_dot_com/webhooks":
     post:
       summary: Consume webhook

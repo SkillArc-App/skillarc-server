@@ -13,12 +13,14 @@ module Coaches
     end
 
     def create_reminder
+      reminder = reminder_hash
+
       with_message_service do
         CoachesReactor.new(message_service:).create_reminder(
           coach:,
-          note: params[:note],
-          reminder_at: Time.zone.parse(params[:reminder_at]),
-          context_id: params[:context_id],
+          note: reminder[:note],
+          reminder_at: Time.zone.parse(reminder[:reminder_at]),
+          context_id: reminder[:context_id],
           trace_id: request.request_id
         )
       end
@@ -41,6 +43,14 @@ module Coaches
     private
 
     attr_reader :coach
+
+    def reminder_hash
+      params.require(:reminder).permit(
+        :context_id,
+        :note,
+        :reminder_at
+      ).to_h.symbolize_keys
+    end
 
     def set_coach
       @coach = Coach.find_by(user_id: current_user.id)

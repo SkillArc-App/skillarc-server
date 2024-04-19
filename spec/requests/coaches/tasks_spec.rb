@@ -16,7 +16,7 @@ RSpec.describe "Tasks", type: :request do
       context "when authenticated" do
         include_context "coach authenticated openapi"
 
-        response '200', 'Creates a note' do
+        response '200', 'Returns all tasks' do
           schema type: :array,
                  items: {
                    '$ref' => '#/components/schemas/reminder'
@@ -49,19 +49,25 @@ RSpec.describe "Tasks", type: :request do
       parameter name: :reminder_params, in: :body, schema: {
         type: :object,
         properties: {
-          note: {
-            type: :string
+          reminder: {
+            type: :object,
+            properties: {
+              note: {
+                type: :string
+              },
+              reminderAt: {
+                type: :string,
+                format: 'date-time'
+              },
+              contextId: {
+                type: :string,
+                format: :uuid
+              }
+            }
           },
-          reminderAt: {
-            type: :string,
-            format: 'date-time'
-          },
-          contextId: {
-            type: :string,
-            format: :uuid
-          }
+          required: %w[reminderAt note]
         },
-        required: %w[reminderAt note]
+        required: %w[reminder]
       }
 
       include_context "olive branch casing parameter"
@@ -71,9 +77,11 @@ RSpec.describe "Tasks", type: :request do
 
       let(:reminder_params) do
         {
-          note:,
-          reminderAt: reminder_at.to_s,
-          contextId: context_id
+          reminder: {
+            note:,
+            reminderAt: reminder_at.to_s,
+            contextId: context_id
+          }
         }
       end
       let(:note) { "A note" }

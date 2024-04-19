@@ -9,7 +9,7 @@ module Coaches
     before_action :set_coach
 
     def index
-      render json: CoachesQuery.reminders(coach)
+      render json: CoachesQuery.tasks(coach:, context_id: params[:context_id])
     end
 
     def create_reminder

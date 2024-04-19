@@ -5,7 +5,7 @@ module Employers
     end
 
     def all_applicants
-      jobs = employers.map(&:jobs).flatten
+      jobs = Job.where(employers_employer_id: employers.map(&:id))
       applicants = Applicant.where(job: jobs)
       seekers = Seeker.where(seeker_id: applicants.select(:seeker_id))
 

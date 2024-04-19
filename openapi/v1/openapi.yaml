@@ -555,6 +555,12 @@ paths:
       security:
       - bearer_auth: []
       parameters:
+      - name: context_id
+        in: query
+        format: uuid
+        required: false
+        schema:
+          type: string
       - name: Key-Inflection
         in: header
         schema:

@@ -7,6 +7,11 @@ RSpec.describe "Tasks", type: :request do
       tags 'Coaches'
       produces 'application/json'
       security [bearer_auth: []]
+      parameter name: 'context_id',
+                in: :query,
+                type: :string,
+                format: :uuid,
+                required: false
 
       include_context "olive branch casing parameter"
       include_context "olive branch camelcasing"
@@ -22,19 +27,36 @@ RSpec.describe "Tasks", type: :request do
                    '$ref' => '#/components/schemas/reminder'
                  }
 
+          let(:reminder_context_id) { SecureRandom.uuid }
+
           before do
             create(:coaches__reminder, coach:)
-            create(:coaches__reminder, coach:, context_id: SecureRandom.uuid)
+            create(:coaches__reminder, coach:, context_id: reminder_context_id)
           end
 
-          before do
-            expect(Coaches::CoachesQuery)
-              .to receive(:reminders)
-              .with(coach)
-              .and_call_original
+          context "when no context id is provided" do
+            before do
+              expect(Coaches::CoachesQuery)
+                .to receive(:tasks)
+                .with(coach:, context_id: nil)
+                .and_call_original
+            end
+
+            run_test!
           end
 
-          run_test!
+          context "when a context id is provided" do
+            let(:context_id) { reminder_context_id }
+
+            before do
+              expect(Coaches::CoachesQuery)
+                .to receive(:tasks)
+                .with(coach:, context_id: reminder_context_id)
+                .and_call_original
+            end
+
+            run_test!
+          end
         end
       end
     end

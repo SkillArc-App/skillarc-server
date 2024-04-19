@@ -18,8 +18,8 @@ module Coaches
       serialize_coach_seeker_context(csc)
     end
 
-    def self.reminders(coach)
-      serialize_coach_reminders(coach)
+    def self.tasks(coach:, context_id: nil)
+      serialize_coach_tasks(coach, context_id)
     end
 
     def self.all_barriers
@@ -69,8 +69,11 @@ module Coaches
         }
       end
 
-      def serialize_coach_reminders(coach)
-        coach.reminders.map do |reminder|
+      def serialize_coach_tasks(coach, context_id)
+        reminders = coach.reminders
+        reminders = reminders.where(context_id:) if context_id.present?
+
+        reminders.map do |reminder|
           {
             id: reminder.id,
             note: reminder.note,

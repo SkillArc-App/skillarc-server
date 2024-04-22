@@ -64,5 +64,30 @@ RSpec.describe Infrastructure::InfrastructureAggregator do
         expect(task.state).to eq(Infrastructure::TaskStates::EXECUTED)
       end
     end
+
+    context "when the message is task cancelled" do
+      let!(:task) { create(:infrastructure__task, id: task_id) }
+
+      let(:message) do
+        build(
+          :message,
+          schema: Events::TaskCancelled::V1,
+          aggregate_id: task_id,
+          data: Messages::Nothing,
+          metadata: {
+            requestor_type: Requestor::Kinds::USER,
+            requestor_id: SecureRandom.uuid
+          }
+        )
+      end
+      let(:task_id) { SecureRandom.uuid }
+
+      it "updates an existing command to status cancelled" do
+        expect { subject }.not_to change(Infrastructure::Task, :count)
+
+        task = Infrastructure::Task.take(1).first
+        expect(task.state).to eq(Infrastructure::TaskStates::CANCELLED)
+      end
+    end
   end
 end

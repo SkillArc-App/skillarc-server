@@ -17,5 +17,10 @@ module Infrastructure
       task = Infrastructure::Task.find(message.aggregate.task_id)
       task.execute!
     end
+
+    on_message Events::TaskCancelled::V1, :sync do |message|
+      task = Infrastructure::Task.find(message.aggregate.task_id)
+      task.cancel!
+    end
   end
 end

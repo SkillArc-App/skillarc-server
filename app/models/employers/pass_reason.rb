@@ -12,4 +12,3 @@ module Employers
     self.table_name = "reasons"
   end
 end
-

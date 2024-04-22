@@ -39,7 +39,7 @@ module PubSubInitializer
     )
 
     PUBSUB.subscribe(
-      message_schema: Events::ApplicantStatusUpdated::V5,
+      message_schema: Events::ApplicantStatusUpdated::V6,
       subscriber: Klayvio::ApplicationStatusUpdated.new
     )
 

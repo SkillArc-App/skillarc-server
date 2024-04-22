@@ -8,8 +8,7 @@ RSpec.describe Contact::SmtpReactor do
       let(:message) do
         build(
           :message,
-          :notify_employer_of_applicant,
-          version: 1,
+          schema: Commands::NotifyEmployerOfApplicant::V1,
           data: {
             employment_title: "Job Title",
             recepent_email: "recruiter@skillarc.com",

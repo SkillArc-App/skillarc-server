@@ -13,10 +13,10 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
   let(:other_seeker_created) { build(:message, :profile_created, aggregate_id: other_user_id, data: { id: other_seeker_id, user_id: other_user_id }) }
   let(:note_with_id_added1) { build(:message, :note_added, version: 3, aggregate_id: lead1.lead_id, data: { note: "This is a note with an id 1", note_id: note_id1, originator: "coach@blocktrainapp.com" }, occurred_at: time1) }
   let(:note_with_id_added2) { build(:message, :note_added, version: 3, aggregate_id: lead1.lead_id, data: { note: "This is a note with an id 2", note_id: note_id2, originator: "coach@blocktrainapp.com" }, occurred_at: time1) }
-  let(:applicant_status_updated1) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated1, metadata: status_metadata, occurred_at: time2) }
-  let(:applicant_status_updated2) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated2, metadata: status_metadata, occurred_at: time2) }
-  let(:applicant_status_updated3) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated3, metadata: status_metadata, occurred_at: time2) }
-  let(:applicant_status_updated4) { build(:message, :applicant_status_updated, version: 5, aggregate_id: job_id, data: status_updated4, metadata: status_metadata, occurred_at: time2) }
+  let(:applicant_status_updated1) { build(:message, schema: Events::ApplicantStatusUpdated::V6, aggregate_id: applicant_id1, data: status_updated1, metadata: {}, occurred_at: time2) }
+  let(:applicant_status_updated2) { build(:message, schema: Events::ApplicantStatusUpdated::V6, aggregate_id: applicant_id1, data: status_updated2, metadata: {}, occurred_at: time2) }
+  let(:applicant_status_updated3) { build(:message, schema: Events::ApplicantStatusUpdated::V6, aggregate_id: applicant_id2, data: status_updated3, metadata: {}, occurred_at: time2) }
+  let(:applicant_status_updated4) { build(:message, schema: Events::ApplicantStatusUpdated::V6, aggregate_id: applicant_id3, data: status_updated4, metadata: {}, occurred_at: time2) }
   let(:note_deleted) { build(:message, :note_deleted, version: 3, aggregate_id: lead1.lead_id, data: { note_id: note_id1, originator: coach.email }, occurred_at: time1) }
   let(:note_modified) { build(:message, :note_modified, version: 3, aggregate_id: lead1.lead_id, data: { note: updated_note, note_id: note_id2, originator: coach.email }, occurred_at: time1) }
   let(:skill_level_updated) { build(:message, :skill_level_updated, version: 2, aggregate_id: lead1.lead_id, data: { skill_level: "advanced" }, occurred_at: time1) }
@@ -47,9 +47,8 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
     )
   end
   let(:status_updated1) do
-    Events::ApplicantStatusUpdated::Data::V4.new(
+    {
       job_id:,
-      applicant_id: applicant_id1,
       applicant_first_name: "Hannah",
       applicant_last_name: "Block",
       applicant_email: "hannah@hannah.com",
@@ -59,12 +58,11 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
       user_id: other_user_id,
       employment_title: employment_title1,
       status: status1
-    )
+    }
   end
   let(:status_updated2) do
-    Events::ApplicantStatusUpdated::Data::V4.new(
+    {
       job_id:,
-      applicant_id: applicant_id1,
       applicant_first_name: "Hannah",
       applicant_last_name: "Block",
       applicant_email: "hannah@hannah.com",
@@ -74,12 +72,11 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
       user_id: other_user_id,
       employment_title: employment_title1,
       status: status2
-    )
+    }
   end
   let(:status_updated3) do
-    Events::ApplicantStatusUpdated::Data::V4.new(
+    {
       job_id:,
-      applicant_id: applicant_id2,
       applicant_first_name: "Hannah",
       applicant_last_name: "Block",
       applicant_email: "hannah@hannah.com",
@@ -89,12 +86,11 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
       employer_name: employer_name2,
       employment_title: employment_title2,
       status: status1
-    )
+    }
   end
   let(:status_updated4) do
-    Events::ApplicantStatusUpdated::Data::V4.new(
+    {
       job_id:,
-      applicant_id: applicant_id3,
       applicant_first_name: "Hannah",
       applicant_last_name: "Block",
       applicant_email: "hannah@hannah.com",
@@ -104,11 +100,9 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
       user_id: other_user_id,
       employment_title: employment_title2,
       status: status1
-    )
+    }
   end
-  let(:status_metadata) do
-    Events::ApplicantStatusUpdated::MetaData::V1.new
-  end
+
   let(:barrier1) { create(:barrier, name: "barrier1") }
   let(:barrier2) { create(:barrier, name: "barrier2") }
 
@@ -323,10 +317,10 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         let(:message) do
           build(
             :message,
-            schema: Events::ApplicantStatusUpdated::V5,
+            schema: Events::ApplicantStatusUpdated::V6,
+            aggregate_id: applicant_id,
             data: {
               job_id:,
-              applicant_id:,
               applicant_first_name: "Hannah",
               applicant_last_name: "Block",
               applicant_email: "hannah@hannah.com",

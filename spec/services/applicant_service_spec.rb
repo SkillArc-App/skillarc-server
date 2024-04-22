@@ -11,7 +11,7 @@ RSpec.describe ApplicantService do
 
     let(:status) { ApplicantStatus::StatusTypes::PENDING_INTRO }
     let(:reasons) { [{ id: reason.id, response: "Bad canidate" }] }
-    let(:reason) { create(:reason) }
+    let(:reason) { create(:employers__pass_reason) }
     let(:user_id) { SecureRandom.uuid }
 
     it "creates a new applicant status" do
@@ -24,10 +24,9 @@ RSpec.describe ApplicantService do
 
     it "creates an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::ApplicantStatusUpdated::V5,
-        job_id: applicant.job.id,
+        schema: Events::ApplicantStatusUpdated::V6,
+        application_id: applicant.id,
         data: {
-          applicant_id: applicant.id,
           applicant_first_name: applicant.seeker.user.first_name,
           applicant_last_name: applicant.seeker.user.last_name,
           applicant_email: applicant.seeker.user.email,
@@ -53,14 +52,6 @@ RSpec.describe ApplicantService do
       ).and_call_original
 
       subject
-    end
-
-    it "attaches applicant status reasons" do
-      expect do
-        subject
-      end.to change { applicant.reload.applicant_statuses.last_created.applicant_status_reasons.count }.by(1)
-
-      expect(applicant.applicant_statuses.last_created.applicant_status_reasons.last_created.reason).to eq(reason)
     end
   end
 end

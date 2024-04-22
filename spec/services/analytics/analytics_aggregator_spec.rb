@@ -522,10 +522,9 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       let(:message) do
         build(
           :message,
-          schema: Events::ApplicantStatusUpdated::V5,
-          aggregate_id: job_id,
+          schema: Events::ApplicantStatusUpdated::V6,
+          aggregate_id: application_id,
           data: {
-            applicant_id: application_id,
             applicant_first_name: "John",
             applicant_last_name: "Wexner",
             applicant_email: Faker::Internet.email,

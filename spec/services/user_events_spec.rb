@@ -80,7 +80,7 @@ RSpec.describe UserEvents do
         :applicant_status_updated,
         occurred_at:,
         aggregate_id: job.id,
-        version: 5,
+        version: 6,
         data: {
           applicant_id: SecureRandom.uuid,
           applicant_first_name: "John",

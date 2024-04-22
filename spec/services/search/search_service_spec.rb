@@ -221,10 +221,9 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
     let(:application1_for_job1_for_seeker1) do
       build(
         :message,
-        aggregate_id: job_id1,
-        schema: Events::ApplicantStatusUpdated::V5,
+        aggregate_id: applicant_id1,
+        schema: Events::ApplicantStatusUpdated::V6,
         data: {
-          applicant_id: applicant_id1,
           applicant_first_name: "John",
           applicant_last_name: "Chabot",
           applicant_email: "john@skillarc.com",
@@ -243,10 +242,9 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
     let(:application2_for_job2_for_seeker2) do
       build(
         :message,
-        aggregate_id: job_id2,
-        schema: Events::ApplicantStatusUpdated::V5,
+        aggregate_id: applicant_id2,
+        schema: Events::ApplicantStatusUpdated::V6,
         data: {
-          applicant_id: applicant_id2,
           applicant_first_name: "Chris",
           applicant_last_name: "Brauns",
           applicant_email: "chris@skillarc.com",

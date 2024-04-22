@@ -2,17 +2,17 @@ module Employers
   class EmployerAggregator < MessageConsumer
     def reset_for_replay
       JobOwner.delete_all
-      ApplicantStatusReason.delete_all
       Applicant.delete_all
       Recruiter.delete_all
+      PassReason.delete_all
       Job.delete_all
       Employer.delete_all
     end
 
-    on_message Events::ApplicantStatusUpdated::V5, :sync do |message|
+    on_message Events::ApplicantStatusUpdated::V6, :sync do |message|
       job = Job.find_by!(job_id: message.data.job_id)
       applicant = Applicant.find_or_initialize_by(
-        applicant_id: message.data.applicant_id,
+        applicant_id: message.aggregate.id,
         seeker_id: message.data.seeker_id,
         job:
       )
@@ -90,6 +90,20 @@ module Employers
         requirements_description: message.data.requirements_description,
         industry: message.data.industry
       )
+    end
+
+    on_message Events::PassReasonAdded::V1 do |message|
+      PassReason.create!(
+        id: message.aggregate.id,
+        description: message.data.description
+      )
+    end
+
+    on_message Events::PassReasonRemoved::V1 do |message|
+      pass_reason = Employers::PassReason.find_by(id: message.aggregate.id)
+      return if pass_reason.blank?
+
+      pass_reason.destroy
     end
 
     on_message Events::JobOwnerAssigned::V1 do |message|

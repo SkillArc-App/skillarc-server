@@ -37,9 +37,8 @@ RSpec.describe Slack::SlackReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::ApplicantStatusUpdated::V5,
+          schema: Events::ApplicantStatusUpdated::V6,
           data: {
-            applicant_id: SecureRandom.uuid,
             applicant_first_name: "John",
             applicant_last_name: "Chabot",
             applicant_email: "john@skillarc.com",

@@ -25,10 +25,9 @@ RSpec.describe Applicants::OrchestrationReactor do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          job_id: job.id,
-          schema: Events::ApplicantStatusUpdated::V5,
+          application_id: applicant.id,
+          schema: Events::ApplicantStatusUpdated::V6,
           data: {
-            applicant_id: applicant.id,
             applicant_first_name: "David",
             applicant_last_name: "Helm",
             applicant_email: "david@skillarc.com",
@@ -65,7 +64,7 @@ RSpec.describe Applicants::OrchestrationReactor do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          applicant_id: applicant.id,
+          application_id: applicant.id,
           schema: Events::ApplicantScreened::V1,
           data: Messages::Nothing,
           metadata: Messages::Nothing,
@@ -109,7 +108,7 @@ RSpec.describe Applicants::OrchestrationReactor do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          applicant_id: be_a(String),
+          application_id: be_a(String),
           trace_id: seeker_applied.trace_id,
           schema: Commands::ScreenApplicant::V1,
           data: Messages::Nothing

@@ -1,10 +1,10 @@
 module Events
-  module ApplicantScreened
+  module PassReasonRemoved
     V1 = Messages::Schema.active(
       data: Messages::Nothing,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Application,
-      message_type: Messages::Types::Applications::APPLICANT_SCREENED,
+      aggregate: Aggregates::PassReason,
+      message_type: Messages::Types::Jobs::PASS_REASON_REMOVED,
       version: 1
     )
   end

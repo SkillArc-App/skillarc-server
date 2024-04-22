@@ -5,35 +5,29 @@ RSpec.describe Klayvio::ApplicationStatusUpdated do
     let(:message) do
       build(
         :message,
-        :applicant_status_updated,
-        version: 3,
-        aggregate_id: job.id,
+        schema: Events::ApplicantStatusUpdated::V6,
+        aggregate_id: SecureRandom.uuid,
         data: {
-          applicant_id: applicant.id,
           applicant_first_name: "John",
           applicant_last_name: "Chabot",
           applicant_email: "john@skillar.com",
-          profile_id: SecureRandom.uuid,
           seeker_id: SecureRandom.uuid,
           user_id: SecureRandom.uuid,
           job_id: SecureRandom.uuid,
           employer_name: "A employer",
           employment_title: "A title",
           status: "new"
-        }
+        },
+        metadata: {}
       )
     end
-    let(:job) { create(:job) }
-    let(:applicant) { create(:applicant, job:, seeker:) }
-    let(:seeker) { create(:seeker, user:) }
-    let(:user) { create(:user, email: "tom@blocktrainapp.com") }
 
     it "calls the Klayvio API" do
       expect_any_instance_of(Klayvio::FakeGateway).to receive(:application_status_updated).with(
-        application_id: applicant.id,
-        email: user.email,
-        employment_title: job.employment_title,
-        employer_name: job.employer.name,
+        application_id: message.aggregate.id,
+        email: message.data.applicant_email,
+        employment_title: message.data.employment_title,
+        employer_name: message.data.employer_name,
         event_id: message.id,
         occurred_at: message.occurred_at,
         status: "new"

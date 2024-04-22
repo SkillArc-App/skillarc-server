@@ -20,7 +20,7 @@ module Slack
       )
     end
 
-    on_message ::Events::ApplicantStatusUpdated::V5 do |message|
+    on_message ::Events::ApplicantStatusUpdated::V6 do |message|
       data = message.data
       return unless data.status == ApplicantStatus::StatusTypes::NEW
 

@@ -40,6 +40,26 @@ RSpec.describe "Jobs", type: :request do
 
           run_test!
         end
+
+        context "when authenticated with an application" do
+          before do
+            create(:career_path, job:)
+            create(:learned_skill, job:)
+            create(:desired_skill, job:)
+            create(:desired_certification, job:)
+            create(:job_photo, job:)
+            create(:testimonial, job:)
+            create(:job_tag, job:)
+            create(:applicant, job:, seeker_id: seeker.id)
+          end
+
+          include_context "seeker authenticated openapi"
+
+          let(:job) { create(:job) }
+          let(:id) { job.id }
+
+          run_test!
+        end
       end
 
       response '404', 'Job not found' do

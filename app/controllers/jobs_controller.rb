@@ -3,6 +3,7 @@ class JobsController < ApplicationController
   include MessageEmitter
 
   before_action :authorize, only: %i[apply elevator_pitch]
+  before_action :set_current_user, only: [:show]
 
   def apply
     if_visible(Job.find(params[:job_id])) do |job|
@@ -38,7 +39,7 @@ class JobsController < ApplicationController
       learned_skills: :master_skill,
       desired_certifications: :master_certification
     ).find(params[:id])) do |job|
-      render json: serialize_job(job)
+      render json: serialize_job(job, current_user&.seeker)
     end
   end
 
@@ -52,7 +53,10 @@ class JobsController < ApplicationController
     end
   end
 
-  def serialize_job(j)
+  def serialize_job(j, seeker)
+    application = Applicant.find_by(job_id: j.id, seeker_id: seeker&.id)
+    application_status = application&.status&.status
+
     {
       **j.slice(
         :id,
@@ -61,11 +65,9 @@ class JobsController < ApplicationController
         :employment_title,
         :location,
         :employment_type,
-        :hide_job,
         :schedule,
         :work_days,
         :requirements_description,
-        :created_at,
         :category
       ).as_json,
       employer: {
@@ -78,7 +80,6 @@ class JobsController < ApplicationController
           :created_at
         ).as_json
       },
-      industry: j.industry || [],
       learned_skills: j.learned_skills.map do |ls|
         {
           id: ls.id,
@@ -108,7 +109,7 @@ class JobsController < ApplicationController
           }
         }
       end,
-      number_of_applicants: j.applicants.length,
+      application_status:,
       testimonials: j.testimonials.map { |t| serialize_testimonial(t) }
     }
   end

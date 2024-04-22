@@ -53,13 +53,5 @@ RSpec.describe ApplicantService do
 
       subject
     end
-
-    it "attaches applicant status reasons" do
-      expect do
-        subject
-      end.to change { applicant.reload.applicant_statuses.last_created.applicant_status_reasons.count }.by(1)
-
-      expect(applicant.applicant_statuses.last_created.applicant_status_reasons.last_created.reason).to eq(reason)
-    end
   end
 end

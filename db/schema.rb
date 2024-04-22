@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_18_194303) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_22_162649) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -147,16 +147,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_18_194303) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["applicant_id"], name: "index_applicant_chats_on_applicant_id", unique: true
-  end
-
-  create_table "applicant_status_reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.text "applicant_status_id", null: false
-    t.uuid "reason_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "response"
-    t.index ["applicant_status_id"], name: "index_applicant_status_reasons_on_applicant_status_id"
-    t.index ["reason_id"], name: "index_applicant_status_reasons_on_reason_id"
   end
 
   create_table "applicant_statuses", id: :text, force: :cascade do |t|
@@ -936,8 +926,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_18_194303) do
   add_foreign_key "applicant_analytics", "employers"
   add_foreign_key "applicant_analytics", "jobs"
   add_foreign_key "applicant_chats", "applicants"
-  add_foreign_key "applicant_status_reasons", "applicant_statuses"
-  add_foreign_key "applicant_status_reasons", "reasons"
   add_foreign_key "applicant_statuses", "applicants", name: "ApplicantStatus_applicant_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "applicants", "jobs", name: "Applicant_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "applicants", "seekers"

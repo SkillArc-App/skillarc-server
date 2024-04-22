@@ -2,7 +2,6 @@ module Employers
   class EmployerAggregator < MessageConsumer
     def reset_for_replay
       JobOwner.delete_all
-      ApplicantStatusReason.delete_all
       Applicant.delete_all
       Recruiter.delete_all
       Job.delete_all

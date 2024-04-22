@@ -12,14 +12,6 @@ class ApplicantService
       status:
     )
 
-    applicant_status_reasons = reasons.map do |reason|
-      ApplicantStatusReason.create!(
-        applicant_status:,
-        reason_id: reason[:id],
-        response: reason[:response]
-      )
-    end
-
     message_service.create!(
       schema: Events::ApplicantStatusUpdated::V6,
       application_id: applicant.id,
@@ -34,11 +26,11 @@ class ApplicantService
         employer_name: applicant.job.employer.name,
         employment_title: applicant.job.employment_title,
         status: applicant.status.status,
-        reasons: applicant_status_reasons.map do |asr|
+        reasons: reasons.map do |reason|
           Events::ApplicantStatusUpdated::Reason::V2.new(
-            id: asr.reason_id,
-            response: asr.response,
-            reason_description: asr.reason.description
+            id: reason[:id],
+            response: reason[:response],
+            reason_description: Reason.find(reason[:id]).description
           )
         end
       },

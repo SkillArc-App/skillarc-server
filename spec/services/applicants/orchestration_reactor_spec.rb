@@ -65,7 +65,7 @@ RSpec.describe Applicants::OrchestrationReactor do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          applicant_id: applicant.id,
+          application_id: applicant.id,
           schema: Events::ApplicantScreened::V1,
           data: Messages::Nothing,
           metadata: Messages::Nothing,
@@ -109,7 +109,7 @@ RSpec.describe Applicants::OrchestrationReactor do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          applicant_id: be_a(String),
+          application_id: be_a(String),
           trace_id: seeker_applied.trace_id,
           schema: Commands::ScreenApplicant::V1,
           data: Messages::Nothing

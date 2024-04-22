@@ -5,7 +5,7 @@ module Applicants
     end
 
     on_message Events::ApplicantScreened::V1, :sync do |event|
-      applicant = Applicant.find(event.aggregate.applicant_id)
+      applicant = Applicant.find(event.aggregate.application_id)
       seeker = applicant.seeker
 
       message_service.create!(
@@ -35,7 +35,7 @@ module Applicants
 
     on_message Commands::ScreenApplicant::V1, :sync do |event|
       message_service.create!(
-        applicant_id: event.aggregate.applicant_id,
+        application_id: event.aggregate.application_id,
         schema: Events::ApplicantScreened::V1,
         data: Messages::Nothing,
         metadata: Messages::Nothing,
@@ -60,7 +60,7 @@ module Applicants
       )
 
       message_service.create!(
-        applicant_id: applicant.id,
+        application_id: applicant.id,
         trace_id: event.trace_id,
         schema: Commands::ScreenApplicant::V1,
         data: Messages::Nothing

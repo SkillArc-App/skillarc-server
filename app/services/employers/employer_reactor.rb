@@ -13,7 +13,7 @@ module Employers
       job.owner_emails.each do |owner_email|
         message_service.create!(
           schema: Commands::NotifyEmployerOfApplicant::V1,
-          applicant_id: data.applicant_id,
+          application_id: data.applicant_id,
           trace_id: message.trace_id,
           data: {
             employment_title: data.employment_title,

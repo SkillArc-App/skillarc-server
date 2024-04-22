@@ -4,6 +4,7 @@ module Employers
       JobOwner.delete_all
       Applicant.delete_all
       Recruiter.delete_all
+      PassReason.delete_all
       Job.delete_all
       Employer.delete_all
     end
@@ -89,6 +90,20 @@ module Employers
         requirements_description: message.data.requirements_description,
         industry: message.data.industry
       )
+    end
+
+    on_message Events::PassReasonAdded::V1 do |message|
+      PassReason.create!(
+        id: message.aggregate.id,
+        description: message.data.description
+      )
+    end
+
+    on_message Events::PassReasonRemoved::V1 do |message|
+      pass_reason = Employers::PassReason.find_by(id: message.aggregate.id)
+      return if pass_reason.blank?
+
+      pass_reason.destroy
     end
 
     on_message Events::JobOwnerAssigned::V1 do |message|

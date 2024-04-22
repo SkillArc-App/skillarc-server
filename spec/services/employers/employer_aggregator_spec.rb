@@ -196,4 +196,58 @@ RSpec.describe Employers::EmployerAggregator do
       end.to change { Employers::JobOwner.count }.by(1)
     end
   end
+
+  describe "#handle_message" do
+    subject { consumer.handle_message(message) }
+
+    let(:consumer) { described_class.new }
+
+    context "when message is pass reason added" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::PassReasonAdded::V1,
+          data: {
+            description: "This canidates blows"
+          }
+        )
+      end
+
+      it "creates a new pass reason record" do
+        expect { subject }.to change(Employers::PassReason, :count).from(0).to(1)
+
+        pass_reason = Employers::PassReason.last_created
+        expect(pass_reason.id).to eq(message.aggregate.id)
+        expect(pass_reason.description).to eq("This canidates blows")
+      end
+    end
+
+    context "when message is pass reason removed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::PassReasonRemoved::V1,
+          data: Messages::Nothing
+        )
+      end
+
+      context "when there is a pass reason for the id" do
+        let!(:pass_reason) { create(:employers__pass_reason, id: message.aggregate.id) }
+
+        it "removes the pass reason" do
+          expect { subject }.to change(Employers::PassReason, :count).from(1).to(0)
+
+          expect(Employers::PassReason.find_by(id: pass_reason.id)).to be_nil
+        end
+      end
+
+      context "when there is not a pass reason for the id" do
+        let!(:pass_reason) { create(:employers__pass_reason, id: SecureRandom.uuid) }
+
+        it "removes the pass reason" do
+          expect { subject }.not_to change(Employers::PassReason, :count)
+        end
+      end
+    end
+  end
 end

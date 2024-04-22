@@ -55,6 +55,8 @@ module Messages
         LEARNED_SKILL_DESTROYED = 'learned_skill_destroyed',
         JOB_TAG_CREATED = 'job_tag_created',
         JOB_TAG_DELETED = 'job_tag_deleted',
+        PASS_REASON_ADDED = 'pass_reason_added',
+        PASS_REASON_REMOVED = 'pass_reason_removed',
         TESTIMONIAL_CREATED = 'testimonial_created',
         TESTIMONIAL_DESTROYED = 'testimonial_destroyed'
       ].freeze

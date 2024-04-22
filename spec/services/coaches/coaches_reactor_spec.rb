@@ -320,6 +320,43 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
         end
       end
     end
+
+    context "when the message is coach reminder completed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::CoachReminderCompleted::V1,
+          aggregate_id: coach.coach_id,
+          data: {
+            reminder_id: reminder.id
+          }
+        )
+      end
+
+      let(:coach) { create(:coaches__coach) }
+      let(:reminder) { create(:coaches__reminder) }
+
+      # Note in general we'll be trying to get away
+      # From this approach
+      context "when the aggregated data is present" do
+        it "fires off a cancel task command" do
+          expect(message_service)
+            .to receive(:create!)
+            .with(
+              schema: Commands::CancelTask::V1,
+              trace_id: message.trace_id,
+              task_id: reminder.message_task_id,
+              data: Messages::Nothing,
+              metadata: {
+                requestor_type: Requestor::Kinds::USER,
+                requestor_id: coach.user_id
+              }
+            )
+
+          subject
+        end
+      end
+    end
   end
 
   describe "#add_lead" do

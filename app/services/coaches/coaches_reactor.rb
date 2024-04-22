@@ -213,6 +213,24 @@ module Coaches
       )
     end
 
+    on_message Events::CoachReminderCompleted::V1 do |message|
+      reminder = Reminder.find_by(id: message.data.reminder_id)
+      return if reminder.blank?
+
+      coach = Coach.find_by(coach_id: message.aggregate.coach_id)
+
+      message_service.create!(
+        schema: Commands::CancelTask::V1,
+        trace_id: message.trace_id,
+        task_id: reminder.message_task_id,
+        data: Messages::Nothing,
+        metadata: {
+          requestor_type: Requestor::Kinds::USER,
+          requestor_id: coach&.user_id
+        }
+      )
+    end
+
     on_message Events::LeadAdded::V2 do |message|
       csc = Coaches::CoachSeekerContext.find_by(lead_id: message.aggregate.context_id)
       return if csc&.assigned_coach.present?

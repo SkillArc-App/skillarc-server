@@ -1127,35 +1127,35 @@ Coaches::SeekerApplication.create!(
 )
 
 message_service.create!(
-  schema: Events::PassReasonAdded,
+  schema: Events::PassReasonAdded::V1,
   pass_reason_id: SecureRandom.uuid,
   data: {
     description: "This candidate does not meet the role requirements"
   }
 )
 message_service.create!(
-  schema: Events::PassReasonAdded,
+  schema: Events::PassReasonAdded::V1,
   pass_reason_id: SecureRandom.uuid,
   data: {
     description: "The role is filled, no longer accepting applications"
   }
 )
 message_service.create!(
-  schema: Events::PassReasonAdded,
+  schema: Events::PassReasonAdded::V1,
   pass_reason_id: SecureRandom.uuid,
   data: {
     description: "The role is seasonal or pausing accepting candidates"
   }
 )
 message_service.create!(
-  schema: Events::PassReasonAdded,
+  schema: Events::PassReasonAdded::V1,
   pass_reason_id: SecureRandom.uuid,
   data: {
     description: "This candidate is a better for another role"
   }
 )
 message_service.create!(
-  schema: Events::PassReasonAdded,
+  schema: Events::PassReasonAdded::V1,
   pass_reason_id: SecureRandom.uuid,
   data: {
     description: "The candidate did not show up for the interview"

@@ -154,9 +154,9 @@ module Analytics
       end
     end
 
-    on_message Events::ApplicantStatusUpdated::V5 do |message|
+    on_message Events::ApplicantStatusUpdated::V6 do |message|
       data = message.data
-      fact_application = Analytics::FactApplication.find_by(application_id: data.applicant_id)
+      fact_application = Analytics::FactApplication.find_by(application_id: message.aggregate.id)
 
       if fact_application.present?
         fact_application.update!(status: data.status, application_updated_at: message.occurred_at)
@@ -173,7 +173,7 @@ module Analytics
           application_number:,
           status: data.status,
           application_opened_at: message.occurred_at,
-          application_id: data.applicant_id,
+          application_id: message.aggregate.id,
           application_updated_at: message.occurred_at
         )
       end

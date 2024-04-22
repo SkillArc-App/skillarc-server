@@ -25,10 +25,9 @@ RSpec.describe Applicants::OrchestrationReactor do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          job_id: job.id,
-          schema: Events::ApplicantStatusUpdated::V5,
+          application_id: applicant.id,
+          schema: Events::ApplicantStatusUpdated::V6,
           data: {
-            applicant_id: applicant.id,
             applicant_first_name: "David",
             applicant_last_name: "Helm",
             applicant_email: "david@skillarc.com",

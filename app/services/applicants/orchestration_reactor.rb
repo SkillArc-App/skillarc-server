@@ -9,10 +9,9 @@ module Applicants
       seeker = applicant.seeker
 
       message_service.create!(
-        job_id: applicant.job_id,
-        schema: Events::ApplicantStatusUpdated::V5,
+        application_id: applicant.id,
+        schema: Events::ApplicantStatusUpdated::V6,
         data: {
-          applicant_id: applicant.id,
           applicant_first_name: seeker.first_name,
           applicant_last_name: seeker.last_name,
           applicant_email: seeker.email,

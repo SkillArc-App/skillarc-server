@@ -7,25 +7,24 @@ RSpec.describe Employers::EmployerReactor do
     subject { described_class.new(message_service: MessageService.new).handle_message(message) }
 
     describe "when message is application status updated" do
-      let(:message) { build(:message, schema: Events::ApplicantStatusUpdated::V5, data:, metadata:) }
-      let(:data) do
-        Events::ApplicantStatusUpdated::Data::V4.new(
-          applicant_id: applicant.applicant_id,
-          applicant_first_name: applicant.first_name,
-          applicant_last_name: applicant.last_name,
-          applicant_email: applicant.email,
-          applicant_phone_number: applicant.phone_number,
-          profile_id: applicant.seeker_id,
-          seeker_id: applicant.seeker_id,
-          user_id: SecureRandom.uuid,
-          job_id: applicant.job.job_id,
-          employer_name: "employer_name",
-          employment_title: "employment_title",
-          status:
+      let(:message) do
+        build(
+          :message,
+          schema: Events::ApplicantStatusUpdated::V6,
+          data: {
+            applicant_first_name: applicant.first_name,
+            applicant_last_name: applicant.last_name,
+            applicant_email: applicant.email,
+            applicant_phone_number: applicant.phone_number,
+            seeker_id: applicant.seeker_id,
+            user_id: SecureRandom.uuid,
+            job_id: applicant.job.job_id,
+            employer_name: "employer_name",
+            employment_title: "employment_title",
+            status:
+          },
+          metadata: {}
         )
-      end
-      let(:metadata) do
-        Events::ApplicantStatusUpdated::MetaData::V1.new
       end
       let(:applicant) { create(:employers_applicant, job:) }
       let(:status) { ApplicantStatus::StatusTypes::NEW }
@@ -41,17 +40,17 @@ RSpec.describe Employers::EmployerReactor do
             .to receive(:create!)
             .with(
               schema: Commands::NotifyEmployerOfApplicant::V1,
-              application_id: data.applicant_id,
+              application_id: message.aggregate.id,
               trace_id: message.trace_id,
               data: {
-                employment_title: data.employment_title,
+                employment_title: message.data.employment_title,
                 recepent_email: recruiter.email,
                 certified_by: nil,
-                applicant_first_name: data.applicant_first_name,
-                applicant_last_name: data.applicant_last_name,
-                applicant_seeker_id: data.seeker_id,
-                applicant_email: data.applicant_email,
-                applicant_phone_number: data.applicant_phone_number
+                applicant_first_name: message.data.applicant_first_name,
+                applicant_last_name: message.data.applicant_last_name,
+                applicant_seeker_id: message.data.seeker_id,
+                applicant_email: message.data.applicant_email,
+                applicant_phone_number: message.data.applicant_phone_number
               }
             )
             .and_call_original
@@ -68,17 +67,17 @@ RSpec.describe Employers::EmployerReactor do
             .to receive(:create!)
             .with(
               schema: Commands::NotifyEmployerOfApplicant::V1,
-              application_id: data.applicant_id,
+              application_id: message.aggregate.id,
               trace_id: message.trace_id,
               data: {
-                employment_title: data.employment_title,
+                employment_title: message.data.employment_title,
                 recepent_email: recruiter.email,
                 certified_by: employers_seeker.certified_by,
-                applicant_first_name: data.applicant_first_name,
-                applicant_last_name: data.applicant_last_name,
-                applicant_seeker_id: data.seeker_id,
-                applicant_email: data.applicant_email,
-                applicant_phone_number: data.applicant_phone_number
+                applicant_first_name: message.data.applicant_first_name,
+                applicant_last_name: message.data.applicant_last_name,
+                applicant_seeker_id: message.data.seeker_id,
+                applicant_email: message.data.applicant_email,
+                applicant_phone_number: message.data.applicant_phone_number
               }
             )
             .and_call_original

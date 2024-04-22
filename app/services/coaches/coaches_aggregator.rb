@@ -70,7 +70,7 @@ module Coaches
       )
     end
 
-    on_message Events::ApplicantStatusUpdated::V5 do |message|
+    on_message Events::ApplicantStatusUpdated::V6 do |message|
       data = message.data
       csc = CoachSeekerContext.find_by!(user_id: data.user_id)
       csc.update!(last_active_on: message.occurred_at)
@@ -82,7 +82,7 @@ module Coaches
 
       application = SeekerApplication.find_or_create_by(
         coach_seeker_context: csc,
-        application_id: data.applicant_id
+        application_id: message.aggregate.id
       )
 
       application.update!(

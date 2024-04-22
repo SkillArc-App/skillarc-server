@@ -179,10 +179,10 @@ module Search
       )
     end
 
-    on_message Events::ApplicantStatusUpdated::V5, :sync do |message|
+    on_message Events::ApplicantStatusUpdated::V6, :sync do |message|
       data = message.data
       job = Job.find_by!(job_id: data.job_id)
-      application = Application.find_or_initialize_by(application_id: data.applicant_id, search_job: job)
+      application = Application.find_or_initialize_by(application_id: message.aggregate.application_id, search_job: job)
 
       application.update!(
         status: data.status,

@@ -9,10 +9,10 @@ module Employers
       Employer.delete_all
     end
 
-    on_message Events::ApplicantStatusUpdated::V5, :sync do |message|
+    on_message Events::ApplicantStatusUpdated::V6, :sync do |message|
       job = Job.find_by!(job_id: message.data.job_id)
       applicant = Applicant.find_or_initialize_by(
-        applicant_id: message.data.applicant_id,
+        applicant_id: message.aggregate.id,
         seeker_id: message.data.seeker_id,
         job:
       )

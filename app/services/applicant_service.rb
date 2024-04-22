@@ -21,10 +21,9 @@ class ApplicantService
     end
 
     message_service.create!(
-      schema: Events::ApplicantStatusUpdated::V5,
-      job_id: applicant.job.id,
+      schema: Events::ApplicantStatusUpdated::V6,
+      application_id: applicant.id,
       data: {
-        applicant_id: applicant.id,
         applicant_first_name: applicant.seeker.user.first_name,
         applicant_last_name: applicant.seeker.user.last_name,
         applicant_email: applicant.seeker.user.email,

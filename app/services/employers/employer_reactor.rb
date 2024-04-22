@@ -2,7 +2,7 @@ module Employers
   class EmployerReactor < MessageConsumer
     def reset_for_replay; end
 
-    on_message Events::ApplicantStatusUpdated::V5 do |message|
+    on_message Events::ApplicantStatusUpdated::V6 do |message|
       return unless message.data.status == Applicant::StatusTypes::NEW
 
       job = Job.find_by!(job_id: message.data.job_id)
@@ -13,7 +13,7 @@ module Employers
       job.owner_emails.each do |owner_email|
         message_service.create!(
           schema: Commands::NotifyEmployerOfApplicant::V1,
-          application_id: data.applicant_id,
+          application_id: message.aggregate.id,
           trace_id: message.trace_id,
           data: {
             employment_title: data.employment_title,

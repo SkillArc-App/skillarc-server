@@ -26,7 +26,7 @@ class UserEvents
 
   def event_message(message)
     case message.schema
-    when Events::ApplicantStatusUpdated::V5
+    when Events::ApplicantStatusUpdated::V6
       "Applicant Status Updated: #{message.data[:employment_title]} - #{message.data[:status]}"
     when Events::EducationExperienceCreated::V1
       "Education Experience Created: #{message.data[:organization_name]}"

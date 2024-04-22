@@ -95,6 +95,24 @@ module Events
           reasons ArrayOf(Reason::V2), default: []
         end
       end
+
+      class V5
+        extend Messages::Payload
+
+        schema do
+          applicant_first_name String
+          applicant_last_name String
+          applicant_email String
+          applicant_phone_number Either(String, nil), default: nil
+          seeker_id Uuid
+          user_id String
+          job_id Uuid
+          employer_name String
+          employment_title String
+          status Either(*ApplicantStatus::StatusTypes::ALL)
+          reasons ArrayOf(Reason::V2), default: []
+        end
+      end
     end
 
     module MetaData
@@ -139,12 +157,20 @@ module Events
       version: 4
     )
 
-    V5 = Messages::Schema.active(
+    V5 = Messages::Schema.inactive(
       data: Data::V4,
       metadata: MetaData::V1,
       aggregate: Aggregates::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 5
+    )
+
+    V6 = Messages::Schema.active(
+      data: Data::V5,
+      metadata: MetaData::V1,
+      aggregate: Aggregates::Application,
+      message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+      version: 6
     )
   end
 end

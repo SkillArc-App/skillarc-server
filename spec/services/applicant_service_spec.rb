@@ -11,7 +11,7 @@ RSpec.describe ApplicantService do
 
     let(:status) { ApplicantStatus::StatusTypes::PENDING_INTRO }
     let(:reasons) { [{ id: reason.id, response: "Bad canidate" }] }
-    let(:reason) { create(:reason) }
+    let(:reason) { create(:employers__pass_reason) }
     let(:user_id) { SecureRandom.uuid }
 
     it "creates a new applicant status" do

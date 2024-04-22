@@ -30,7 +30,7 @@ class ApplicantService
           Events::ApplicantStatusUpdated::Reason::V2.new(
             id: reason[:id],
             response: reason[:response],
-            reason_description: Reason.find(reason[:id]).description
+            reason_description: Employers::PassReason.find(reason[:id]).description
           )
         end
       },

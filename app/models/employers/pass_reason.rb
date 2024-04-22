@@ -7,5 +7,9 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
-class Reason < ApplicationRecord
+module Employers
+  class PassReason < ApplicationRecord
+    self.table_name = "reasons"
+  end
 end
+

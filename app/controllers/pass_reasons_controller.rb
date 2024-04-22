@@ -6,6 +6,6 @@ class PassReasonsController < ApplicationController
   before_action :employer_authorize
 
   def index
-    render json: Reason.all
+    render json: Employers::PassReason.all
   end
 end

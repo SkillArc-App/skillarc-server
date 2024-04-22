@@ -1126,11 +1126,11 @@ Coaches::SeekerApplication.create!(
   coach_seeker_context:
 )
 
-Reason.create!(description: "This candidate does not meet the role requirements")
-Reason.create!(description: "The role is filled, no longer accepting applications")
-Reason.create!(description: "The role is seasonal or pausing accepting candidates")
-Reason.create!(description: "This candidate is a better for another role")
-Reason.create!(description: "The candidate did not show up for the interview")
+Employers::PassReason.create!(description: "This candidate does not meet the role requirements")
+Employers::PassReason.create!(description: "The role is filled, no longer accepting applications")
+Employers::PassReason.create!(description: "The role is seasonal or pausing accepting candidates")
+Employers::PassReason.create!(description: "This candidate is a better for another role")
+Employers::PassReason.create!(description: "The candidate did not show up for the interview")
 
 FactoryBot.create(:barrier, name: "Background")
 FactoryBot.create(:barrier, name: "Unable to Drive")

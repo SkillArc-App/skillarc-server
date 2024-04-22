@@ -47,7 +47,7 @@ RSpec.describe "Employers::Applicants", type: :request do
       let(:applicant) { create(:applicant) }
       let(:id) { applicant.id }
       let(:status) { ApplicantStatus::StatusTypes::PENDING_INTRO }
-      let(:reasons) { [{ id: create(:reason).id, response: "Bad canidate" }] }
+      let(:reasons) { [{ id: create(:employers__pass_reason).id, response: "Bad canidate" }] }
       let(:update) do
         {
           status:,
@@ -79,7 +79,7 @@ RSpec.describe "Employers::Applicants", type: :request do
           end
 
           context "when reasons are not given" do
-            let(:reasons) { [{ id: create(:reason).id, response: "Bad canidate" }] }
+            let(:reasons) { [{ id: create(:employers__pass_reason).id, response: "Bad canidate" }] }
 
             before do
               expect_any_instance_of(ApplicantService)

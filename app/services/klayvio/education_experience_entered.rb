@@ -3,7 +3,7 @@ module Klayvio
     include DefaultStreamId
 
     def call(message:)
-      user = User.find(message.aggregate_id)
+      user = Seeker.find(message.aggregate_id).user
 
       Gateway.build.education_experience_entered(
         email: user.email,

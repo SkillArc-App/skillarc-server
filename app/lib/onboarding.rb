@@ -138,18 +138,16 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         ee.save!
 
         message_service.create!(
-          user_id: user.id,
-          schema: Events::EducationExperienceCreated::V1,
+          seeker_id: ee.seeker_id,
+          schema: Events::EducationExperienceAdded::V1,
           data: {
             id: ee.id,
             organization_name: ee.organization_name,
             title: ee.title,
             activities: ee.activities,
             graduation_date: ee.graduation_date,
-            gpa: ee.gpa,
-            seeker_id: ee.seeker_id
-          },
-          occurred_at: ee.created_at
+            gpa: ee.gpa
+          }
         )
       end
     end

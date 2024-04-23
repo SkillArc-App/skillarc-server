@@ -232,7 +232,7 @@ module Coaches
       )
     end
 
-    on_message Events::EducationExperienceCreated::V1 do |message|
+    on_message Events::EducationExperienceAdded::V1 do |message|
       handle_last_active_updated(message)
     end
 
@@ -259,17 +259,19 @@ module Coaches
     end
 
     on_message Events::SeekerUpdated::V1 do |message|
-      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
+      handle_last_active_updated(message)
 
-      csc.update!(
-        last_active_on: message.occurred_at
-      )
     end
 
     private
 
     def handle_last_active_updated(message)
-      csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
+      case message.aggregate
+      when Aggregates::User, Aggregates::Search
+        csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
+      when Aggregates::Seeker
+        csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
+      end
 
       csc.update!(
         last_active_on: message.occurred_at

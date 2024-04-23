@@ -86,6 +86,7 @@ module Messages
 
     module Seekers
       EVENTS = [
+        EDUCATION_EXPERIENCE_ADDED = 'education_experience_added',
         EDUCATION_EXPERIENCE_CREATED = 'education_experience_created',
         EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted',
         EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated',

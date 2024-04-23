@@ -5,21 +5,20 @@ RSpec.describe Klayvio::EducationExperienceEntered do
     let(:message) do
       build(
         :message,
-        :education_experience_created,
-        aggregate_id: user.id,
+        schema: Events::EducationExperienceAdded::V1,
+        aggregate_id: seeker.id,
         data: {
           id: SecureRandom.uuid,
           organization_name: "A organization",
           title: "A title",
           activities: nil,
           graduation_date: Time.zone.now.to_s,
-          gpa: "1.89",
-          profile_id: SecureRandom.uuid,
-          seeker_id: SecureRandom.uuid
+          gpa: "1.89"
         }
       )
     end
     let(:user) { create(:user, email:) }
+    let(:seeker) { create(:seeker, user:) }
     let(:email) { "tom@blocktrainapp.com" }
     let(:occurred_at) { Date.new(2020, 1, 1) }
 

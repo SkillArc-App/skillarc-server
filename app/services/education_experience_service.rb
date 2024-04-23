@@ -17,34 +17,31 @@ class EducationExperienceService
     )
 
     message_service.create!(
-      schema: Events::EducationExperienceCreated::V1,
-      user_id: seeker.user.id,
+      schema: Events::EducationExperienceAdded::V1,
+      seeker_id: seeker.id,
       data: {
         id: ee.id,
         organization_name:,
         title:,
         graduation_date:,
         gpa:,
-        activities:,
-        seeker_id: seeker.id
-      },
-      occurred_at: Time.zone.now
+        activities:
+      }
     )
   end
 
-  def update(id:, **params)
+  def update(id:, **)
     education_experience = EducationExperience.find(id)
 
-    education_experience.update!(**params)
+    education_experience.update!(**)
 
     message_service.create!(
-      schema: Events::EducationExperienceUpdated::V1,
-      user_id: seeker.user.id,
+      schema: Events::EducationExperienceAdded::V1,
+      seeker_id: seeker.id,
       data: {
-        seeker_id: seeker.id,
-        **params.merge(id:)
-      },
-      occurred_at: Time.zone.now
+        **,
+        id:
+      }
     )
   end
 

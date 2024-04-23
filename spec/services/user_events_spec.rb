@@ -5,14 +5,15 @@ RSpec.describe UserEvents do
     subject { described_class.new(user).all }
 
     let(:user) { create(:user) }
+    let(:seeker) { create(:seeker, user:) }
 
     let!(:event) { create(:event, :user_created, occurred_at:, aggregate_id: user.id) }
     let!(:education_experience_created_event) do
       create(
         :event,
-        :education_experience_created,
+        :education_experience_added,
         occurred_at:,
-        aggregate_id: user.id,
+        aggregate_id: seeker.id,
         data: {
           organization_name: "Test University",
           id: SecureRandom.uuid,
@@ -20,8 +21,7 @@ RSpec.describe UserEvents do
           graduation_date: Time.zone.now.to_s,
           activities: nil,
           gpa: "1.8",
-          profile_id: SecureRandom.uuid,
-          seeker_id: SecureRandom.uuid
+          seeker_id: seeker.id
         }
       )
     end

@@ -20,18 +20,16 @@ RSpec.describe EducationExperienceService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::EducationExperienceCreated::V1,
-        user_id: seeker.user.id,
+        schema: Events::EducationExperienceAdded::V1,
+        seeker_id: seeker.id,
         data: {
           id: be_present,
           organization_name: "University of Cincinnati",
           title: "Student",
           graduation_date: Date.new(2019, 5, 1).to_s,
           gpa: "3.5",
-          activities: "Activities",
-          seeker_id: seeker.id
-        },
-        occurred_at: be_a(Time)
+          activities: "Activities"
+        }
       )
 
       subject
@@ -72,18 +70,16 @@ RSpec.describe EducationExperienceService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::EducationExperienceUpdated::V1,
-        user_id: seeker.user.id,
+        schema: Events::EducationExperienceAdded::V1,
+        seeker_id: seeker.id,
         data: {
           id: education_experience.id,
           organization_name: "University of Cincinnati",
           title: "Student",
           graduation_date: "2019-05-01",
           gpa: "3.5",
-          activities: "Activities",
-          seeker_id: seeker.id
-        },
-        occurred_at: be_a(Time)
+          activities: "Activities"
+        }
       )
 
       subject

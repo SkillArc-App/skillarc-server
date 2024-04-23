@@ -4,7 +4,10 @@ class UserEvents
   end
 
   def all
-    events = Event.where(aggregate_id: user.id).order(occurred_at: :desc).map(&:message)
+    user_events = Event.where(aggregate_id: user.id).order(occurred_at: :desc).map(&:message)
+    seeker_events = Event.where(aggregate_id: user.seeker.id).order(occurred_at: :desc).map(&:message)
+
+    events = user_events + seeker_events
 
     applicant_events = Event.where(event_type: Messages::Types::APPLICANT_STATUS_UPDATED)
                             .where("data->>'user_id' = ?", user.id)
@@ -27,13 +30,13 @@ class UserEvents
   def event_message(message)
     case message.schema
     when Events::ApplicantStatusUpdated::V6
-      "Applicant Status Updated: #{message.data[:employment_title]} - #{message.data[:status]}"
-    when Events::EducationExperienceCreated::V1
-      "Education Experience Created: #{message.data[:organization_name]}"
+      "Applicant Status Updated: #{message.data.employment_title} - #{message.data.status}"
+    when Events::EducationExperienceAdded::V1
+      "Education Experience Created: #{message.data.organization_name}"
     when Events::ExperienceCreated::V1
-      "Work Experience Created: #{message.data[:organization_name]}"
+      "Work Experience Created: #{message.data.organization_name}"
     when Events::JobSaved::V1
-      "Job Saved: #{message.data[:employment_title]}"
+      "Job Saved: #{message.data.employment_title}"
     when Events::OnboardingCompleted::V1
       "Onboarding Complete"
     when Events::UserCreated::V1

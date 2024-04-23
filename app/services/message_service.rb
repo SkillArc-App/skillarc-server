@@ -75,6 +75,10 @@ class MessageService
     Event.where(version: schema.version, event_type: schema.message_type).map(&:message)
   end
 
+  def self.aggregate_events(aggregate)
+    Event.where(aggregate_id: aggregate.id).order(:occurred_at).map(&:message).select { |m| m.schema.type == Messages::EVENT }
+  end
+
   def self.migrate_event(schema:, &block)
     Event.where(event_type: schema.message_type, version: schema.version).find_each do |e|
       block.call(e.message)

@@ -362,6 +362,53 @@ RSpec.describe MessageService do
     end
   end
 
+  describe ".aggregate_events" do
+    before do
+      Event.from_message!(message1)
+      Event.from_message!(message2)
+      Event.from_message!(message3)
+    end
+
+    let(:message_id) { SecureRandom.uuid }
+    let(:message1) do
+      build(
+        :message,
+        aggregate_id: message_id,
+        schema: Events::MessageSent::V1,
+        data: Messages::Nothing,
+        occurred_at: Time.zone.local(2021, 1, 1)
+      )
+    end
+    let(:message2) do
+      build(
+        :message,
+        aggregate_id: message_id,
+        schema: Events::SlackMessageSent::V1,
+        data: {
+          channel: "#cool",
+          text: "Sup"
+        },
+        occurred_at: Time.zone.local(2020, 1, 1)
+      )
+    end
+    let(:message3) do
+      build(
+        :message,
+        aggregate_id: message_id,
+        schema: Commands::SendSlackMessage::V1,
+        data: {
+          channel: "#cool",
+          text: "Sup"
+        },
+        occurred_at: Time.zone.local(2020, 1, 1)
+      )
+    end
+
+    it "returns all the events for the aggregate in order" do
+      expect(described_class.aggregate_events(Aggregates::Message.new(message_id:))).to eq([message2, message1])
+    end
+  end
+
   describe ".get_schema" do
     subject do
       described_class.get_schema(message_type:, version:)

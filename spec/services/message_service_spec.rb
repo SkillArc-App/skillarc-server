@@ -423,8 +423,6 @@ RSpec.describe MessageService do
         expect { described_class.aggregate_events("cat") }.to raise_error(described_class::NotAggregateError)
       end
     end
-
-
   end
 
   describe ".get_schema" do

@@ -161,14 +161,12 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         stp.save!
 
         message_service.create!(
-          user_id: user.id,
-          schema: Events::SeekerTrainingProviderCreated::V1,
+          seeker_id: user.seeker.id,
+          schema: Events::SeekerTrainingProviderCreated::V2,
           data: {
             id: stp.id,
-            user_id: stp.user_id,
             training_provider_id: stp.training_provider_id
-          },
-          occurred_at: stp.created_at
+          }
         )
       end
     end

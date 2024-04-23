@@ -289,14 +289,12 @@ RSpec.describe Onboarding do
         expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
-            user_id: user.id,
-            schema: Events::SeekerTrainingProviderCreated::V1,
+            seeker_id: be_a(String),
+            schema: Events::SeekerTrainingProviderCreated::V2,
             data: {
               id: be_present,
-              user_id: user.id,
               training_provider_id: training_provider.id
-            },
-            occurred_at: be_present
+            }
           ).and_call_original
 
         subject

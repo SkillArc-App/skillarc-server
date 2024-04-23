@@ -19,6 +19,15 @@ module Messages
       ].freeze
     end
 
+    module Attributes
+      EVENTS = [
+        ATTRIBUTE_CREATED = 'attribute_created',
+        ATTRIBUTE_UPDATED = 'attribute_updated',
+        ATTRIBUTE_DELETED = 'attribute_deleted'
+
+      ]
+    end
+
     module Coaches
       EVENTS = [
         BARRIER_ADDED = 'barrier_added',
@@ -164,6 +173,7 @@ module Messages
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted',
       USER_CREATED = 'user_created',
       USER_UPDATED = 'user_updated',
+      *Attributes::EVENTS,
       *Applications::EVENTS,
       *Coaches::EVENTS,
       *Jobs::EVENTS,

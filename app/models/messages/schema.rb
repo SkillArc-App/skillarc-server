@@ -11,6 +11,7 @@ module Messages
     include(ValueSemantics.for_attributes do
       data
       metadata
+      type Either(Messages::COMMAND, Messages::EVENT)
       version Integer
       status Either(*Status::ALL)
       message_type Either(*Messages::Types::ALL)
@@ -28,20 +29,20 @@ module Messages
       MessageService.get_schema(message_type: hash[:message_type], version: hash[:version])
     end
 
-    def self.active(data:, metadata:, message_type:, version:, aggregate:)
-      schema = new(data:, metadata:, message_type:, version:, aggregate:, status: Status::ACTIVE)
+    def self.active(data:, metadata:, message_type:, version:, aggregate:, type:) # rubocop:disable Metrics/ParameterLists
+      schema = new(data:, metadata:, message_type:, version:, aggregate:, type:, status: Status::ACTIVE)
       MessageService.register(schema:)
       schema
     end
 
-    def self.deprecated(data:, metadata:, message_type:, version:, aggregate:)
-      schema = new(data:, metadata:, message_type:, version:, aggregate:, status: Status::DEPRECATED)
+    def self.deprecated(data:, metadata:, message_type:, version:, aggregate:, type:) # rubocop:disable Metrics/ParameterLists
+      schema = new(data:, metadata:, message_type:, version:, aggregate:, type:, status: Status::DEPRECATED)
       MessageService.register(schema:)
       schema
     end
 
-    def self.inactive(data:, metadata:, message_type:, version:, aggregate:)
-      schema = new(data:, metadata:, message_type:, version:, aggregate:, status: Status::INACTIVE)
+    def self.inactive(data:, metadata:, message_type:, version:, aggregate:, type:) # rubocop:disable Metrics/ParameterLists
+      schema = new(data:, metadata:, message_type:, version:, aggregate:, type:, status: Status::INACTIVE)
       MessageService.register(schema:)
       schema
     end
@@ -68,8 +69,8 @@ module Messages
 
     private
 
-    def initialize(data:, metadata:, message_type:, version:, aggregate:, status:) # rubocop:disable Metrics/ParameterLists
-      super(data:, metadata:, message_type:, version:, aggregate:, status:)
+    def initialize(data:, metadata:, message_type:, version:, aggregate:, status:, type:) # rubocop:disable Metrics/ParameterLists
+      super(data:, metadata:, message_type:, version:, aggregate:, status:, type:)
     end
   end
 end

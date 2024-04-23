@@ -23,6 +23,7 @@ module Events
     end
 
     V1 = Messages::Schema.active(
+      type: Messages::EVENT,
       data: Data::V1,
       metadata: MetaData::V1,
       aggregate: Aggregates::Task,

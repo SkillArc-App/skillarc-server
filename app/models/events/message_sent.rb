@@ -1,6 +1,7 @@
 module Events
   module MessageSent
     V1 = Messages::Schema.active(
+      type: Messages::EVENT,
       data: Messages::Nothing,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Message,

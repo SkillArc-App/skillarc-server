@@ -12,6 +12,7 @@ module Commands
     end
 
     V1 = Messages::Schema.inactive(
+      type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
@@ -19,6 +20,7 @@ module Commands
       version: 1
     )
     V2 = Messages::Schema.inactive(
+      type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Phone,
@@ -26,6 +28,7 @@ module Commands
       version: 2
     )
     V3 = Messages::Schema.active(
+      type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Message,

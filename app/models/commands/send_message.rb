@@ -25,6 +25,7 @@ module Commands
     end
 
     V1 = Messages::Schema.active(
+      type: Messages::COMMAND,
       data: Data::V1,
       metadata: MetaData::V1,
       aggregate: Aggregates::Message,

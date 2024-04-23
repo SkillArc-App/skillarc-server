@@ -23,6 +23,7 @@ RSpec.describe MessageService do
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
     let(:version) { 4 }
+    let(:type) { Messages::EVENT }
     let(:id) { SecureRandom.uuid }
 
     let!(:schema) do
@@ -31,7 +32,8 @@ RSpec.describe MessageService do
         metadata: Events::ApplicantStatusUpdated::MetaData::V1,
         aggregate: Aggregates::User,
         message_type:,
-        version:
+        version:,
+        type:
       )
     end
 
@@ -92,13 +94,14 @@ RSpec.describe MessageService do
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
     let(:version) { 4 }
+    let(:type) { Messages::EVENT }
     let(:id) { SecureRandom.uuid }
 
     context "when the event_schema is not a Messages::Schema" do
       let(:schema) { 10 }
 
-      it "raises a NotEventSchemaError" do
-        expect { subject }.to raise_error(described_class::NotEventSchemaError)
+      it "raises a NotSchemaError" do
+        expect { subject }.to raise_error(described_class::NotSchemaError)
       end
     end
 
@@ -109,7 +112,8 @@ RSpec.describe MessageService do
           metadata: Events::ApplicantStatusUpdated::MetaData::V1,
           aggregate: Aggregates::User,
           message_type:,
-          version:
+          version:,
+          type:
         )
       end
 
@@ -227,7 +231,8 @@ RSpec.describe MessageService do
         metadata: Messages::Nothing,
         aggregate: Aggregates::User,
         message_type:,
-        version:
+        version:,
+        type:
       )
     end
     let(:user_id) { SecureRandom.uuid }
@@ -236,6 +241,7 @@ RSpec.describe MessageService do
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Messages::Nothing }
     let(:version) { 4 }
+    let(:type) { Messages::EVENT }
     let(:id) { SecureRandom.uuid }
 
     before do
@@ -292,6 +298,7 @@ RSpec.describe MessageService do
             metadata: Messages::Nothing,
             aggregate: Aggregates::User,
             message_type: Messages::Types::USER_CREATED,
+            type: Messages::EVENT,
             version: 2
           )
         end.to raise_error(described_class::MessageTypeHasMultipleActiveSchemas)
@@ -308,7 +315,8 @@ RSpec.describe MessageService do
         metadata: Array,
         aggregate: Aggregates::User,
         message_type: Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
-        version: 1
+        version: 1,
+        type: Messages::EVENT
       )
     end
 
@@ -349,8 +357,71 @@ RSpec.describe MessageService do
       )
     end
 
-    it "returns all the messages persisted for a schema" do
-      expect(described_class.all_messages(Events::MetCareerCoachUpdated::V1)).to contain_exactly(message1, message2)
+    context "when schema is a schema" do
+      it "returns all the messages persisted for a schema" do
+        expect(described_class.all_messages(Events::MetCareerCoachUpdated::V1)).to contain_exactly(message1, message2)
+      end
+    end
+
+    context "when schema is not a schema" do
+      it "raises a NotSchemaError" do
+        expect { expect(described_class.all_messages(10)) }.to raise_error(described_class::NotSchemaError)
+      end
+    end
+  end
+
+  describe ".aggregate_events" do
+    before do
+      Event.from_message!(message1)
+      Event.from_message!(message2)
+      Event.from_message!(message3)
+    end
+
+    let(:message_id) { SecureRandom.uuid }
+    let(:message1) do
+      build(
+        :message,
+        aggregate_id: message_id,
+        schema: Events::MessageSent::V1,
+        data: Messages::Nothing,
+        occurred_at: Time.zone.local(2021, 1, 1)
+      )
+    end
+    let(:message2) do
+      build(
+        :message,
+        aggregate_id: message_id,
+        schema: Events::SlackMessageSent::V1,
+        data: {
+          channel: "#cool",
+          text: "Sup"
+        },
+        occurred_at: Time.zone.local(2020, 1, 1)
+      )
+    end
+    let(:message3) do
+      build(
+        :message,
+        aggregate_id: message_id,
+        schema: Commands::SendSlackMessage::V1,
+        data: {
+          channel: "#cool",
+          text: "Sup"
+        },
+        occurred_at: Time.zone.local(2020, 1, 1)
+      )
+    end
+
+    context "when aggregate is a aggregate" do
+      it "returns all the events for the aggregate in order" do
+        expect(described_class.aggregate_events(Aggregates::Message.new(message_id:))).to eq([message2, message1])
+      end
+    end
+
+    context "when aggregate is not a aggregate" do
+      it "raises a NotSchemaError" do
+        expect { described_class.aggregate_events("cat") }.to raise_error(described_class::NotAggregateError)
+      end
     end
   end
 
@@ -375,6 +446,7 @@ RSpec.describe MessageService do
           metadata: Array,
           aggregate: Aggregates::User,
           message_type:,
+          type: Messages::EVENT,
           version:
         )
       end

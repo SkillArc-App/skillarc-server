@@ -260,7 +260,6 @@ module Coaches
 
     on_message Events::SeekerUpdated::V1 do |message|
       handle_last_active_updated(message)
-
     end
 
     private

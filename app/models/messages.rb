@@ -24,8 +24,7 @@ module Messages
         ATTRIBUTE_CREATED = 'attribute_created',
         ATTRIBUTE_UPDATED = 'attribute_updated',
         ATTRIBUTE_DELETED = 'attribute_deleted'
-
-      ]
+      ].freeze
     end
 
     module Coaches

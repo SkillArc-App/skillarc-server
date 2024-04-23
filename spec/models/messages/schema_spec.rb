@@ -8,7 +8,8 @@ RSpec.describe Messages::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:
+        aggregate:,
+        type:
       )
     end
 
@@ -17,6 +18,7 @@ RSpec.describe Messages::Schema do
     let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
+    let(:type) { Messages::EVENT }
 
     it "returns the schema and registers it" do
       expect(MessageService)
@@ -41,7 +43,8 @@ RSpec.describe Messages::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:
+        aggregate:,
+        type:
       )
     end
 
@@ -50,6 +53,7 @@ RSpec.describe Messages::Schema do
     let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
+    let(:type) { Messages::EVENT }
 
     it "returns the schema and registers it" do
       expect(MessageService)
@@ -74,7 +78,8 @@ RSpec.describe Messages::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:
+        aggregate:,
+        type:
       )
     end
 
@@ -83,6 +88,7 @@ RSpec.describe Messages::Schema do
     let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
+    let(:type) { Messages::EVENT }
 
     it "returns the schema and registers it" do
       expect(MessageService)
@@ -107,7 +113,8 @@ RSpec.describe Messages::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:
+        aggregate:,
+        type:
       )
     end
 
@@ -116,6 +123,7 @@ RSpec.describe Messages::Schema do
     let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
+    let(:type) { Messages::EVENT }
 
     it "passes itself to MessageService.all_messages" do
       expect(MessageService)
@@ -133,7 +141,8 @@ RSpec.describe Messages::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:
+        aggregate:,
+        type:
       )
     end
 
@@ -142,6 +151,7 @@ RSpec.describe Messages::Schema do
     let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
+    let(:type) { Messages::EVENT }
 
     it "just returns the message_type and version" do
       expect(instance.serialize).to eq({ version:, message_type: })
@@ -155,12 +165,14 @@ RSpec.describe Messages::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:
+        aggregate:,
+        type:
       )
     end
 
     let(:data) { String }
     let(:metadata) { Hash }
+    let(:type) { Messages::EVENT }
     let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }

@@ -3,6 +3,11 @@
 module Messages
   UNDEFINED = Messages::Undefined.new
 
+  ALL = [
+    COMMAND = "command",
+    EVENT = "event"
+  ].freeze
+
   module Types
     module Applications
       COMMANDS = [

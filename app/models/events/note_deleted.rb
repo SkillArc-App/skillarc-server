@@ -22,6 +22,7 @@ module Events
     end
 
     V1 = Messages::Schema.inactive(
+      type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
@@ -29,6 +30,7 @@ module Events
       version: 1
     )
     V2 = Messages::Schema.inactive(
+      type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,
@@ -36,6 +38,7 @@ module Events
       version: 2
     )
     V3 = Messages::Schema.active(
+      type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,

@@ -23,6 +23,7 @@ RSpec.describe MessageService do
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
     let(:version) { 4 }
+    let(:type) { Messages::EVENT }
     let(:id) { SecureRandom.uuid }
 
     let!(:schema) do
@@ -31,7 +32,8 @@ RSpec.describe MessageService do
         metadata: Events::ApplicantStatusUpdated::MetaData::V1,
         aggregate: Aggregates::User,
         message_type:,
-        version:
+        version:,
+        type:
       )
     end
 
@@ -92,6 +94,7 @@ RSpec.describe MessageService do
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
     let(:version) { 4 }
+    let(:type) { Messages::EVENT }
     let(:id) { SecureRandom.uuid }
 
     context "when the event_schema is not a Messages::Schema" do
@@ -109,7 +112,8 @@ RSpec.describe MessageService do
           metadata: Events::ApplicantStatusUpdated::MetaData::V1,
           aggregate: Aggregates::User,
           message_type:,
-          version:
+          version:,
+          type:
         )
       end
 
@@ -227,7 +231,8 @@ RSpec.describe MessageService do
         metadata: Messages::Nothing,
         aggregate: Aggregates::User,
         message_type:,
-        version:
+        version:,
+        type:
       )
     end
     let(:user_id) { SecureRandom.uuid }
@@ -236,6 +241,7 @@ RSpec.describe MessageService do
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Messages::Nothing }
     let(:version) { 4 }
+    let(:type) { Messages::EVENT }
     let(:id) { SecureRandom.uuid }
 
     before do
@@ -292,6 +298,7 @@ RSpec.describe MessageService do
             metadata: Messages::Nothing,
             aggregate: Aggregates::User,
             message_type: Messages::Types::USER_CREATED,
+            type: Messages::EVENT,
             version: 2
           )
         end.to raise_error(described_class::MessageTypeHasMultipleActiveSchemas)
@@ -308,7 +315,8 @@ RSpec.describe MessageService do
         metadata: Array,
         aggregate: Aggregates::User,
         message_type: Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
-        version: 1
+        version: 1,
+        type: Messages::EVENT
       )
     end
 
@@ -375,6 +383,7 @@ RSpec.describe MessageService do
           metadata: Array,
           aggregate: Aggregates::User,
           message_type:,
+          type: Messages::EVENT,
           version:
         )
       end

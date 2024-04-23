@@ -1,6 +1,7 @@
 module Events
   module SessionStarted
     V1 = Messages::Schema.active(
+      type: Messages::EVENT,
       data: Messages::Nothing,
       metadata: Messages::Nothing,
       aggregate: Aggregates::User,

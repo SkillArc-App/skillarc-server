@@ -34,6 +34,7 @@ module Events
     end
 
     V1 = Messages::Schema.inactive(
+      type: Messages::EVENT,
       data: Data::V1,
       metadata: MetaData::V1,
       aggregate: Aggregates::User,
@@ -41,6 +42,7 @@ module Events
       version: 1
     )
     V2 = Messages::Schema.active(
+      type: Messages::EVENT,
       data: Data::V1,
       metadata: MetaData::V2,
       aggregate: Aggregates::Search,

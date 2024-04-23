@@ -244,7 +244,7 @@ module Coaches
       handle_last_active_updated(message)
     end
 
-    on_message Events::PersonalExperienceCreated::V1 do |message|
+    on_message Events::PersonalExperienceAdded::V1 do |message|
       handle_last_active_updated(message)
     end
 

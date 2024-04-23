@@ -1,5 +1,5 @@
 module Events
-  module PersonalExperienceCreated
+  module PersonalExperienceAdded
     module Data
       class V1
         extend Messages::Payload
@@ -10,18 +10,16 @@ module Events
           description Either(String, nil), default: nil
           start_date Either(String, nil), default: nil
           end_date Either(String, nil), default: nil
-          profile_id Either(Uuid, nil), default: nil
-          seeker_id Uuid
         end
       end
     end
 
-    V1 = Messages::Schema.inactive(
+    V1 = Messages::Schema.active(
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::User,
-      message_type: Messages::Types::Seekers::PERSONAL_EXPERIENCE_CREATED,
+      aggregate: Aggregates::Seeker,
+      message_type: Messages::Types::Seekers::PERSONAL_EXPERIENCE_ADDED,
       version: 1
     )
   end

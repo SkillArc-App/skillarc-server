@@ -29,6 +29,32 @@ module Seekers
       )
     end
 
+    def add_personal_experience(seeker_id:, activity:, description:, start_date:, end_date:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
+      message_service.create!(
+        schema: Events::PersonalExperienceAdded::V1,
+        seeker_id:,
+        trace_id:,
+        data: {
+          id:,
+          activity:,
+          description:,
+          start_date:,
+          end_date:
+        }
+      )
+    end
+
+    def remove_personal_experience(seeker_id:, personal_experience_id:, trace_id:)
+      message_service.create!(
+        schema: Events::PersonalExperienceRemoved::V1,
+        trace_id:,
+        seeker_id:,
+        data: {
+          id: personal_experience_id
+        }
+      )
+    end
+
     def add_experience(seeker_id:, organization_name:, position:, start_date:, end_date:, is_current:, description:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         schema: Events::ExperienceAdded::V1,

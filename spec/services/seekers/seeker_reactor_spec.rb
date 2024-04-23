@@ -79,6 +79,76 @@ RSpec.describe Seekers::SeekerReactor do
     end
   end
 
+  describe "add_personal_experience" do
+    subject do
+      consumer.add_personal_experience(
+        seeker_id:,
+        activity:,
+        description:,
+        start_date:,
+        end_date:,
+        trace_id:,
+        id:
+      )
+    end
+
+    let(:seeker_id) { SecureRandom.uuid }
+    let(:activity) { "Do stuff" }
+    let(:description) { "Best stuff" }
+    let(:start_date) { "bro" }
+    let(:end_date) { "15" }
+    let(:trace_id) { SecureRandom.uuid }
+    let(:id) { SecureRandom.uuid }
+
+    it "emits an experience added event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::PersonalExperienceAdded::V1,
+          trace_id:,
+          seeker_id:,
+          data: {
+            id:,
+            activity:,
+            description:,
+            start_date:,
+            end_date:
+          }
+        )
+
+      subject
+    end
+  end
+
+  describe "remove_personal_experience" do
+    subject do
+      consumer.remove_personal_experience(
+        seeker_id:,
+        personal_experience_id:,
+        trace_id:
+      )
+    end
+
+    let(:seeker_id) { SecureRandom.uuid }
+    let(:personal_experience_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+
+    it "emits an experience added event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::PersonalExperienceRemoved::V1,
+          trace_id:,
+          seeker_id:,
+          data: {
+            id: personal_experience_id
+          }
+        )
+
+      subject
+    end
+  end
+
   describe "add_experience" do
     subject do
       consumer.add_experience(

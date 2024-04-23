@@ -384,17 +384,15 @@ RSpec.describe Onboarding do
         expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
-            user_id: user.id,
-            schema: Events::PersonalExperienceCreated::V1,
+            seeker_id: be_a(String),
+            schema: Events::PersonalExperienceAdded::V1,
             data: {
               id: be_present,
               activity: "Activity",
               start_date: "01/01/2000",
               end_date: "01/01/2001",
-              description: "Learning",
-              seeker_id: be_present # TODO: Come up with a way to check the profile id as well
-            },
-            occurred_at: be_present
+              description: "Learning"
+            }
           ).and_call_original
 
         subject

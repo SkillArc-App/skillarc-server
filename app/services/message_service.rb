@@ -1,6 +1,6 @@
 class MessageService
-  NotEventSchemaError = Class.new(StandardError)
   NotSchemaError = Class.new(StandardError)
+  NotAggregateError = Class.new(StandardError)
   SchemaAlreadyDefinedError = Class.new(StandardError)
   MessageTypeHasMultipleActiveSchemas = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
@@ -14,7 +14,7 @@ class MessageService
   end
 
   def build(schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
-    raise NotEventSchemaError unless schema.is_a?(Messages::Schema)
+    raise NotSchemaError unless schema.is_a?(Messages::Schema)
 
     raise InactiveSchemaError, "Attempted to create message for #{schema}" if schema.inactive?
 
@@ -72,10 +72,14 @@ class MessageService
   end
 
   def self.all_messages(schema)
+    raise NotSchemaError unless schema.is_a?(Messages::Schema)
+
     Event.where(version: schema.version, event_type: schema.message_type).map(&:message)
   end
 
   def self.aggregate_events(aggregate)
+    raise NotAggregateError unless aggregate.is_a?(Messages::Aggregate)
+
     Event.where(aggregate_id: aggregate.id).order(:occurred_at).map(&:message).select { |m| m.schema.type == Messages::EVENT }
   end
 

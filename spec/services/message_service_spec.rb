@@ -100,8 +100,8 @@ RSpec.describe MessageService do
     context "when the event_schema is not a Messages::Schema" do
       let(:schema) { 10 }
 
-      it "raises a NotEventSchemaError" do
-        expect { subject }.to raise_error(described_class::NotEventSchemaError)
+      it "raises a NotSchemaError" do
+        expect { subject }.to raise_error(described_class::NotSchemaError)
       end
     end
 
@@ -357,8 +357,16 @@ RSpec.describe MessageService do
       )
     end
 
-    it "returns all the messages persisted for a schema" do
-      expect(described_class.all_messages(Events::MetCareerCoachUpdated::V1)).to contain_exactly(message1, message2)
+    context "when schema is a schema" do
+      it "returns all the messages persisted for a schema" do
+        expect(described_class.all_messages(Events::MetCareerCoachUpdated::V1)).to contain_exactly(message1, message2)
+      end
+    end
+
+    context "when schema is not a schema" do
+      it "raises a NotSchemaError" do
+        expect { expect(described_class.all_messages(10)) }.to raise_error(described_class::NotSchemaError)
+      end
     end
   end
 
@@ -404,9 +412,19 @@ RSpec.describe MessageService do
       )
     end
 
-    it "returns all the events for the aggregate in order" do
-      expect(described_class.aggregate_events(Aggregates::Message.new(message_id:))).to eq([message2, message1])
+    context "when aggregate is a aggregate" do
+      it "returns all the events for the aggregate in order" do
+        expect(described_class.aggregate_events(Aggregates::Message.new(message_id:))).to eq([message2, message1])
+      end
     end
+
+    context "when aggregate is not a aggregate" do
+      it "raises a NotSchemaError" do
+        expect { described_class.aggregate_events("cat") }.to raise_error(described_class::NotAggregateError)
+      end
+    end
+
+
   end
 
   describe ".get_schema" do

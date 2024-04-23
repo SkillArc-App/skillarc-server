@@ -32,7 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/job"
+                "$ref": "#/components/schemas/admin_job"
   "/coaches/contexts":
     get:
       summary: Retrieve all contexts
@@ -680,6 +680,138 @@ paths:
                   format: datetime
                 payload:
                   type: object
+  "/profiles/{seeker_id}/education_experiences":
+    post:
+      summary: Create experience
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Create an experience
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                educationExperience:
+                  type: object
+                  properties:
+                    organization_name:
+                      type: string
+                    title:
+                      type: string
+                    graduation_date:
+                      type: string
+                    gpa:
+                      type: string
+                    activities:
+                      type: string
+              required:
+              - educationExperience
+  "/profiles/{seeker_id}/education_experiences/{id}":
+    put:
+      summary: Update experience
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Adds an experience
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                educationExperience:
+                  type: object
+                  properties:
+                    organization_name:
+                      type: string
+                    title:
+                      type: string
+                    graduation_date:
+                      type: string
+                    gpa:
+                      type: string
+                    activities:
+                      type: string
+              required:
+              - educationExperience
+    delete:
+      summary: Remove experience
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Removes a experience
   "/employers/applicants/{id}":
     put:
       summary: Update an applicants status
@@ -920,6 +1052,270 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/one_user"
+  "/profiles/{seeker_id}/other_experiences":
+    post:
+      summary: Create experience
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Create an experience
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                otherExperience:
+                  type: object
+                  properties:
+                    organization_name:
+                      type: string
+                    position:
+                      type: string
+                    startDate:
+                      type: string
+                    endDate:
+                      type: string
+                    isCurrent:
+                      type: boolean
+                    description:
+                      type: string
+              required:
+              - otherExperience
+  "/profiles/{seeker_id}/other_experiences/{id}":
+    put:
+      summary: Update experience
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Adds an experience
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                otherExperience:
+                  type: object
+                  properties:
+                    organization_name:
+                      type: string
+                    position:
+                      type: string
+                    startDate:
+                      type: string
+                    endDate:
+                      type: string
+                    isCurrent:
+                      type: boolean
+                    description:
+                      type: string
+              required:
+              - otherExperience
+    delete:
+      summary: Remove experience
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Removes a experience
+  "/profiles/{seeker_id}/personal_experiences":
+    post:
+      summary: Create experience
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Create an experience
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                personalExperience:
+                  type: object
+                  properties:
+                    activity:
+                      type: string
+                    startDate:
+                      type: string
+                    endDate:
+                      type: string
+                    description:
+                      type: string
+              required:
+              - personalExperience
+  "/profiles/{seeker_id}/personal_experiences/{id}":
+    put:
+      summary: Update experience
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Adds an experience
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                personalExperience:
+                  type: object
+                  properties:
+                    activity:
+                      type: string
+                    startDate:
+                      type: string
+                    endDate:
+                      type: string
+                    description:
+                      type: string
+              required:
+              - personalExperience
+    delete:
+      summary: Remove experience
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Removes a experience
   "/profiles":
     get:
       summary: Retrieve all seekers
@@ -2235,6 +2631,110 @@ components:
           createdAt:
             type: string
             format: date-time
+    admin_job:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        benefitsDescription:
+          type: string
+        responsibilitiesDescription:
+          type: string
+          nullable: true
+        employmentTitle:
+          type: string
+        location:
+          type: string
+        employmentType:
+          type: string
+          enum:
+          - FULLTIME
+          - PARTTIME
+        hideJob:
+          type: boolean
+        schedule:
+          type: string
+          nullable: true
+        workDays:
+          type: string
+          nullable: true
+        requirementsDescription:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        category:
+          type: string
+        employer:
+          "$ref": "#/components/schemas/employer"
+        industry:
+          type: array
+          items:
+            type: string
+        learnedSkills:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              masterSkill:
+                "$ref": "#/components/schemas/master_skill"
+        desiredSkills:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              masterSkill:
+                "$ref": "#/components/schemas/master_skill"
+        desiredCertifications:
+          id:
+            type: string
+            format: uuid
+          masterCertification:
+            "$ref": "#/components/schemas/master_certification"
+        careerPaths:
+          type: array
+          items:
+            "$ref": "#/components/schemas/career_path"
+        jobPhotos:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              photoUrl:
+                type: string
+              jobId:
+                type: string
+        jobTag:
+          type: array
+          items:
+            id:
+              type: string
+              format: uuid
+            tag:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                name:
+                  type: string
+        numberOfApplicants:
+          type: integer
+        testimonials:
+          type: array
+          items:
+            "$ref": "#/components/schemas/testimonial"
     job:
       type: object
       properties:

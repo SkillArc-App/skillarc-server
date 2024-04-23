@@ -12,10 +12,9 @@ class DbStreamListener < StreamListener
   def play
     error = nil
 
+    bookmark = load_bookmark
     bookmark.with_lock do
-      events = unplayed_events
-
-      next if events.empty?
+      events = unplayed_events(bookmark)
 
       last_handled_event = nil
 
@@ -28,7 +27,7 @@ class DbStreamListener < StreamListener
         @last_error = e
         error = e
       ensure
-        update_bookmark(last_handled_event) if last_handled_event
+        update_bookmark(bookmark, last_handled_event) if last_handled_event
 
         message_service.flush
       end
@@ -47,12 +46,12 @@ class DbStreamListener < StreamListener
 
   private
 
-  def bookmark
+  def load_bookmark
     ListenerBookmark.find_or_create_by!(consumer_name: listener_name)
   end
 
-  def unplayed_events
-    Event.where("occurred_at > ?", bookmark_timestamp).order(:occurred_at)
+  def unplayed_events(bookmark)
+    Event.where("occurred_at > ?", bookmark_timestamp(bookmark)).order(:occurred_at)
   end
 
   def initialize(consumer:, listener_name:, message_service: MessageService.new) # rubocop:disable Lint/MissingSuper
@@ -64,16 +63,14 @@ class DbStreamListener < StreamListener
     @last_error = nil
   end
 
-  def bookmark_timestamp
-    b = bookmark
+  def bookmark_timestamp(bookmark)
+    return default_time unless bookmark.id
+    return default_time unless bookmark.event_id
 
-    return default_time unless b.id
-    return default_time unless b.event_id
-
-    Event.find(b.event_id).message.occurred_at
+    Event.find(bookmark.event_id).message.occurred_at
   end
 
-  def update_bookmark(event)
+  def update_bookmark(bookmark, event)
     bookmark.update!(event_id: event.id)
   end
 

@@ -1,0 +1,70 @@
+require 'rails_helper'
+
+RSpec.describe Attributes::AttributesReactor do
+  it_behaves_like "a message consumer"
+
+  let(:message_service) { MessageService.new }
+  let(:consumer) { described_class.new(message_service:) }
+
+  describe ".create" do
+    subject { consumer.create(attribute_id:, name:, set:, default:) }
+
+    let(:name) { "name" }
+    let(:set) { %w[A B] }
+    let(:default) { ["B"] }
+    let(:attribute_id) { SecureRandom.uuid }
+
+    it "creates an event" do
+      expect(message_service).to receive(:create!).with(
+        schema: Events::AttributeCreated::V3,
+        attribute_id:,
+        data: {
+          name:,
+          set:,
+          default:
+        }
+      )
+
+      subject
+    end
+  end
+
+  describe ".update" do
+    subject { consumer.update(attribute_id:, name:, set:, default:) }
+
+    let(:name) { "name" }
+    let(:set) { %w[A B] }
+    let(:default) { ["B"] }
+    let(:attribute_id) { SecureRandom.uuid }
+
+    it "creates an event" do
+      expect(message_service).to receive(:create!).with(
+        schema: Events::AttributeUpdated::V1,
+        attribute_id:,
+        data: {
+          name:,
+          set:,
+          default:
+        }
+      )
+
+      subject
+    end
+  end
+
+  describe ".destroy" do
+    subject { consumer.destroy(attribute_id:) }
+
+    let(:attribute_id) { SecureRandom.uuid }
+
+    it "creates an event" do
+      expect(message_service).to receive(:create!).with(
+        schema: Events::AttributeDeleted::V1,
+        attribute_id:,
+        data: {}
+      )
+
+      subject
+    end
+  end
+end

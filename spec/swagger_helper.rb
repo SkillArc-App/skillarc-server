@@ -736,7 +736,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             ]
           },
-          job: {
+          admin_job: {
             type: :object,
             properties: {
               id: {
@@ -877,6 +877,145 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               },
               numberOfApplicants: {
                 type: :integer
+              },
+              testimonials: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/testimonial'
+                }
+              }
+            }
+          },
+          job: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              benefitsDescription: {
+                type: :string
+              },
+              responsibilitiesDescription: {
+                type: :string,
+                nullable: true
+              },
+              employmentTitle: {
+                type: :string
+              },
+              location: {
+                type: :string
+              },
+              employmentType: {
+                type: :string,
+                enum: Job::EmploymentTypes::ALL
+              },
+              schedule: {
+                type: :string,
+                nullable: true
+              },
+              workDays: {
+                type: :string,
+                nullable: true
+              },
+              requirementsDescription: {
+                type: :string,
+                nullable: true
+              },
+              category: {
+                type: :string
+              },
+              employer: {
+                '$ref' => '#/components/schemas/employer'
+              },
+              learnedSkills: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: {
+                      type: :string,
+                      format: :uuid
+                    },
+                    masterSkill: {
+                      '$ref' => '#/components/schemas/master_skill'
+                    }
+                  }
+                }
+              },
+              desiredSkills: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: {
+                      type: :string,
+                      format: :uuid
+                    },
+                    masterSkill: {
+                      '$ref' => '#/components/schemas/master_skill'
+                    }
+                  }
+                }
+              },
+              desiredCertifications: {
+                id: {
+                  type: :string,
+                  format: :uuid
+                },
+                masterCertification: {
+                  '$ref' => '#/components/schemas/master_certification'
+                }
+              },
+              careerPaths: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/career_path'
+                }
+              },
+              applicationStatus: {
+                type: :string,
+                enum: ApplicantStatus::StatusTypes::ALL,
+                nullable: true
+              },
+              jobPhotos: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: {
+                      type: :string,
+                      format: :uuid
+                    },
+                    photoUrl: {
+                      type: :string
+                    },
+                    jobId: {
+                      type: :string
+                    }
+                  }
+                }
+              },
+              jobTag: {
+                type: :array,
+                items: {
+                  id: {
+                    type: :string,
+                    format: :uuid
+                  },
+                  tag: {
+                    type: :object,
+                    properties: {
+                      id: {
+                        type: :string,
+                        format: :uuid
+                      },
+                      name: {
+                        type: :string
+                      }
+                    }
+                  }
+                }
               },
               testimonials: {
                 type: :array,

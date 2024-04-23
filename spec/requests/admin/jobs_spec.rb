@@ -25,7 +25,7 @@ RSpec.describe "Admin::Jobs", type: :request do
         include_context "admin authenticated openapi"
 
         response '200', 'Retreives a job' do
-          schema '$ref' => '#/components/schemas/job'
+          schema '$ref' => '#/components/schemas/admin_job'
 
           context "when job is fully loaded" do
             before do

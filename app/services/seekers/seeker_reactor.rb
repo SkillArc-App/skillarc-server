@@ -2,6 +2,33 @@ module Seekers
   class SeekerReactor < MessageConsumer
     def reset_for_replay; end
 
+    def add_education_experience(seeker_id:, organization_name:, title:, graduation_date:, gpa:, activities:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
+      message_service.create!(
+        schema: Events::EducationExperienceAdded::V1,
+        seeker_id:,
+        trace_id:,
+        data: {
+          id:,
+          organization_name:,
+          title:,
+          graduation_date:,
+          gpa:,
+          activities:
+        }
+      )
+    end
+
+    def remove_education_experience(seeker_id:, education_experience_id:, trace_id:)
+      message_service.create!(
+        schema: Events::EducationExperienceDeleted::V1,
+        trace_id:,
+        seeker_id:,
+        data: {
+          id: education_experience_id
+        }
+      )
+    end
+
     def add_experience(seeker_id:, organization_name:, position:, start_date:, end_date:, is_current:, description:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         schema: Events::ExperienceAdded::V1,

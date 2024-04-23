@@ -6,6 +6,79 @@ RSpec.describe Seekers::SeekerReactor do
   let(:consumer) { described_class.new(message_service:) }
   let(:message_service) { MessageService.new }
 
+  describe "add_education_experience" do
+    subject do
+      consumer.add_education_experience(
+        seeker_id:,
+        organization_name:,
+        title:,
+        graduation_date:,
+        gpa:,
+        activities:,
+        trace_id:,
+        id:
+      )
+    end
+
+    let(:seeker_id) { SecureRandom.uuid }
+    let(:organization_name) { "Some org" }
+    let(:title) { "Scholar" }
+    let(:graduation_date) { "Some date" }
+    let(:gpa) { "3.9" }
+    let(:activities) { "Picking my nose" }
+    let(:trace_id) { SecureRandom.uuid }
+    let(:id) { SecureRandom.uuid }
+
+    it "emits an experience added event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::EducationExperienceAdded::V1,
+          trace_id:,
+          seeker_id:,
+          data: {
+            id:,
+            activities:,
+            organization_name:,
+            title:,
+            graduation_date:,
+            gpa:
+          }
+        )
+
+      subject
+    end
+  end
+
+  describe "remove_education_experience" do
+    subject do
+      consumer.remove_education_experience(
+        seeker_id:,
+        education_experience_id:,
+        trace_id:
+      )
+    end
+
+    let(:seeker_id) { SecureRandom.uuid }
+    let(:education_experience_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+
+    it "emits an experience added event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::EducationExperienceDeleted::V1,
+          trace_id:,
+          seeker_id:,
+          data: {
+            id: education_experience_id
+          }
+        )
+
+      subject
+    end
+  end
+
   describe "add_experience" do
     subject do
       consumer.add_experience(

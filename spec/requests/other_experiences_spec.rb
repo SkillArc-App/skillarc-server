@@ -21,12 +21,10 @@ RSpec.describe "OtherExperiences", type: :request do
                 type: :string
               },
               startDate: {
-                type: :string,
-                format: :date
+                type: :string
               },
               endDate: {
-                type: :string,
-                format: :date
+                type: :string
               },
               isCurrent: {
                 type: :boolean
@@ -37,7 +35,7 @@ RSpec.describe "OtherExperiences", type: :request do
             }
           }
         },
-        required: %w[level]
+        required: %w[otherExperience]
       }
       security [bearer_auth: []]
 
@@ -119,12 +117,10 @@ RSpec.describe "OtherExperiences", type: :request do
                 type: :string
               },
               startDate: {
-                type: :string,
-                format: :date
+                type: :string
               },
               endDate: {
-                type: :string,
-                format: :date
+                type: :string
               },
               isCurrent: {
                 type: :boolean
@@ -135,7 +131,7 @@ RSpec.describe "OtherExperiences", type: :request do
             }
           }
         },
-        required: %w[level]
+        required: %w[otherExperience]
       }
       security [bearer_auth: []]
 

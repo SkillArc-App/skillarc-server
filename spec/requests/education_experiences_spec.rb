@@ -1,93 +1,229 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "EducationExperiences", type: :request do
-  let(:seeker) { create(:seeker, user:) }
-  let(:user) { create(:user) }
-
-  describe "POST /create" do
-    subject { post profile_education_experiences_path(seeker), params:, headers: }
-
-    let(:params) do
-      {
-        education_experience: {
-          organization_name: "Linden High School",
-          title: "Student",
-          graduation_date: "2014-01-01",
-          gpa: "3.5",
-          activities: "Football, Basketball"
-        }
+  path '/profiles/{seeker_id}/education_experiences' do
+    post "Create experience" do
+      tags "Seekers"
+      security [bearer_auth: []]
+      consumes 'application/json'
+      parameter name: :seeker_id, in: :path, type: :string
+      parameter name: :experience_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          educationExperience: {
+            type: :object,
+            properties: {
+              organization_name: {
+                type: :string
+              },
+              title: {
+                type: :string
+              },
+              graduation_date: {
+                type: :string
+              },
+              gpa: {
+                type: :string
+              },
+              activities: {
+                type: :string
+              }
+            }
+          }
+        },
+        required: %w[educationExperience]
       }
-    end
+      security [bearer_auth: []]
 
-    it_behaves_like "a seeker secured endpoint"
+      let(:experience_params) do
+        {
+          educationExperience: {
+            organizationName: organization_name,
+            title:,
+            graduationDate: graduation_date,
+            gpa:,
+            activities:
+          }
+        }
+      end
 
-    context "authenticated" do
-      include_context "profile owner"
+      let(:seeker_id) { SecureRandom.uuid }
+      let(:organization_name) { "Some org" }
+      let(:title) { "great title" }
+      let(:graduation_date) { "Last week" }
+      let(:gpa) { "Dude" }
+      let(:activities) { "!!!" }
 
-      it "calls EducationExperienceService.create" do
-        expect_any_instance_of(EducationExperienceService)
-          .to receive(:create)
-          .with(
-            organization_name: "Linden High School",
-            title: "Student",
-            graduation_date: "2014-01-01",
-            gpa: "3.5",
-            activities: "Football, Basketball"
-          ).and_call_original
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-        subject
+      it_behaves_like "seeker spec unauthenticated openapi"
+
+      context "when authenticated" do
+        include_context "seeker authenticated openapi"
+
+        let(:seeker_id) { seeker.id }
+
+        response '201', 'Create an experience' do
+          before do
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                schema: Events::EducationExperienceAdded::V1,
+                seeker_id: seeker.id,
+                trace_id: be_a(String),
+                data: {
+                  id: be_a(String),
+                  organization_name:,
+                  title:,
+                  gpa:,
+                  activities:,
+                  graduation_date:
+                }
+              )
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end
 
-  describe "PUT /update" do
-    subject { put profile_education_experience_path(seeker, education_experience), params:, headers: }
-
-    let(:education_experience) { create(:education_experience, seeker:) }
-    let(:params) do
-      {
-        education_experience: {
-          organization_name: "Linden High School 2.0"
-        }
+  path '/profiles/{seeker_id}/education_experiences/{id}' do
+    put "Update experience" do
+      tags "Seekers"
+      security [bearer_auth: []]
+      consumes 'application/json'
+      parameter name: :seeker_id, in: :path, type: :string
+      parameter name: :id, in: :path, type: :string
+      parameter name: :experience_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          educationExperience: {
+            type: :object,
+            properties: {
+              organization_name: {
+                type: :string
+              },
+              title: {
+                type: :string
+              },
+              graduation_date: {
+                type: :string
+              },
+              gpa: {
+                type: :string
+              },
+              activities: {
+                type: :string
+              }
+            }
+          }
+        },
+        required: %w[educationExperience]
       }
-    end
+      security [bearer_auth: []]
 
-    it_behaves_like "a seeker secured endpoint"
+      let(:experience_params) do
+        {
+          educationExperience: {
+            organizationName: organization_name,
+            title:,
+            graduationDate: graduation_date,
+            gpa:,
+            activities:
+          }
+        }
+      end
 
-    context "authenticated" do
-      include_context "profile owner"
+      let(:id) { SecureRandom.uuid }
+      let(:seeker_id) { SecureRandom.uuid }
 
-      it "calls EducationExperienceService.update" do
-        expect_any_instance_of(EducationExperienceService)
-          .to receive(:update)
-          .with(
-            id: education_experience.id,
-            organization_name: "Linden High School 2.0"
-          ).and_call_original
+      let(:seeker_id) { SecureRandom.uuid }
+      let(:organization_name) { "Some org" }
+      let(:title) { "great title" }
+      let(:graduation_date) { "Last week" }
+      let(:gpa) { "Dude" }
+      let(:activities) { "!!!" }
 
-        subject
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      it_behaves_like "seeker spec unauthenticated openapi"
+
+      context "when authenticated" do
+        include_context "seeker authenticated openapi"
+
+        let(:education_experience) { create(:education_experience, seeker:) }
+        let(:id) { education_experience.id }
+        let(:seeker_id) { seeker.id }
+
+        response '202', 'Adds an experience' do
+          before do
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                schema: Events::EducationExperienceAdded::V1,
+                seeker_id: seeker.id,
+                trace_id: be_a(String),
+                data: {
+                  id:,
+                  organization_name:,
+                  title:,
+                  gpa:,
+                  activities:,
+                  graduation_date:
+                }
+              )
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
-  end
 
-  describe "DELETE /destroy" do
-    subject { delete profile_education_experience_path(seeker, education_experience), headers: }
+    delete "Remove experience" do
+      tags "Seekers"
+      security [bearer_auth: []]
+      parameter name: :seeker_id, in: :path, type: :string
+      parameter name: :id, in: :path, type: :string
+      security [bearer_auth: []]
 
-    let!(:education_experience) { create(:education_experience, seeker:) }
+      let(:id) { SecureRandom.uuid }
+      let(:seeker_id) { SecureRandom.uuid }
 
-    it_behaves_like "a seeker secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "profile owner"
+      it_behaves_like "seeker spec unauthenticated openapi"
 
-      it "calls EducationExperienceService.destroy" do
-        expect_any_instance_of(EducationExperienceService)
-          .to receive(:destroy)
-          .with(
-            id: education_experience.id
-          ).and_call_original
+      context "when authenticated" do
+        include_context "seeker authenticated openapi"
 
-        subject
+        let(:education_experience) { create(:education_experience, seeker:) }
+        let(:id) { education_experience.id }
+        let(:seeker_id) { seeker.id }
+
+        response '202', 'Removes a experience' do
+          before do
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                schema: Events::EducationExperienceDeleted::V1,
+                seeker_id: seeker.id,
+                trace_id: be_a(String),
+                data: {
+                  id:
+                }
+              )
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end

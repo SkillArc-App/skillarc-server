@@ -100,8 +100,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         other_experience.save!
 
         message_service.create!(
-          user_id: user.id,
-          schema: Events::ExperienceCreated::V1,
+          seeker_id: other_experience.seeker_id,
+          schema: Events::ExperienceAdded::V1,
           data: {
             id: other_experience.id,
             organization_name: other_experience.organization_name,
@@ -109,10 +109,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             start_date: other_experience.start_date,
             end_date: other_experience.end_date,
             description: other_experience.description,
-            is_current: other_experience.is_current,
-            seeker_id: other_experience.seeker_id
-          },
-          occurred_at: other_experience.created_at
+            is_current: other_experience.is_current
+          }
         )
       end
     end

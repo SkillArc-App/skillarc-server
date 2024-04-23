@@ -1,72 +1,244 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "OtherExperiences", type: :request do
-  let(:seeker) { create(:seeker, user:) }
-  let(:user) { create(:user) }
-
-  describe "POST /create" do
-    subject { post profile_other_experiences_path(seeker), params:, headers: }
-
-    let(:params) do
-      {
-        other_experience: {
-          organization_name: "Dunder Mifflin",
-          position: "Assistant to the Regional Manager",
-          start_date: "2014-01-01",
-          end_date: "2015-01-01",
-          is_current: false,
-          description: "I sold paper"
-        }
+  path '/profiles/{seeker_id}/other_experiences' do
+    post "Create experience" do
+      tags "Seekers"
+      security [bearer_auth: []]
+      consumes 'application/json'
+      parameter name: :seeker_id, in: :path, type: :string
+      parameter name: :experience_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          otherExperience: {
+            type: :object,
+            properties: {
+              organization_name: {
+                type: :string
+              },
+              position: {
+                type: :string
+              },
+              startDate: {
+                type: :string,
+                format: :date
+              },
+              endDate: {
+                type: :string,
+                format: :date
+              },
+              isCurrent: {
+                type: :boolean
+              },
+              description: {
+                type: :string
+              }
+            }
+          }
+        },
+        required: %w[level]
       }
-    end
+      security [bearer_auth: []]
 
-    it_behaves_like "a seeker secured endpoint"
+      let(:experience_params) do
+        {
+          otherExperience: {
+            organizationName: organization_name,
+            position:,
+            startDate: start_date,
+            endDate: end_date,
+            isCurrent: is_current,
+            description:
+          }
+        }
+      end
 
-    context "authenticated" do
-      include_context "profile owner"
+      let(:seeker_id) { SecureRandom.uuid }
+      let(:organization_name) { "Some org" }
+      let(:position) { "great position" }
+      let(:start_date) { "2020-10-15" }
+      let(:end_date) { "2021-11-07" }
+      let(:is_current) { false }
+      let(:description) { "Some job" }
 
-      it "creates an other experience" do
-        expect { subject }.to change(OtherExperience, :count).by(1)
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      it_behaves_like "seeker spec unauthenticated openapi"
+
+      context "when authenticated" do
+        include_context "seeker authenticated openapi"
+
+        let(:seeker_id) { seeker.id }
+
+        response '201', 'Create an experience' do
+          before do
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                schema: Events::ExperienceAdded::V1,
+                seeker_id: seeker.id,
+                trace_id: be_a(String),
+                data: {
+                  id: be_a(String),
+                  organization_name:,
+                  position:,
+                  start_date:,
+                  end_date:,
+                  description:,
+                  is_current:
+                }
+              )
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end
 
-  describe "UPDATE /update" do
-    subject { put profile_other_experience_path(seeker, other_experience), params:, headers: }
-
-    let(:other_experience) { create(:other_experience, seeker:) }
-
-    let(:params) do
-      {
-        other_experience: {
-          organization_name: "Dunder Mifflin 2.0"
-        }
+  path '/profiles/{seeker_id}/other_experiences/{id}' do
+    put "Update experience" do
+      tags "Seekers"
+      security [bearer_auth: []]
+      consumes 'application/json'
+      parameter name: :seeker_id, in: :path, type: :string
+      parameter name: :id, in: :path, type: :string
+      parameter name: :experience_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          otherExperience: {
+            type: :object,
+            properties: {
+              organization_name: {
+                type: :string
+              },
+              position: {
+                type: :string
+              },
+              startDate: {
+                type: :string,
+                format: :date
+              },
+              endDate: {
+                type: :string,
+                format: :date
+              },
+              isCurrent: {
+                type: :boolean
+              },
+              description: {
+                type: :string
+              }
+            }
+          }
+        },
+        required: %w[level]
       }
-    end
+      security [bearer_auth: []]
 
-    it_behaves_like "a seeker secured endpoint"
+      let(:experience_params) do
+        {
+          otherExperience: {
+            organizationName: organization_name,
+            position:,
+            startDate: start_date,
+            endDate: end_date,
+            isCurrent: is_current,
+            description:
+          }
+        }
+      end
 
-    context "authenticated" do
-      include_context "profile owner"
+      let(:id) { SecureRandom.uuid }
+      let(:seeker_id) { SecureRandom.uuid }
 
-      it "updates the other experience" do
-        expect { subject }.to change { other_experience.reload.organization_name }.to("Dunder Mifflin 2.0")
+      let(:organization_name) { "Some org" }
+      let(:position) { "great position" }
+      let(:start_date) { "2020-10-15" }
+      let(:end_date) { "2021-11-07" }
+      let(:is_current) { false }
+      let(:description) { "Some job" }
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      it_behaves_like "seeker spec unauthenticated openapi"
+
+      context "when authenticated" do
+        include_context "seeker authenticated openapi"
+
+        let(:other_experience) { create(:other_experience, seeker:) }
+        let(:id) { other_experience.id }
+        let(:seeker_id) { seeker.id }
+
+        response '202', 'Adds an experience' do
+          before do
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                schema: Events::ExperienceAdded::V1,
+                seeker_id: seeker.id,
+                trace_id: be_a(String),
+                data: {
+                  id:,
+                  organization_name:,
+                  position:,
+                  start_date:,
+                  end_date:,
+                  description:,
+                  is_current:
+                }
+              )
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
-  end
 
-  describe "DELETE /destroy" do
-    subject { delete profile_other_experience_path(seeker, other_experience), headers: }
+    delete "Remove experience" do
+      tags "Seekers"
+      security [bearer_auth: []]
+      parameter name: :seeker_id, in: :path, type: :string
+      parameter name: :id, in: :path, type: :string
+      security [bearer_auth: []]
 
-    let!(:other_experience) { create(:other_experience, seeker:) }
+      let(:id) { SecureRandom.uuid }
+      let(:seeker_id) { SecureRandom.uuid }
 
-    it_behaves_like "a seeker secured endpoint"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    context "authenticated" do
-      include_context "profile owner"
+      it_behaves_like "seeker spec unauthenticated openapi"
 
-      it "deletes the other experience" do
-        expect { subject }.to change(OtherExperience, :count).by(-1)
+      context "when authenticated" do
+        include_context "seeker authenticated openapi"
+
+        let(:other_experience) { create(:other_experience, seeker:) }
+        let(:id) { other_experience.id }
+        let(:seeker_id) { seeker.id }
+
+        response '202', 'Removes a experience' do
+          before do
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                schema: Events::ExperienceRemoved::V1,
+                seeker_id: seeker.id,
+                trace_id: be_a(String),
+                data: {
+                  id:
+                }
+              )
+              .and_call_original
+          end
+
+          run_test!
+        end
       end
     end
   end

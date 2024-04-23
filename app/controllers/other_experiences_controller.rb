@@ -1,6 +1,7 @@
 class OtherExperiencesController < ApplicationController
   include Secured
   include SeekerAuth
+  include MessageEmitter
 
   before_action :authorize
   before_action :set_seeker
@@ -20,7 +21,21 @@ class OtherExperiencesController < ApplicationController
       seeker:
     )
 
-    render json: other_experience
+    with_message_service do
+      Seekers::SeekerReactor.new(message_service:).add_experience(
+        id: other_experience.id,
+        trace_id: request.request_id,
+        organization_name: other_experience.organization_name,
+        position: other_experience.position,
+        start_date: other_experience.start_date,
+        end_date: other_experience.end_date,
+        is_current: other_experience.is_current,
+        description: other_experience.description,
+        seeker_id: seeker.id
+      )
+    end
+
+    head :created
   end
 
   def update
@@ -35,7 +50,21 @@ class OtherExperiencesController < ApplicationController
       :description
     ))
 
-    render json: other_experience
+    with_message_service do
+      Seekers::SeekerReactor.new(message_service:).add_experience(
+        id: params[:id],
+        trace_id: request.request_id,
+        organization_name: other_experience.organization_name,
+        position: other_experience.position,
+        start_date: other_experience.start_date,
+        end_date: other_experience.end_date,
+        is_current: other_experience.is_current,
+        description: other_experience.description,
+        seeker_id: seeker.id
+      )
+    end
+
+    head :accepted
   end
 
   def destroy
@@ -43,7 +72,15 @@ class OtherExperiencesController < ApplicationController
 
     other_experience.destroy!
 
-    render json: other_experience
+    with_message_service do
+      Seekers::SeekerReactor.new(message_service:).remove_experience(
+        trace_id: request.request_id,
+        experience_id: params[:id],
+        seeker_id: seeker.id
+      )
+    end
+
+    head :accepted
   end
 
   private

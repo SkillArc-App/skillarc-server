@@ -91,6 +91,8 @@ module Messages
         EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted',
         EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated',
         ELEVATOR_PITCH_CREATED = 'elevator_pitch_created',
+        EXPERIENCE_ADDED = 'experience_added',
+        EXPERIENCE_REMOVED = 'experience_removed',
         EXPERIENCE_CREATED = 'experience_created',
         JOB_SAVED = 'job_saved',
         JOB_SEARCH = 'job_search',

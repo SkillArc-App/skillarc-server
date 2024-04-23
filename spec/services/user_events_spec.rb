@@ -11,7 +11,7 @@ RSpec.describe UserEvents do
     let!(:education_experience_created_event) do
       create(
         :event,
-        :education_experience_added,
+        schema: Events::EducationExperienceAdded::V1,
         occurred_at:,
         aggregate_id: seeker.id,
         data: {
@@ -28,26 +28,24 @@ RSpec.describe UserEvents do
     let!(:work_experience) do
       create(
         :event,
-        :experience_created,
+        schema: Events::ExperienceAdded::V1,
         occurred_at:,
-        aggregate_id: user.id,
+        aggregate_id: seeker.id,
         data: {
           id: SecureRandom.uuid,
           organization_name: "Test Company",
           position: "Test Position",
-          start_date: Time.zone.now.to_s,
+          start_date: "2000-12-10",
           end_date: nil,
           description: "My job",
-          is_current: false,
-          profile_id: SecureRandom.uuid,
-          seeker_id: SecureRandom.uuid
+          is_current: false
         }
       )
     end
     let!(:onboarding_complete_event) do
       create(
         :event,
-        :onboarding_completed,
+        schema: Events::OnboardingCompleted::V1,
         occurred_at:,
         aggregate_id: user.id,
         data: {
@@ -63,7 +61,7 @@ RSpec.describe UserEvents do
     let!(:job_saved_event) do
       create(
         :event,
-        :job_saved,
+        schema: Events::JobSaved::V1,
         occurred_at:,
         aggregate_id: user.id,
         data: {
@@ -77,10 +75,9 @@ RSpec.describe UserEvents do
     let!(:applicant_status_updated_event) do
       create(
         :event,
-        :applicant_status_updated,
+        schema: Events::ApplicantStatusUpdated::V6,
         occurred_at:,
         aggregate_id: job.id,
-        version: 6,
         data: {
           applicant_id: SecureRandom.uuid,
           applicant_first_name: "John",

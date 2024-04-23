@@ -5,7 +5,7 @@ class UserEvents
 
   def all
     user_events = Event.where(aggregate_id: user.id).order(occurred_at: :desc).map(&:message)
-    seeker_events = Event.where(aggregate_id: user.seeker.id).order(occurred_at: :desc).map(&:message)
+    seeker_events = Event.where(aggregate_id: user.seeker&.id).order(occurred_at: :desc).map(&:message)
 
     events = user_events + seeker_events
 
@@ -33,7 +33,7 @@ class UserEvents
       "Applicant Status Updated: #{message.data.employment_title} - #{message.data.status}"
     when Events::EducationExperienceAdded::V1
       "Education Experience Created: #{message.data.organization_name}"
-    when Events::ExperienceCreated::V1
+    when Events::ExperienceAdded::V1
       "Work Experience Created: #{message.data.organization_name}"
     when Events::JobSaved::V1
       "Job Saved: #{message.data.employment_title}"

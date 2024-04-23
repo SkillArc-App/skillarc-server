@@ -81,8 +81,8 @@ class DbStreamListener < StreamListener
     raise NoMethodError
   end
 
-  def handle_message(*)
-    raise NoMethodError
+  def handle_message(message)
+    consumer.handle_message(message)
   end
 
   attr_reader :consumer, :message_service

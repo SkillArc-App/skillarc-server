@@ -21,8 +21,4 @@ class DbStreamAggregator < DbStreamListener
   def default_time
     Time.zone.at(0)
   end
-
-  def handle_message(message)
-    consumer.handle_message(message)
-  end
 end

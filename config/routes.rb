@@ -116,6 +116,7 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
+    resources :attributes
     resources :jobs
     resources :users
     resources :application_analytics

@@ -8,7 +8,7 @@ class OnboardingSessionsController < ApplicationController
   def index
     os = OnboardingSession.where(user_id: current_user.id).first
 
-    render json: deep_transform_keys(os.as_json) { |key| to_camel_case(key) }
+    render json: os.as_json
   end
 
   def create
@@ -18,7 +18,7 @@ class OnboardingSessionsController < ApplicationController
         os.started_at = Time.zone.now
       end
 
-      render json: deep_transform_keys(onboarding_session.as_json) { |key| to_camel_case(key) }
+      render json: onboarding_session.as_json
     end
   end
 
@@ -32,7 +32,7 @@ class OnboardingSessionsController < ApplicationController
           response: %i[
             org
             title
-            gradYear
+            grad_year
             gpa
             activities
           ]
@@ -41,35 +41,35 @@ class OnboardingSessionsController < ApplicationController
           response: %i[
             company
             position
-            startDate
+            start_date
             current
-            endDate
+            end_date
             description
           ]
         },
         name: {
           response: %i[
-            firstName
-            lastName
-            phoneNumber
-            dateOfBirth
+            first_name
+            last_name
+            phone_number
+            date_of_birth
           ]
         },
-        opportunityInterests: {
+        opportunity_interests: {
           response: []
         },
         other: {
           response: %i[
             activity
-            startDate
-            endDate
+            start_date
+            end_date
             learning
           ]
         },
         reliability: {
           response: []
         },
-        trainingProvider: {
+        training_provider: {
           response: []
         }
       }
@@ -81,6 +81,6 @@ class OnboardingSessionsController < ApplicationController
       Onboarding.new(onboarding_session: os).update(responses:)
     end
 
-    render json: deep_transform_keys(os.as_json) { |key| to_camel_case(key) }
+    render json: os.as_json
   end
 end

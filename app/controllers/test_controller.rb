@@ -93,7 +93,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   end
 
   def create_seeker
-    user = FactoryBot.create(:user, onboarding_sessions: [FactoryBot.build(:onboarding_session, completed_at: Time.zone.now)])
+    user = FactoryBot.create(:user, onboarding_session: FactoryBot.build(:onboarding_session, completed_at: Time.zone.now))
     seeker = FactoryBot.create(:seeker, user:)
 
     now = Time.zone.now

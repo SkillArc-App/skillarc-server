@@ -25,7 +25,7 @@
 class User < ApplicationRecord
   has_one :recruiter, dependent: :destroy
   has_one :seeker, dependent: :destroy
-  has_many :onboarding_sessions, dependent: :destroy
+  has_one :onboarding_session, dependent: :destroy
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
   has_many :seeker_training_providers, dependent: :destroy
@@ -37,10 +37,6 @@ class User < ApplicationRecord
 
   def employer_admin?
     user_roles.map(&:role).map(&:name).include?(Role::Types::EMPLOYER_ADMIN)
-  end
-
-  def onboarding_session
-    onboarding_sessions.order(created_at: :desc).first
   end
 
   def saved_jobs

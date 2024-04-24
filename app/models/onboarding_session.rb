@@ -8,6 +8,7 @@
 #  started_at   :datetime         not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  seeker_id    :uuid
 #  user_id      :text             not null
 #
 # Indexes

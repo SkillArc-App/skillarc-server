@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_23_121429) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_23_130324) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -164,6 +164,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121429) do
     t.string "elevator_pitch"
     t.index ["seeker_id", "job_id"], name: "index_applicants_on_seeker_id_and_job_id", unique: true
     t.index ["seeker_id"], name: "index_applicants_on_seeker_id"
+  end
+
+  create_table "attributes_attributes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "set", null: false, array: true
+    t.string "default", null: false, array: true
   end
 
   create_table "barriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

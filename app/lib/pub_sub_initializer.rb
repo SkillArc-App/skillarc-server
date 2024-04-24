@@ -50,6 +50,7 @@ module PubSubInitializer
 
     aggregators = [
       DbStreamAggregator.build(consumer: Analytics::AnalyticsAggregator.new, listener_name: "analytics"),
+      DbStreamAggregator.build(consumer: Attributes::AttributesAggregator.new, listener_name: "attributes_aggregator"),
       DbStreamAggregator.build(consumer: Coaches::CoachesAggregator.new, listener_name: "coach_seekers"),
       DbStreamAggregator.build(consumer: Search::SearchService.new, listener_name: "search"),
       DbStreamAggregator.build(consumer: Contact::ContactAggregator.new, listener_name: "contact_aggregator"),
@@ -61,6 +62,7 @@ module PubSubInitializer
     reactors = [
       DbStreamReactor.build(consumer: Coaches::CoachesReactor.new, listener_name: "coach_seekers_reactor"),
       DbStreamReactor.build(consumer: Applicants::OrchestrationReactor.new, listener_name: "applicants_orchestration_reactor"),
+      DbStreamReactor.build(consumer: Attributes::AttributesReactor.new, listener_name: "attributes_reactor"),
       DbStreamReactor.build(consumer: Slack::SlackReactor.new, listener_name: "slack_reactor"),
       DbStreamReactor.build(consumer: Contact::ContactReactor.new, listener_name: "contact_reactor"),
       DbStreamReactor.build(consumer: Infrastructure::InfrastructureReactor.new, listener_name: "infrastructure_reactor"),

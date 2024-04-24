@@ -8,7 +8,6 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
   let(:updated_note) { "This note was updated" }
   let(:consumer) { described_class.new(message_service:) }
   let(:message_service) { MessageService.new }
-  let(:message_service) { MessageService.new }
 
   it_behaves_like "a message consumer"
 

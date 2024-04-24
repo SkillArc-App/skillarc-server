@@ -1,6 +1,5 @@
 class OnboardingSessionsController < ApplicationController
   include Secured
-  include Cereal
   include MessageEmitter
 
   before_action :authorize

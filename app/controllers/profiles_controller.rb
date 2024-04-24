@@ -1,7 +1,6 @@
 class ProfilesController < ApplicationController
   include Secured
   include Admin
-  include Cereal
   include SeekerAuth
   include MessageEmitter
 

@@ -107,7 +107,7 @@ RSpec.describe "Attributes", type: :request do
       include_context "olive branch casing parameter"
       include_context "olive branch camelcasing"
 
-      let(:id) { SecureRandom.uuid }
+      let(:id) { create(:attributes_attribute).id }
       let(:attribute) do
         {
           name: "new name",
@@ -143,7 +143,7 @@ RSpec.describe "Attributes", type: :request do
       include_context "olive branch casing parameter"
       include_context "olive branch camelcasing"
 
-      let(:id) { SecureRandom.uuid }
+      let(:id) { create(:attributes_attribute).id }
 
       it_behaves_like "admin spec unauthenticated openapi"
 

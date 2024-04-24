@@ -524,16 +524,9 @@ RSpec.describe Onboarding do
           expect_any_instance_of(MessageService)
             .to receive(:create!)
             .with(
-              user_id: user.id,
-              schema: Events::OnboardingCompleted::V1,
-              data: {
-                name: responses["name"],
-                experience: responses["experience"],
-                education: responses["education"],
-                trainingProvider: responses["training_provider"],
-                other: responses["other"],
-                opportunityInterests: responses["opportunity_interests"]
-              },
+              seeker_id: be_present,
+              schema: Events::OnboardingCompleted::V2,
+              data: Messages::Nothing,
               occurred_at: be_present
             ).and_call_original
 

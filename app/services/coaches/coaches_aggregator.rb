@@ -248,7 +248,7 @@ module Coaches
       handle_last_active_updated(message)
     end
 
-    on_message Events::OnboardingCompleted::V1 do |message|
+    on_message Events::OnboardingCompleted::V2 do |message|
       handle_last_active_updated(message)
     end
 

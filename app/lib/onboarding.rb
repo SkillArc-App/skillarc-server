@@ -25,16 +25,9 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     onboarding_session.update!(completed_at:)
 
     message_service.create!(
-      user_id: user.id,
-      schema: Events::OnboardingCompleted::V1,
-      data: {
-        name: responses["name"],
-        experience: responses["experience"],
-        education: responses["education"],
-        trainingProvider: responses["training_provider"],
-        other: responses["other"],
-        opportunityInterests: responses["opportunity_interests"]
-      },
+      seeker_id: user.seeker.id,
+      schema: Events::OnboardingCompleted::V2,
+      data: Messages::Nothing,
       occurred_at: completed_at
     )
   end

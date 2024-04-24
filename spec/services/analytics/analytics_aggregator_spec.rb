@@ -161,12 +161,14 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           :analytics__dim_person,
           :user,
           user_id:,
-          email:
+          email:,
+          seeker_id:
         )
       end
 
       let(:user_id) { SecureRandom.uuid }
       let(:email) { Faker::Internet.email }
+      let(:seeker_id) { SecureRandom.uuid }
 
       describe "when the message is user_updated" do
         let(:message) do
@@ -245,9 +247,9 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         let(:message) do
           build(
             :message,
-            aggregate_id: user_id,
-            schema: Events::OnboardingCompleted::V1,
-            data: {}
+            aggregate_id: seeker_id,
+            schema: Events::OnboardingCompleted::V2,
+            data: Messages::Nothing
           )
         end
 

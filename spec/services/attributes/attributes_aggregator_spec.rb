@@ -15,6 +15,7 @@ RSpec.describe Attributes::AttributesAggregator do
           schema: Events::AttributeCreated::V1,
           data: {
             name: "name",
+            description: "description",
             set: %w[A B],
             default: ["B"]
           }
@@ -34,6 +35,7 @@ RSpec.describe Attributes::AttributesAggregator do
           aggregate_id: attribute.id,
           data: {
             name: "name",
+            description: "description",
             set: %w[A B],
             default: ["B"]
           }

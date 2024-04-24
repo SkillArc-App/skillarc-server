@@ -56,6 +56,7 @@ RSpec.describe "Attributes", type: :request do
       let(:attribute) do
         {
           name: "name",
+          description: "description",
           set: %w[A B],
           default: ["B"]
         }
@@ -68,6 +69,7 @@ RSpec.describe "Attributes", type: :request do
           type: :object,
           properties: {
             name: { type: :string },
+            description: { type: :string },
             set: { type: :array, items: { type: :string } },
             default: { type: :array, items: { type: :string } }
           },
@@ -78,7 +80,7 @@ RSpec.describe "Attributes", type: :request do
           before do
             expect_any_instance_of(Attributes::AttributesReactor)
               .to receive(:create)
-              .with(attribute_id: anything, name: "name", set: %w[A B], default: ["B"])
+              .with(attribute_id: anything, name: "name", description: "description", set: %w[A B], default: ["B"])
               .and_call_original
           end
 
@@ -98,6 +100,7 @@ RSpec.describe "Attributes", type: :request do
         type: :object,
         properties: {
           name: { type: :string },
+          description: { type: :string },
           set: { type: :array, items: { type: :string } },
           default: { type: :array, items: { type: :string } }
         }
@@ -111,6 +114,7 @@ RSpec.describe "Attributes", type: :request do
       let(:attribute) do
         {
           name: "new name",
+          description: "new description",
           set: %w[C D],
           default: ["D"]
         }
@@ -125,7 +129,7 @@ RSpec.describe "Attributes", type: :request do
           before do
             expect_any_instance_of(Attributes::AttributesReactor)
               .to receive(:update)
-              .with(attribute_id: id, name: "new name", set: %w[C D], default: ["D"])
+              .with(attribute_id: id, name: "new name", description: "new description", set: %w[C D], default: ["D"])
               .and_call_original
           end
 

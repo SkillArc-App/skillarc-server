@@ -8,6 +8,7 @@ module Attributes
       Attribute.create!(
         id: message.aggregate.attribute_id,
         name: message.data.name,
+        description: message.data.description,
         set: message.data.set,
         default: message.data.default
       )
@@ -17,6 +18,7 @@ module Attributes
       attribute = Attribute.find(message.aggregate.attribute_id)
       attribute.update!(
         name: message.data.name,
+        description: message.data.description,
         set: message.data.set,
         default: message.data.default
       )

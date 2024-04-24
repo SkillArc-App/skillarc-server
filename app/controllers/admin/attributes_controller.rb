@@ -11,11 +11,13 @@ module Admin
       name = params[:name]
       set = params[:set]
       default = params[:default]
+      description = params[:description]
 
       with_message_service do
         Attributes::AttributesReactor.new(message_service:).create(
           attribute_id:,
           name:,
+          description:,
           set:,
           default:
         )
@@ -29,11 +31,13 @@ module Admin
       name = params[:name]
       set = params[:set]
       default = params[:default]
+      description = params[:description]
 
       with_message_service do
         Attributes::AttributesReactor.new(message_service:).update(
           attribute_id:,
           name:,
+          description:,
           set:,
           default:
         )

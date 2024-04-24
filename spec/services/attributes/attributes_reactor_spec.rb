@@ -7,9 +7,10 @@ RSpec.describe Attributes::AttributesReactor do
   let(:consumer) { described_class.new(message_service:) }
 
   describe ".create" do
-    subject { consumer.create(attribute_id:, name:, set:, default:) }
+    subject { consumer.create(attribute_id:, name:, description:, set:, default:) }
 
     let(:name) { "name" }
+    let(:description) { "description" }
     let(:set) { %w[A B] }
     let(:default) { ["B"] }
     let(:attribute_id) { SecureRandom.uuid }
@@ -20,6 +21,7 @@ RSpec.describe Attributes::AttributesReactor do
         attribute_id:,
         data: {
           name:,
+          description:,
           set:,
           default:
         }
@@ -30,9 +32,10 @@ RSpec.describe Attributes::AttributesReactor do
   end
 
   describe ".update" do
-    subject { consumer.update(attribute_id:, name:, set:, default:) }
+    subject { consumer.update(attribute_id:, name:, description:, set:, default:) }
 
     let(:name) { "name" }
+    let(:description) { "description" }
     let(:set) { %w[A B] }
     let(:default) { ["B"] }
     let(:attribute_id) { SecureRandom.uuid }
@@ -43,6 +46,7 @@ RSpec.describe Attributes::AttributesReactor do
         attribute_id:,
         data: {
           name:,
+          description:,
           set:,
           default:
         }

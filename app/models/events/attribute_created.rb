@@ -6,6 +6,7 @@ module Events
 
         schema do
           name String
+          description String
           set ArrayOf(String)
           default ArrayOf(String)
         end

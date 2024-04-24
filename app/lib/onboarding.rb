@@ -100,8 +100,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         other_experience.save!
 
         message_service.create!(
-          user_id: user.id,
-          schema: Events::ExperienceCreated::V1,
+          seeker_id: other_experience.seeker_id,
+          schema: Events::ExperienceAdded::V1,
           data: {
             id: other_experience.id,
             organization_name: other_experience.organization_name,
@@ -109,10 +109,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
             start_date: other_experience.start_date,
             end_date: other_experience.end_date,
             description: other_experience.description,
-            is_current: other_experience.is_current,
-            seeker_id: other_experience.seeker_id
-          },
-          occurred_at: other_experience.created_at
+            is_current: other_experience.is_current
+          }
         )
       end
     end
@@ -138,18 +136,16 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         ee.save!
 
         message_service.create!(
-          user_id: user.id,
-          schema: Events::EducationExperienceCreated::V1,
+          seeker_id: ee.seeker_id,
+          schema: Events::EducationExperienceAdded::V1,
           data: {
             id: ee.id,
             organization_name: ee.organization_name,
             title: ee.title,
             activities: ee.activities,
             graduation_date: ee.graduation_date,
-            gpa: ee.gpa,
-            seeker_id: ee.seeker_id
-          },
-          occurred_at: ee.created_at
+            gpa: ee.gpa
+          }
         )
       end
     end
@@ -165,14 +161,12 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         stp.save!
 
         message_service.create!(
-          user_id: user.id,
-          schema: Events::SeekerTrainingProviderCreated::V1,
+          seeker_id: user.seeker.id,
+          schema: Events::SeekerTrainingProviderCreated::V2,
           data: {
             id: stp.id,
-            user_id: stp.user_id,
             training_provider_id: stp.training_provider_id
-          },
-          occurred_at: stp.created_at
+          }
         )
       end
     end
@@ -197,17 +191,15 @@ class Onboarding # rubocop:disable Metrics/ClassLength
       pe.save!
 
       message_service.create!(
-        user_id: user.id,
-        schema: Events::PersonalExperienceCreated::V1,
+        seeker_id: user.seeker.id,
+        schema: Events::PersonalExperienceAdded::V1,
         data: {
           id: pe.id,
           activity: pe.activity,
           description: pe.description,
           start_date: pe.start_date,
-          end_date: pe.end_date,
-          seeker_id: pe.seeker_id
-        },
-        occurred_at: pe.created_at
+          end_date: pe.end_date
+        }
       )
     end
   end

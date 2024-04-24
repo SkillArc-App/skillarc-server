@@ -9,38 +9,69 @@ class EducationExperiencesController < ApplicationController
 
   def create
     with_message_service do
-      ee = EducationExperienceService.new(seeker).create(
-        **education_experience_params
+      # This is a temporary state until we make a seeker aggregator
+      # to do this
+      id = SecureRandom.uuid
+      EducationExperience.create!(
+        **education_experience_params,
+        id:,
+        seeker_id: seeker.id
       )
 
-      render json: ee
+      Seekers::SeekerReactor.new(message_service:).add_education_experience(
+        id:,
+        seeker_id: seeker.id,
+        trace_id: request.request_id,
+        organization_name: education_experience_params[:organization_name],
+        title: education_experience_params[:title],
+        graduation_date: education_experience_params[:graduation_date],
+        gpa: education_experience_params[:gpa],
+        activities: education_experience_params[:activities]
+      )
+
+      head :created
     end
-  rescue StandardError => e
-    render json: { error: e.message }, status: :bad_request
   end
 
   def update
     with_message_service do
-      ee = EducationExperienceService.new(seeker).update(
-        **education_experience_params.merge(id: params[:id])
+      # This is a temporary state until we make a seeker aggregator
+      # to do this
+      education_experience = EducationExperience.find(params[:id])
+
+      education_experience.update!(**education_experience_params)
+
+      Seekers::SeekerReactor.new(message_service:).add_education_experience(
+        id: params[:id],
+        seeker_id: seeker.id,
+        trace_id: request.request_id,
+        organization_name: education_experience_params[:organization_name],
+        title: education_experience_params[:title],
+        graduation_date: education_experience_params[:graduation_date],
+        gpa: education_experience_params[:gpa],
+        activities: education_experience_params[:activities]
       )
 
-      render json: ee
+      head :accepted
     end
-  rescue StandardError => e
-    render json: { error: e.message }, status: :bad_request
   end
 
   def destroy
     with_message_service do
-      ee = EducationExperienceService.new(seeker).destroy(
-        id: params[:id]
+      # This is a temporary state until we make a seeker aggregator
+      # to do this
+
+      education_experience = EducationExperience.find(params[:id])
+      education_experience.destroy
+
+      Seekers::SeekerReactor.new(message_service:).remove_education_experience(
+        trace_id: request.request_id,
+        seeker_id: seeker.id,
+        education_experience_id: params[:id]
       )
 
-      render json: ee
+      head :accepted
     end
-  rescue StandardError => e
-    render json: { error: e.message }, status: :bad_request
   end
 
   private

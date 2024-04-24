@@ -86,16 +86,21 @@ module Messages
 
     module Seekers
       EVENTS = [
+        EDUCATION_EXPERIENCE_ADDED = 'education_experience_added',
         EDUCATION_EXPERIENCE_CREATED = 'education_experience_created',
         EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted',
         EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated',
         ELEVATOR_PITCH_CREATED = 'elevator_pitch_created',
+        EXPERIENCE_ADDED = 'experience_added',
+        EXPERIENCE_REMOVED = 'experience_removed',
         EXPERIENCE_CREATED = 'experience_created',
         JOB_SAVED = 'job_saved',
         JOB_SEARCH = 'job_search',
         JOB_UNSAVED = 'job_unsaved',
         ONBOARDING_COMPLETED = 'onboarding_completed',
+        PERSONAL_EXPERIENCE_ADDED = 'personal_experience_added',
         PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created',
+        PERSONAL_EXPERIENCE_REMOVED = 'personal_experience_removed',
         SEEKER_APPLIED = 'seeker_applied',
         SEEKER_CONTEXT_VIEWED = 'seeker_context_viewed',
         SEEKER_CREATED = 'profile_created',

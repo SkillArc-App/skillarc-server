@@ -19,7 +19,7 @@ module PubSubInitializer
     )
 
     PUBSUB.subscribe(
-      message_schema: Events::EducationExperienceCreated::V1,
+      message_schema: Events::EducationExperienceAdded::V1,
       subscriber: Klayvio::EducationExperienceEntered.new
     )
 

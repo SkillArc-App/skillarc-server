@@ -658,18 +658,16 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           it "updates the last active to when the event occured" do
             message = build(
               :message,
-              message_type: Events::EducationExperienceCreated::V1.message_type,
-              version: Events::EducationExperienceCreated::V1.version,
+              schema: Events::EducationExperienceAdded::V1,
               data: {
                 id: SecureRandom.uuid,
                 organization_name: "Org",
                 title: "A title",
                 activities: nil,
                 graduation_date: Time.zone.now.to_s,
-                gpa: "1.9",
-                seeker_id: SecureRandom.uuid
+                gpa: "1.9"
               },
-              aggregate_id: user_id,
+              aggregate_id: seeker_id,
               occurred_at: time2
             )
 
@@ -702,17 +700,15 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           it "updates the last active to when the event occured" do
             message = build(
               :message,
-              message_type: Events::PersonalExperienceCreated::V1.message_type,
-              version: Events::PersonalExperienceCreated::V1.version,
+              aggregate_id: seeker_id,
+              schema: Events::PersonalExperienceAdded::V1,
               data: {
                 id: SecureRandom.uuid,
                 activity: "something",
                 description: "A description",
                 start_date: Time.zone.now.to_s,
-                end_date: Time.zone.now.to_s,
-                seeker_id: SecureRandom.uuid
+                end_date: Time.zone.now.to_s
               },
-              aggregate_id: user_id,
               occurred_at: time2
             )
 

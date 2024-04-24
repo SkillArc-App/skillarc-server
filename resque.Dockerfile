@@ -14,5 +14,6 @@ RUN bundle install
 EXPOSE 3001
 ENV COUNT 2
 ENV QUEUE *
+ENV INTERVAL 1
 
 CMD ["rake", "resque:workers"]

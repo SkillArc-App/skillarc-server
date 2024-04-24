@@ -167,7 +167,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_130324) do
   end
 
   create_table "attributes_attributes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
     t.string "set", null: false, array: true
     t.string "default", null: false, array: true

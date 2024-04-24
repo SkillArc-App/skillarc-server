@@ -5,7 +5,7 @@
 #  id          :uuid             not null, primary key
 #  default     :string           not null, is an Array
 #  description :text
-#  name        :string
+#  name        :string           not null
 #  set         :string           not null, is an Array
 #
 module Attributes

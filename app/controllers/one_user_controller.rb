@@ -1,6 +1,5 @@
 class OneUserController < ApplicationController
   include Secured
-  include Cereal
 
   before_action :authorize
 

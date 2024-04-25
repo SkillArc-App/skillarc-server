@@ -1,5 +1,4 @@
 class SeekerService
-  include Cereal
   include MessageEmitter
 
   def initialize(seeker)

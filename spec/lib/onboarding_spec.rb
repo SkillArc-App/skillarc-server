@@ -24,10 +24,10 @@ RSpec.describe Onboarding do
         {
           "name" => {
             "response" => {
-              "firstName" => "John",
-              "lastName" => "Doe",
-              "phoneNumber" => "1234567890",
-              "dateOfBirth" => "01/01/2000"
+              "first_name" => "John",
+              "last_name" => "Doe",
+              "phone_number" => "1234567890",
+              "date_of_birth" => "01/01/2000"
             }
           }
         }
@@ -48,10 +48,10 @@ RSpec.describe Onboarding do
           {
             "name" => {
               "response" => {
-                "firstName" => "John",
-                "lastName" => "Doe",
-                "phoneNumber" => "1234567890",
-                "dateOfBirth" => "01/01/2000"
+                "first_name" => "John",
+                "last_name" => "Doe",
+                "phone_number" => "1234567890",
+                "date_of_birth" => "01/01/2000"
               }
             }
           }
@@ -106,19 +106,19 @@ RSpec.describe Onboarding do
         {
           "name" => {
             "response" => {
-              "firstName" => "John",
-              "lastName" => "Doe",
-              "phoneNumber" => "1234567890",
-              "dateOfBirth" => "01/01/2000"
+              "first_name" => "John",
+              "last_name" => "Doe",
+              "phone_number" => "1234567890",
+              "date_of_birth" => "01/01/2000"
             }
           },
           "experience" => {
             "response" => [{
               "company" => "Company",
               "position" => "Position",
-              "startDate" => "01/01/2000",
+              "start_date" => "01/01/2000",
               "current" => true,
-              "endDate" => nil,
+              "end_date" => nil,
               "description" => "Description"
             }]
           }
@@ -168,9 +168,9 @@ RSpec.describe Onboarding do
               "response" => [{
                 "company" => "Company",
                 "position" => "Position",
-                "startDate" => "01/01/2000",
+                "start_date" => "01/01/2000",
                 "current" => true,
-                "endDate" => nil,
+                "end_date" => nil,
                 "description" => "Description"
               }]
             }
@@ -184,10 +184,10 @@ RSpec.describe Onboarding do
         {
           "name" => {
             "response" => {
-              "firstName" => "John",
-              "lastName" => "Doe",
-              "phoneNumber" => "1234567890",
-              "dateOfBirth" => "01/01/2000"
+              "first_name" => "John",
+              "last_name" => "Doe",
+              "phone_number" => "1234567890",
+              "date_of_birth" => "01/01/2000"
             }
           },
           "education" => {
@@ -195,7 +195,7 @@ RSpec.describe Onboarding do
               "activities" => "Football",
               "org" => "School",
               "title" => "Title",
-              "gradYear" => "2000",
+              "grad_year" => "2000",
               "gpa" => "4.0"
             }]
           }
@@ -247,7 +247,7 @@ RSpec.describe Onboarding do
                 "activities" => "Football",
                 "org" => "School",
                 "title" => "Title",
-                "gradYear" => "2000",
+                "grad_year" => "2000",
                 "gpa" => "4.0"
               }]
             }
@@ -256,18 +256,18 @@ RSpec.describe Onboarding do
       end
     end
 
-    context "when the responses include trainingProvider" do
+    context "when the responses include training_provider" do
       let(:responses) do
         {
           "name" => {
             "response" => {
-              "firstName" => "John",
-              "lastName" => "Doe",
-              "phoneNumber" => "1234567890",
-              "dateOfBirth" => "01/01/2000"
+              "first_name" => "John",
+              "last_name" => "Doe",
+              "phone_number" => "1234567890",
+              "date_of_birth" => "01/01/2000"
             }
           },
-          "trainingProvider" => {
+          "training_provider" => {
             "response" => [
               training_provider.id
             ]
@@ -305,7 +305,7 @@ RSpec.describe Onboarding do
 
         expect(onboarding_session.responses).to include(
           {
-            "trainingProvider" => {
+            "training_provider" => {
               "response" => [
                 training_provider.id
               ]
@@ -315,18 +315,18 @@ RSpec.describe Onboarding do
       end
     end
 
-    context "when the responses include opportunityInterests" do
+    context "when the responses include opportunity_interests" do
       let(:responses) do
         {
           "name" => {
             "response" => {
-              "firstName" => "John",
-              "lastName" => "Doe",
-              "phoneNumber" => "1234567890",
-              "dateOfBirth" => "01/01/2000"
+              "first_name" => "John",
+              "last_name" => "Doe",
+              "phone_number" => "1234567890",
+              "date_of_birth" => "01/01/2000"
             }
           },
-          "opportunityInterests" => {
+          "opportunity_interests" => {
             "response" => ["construction"]
           }
         }
@@ -337,7 +337,7 @@ RSpec.describe Onboarding do
 
         expect(onboarding_session.responses).to include(
           {
-            "opportunityInterests" => {
+            "opportunity_interests" => {
               "response" => ["construction"]
             }
           }
@@ -350,17 +350,17 @@ RSpec.describe Onboarding do
         {
           "name" => {
             "response" => {
-              "firstName" => "John",
-              "lastName" => "Doe",
-              "phoneNumber" => "1234567890",
-              "dateOfBirth" => "01/01/2000"
+              "first_name" => "John",
+              "last_name" => "Doe",
+              "phone_number" => "1234567890",
+              "date_of_birth" => "01/01/2000"
             }
           },
           "other" => {
             "response" => [{
               "activity" => "Activity",
-              "startDate" => "01/01/2000",
-              "endDate" => "01/01/2001",
+              "start_date" => "01/01/2000",
+              "end_date" => "01/01/2001",
               "learning" => "Learning"
             }]
           }
@@ -406,8 +406,8 @@ RSpec.describe Onboarding do
             "other" => {
               "response" => [{
                 "activity" => "Activity",
-                "startDate" => "01/01/2000",
-                "endDate" => "01/01/2001",
+                "start_date" => "01/01/2000",
+                "end_date" => "01/01/2001",
                 "learning" => "Learning"
               }]
             }
@@ -416,18 +416,18 @@ RSpec.describe Onboarding do
       end
     end
 
-    context "when the responses include opportunityInterests" do
+    context "when the responses include opportunity_interests" do
       let(:responses) do
         {
           "name" => {
             "response" => {
-              "firstName" => "John",
-              "lastName" => "Doe",
-              "phoneNumber" => "1234567890",
-              "dateOfBirth" => "01/01/2000"
+              "first_name" => "John",
+              "last_name" => "Doe",
+              "phone_number" => "1234567890",
+              "date_of_birth" => "01/01/2000"
             }
           },
-          "opportunityInterests" => {
+          "opportunity_interests" => {
             "response" => ["construction"]
           }
         }
@@ -447,7 +447,7 @@ RSpec.describe Onboarding do
 
         expect(onboarding_session.responses).to include(
           {
-            "opportunityInterests" => {
+            "opportunity_interests" => {
               "response" => ["construction"]
             }
           }
@@ -461,19 +461,19 @@ RSpec.describe Onboarding do
           {
             "name" => {
               "response" => {
-                "firstName" => "John",
-                "lastName" => "Doe",
-                "phoneNumber" => "1234567890",
-                "dateOfBirth" => "01/01/2000"
+                "first_name" => "John",
+                "last_name" => "Doe",
+                "phone_number" => "1234567890",
+                "date_of_birth" => "01/01/2000"
               }
             },
             "experience" => {
               "response" => [{
                 "company" => "Company",
                 "position" => "Position",
-                "startDate" => "01/01/2000",
+                "start_date" => "01/01/2000",
                 "current" => true,
-                "endDate" => nil,
+                "end_date" => nil,
                 "description" => "Description"
               }]
             },
@@ -482,18 +482,18 @@ RSpec.describe Onboarding do
                 "activities" => "Football",
                 "org" => "School",
                 "title" => "Title",
-                "gradYear" => "2000",
+                "grad_year" => "2000",
                 "gpa" => "4.0"
               }]
             },
-            "opportunityInterests" => {
+            "opportunity_interests" => {
               "response" => ["construction"]
             },
             "other" => {
               "response" => [{
                 "activity" => "Activity",
-                "startDate" => "01/01/2000",
-                "endDate" => "01/01/2001",
+                "start_date" => "01/01/2000",
+                "end_date" => "01/01/2001",
                 "learning" => "Learning"
               }]
             },
@@ -505,7 +505,7 @@ RSpec.describe Onboarding do
                 "I have other experience I'd like to share"
               ]
             },
-            "trainingProvider" => {
+            "training_provider" => {
               "response" => [
                 training_provider.id
               ]
@@ -530,9 +530,9 @@ RSpec.describe Onboarding do
                 name: responses["name"],
                 experience: responses["experience"],
                 education: responses["education"],
-                trainingProvider: responses["trainingProvider"],
+                trainingProvider: responses["training_provider"],
                 other: responses["other"],
-                opportunityInterests: responses["opportunityInterests"]
+                opportunityInterests: responses["opportunity_interests"]
               },
               occurred_at: be_present
             ).and_call_original
@@ -546,19 +546,19 @@ RSpec.describe Onboarding do
           {
             "name" => {
               "response" => {
-                "firstName" => "John",
-                "lastName" => "Doe",
-                "phoneNumber" => "1234567890",
-                "dateOfBirth" => "01/01/2000"
+                "first_name" => "John",
+                "last_name" => "Doe",
+                "phone_number" => "1234567890",
+                "date_of_birth" => "01/01/2000"
               }
             },
             "experience" => {
               "response" => [{
                 "company" => "Company",
                 "position" => "Position",
-                "startDate" => "01/01/2000",
+                "start_date" => "01/01/2000",
                 "current" => true,
-                "endDate" => nil,
+                "end_date" => nil,
                 "description" => "Description"
               }]
             },
@@ -566,11 +566,11 @@ RSpec.describe Onboarding do
               "response" => [{
                 "org" => "School",
                 "title" => "Title",
-                "gradYear" => "2000",
+                "grad_year" => "2000",
                 "gpa" => "4.0"
               }]
             },
-            "opportunityInterests" => {
+            "opportunity_interests" => {
               "response" => ["construction"]
             },
             "reliability" => {
@@ -581,7 +581,7 @@ RSpec.describe Onboarding do
                 "I have other experience I'd like to share"
               ]
             },
-            "trainingProvider" => {
+            "training_provider" => {
               "response" => [
                 training_provider.id
               ]
@@ -604,10 +604,10 @@ RSpec.describe Onboarding do
         {
           "name" => {
             "response" => {
-              "firstName" => "John",
-              "lastName" => "Doe",
-              "phoneNumber" => "1234567890",
-              "dateOfBirth" => "01/01/2000"
+              "first_name" => "John",
+              "last_name" => "Doe",
+              "phone_number" => "1234567890",
+              "date_of_birth" => "01/01/2000"
             }
           }
         }
@@ -616,10 +616,10 @@ RSpec.describe Onboarding do
         {
           "name" => {
             "response" => {
-              "firstName" => "John",
-              "lastName" => "Doe",
-              "phoneNumber" => "1234567890",
-              "dateOfBirth" => "01/01/2000"
+              "first_name" => "John",
+              "last_name" => "Doe",
+              "phone_number" => "1234567890",
+              "date_of_birth" => "01/01/2000"
             }
           }
         }

@@ -8,12 +8,13 @@ class Onboarding # rubocop:disable Metrics/ClassLength
   end
 
   def update(responses:)
+    add_seeker
     update_name(retrieve_response_for(responses, "name")) if response_for?(responses, "name")
     update_experience(retrieve_response_for(responses, "experience")) if response_for?(responses, "experience")
     update_education(retrieve_response_for(responses, "education")) if response_for?(responses, "education")
-    update_training_provider(retrieve_response_for(responses, "trainingProvider")) if response_for?(responses, "trainingProvider")
+    update_training_provider(retrieve_response_for(responses, "training_provider")) if response_for?(responses, "training_provider")
     update_other(retrieve_response_for(responses, "other")) if response_for?(responses, "other")
-    update_interests(retrieve_response_for(responses, "opportunityInterests")) if response_for?(responses, "opportunityInterests")
+    update_interests(retrieve_response_for(responses, "opportunity_interests")) if response_for?(responses, "opportunity_interests")
 
     onboarding_session.update!(responses:)
 
@@ -30,9 +31,9 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         name: responses["name"],
         experience: responses["experience"],
         education: responses["education"],
-        trainingProvider: responses["trainingProvider"],
+        trainingProvider: responses["training_provider"],
         other: responses["other"],
-        opportunityInterests: responses["opportunityInterests"]
+        opportunityInterests: responses["opportunity_interests"]
       },
       occurred_at: completed_at
     )
@@ -40,30 +41,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
   private
 
-  def update_name(name_response)
-    unless user.first_name == name_response["firstName"] &&
-           user.last_name == name_response["lastName"] &&
-           user.phone_number == name_response["phoneNumber"]
-      user.update!(
-        first_name: name_response["firstName"],
-        last_name: name_response["lastName"],
-        phone_number: name_response["phoneNumber"]
-      )
-
-      message_service.create!(
-        user_id: user.id,
-        schema: Events::UserUpdated::V1,
-        data: {
-          email: user.email,
-          first_name: user.first_name,
-          last_name: user.last_name,
-          phone_number: user.phone_number,
-          date_of_birth: Date.strptime(name_response["dateOfBirth"], "%m/%d/%Y")
-        },
-        occurred_at: user.updated_at
-      )
-    end
-
+  def add_seeker
     return if user.seeker
 
     seeker = Seeker.create!(user:)
@@ -79,13 +57,38 @@ class Onboarding # rubocop:disable Metrics/ClassLength
     )
   end
 
+  def update_name(name_response)
+    unless user.first_name == name_response["first_name"] &&
+           user.last_name == name_response["last_name"] &&
+           user.phone_number == name_response["phone_number"]
+      user.update!(
+        first_name: name_response["first_name"],
+        last_name: name_response["last_name"],
+        phone_number: name_response["phone_number"]
+      )
+
+      message_service.create!(
+        user_id: user.id,
+        schema: Events::UserUpdated::V1,
+        data: {
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          phone_number: user.phone_number,
+          date_of_birth: Date.strptime(name_response["date_of_birth"], "%m/%d/%Y")
+        },
+        occurred_at: user.updated_at
+      )
+    end
+  end
+
   def update_experience(work_responses)
     work_responses = work_responses.map do |wr|
       {
         organization_name: wr["company"],
         position: wr["position"],
-        start_date: wr["startDate"],
-        end_date: wr["endDate"],
+        start_date: wr["start_date"],
+        end_date: wr["end_date"],
         description: wr["description"],
         is_current: wr["current"],
         seeker_id: user.seeker.id
@@ -122,7 +125,7 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         organization_name: er["org"],
         title: er["title"],
         activities: er["activities"],
-        graduation_date: er["gradYear"],
+        graduation_date: er["grad_year"],
         gpa: er["gpa"],
         seeker_id: user.seeker.id
       }
@@ -178,8 +181,8 @@ class Onboarding # rubocop:disable Metrics/ClassLength
         seeker_id: user.seeker.id,
         activity: oth_r["activity"],
         description: oth_r["learning"],
-        start_date: oth_r["startDate"],
-        end_date: oth_r["endDate"]
+        start_date: oth_r["start_date"],
+        end_date: oth_r["end_date"]
       }
     end
 
@@ -223,12 +226,12 @@ class Onboarding # rubocop:disable Metrics/ClassLength
 
   def onboarding_complete?(reliability, responses)
     return false unless reliability
-    return false unless (responses.dig("opportunityInterests", "response")&.length || 0).positive?
+    return false unless (responses.dig("opportunity_interests", "response")&.length || 0).positive?
 
     reliability.all? do |r|
       (r == "I've had or currently have a job" && response_for?(responses, "experience")) ||
         (r == 'I have a High School Diploma / GED' && response_for?(responses, "education")) ||
-        (r == "I've attended a Training Program" && response_for?(responses, "trainingProvider")) ||
+        (r == "I've attended a Training Program" && response_for?(responses, "training_provider")) ||
         (r == "I have other experience I'd like to share" && response_for?(responses, "other"))
     end
   end

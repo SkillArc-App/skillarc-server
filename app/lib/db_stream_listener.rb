@@ -28,11 +28,10 @@ class DbStreamListener < StreamListener
         error = e
       ensure
         update_bookmark(bookmark, last_handled_event) if last_handled_event
-
-        message_service.flush
       end
     end
 
+    message_service.flush
     raise error if error.present?
   end
 

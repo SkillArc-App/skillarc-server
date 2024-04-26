@@ -124,6 +124,7 @@ module Admin # rubocop:disable Metrics/ModuleLength
         }
       end,
       career_paths: job.career_paths.map { |cp| serialize_career_path(cp) },
+      job_attributes: job.job_attributes.map { |ja| serialize_job_attribute(ja) },
       job_photos: job.job_photos.map { |jp| serialize_job_photo(jp) },
       job_tag: job.job_tags.map do |jt|
         {
@@ -173,6 +174,10 @@ module Admin # rubocop:disable Metrics/ModuleLength
       number_of_applicants: job.applicants.length,
       testimonials: job.testimonials.as_json
     }
+  end
+
+  def serialize_job_attribute(job_attribute)
+    job_attribute.slice(:id, :acceptible_set, :attribute_id, :attribute_name)
   end
 
   def serialize_master_skill(master_skill)

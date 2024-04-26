@@ -791,6 +791,31 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                   type: :string
                 }
               },
+              jobAttributes: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: {
+                      type: :string,
+                      format: :uuid
+                    },
+                    acceptibleSet: {
+                      type: :array,
+                      items: {
+                        type: :string
+                      }
+                    },
+                    attributeId: {
+                      type: :string,
+                      format: :uuid
+                    },
+                    attributeName: {
+                      type: :string
+                    }
+                  }
+                }
+              },
               learnedSkills: {
                 type: :array,
                 items: {

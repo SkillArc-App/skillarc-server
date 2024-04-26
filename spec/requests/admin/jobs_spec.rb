@@ -29,6 +29,7 @@ RSpec.describe "Admin::Jobs", type: :request do
 
           context "when job is fully loaded" do
             before do
+              create(:job_attribute, job:)
               create(:career_path, job:)
               create(:learned_skill, job:)
               create(:desired_skill, job:)

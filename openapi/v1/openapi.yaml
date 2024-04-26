@@ -4,6 +4,287 @@ info:
   title: API V1
   version: v1
 paths:
+  "/admin/attributes":
+    get:
+      summary: get all attributes
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns all attributes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    description:
+                      type: string
+                      nullable: true
+                    name:
+                      type: string
+                    set:
+                      type: array
+                      items:
+                        type: string
+                    default:
+                      type: array
+                      items:
+                        type: string
+    post:
+      summary: create an attribute
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Creates an attribute
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                set:
+                  type: array
+                  items:
+                    type: string
+                default:
+                  type: array
+                  items:
+                    type: string
+              required:
+              - name
+              - set
+              - default
+  "/admin/attributes/{id}":
+    put:
+      summary: update an attribute
+      tags:
+      - Admin
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '204':
+          description: Updates an attribute
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                set:
+                  type: array
+                  items:
+                    type: string
+                default:
+                  type: array
+                  items:
+                    type: string
+    delete:
+      summary: delete an attribute
+      tags:
+      - Admin
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '204':
+          description: Deletes an attribute
+  "/admin/jobs/{id}/job_attributes":
+    post:
+      summary: Create a job attribute
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '201':
+          description: Creates a job attribute
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job_attribute:
+                  type: object
+                  properties:
+                    attribute_id:
+                      type: string
+                      format: uuid
+                    acceptible_set:
+                      type: array
+                      items:
+                        type: string
+                  required:
+                  - attribute_id
+                  - acceptible_set
+              required:
+              - job_attribute
+  "/admin/jobs/{id}/job_attributes/{job_attribute_id}":
+    put:
+      summary: Update a job attribute
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: job_attribute_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '204':
+          description: Updates a job attribute
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job_attribute:
+                  type: object
+                  properties:
+                    acceptible_set:
+                      type: array
+                      items:
+                        type: string
+                  required:
+                  - acceptible_set
+              required:
+              - job_attribute
+    delete:
+      summary: Destroy a job attribute
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: job_attribute_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '204':
+          description: Destroys a job attribute
   "/admin/jobs/{id}":
     get:
       summary: Show a job
@@ -2673,6 +2954,23 @@ components:
           type: array
           items:
             type: string
+        jobAttributes:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              acceptibleSet:
+                type: array
+                items:
+                  type: string
+              attributeId:
+                type: string
+                format: uuid
+              attributeName:
+                type: string
         learnedSkills:
           type: array
           items:

@@ -1162,6 +1162,17 @@ message_service.create!(
   }
 )
 
+message_service.create!(
+  schema: Events::AttributeCreated::V1,
+  attribute_id: SecureRandom.uuid,
+  data: {
+    name: "Background",
+    description: "The candidate has a criminal background that may be a barrier to employment",
+    set: %w[Misdemeanor Felony Violent],
+    default: ["Misdemeanor"]
+  }
+)
+
 FactoryBot.create(:barrier, name: "Background")
 FactoryBot.create(:barrier, name: "Unable to Drive")
 

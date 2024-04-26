@@ -17,12 +17,12 @@ module Jobs
       )
     end
 
-    def update_job_attribute(job_attribute_id:, acceptible_set:)
+    def update_job_attribute(job_id:, job_attribute_id:, acceptible_set:)
       job_attribute = JobAttribute.find(job_attribute_id)
 
       message_service.create!(
         schema: Events::JobAttributeUpdated::V1,
-        job_id: job_attribute.job_id,
+        job_id:,
         data: {
           id: job_attribute.id,
           acceptible_set:
@@ -30,12 +30,12 @@ module Jobs
       )
     end
 
-    def destroy_job_attribute(job_attribute_id:)
+    def destroy_job_attribute(job_id:, job_attribute_id:)
       job_attribute = JobAttribute.find(job_attribute_id)
 
       message_service.create!(
         schema: Events::JobAttributeDestroyed::V1,
-        job_id: job_attribute.job_id,
+        job_id:,
         data: {
           id: job_attribute.id
         }

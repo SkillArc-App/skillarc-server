@@ -48,7 +48,7 @@ class Job < ApplicationRecord
 
   belongs_to :employer
 
-  has_many :job_attributes, dependent: :destroy
+  has_many :job_attributes # rubocop:disable Rails/HasManyOrHasOneDependent
   has_many :applicants, dependent: :destroy
   has_many :career_paths, dependent: :destroy
   has_many :learned_skills, dependent: :destroy

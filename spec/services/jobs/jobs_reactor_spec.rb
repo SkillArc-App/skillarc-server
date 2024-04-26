@@ -31,7 +31,7 @@ RSpec.describe Jobs::JobsReactor do
   end
 
   describe "#update_job_attribute" do
-    subject { consumer.update_job_attribute(job_attribute_id:, acceptible_set:) }
+    subject { consumer.update_job_attribute(job_id: job_attribute.job_id, job_attribute_id:, acceptible_set:) }
 
     let(:job_attribute) { create(:job_attribute, acceptible_set: %w[A B]) }
     let(:job_attribute_id) { job_attribute.id }
@@ -52,7 +52,7 @@ RSpec.describe Jobs::JobsReactor do
   end
 
   describe "#destroy_job_attribute" do
-    subject { consumer.destroy_job_attribute(job_attribute_id:) }
+    subject { consumer.destroy_job_attribute(job_id: job_attribute.job_id, job_attribute_id:) }
 
     let(:job_attribute) { create(:job_attribute) }
     let(:job_attribute_id) { job_attribute.id }

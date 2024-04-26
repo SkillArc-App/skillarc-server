@@ -2,7 +2,7 @@ module Admin
   class JobAttributesController < AdminController
     include MessageEmitter
 
-    before_action :set_job, only: %i[create]
+    before_action :set_job
 
     def create
       with_message_service do
@@ -19,6 +19,7 @@ module Admin
     def update
       with_message_service do
         Jobs::JobsReactor.new(message_service:).update_job_attribute(
+          job_id: job.id,
           job_attribute_id: params[:id],
           acceptible_set: params[:job_attribute][:acceptible_set]
         )
@@ -28,6 +29,7 @@ module Admin
     def destroy
       with_message_service do
         Jobs::JobsReactor.new(message_service:).destroy_job_attribute(
+          job_id: job.id,
           job_attribute_id: params[:id]
         )
       end

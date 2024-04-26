@@ -5,11 +5,9 @@ module Jobs
     end
 
     on_message Events::JobAttributeCreated::V1, :sync do |message|
-      job = Job.find(message.aggregate.job_id)
-
       JobAttribute.create!(
         id: message.data.id,
-        job_id: job.id,
+        job_id: message.aggregate.job_id,
         attribute_name: message.data.attribute_name,
         attribute_id: message.data.attribute_id,
         acceptible_set: message.data.acceptible_set

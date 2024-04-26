@@ -122,6 +122,7 @@ RSpec.describe "Admin::JobAttributes", type: :request do
             expect_any_instance_of(Jobs::JobsReactor)
               .to receive(:update_job_attribute)
               .with(
+                job_id: id,
                 job_attribute_id:,
                 acceptible_set: %w[A]
               )
@@ -157,7 +158,7 @@ RSpec.describe "Admin::JobAttributes", type: :request do
           before do
             expect_any_instance_of(Jobs::JobsReactor)
               .to receive(:destroy_job_attribute)
-              .with(job_attribute_id: job_attribute.id)
+              .with(job_id: id, job_attribute_id: job_attribute.id)
               .and_call_original
           end
 

@@ -17,7 +17,7 @@ RSpec.describe Jobs::JobsAggregator do
           data: {
             id:,
             attribute_name: "name",
-            attribute_id: SecureRandom.uuid,
+            attribute_id:,
             acceptible_set: %w[A B]
           }
         )
@@ -28,6 +28,13 @@ RSpec.describe Jobs::JobsAggregator do
 
       it "creates a job attribute" do
         expect { subject }.to change { JobAttribute.count }.by(1)
+
+        job_attribute = JobAttribute.last
+
+        expect(job_attribute.id).to eq(id)
+        expect(job_attribute.attribute_id).to eq(attribute_id)
+        expect(job_attribute.attribute_name).to eq("name")
+        expect(job_attribute.acceptible_set).to eq(%w[A B])
       end
     end
 

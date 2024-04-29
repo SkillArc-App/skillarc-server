@@ -3,36 +3,28 @@ class DbStreamListener < StreamListener
   delegate :handled_messages, to: :consumer
   delegate :handled_messages_sync, to: :consumer
 
-  attr_reader :listener_name, :last_error
+  attr_reader :listener_name
 
   def id
     "db-stream-#{kind}-#{listener_name}"
   end
 
   def play
-    error = nil
-
     bookmark = load_bookmark
     bookmark.with_lock do
       events = unplayed_events(bookmark)
 
       last_handled_event = nil
 
-      begin
-        events.each do |event|
-          handle_message(event.message)
-          last_handled_event = event
-        end
-      rescue StandardError => e
-        @last_error = e
-        error = e
-      ensure
-        update_bookmark(bookmark, last_handled_event) if last_handled_event
+      events.each do |event|
+        handle_message(event.message)
+        last_handled_event = event
       end
+
+      update_bookmark(bookmark, last_handled_event) if last_handled_event
     end
 
     message_service.flush
-    raise error if error.present?
   end
 
   def next_event
@@ -59,7 +51,6 @@ class DbStreamListener < StreamListener
 
     @listener_name = listener_name
     @message_service = message_service
-    @last_error = nil
   end
 
   def bookmark_timestamp(bookmark)

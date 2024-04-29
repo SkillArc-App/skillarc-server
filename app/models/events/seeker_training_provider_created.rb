@@ -6,16 +6,7 @@ module Events
 
         schema do
           id Uuid
-          user_id Uuid
-          training_provider_id Uuid
-        end
-      end
-
-      class V2
-        extend Messages::Payload
-
-        schema do
-          id Uuid
+          user_id String
           training_provider_id Uuid
         end
       end
@@ -31,7 +22,7 @@ module Events
     )
     V2 = Messages::Schema.active(
       type: Messages::EVENT,
-      data: Data::V2,
+      data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
       message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,

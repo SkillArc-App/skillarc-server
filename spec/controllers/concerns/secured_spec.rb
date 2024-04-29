@@ -52,7 +52,6 @@ RSpec.describe ApplicationController, type: :controller do
 
       body = response.parsed_body
       expect(body['email']).to eq(email)
-      expect(body['user_type']).to eq('SEEKER')
       expect(body['sub']).to eq(token)
     end
   end

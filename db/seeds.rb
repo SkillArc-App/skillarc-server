@@ -894,7 +894,6 @@ trainer = User.create!(
   first_name: 'Meghan',
   last_name: 'Trainer',
   email: 'trainer@blocktrainapp.com',
-  user_type: 'TRAINING_PROVIDER',
   sub: 'megsub'
 )
 
@@ -921,7 +920,6 @@ trainer_with_reference = User.create!(
   first_name: 'Bill',
   last_name: 'Traynor',
   email: 'trainer-with-reference@blocktrainapp.com',
-  user_type: 'TRAINING_PROVIDER',
   sub: 'billsub'
 )
 

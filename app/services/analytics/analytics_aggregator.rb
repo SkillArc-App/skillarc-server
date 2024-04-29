@@ -72,8 +72,8 @@ module Analytics
       )
     end
 
-    on_message Events::OnboardingCompleted::V1 do |message|
-      person = DimPerson.find_by!(user_id: message.aggregate_id)
+    on_message Events::OnboardingCompleted::V2 do |message|
+      person = DimPerson.find_by!(seeker_id: message.aggregate_id)
 
       person.update!(
         last_active_at: message.occurred_at,

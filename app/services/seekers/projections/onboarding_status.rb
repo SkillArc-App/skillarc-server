@@ -104,7 +104,7 @@ module Seekers
         set_provided(accumulator, :education)
       end
 
-      on_message Events::SeekerTrainingProviderCreated::V2 do |_, accumulator|
+      on_message Events::SeekerTrainingProviderCreated::V3 do |_, accumulator|
         set_provided(accumulator, :training)
       end
 

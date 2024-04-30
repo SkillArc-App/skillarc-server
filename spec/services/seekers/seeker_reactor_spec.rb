@@ -83,12 +83,14 @@ RSpec.describe Seekers::SeekerReactor do
         user_id:,
         trace_id:,
         training_provider_id:,
+        program_id:,
         id:
       )
     end
 
     let(:id) { SecureRandom.uuid }
     let(:training_provider_id) { SecureRandom.uuid }
+    let(:program_id) { SecureRandom.uuid }
 
     it "emits an seeker training provider created event" do
       expect(message_service)
@@ -96,10 +98,11 @@ RSpec.describe Seekers::SeekerReactor do
         .with(
           seeker_id:,
           trace_id:,
-          schema: Events::SeekerTrainingProviderCreated::V2,
+          schema: Events::SeekerTrainingProviderCreated::V3,
           data: {
             id:,
             user_id:,
+            program_id:,
             training_provider_id:
           }
         )

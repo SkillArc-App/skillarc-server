@@ -102,6 +102,7 @@ class Onboarding
         seeker_id:,
         trace_id:,
         user_id:,
+        program_id: nil,
 
         training_provider_id: tr
       )

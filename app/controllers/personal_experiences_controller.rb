@@ -5,20 +5,15 @@ class PersonalExperiencesController < ApplicationController
   before_action :authorize
 
   def create
-    id = SecureRandom.uuid
-
-    PersonalExperience.create!(
-      **personal_experience_params,
-      id:,
-      seeker: current_user.seeker
-    )
-
     with_message_service do
       Seekers::SeekerReactor.new(message_service:).add_personal_experience(
-        **personal_experience_params,
+        id: SecureRandom.uuid,
         trace_id: request.request_id,
         seeker_id: current_user.seeker.id,
-        id:
+        activity: personal_experience_params[:activity],
+        start_date: personal_experience_params[:start_date],
+        end_date: personal_experience_params[:end_date],
+        description: personal_experience_params[:description]
       )
     end
 
@@ -26,15 +21,15 @@ class PersonalExperiencesController < ApplicationController
   end
 
   def update
-    personal_experience = PersonalExperience.find(params[:id])
-    personal_experience.update!(**personal_experience_params)
-
     with_message_service do
       Seekers::SeekerReactor.new(message_service:).add_personal_experience(
-        **personal_experience_params,
+        id: params[:id],
         trace_id: request.request_id,
         seeker_id: current_user.seeker.id,
-        id: params[:id]
+        activity: personal_experience_params[:activity],
+        start_date: personal_experience_params[:start_date],
+        end_date: personal_experience_params[:end_date],
+        description: personal_experience_params[:description]
       )
     end
 
@@ -42,9 +37,6 @@ class PersonalExperiencesController < ApplicationController
   end
 
   def destroy
-    personal_experience = PersonalExperience.find(params[:id])
-    personal_experience.destroy!
-
     with_message_service do
       Seekers::SeekerReactor.new(message_service:).remove_personal_experience(
         seeker_id: current_user.seeker.id,
@@ -58,8 +50,14 @@ class PersonalExperiencesController < ApplicationController
 
   private
 
+  attr_reader :seeker
+
+  def set_seeker
+    @seeker = Seeker.find(params[:profile_id])
+  end
+
   def personal_experience_params
-    params.require(:personal_experience).permit(
+    @personal_experience_params = params.require(:personal_experience).permit(
       :activity, :start_date, :end_date, :description
     ).to_h.symbolize_keys
   end

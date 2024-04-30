@@ -8,30 +8,17 @@ class OtherExperiencesController < ApplicationController
   before_action :seeker_editor_authorize
 
   def create
-    other_experience = OtherExperience.create!(
-      **params.require(:other_experience).permit(
-        :organization_name,
-        :position,
-        :start_date,
-        :end_date,
-        :is_current,
-        :description
-      ),
-      id: SecureRandom.uuid,
-      seeker:
-    )
-
     with_message_service do
       Seekers::SeekerReactor.new(message_service:).add_experience(
-        id: other_experience.id,
+        id: SecureRandom.uuid,
         trace_id: request.request_id,
-        organization_name: other_experience.organization_name,
-        position: other_experience.position,
-        start_date: other_experience.start_date,
-        end_date: other_experience.end_date,
-        is_current: other_experience.is_current,
-        description: other_experience.description,
-        seeker_id: seeker.id
+        seeker_id: params[:profile_id],
+        organization_name: work_experience_params[:organization_name],
+        position: work_experience_params[:position],
+        start_date: work_experience_params[:start_date],
+        end_date: work_experience_params[:end_date],
+        is_current: work_experience_params[:is_current],
+        description: work_experience_params[:description]
       )
     end
 
@@ -39,28 +26,17 @@ class OtherExperiencesController < ApplicationController
   end
 
   def update
-    other_experience = OtherExperience.find(params[:id])
-
-    other_experience.update!(**params.require(:other_experience).permit(
-      :organization_name,
-      :position,
-      :start_date,
-      :end_date,
-      :is_current,
-      :description
-    ))
-
     with_message_service do
       Seekers::SeekerReactor.new(message_service:).add_experience(
         id: params[:id],
         trace_id: request.request_id,
-        organization_name: other_experience.organization_name,
-        position: other_experience.position,
-        start_date: other_experience.start_date,
-        end_date: other_experience.end_date,
-        is_current: other_experience.is_current,
-        description: other_experience.description,
-        seeker_id: seeker.id
+        seeker_id: params[:profile_id],
+        organization_name: work_experience_params[:organization_name],
+        position: work_experience_params[:position],
+        start_date: work_experience_params[:start_date],
+        end_date: work_experience_params[:end_date],
+        is_current: work_experience_params[:is_current],
+        description: work_experience_params[:description]
       )
     end
 
@@ -68,15 +44,11 @@ class OtherExperiencesController < ApplicationController
   end
 
   def destroy
-    other_experience = OtherExperience.find(params[:id])
-
-    other_experience.destroy!
-
     with_message_service do
       Seekers::SeekerReactor.new(message_service:).remove_experience(
         trace_id: request.request_id,
         experience_id: params[:id],
-        seeker_id: seeker.id
+        seeker_id: params[:profile_id]
       )
     end
 
@@ -84,6 +56,17 @@ class OtherExperiencesController < ApplicationController
   end
 
   private
+
+  def work_experience_params
+    @work_experience_params ||= params.require(:other_experience).permit(
+      :organization_name,
+      :position,
+      :start_date,
+      :end_date,
+      :is_current,
+      :description
+    ).to_h.symbolize_keys
+  end
 
   attr_reader :seeker
 

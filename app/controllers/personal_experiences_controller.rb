@@ -6,7 +6,7 @@ class PersonalExperiencesController < ApplicationController
 
   def create
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).add_personal_experience(
+      Seekers::SeekerReactor.new(message_service:).personal_experience_added(
         id: SecureRandom.uuid,
         trace_id: request.request_id,
         seeker_id: current_user.seeker.id,
@@ -22,7 +22,7 @@ class PersonalExperiencesController < ApplicationController
 
   def update
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).add_personal_experience(
+      Seekers::SeekerReactor.new(message_service:).personal_experience_added(
         id: params[:id],
         trace_id: request.request_id,
         seeker_id: current_user.seeker.id,
@@ -38,7 +38,7 @@ class PersonalExperiencesController < ApplicationController
 
   def destroy
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).remove_personal_experience(
+      Seekers::SeekerReactor.new(message_service:).personal_experience_removed(
         seeker_id: current_user.seeker.id,
         trace_id: request.request_id,
         personal_experience_id: params[:id]
@@ -57,7 +57,7 @@ class PersonalExperiencesController < ApplicationController
   end
 
   def personal_experience_params
-    @personal_experience_params = params.require(:personal_experience).permit(
+    @personal_experience_params ||= params.require(:personal_experience).permit(
       :activity, :start_date, :end_date, :description
     ).to_h.symbolize_keys
   end

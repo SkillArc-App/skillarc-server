@@ -9,7 +9,7 @@ class OtherExperiencesController < ApplicationController
 
   def create
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).add_experience(
+      Seekers::SeekerReactor.new(message_service:).experience_added(
         id: SecureRandom.uuid,
         trace_id: request.request_id,
         seeker_id: params[:profile_id],
@@ -27,7 +27,7 @@ class OtherExperiencesController < ApplicationController
 
   def update
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).add_experience(
+      Seekers::SeekerReactor.new(message_service:).experience_added(
         id: params[:id],
         trace_id: request.request_id,
         seeker_id: params[:profile_id],
@@ -45,7 +45,7 @@ class OtherExperiencesController < ApplicationController
 
   def destroy
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).remove_experience(
+      Seekers::SeekerReactor.new(message_service:).experience_removed(
         trace_id: request.request_id,
         experience_id: params[:id],
         seeker_id: params[:profile_id]

@@ -6,19 +6,19 @@ class MessageService
   SchemaNotFoundError = Class.new(StandardError)
   InactiveSchemaError = Class.new(StandardError)
 
-  def create!(schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
-    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, **)
+  def create!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
     save!(message)
 
     message
   end
 
-  def build(schema:, data:, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+  def build(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     raise NotSchemaError unless schema.is_a?(Messages::Schema)
 
     raise InactiveSchemaError, "Attempted to create message for #{schema}" if schema.inactive?
 
-    aggregate = schema.aggregate.new(**)
+    aggregate ||= schema.aggregate.new(**)
 
     data = schema.data.new(**data) if data.is_a?(Hash)
     metadata = schema.metadata.new(**metadata) if metadata.is_a?(Hash)

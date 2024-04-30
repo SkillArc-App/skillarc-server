@@ -46,6 +46,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
+            aggregate: nil,
             trace_id:,
             id:,
             occurred_at:,
@@ -297,7 +298,7 @@ RSpec.describe MessageService do
             data: Messages::Nothing,
             metadata: Messages::Nothing,
             aggregate: Aggregates::User,
-            message_type: Messages::Types::USER_CREATED,
+            message_type: Messages::Types::User::USER_CREATED,
             type: Messages::EVENT,
             version: 2
           )

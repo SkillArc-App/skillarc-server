@@ -787,8 +787,16 @@ message_service.create!(
     last_name: trained_seeker_with_reference.user.last_name,
     email: trained_seeker_with_reference.user.email,
     sub: trained_seeker_with_reference.user.sub
-  },
-  occurred_at: trained_seeker_with_reference.user.created_at
+  }
+)
+
+message_service.create!(
+  user_id: trained_seeker_with_reference.user.id,
+  schema: Events::SeekerCreated::V1,
+  data: {
+    id: trained_seeker_with_reference.id,
+    user_id: trained_seeker_with_reference.user.id
+  }
 )
 
 trained_seeker = Seeker.create!(
@@ -811,7 +819,15 @@ message_service.create!(
     email: trained_seeker.user.email,
     sub: trained_seeker.user.sub
   },
-  occurred_at: trained_seeker.user.created_at
+)
+
+message_service.create!(
+  user_id: trained_seeker.user.id,
+  schema: Events::SeekerCreated::V1,
+  data: {
+    id: trained_seeker.id,
+    user_id: trained_seeker.user.id
+  }
 )
 
 seeker_with_profile = Seeker.create!(
@@ -869,11 +885,18 @@ Employers::Applicant.create!(
   status: 'new'
 )
 
-OnboardingSession.create!(
-  id: SecureRandom.uuid,
-  user_id: seeker_with_profile.user.id,
-  started_at: seeker_with_profile.created_at,
-  completed_at: seeker_with_profile.created_at + 1.day
+message_service.create!(
+  schema: Events::OnboardingStarted::V1,
+  seeker_id: seeker_with_profile.id,
+  data: {
+    user_id: seeker_with_profile.user.id
+  }
+)
+
+message_service.create!(
+  schema: Events::OnboardingCompleted::V2,
+  seeker_id: seeker_with_profile.id,
+  data: Messages::Nothing
 )
 
 megans_recruits = TrainingProvider.create!(
@@ -905,8 +928,7 @@ message_service.create!(
     last_name: trainer.last_name,
     email: trainer.email,
     sub: trainer.sub
-  },
-  occurred_at: trainer.created_at
+  }
 )
 
 TrainingProviderProfile.create!(

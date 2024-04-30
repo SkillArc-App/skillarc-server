@@ -39,7 +39,7 @@ module Contact
 
       user_contact.update!(
         phone_number: message.data.phone_number,
-        preferred_contact: Contact::ContactPreference::SMS,
+        preferred_contact: Contact::ContactPreference::SMS
       )
     end
 

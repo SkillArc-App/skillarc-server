@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Seekers::SeekerReactor do
+RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
   it_behaves_like "a message consumer"
 
   let(:consumer) { described_class.new(message_service:) }
@@ -585,7 +585,6 @@ RSpec.describe Seekers::SeekerReactor do
       end
 
       before do
-
         expect(Seekers::Projections::OnboardingStatus)
           .to receive(:project)
           .with(aggregate: message.aggregate)

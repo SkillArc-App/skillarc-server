@@ -818,7 +818,7 @@ message_service.create!(
     last_name: trained_seeker.user.last_name,
     email: trained_seeker.user.email,
     sub: trained_seeker.user.sub
-  },
+  }
 )
 
 message_service.create!(

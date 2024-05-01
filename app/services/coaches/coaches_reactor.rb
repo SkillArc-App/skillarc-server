@@ -2,6 +2,31 @@ module Coaches
   class CoachesReactor < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay; end
 
+    def add_attribute(seeker_id:, seeker_attribute_id:, attribute_id:, attribute_name:, attribute_value:, trace_id:) # rubocop:disable Metrics/ParameterLists
+      message_service.create!(
+        schema: Events::SeekerAttributeAdded::V1,
+        seeker_id:,
+        trace_id:,
+        data: {
+          id: seeker_attribute_id,
+          attribute_id:,
+          attribute_name:,
+          attribute_value:
+        }
+      )
+    end
+
+    def remove_attribute(seeker_id:, seeker_attribute_id:, trace_id:)
+      message_service.create!(
+        schema: Events::SeekerAttributeRemoved::V1,
+        seeker_id:,
+        trace_id:,
+        data: {
+          id: seeker_attribute_id
+        }
+      )
+    end
+
     def add_lead(lead_captured_by:, lead_id:, phone_number:, first_name:, last_name:, trace_id:, email: nil) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         schema: Events::LeadAdded::V2,

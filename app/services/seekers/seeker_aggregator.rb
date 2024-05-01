@@ -6,6 +6,7 @@ module Seekers
       PersonalExperience.delete_all
       SeekerTrainingProvider.delete_all
       ProfileSkill.delete_all
+      OnboardingSession.delete_all
     end
 
     on_message Events::BasicInfoAdded::V1, :sync do |message|

@@ -510,6 +510,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           last_contacted: note_with_id_added1.occurred_at,
           assigned_coach: "coach@blocktrainapp.com",
           certified_by: coach.email,
+          attributes: [],
           barriers: [{
             id: barrier2.barrier_id,
             name: "barrier2"
@@ -547,6 +548,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           certified_by: nil,
           barriers: [],
           notes: [],
+          attributes: [],
           applications: [
             {
               job_id:,
@@ -607,6 +609,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           last_contacted: note_with_id_added1.occurred_at,
           assigned_coach: "coach@blocktrainapp.com",
           certified_by: coach.email,
+          attributes: [],
           barriers: [{
             id: barrier2.barrier_id,
             name: "barrier2"

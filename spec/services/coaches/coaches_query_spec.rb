@@ -241,6 +241,15 @@ RSpec.describe Coaches::CoachesQuery do
         coach_seeker_context: csc1,
         job: create(:coaches__job, job_id: "d4cd7594-bc68-44cd-b22c-246979a9ea0f")
       )
+
+      create(
+        :coaches__seeker_attribute,
+        id: '2527d624-d0c4-48d4-856b-369ff767f29d',
+        coach_seeker_context: csc1,
+        attribute_name: "Education Level",
+        attribute_value: "High School",
+        attribute_id: "3f48a475-b711-4265-9cc5-02fcfc0c40d1"
+      )
     end
 
     it "returns the context" do
@@ -257,6 +266,12 @@ RSpec.describe Coaches::CoachesQuery do
         last_contacted: Time.zone.local(2010, 1, 1),
         assigned_coach: "coach@blocktrainapp.com",
         certified_by: "person@skillarc.com",
+        attributes: [{
+          name: "Education Level",
+          id: '2527d624-d0c4-48d4-856b-369ff767f29d',
+          attribute_id: "3f48a475-b711-4265-9cc5-02fcfc0c40d1",
+          value: "High School"
+        }],
         barriers: [{
           id: "81f43abc-67b6-4531-af45-293d3fc053e5",
           name: "barrier2"

@@ -55,12 +55,10 @@ module Coaches
 
     on_message Events::SeekerAttributeAdded::V1, :sync do |message|
       csc = Coaches::CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
-      seeker_attribute = SeekerAttribute.find_or_initialize_by(
-        id: message.data.id,
-        coach_seeker_context_id: csc.id
-      )
+      seeker_attribute = SeekerAttribute.find_or_initialize_by(id: message.data.id)
 
       seeker_attribute.update!(
+        coach_seeker_context_id: csc.id,
         attribute_name: message.data.attribute_name,
         attribute_value: message.data.attribute_value,
         attribute_id: message.data.attribute_id

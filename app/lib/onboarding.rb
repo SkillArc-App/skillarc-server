@@ -34,7 +34,7 @@ class Onboarding
   attr_reader :seeker_reactor, :user_id, :seeker_id, :trace_id
 
   def update_name(name_response)
-    seeker_reactor.basic_info_added(
+    seeker_reactor.add_basic_info(
       seeker_id:,
       trace_id:,
       user_id:,
@@ -47,7 +47,7 @@ class Onboarding
   end
 
   def update_reliability(reliabilities)
-    seeker_reactor.reliability_added(
+    seeker_reactor.add_reliability(
       seeker_id:,
       trace_id:,
       reliabilities: reliabilities.map { |r| map_reliabilities(r) }
@@ -67,7 +67,7 @@ class Onboarding
 
   def update_experience(work_responses)
     work_responses.each do |wr|
-      seeker_reactor.experience_added(
+      seeker_reactor.add_experience(
         seeker_id:,
         trace_id:,
 
@@ -83,7 +83,7 @@ class Onboarding
 
   def update_education(education_responses)
     education_responses.each do |er|
-      seeker_reactor.education_experience_added(
+      seeker_reactor.add_education_experience(
         seeker_id:,
         trace_id:,
 
@@ -98,7 +98,7 @@ class Onboarding
 
   def update_training_provider(tp_responses)
     tp_responses.each do |tr|
-      seeker_reactor.seeker_training_provider_added(
+      seeker_reactor.add_seeker_training_provider(
         seeker_id:,
         trace_id:,
         user_id:,
@@ -111,7 +111,7 @@ class Onboarding
 
   def update_other(other_responses)
     other_responses.each do |oth_r|
-      seeker_reactor.personal_experience_added(
+      seeker_reactor.add_personal_experience(
         seeker_id:,
         trace_id:,
 
@@ -124,7 +124,7 @@ class Onboarding
   end
 
   def update_interests(opportunity_interests_response)
-    seeker_reactor.professional_interests_added(
+    seeker_reactor.add_professional_interests(
       seeker_id:,
       trace_id:,
 

@@ -1,5 +1,5 @@
 module Events
-  module ProfessionalInterests
+  module ProfessionalInterestsAdded
     module Data
       class V1
         extend Messages::Payload

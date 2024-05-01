@@ -2,7 +2,7 @@ module Seekers
   class SeekerReactor < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay; end
 
-    def education_experience_added(seeker_id:, organization_name:, title:, graduation_date:, gpa:, activities:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
+    def add_education_experience(seeker_id:, organization_name:, title:, graduation_date:, gpa:, activities:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         schema: Events::EducationExperienceAdded::V1,
         seeker_id:,
@@ -18,7 +18,7 @@ module Seekers
       )
     end
 
-    def education_experience_removed(seeker_id:, education_experience_id:, trace_id:)
+    def remove_education_experience(seeker_id:, education_experience_id:, trace_id:)
       message_service.create!(
         schema: Events::EducationExperienceDeleted::V1,
         trace_id:,
@@ -29,7 +29,7 @@ module Seekers
       )
     end
 
-    def personal_experience_added(seeker_id:, activity:, description:, start_date:, end_date:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
+    def add_personal_experience(seeker_id:, activity:, description:, start_date:, end_date:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         schema: Events::PersonalExperienceAdded::V1,
         seeker_id:,
@@ -44,7 +44,7 @@ module Seekers
       )
     end
 
-    def personal_experience_removed(seeker_id:, personal_experience_id:, trace_id:)
+    def remove_personal_experience(seeker_id:, personal_experience_id:, trace_id:)
       message_service.create!(
         schema: Events::PersonalExperienceRemoved::V1,
         trace_id:,
@@ -55,7 +55,7 @@ module Seekers
       )
     end
 
-    def experience_added(seeker_id:, organization_name:, position:, start_date:, end_date:, is_current:, description:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
+    def add_experience(seeker_id:, organization_name:, position:, start_date:, end_date:, is_current:, description:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         schema: Events::ExperienceAdded::V1,
         trace_id:,
@@ -72,7 +72,7 @@ module Seekers
       )
     end
 
-    def experience_removed(seeker_id:, experience_id:, trace_id:)
+    def remove_experience(seeker_id:, experience_id:, trace_id:)
       message_service.create!(
         schema: Events::ExperienceRemoved::V1,
         trace_id:,
@@ -94,7 +94,7 @@ module Seekers
       )
     end
 
-    def seeker_training_provider_added(seeker_id:, user_id:, trace_id:, program_id:, training_provider_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
+    def add_seeker_training_provider(seeker_id:, user_id:, trace_id:, program_id:, training_provider_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         seeker_id:,
         trace_id:,
@@ -108,7 +108,7 @@ module Seekers
       )
     end
 
-    def reliability_added(seeker_id:, trace_id:, reliabilities:)
+    def add_reliability(seeker_id:, trace_id:, reliabilities:)
       message_service.create!(
         seeker_id:,
         trace_id:,
@@ -119,18 +119,18 @@ module Seekers
       )
     end
 
-    def professional_interests_added(seeker_id:, trace_id:, interests:)
+    def add_professional_interests(seeker_id:, trace_id:, interests:)
       message_service.create!(
         seeker_id:,
         trace_id:,
-        schema: Events::ProfessionalInterests::V1,
+        schema: Events::ProfessionalInterestsAdded::V1,
         data: {
           interests:
         }
       )
     end
 
-    def basic_info_added(seeker_id:, user_id:, first_name:, last_name:, phone_number:, date_of_birth:, trace_id:) # rubocop:disable Metrics/ParameterLists
+    def add_basic_info(seeker_id:, user_id:, first_name:, last_name:, phone_number:, date_of_birth:, trace_id:) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         seeker_id:,
         trace_id:,
@@ -227,13 +227,15 @@ module Seekers
       emit_complete_onboarding_if_applicable(message)
     end
 
-    on_message Events::ProfessionalInterests::V1 do |message|
+    on_message Events::ProfessionalInterestsAdded::V1 do |message|
       emit_complete_onboarding_if_applicable(message)
     end
 
     private
 
     def emit_complete_onboarding_if_applicable(message)
+      return if ::Projections::HasOccurred.project(aggregate: message.aggregate, schema: Events::OnboardingCompleted::V2)
+
       status = Seekers::Projections::OnboardingStatus.project(aggregate: message.aggregate)
 
       return unless status.next_step == Onboarding::Steps::COMPLETE

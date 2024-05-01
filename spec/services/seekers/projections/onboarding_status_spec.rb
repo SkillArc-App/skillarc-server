@@ -105,7 +105,7 @@ RSpec.describe Seekers::Projections::OnboardingStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::ProfessionalInterests::V1,
+        schema: Events::ProfessionalInterestsAdded::V1,
         data: {
           interests: []
         }

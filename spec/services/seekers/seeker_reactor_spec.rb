@@ -9,9 +9,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
   let(:trace_id) { SecureRandom.uuid }
   let(:user_id) { SecureRandom.uuid }
 
-  describe "education_experience_added" do
+  describe "add_education_experience" do
     subject do
-      consumer.education_experience_added(
+      consumer.add_education_experience(
         seeker_id:,
         organization_name:,
         title:,
@@ -76,9 +76,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe "seeker_training_provider_added" do
+  describe "add_seeker_training_provider" do
     subject do
-      consumer.seeker_training_provider_added(
+      consumer.add_seeker_training_provider(
         seeker_id:,
         user_id:,
         trace_id:,
@@ -111,9 +111,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe "reliability_added" do
+  describe "add_reliability" do
     subject do
-      consumer.reliability_added(
+      consumer.add_reliability(
         seeker_id:,
         trace_id:,
         reliabilities:
@@ -138,9 +138,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe "professional_interests_added" do
+  describe "add_professional_interests" do
     subject do
-      consumer.professional_interests_added(
+      consumer.add_professional_interests(
         seeker_id:,
         trace_id:,
         interests:
@@ -155,7 +155,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
         .with(
           seeker_id:,
           trace_id:,
-          schema: Events::ProfessionalInterests::V1,
+          schema: Events::ProfessionalInterestsAdded::V1,
           data: {
             interests:
           }
@@ -165,9 +165,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe "basic_info_added" do
+  describe "add_basic_info" do
     subject do
-      consumer.basic_info_added(
+      consumer.add_basic_info(
         seeker_id:,
         user_id:,
         first_name:,
@@ -225,9 +225,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe "education_experience_removed" do
+  describe "remove_education_experience" do
     subject do
-      consumer.education_experience_removed(
+      consumer.remove_education_experience(
         seeker_id:,
         education_experience_id:,
         trace_id:
@@ -252,9 +252,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe "personal_experience_added" do
+  describe "add_personal_experience" do
     subject do
-      consumer.personal_experience_added(
+      consumer.add_personal_experience(
         seeker_id:,
         activity:,
         description:,
@@ -291,9 +291,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe "personal_experience_removed" do
+  describe "remove_personal_experience" do
     subject do
-      consumer.personal_experience_removed(
+      consumer.remove_personal_experience(
         seeker_id:,
         personal_experience_id:,
         trace_id:
@@ -318,9 +318,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe "experience_added" do
+  describe "add_experience" do
     subject do
-      consumer.experience_added(
+      consumer.add_experience(
         seeker_id:,
         organization_name:,
         position:,
@@ -361,9 +361,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe "experience_removed" do
+  describe "remove_experience" do
     subject do
-      consumer.experience_removed(
+      consumer.remove_experience(
         seeker_id:,
         experience_id:,
         trace_id:

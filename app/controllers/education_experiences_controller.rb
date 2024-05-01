@@ -9,7 +9,7 @@ class EducationExperiencesController < ApplicationController
 
   def create
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).education_experience_added(
+      Seekers::SeekerReactor.new(message_service:).add_education_experience(
         id: SecureRandom.uuid,
         seeker_id: params[:profile_id],
         trace_id: request.request_id,
@@ -26,7 +26,7 @@ class EducationExperiencesController < ApplicationController
 
   def update
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).education_experience_added(
+      Seekers::SeekerReactor.new(message_service:).add_education_experience(
         id: params[:id],
         seeker_id: params[:profile_id],
         trace_id: request.request_id,
@@ -43,7 +43,7 @@ class EducationExperiencesController < ApplicationController
 
   def destroy
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).education_experience_removed(
+      Seekers::SeekerReactor.new(message_service:).remove_education_experience(
         trace_id: request.request_id,
         seeker_id: params[:profile_id],
         education_experience_id: params[:id]

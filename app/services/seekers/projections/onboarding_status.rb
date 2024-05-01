@@ -108,7 +108,7 @@ module Seekers
         set_provided(accumulator, :training)
       end
 
-      on_message Events::ProfessionalInterests::V1 do |_, accumulator|
+      on_message Events::ProfessionalInterestsAdded::V1 do |_, accumulator|
         set_provided(accumulator, :opportunities)
       end
 

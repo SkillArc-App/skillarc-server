@@ -163,7 +163,7 @@ RSpec.describe Onboarding do
           .with(
             seeker_id:,
             trace_id:,
-            schema: Events::ProfessionalInterests::V1,
+            schema: Events::ProfessionalInterestsAdded::V1,
             data: {
               interests: ["construction"]
             }

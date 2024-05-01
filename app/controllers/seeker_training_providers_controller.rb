@@ -1,39 +1,51 @@
 class SeekerTrainingProvidersController < ApplicationController
   include Secured
   include Admin
+  include MessageEmitter
 
   before_action :authorize
   before_action :admin_authorize
 
   def create
-    seeker_id = params["seeker_id"]
-    program_id = params["programId"]
-    training_provider_id = params["trainingProviderId"]
+    seeker = Seeker.find(params["seeker_id"])
 
-    stp = SeekerTrainingProvider.create!(
-      id: SecureRandom.uuid,
-      program_id:,
-      user_id: Seeker.find(seeker_id).user_id,
-      training_provider_id:
-    )
+    with_message_service do
+      message_service.create!(
+        schema: Events::SeekerTrainingProviderCreated::V3,
+        trace_id: request.request_id,
+        seeker_id: params["seeker_id"],
+        data: {
+          id: SecureRandom.uuid,
+          program_id: params["programId"],
+          training_provider_id: params["trainingProviderId"],
+          user_id: seeker.user_id
+        }
+      )
+    end
 
-    render json: stp
+    head :created
   end
 
   def update
-    seeker_id = params["seeker_id"]
-    program_id = params["programId"]
-    training_provider_id = params["trainingProviderId"]
-
+    seeker = Seeker.find(params["seeker_id"])
     stp = SeekerTrainingProvider.find_by!(
-      user_id: Seeker.find(seeker_id).user_id
+      user_id: seeker.user_id
     )
 
-    stp.program_id = program_id if program_id
-    stp.training_provider_id = training_provider_id if training_provider_id
+    with_message_service do
+      message_service.create!(
+        schema: Events::SeekerTrainingProviderCreated::V3,
+        trace_id: request.request_id,
+        seeker_id: params["seeker_id"],
+        data: {
+          id: stp.id,
+          program_id: params["programId"],
+          training_provider_id: params["trainingProviderId"],
+          user_id: seeker.user_id
+        }
+      )
+    end
 
-    stp.save!
-
-    render json: stp
+    head :accepted
   end
 end

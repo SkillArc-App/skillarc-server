@@ -174,47 +174,27 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         let(:message) do
           build(
             :message,
-            aggregate_id: user_id,
-            schema: Events::UserUpdated::V1,
+            aggregate_id: seeker_id,
+            schema: Events::BasicInfoAdded::V1,
             data: {
-              email:,
+              user_id:,
               first_name: "John",
               last_name: "Chabot",
-              phone_number: "333-333-444"
+              phone_number: "333-333-444",
+              date_of_birth: "10-10-2000"
             }
           )
         end
 
-        context "when email is defined" do
-          let(:email) { "some@email.com" }
+        it "updates a dim person from the message" do
+          expect { subject }.not_to change(Analytics::DimPerson, :count)
 
-          it "updates a dim person from the message" do
-            expect { subject }.not_to change(Analytics::DimPerson, :count)
+          person = Analytics::DimPerson.take(1).first
 
-            person = Analytics::DimPerson.take(1).first
-
-            expect(person.last_active_at).to eq(message.occurred_at)
-            expect(person.email).to eq(message.data.email)
-            expect(person.phone_number).to eq(message.data.phone_number)
-            expect(person.first_name).to eq(message.data.first_name)
-            expect(person.last_name).to eq(message.data.last_name)
-          end
-        end
-
-        context "when email is undefined" do
-          let(:email) { Messages::UNDEFINED }
-
-          it "updates a dim person from the message" do
-            expect { subject }.not_to change(Analytics::DimPerson, :count)
-
-            person = Analytics::DimPerson.take(1).first
-
-            expect(person.last_active_at).to eq(message.occurred_at)
-            expect(person.email).not_to eq(message.data.email)
-            expect(person.phone_number).to eq(message.data.phone_number)
-            expect(person.first_name).to eq(message.data.first_name)
-            expect(person.last_name).to eq(message.data.last_name)
-          end
+          expect(person.last_active_at).to eq(message.occurred_at)
+          expect(person.phone_number).to eq(message.data.phone_number)
+          expect(person.first_name).to eq(message.data.first_name)
+          expect(person.last_name).to eq(message.data.last_name)
         end
       end
 

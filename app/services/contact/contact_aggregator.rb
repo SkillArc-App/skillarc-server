@@ -34,16 +34,13 @@ module Contact
       )
     end
 
-    on_message Events::UserUpdated::V1 do |message|
-      user_contact = Contact::UserContact.find_by!(user_id: message.aggregate.user_id)
+    on_message Events::BasicInfoAdded::V1 do |message|
+      user_contact = Contact::UserContact.find_by!(user_id: message.data.user_id)
 
-      data = message.data.serialize
-
-      user_contact.email = data[:email] if data.key?(:email)
-      user_contact.phone_number = data[:phone_number]
-      user_contact.preferred_contact = Contact::ContactPreference::SMS
-
-      user_contact.save!
+      user_contact.update!(
+        phone_number: message.data.phone_number,
+        preferred_contact: Contact::ContactPreference::SMS
+      )
     end
 
     on_message Events::SlackIdAdded::V1 do |message|

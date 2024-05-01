@@ -204,8 +204,8 @@ module Coaches
       end
     end
 
-    on_message Events::UserUpdated::V1 do |message|
-      csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
+    on_message Events::BasicInfoAdded::V1 do |message|
+      csc = CoachSeekerContext.find_by!(user_id: message.data.user_id)
 
       csc.update!(
         last_active_on: message.occurred_at,
@@ -220,7 +220,7 @@ module Coaches
 
       csc.update!(
         last_active_on: message.occurred_at,
-        seeker_id: message.data[:id]
+        seeker_id: message.data.id
       )
     end
 

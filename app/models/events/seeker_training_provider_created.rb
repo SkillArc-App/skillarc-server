@@ -6,7 +6,7 @@ module Events
 
         schema do
           id Uuid
-          user_id Uuid
+          user_id String
           training_provider_id Uuid
         end
       end
@@ -16,6 +16,8 @@ module Events
 
         schema do
           id Uuid
+          user_id String
+          program_id Either(String, nil)
           training_provider_id Uuid
         end
       end
@@ -29,13 +31,21 @@ module Events
       message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 1
     )
-    V2 = Messages::Schema.active(
+    V2 = Messages::Schema.inactive(
+      type: Messages::EVENT,
+      data: Data::V1,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Seeker,
+      message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
+      version: 2
+    )
+    V3 = Messages::Schema.active(
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
       message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
-      version: 2
+      version: 3
     )
   end
 end

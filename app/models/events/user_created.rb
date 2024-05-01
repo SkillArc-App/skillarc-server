@@ -18,7 +18,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::USER_CREATED,
+      message_type: Messages::Types::User::USER_CREATED,
       version: 1
     )
   end

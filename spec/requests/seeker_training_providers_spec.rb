@@ -18,14 +18,29 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
       }
     end
 
-    it "returns a 200" do
+    it "returns a 201" do
       subject
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:created)
     end
 
-    it "creates a seeker training provider" do
-      expect { subject }.to change(SeekerTrainingProvider, :count).by(1)
+    it "emits a message" do
+      expect_any_instance_of(MessageService)
+        .to receive(:create!)
+        .with(
+          schema: Events::SeekerTrainingProviderCreated::V3,
+          trace_id: be_a(String),
+          seeker_id: seeker.id,
+          data: {
+            id: be_a(String),
+            program_id: params[:programId],
+            training_provider_id: params[:trainingProviderId],
+            user_id: seeker.user_id
+          }
+        )
+        .and_call_original
+
+      subject
     end
   end
 
@@ -43,17 +58,29 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
       }
     end
 
-    it "returns a 200" do
+    it "returns a 202" do
       subject
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:accepted)
     end
 
-    it "updates the seeker training provider" do
-      subject
+    it "emits a message" do
+      expect_any_instance_of(MessageService)
+        .to receive(:create!)
+        .with(
+          schema: Events::SeekerTrainingProviderCreated::V3,
+          trace_id: be_a(String),
+          seeker_id: seeker.id,
+          data: {
+            id: be_a(String),
+            program_id: params[:programId],
+            training_provider_id: params[:trainingProviderId],
+            user_id: seeker.user_id
+          }
+        )
+        .and_call_original
 
-      expect(stp.reload.program_id).to eq(new_program.id)
-      expect(stp.reload.training_provider_id).to eq(new_training_provider.id)
+      subject
     end
   end
 end

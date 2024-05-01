@@ -60,7 +60,8 @@ Rails.application.routes.draw do
 
   resources :pass_reasons
 
-  resources :onboarding_sessions
+  post 'onboarding_sessions' => 'onboarding_sessions#create'
+  put 'onboarding_sessions' => 'onboarding_sessions#update'
 
   resources :users
   resources :profiles, only: %i[index show] do
@@ -147,6 +148,7 @@ Rails.application.routes.draw do
       post '/create_active_seeker' => 'test#create_active_seeker'
       get '/assert_no_failed_jobs' => 'test#assert_no_failed_jobs'
       get '/jobs_settled' => 'test#jobs_settled'
+      post '/clear_failed_jobs' => 'test#clear_failed_jobs'
       post '/create_test_trainer_with_student' => 'test#create_test_trainer_with_student'
       post '/create_recruiter_with_applicant' => 'test#create_test_recruiter_with_applicant'
     end

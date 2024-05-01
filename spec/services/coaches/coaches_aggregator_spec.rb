@@ -7,7 +7,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
   let(:user_without_email) { build(:message, :user_created, aggregate_id: user_without_email_id, data: { first_name: "Hannah", last_name: "Block" }) }
   let(:seeker_without_email) { build(:message, :profile_created, aggregate_id: user_without_email_id, data: { id: seeker_without_email_id, user_id: user_without_email_id }) }
   let(:user_created) { build(:message, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com" }) }
-  let(:user_updated) { build(:message, :user_updated, aggregate_id: user_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890" }) }
+  let(:basic_info_added) { build(:message, schema: Events::BasicInfoAdded::V1, aggregate_id: seeker_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890", date_of_birth: "10-10-2000", user_id: }) }
   let(:other_user_created) { build(:message, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
   let(:seeker_created) { build(:message, :profile_created, aggregate_id: user_id, data: { id: seeker_id, user_id: }) }
   let(:other_seeker_created) { build(:message, :profile_created, aggregate_id: other_user_id, data: { id: other_seeker_id, user_id: other_user_id }) }
@@ -396,7 +396,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
       consumer.handle_message(user_without_email)
       consumer.handle_message(seeker_without_email)
       consumer.handle_message(user_created)
-      consumer.handle_message(user_updated)
+      consumer.handle_message(basic_info_added)
       consumer.handle_message(other_user_created)
       consumer.handle_message(seeker_created)
       consumer.handle_message(other_seeker_created)

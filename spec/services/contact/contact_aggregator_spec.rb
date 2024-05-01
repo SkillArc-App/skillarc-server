@@ -100,8 +100,8 @@ RSpec.describe Contact::ContactAggregator do
       let(:message) do
         build(
           :message,
-          aggregate_id: user_contact.user_id,
-          schema: Events::UserUpdated::V1,
+          aggregate_id: SecureRandom.uuid,
+          schema: Events::BasicInfoAdded::V1,
           data:
         )
       end
@@ -112,35 +112,18 @@ RSpec.describe Contact::ContactAggregator do
         {
           first_name: "John",
           last_name: "Chabot",
-          email:,
-          phone_number: "333-333-3333"
+          phone_number: "333-333-3333",
+          date_of_birth: "10-10-2000",
+          user_id: user_contact.user_id
         }
       end
 
-      context "when data includes email and phone number" do
-        let(:email) { "an@email.com" }
+      it "updates user_contact with phone number" do
+        subject
 
-        it "updates user_contact with phone number and email" do
-          subject
-
-          user_contact.reload
-          expect(user_contact.phone_number).to eq("333-333-3333")
-          expect(user_contact.email).to eq("an@email.com")
-          expect(user_contact.preferred_contact).to eq(Contact::ContactPreference::SMS)
-        end
-      end
-
-      context "when data doesn't include a email but does include a phone number" do
-        let(:email) { Messages::UNDEFINED }
-
-        it "updates user_contact with phone number but not email" do
-          subject
-
-          user_contact.reload
-          expect(user_contact.phone_number).to eq("333-333-3333")
-          expect(user_contact.email).to eq(og_email)
-          expect(user_contact.preferred_contact).to eq(Contact::ContactPreference::SMS)
-        end
+        user_contact.reload
+        expect(user_contact.phone_number).to eq("333-333-3333")
+        expect(user_contact.preferred_contact).to eq(Contact::ContactPreference::SMS)
       end
     end
 

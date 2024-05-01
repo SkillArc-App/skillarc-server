@@ -7,6 +7,12 @@ module Seekers
     end
 
     def update(about:, first_name:, last_name:, phone_number:, zip_code:)
+      seeker = user.seeker
+      return unless seeker
+
+      aggregate = Aggregates::Seeker.new(seeker_id: seeker.id)
+      date_of_birth = ::Projections::GetLastValue.project(schema: Events::BasicInfoAdded::V1, aggregate:, attribute: :date_of_birth)
+
       user.update!(
         first_name:,
         last_name:,
@@ -14,33 +20,36 @@ module Seekers
         zip_code:
       )
 
-      message_service.create!(
-        schema: Events::UserUpdated::V1,
-        user_id: user.id,
-        data: {
-          first_name:,
-          last_name:,
-          phone_number:,
-          zip_code:
-        },
-        occurred_at: Time.zone.now
-      )
-
-      seeker = user.seeker
-
-      return unless seeker
-
       seeker.update!(
         about:
       )
 
       message_service.create!(
+        schema: Events::BasicInfoAdded::V1,
+        aggregate:,
+        data: {
+          first_name:,
+          last_name:,
+          phone_number:,
+          date_of_birth:,
+          user_id: user.id
+        }
+      )
+
+      message_service.create!(
+        schema: Events::ZipAdded::V1,
+        aggregate:,
+        data: {
+          zip_code:
+        }
+      )
+
+      message_service.create!(
         schema: Events::SeekerUpdated::V1,
-        seeker_id: seeker.id,
+        aggregate:,
         data: {
           about:
-        },
-        occurred_at: Time.zone.now
+        }
       )
     end
 

@@ -145,7 +145,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
             onboarding_session: {
               type: :object,
               properties: {
-                completedAt: {
+                seekerId: {
                   type: :string,
                   format: 'date-time',
                   nullable: true
@@ -225,6 +225,22 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                   }
                 },
                 nullable: true
+              }
+            }
+          },
+          onboarding_session: {
+            type: :object,
+            properties: {
+              seekerId: {
+                type: :string,
+                format: :uuid
+              },
+              nextStep: {
+                type: :string,
+                enum: Onboarding::Steps::ALL
+              },
+              progress: {
+                type: :integer
               }
             }
           },

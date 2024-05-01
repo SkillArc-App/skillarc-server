@@ -4,26 +4,42 @@ class OnboardingSessionsController < ApplicationController
 
   before_action :authorize
 
-  def index
-    os = OnboardingSession.where(user_id: current_user.id).first
-
-    render json: os.as_json
-  end
-
   def create
     with_message_service do
-      onboarding_session = OnboardingSession.find_or_create_by!(user_id: current_user.id) do |os|
-        os.id = SecureRandom.uuid
-        os.started_at = Time.zone.now
+      if current_user.seeker.blank?
+        seeker = Seeker.create!(user: current_user)
+
+        message_service.create!(
+          schema: Events::SeekerCreated::V1,
+          trace_id: request.request_id,
+          user_id: current_user.id,
+          data: {
+            id: seeker.id,
+            user_id: current_user.id
+          }
+        )
       end
 
-      render json: onboarding_session.as_json
+      message_service.create!(
+        schema: Commands::StartOnboarding::V1,
+        trace_id: request.request_id,
+        seeker_id: current_user.seeker.id,
+        data: {
+          user_id: current_user.id
+        }
+      )
     end
+
+    render json: serialize_onboarding_session(current_user.seeker.id)
   end
 
   def update
-    # find onboarding session by id
-    os = OnboardingSession.find(params[:id])
+    seeker_id = current_user.seeker&.id
+
+    if seeker_id.blank?
+      render json: { error: 'Seeker not found' }, status: :bad_request
+      return
+    end
 
     filtered = params.require("onboarding_session").permit(
       responses: {
@@ -77,9 +93,26 @@ class OnboardingSessionsController < ApplicationController
     responses = filtered[:responses]
 
     with_message_service do
-      Onboarding.new(onboarding_session: os).update(responses:)
+      Onboarding.new(
+        message_service:,
+        seeker_id:,
+        user_id: current_user.id,
+        trace_id: request.request_id
+      ).update(responses:)
     end
 
-    render json: os.as_json
+    render json: serialize_onboarding_session(seeker_id)
+  end
+
+  private
+
+  def serialize_onboarding_session(seeker_id)
+    status = Seekers::Projections::OnboardingStatus.project(aggregate: Aggregates::Seeker.new(seeker_id:))
+
+    {
+      seeker_id:,
+      next_step: status.next_step,
+      progress: status.progress
+    }
   end
 end

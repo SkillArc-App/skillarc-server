@@ -88,7 +88,14 @@ module Messages
     end
 
     module Seekers
+      COMMANDS = [
+        ADD_SEEKER = "add_seeker",
+        START_ONBOARDING = "start_onboarding",
+        COMPLETE_ONBOARDING = 'complete_onboarding'
+      ].freeze
+
       EVENTS = [
+        BASIC_INFO_ADDED = 'user_basic_info_added',
         EDUCATION_EXPERIENCE_ADDED = 'education_experience_added',
         EDUCATION_EXPERIENCE_CREATED = 'education_experience_created',
         EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted',
@@ -97,13 +104,16 @@ module Messages
         EXPERIENCE_ADDED = 'experience_added',
         EXPERIENCE_REMOVED = 'experience_removed',
         EXPERIENCE_CREATED = 'experience_created',
+        PROFESSIONAL_INTERESTS = "professional_interests",
         JOB_SAVED = 'job_saved',
         JOB_SEARCH = 'job_search',
         JOB_UNSAVED = 'job_unsaved',
+        ONBOARDING_STARTED = 'onboarding_started',
         ONBOARDING_COMPLETED = 'onboarding_completed',
         PERSONAL_EXPERIENCE_ADDED = 'personal_experience_added',
         PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created',
         PERSONAL_EXPERIENCE_REMOVED = 'personal_experience_removed',
+        RELIABILITY_ADDED = 'relability_added',
         SEEKER_APPLIED = 'seeker_applied',
         SEEKER_CONTEXT_VIEWED = 'seeker_context_viewed',
         SEEKER_CREATED = 'profile_created',
@@ -114,7 +124,8 @@ module Messages
         SEEKER_VIEWED = 'seeker_viewed',
         STORY_CREATED = 'story_created',
         STORY_DESTROYED = 'story_destroyed',
-        STORY_UPDATED = 'story_updated'
+        STORY_UPDATED = 'story_updated',
+        ZIP_ADDED = 'zip_added'
       ].freeze
     end
 
@@ -155,6 +166,13 @@ module Messages
       ].freeze
     end
 
+    module User
+      EVENTS = [
+        USER_CREATED = 'user_created',
+        USER_UPDATED = 'user_updated'
+      ].freeze
+    end
+
     # Because our instance amount to singleton
     # if we want to test actual creating an event we need to
     # make it accurate as rspec stubing occurs _after_
@@ -178,8 +196,7 @@ module Messages
       ROLE_ADDED = 'role_added',
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created',
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted',
-      USER_CREATED = 'user_created',
-      USER_UPDATED = 'user_updated',
+      *User::EVENTS,
       *Attributes::EVENTS,
       *Applications::EVENTS,
       *Coaches::EVENTS,
@@ -195,6 +212,7 @@ module Messages
       *Applications::COMMANDS,
       *Contact::COMMANDS,
       *Coaches::COMMANDS,
+      *Seekers::COMMANDS,
       *Infrastructure::COMMANDS
     ].freeze
 

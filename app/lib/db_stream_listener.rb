@@ -12,7 +12,7 @@ class DbStreamListener < StreamListener
   def play
     bookmark = load_bookmark
     bookmark.with_lock do
-      events = unplayed_events(bookmark)
+      events = unplayed_messages(bookmark)
 
       last_handled_event = nil
 
@@ -27,8 +27,9 @@ class DbStreamListener < StreamListener
     message_service.flush
   end
 
-  def next_event
-    unplayed_events.take(1).first.message
+  def next_message
+    bookmark = load_bookmark
+    unplayed_messages(bookmark).take(1).first.message
   end
 
   def call(*)
@@ -41,7 +42,7 @@ class DbStreamListener < StreamListener
     ListenerBookmark.find_or_create_by!(consumer_name: listener_name)
   end
 
-  def unplayed_events(bookmark)
+  def unplayed_messages(bookmark)
     Event.where("occurred_at > ?", bookmark_timestamp(bookmark)).order(:occurred_at)
   end
 

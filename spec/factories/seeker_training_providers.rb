@@ -4,6 +4,6 @@ FactoryBot.define do
 
     program
     training_provider
-    user
+    seeker
   end
 end

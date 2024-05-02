@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_02_184732) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_02_184855) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -801,6 +801,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_184732) do
     t.text "reference_text", null: false
     t.uuid "seeker_id", null: false
     t.index ["seeker_id"], name: "index_seeker_references_on_seeker_id"
+  end
+
+  create_table "seeker_training_providers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "training_provider_id", null: false
+    t.uuid "program_id"
+    t.uuid "seeker_id", null: false
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_seeker_training_providers_on_program_id"
+    t.index ["seeker_id"], name: "index_seeker_training_providers_on_seeker_id"
+    t.index ["training_provider_id"], name: "index_seeker_training_providers_on_training_provider_id"
   end
 
   create_table "seekers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

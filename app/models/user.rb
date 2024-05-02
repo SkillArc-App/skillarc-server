@@ -25,7 +25,6 @@ class User < ApplicationRecord
   has_one :onboarding_session, dependent: :destroy
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
-  has_many :seeker_training_providers, dependent: :destroy
   has_many :training_provider_profiles, dependent: :destroy
 
   def employer_admin?

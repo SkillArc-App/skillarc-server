@@ -1046,7 +1046,7 @@ message_service.create!(
     id: SecureRandom.uuid,
     program_id: cool_program.id,
     training_provider_id: megans_recruits.id,
-    status: "Enrolled",
+    status: "Enrolled"
   }
 )
 
@@ -1057,7 +1057,7 @@ message_service.create!(
     id: SecureRandom.uuid,
     program_id: plumbing.id,
     training_provider_id: cul.id,
-    status: "Enrolled",
+    status: "Enrolled"
   }
 )
 
@@ -1068,7 +1068,7 @@ message_service.create!(
     id: SecureRandom.uuid,
     program_id: welding.id,
     training_provider_id: cul.id,
-    status: "Enrolled",
+    status: "Enrolled"
   }
 )
 
@@ -1079,7 +1079,7 @@ message_service.create!(
     id: SecureRandom.uuid,
     program_id: carpentry.id,
     training_provider_id: cul.id,
-    status: "Enrolled",
+    status: "Enrolled"
   }
 )
 

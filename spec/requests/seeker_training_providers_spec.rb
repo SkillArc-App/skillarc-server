@@ -35,7 +35,7 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
             id: be_a(String),
             program_id: params[:programId],
             training_provider_id: params[:trainingProviderId],
-            status: "Enrolled",
+            status: "Enrolled"
           }
         )
         .and_call_original
@@ -75,7 +75,7 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
             id: be_a(String),
             program_id: params[:programId],
             training_provider_id: params[:trainingProviderId],
-            status: stp.status,
+            status: stp.status
           }
         )
         .and_call_original

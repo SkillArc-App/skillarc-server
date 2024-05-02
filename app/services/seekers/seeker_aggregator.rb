@@ -82,7 +82,7 @@ module Seekers
         program_id: message.data.program_id,
         status: message.data.status,
         seeker_id: message.aggregate.id,
-        training_provider_id: message.data.training_provider_id,
+        training_provider_id: message.data.training_provider_id
       )
     end
 

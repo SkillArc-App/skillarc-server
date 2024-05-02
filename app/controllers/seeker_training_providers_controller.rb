@@ -39,7 +39,7 @@ class SeekerTrainingProvidersController < ApplicationController
           id: stp.id,
           program_id: params["programId"],
           training_provider_id: params["trainingProviderId"],
-          status: stp.status,
+          status: stp.status
         }
       )
     end

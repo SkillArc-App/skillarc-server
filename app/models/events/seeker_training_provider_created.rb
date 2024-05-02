@@ -21,6 +21,17 @@ module Events
           training_provider_id Uuid
         end
       end
+
+      class V3
+        extend Messages::Payload
+
+        schema do
+          id Uuid
+          status String
+          program_id Either(String, nil)
+          training_provider_id Uuid
+        end
+      end
     end
 
     V1 = Messages::Schema.inactive(
@@ -39,13 +50,21 @@ module Events
       message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 2
     )
-    V3 = Messages::Schema.active(
+    V3 = Messages::Schema.inactive(
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
       message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 3
+    )
+    V4 = Messages::Schema.active(
+      type: Messages::EVENT,
+      data: Data::V3,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Seeker,
+      message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
+      version: 4
     )
   end
 end

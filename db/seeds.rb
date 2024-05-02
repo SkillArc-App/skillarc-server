@@ -1039,32 +1039,48 @@ ProgramSkill.create!([
                        }
                      ])
 
-SeekerTrainingProvider.create!(
-  id: SecureRandom.uuid,
-  user_id: trained_seeker_with_reference.user_id,
-  program_id: cool_program.id,
-  training_provider_id: megans_recruits.id
+message_service.create!(
+  schema: Events::SeekerTrainingProviderCreated::V4,
+  seeker_id: trained_seeker_with_reference.id,
+  data: {
+    id: SecureRandom.uuid,
+    program_id: cool_program.id,
+    training_provider_id: megans_recruits.id,
+    status: "Enrolled",
+  }
 )
 
-SeekerTrainingProvider.create!(
-  id: SecureRandom.uuid,
-  user_id: trained_seeker.user.id,
-  program_id: plumbing.id,
-  training_provider_id: cul.id
+message_service.create!(
+  schema: Events::SeekerTrainingProviderCreated::V4,
+  seeker_id: trained_seeker.id,
+  data: {
+    id: SecureRandom.uuid,
+    program_id: plumbing.id,
+    training_provider_id: cul.id,
+    status: "Enrolled",
+  }
 )
 
-SeekerTrainingProvider.create!(
-  id: SecureRandom.uuid,
-  user_id: trained_seeker.user.id,
-  program_id: welding.id,
-  training_provider_id: cul.id
+message_service.create!(
+  schema: Events::SeekerTrainingProviderCreated::V4,
+  seeker_id: trained_seeker.id,
+  data: {
+    id: SecureRandom.uuid,
+    program_id: welding.id,
+    training_provider_id: cul.id,
+    status: "Enrolled",
+  }
 )
 
-SeekerTrainingProvider.create!(
-  id: SecureRandom.uuid,
-  user_id: trained_seeker_with_reference.user_id,
-  program_id: carpentry.id,
-  training_provider_id: cul.id
+message_service.create!(
+  schema: Events::SeekerTrainingProviderCreated::V4,
+  seeker_id: trained_seeker_with_reference.id,
+  data: {
+    id: SecureRandom.uuid,
+    program_id: carpentry.id,
+    training_provider_id: cul.id,
+    status: "Enrolled",
+  }
 )
 
 Reference.create!(

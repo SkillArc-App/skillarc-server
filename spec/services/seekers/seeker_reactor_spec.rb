@@ -80,7 +80,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     subject do
       consumer.add_seeker_training_provider(
         seeker_id:,
-        user_id:,
+        status:,
         trace_id:,
         training_provider_id:,
         program_id:,
@@ -91,6 +91,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
     let(:id) { SecureRandom.uuid }
     let(:training_provider_id) { SecureRandom.uuid }
     let(:program_id) { SecureRandom.uuid }
+    let(:status) { "Doing greate" }
 
     it "emits an seeker training provider created event" do
       expect(message_service)
@@ -98,10 +99,10 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
         .with(
           seeker_id:,
           trace_id:,
-          schema: Events::SeekerTrainingProviderCreated::V3,
+          schema: Events::SeekerTrainingProviderCreated::V4,
           data: {
             id:,
-            user_id:,
+            status:,
             program_id:,
             training_provider_id:
           }

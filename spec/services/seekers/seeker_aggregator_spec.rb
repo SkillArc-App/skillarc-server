@@ -249,12 +249,30 @@ RSpec.describe Seekers::SeekerAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::SeekerTrainingProviderCreated::V3,
+          schema: Events::SeekerTrainingProviderCreated::V4,
           aggregate_id: seeker.id,
           data: {
-            id:
+            id:,
+            status: "doing good!",
+            program_id: program.id,
+            training_provider_id: training_provider.id
           }
         )
+      end
+
+      let(:program) { create(:program, training_provider:) }
+      let(:training_provider) { create(:training_provider) }
+      let(:id) { SecureRandom.uuid }
+
+      it "creates a seeker training provider" do
+        expect { subject }.to change(SeekerTrainingProvider, :count).from(0).to(1)
+
+        onboarding_session = SeekerTrainingProvider.take(1).first
+        expect(onboarding_session.id).to eq(message.data.id)
+        expect(onboarding_session.seeker_id).to eq(message.aggregate.id)
+        expect(onboarding_session.program_id).to eq(message.data.program_id)
+        expect(onboarding_session.training_provider_id).to eq(message.data.training_provider_id)
+        expect(onboarding_session.status).to eq(message.data.status)
       end
     end
 

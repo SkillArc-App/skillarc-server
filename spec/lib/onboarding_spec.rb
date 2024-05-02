@@ -135,10 +135,10 @@ RSpec.describe Onboarding do
           .with(
             seeker_id:,
             trace_id:,
-            schema: Events::SeekerTrainingProviderCreated::V3,
+            schema: Events::SeekerTrainingProviderCreated::V4,
             data: {
               id: be_present,
-              user_id:,
+              status: "Enrolled",
               program_id: nil,
               training_provider_id:
             }

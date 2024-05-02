@@ -28,6 +28,7 @@ class Seeker < ApplicationRecord
   has_many :profile_skills, dependent: :destroy
   has_many :references, class_name: "Reference", dependent: :destroy
   has_many :stories, dependent: :destroy
+  has_many :seeker_training_providers, dependent: :destroy
 
   delegate :email, to: :user
   delegate :first_name, to: :user

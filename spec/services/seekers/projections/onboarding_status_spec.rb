@@ -80,22 +80,10 @@ RSpec.describe Seekers::Projections::OnboardingStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::SeekerTrainingProviderCreated::V3,
+        schema: Events::SeekerTrainingProviderCreated::V4,
         data: {
           id: SecureRandom.uuid,
-          user_id: SecureRandom.uuid,
-          training_provider_id: SecureRandom.uuid
-        }
-      )
-    end
-    let(:seeker_training_provider_added) do
-      build(
-        :message,
-        aggregate:,
-        schema: Events::SeekerTrainingProviderCreated::V3,
-        data: {
-          id: SecureRandom.uuid,
-          user_id: SecureRandom.uuid,
+          status: "cool beans",
           program_id: SecureRandom.uuid,
           training_provider_id: SecureRandom.uuid
         }

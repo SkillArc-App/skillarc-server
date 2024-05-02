@@ -28,14 +28,14 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          schema: Events::SeekerTrainingProviderCreated::V3,
+          schema: Events::SeekerTrainingProviderCreated::V4,
           trace_id: be_a(String),
           seeker_id: seeker.id,
           data: {
             id: be_a(String),
             program_id: params[:programId],
             training_provider_id: params[:trainingProviderId],
-            user_id: seeker.user_id
+            status: "Enrolled",
           }
         )
         .and_call_original
@@ -47,7 +47,7 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
   describe "PUT /update" do
     subject { put seeker_training_provider_path(seeker, stp), params:, headers: }
 
-    let(:stp) { create(:seeker_training_provider, user:, training_provider:, program:) }
+    let(:stp) { create(:seeker_training_provider, seeker:, training_provider:, program:) }
     let!(:new_training_provider) { create(:training_provider) }
     let!(:new_program) { create(:program, training_provider:) }
 
@@ -68,14 +68,14 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          schema: Events::SeekerTrainingProviderCreated::V3,
+          schema: Events::SeekerTrainingProviderCreated::V4,
           trace_id: be_a(String),
           seeker_id: seeker.id,
           data: {
             id: be_a(String),
             program_id: params[:programId],
             training_provider_id: params[:trainingProviderId],
-            user_id: seeker.user_id
+            status: stp.status,
           }
         )
         .and_call_original

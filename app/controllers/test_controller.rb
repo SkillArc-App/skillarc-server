@@ -82,7 +82,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     student_seeker = create_seeker_with_messages
 
     FactoryBot.create(:training_provider_profile, training_provider:, user: trainer_user)
-    FactoryBot.create(:seeker_training_provider, training_provider:, program:, user: student_seeker.user)
+    FactoryBot.create(:seeker_training_provider, training_provider:, program:, seeker: student_seeker)
 
     render json: {
       trainer: trainer_user,

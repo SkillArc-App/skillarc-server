@@ -94,14 +94,14 @@ module Seekers
       )
     end
 
-    def add_seeker_training_provider(seeker_id:, user_id:, trace_id:, program_id:, training_provider_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
+    def add_seeker_training_provider(seeker_id:, trace_id:, program_id:, training_provider_id:, status:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         seeker_id:,
         trace_id:,
-        schema: Events::SeekerTrainingProviderCreated::V3,
+        schema: Events::SeekerTrainingProviderCreated::V4,
         data: {
           id:,
-          user_id:,
+          status:,
           program_id:,
           training_provider_id:
         }
@@ -223,7 +223,7 @@ module Seekers
       emit_complete_onboarding_if_applicable(message)
     end
 
-    on_message Events::SeekerTrainingProviderCreated::V3 do |message|
+    on_message Events::SeekerTrainingProviderCreated::V4 do |message|
       emit_complete_onboarding_if_applicable(message)
     end
 

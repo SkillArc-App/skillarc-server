@@ -19,7 +19,7 @@ RSpec.describe "Profiles", type: :request do
           seeker = create(:seeker)
 
           program = create(:program)
-          create(:seeker_training_provider, user: seeker.user, program:, training_provider: program.training_provider)
+          create(:seeker_training_provider, seeker:, program:, training_provider: program.training_provider)
         end
 
         include_context "admin authenticated openapi"
@@ -114,7 +114,7 @@ RSpec.describe "Profiles", type: :request do
               create(:personal_experience, seeker:)
               create(:profile_skill, seeker:)
               create(:reference, seeker:)
-              create(:seeker_training_provider, user: seeker.user)
+              create(:seeker_training_provider, seeker:)
             end
 
             let(:seeker) { create(:seeker) }
@@ -147,7 +147,7 @@ RSpec.describe "Profiles", type: :request do
                 create(:personal_experience, seeker:)
                 create(:profile_skill, seeker:)
                 create(:reference, seeker:)
-                create(:seeker_training_provider, user: seeker.user)
+                create(:seeker_training_provider, seeker:)
               end
 
               let(:seeker) { create(:seeker, user:) }
@@ -179,7 +179,7 @@ RSpec.describe "Profiles", type: :request do
                 create(:personal_experience, seeker:)
                 create(:profile_skill, seeker:)
                 create(:reference, seeker:)
-                create(:seeker_training_provider, user: seeker.user)
+                create(:seeker_training_provider, seeker:)
               end
 
               let(:seeker) { create(:seeker) }

@@ -1,0 +1,507 @@
+require 'rails_helper'
+
+RSpec.describe Klayvio::KlayvioReactor do
+  let(:instance) { described_class.new(message_service:, client:) }
+
+  let(:message_service) { MessageService.new }
+  let(:client) { Klayvio::FakeGateway.new }
+
+  describe "#handle_message" do
+    subject { instance.handle_message(message) }
+
+    let(:user_id) { SecureRandom.uuid }
+    let(:seeker_id) { SecureRandom.uuid }
+    let(:email) { "an@email.com" }
+
+    shared_examples "emits klayvio event pushed once" do
+      it "only emits the event once" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: Events::KlayvioEventPushed::V1,
+            trace_id: message.trace_id,
+            event_id: message.id,
+            data: Messages::Nothing
+          )
+          .once
+          .and_call_original
+
+        instance.handle_message(message)
+        instance.handle_message(message)
+      end
+    end
+
+    context "when the message is user created" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::UserCreated::V1,
+          data: {
+            first_name: "John",
+            last_name: "Chabot",
+            email: "example@cool.com",
+            sub: "sub"
+          }
+        )
+      end
+
+      it_behaves_like "emits klayvio event pushed once"
+
+      it "calls the klayvio gateway" do
+        expect(client)
+          .to receive(:user_signup)
+          .with(
+            email: message.data.email,
+            event_id: message.id,
+            occurred_at: message.occurred_at
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "seeker messages" do
+      before do
+        message_service.create!(
+          schema: Events::UserCreated::V1,
+          user_id:,
+          data: {
+            email:,
+            first_name: "Cool",
+            last_name: "Seeker"
+          }
+        )
+        message_service.create!(
+          schema: Events::OnboardingStarted::V1,
+          seeker_id:,
+          data: {
+            user_id:
+          }
+        )
+      end
+
+      context "when the message is basic info added" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: seeker_id,
+            schema: Events::BasicInfoAdded::V1,
+            data: {
+              user_id: SecureRandom.uuid,
+              first_name: "Hannah",
+              last_name: "Skillz",
+              phone_number: "222-222-2222",
+              date_of_birth: "2000-10-10"
+            }
+          )
+        end
+
+        it_behaves_like "emits klayvio event pushed once"
+
+        it "calls the klayvio gateway" do
+          expect(client)
+            .to receive(:user_updated)
+            .with(
+              email:,
+              event_id: message.id,
+              occurred_at: message.occurred_at,
+              profile_attributes: {
+                first_name: "Hannah",
+                last_name: "Skillz",
+                phone_number: '+12222222222'
+              },
+              profile_properties: {
+                date_of_birth: Date.new(2000, 10, 10)
+              }
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when the message is education experience added" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: seeker_id,
+            schema: Events::EducationExperienceAdded::V1,
+            data: {
+              id: SecureRandom.uuid,
+              organization_name: "School",
+              title: "Student",
+              activities: "Class Clown",
+              graduation_date: "Sometime",
+              gpa: "4.2"
+            }
+          )
+        end
+
+        it_behaves_like "emits klayvio event pushed once"
+
+        it "calls the klayvio gateway" do
+          expect(client)
+            .to receive(:education_experience_entered)
+            .with(
+              email:,
+              event_id: message.id,
+              occurred_at: message.occurred_at
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when the message is experience added" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: seeker_id,
+            schema: Events::ExperienceAdded::V1,
+            data: {
+              id: SecureRandom.uuid,
+              organization_name: "Employers",
+              position: "Job",
+              start_date: "Today",
+              description: "Stuff",
+              is_current: true
+            }
+          )
+        end
+
+        it_behaves_like "emits klayvio event pushed once"
+
+        it "calls the klayvio gateway" do
+          expect(client)
+            .to receive(:experience_entered)
+            .with(
+              email:,
+              event_id: message.id,
+              occurred_at: message.occurred_at
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when the message is onboarding completed" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: seeker_id,
+            schema: Events::OnboardingCompleted::V2,
+            data: Messages::Nothing
+          )
+        end
+
+        it_behaves_like "emits klayvio event pushed once"
+
+        it "calls the klayvio gateway" do
+          expect(client)
+            .to receive(:onboarding_complete)
+            .with(
+              email:,
+              event_id: message.id,
+              occurred_at: message.occurred_at
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+    end
+
+    context "when the message is chat message sent" do
+      before do
+        message_service.create!(
+          schema: Events::ApplicantStatusUpdated::V6,
+          application_id:,
+          data: {
+            applicant_first_name: "First",
+            applicant_last_name: "Last",
+            applicant_email: email,
+            applicant_phone_number: "333-333-3333",
+            seeker_id: SecureRandom.uuid,
+            user_id:,
+            job_id: SecureRandom.uuid,
+            employer_name: "Employer",
+            employment_title: "Job",
+            status: ApplicantStatus::StatusTypes::NEW,
+            reasons: []
+          },
+          metadata: {
+            user_id:
+          }
+        )
+      end
+
+      let(:message) do
+        build(
+          :message,
+          schema: Events::ChatMessageSent::V1,
+          data: {
+            applicant_id: application_id,
+            seeker_id:,
+            from_user_id:,
+            employer_name: "Name",
+            employment_title: "Title",
+            message: "Sup?"
+          }
+        )
+      end
+      let(:application_id) { SecureRandom.uuid }
+      let(:from_user_id) { SecureRandom.uuid }
+
+      it_behaves_like "emits klayvio event pushed once"
+
+      context "when the message is from the applicant" do
+        let(:from_user_id) { user_id }
+
+        it "does nothing" do
+          expect(client)
+            .not_to receive(:chat_message_received)
+
+          subject
+        end
+      end
+
+      context "when the message is from the employer" do
+        let(:from_user_id) { SecureRandom.uuid }
+
+        it "calls the klayvio gateway" do
+          expect(client)
+            .to receive(:chat_message_received)
+            .with(
+              applicant_id: application_id,
+              email:,
+              employment_title: "Title",
+              employer_name: "Name",
+              event_id: message.id,
+              occurred_at: message.occurred_at
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+    end
+
+    context "when the message is job saved" do
+      before do
+        message_service.create!(
+          schema: Events::UserCreated::V1,
+          user_id:,
+          data: {
+            email:,
+            first_name: "Cool",
+            last_name: "Seeker"
+          }
+        )
+      end
+
+      let(:message) do
+        build(
+          :message,
+          aggregate_id: user_id,
+          schema: Events::JobSaved::V1,
+          data: {
+            job_id: SecureRandom.uuid,
+            employment_title: "Title",
+            employer_name: "AMC"
+          }
+        )
+      end
+
+      it_behaves_like "emits klayvio event pushed once"
+
+      it "calls the klayvio gateway" do
+        expect(client)
+          .to receive(:job_saved)
+          .with(
+            email:,
+            event_id: message.id,
+            event_properties: {
+              job_id: message.data.job_id,
+              employment_title: "Title",
+              employer_name: "AMC"
+            },
+            occurred_at: message.occurred_at
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "when the message is lead added" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::LeadAdded::V2,
+          data: {
+            email: lead_email,
+            lead_id: SecureRandom.uuid,
+            phone_number: "333-333-3333",
+            first_name: "Chris",
+            last_name: "Brauns",
+            lead_captured_by: "AI overlord"
+          }
+        )
+      end
+
+      let(:lead_email) { "A@B.com" }
+
+      it_behaves_like "emits klayvio event pushed once"
+
+      context "when email is present" do
+        let(:lead_email) { "A@B.com" }
+
+        it "calls the klayvio gateway" do
+          expect(client)
+            .to receive(:lead_captured)
+            .with(
+              email: lead_email,
+              event_id: message.id,
+              profile_attributes: {
+                first_name: "Chris",
+                last_name: "Brauns",
+                phone_number: "+13333333333"
+              },
+              occurred_at: message.occurred_at
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when email is absent" do
+        let(:lead_email) { nil }
+
+        it "calls the klayvio gateway" do
+          expect(client)
+            .not_to receive(:lead_captured)
+
+          subject
+        end
+      end
+    end
+
+    context "when the message is employer invite accepted" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::EmployerInviteAccepted::V1,
+          data: {
+            employer_invite_id: SecureRandom.uuid,
+            invite_email: "example@email.com",
+            employer_id: SecureRandom.uuid,
+            employer_name: "Employer"
+          }
+        )
+      end
+
+      it_behaves_like "emits klayvio event pushed once"
+
+      it "calls the klayvio gateway" do
+        expect(client)
+          .to receive(:employer_invite_accepted)
+          .with(
+            event_id: message.id,
+            email: "example@email.com",
+            profile_properties: {
+              is_recruiter: true,
+              employer_name: "Employer",
+              employer_id: message.data.employer_id
+            },
+            occurred_at: message.occurred_at
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "when the message is training provider invite accepted" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::TrainingProviderInviteAccepted::V1,
+          data: {
+            training_provider_invite_id: SecureRandom.uuid,
+            invite_email: "trainer@email.com",
+            training_provider_id: SecureRandom.uuid,
+            training_provider_name: "Trainer"
+          }
+        )
+      end
+
+      it_behaves_like "emits klayvio event pushed once"
+
+      it "calls the klayvio gateway" do
+        expect(client)
+          .to receive(:training_provider_invite_accepted)
+          .with(
+            event_id: message.id,
+            email: "trainer@email.com",
+            profile_properties: {
+              is_training_provider: true,
+              training_provider_name: "Trainer",
+              training_provider_id: message.data.training_provider_id
+            },
+            occurred_at: message.occurred_at
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "when the message is applicant status updated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::ApplicantStatusUpdated::V6,
+          data: {
+            applicant_first_name: "First",
+            applicant_last_name: "Last",
+            applicant_email: "applicant@email.com",
+            applicant_phone_number: "333-333-3333",
+            seeker_id: SecureRandom.uuid,
+            user_id: SecureRandom.uuid,
+            job_id: SecureRandom.uuid,
+            employer_name: "Employer",
+            employment_title: "Job",
+            status: ApplicantStatus::StatusTypes::NEW,
+            reasons: []
+          },
+          metadata: {
+            user_id: SecureRandom.uuid
+          }
+        )
+      end
+
+      it_behaves_like "emits klayvio event pushed once"
+
+      it "calls the klayvio gateway" do
+        expect(client)
+          .to receive(:application_status_updated)
+          .with(
+            application_id: message.aggregate.id,
+            email: "applicant@email.com",
+            employment_title: "Job",
+            employer_name: "Employer",
+            event_id: message.id,
+            occurred_at: message.occurred_at,
+            status: ApplicantStatus::StatusTypes::NEW
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+  end
+end

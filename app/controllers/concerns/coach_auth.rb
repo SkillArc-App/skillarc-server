@@ -9,6 +9,6 @@ module CoachAuth
   def coach?
     return false unless current_user
 
-    current_user.roles.any? { |r| r.name == Role::Types::COACH }
+    current_user.coach_role?
   end
 end

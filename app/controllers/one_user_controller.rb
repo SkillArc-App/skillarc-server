@@ -15,10 +15,10 @@ class OneUserController < ApplicationController
       }
     end
 
-    roles = current_user.user_roles.map do |ur|
+    roles = current_user.roles.map do |r|
       {
         role: {
-          name: ur.role.name
+          name: r.name
         }
       }
     end || []

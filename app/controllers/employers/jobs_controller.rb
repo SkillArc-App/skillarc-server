@@ -6,7 +6,7 @@ class Employers::JobsController < ApplicationController
   before_action :employer_authorize
 
   def index
-    employers = if current_user.employer_admin?
+    employers = if current_user.employer_admin_role?
                   Employers::Employer.all
                 else
                   [Employers::Recruiter.find_by!(email: current_user.email).employer]

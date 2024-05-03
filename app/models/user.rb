@@ -27,8 +27,20 @@ class User < ApplicationRecord
   has_many :roles, through: :user_roles
   has_many :training_provider_profiles, dependent: :destroy
 
-  def employer_admin?
-    user_roles.map(&:role).map(&:name).include?(Role::Types::EMPLOYER_ADMIN)
+  def employer_admin_role?
+    role?(Role::Types::EMPLOYER_ADMIN)
+  end
+
+  def coach_role?
+    role?(Role::Types::COACH)
+  end
+
+  def admin_role?
+    role?(Role::Types::ADMIN)
+  end
+
+  def role?(role)
+    roles.any? { |r| r.name == role }
   end
 
   def training_provider_profile

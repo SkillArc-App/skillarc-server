@@ -46,7 +46,7 @@ module Employers
     attr_reader :r
 
     def set_r
-      @r = if current_user.employer_admin?
+      @r = if current_user.employer_admin_role?
              EmployerChats::Recruiter.new(current_user, ::Employer.pluck(:id))
            else
              EmployerChats::Recruiter.new(recruiter.user, recruiter.employer_id)

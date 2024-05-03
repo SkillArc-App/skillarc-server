@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_25_171847) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_01_182351) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -275,6 +275,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_171847) do
     t.uuid "job_id"
     t.index ["application_id"], name: "index_coaches_seeker_applications_on_application_id"
     t.index ["coach_seeker_context_id"], name: "index_coaches_seeker_applications_on_coach_seeker_context_id"
+  end
+
+  create_table "coaches_seeker_attributes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "coach_seeker_context_id", null: false
+    t.uuid "attribute_id", null: false
+    t.string "attribute_name", null: false
+    t.string "attribute_value", null: false
+    t.index ["coach_seeker_context_id"], name: "index_coaches_seeker_attributes_on_coach_seeker_context_id"
   end
 
   create_table "coaches_seeker_job_recommendations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -938,6 +946,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_171847) do
   add_foreign_key "chat_messages", "users"
   add_foreign_key "coaches_reminders", "coaches"
   add_foreign_key "coaches_seeker_applications", "coach_seeker_contexts"
+  add_foreign_key "coaches_seeker_attributes", "coach_seeker_contexts"
   add_foreign_key "coaches_seeker_job_recommendations", "coach_seeker_contexts"
   add_foreign_key "coaches_seeker_job_recommendations", "coaches"
   add_foreign_key "coaches_seeker_job_recommendations", "coaches_jobs", column: "job_id"

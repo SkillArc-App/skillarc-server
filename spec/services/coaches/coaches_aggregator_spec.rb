@@ -311,7 +311,8 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
     end
 
     context "for coach seekers context" do
-      let!(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let!(:coach_seeker_context) { create(:coaches__coach_seeker_context, seeker_id:) }
+      let(:seeker_id) { SecureRandom.uuid }
 
       context "when the message is applicant_status_updated" do
         let(:message) do
@@ -383,6 +384,51 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
             expect(seeker_applications.job_id).to eq(job_id)
             expect(seeker_applications.employment_title).to eq("Software Engineer")
           end
+        end
+      end
+
+      context "when the message is seeker attribute added" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::SeekerAttributeAdded::V1,
+            aggregate_id: seeker_id,
+            data: {
+              id: SecureRandom.uuid,
+              attribute_id: SecureRandom.uuid,
+              attribute_name: "HS Cliques",
+              attribute_value: "Jock"
+            }
+          )
+        end
+
+        it "Creates a Seeker Attribute" do
+          expect { subject }.to change(Coaches::SeekerAttribute, :count).from(0).to(1)
+
+          seeker_attribute = Coaches::SeekerAttribute.take(1).first
+          expect(seeker_attribute.coach_seeker_context).to eq(coach_seeker_context)
+          expect(seeker_attribute.attribute_id).to eq(message.data.attribute_id)
+          expect(seeker_attribute.attribute_name).to eq("HS Cliques")
+          expect(seeker_attribute.attribute_value).to eq("Jock")
+        end
+      end
+
+      context "when the message is seeker attribute removed" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::SeekerAttributeRemoved::V1,
+            aggregate_id: seeker_id,
+            data: {
+              id: seeker_attribute.id
+            }
+          )
+        end
+
+        let!(:seeker_attribute) { create(:coaches__seeker_attribute, coach_seeker_context:) }
+
+        it "Creates a Seeker Attribute" do
+          expect { subject }.to change(Coaches::SeekerAttribute, :count).from(1).to(0)
         end
       end
     end
@@ -464,6 +510,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           last_contacted: note_with_id_added1.occurred_at,
           assigned_coach: "coach@blocktrainapp.com",
           certified_by: coach.email,
+          attributes: [],
           barriers: [{
             id: barrier2.barrier_id,
             name: "barrier2"
@@ -501,6 +548,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           certified_by: nil,
           barriers: [],
           notes: [],
+          attributes: [],
           applications: [
             {
               job_id:,
@@ -561,6 +609,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           last_contacted: note_with_id_added1.occurred_at,
           assigned_coach: "coach@blocktrainapp.com",
           certified_by: coach.email,
+          attributes: [],
           barriers: [{
             id: barrier2.barrier_id,
             name: "barrier2"

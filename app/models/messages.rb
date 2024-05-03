@@ -105,6 +105,8 @@ module Messages
         EXPERIENCE_REMOVED = 'experience_removed',
         EXPERIENCE_CREATED = 'experience_created',
         PROFESSIONAL_INTERESTS = "professional_interests",
+        SEEKER_ATTRIBUTE_ADDED = 'seeker_attribute_added',
+        SEEKER_ATTRIBUTE_REMOVED = 'seeker_attribute_removed',
         JOB_SAVED = 'job_saved',
         JOB_SEARCH = 'job_search',
         JOB_UNSAVED = 'job_unsaved',

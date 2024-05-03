@@ -99,6 +99,7 @@ module Coaches
           last_contacted: csc.last_contacted_at || "Never",
           assigned_coach: csc.assigned_coach || 'none',
           barriers: csc.seeker_barriers.map(&:barrier).map { |b| { id: b.barrier_id, name: b.name } },
+          attributes: csc.seeker_attributes.map { |a| { name: a.attribute_name, id: a.id, attribute_id: a.attribute_id, value: a.attribute_value } },
           notes: csc.seeker_notes.map do |note|
             {
               note: note.note,

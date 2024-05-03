@@ -40,6 +40,7 @@ module Coaches
     has_many :seeker_applications, dependent: :destroy, class_name: "Coaches::SeekerApplication"
     has_many :seeker_barriers, dependent: :destroy, class_name: "Coaches::SeekerBarrier"
     has_many :seeker_job_recommendations, dependent: :destroy, class_name: "Coaches::SeekerJobRecommendation"
+    has_many :seeker_attributes, dependent: :destroy, class_name: "Coaches::SeekerAttribute"
 
     validates :kind, allow_nil: true, inclusion: { in: Kind::ALL }
     validates :context_id, presence: true

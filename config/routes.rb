@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :barriers
     resources :contexts do
       resources :notes, only: %i[create update destroy]
+
       post 'skill-levels' => 'contexts#update_skill_level'
       post 'assign_coach' => 'contexts#assign'
       post 'certify' => 'contexts#certify' # deprecated should be removed once client is updated
@@ -24,6 +25,7 @@ Rails.application.routes.draw do
     resources :feeds
     resources :seekers do
       post 'certify' => 'seekers#certify'
+      resources :attributes, only: %i[create update destroy]
     end
     resources :leads, only: %i[create index]
     resources :jobs, only: [:index], as: 'coaches_jobs'

@@ -386,6 +386,50 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
     end
   end
 
+  describe "#add_attribute" do
+    subject { consumer.add_attribute(seeker_id:, seeker_attribute_id:, attribute_id:, attribute_name:, attribute_value:, trace_id:) }
+
+    let(:seeker_attribute_id) { SecureRandom.uuid }
+    let(:attribute_id) { SecureRandom.uuid }
+    let(:attribute_name) { "Cool factor" }
+    let(:attribute_value) { "Cool" }
+
+    it "creates an event" do
+      expect(message_service).to receive(:create!).with(
+        schema: Events::SeekerAttributeAdded::V1,
+        seeker_id:,
+        trace_id:,
+        data: {
+          id: seeker_attribute_id,
+          attribute_id:,
+          attribute_name:,
+          attribute_value:
+        }
+      ).and_call_original
+
+      subject
+    end
+  end
+
+  describe "#remove_attribute" do
+    subject { consumer.remove_attribute(seeker_id:, seeker_attribute_id:, trace_id:) }
+
+    let(:seeker_attribute_id) { SecureRandom.uuid }
+
+    it "creates an event" do
+      expect(message_service).to receive(:create!).with(
+        schema: Events::SeekerAttributeRemoved::V1,
+        seeker_id:,
+        trace_id:,
+        data: {
+          id: seeker_attribute_id
+        }
+      ).and_call_original
+
+      subject
+    end
+  end
+
   describe "#add_note" do
     subject { consumer.add_note(context_id:, originator:, note: "This is a new note", note_id:, trace_id:) }
 

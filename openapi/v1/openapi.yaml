@@ -314,6 +314,130 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/admin_job"
+  "/coaches/seekers/{seeker_id}/attributes":
+    post:
+      summary: Add an attribute
+      tags:
+      - Coaches
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Adds an attribute
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attributeId:
+                  type: string
+                  format: uuid
+                name:
+                  type: string
+                value:
+                  type: string
+              required:
+              - attributesId
+              - name
+              - value
+  "/coaches/seekers/{seeker_id}/attributes/{id}":
+    put:
+      summary: update an attribute
+      tags:
+      - Coaches
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Adds an attribute
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attributeId:
+                  type: string
+                  format: uuid
+                name:
+                  type: string
+                value:
+                  type: string
+              required:
+              - attributesId
+              - name
+              - value
+    delete:
+      summary: remove an attribute
+      tags:
+      - Coaches
+      parameters:
+      - name: seeker_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Removes an attribute
   "/coaches/contexts":
     get:
       summary: Retrieve all contexts
@@ -1307,6 +1431,77 @@ paths:
                   type: string
               required:
               - elevator_pitch
+  "/onboarding_sessions":
+    post:
+      summary: Create new onboarding session
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Create an experience
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/onboarding_session"
+    put:
+      summary: Update a onboarding session
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '400':
+          description: Bad request no seeker
+          content:
+            application/json:
+              schema:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+        '200':
+          description: Create an experience
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/onboarding_session"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                onboarding_session:
+                  type: object
+              required:
+              - onboarding_session
   "/one_user":
     get:
       summary: The current user
@@ -2473,7 +2668,7 @@ components:
       onboarding_session:
         type: object
         properties:
-          completedAt:
+          seekerId:
             type: string
             format: date-time
             nullable: true
@@ -2535,6 +2730,25 @@ components:
               type: string
               format: uuid
           nullable: true
+    onboarding_session:
+      type: object
+      properties:
+        seekerId:
+          type: string
+          format: uuid
+        nextStep:
+          type: string
+          enum:
+          - start
+          - name
+          - reliability
+          - employment
+          - education
+          - training
+          - opportunities
+          - complete
+        progress:
+          type: integer
     reminder:
       type: object
       properties:

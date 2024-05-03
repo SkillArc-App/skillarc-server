@@ -82,7 +82,7 @@ RSpec.describe SeekerService do
       tp = create(:training_provider, name: "Training Provider")
       create(
         :seeker_training_provider,
-        user:,
+        seeker:,
         training_provider: tp,
         program: create(:program, name: "Program", training_provider: tp)
       )
@@ -91,7 +91,7 @@ RSpec.describe SeekerService do
 
       create(
         :seeker_training_provider,
-        user:,
+        seeker:,
         training_provider: second_tp,
         program: nil
       )

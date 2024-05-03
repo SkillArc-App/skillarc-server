@@ -101,8 +101,8 @@ class Onboarding
       seeker_reactor.add_seeker_training_provider(
         seeker_id:,
         trace_id:,
-        user_id:,
         program_id: nil,
+        status: "Enrolled",
 
         training_provider_id: tr
       )

@@ -10,12 +10,9 @@ class StudentsController < ApplicationController
       programs: {
         seeker_invites: {},
         students: {
-          program_statuses: {},
-          user: {
-            seeker: {
-              applicants: :applicant_statuses,
-              references: {}
-            }
+          seeker: {
+            applicants: :applicant_statuses,
+            references: {}
           }
         }
       }
@@ -23,22 +20,20 @@ class StudentsController < ApplicationController
 
     programs = training_provider.programs.map do |program|
       students = program.students.map do |stp|
-        next if stp.user.seeker.blank?
-
         # TODO: 🙀 Horrible code. Refactor this.
-        reference = stp.user.seeker.references.find_by(author_profile: training_provider_profile)
+        reference = stp.seeker.references.find_by(author_profile: training_provider_profile)
 
         {
-          email: stp.user.email,
-          firstName: stp.user.first_name,
-          lastName: stp.user.last_name,
-          profileId: stp.user.seeker&.id,
+          email: stp.seeker.user.email,
+          firstName: stp.seeker.user.first_name,
+          lastName: stp.seeker.user.last_name,
+          profileId: stp.seeker_id,
           reference: {
             referenceText: reference&.reference_text,
             referenceId: reference&.id
           },
-          status: stp.program_statuses.order(created_at: :desc).first&.status || 'Enrolled',
-          hiringStatus: stp.user.seeker&.hiring_status || 'FAIL'
+          status: stp.status,
+          hiringStatus: stp.seeker&.hiring_status || 'FAIL'
         }
       end.compact
 

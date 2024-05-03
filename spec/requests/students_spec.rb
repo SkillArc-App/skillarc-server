@@ -19,9 +19,8 @@ RSpec.describe "Students", type: :request do
         before do
           program = create(:program, training_provider:)
           create(:seeker_training_provider, program:, training_provider:)
-          stp = create(:seeker_training_provider, program:, training_provider:)
+          create(:seeker_training_provider, program:, training_provider:)
 
-          create(:seeker, user: stp.user)
           create(:seeker_invite, training_provider:, program:)
         end
 

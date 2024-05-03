@@ -39,18 +39,33 @@ RSpec.describe "Program::Students", type: :request do
         :seeker_training_provider,
         training_provider:,
         program:,
-        user: student_user
+        seeker: student
       )
     end
 
     it "returns 200" do
       subject
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:accepted)
     end
 
     it "creates a program status" do
-      expect { subject }.to change(SeekerTrainingProviderProgramStatus, :count).by(1)
+      expect_any_instance_of(MessageService)
+        .to receive(:create!)
+        .with(
+          seeker_id: student.id,
+          trace_id: be_a(String),
+          schema: Events::SeekerTrainingProviderCreated::V4,
+          data: {
+            id: seeker_training_provider.id,
+            status: params[:status],
+            program_id: params[:program_id],
+            training_provider_id: training_provider.id
+          }
+        )
+        .and_call_original
+
+      subject
     end
   end
 end

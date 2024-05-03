@@ -51,7 +51,7 @@ class SeekerService
       missing_profile_items: ProfileCompleteness.new(seeker).status.missing,
       user: {
         **seeker.user.slice(:id, :email, :first_name, :last_name, :phone_number, :zip_code).symbolize_keys,
-        seeker_training_providers: seeker.user.seeker_training_providers.map do |stp|
+        seeker_training_providers: seeker.seeker_training_providers.map do |stp|
           {
             program_id: stp&.program&.id,
             training_provider_id: stp.training_provider.id

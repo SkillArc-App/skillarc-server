@@ -75,13 +75,14 @@ module Seekers
       PersonalExperience.find(message.data.id).destroy!
     end
 
-    on_message Events::SeekerTrainingProviderCreated::V3, :sync do |message|
+    on_message Events::SeekerTrainingProviderCreated::V4, :sync do |message|
       seeker_training_provider_created = SeekerTrainingProvider.find_or_initialize_by(id: message.data.id)
 
       seeker_training_provider_created.update!(
         program_id: message.data.program_id,
-        training_provider_id: message.data.training_provider_id,
-        user_id: message.data.user_id
+        status: message.data.status,
+        seeker_id: message.aggregate.id,
+        training_provider_id: message.data.training_provider_id
       )
     end
 

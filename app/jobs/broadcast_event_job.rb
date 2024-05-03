@@ -1,7 +1,7 @@
 class BroadcastEventJob < ApplicationJob
   queue_as :default
 
-  def perform(message)
-    PUBSUB.publish(message:)
+  def perform(schema_string)
+    PUBSUB.publish(schema_string:)
   end
 end

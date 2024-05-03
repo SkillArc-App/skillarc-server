@@ -42,8 +42,10 @@ class MessageService
 
   def flush
     while (message = messages_to_publish.shift)
-      PUBSUB_SYNC.publish(message:)
-      BroadcastEventJob.perform_later(message) if broadcast?
+      schema_string = message.schema.to_s
+
+      PUBSUB_SYNC.publish(schema_string:)
+      BroadcastEventJob.perform_later(schema_string) if broadcast?
     end
   end
 

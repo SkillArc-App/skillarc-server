@@ -9,19 +9,16 @@ RSpec.describe Pubsub do
     let(:sync) { true }
 
     it "calls the subscriber when the event is published" do
-      message = build(:message, :user_created, data: Events::UserCreated::Data::V1.new)
+      schema = Events::UserCreated::Data::V1
+      schema_string = schema.to_s
 
-      subscriber = Klayvio::JobSaved.new
-      allow(subscriber).to receive(:call)
-      subject.subscribe(message_schema: message.schema, subscriber:)
+      subscriber = DbStreamReactor.build(consumer: Contact::ContactReactor.new, listener_name: SecureRandom.uuid)
+      subject.subscribe(message_schema: schema, subscriber:)
 
       expect(subscriber)
-        .to receive(:call)
-        .with(
-          message:
-        )
+        .to receive(:play)
 
-      subject.publish(message:)
+      subject.publish(schema_string:)
     end
   end
 
@@ -29,17 +26,18 @@ RSpec.describe Pubsub do
     let(:sync) { false }
 
     it "calls enqueues a execute subscriber job" do
-      message = build(:message, :user_created, data: Events::UserCreated::Data::V1.new)
+      schema = Events::UserCreated::Data::V1
+      schema_string = schema.to_s
 
-      subscriber = Klayvio::JobSaved.new
+      subscriber = DbStreamReactor.build(consumer: Contact::ContactReactor.new, listener_name: SecureRandom.uuid)
       allow(subscriber).to receive(:call)
 
-      subject.subscribe(message_schema: message.schema, subscriber:)
+      subject.subscribe(message_schema: schema, subscriber:)
 
       expect(ExecuteSubscriberJob)
         .to receive(:new)
         .with(
-          message:,
+          schema_string:,
           subscriber_id: subscriber.id
         ).and_call_original
 
@@ -48,7 +46,7 @@ RSpec.describe Pubsub do
         .with([be_a(ExecuteSubscriberJob)])
         .and_call_original
 
-      subject.publish(message:)
+      subject.publish(schema_string:)
     end
   end
 end

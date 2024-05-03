@@ -12,6 +12,8 @@ module Klayvio
 
     def user_signup(email:, occurred_at:, event_id:); end
 
+    def lead_captured(email:, occurred_at:, event_id:, profile_attributes:); end
+
     def user_updated(email:, occurred_at:, event_id:, profile_properties:, profile_attributes:); end
 
     def education_experience_entered(email:, occurred_at:, event_id:); end

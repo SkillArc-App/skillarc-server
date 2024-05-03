@@ -32,10 +32,6 @@ class DbStreamListener < StreamListener
     unplayed_messages(bookmark).take(1).first.message
   end
 
-  def call(*)
-    play
-  end
-
   private
 
   def load_bookmark

@@ -1,5 +1,5 @@
 module Klayvio
-  class RealGateway
+  class RealGateway # rubocop:disable Metrics/ClassLength
     def initialize(api_key:)
       @api_key = api_key
     end
@@ -62,6 +62,19 @@ module Klayvio
         time: occurred_at,
         event_id:,
         profile_properties:
+      )
+
+      url = URI("https://a.klaviyo.com/api/events/")
+
+      post(url, data)
+    end
+
+    def lead_captured(email:, occurred_at:, event_id:, profile_attributes:)
+      data = event_data(
+        event_type: 'Lead Capture',
+        email:,
+        profile_attributes:,
+        time: occurred_at, event_id:
       )
 
       url = URI("https://a.klaviyo.com/api/events/")

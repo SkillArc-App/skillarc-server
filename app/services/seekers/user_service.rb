@@ -11,7 +11,7 @@ module Seekers
       return unless seeker
 
       aggregate = Aggregates::Seeker.new(seeker_id: seeker.id)
-      date_of_birth = ::Projections::GetLastValue.project(schema: Events::BasicInfoAdded::V1, aggregate:, attribute: :date_of_birth)
+      date_of_birth = ::Projections::GetLast.project(schema: Events::BasicInfoAdded::V1, aggregate:)&.date_of_birth
 
       user.update!(
         first_name:,

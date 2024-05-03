@@ -165,16 +165,6 @@ RSpec.describe DbStreamReactor do
     end
   end
 
-  describe "#call" do
-    it "calls play" do
-      expect(instance)
-        .to receive(:play)
-        .and_call_original
-
-      instance.call(event:)
-    end
-  end
-
   describe ".get_listener" do
     it "retrieves a listener if created" do
       described_class.build(consumer:, listener_name: "example", message_service: MessageService.new)

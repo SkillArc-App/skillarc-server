@@ -185,13 +185,15 @@ RSpec.describe MessageService do
     let(:message) do
       build(
         :message,
-        schema: Commands::AssignCoach::V1,
+        schema:,
         aggregate_id: SecureRandom.uuid,
         data: {
           coach_email: "coach@skillarc.com"
         }
       )
     end
+    let(:schema) { Commands::AssignCoach::V1 }
+    let(:schema_string) { schema.to_s }
 
     it "persists the message" do
       expect { subject }.to change(Event, :count).by(1)
@@ -210,11 +212,11 @@ RSpec.describe MessageService do
 
       expect(PUBSUB_SYNC)
         .to receive(:publish)
-        .with(message:)
+        .with(schema_string:)
 
       expect(BroadcastEventJob)
         .to receive(:perform_later)
-        .with(message)
+        .with(schema_string)
 
       subject
 

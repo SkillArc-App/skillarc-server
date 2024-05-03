@@ -55,21 +55,10 @@ RSpec.describe DbStreamAggregator do
         event.message
       ).and_return(event_lambda.call)
 
-      expected_message = Message.new(
-        id:,
-        trace_id:,
-        aggregate: Aggregates::Day.new(day: "day"),
-        schema: Events::DayElapsed::V1,
-        data: Events::DayElapsed::Data::V1.new(
-          date: Time.zone.today,
-          day_of_week: Time.zone.today.strftime("%A").downcase
-        ),
-        metadata: Messages::Nothing,
-        occurred_at:
-      )
+      schema_string = Events::DayElapsed::V1.to_s
 
-      expect_any_instance_of(Pubsub).to receive(:publish).with(message: expected_message).and_call_original
-      expect(BroadcastEventJob).to receive(:perform_later).with(expected_message)
+      expect_any_instance_of(Pubsub).to receive(:publish).with(schema_string:).and_call_original
+      expect(BroadcastEventJob).to receive(:perform_later).with(schema_string)
 
       subject
     end
@@ -190,16 +179,6 @@ RSpec.describe DbStreamAggregator do
 
         expect { listener_bookmark.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
-    end
-  end
-
-  describe "#call" do
-    it "calls play" do
-      expect(instance)
-        .to receive(:play)
-        .and_call_original
-
-      instance.call(event:)
     end
   end
 

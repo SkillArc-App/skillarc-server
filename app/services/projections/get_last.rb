@@ -1,19 +1,17 @@
 module Projections
-  class GetLastValue
+  class GetLast
     def project(aggregate:)
       MessageService.aggregate_events(aggregate)
                     .select { |m| m.schema == schema }
-                    .map { |m| m.data.send(attribute) }
                     .last
     end
 
-    def initialize(schema:, attribute:)
+    def initialize(schema:)
       @schema = schema
-      @attribute = attribute
     end
 
-    def self.project(aggregate:, schema:, attribute:)
-      instance = new(schema:, attribute:)
+    def self.project(aggregate:, schema:)
+      instance = new(schema:)
       instance.project(aggregate:)
     end
 

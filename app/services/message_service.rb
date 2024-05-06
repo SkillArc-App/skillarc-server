@@ -6,6 +6,14 @@ class MessageService
   SchemaNotFoundError = Class.new(StandardError)
   InactiveSchemaError = Class.new(StandardError)
 
+  def create_once!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
+
+    save!(message) unless Projections::HasOccurred.project(aggregate: message.aggregate, schema: message.schema)
+
+    message
+  end
+
   def create!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
     save!(message)

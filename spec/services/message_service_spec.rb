@@ -2,10 +2,23 @@ require 'rails_helper'
 
 RSpec.describe MessageService do
   let(:instance) { described_class.new }
+  let!(:schema) do
+    Messages::Schema.active(
+      data: Events::SeekerViewed::Data::V1,
+      metadata: Events::ApplicantStatusUpdated::MetaData::V1,
+      aggregate: Aggregates::User,
+      message_type:,
+      version:,
+      type:
+    )
+  end
+  let(:type) { Messages::EVENT }
+  let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+  let(:version) { 3 }
 
-  describe "#create!" do
+  describe "#create_once!" do
     subject do
-      instance.create!(
+      instance.create_once!(
         id:,
         schema:,
         user_id:,
@@ -16,30 +29,14 @@ RSpec.describe MessageService do
       )
     end
 
-    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:user_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
     let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
-    let(:version) { 4 }
-    let(:type) { Messages::EVENT }
     let(:id) { SecureRandom.uuid }
 
-    let!(:schema) do
-      Messages::Schema.active(
-        data: Events::SeekerViewed::Data::V1,
-        metadata: Events::ApplicantStatusUpdated::MetaData::V1,
-        aggregate: Aggregates::User,
-        message_type:,
-        version:,
-        type:
-      )
-    end
-
-    context "when event_schema is a Messages::Schema" do
-      let(:version) { 3 }
-
+    context "when the event has not already occurred" do
       it "calls build and save!" do
         expect(instance)
           .to receive(:build)
@@ -73,6 +70,101 @@ RSpec.describe MessageService do
         subject
       end
     end
+
+    context "when the event has already occured" do
+      before do
+        expect(described_class)
+          .to receive(:aggregate_events)
+          .with(Aggregates::User.new(user_id:))
+          .and_return([
+                        build(
+                          :message,
+                          schema:,
+                          data: {
+                            seeker_id: SecureRandom.uuid
+                          },
+                          metadata: {
+                            user_id: SecureRandom.uuid
+                          }
+                        )
+                      ])
+      end
+
+      it "calls build but not save!" do
+        expect(instance)
+          .to receive(:build)
+          .with(
+            schema:,
+            data:,
+            aggregate: nil,
+            trace_id:,
+            id:,
+            occurred_at:,
+            metadata:,
+            user_id:
+          )
+          .and_call_original
+
+        expect(instance)
+          .not_to receive(:save!)
+
+        subject
+      end
+    end
+  end
+
+  describe "#create!" do
+    subject do
+      instance.create!(
+        id:,
+        schema:,
+        user_id:,
+        trace_id:,
+        data:,
+        occurred_at:,
+        metadata:
+      )
+    end
+
+    let(:user_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+    let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
+    let(:occurred_at) { DateTime.new(2000, 1, 1) }
+    let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
+    let(:id) { SecureRandom.uuid }
+
+    it "calls build and save!" do
+      expect(instance)
+        .to receive(:build)
+        .with(
+          schema:,
+          data:,
+          aggregate: nil,
+          trace_id:,
+          id:,
+          occurred_at:,
+          metadata:,
+          user_id:
+        )
+        .and_call_original
+
+      expect(instance)
+        .to receive(:save!)
+        .with(
+          Message.new(
+            schema:,
+            data:,
+            trace_id:,
+            id:,
+            occurred_at:,
+            metadata:,
+            aggregate: Aggregates::User.new(user_id:)
+          )
+        )
+        .and_call_original
+
+      subject
+    end
   end
 
   describe "#build" do
@@ -88,14 +180,11 @@ RSpec.describe MessageService do
       )
     end
 
-    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:user_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
     let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
-    let(:version) { 4 }
-    let(:type) { Messages::EVENT }
     let(:id) { SecureRandom.uuid }
 
     context "when the event_schema is not a Messages::Schema" do
@@ -107,20 +196,8 @@ RSpec.describe MessageService do
     end
 
     context "when event_schema is a Messages::Schema" do
-      let!(:schema) do
-        Messages::Schema.active(
-          data: Events::SeekerViewed::Data::V1,
-          metadata: Events::ApplicantStatusUpdated::MetaData::V1,
-          aggregate: Aggregates::User,
-          message_type:,
-          version:,
-          type:
-        )
-      end
-
       context "when data doesn't type check" do
         let(:data) { "cat" }
-        let(:version) { 1 }
 
         it "raies a InvalidSchemaError" do
           expect { subject }.to raise_error(Message::InvalidSchemaError)
@@ -129,7 +206,6 @@ RSpec.describe MessageService do
 
       context "when metadata doesn't type check" do
         let(:metadata) { [1, 2, 3] }
-        let(:version) { 2 }
 
         it "raies a InvalidSchemaError" do
           expect { subject }.to raise_error(Message::InvalidSchemaError)
@@ -137,8 +213,6 @@ RSpec.describe MessageService do
       end
 
       context "when data and metadata type check" do
-        let(:version) { 3 }
-
         it "returns the produced message" do
           expect(subject.id).to eq(id)
           expect(subject.aggregate_id).to eq(user_id)
@@ -227,24 +301,11 @@ RSpec.describe MessageService do
   describe "#flush" do
     subject { instance.flush }
 
-    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
-    let!(:schema) do
-      Messages::Schema.active(
-        data: Messages::Nothing,
-        metadata: Messages::Nothing,
-        aggregate: Aggregates::User,
-        message_type:,
-        version:,
-        type:
-      )
-    end
     let(:user_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
-    let(:data) { Messages::Nothing }
+    let(:data) { { seeker_id: SecureRandom.uuid } }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
-    let(:metadata) { Messages::Nothing }
-    let(:version) { 4 }
-    let(:type) { Messages::EVENT }
+    let(:metadata) { { user_id: SecureRandom.uuid } }
     let(:id) { SecureRandom.uuid }
 
     before do
@@ -311,17 +372,6 @@ RSpec.describe MessageService do
 
   describe ".all_schemas" do
     subject { described_class.all_schemas }
-
-    let!(:schema) do
-      Messages::Schema.active(
-        data: Array,
-        metadata: Array,
-        aggregate: Aggregates::User,
-        message_type: Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
-        version: 1,
-        type: Messages::EVENT
-      )
-    end
 
     it "returns all registered schemas" do
       expect(subject).to include(schema)
@@ -434,30 +484,14 @@ RSpec.describe MessageService do
     end
 
     context "when the schema does not exist" do
-      let(:message_type) { "not_a_real_event" }
-      let(:version) { 1 }
-
       it "raises a SchemaNotFoundError" do
-        expect { subject }.to raise_error(described_class::SchemaNotFoundError)
+        expect { described_class.get_schema(message_type: "not_a_real_event", version:) }.to raise_error(described_class::SchemaNotFoundError)
       end
     end
 
     context "when the schema exists" do
-      let!(:schema) do
-        Messages::Schema.active(
-          data: Array,
-          metadata: Array,
-          aggregate: Aggregates::User,
-          message_type:,
-          type: Messages::EVENT,
-          version:
-        )
-      end
-      let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
-      let(:version) { 1 }
-
       it "returns the schema" do
-        expect(subject).to eq(schema)
+        expect(described_class.get_schema(message_type:, version:)).to eq(schema)
       end
     end
   end

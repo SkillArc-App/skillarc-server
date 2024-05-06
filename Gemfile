@@ -7,6 +7,7 @@ gem "bootsnap", require: false
 gem 'e164'
 gem "importmap-rails"
 gem "jbuilder"
+gem 'oj'
 gem "olive_branch"
 gem "omniauth-auth0"
 gem 'omniauth-rails_csrf_protection'

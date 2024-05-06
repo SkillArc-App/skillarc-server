@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe MessageService do
+RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
   let(:instance) { described_class.new }
   let!(:schema) do
     Messages::Schema.active(

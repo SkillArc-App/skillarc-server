@@ -6,8 +6,10 @@ module Messages
       elsif value.is_a?(String)
         if %r{\d{2}/\d{2}/\d{4}}.match(value)
           Date.strptime(value, "%m/%d/%Y")
-        else
+        elsif /\d{4}-\d{2}-\d{2}/.match(value)
           Date.strptime(value, "%Y-%m-%d")
+        else
+          value
         end
       else
         value

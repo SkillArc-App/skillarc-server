@@ -137,7 +137,7 @@ module Messages
         MESSAGE_SENT = "message_sent",
         MESSAGE_ENQUEUED = "message_enqueued",
         SMS_MESSAGE_SENT = 'sms_sent',
-        KLAYVIO_EVENT_PUSHED = "klayvio_event_pushed",
+        KLAVIYO_EVENT_PUSHED = "klayvio_event_pushed",
         SLACK_MESSAGE_SENT = "slack_message_sent",
         EMAIL_MESSAGE_SENT = "email_message_sent",
         SMTP_SENT = 'smtp_sent',

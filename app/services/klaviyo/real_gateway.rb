@@ -1,5 +1,8 @@
-module Klayvio
+module Klaviyo
   class RealGateway # rubocop:disable Metrics/ClassLength
+    ClientSideEventError = Class.new(StandardError)
+    ServerSideEventError = Class.new(StandardError)
+
     def initialize(api_key:)
       @api_key = api_key
     end
@@ -210,9 +213,22 @@ module Klayvio
 
       response = http.request(request)
 
-      Rails.logger.info("Klayvio response: #{response.body}")
+      case response.code
+      when /4../
+        response.body["errors"].each do |error|
+          Sentry.capture_exception(ClientSideEventError.new(error_message(response.code, error)))
+        end
+      when /5../
+        response.body["errors"].each do |error|
+          Sentry.capture_exception(ServerSideEventError.new(error_message(response.code, error)))
+        end
+      end
 
-      response.read_body
+      Rails.logger.info("Klaviyo response: #{response.body}")
+    end
+
+    def error_message(response_code, error)
+      "Status code #{response_code}. Klavyio code #{error['code']}. #{error['title']} #{error['details']}"
     end
   end
 end

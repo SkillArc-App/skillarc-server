@@ -1,4 +1,4 @@
-module Klayvio
+module Klaviyo
   class FakeGateway
     def application_status_updated(application_id:, email:, event_id:, employment_title:, employer_name:, occurred_at:, status:) # rubocop:disable Metrics/ParameterLists
     end

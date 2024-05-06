@@ -13,8 +13,8 @@ RSpec.describe Coaches::CoachAssignmentService do
       let!(:coach1) { nil }
       let!(:coach2) { nil }
 
-      it "raiises a NoCoachesError" do
-        expect { subject }.to raise_error(described_class::NoCoachesError)
+      it "return nil" do
+        expect(subject).to eq(nil)
       end
     end
 

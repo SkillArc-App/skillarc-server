@@ -12,7 +12,7 @@ module Coaches
 
       coaches = Coach.all
 
-      raise NoCoachesError if coaches.count.zero?
+      return if coaches.count.zero?
 
       actual_ratios = calculate_actual_ratios(coaches, assigned_contexts)
       target_ratios = calculate_target_ratios(coaches)

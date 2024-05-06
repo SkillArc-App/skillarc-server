@@ -50,8 +50,7 @@ message_service.create!(
     last_name: recruiter_user.last_name,
     email: recruiter_user.email,
     sub: recruiter_user.sub
-  },
-  occurred_at: recruiter_user.created_at
+  }
 )
 
 recruiter = Recruiter.create!(
@@ -849,8 +848,7 @@ message_service.create!(
     last_name: seeker_with_profile.user.last_name,
     email: seeker_with_profile.user.email,
     sub: seeker_with_profile.user.sub
-  },
-  occurred_at: seeker_with_profile.user.created_at
+  }
 )
 
 message_service.create!(
@@ -953,8 +951,7 @@ message_service.create!(
     last_name: trainer_with_reference.last_name,
     email: trainer_with_reference.email,
     sub: trainer_with_reference.sub
-  },
-  occurred_at: trainer_with_reference.created_at
+  }
 )
 
 admin_user = User.create!(
@@ -973,23 +970,26 @@ message_service.create!(
     last_name: admin_user.last_name,
     email: admin_user.email,
     sub: admin_user.sub
-  },
-  occurred_at: admin_user.created_at
+  }
 )
 
-admin = Role.create!(id: SecureRandom.uuid, name: "admin")
-employer_admin = Role.create!(id: SecureRandom.uuid, name: Role::Types::EMPLOYER_ADMIN)
+Role::Types::ALL.each do |role|
+  Role.create!(id: SecureRandom.uuid, name: role)
+end
 
-UserRole.create!(
-  id: SecureRandom.uuid,
-  role_id: admin.id,
-  user_id: admin_user.id
+message_service.create!(
+  user_id: admin_user.id,
+  schema: Events::RoleAdded::V2,
+  data: {
+    role: Role::Types::ADMIN
+  }
 )
-
-UserRole.create!(
-  id: SecureRandom.uuid,
-  role_id: employer_admin.id,
-  user_id: admin_user.id
+message_service.create!(
+  user_id: admin_user.id,
+  schema: Events::RoleAdded::V2,
+  data: {
+    role: Role::Types::EMPLOYER_ADMIN
+  }
 )
 
 bill_trainer_profile = TrainingProviderProfile.create!(
@@ -1107,27 +1107,15 @@ message_service.create!(
     last_name: coach_user.last_name,
     email: coach_user.email,
     sub: coach_user.sub
-  },
-  occurred_at: coach_user.created_at
+  }
 )
-
-coach_id = SecureRandom.uuid
 
 message_service.create!(
   user_id: coach_user.id,
-  schema: Events::RoleAdded::V1,
+  schema: Events::RoleAdded::V2,
   data: {
-    role: "coach",
-    email: coach_user.email,
-    coach_id:
+    role: Role::Types::COACH
   }
-)
-coach = Role.create!(id: SecureRandom.uuid, name: Role::Types::COACH)
-
-UserRole.create!(
-  id: SecureRandom.uuid,
-  role_id: coach.id,
-  user_id: coach_user.id
 )
 
 coach_seeker_context = Coaches::CoachSeekerContext.create!(

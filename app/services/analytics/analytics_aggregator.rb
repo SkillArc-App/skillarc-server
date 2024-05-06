@@ -86,9 +86,7 @@ module Analytics
       person.update!(last_active_at: message.occurred_at)
     end
 
-    on_message Events::RoleAdded::V1 do |message|
-      return unless message.data.role == "coach"
-
+    on_message Events::CoachAdded::V1 do |message|
       person = DimPerson.find_by!(user_id: message.aggregate_id)
 
       person.update!(

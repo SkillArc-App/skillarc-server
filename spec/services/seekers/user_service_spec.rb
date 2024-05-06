@@ -14,6 +14,29 @@ RSpec.describe Seekers::UserService do
     let(:last_name) { "New Last Name" }
     let(:phone_number) { "1234567890" }
     let(:zip_code) { "12345" }
+    let(:aggregate) { Aggregates::Seeker.new(seeker_id: seeker.id) }
+
+    before do
+      allow(MessageService)
+        .to receive(:aggregate_events)
+        .with(aggregate)
+        .and_return(
+          [
+            build(
+              :message,
+              schema: Events::BasicInfoAdded::V1,
+              aggregate_id: seeker.id,
+              data: {
+                user_id:,
+                first_name: "A name",
+                last_name: "A name",
+                phone_number: "333-333-3333",
+                date_of_birth: "2000-10-10"
+              }
+            )
+          ]
+        )
+    end
 
     it "updates the user" do
       expect { subject }
@@ -32,7 +55,7 @@ RSpec.describe Seekers::UserService do
           first_name:,
           last_name:,
           phone_number:,
-          date_of_birth: nil,
+          date_of_birth: Date.new(2000, 10, 10),
           user_id:
         }
       ).and_call_original

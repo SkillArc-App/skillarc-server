@@ -42,7 +42,7 @@ RSpec.describe Seekers::Projections::OnboardingStatus do
           first_name: "A",
           last_name: "B",
           phone_number: "333-333-3333",
-          date_of_birth: "10-10-2000"
+          date_of_birth: "2000-10-10"
         }
       )
     end

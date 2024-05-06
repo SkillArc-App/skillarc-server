@@ -181,7 +181,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
               first_name: "John",
               last_name: "Chabot",
               phone_number: "333-333-444",
-              date_of_birth: "10-10-2000"
+              date_of_birth: "2000-10-10"
             }
           )
         end

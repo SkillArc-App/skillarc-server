@@ -113,7 +113,7 @@ RSpec.describe Contact::ContactAggregator do
           first_name: "John",
           last_name: "Chabot",
           phone_number: "333-333-3333",
-          date_of_birth: "10-10-2000",
+          date_of_birth: "2000-10-10",
           user_id: user_contact.user_id
         }
       end

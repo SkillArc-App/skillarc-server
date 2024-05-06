@@ -31,6 +31,10 @@ class User < ApplicationRecord
     role?(Role::Types::EMPLOYER_ADMIN)
   end
 
+  def job_order_admin_role?
+    role?(Role::Types::JOB_ORDER_ADMIN)
+  end
+
   def coach_role?
     role?(Role::Types::COACH)
   end

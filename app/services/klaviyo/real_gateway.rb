@@ -1,4 +1,4 @@
-module Klayvio
+module Klaviyo
   class RealGateway # rubocop:disable Metrics/ClassLength
     ClientSideEventError = Class.new(StandardError)
     ServerSideEventError = Class.new(StandardError)
@@ -224,7 +224,7 @@ module Klayvio
         end
       end
 
-      Rails.logger.info("Klayvio response: #{response.body}")
+      Rails.logger.info("Klaviyo response: #{response.body}")
     end
 
     def error_message(response_code, error)

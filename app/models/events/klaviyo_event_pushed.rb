@@ -1,11 +1,11 @@
 module Events
-  module KlayvioEventPushed
+  module KlaviyoEventPushed
     V1 = Messages::Schema.active(
       type: Messages::EVENT,
       data: Messages::Nothing,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Klayvio,
-      message_type: Messages::Types::Contact::KLAYVIO_EVENT_PUSHED,
+      aggregate: Aggregates::Klaviyo,
+      message_type: Messages::Types::Contact::KLAVIYO_EVENT_PUSHED,
       version: 1
     )
   end

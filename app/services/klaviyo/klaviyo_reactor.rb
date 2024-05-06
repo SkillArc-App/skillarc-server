@@ -1,8 +1,8 @@
-module Klayvio
-  class KlayvioReactor < MessageConsumer # rubocop:disable Metrics/ClassLength
+module Klaviyo
+  class KlaviyoReactor < MessageConsumer # rubocop:disable Metrics/ClassLength
     UnableToRetrieveEmailError = Class.new(StandardError)
 
-    def initialize(client: Klayvio::Gateway.build, **params)
+    def initialize(client: Klaviyo::Gateway.build, **params)
       super(**params)
       @client = client
     end
@@ -166,12 +166,12 @@ module Klayvio
     def dedup_messages(message)
       aggregate = Aggregates::Message.new(message_id: message.id)
 
-      return if Projections::HasOccurred.project(aggregate:, schema: Events::KlayvioEventPushed::V1)
+      return if Projections::HasOccurred.project(aggregate:, schema: Events::KlaviyoEventPushed::V1)
 
       yield
 
       message_service.create!(
-        schema: Events::KlayvioEventPushed::V1,
+        schema: Events::KlaviyoEventPushed::V1,
         trace_id: message.trace_id,
         event_id: message.id,
         data: Messages::Nothing

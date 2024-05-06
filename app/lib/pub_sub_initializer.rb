@@ -18,7 +18,7 @@ module PubSubInitializer
 
     reactors = [
       DbStreamReactor.build(consumer: Coaches::CoachesReactor.new, listener_name: "coach_seekers_reactor"),
-      DbStreamReactor.build(consumer: Klayvio::KlayvioReactor.new, listener_name: "klayvio_reactor"),
+      DbStreamReactor.build(consumer: Klaviyo::KlaviyoReactor.new, listener_name: "klayvio_reactor"),
       DbStreamReactor.build(consumer: Applicants::OrchestrationReactor.new, listener_name: "applicants_orchestration_reactor"),
       DbStreamReactor.build(consumer: Attributes::AttributesReactor.new, listener_name: "attributes_reactor"),
       DbStreamReactor.build(consumer: Jobs::JobsReactor.new, listener_name: "jobs_reactor"),

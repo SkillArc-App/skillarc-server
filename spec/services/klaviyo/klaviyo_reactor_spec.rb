@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Klayvio::KlayvioReactor do
+RSpec.describe Klaviyo::KlaviyoReactor do
   let(:instance) { described_class.new(message_service:, client:) }
 
   let(:message_service) { MessageService.new }
-  let(:client) { Klayvio::FakeGateway.new }
+  let(:client) { Klaviyo::FakeGateway.new }
 
   describe "#handle_message" do
     subject { instance.handle_message(message) }
@@ -13,12 +13,12 @@ RSpec.describe Klayvio::KlayvioReactor do
     let(:seeker_id) { SecureRandom.uuid }
     let(:email) { "an@email.com" }
 
-    shared_examples "emits klayvio event pushed once" do
+    shared_examples "emits Klaviyo event pushed once" do
       it "only emits the event once" do
         expect(message_service)
           .to receive(:create!)
           .with(
-            schema: Events::KlayvioEventPushed::V1,
+            schema: Events::KlaviyoEventPushed::V1,
             trace_id: message.trace_id,
             event_id: message.id,
             data: Messages::Nothing
@@ -45,9 +45,9 @@ RSpec.describe Klayvio::KlayvioReactor do
         )
       end
 
-      it_behaves_like "emits klayvio event pushed once"
+      it_behaves_like "emits Klaviyo event pushed once"
 
-      it "calls the klayvio gateway" do
+      it "calls the Klaviyo gateway" do
         expect(client)
           .to receive(:user_signup)
           .with(
@@ -97,9 +97,9 @@ RSpec.describe Klayvio::KlayvioReactor do
           )
         end
 
-        it_behaves_like "emits klayvio event pushed once"
+        it_behaves_like "emits Klaviyo event pushed once"
 
-        it "calls the klayvio gateway" do
+        it "calls the Klaviyo gateway" do
           expect(client)
             .to receive(:user_updated)
             .with(
@@ -138,9 +138,9 @@ RSpec.describe Klayvio::KlayvioReactor do
           )
         end
 
-        it_behaves_like "emits klayvio event pushed once"
+        it_behaves_like "emits Klaviyo event pushed once"
 
-        it "calls the klayvio gateway" do
+        it "calls the Klaviyo gateway" do
           expect(client)
             .to receive(:education_experience_entered)
             .with(
@@ -171,9 +171,9 @@ RSpec.describe Klayvio::KlayvioReactor do
           )
         end
 
-        it_behaves_like "emits klayvio event pushed once"
+        it_behaves_like "emits Klaviyo event pushed once"
 
-        it "calls the klayvio gateway" do
+        it "calls the Klaviyo gateway" do
           expect(client)
             .to receive(:experience_entered)
             .with(
@@ -197,9 +197,9 @@ RSpec.describe Klayvio::KlayvioReactor do
           )
         end
 
-        it_behaves_like "emits klayvio event pushed once"
+        it_behaves_like "emits Klaviyo event pushed once"
 
-        it "calls the klayvio gateway" do
+        it "calls the Klaviyo gateway" do
           expect(client)
             .to receive(:onboarding_complete)
             .with(
@@ -255,7 +255,7 @@ RSpec.describe Klayvio::KlayvioReactor do
       let(:application_id) { SecureRandom.uuid }
       let(:from_user_id) { SecureRandom.uuid }
 
-      it_behaves_like "emits klayvio event pushed once"
+      it_behaves_like "emits Klaviyo event pushed once"
 
       context "when the message is from the applicant" do
         let(:from_user_id) { user_id }
@@ -271,7 +271,7 @@ RSpec.describe Klayvio::KlayvioReactor do
       context "when the message is from the employer" do
         let(:from_user_id) { SecureRandom.uuid }
 
-        it "calls the klayvio gateway" do
+        it "calls the Klaviyo gateway" do
           expect(client)
             .to receive(:chat_message_received)
             .with(
@@ -315,9 +315,9 @@ RSpec.describe Klayvio::KlayvioReactor do
         )
       end
 
-      it_behaves_like "emits klayvio event pushed once"
+      it_behaves_like "emits Klaviyo event pushed once"
 
-      it "calls the klayvio gateway" do
+      it "calls the Klaviyo gateway" do
         expect(client)
           .to receive(:job_saved)
           .with(
@@ -354,12 +354,12 @@ RSpec.describe Klayvio::KlayvioReactor do
 
       let(:lead_email) { "A@B.com" }
 
-      it_behaves_like "emits klayvio event pushed once"
+      it_behaves_like "emits Klaviyo event pushed once"
 
       context "when email is present" do
         let(:lead_email) { "A@B.com" }
 
-        it "calls the klayvio gateway" do
+        it "calls the Klaviyo gateway" do
           expect(client)
             .to receive(:lead_captured)
             .with(
@@ -381,7 +381,7 @@ RSpec.describe Klayvio::KlayvioReactor do
       context "when email is absent" do
         let(:lead_email) { nil }
 
-        it "calls the klayvio gateway" do
+        it "calls the Klaviyo gateway" do
           expect(client)
             .not_to receive(:lead_captured)
 
@@ -404,9 +404,9 @@ RSpec.describe Klayvio::KlayvioReactor do
         )
       end
 
-      it_behaves_like "emits klayvio event pushed once"
+      it_behaves_like "emits Klaviyo event pushed once"
 
-      it "calls the klayvio gateway" do
+      it "calls the Klaviyo gateway" do
         expect(client)
           .to receive(:employer_invite_accepted)
           .with(
@@ -439,9 +439,9 @@ RSpec.describe Klayvio::KlayvioReactor do
         )
       end
 
-      it_behaves_like "emits klayvio event pushed once"
+      it_behaves_like "emits Klaviyo event pushed once"
 
-      it "calls the klayvio gateway" do
+      it "calls the Klaviyo gateway" do
         expect(client)
           .to receive(:training_provider_invite_accepted)
           .with(
@@ -484,9 +484,9 @@ RSpec.describe Klayvio::KlayvioReactor do
         )
       end
 
-      it_behaves_like "emits klayvio event pushed once"
+      it_behaves_like "emits Klaviyo event pushed once"
 
-      it "calls the klayvio gateway" do
+      it "calls the Klaviyo gateway" do
         expect(client)
           .to receive(:application_status_updated)
           .with(

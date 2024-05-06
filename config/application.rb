@@ -36,6 +36,8 @@ module BlocktrainRails
     # Don't generate system test files.
     config.generators.system_tests = nil
 
-    config.middleware.use OliveBranch::Middleware
+    config.middleware.use OliveBranch::Middleware, content_type_check: lambda { |content_type|
+      content_type.nil? || OliveBranch::Checks.content_type_check(content_type)
+    }
   end
 end

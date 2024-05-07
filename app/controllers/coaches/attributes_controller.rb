@@ -8,14 +8,20 @@ module Coaches
     before_action :coach_authorize
     before_action :set_coach
 
+    def index
+      render json: Attributes::AttributesQuery.all
+    end
+
     def create
+      attribute_name = Attributes::AttributesQuery.find(params[:attribute_id]).name
+
       with_message_service do
         CoachesReactor.new(message_service:).add_attribute(
           seeker_attribute_id: SecureRandom.uuid,
           seeker_id: params[:seeker_id],
           attribute_id: params[:attribute_id],
-          attribute_name: params[:name],
-          attribute_value: params[:value],
+          attribute_values: params[:values],
+          attribute_name:,
           trace_id: request.request_id
         )
       end
@@ -24,13 +30,15 @@ module Coaches
     end
 
     def update
+      attribute_name = Attributes::AttributesQuery.find(params[:attribute_id]).name
+
       with_message_service do
         CoachesReactor.new(message_service:).add_attribute(
           seeker_attribute_id: params[:id],
           seeker_id: params[:seeker_id],
           attribute_id: params[:attribute_id],
-          attribute_name: params[:name],
-          attribute_value: params[:value],
+          attribute_name:,
+          attribute_values: params[:values],
           trace_id: request.request_id
         )
       end

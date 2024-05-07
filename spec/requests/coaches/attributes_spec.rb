@@ -1,8 +1,51 @@
 require 'rails_helper'
 require 'swagger_helper'
 
-RSpec.describe "Notes", type: :request do
+RSpec.describe "Attributes", type: :request do
+  path '/coaches/attributes' do
+    get "Get all attributes" do
+      tags 'Coaches'
+      produces 'application/json'
+      security [bearer_auth: []]
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      it_behaves_like "coach spec unauthenticated openapi"
+
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
+
+        response '200', 'Returns all attributes' do
+          schema type: :array,
+                 items: {
+                   type: :object,
+                   properties: {
+                     id: { type: :string, format: :uuid },
+                     description: { type: :string, nullable: true },
+                     name: { type: :string },
+                     set: { type: :array, items: { type: :string } },
+                     default: { type: :array, items: { type: :string } }
+                   }
+                 }
+
+          let!(:attribute) { create(:attributes_attribute) }
+
+          before do
+            expect(Attributes::AttributesQuery)
+              .to receive(:all)
+              .and_call_original
+          end
+
+          run_test!
+        end
+      end
+    end
+  end
+
   path '/coaches/seekers/{seeker_id}/attributes' do
+    let(:attribute) { create(:attributes_attribute) }
+
     post "Add an attribute" do
       tags 'Coaches'
       consumes 'application/json'
@@ -14,11 +57,11 @@ RSpec.describe "Notes", type: :request do
             type: :string,
             format: :uuid
           },
-          name: {
-            type: :string
-          },
-          value: {
-            type: :string
+          values: {
+            type: :array,
+            items: {
+              type: :string
+            }
           }
         },
         required: %w[attributesId name value]
@@ -35,13 +78,11 @@ RSpec.describe "Notes", type: :request do
       let(:attribute_params) do
         {
           attributeId: attribute_id,
-          name:,
-          value:
+          values:
         }
       end
-      let(:attribute_id) { SecureRandom.uuid }
-      let(:name) { "A name" }
-      let(:value) { "A value" }
+      let(:attribute_id) { attribute.id }
+      let(:values) { ["A value"] }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -54,8 +95,8 @@ RSpec.describe "Notes", type: :request do
                 seeker_attribute_id: be_a(String),
                 seeker_id:,
                 attribute_id:,
-                attribute_name: name,
-                attribute_value: value,
+                attribute_name: attribute.name,
+                attribute_values: values,
                 trace_id: be_a(String)
               )
               .and_call_original
@@ -68,6 +109,8 @@ RSpec.describe "Notes", type: :request do
   end
 
   path '/coaches/seekers/{seeker_id}/attributes/{id}' do
+    let(:attribute) { create(:attributes_attribute) }
+
     put "update an attribute" do
       tags 'Coaches'
       consumes 'application/json'
@@ -80,11 +123,11 @@ RSpec.describe "Notes", type: :request do
             type: :string,
             format: :uuid
           },
-          name: {
-            type: :string
-          },
           value: {
-            type: :string
+            type: :array,
+            items: {
+              type: :string
+            }
           }
         },
         required: %w[attributesId name value]
@@ -103,13 +146,11 @@ RSpec.describe "Notes", type: :request do
       let(:attribute_params) do
         {
           attributeId: attribute_id,
-          name:,
-          value:
+          values:
         }
       end
-      let(:attribute_id) { SecureRandom.uuid }
-      let(:name) { "A name" }
-      let(:value) { "A value" }
+      let(:attribute_id) { attribute.id }
+      let(:values) { ["A value"] }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -122,8 +163,8 @@ RSpec.describe "Notes", type: :request do
                 seeker_attribute_id: id,
                 seeker_id:,
                 attribute_id:,
-                attribute_name: name,
-                attribute_value: value,
+                attribute_name: attribute.name,
+                attribute_values: values,
                 trace_id: be_a(String)
               )
               .and_call_original

@@ -247,7 +247,7 @@ RSpec.describe Coaches::CoachesQuery do
         id: '2527d624-d0c4-48d4-856b-369ff767f29d',
         coach_seeker_context: csc1,
         attribute_name: "Education Level",
-        attribute_value: "High School",
+        attribute_values: ["High School"],
         attribute_id: "3f48a475-b711-4265-9cc5-02fcfc0c40d1"
       )
     end
@@ -270,7 +270,7 @@ RSpec.describe Coaches::CoachesQuery do
           name: "Education Level",
           id: '2527d624-d0c4-48d4-856b-369ff767f29d',
           attribute_id: "3f48a475-b711-4265-9cc5-02fcfc0c40d1",
-          value: "High School"
+          value: ["High School"]
         }],
         barriers: [{
           id: "81f43abc-67b6-4531-af45-293d3fc053e5",

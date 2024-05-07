@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_02_184855) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_06_180815) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -281,7 +281,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_184855) do
     t.uuid "coach_seeker_context_id", null: false
     t.uuid "attribute_id", null: false
     t.string "attribute_name", null: false
-    t.string "attribute_value", null: false
+    t.string "attribute_values", default: [], array: true
     t.index ["coach_seeker_context_id"], name: "index_coaches_seeker_attributes_on_coach_seeker_context_id"
   end
 

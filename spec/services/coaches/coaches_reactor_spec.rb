@@ -387,12 +387,12 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
   end
 
   describe "#add_attribute" do
-    subject { consumer.add_attribute(seeker_id:, seeker_attribute_id:, attribute_id:, attribute_name:, attribute_value:, trace_id:) }
+    subject { consumer.add_attribute(seeker_id:, seeker_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) }
 
     let(:seeker_attribute_id) { SecureRandom.uuid }
     let(:attribute_id) { SecureRandom.uuid }
     let(:attribute_name) { "Cool factor" }
-    let(:attribute_value) { "Cool" }
+    let(:attribute_values) { ["Cool"] }
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
@@ -403,7 +403,7 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
           id: seeker_attribute_id,
           attribute_id:,
           attribute_name:,
-          attribute_value:
+          attribute_values:
         }
       ).and_call_original
 

@@ -8,7 +8,7 @@ module Events
           id Uuid
           attribute_id Uuid
           attribute_name String
-          attribute_value String
+          attribute_values ArrayOf(String)
         end
       end
     end

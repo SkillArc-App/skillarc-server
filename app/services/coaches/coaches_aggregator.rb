@@ -21,12 +21,10 @@ module Coaches
       )
     end
 
-    on_message Events::RoleAdded::V1, :sync do |message|
-      return unless message.data.role == "coach"
-
+    on_message Events::CoachAdded::V1, :sync do |message|
       Coach.create!(
         coach_id: message.data.coach_id,
-        user_id: message.aggregate_id,
+        user_id: message.aggregate.id,
         email: message.data.email
       )
     end

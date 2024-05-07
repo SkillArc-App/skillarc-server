@@ -267,38 +267,21 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           build(
             :message,
             aggregate_id: user_id,
-            schema: Events::RoleAdded::V1,
+            schema: Events::CoachAdded::V1,
             data: {
-              role:,
               email: "an@email.com",
               coach_id: SecureRandom.uuid
             }
           )
         end
 
-        context "when role is coach" do
-          let(:role) { Role::Types::COACH }
+        it "updates a dim person from the message" do
+          expect { subject }.not_to change(Analytics::DimPerson, :count)
 
-          it "updates a dim person from the message" do
-            expect { subject }.not_to change(Analytics::DimPerson, :count)
+          person = Analytics::DimPerson.take(1).first
 
-            person = Analytics::DimPerson.take(1).first
-
-            expect(person.kind).to eq(Analytics::DimPerson::Kind::COACH)
-            expect(person.coach_id).to eq(message.data.coach_id)
-          end
-        end
-
-        context "when role is not coach" do
-          let(:role) { Role::Types::ADMIN }
-
-          it "updates a dim person from the message" do
-            expect { subject }.not_to change(Analytics::DimPerson, :count)
-
-            person = Analytics::DimPerson.take(1).first
-
-            expect(person.kind).to eq(Analytics::DimPerson::Kind::USER)
-          end
+          expect(person.kind).to eq(Analytics::DimPerson::Kind::COACH)
+          expect(person.coach_id).to eq(message.data.coach_id)
         end
       end
 

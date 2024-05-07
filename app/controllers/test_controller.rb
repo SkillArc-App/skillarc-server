@@ -10,23 +10,12 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   def create_coach
     user = create_user_with_messages
 
-    role = Role.find_by(name: Role::Types::COACH)
-    role ||= Role.create!(id: SecureRandom.uuid, name: Role::Types::COACH)
-
-    UserRole.create!(
-      id: SecureRandom.uuid,
-      role:,
-      user:
-    )
-
     with_message_service do
       message_service.create!(
         user_id: user.id,
-        schema: Events::RoleAdded::V1,
+        schema: Events::RoleAdded::V2,
         data: {
-          role: Role::Types::COACH,
-          email: user.email,
-          coach_id: SecureRandom.uuid
+          role: Role::Types::COACH
         }
       )
     end

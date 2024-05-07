@@ -167,37 +167,22 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
       let(:message) do
         build(
           :message,
-          schema: Events::RoleAdded::V1,
+          schema: Events::CoachAdded::V1,
           data: {
-            role:,
             email: "some@email.com",
             coach_id: id
           }
         )
       end
 
-      context "when the role is not 'coach'" do
-        let(:role) { Role::Types::EMPLOYER_ADMIN }
+      it "Creates a coach record" do
+        expect { subject }.to change {
+          Coaches::Coach.count
+        }.from(0).to(1)
 
-        it "does nothing" do
-          expect { subject }.not_to(change do
-                                      Coaches::Coach.count
-                                    end)
-        end
-      end
-
-      context "when the role is 'coach'" do
-        let(:role) { Role::Types::COACH }
-
-        it "Creates a coach record" do
-          expect { subject }.to change {
-            Coaches::Coach.count
-          }.from(0).to(1)
-
-          coach = Coaches::Coach.last_created
-          expect(coach.email).to eq("some@email.com")
-          expect(coach.coach_id).to eq(id)
-        end
+        coach = Coaches::Coach.last_created
+        expect(coach.email).to eq("some@email.com")
+        expect(coach.coach_id).to eq(id)
       end
     end
 

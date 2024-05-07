@@ -1,6 +1,6 @@
 module Admin
   def admin_authorize
-    unless current_user.user_roles.any? { |ur| ur.role.name == 'admin' }
+    unless current_user.admin_role?
       render json: { error: 'Not authorized' }, status: :unauthorized
       nil
     end

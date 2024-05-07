@@ -20,7 +20,7 @@ module Coaches
           seeker_attribute_id: SecureRandom.uuid,
           seeker_id: params[:seeker_id],
           attribute_id: params[:attribute_id],
-          attribute_values: params[:value],
+          attribute_values: params[:values],
           attribute_name:,
           trace_id: request.request_id
         )
@@ -38,7 +38,7 @@ module Coaches
           seeker_id: params[:seeker_id],
           attribute_id: params[:attribute_id],
           attribute_name:,
-          attribute_values: params[:value],
+          attribute_values: params[:values],
           trace_id: request.request_id
         )
       end

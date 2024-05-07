@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'swagger_helper'
 
-RSpec.describe "Notes", type: :request do
+RSpec.describe "Attributes", type: :request do
   path '/coaches/attributes' do
     get "Get all attributes" do
       tags 'Coaches'
@@ -57,7 +57,7 @@ RSpec.describe "Notes", type: :request do
             type: :string,
             format: :uuid
           },
-          value: {
+          values: {
             type: :array,
             items: {
               type: :string
@@ -78,11 +78,11 @@ RSpec.describe "Notes", type: :request do
       let(:attribute_params) do
         {
           attributeId: attribute_id,
-          value:
+          values:
         }
       end
       let(:attribute_id) { attribute.id }
-      let(:value) { ["A value"] }
+      let(:values) { ["A value"] }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -96,7 +96,7 @@ RSpec.describe "Notes", type: :request do
                 seeker_id:,
                 attribute_id:,
                 attribute_name: attribute.name,
-                attribute_values: value,
+                attribute_values: values,
                 trace_id: be_a(String)
               )
               .and_call_original
@@ -146,11 +146,11 @@ RSpec.describe "Notes", type: :request do
       let(:attribute_params) do
         {
           attributeId: attribute_id,
-          value:
+          values:
         }
       end
       let(:attribute_id) { attribute.id }
-      let(:value) { ["A value"] }
+      let(:values) { ["A value"] }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -164,7 +164,7 @@ RSpec.describe "Notes", type: :request do
                 seeker_id:,
                 attribute_id:,
                 attribute_name: attribute.name,
-                attribute_values: value,
+                attribute_values: values,
                 trace_id: be_a(String)
               )
               .and_call_original

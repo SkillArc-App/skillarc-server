@@ -193,6 +193,8 @@ GEM
       rack (>= 1.2, < 4)
       snaky_hash (~> 2.0)
       version_gem (~> 1.1)
+    oj (3.16.3)
+      bigdecimal (>= 3.0)
     olive_branch (4.0.1)
       multi_json
       rails (>= 4.0)
@@ -433,6 +435,7 @@ DEPENDENCIES
   faker
   importmap-rails
   jbuilder
+  oj
   olive_branch
   omniauth-auth0
   omniauth-rails_csrf_protection

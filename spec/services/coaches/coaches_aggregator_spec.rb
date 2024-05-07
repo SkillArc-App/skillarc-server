@@ -382,7 +382,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
               id: SecureRandom.uuid,
               attribute_id: SecureRandom.uuid,
               attribute_name: "HS Cliques",
-              attribute_value: "Jock"
+              attribute_values: ["Jock"]
             }
           )
         end
@@ -394,7 +394,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           expect(seeker_attribute.coach_seeker_context).to eq(coach_seeker_context)
           expect(seeker_attribute.attribute_id).to eq(message.data.attribute_id)
           expect(seeker_attribute.attribute_name).to eq("HS Cliques")
-          expect(seeker_attribute.attribute_value).to eq("Jock")
+          expect(seeker_attribute.attribute_values).to eq(["Jock"])
         end
       end
 

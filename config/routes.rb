@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   put 'employers/applicants/:id' => 'employers/applicants#update', as: 'employers_applicant'
 
   scope module: 'coaches', path: 'coaches' do
+    resources :attributes
     resources :barriers
     resources :contexts do
       resources :notes, only: %i[create update destroy]

@@ -350,10 +350,10 @@ paths:
                 attributeId:
                   type: string
                   format: uuid
-                name:
-                  type: string
                 value:
-                  type: string
+                  type: array
+                  items:
+                    type: string
               required:
               - attributesId
               - name
@@ -399,10 +399,10 @@ paths:
                 attributeId:
                   type: string
                   format: uuid
-                name:
-                  type: string
                 value:
-                  type: string
+                  type: array
+                  items:
+                    type: string
               required:
               - attributesId
               - name

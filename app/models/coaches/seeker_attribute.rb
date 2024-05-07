@@ -4,7 +4,7 @@
 #
 #  id                      :uuid             not null, primary key
 #  attribute_name          :string           not null
-#  attribute_value         :string           not null
+#  attribute_values        :string           default([]), is an Array
 #  attribute_id            :uuid             not null
 #  coach_seeker_context_id :uuid             not null
 #

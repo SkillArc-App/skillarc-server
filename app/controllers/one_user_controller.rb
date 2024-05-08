@@ -23,13 +23,22 @@ class OneUserController < ApplicationController
       }
     end || []
 
+    completed_at = nil
+
+    if seeker&.id.present?
+      completed_at = Projections::GetFirst.project(
+        aggregate: Aggregates::Seeker.new(seeker_id: seeker&.id),
+        schema: Events::OnboardingCompleted::V2
+      )&.occurred_at
+    end
+
     render json: {
       id: current_user.id,
       first_name: current_user.first_name,
       last_name: current_user.last_name,
       email: current_user.email,
       onboarding_session: {
-        completed_at: current_user.onboarding_session&.completed_at
+        completed_at:
       },
       user_roles: roles,
       notifications:,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_06_180815) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_07_164307) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -532,6 +532,57 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_06_180815) do
     t.datetime "occurred_at", null: false
   end
 
+  create_table "job_orders_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "job_orders_jobs_id", null: false
+    t.uuid "job_orders_seekers_id", null: false
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_orders_jobs_id"], name: "index_job_orders_applications_on_job_orders_jobs_id"
+    t.index ["job_orders_seekers_id"], name: "index_job_orders_applications_on_job_orders_seekers_id"
+  end
+
+  create_table "job_orders_candidates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "job_orders_job_orders_id", null: false
+    t.uuid "job_orders_seekers_id", null: false
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_orders_job_orders_id"], name: "index_job_orders_candidates_on_job_orders_job_orders_id"
+    t.index ["job_orders_seekers_id"], name: "index_job_orders_candidates_on_job_orders_seekers_id"
+  end
+
+  create_table "job_orders_job_orders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "job_orders_jobs_id", null: false
+    t.integer "candidate_count", null: false
+    t.integer "applicant_count", null: false
+    t.integer "recommended_count", null: false
+    t.integer "hire_count", null: false
+    t.integer "order_count"
+    t.datetime "closed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_orders_jobs_id"], name: "index_job_orders_job_orders_on_job_orders_jobs_id"
+  end
+
+  create_table "job_orders_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "employment_title", null: false
+    t.string "employer_name", null: false
+    t.uuid "employer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employer_id"], name: "index_job_orders_jobs_on_employer_id"
+  end
+
+  create_table "job_orders_seekers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email"
+    t.string "phone_number"
+    t.string "first_name"
+    t.string "last_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "job_photos", id: :text, force: :cascade do |t|
     t.text "photo_url", null: false
     t.text "job_id", null: false
@@ -961,6 +1012,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_06_180815) do
   add_foreign_key "employers_jobs", "employers_employers"
   add_foreign_key "employers_recruiters", "employers_employers"
   add_foreign_key "job_attributes", "jobs"
+  add_foreign_key "job_orders_applications", "job_orders_jobs", column: "job_orders_jobs_id"
+  add_foreign_key "job_orders_applications", "job_orders_seekers", column: "job_orders_seekers_id"
+  add_foreign_key "job_orders_candidates", "job_orders_job_orders", column: "job_orders_job_orders_id"
+  add_foreign_key "job_orders_candidates", "job_orders_seekers", column: "job_orders_seekers_id"
+  add_foreign_key "job_orders_job_orders", "job_orders_jobs", column: "job_orders_jobs_id"
   add_foreign_key "job_photos", "jobs", name: "JobPhoto_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "job_tags", "jobs", name: "JobTag_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "job_tags", "tags", name: "JobTag_tag_id_fkey", on_update: :cascade, on_delete: :restrict

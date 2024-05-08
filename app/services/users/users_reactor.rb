@@ -14,7 +14,7 @@ module Users
 
       return if user_created&.data&.email.nil?
 
-      message_service.create_once!(
+      message_service.create_once_for_aggregate!(
         trace_id: message.trace_id,
         schema: Events::CoachAdded::V1,
         user_id: message.aggregate.id,

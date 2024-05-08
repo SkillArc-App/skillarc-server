@@ -5,11 +5,22 @@ class MessageService
   MessageTypeHasMultipleActiveSchemas = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
   InactiveSchemaError = Class.new(StandardError)
+  NotBooleanProjection = Class.new(StandardError)
 
-  def create_once!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+  def create_once_for_aggregate!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    aggregate = get_aggregate(aggregate:, schema:, **)
+    projector = Projections::Aggregates::HasOccurred.new(aggregate:, schema:)
+
+    create_once!(schema:, data:, projector:, aggregate:, trace_id:, id:, occurred_at:, metadata:, **)
+  end
+
+  def create_once!(schema:, data:, projector:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
 
-    save!(message) unless Projections::Aggregates::HasOccurred.project(aggregate: message.aggregate, schema: message.schema)
+    projection = projector.project
+    raise MessageService::NotBooleanProjection unless [true, false].include?(projection)
+
+    save!(message) unless projection
 
     message
   end
@@ -26,7 +37,7 @@ class MessageService
 
     raise InactiveSchemaError, "Attempted to create message for #{schema}" if schema.inactive?
 
-    aggregate ||= schema.aggregate.new(**)
+    aggregate = get_aggregate(aggregate:, schema:, **)
 
     data = schema.data.new(**data) if data.is_a?(Hash)
     metadata = schema.metadata.new(**metadata) if metadata.is_a?(Hash)
@@ -108,6 +119,10 @@ class MessageService
   end
 
   private
+
+  def get_aggregate(aggregate:, schema:, **)
+    aggregate || schema.aggregate.new(**)
+  end
 
   def messages_to_publish
     @messages_to_publish ||= []

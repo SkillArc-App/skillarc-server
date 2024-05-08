@@ -6,7 +6,7 @@ module Events
 
         schema do
           job_id Uuid
-          hire_count Either(Integer, nil), default: nil
+          order_count Either(1.., nil), default: nil
         end
       end
     end

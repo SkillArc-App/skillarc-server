@@ -537,7 +537,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
 
       context "when an onboarding completed event has already occured" do
         before do
-          expect(Projections::HasOccurred)
+          expect(Projections::Aggregates::HasOccurred)
             .to receive(:project)
             .with(aggregate: message.aggregate, schema: Events::OnboardingCompleted::V2)
             .and_return(true)
@@ -553,7 +553,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
 
       context "when an onboarding completed event has already occured" do
         before do
-          expect(Projections::HasOccurred)
+          expect(Projections::Aggregates::HasOccurred)
             .to receive(:project)
             .with(aggregate: message.aggregate, schema: Events::OnboardingCompleted::V2)
             .and_return(false)

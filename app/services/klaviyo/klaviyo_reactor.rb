@@ -111,7 +111,7 @@ module Klaviyo
 
     on_message Events::ChatMessageSent::V1 do |message|
       dedup_messages(message) do
-        applicant_status_updated = Projections::GetFirst.project(
+        applicant_status_updated = Projections::Aggregates::GetFirst.project(
           aggregate: Aggregates::Application.new(application_id: message.data.applicant_id),
           schema: Events::ApplicantStatusUpdated::V6
         )
@@ -166,7 +166,7 @@ module Klaviyo
     def dedup_messages(message)
       aggregate = Aggregates::Message.new(message_id: message.id)
 
-      return if Projections::HasOccurred.project(aggregate:, schema: Events::KlaviyoEventPushed::V1)
+      return if Projections::Aggregates::HasOccurred.project(aggregate:, schema: Events::KlaviyoEventPushed::V1)
 
       yield
 
@@ -179,7 +179,7 @@ module Klaviyo
     end
 
     def email_for_seeker_aggregate(aggregate)
-      onboarding_started = Projections::GetFirst.project(
+      onboarding_started = Projections::Aggregates::GetFirst.project(
         aggregate:,
         schema: Events::OnboardingStarted::V1
       )
@@ -190,7 +190,7 @@ module Klaviyo
     end
 
     def email_for_user_aggregate(aggregate)
-      user_created = Projections::GetFirst.project(
+      user_created = Projections::Aggregates::GetFirst.project(
         aggregate:,
         schema: Events::UserCreated::V1
       )

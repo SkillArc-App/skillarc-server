@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Projections::GetLast do
+RSpec.describe Projections::Aggregates::GetLast do
   describe ".project" do
     subject { described_class.project(aggregate:, schema:) }
 

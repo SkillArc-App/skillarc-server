@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Projections::GetFirst do
+RSpec.describe Projections::Aggregates::GetFirst do
   describe ".project" do
     subject { described_class.project(aggregate:, schema:) }
 

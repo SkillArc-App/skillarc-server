@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Projections::HasOccurred do
+RSpec.describe Projections::Aggregates::HasOccurred do
   describe ".project" do
     subject { described_class.project(aggregate:, schema:) }
 

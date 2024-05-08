@@ -1,11 +1,18 @@
 class MessageService
   NotSchemaError = Class.new(StandardError)
   NotAggregateError = Class.new(StandardError)
+  NotTraceIdError = Class.new(StandardError)
   SchemaAlreadyDefinedError = Class.new(StandardError)
   MessageTypeHasMultipleActiveSchemas = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
   InactiveSchemaError = Class.new(StandardError)
   NotBooleanProjection = Class.new(StandardError)
+
+  def create_once_for_trace!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    projector = Projections::Trace::HasOccurred.new(trace_id:, schema:)
+
+    create_once!(schema:, data:, projector:, aggregate:, trace_id:, id:, occurred_at:, metadata:, **)
+  end
 
   def create_once_for_aggregate!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     aggregate = get_aggregate(aggregate:, schema:, **)
@@ -102,6 +109,12 @@ class MessageService
     raise NotAggregateError unless aggregate.is_a?(Messages::Aggregate)
 
     Event.where(aggregate_id: aggregate.id).order(:occurred_at).map(&:message).select { |m| m.schema.type == Messages::EVENT }
+  end
+
+  def self.trace_id_events(trace_id)
+    raise NotTraceIdError unless trace_id.is_a?(String)
+
+    Event.where(trace_id:).order(:occurred_at).map(&:message).select { |m| m.schema.type == Messages::EVENT }
   end
 
   def self.migrate_event(schema:, &block)

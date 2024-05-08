@@ -215,13 +215,15 @@ module Klaviyo
 
       case response.code
       when /4../
-        response.body["errors"].each do |error|
-          Sentry.capture_exception(ClientSideEventError.new(error_message(response.code, error)))
-        end
+        Sentry.capture_exception(ClientSideEventError.new(response.body["errors"]))
+        # response.body["errors"].each do |error|
+        #   Sentry.capture_exception(ClientSideEventError.new(error_message(response.code, error)))
+        # end
       when /5../
-        response.body["errors"].each do |error|
-          Sentry.capture_exception(ServerSideEventError.new(error_message(response.code, error)))
-        end
+        Sentry.capture_exception(ServerSideEventError.new(response.body["errors"]))
+        # response.body["errors"].each do |error|
+        #   Sentry.capture_exception(ServerSideEventError.new(error_message(response.code, error)))
+        # end
       end
 
       Rails.logger.info("Klaviyo response: #{response.body}")

@@ -79,6 +79,21 @@ module Messages
       ].freeze
     end
 
+    module JobOrders
+      EVENTS = [
+        JOB_ORDER_ADDED = 'job_order_added',
+        JOB_ORDER_ACTIVATED = 'job_order_activated',
+        JOB_ORDER_STALLED = 'job_order_stalled',
+        JOB_ORDER_CLOSED = 'job_order_closed',
+        JOB_ORDER_CANDIDATE_ADDED = 'job_order_candidate_added',
+        JOB_ORDER_CANDIDATE_HIRED = 'job_order_candidate_hired',
+        JOB_ORDER_CANDIDATE_RECOMMENDED = 'job_order_candidate_recommended',
+        JOB_ORDER_CANDIDATE_RESCINDED = 'job_order_candidate_rescinded'
+      ].freeze
+
+      COMMANDS = [].freeze
+    end
+
     module Employers
       EVENTS = [
         EMPLOYER_CREATED = 'employer_created',
@@ -205,6 +220,7 @@ module Messages
       *Applications::EVENTS,
       *Coaches::EVENTS,
       *Jobs::EVENTS,
+      *JobOrders::EVENTS,
       *Employers::EVENTS,
       *Seekers::EVENTS,
       *Contact::EVENTS,
@@ -217,6 +233,7 @@ module Messages
       *Contact::COMMANDS,
       *Coaches::COMMANDS,
       *Seekers::COMMANDS,
+      *JobOrders::EVENTS,
       *Infrastructure::COMMANDS
     ].freeze
 

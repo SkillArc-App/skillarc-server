@@ -114,101 +114,101 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
   end
 
   describe "#create_once_for_trace!" do
-  subject do
-    instance.create_once_for_trace!(
-      id:,
-      schema:,
-      user_id:,
-      trace_id:,
-      data:,
-      occurred_at:,
-      metadata:
-    )
-  end
+    subject do
+      instance.create_once_for_trace!(
+        id:,
+        schema:,
+        user_id:,
+        trace_id:,
+        data:,
+        occurred_at:,
+        metadata:
+      )
+    end
 
-  let(:user_id) { SecureRandom.uuid }
-  let(:trace_id) { SecureRandom.uuid }
-  let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
-  let(:occurred_at) { DateTime.new(2000, 1, 1) }
-  let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
-  let(:id) { SecureRandom.uuid }
+    let(:user_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+    let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
+    let(:occurred_at) { DateTime.new(2000, 1, 1) }
+    let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
+    let(:id) { SecureRandom.uuid }
 
-  context "when the event has not already occurred" do
-    it "calls build and save!" do
-      expect(instance)
-        .to receive(:build)
-        .with(
-          schema:,
-          data:,
-          aggregate: nil,
-          trace_id:,
-          id:,
-          occurred_at:,
-          metadata:,
-          user_id:
-        )
-        .and_call_original
-
-      expect(instance)
-        .to receive(:save!)
-        .with(
-          Message.new(
+    context "when the event has not already occurred" do
+      it "calls build and save!" do
+        expect(instance)
+          .to receive(:build)
+          .with(
             schema:,
             data:,
+            aggregate: nil,
             trace_id:,
             id:,
             occurred_at:,
             metadata:,
-            aggregate: Aggregates::User.new(user_id:)
+            user_id:
           )
-        )
-        .and_call_original
+          .and_call_original
 
-      subject
+        expect(instance)
+          .to receive(:save!)
+          .with(
+            Message.new(
+              schema:,
+              data:,
+              trace_id:,
+              id:,
+              occurred_at:,
+              metadata:,
+              aggregate: Aggregates::User.new(user_id:)
+            )
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "when the event has already occured" do
+      before do
+        expect(described_class)
+          .to receive(:trace_id_events)
+          .with(trace_id)
+          .and_return([
+                        build(
+                          :message,
+                          schema:,
+                          data: {
+                            seeker_id: SecureRandom.uuid
+                          },
+                          metadata: {
+                            user_id: SecureRandom.uuid
+                          }
+                        )
+                      ])
+      end
+
+      it "calls build but not save!" do
+        expect(instance)
+          .to receive(:build)
+          .with(
+            schema:,
+            data:,
+            aggregate: nil,
+            trace_id:,
+            id:,
+            occurred_at:,
+            metadata:,
+            user_id:
+          )
+          .and_call_original
+
+        expect(instance)
+          .not_to receive(:save!)
+
+        subject
+      end
     end
   end
-
-  context "when the event has already occured" do
-    before do
-      expect(described_class)
-        .to receive(:trace_id_events)
-        .with(trace_id)
-        .and_return([
-                      build(
-                        :message,
-                        schema:,
-                        data: {
-                          seeker_id: SecureRandom.uuid
-                        },
-                        metadata: {
-                          user_id: SecureRandom.uuid
-                        }
-                      )
-                    ])
-    end
-
-    it "calls build but not save!" do
-      expect(instance)
-        .to receive(:build)
-        .with(
-          schema:,
-          data:,
-          aggregate: nil,
-          trace_id:,
-          id:,
-          occurred_at:,
-          metadata:,
-          user_id:
-        )
-        .and_call_original
-
-      expect(instance)
-        .not_to receive(:save!)
-
-      subject
-    end
-  end
-end
 
   describe "#create_once!" do
     subject do

@@ -6,7 +6,13 @@ class DbStreamListener < StreamListener
   attr_reader :listener_name
 
   def id
-    "db-stream-#{kind}-#{listener_name}"
+    "db-stream-#{listener_name}"
+  end
+
+  def self.build(consumer:, listener_name:, now: Time.zone.now)
+    listener = new(consumer:, listener_name:, now:)
+    StreamListener.register(listener_name, listener)
+    listener
   end
 
   def play
@@ -24,7 +30,16 @@ class DbStreamListener < StreamListener
       update_bookmark(bookmark, last_handled_event) if last_handled_event
     end
 
-    message_service.flush
+    consumer.flush
+  end
+
+  def replay
+    return unless consumer.can_replay?
+
+    consumer.reset_for_replay
+
+    ListenerBookmark.find_by(consumer_name: listener_name)&.destroy
+    play
   end
 
   def next_message
@@ -42,12 +57,10 @@ class DbStreamListener < StreamListener
     Event.where("occurred_at > ?", bookmark_timestamp(bookmark)).order(:occurred_at)
   end
 
-  def initialize(consumer:, listener_name:, message_service: MessageService.new) # rubocop:disable Lint/MissingSuper
+  def initialize(consumer:, listener_name:, now:) # rubocop:disable Lint/MissingSuper
     @consumer = consumer
-    @consumer.message_service = message_service
-
     @listener_name = listener_name
-    @message_service = message_service
+    @default_time = consumer.can_replay? ? Time.zone.at(0) : now
   end
 
   def bookmark_timestamp(bookmark)
@@ -61,13 +74,9 @@ class DbStreamListener < StreamListener
     bookmark.update!(event_id: event.id)
   end
 
-  def default_time
-    raise NoMethodError
-  end
+  attr_reader :default_time, :consumer
 
   def handle_message(message)
     consumer.handle_message(message)
   end
-
-  attr_reader :consumer, :message_service
 end

@@ -59,14 +59,19 @@ module JobOrders
             status: current_status
           }
         )
-      when *JobOrders::CloseStatus::ALL
+      when JobOrders::CloseStatus::FILLED
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
-          schema: Events::JobOrderClosed::V1,
-          data: {
-            status: current_status
-          }
+          schema: Events::JobOrderFilled::V1,
+          data: Messages::Nothing
+        )
+      when JobOrders::CloseStatus::NOT_FILLED
+        message_service.create_once_for_trace!(
+          trace_id: message.trace_id,
+          aggregate: message.aggregate,
+          schema: Events::JobOrderNotFilled::V1,
+          data: Messages::Nothing
         )
       end
     end

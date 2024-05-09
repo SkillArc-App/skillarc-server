@@ -16,14 +16,12 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         .and_return(messages)
     end
 
-    let(:job_order_closed) do
+    let(:job_order_not_filled) do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderClosed::V1,
-        data: {
-          status: JobOrders::CloseStatus::NOT_FILLED
-        }
+        schema: Events::JobOrderNotFilled::V1,
+        data: Messages::Nothing
       )
     end
     let(:job_order_activated) do
@@ -139,14 +137,14 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
     end
 
     context "when a job order closed event has occured" do
-      let(:messages) { [job_order_closed] }
+      let(:messages) { [job_order_not_filled] }
 
       it "reports the status as the closed status" do
         expect(subject.status).to eq(JobOrders::CloseStatus::NOT_FILLED)
       end
 
       context "when it's followed by an activation" do
-        let(:messages) { [job_order_closed, job_order_activated] }
+        let(:messages) { [job_order_not_filled, job_order_activated] }
 
         it "reports the status as appropriate" do
           expect(subject.status).to eq(JobOrders::OpenStatus::OPEN)

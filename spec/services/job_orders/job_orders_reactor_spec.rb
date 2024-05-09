@@ -126,7 +126,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                 )
               end
 
-              it "emits an activated event" do
+              it "emits an waiting on employer event" do
                 expect(message_service)
                   .to receive(:create_once_for_trace!)
                   .with(
@@ -142,7 +142,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               end
             end
 
-            context "when the new status should be closed" do
+            context "when the new status should be filled" do
               let(:existing_status) do
                 JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
               end
@@ -157,16 +157,43 @@ RSpec.describe JobOrders::JobOrdersReactor do
                 )
               end
 
-              it "emits an activated event" do
+              it "emits an filled event" do
                 expect(message_service)
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
                     aggregate: message.aggregate,
-                    schema: Events::JobOrderClosed::V1,
-                    data: {
-                      status: JobOrders::CloseStatus::FILLED
-                    }
+                    schema: Events::JobOrderFilled::V1,
+                    data: Messages::Nothing
+                  )
+
+                subject
+              end
+            end
+
+            context "when the new status should be not filled" do
+              let(:existing_status) do
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
+              end
+              let(:new_status) do
+                JobOrders::Projectors::JobOrderStatus::Projection.new(
+                  hired_candidates: Set[1, 2],
+                  order_count: 2,
+                  candidates: Set[],
+                  recommended_candidates: Set[],
+                  rescinded_candidates: Set[],
+                  not_filled?: true
+                )
+              end
+
+              it "emits a not filled event" do
+                expect(message_service)
+                  .to receive(:create_once_for_trace!)
+                  .with(
+                    trace_id: message.trace_id,
+                    aggregate: message.aggregate,
+                    schema: Events::JobOrderNotFilled::V1,
+                    data: Messages::Nothing
                   )
 
                 subject

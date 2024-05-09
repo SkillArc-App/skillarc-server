@@ -52,12 +52,8 @@ module JobOrders
         accumulator.with(order_count: message.data.order_count)
       end
 
-      on_message Events::JobOrderClosed::V1 do |message, accumulator|
-        if message.data.status == CloseStatus::NOT_FILLED
-          accumulator.with(not_filled?: true)
-        else
-          accumulator
-        end
+      on_message Events::JobOrderNotFilled::V1 do |_, accumulator|
+        accumulator.with(not_filled?: true)
       end
 
       on_message Events::JobOrderActivated::V1 do |_, accumulator|

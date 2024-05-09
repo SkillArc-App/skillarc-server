@@ -34,19 +34,25 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
         }
       )
     end
-    let(:job_order_closed) do
+    let(:job_order_filled) do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderClosed::V1,
-        data: {
-          status: JobOrders::CloseStatus::FILLED
-        }
+        schema: Events::JobOrderFilled::V1,
+        data: Messages::Nothing
+      )
+    end
+    let(:job_order_not_filled) do
+      build(
+        :message,
+        aggregate:,
+        schema: Events::JobOrderNotFilled::V1,
+        data: Messages::Nothing
       )
     end
 
     context "when the last event was activated" do
-      let(:messages) { [job_order_closed, job_order_stalled, job_order_activated] }
+      let(:messages) { [job_order_filled, job_order_not_filled, job_order_stalled, job_order_activated] }
 
       it "return the open status" do
         expect(subject.status).to eq(JobOrders::OpenStatus::OPEN)
@@ -54,18 +60,26 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     end
 
     context "when the last event was stalled" do
-      let(:messages) { [job_order_closed, job_order_activated, job_order_stalled] }
+      let(:messages) { [job_order_not_filled, job_order_filled, job_order_activated, job_order_stalled] }
 
       it "return the open status" do
         expect(subject.status).to eq(job_order_stalled.data.status)
       end
     end
 
-    context "when the last event was closed" do
-      let(:messages) { [job_order_activated, job_order_stalled, job_order_closed] }
+    context "when the last event was filled" do
+      let(:messages) { [job_order_activated, job_order_stalled, job_order_not_filled, job_order_filled] }
 
       it "return the open status" do
-        expect(subject.status).to eq(job_order_closed.data.status)
+        expect(subject.status).to eq(JobOrders::CloseStatus::FILLED)
+      end
+    end
+
+    context "when the last event was filled" do
+      let(:messages) { [job_order_activated, job_order_stalled, job_order_filled, job_order_not_filled] }
+
+      it "return the open status" do
+        expect(subject.status).to eq(JobOrders::CloseStatus::NOT_FILLED)
       end
     end
   end

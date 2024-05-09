@@ -21,8 +21,12 @@ module JobOrders
         accumulator.with(status: JobOrders::OpenStatus::OPEN)
       end
 
-      on_message Events::JobOrderClosed::V1 do |message, accumulator|
-        accumulator.with(status: message.data.status)
+      on_message Events::JobOrderFilled::V1 do |_, accumulator|
+        accumulator.with(status: JobOrders::CloseStatus::FILLED)
+      end
+
+      on_message Events::JobOrderNotFilled::V1 do |_, accumulator|
+        accumulator.with(status: JobOrders::CloseStatus::NOT_FILLED)
       end
 
       on_message Events::JobOrderStalled::V1 do |message, accumulator|

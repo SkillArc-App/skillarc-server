@@ -69,4 +69,12 @@ RSpec.describe MessageConsumer do
       end
     end
   end
+
+  describe "#flush" do
+    subject { described_class.new.flush }
+
+    it "implements an empty method" do
+      expect(subject).to eq(nil)
+    end
+  end
 end

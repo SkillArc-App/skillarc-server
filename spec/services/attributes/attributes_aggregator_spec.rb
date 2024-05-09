@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Attributes::AttributesAggregator do
   it_behaves_like "a replayable message consumer"
-  
+
   let(:consumer) { described_class.new }
 
   describe "#handle_message" do

@@ -9,7 +9,7 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
   let(:consumer) { described_class.new(message_service:) }
   let(:message_service) { MessageService.new }
 
-  it_behaves_like "a message consumer"
+  it_behaves_like "a non replayable message consumer"
 
   describe "#handle_message" do
     subject { consumer.handle_message(message) }

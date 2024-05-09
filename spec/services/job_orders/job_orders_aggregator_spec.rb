@@ -1,13 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe JobOrders::JobOrdersAggregator do
-  it_behaves_like "a message consumer"
+  it_behaves_like "a replayable message consumer"
 
   describe "#handle_message" do
     subject { instance.handle_message(message) }
 
-    let(:instance) { described_class.new(message_service:) }
-    let(:message_service) { MessageService.new }
+    let(:instance) { described_class.new }
 
     context "when the message is job created" do
       let(:message) do

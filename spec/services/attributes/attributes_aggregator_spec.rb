@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Attributes::AttributesAggregator do
-  it_behaves_like "a message consumer"
-
-  let(:consumer) { described_class.new(message_service: MessageService.new) }
+  it_behaves_like "a replayable message consumer"
+  
+  let(:consumer) { described_class.new }
 
   describe "#handle_message" do
     subject { consumer.handle_message(message) }

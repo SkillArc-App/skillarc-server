@@ -1,9 +1,7 @@
 module Contact
   module CalDotCom
-    class SchedulingReactor < MessageConsumer
+    class SchedulingReactor < MessageReactor
       UnknownMeetingType = Class.new(StandardError)
-
-      def reset_for_replay; end
 
       on_message Events::CalWebhookReceived::V1 do |message|
         return unless message.data.cal_trigger_event_type == Events::CalWebhookReceived::CalTriggerEventTypes::BOOKING_CREATED

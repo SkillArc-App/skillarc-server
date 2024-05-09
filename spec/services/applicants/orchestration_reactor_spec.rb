@@ -2,12 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Applicants::OrchestrationReactor do
   let(:instance) do
-    orchestration_reactor = described_class.new
-
-    orchestration_reactor.message_service = MessageService.new
-
-    orchestration_reactor
+    described_class.new(message_service:)
   end
+
+  let(:message_service) { MessageService.new }
 
   describe "applicant screened" do
     subject { instance.handle_message(applicant_screened) }
@@ -22,7 +20,7 @@ RSpec.describe Applicants::OrchestrationReactor do
     let(:employer) { create(:employer, name: "Skillarc") }
 
     it "publishes an event" do
-      expect_any_instance_of(MessageService)
+      expect(message_service)
         .to receive(:create!)
         .with(
           application_id: applicant.id,
@@ -61,7 +59,7 @@ RSpec.describe Applicants::OrchestrationReactor do
     let(:applicant) { create(:applicant) }
 
     it "publishes an event" do
-      expect_any_instance_of(MessageService)
+      expect(message_service)
         .to receive(:create!)
         .with(
           application_id: applicant.id,
@@ -105,7 +103,7 @@ RSpec.describe Applicants::OrchestrationReactor do
     end
 
     it "requests an application screen" do
-      expect_any_instance_of(MessageService)
+      expect(message_service)
         .to receive(:create!)
         .with(
           application_id: be_a(String),

@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Contact::CalDotCom::SchedulingReactor do
+  it_behaves_like "a non replayable message consumer"
+
   describe "#handle_message" do
     subject { described_class.new(message_service:).handle_message(message) }
-
-    it_behaves_like "a message consumer"
 
     context "the event is a cal.com webhook recieved event" do
       let(:message) do

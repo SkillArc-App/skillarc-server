@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/BlockLength
+  it_behaves_like "a replayable message consumer"
+
   describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { described_class.new.handle_message(message) }
 

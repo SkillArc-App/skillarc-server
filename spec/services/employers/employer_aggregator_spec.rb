@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Employers::EmployerAggregator do
-  it_behaves_like "a message consumer"
+  it_behaves_like "a replayable message consumer"
 
   describe "application created" do
     let(:employer_created) do

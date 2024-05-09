@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Contact::SmsReactor do
+  it_behaves_like "a non replayable message consumer"
+
   describe "#handle_message" do
     subject { described_class.new(sms_service:, message_service: MessageService.new).handle_message(message) }
 

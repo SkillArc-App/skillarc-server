@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Klaviyo::KlaviyoReactor do
+  it_behaves_like "a replayable message consumer"
+
   let(:instance) { described_class.new(message_service:, client:) }
 
   let(:message_service) { MessageService.new }

@@ -1,7 +1,7 @@
 module JobOrders
-  class JobOrdersReactor < MessageConsumer
-    def reset_for_replay
-      # Stuff
+  class JobOrdersReactor < MessageReactor
+    def can_replay?
+      true
     end
 
     on_message Events::JobCreated::V3 do |message|

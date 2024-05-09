@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe JobOrders::JobOrdersReactor do
-  it_behaves_like "a message consumer"
+  it_behaves_like "a replayable message consumer"
 
   describe "#handle_message" do
     subject { instance.handle_message(message) }

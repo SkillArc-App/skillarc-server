@@ -232,7 +232,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     let(:id) { SecureRandom.uuid }
 
     context "when the projector returns a boolean" do
-      let(:projector) { Projections::Aggregates::HasOccurred.new(aggregate: Aggregates::User.new(user_id:), schema:) }
+      let(:projector) { Projectors::Aggregates::HasOccurred.new(aggregate: Aggregates::User.new(user_id:), schema:) }
 
       it "calls build and save!" do
         expect(instance)
@@ -269,7 +269,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     end
 
     context "when the projector does not returns a boolean" do
-      let(:projector) { Projections::Aggregates::GetFirst.new(aggregate: Aggregates::User.new(user_id:), schema:) }
+      let(:projector) { Projectors::Aggregates::GetFirst.new(aggregate: Aggregates::User.new(user_id:), schema:) }
 
       it "calls build and save!" do
         expect { subject }.to raise_error(described_class::NotBooleanProjection)

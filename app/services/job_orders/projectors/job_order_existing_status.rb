@@ -1,5 +1,5 @@
 module JobOrders
-  module Projections
+  module Projectors
     class JobOrderExistingStatus < Projector
       projection_aggregator Aggregates::JobOrder
 

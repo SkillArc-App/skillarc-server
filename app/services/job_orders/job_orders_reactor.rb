@@ -38,8 +38,8 @@ module JobOrders
     private
 
     def emit_new_status_if_necessary(message)
-      existing_status = Projections::JobOrderExistingStatus.project(aggregate: message.aggregate).status
-      current_status = JobOrders::Projections::JobOrderStatus.project(aggregate: message.aggregate).status
+      existing_status = Projectors::JobOrderExistingStatus.project(aggregate: message.aggregate).status
+      current_status = JobOrders::Projectors::JobOrderStatus.project(aggregate: message.aggregate).status
       return if current_status == existing_status
 
       case current_status

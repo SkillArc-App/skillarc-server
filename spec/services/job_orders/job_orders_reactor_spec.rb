@@ -48,11 +48,11 @@ RSpec.describe JobOrders::JobOrdersReactor do
       shared_examples "emits new status events if necessary" do
         context "when possible to emit a new status" do
           before do
-            expect(JobOrders::Projections::JobOrderExistingStatus)
+            expect(JobOrders::Projectors::JobOrderExistingStatus)
               .to receive(:project)
               .with(aggregate: message.aggregate)
               .and_return(existing_status)
-            expect(JobOrders::Projections::JobOrderStatus)
+            expect(JobOrders::Projectors::JobOrderStatus)
               .to receive(:project)
               .with(aggregate: message.aggregate)
               .and_return(new_status)
@@ -60,10 +60,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
           context "when the current status and new status are the same" do
             let(:existing_status) do
-              JobOrders::Projections::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
+              JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
             end
             let(:new_status) do
-              JobOrders::Projections::JobOrderStatus::Projection.new(
+              JobOrders::Projectors::JobOrderStatus::Projection.new(
                 hired_candidates: Set[],
                 order_count: 1,
                 candidates: Set[],
@@ -84,10 +84,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
           context "when the current status and new status are the different" do
             context "when the new status should be activated" do
               let(:existing_status) do
-                JobOrders::Projections::JobOrderExistingStatus::Projection.new(status: JobOrders::IdleStatus::WAITING_ON_EMPLOYER)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::IdleStatus::WAITING_ON_EMPLOYER)
               end
               let(:new_status) do
-                JobOrders::Projections::JobOrderStatus::Projection.new(
+                JobOrders::Projectors::JobOrderStatus::Projection.new(
                   hired_candidates: Set[],
                   order_count: 2,
                   candidates: Set[],
@@ -113,10 +113,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             context "when the new status should be stalled" do
               let(:existing_status) do
-                JobOrders::Projections::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
               end
               let(:new_status) do
-                JobOrders::Projections::JobOrderStatus::Projection.new(
+                JobOrders::Projectors::JobOrderStatus::Projection.new(
                   hired_candidates: Set[],
                   order_count: 2,
                   candidates: Set[],
@@ -144,10 +144,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             context "when the new status should be closed" do
               let(:existing_status) do
-                JobOrders::Projections::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
               end
               let(:new_status) do
-                JobOrders::Projections::JobOrderStatus::Projection.new(
+                JobOrders::Projectors::JobOrderStatus::Projection.new(
                   hired_candidates: Set[1, 2],
                   order_count: 2,
                   candidates: Set[],

@@ -9,14 +9,14 @@ class MessageService
   NotBooleanProjection = Class.new(StandardError)
 
   def create_once_for_trace!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
-    projector = Projections::Trace::HasOccurred.new(trace_id:, schema:)
+    projector = Projectors::Trace::HasOccurred.new(trace_id:, schema:)
 
     create_once!(schema:, data:, projector:, aggregate:, trace_id:, id:, occurred_at:, metadata:, **)
   end
 
   def create_once_for_aggregate!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     aggregate = get_aggregate(aggregate:, schema:, **)
-    projector = Projections::Aggregates::HasOccurred.new(aggregate:, schema:)
+    projector = Projectors::Aggregates::HasOccurred.new(aggregate:, schema:)
 
     create_once!(schema:, data:, projector:, aggregate:, trace_id:, id:, occurred_at:, metadata:, **)
   end

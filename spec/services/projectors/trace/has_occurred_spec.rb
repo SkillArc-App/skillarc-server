@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Projections::Trace::HasOccurred do
+RSpec.describe Projectors::Trace::HasOccurred do
   describe ".project" do
     subject { described_class.project(trace_id:, schema:) }
 

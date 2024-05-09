@@ -1,10 +1,10 @@
-module Projections
+module Projectors
   module Aggregates
-    class GetLast
+    class GetFirst
       def project
         MessageService.aggregate_events(aggregate)
                       .select { |m| m.schema == schema }
-                      .last
+                      .first
       end
 
       def initialize(schema:, aggregate:)

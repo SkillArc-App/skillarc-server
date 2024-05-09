@@ -1,10 +1,8 @@
-module Projections
+module Projectors
   module Aggregates
-    class GetFirst
+    class HasOccurred
       def project
-        MessageService.aggregate_events(aggregate)
-                      .select { |m| m.schema == schema }
-                      .first
+        MessageService.aggregate_events(aggregate).detect { |m| m.schema == schema }.present?
       end
 
       def initialize(schema:, aggregate:)

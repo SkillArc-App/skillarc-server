@@ -1,4 +1,4 @@
-module Projections
+module Projectors
   module Trace
     class HasOccurred
       def project

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe JobOrders::Projections::JobOrderExistingStatus do
+RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
   describe ".project" do
     subject { described_class.project(aggregate:) }
 

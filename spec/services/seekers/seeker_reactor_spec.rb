@@ -537,7 +537,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
 
       context "when an onboarding completed event has already occured" do
         before do
-          expect(Projections::HasOccurred)
+          expect(Projectors::Aggregates::HasOccurred)
             .to receive(:project)
             .with(aggregate: message.aggregate, schema: Events::OnboardingCompleted::V2)
             .and_return(true)
@@ -553,7 +553,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
 
       context "when an onboarding completed event has already occured" do
         before do
-          expect(Projections::HasOccurred)
+          expect(Projectors::Aggregates::HasOccurred)
             .to receive(:project)
             .with(aggregate: message.aggregate, schema: Events::OnboardingCompleted::V2)
             .and_return(false)
@@ -586,7 +586,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
       end
 
       before do
-        expect(Seekers::Projections::OnboardingStatus)
+        expect(Seekers::Projectors::OnboardingStatus)
           .to receive(:project)
           .with(aggregate: message.aggregate)
           .and_return(projection)
@@ -594,7 +594,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
 
       context "when onboarding status next step is not complete" do
         let(:projection) do
-          Seekers::Projections::OnboardingStatus.new(message.aggregate).init
+          Seekers::Projectors::OnboardingStatus.new(message.aggregate).init
         end
 
         it "does nothing" do
@@ -607,14 +607,14 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
 
       context "when onboarding status next step is complete" do
         let(:projection) do
-          Seekers::Projections::OnboardingStatus::Projection.new(
-            start: Seekers::Projections::OnboardingStatus::Step.new(needed: true, provided: true),
-            name: Seekers::Projections::OnboardingStatus::Step.new(needed: true, provided: true),
-            reliability: Seekers::Projections::OnboardingStatus::Step.new(needed: true, provided: true),
-            employment: Seekers::Projections::OnboardingStatus::Step.new(needed: false, provided: true),
-            education: Seekers::Projections::OnboardingStatus::Step.new(needed: false, provided: true),
-            training: Seekers::Projections::OnboardingStatus::Step.new(needed: false, provided: true),
-            opportunities: Seekers::Projections::OnboardingStatus::Step.new(needed: true, provided: true)
+          Seekers::Projectors::OnboardingStatus::Projection.new(
+            start: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true),
+            name: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true),
+            reliability: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true),
+            employment: Seekers::Projectors::OnboardingStatus::Step.new(needed: false, provided: true),
+            education: Seekers::Projectors::OnboardingStatus::Step.new(needed: false, provided: true),
+            training: Seekers::Projectors::OnboardingStatus::Step.new(needed: false, provided: true),
+            opportunities: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true)
           )
         end
 

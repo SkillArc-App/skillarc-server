@@ -1,5 +1,5 @@
 module Seekers
-  module Projections
+  module Projectors
     class OnboardingStatus < Projector
       projection_aggregator Aggregates::Seeker
 

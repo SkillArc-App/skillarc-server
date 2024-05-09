@@ -1,15 +1,33 @@
 class MessageService
   NotSchemaError = Class.new(StandardError)
   NotAggregateError = Class.new(StandardError)
+  NotTraceIdError = Class.new(StandardError)
   SchemaAlreadyDefinedError = Class.new(StandardError)
   MessageTypeHasMultipleActiveSchemas = Class.new(StandardError)
   SchemaNotFoundError = Class.new(StandardError)
   InactiveSchemaError = Class.new(StandardError)
+  NotBooleanProjection = Class.new(StandardError)
 
-  def create_once!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+  def create_once_for_trace!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    projector = Projectors::Trace::HasOccurred.new(trace_id:, schema:)
+
+    create_once!(schema:, data:, projector:, aggregate:, trace_id:, id:, occurred_at:, metadata:, **)
+  end
+
+  def create_once_for_aggregate!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    aggregate = get_aggregate(aggregate:, schema:, **)
+    projector = Projectors::Aggregates::HasOccurred.new(aggregate:, schema:)
+
+    create_once!(schema:, data:, projector:, aggregate:, trace_id:, id:, occurred_at:, metadata:, **)
+  end
+
+  def create_once!(schema:, data:, projector:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
 
-    save!(message) unless Projections::HasOccurred.project(aggregate: message.aggregate, schema: message.schema)
+    projection = projector.project
+    raise MessageService::NotBooleanProjection unless [true, false].include?(projection)
+
+    save!(message) unless projection
 
     message
   end
@@ -26,7 +44,7 @@ class MessageService
 
     raise InactiveSchemaError, "Attempted to create message for #{schema}" if schema.inactive?
 
-    aggregate ||= schema.aggregate.new(**)
+    aggregate = get_aggregate(aggregate:, schema:, **)
 
     data = schema.data.new(**data) if data.is_a?(Hash)
     metadata = schema.metadata.new(**metadata) if metadata.is_a?(Hash)
@@ -93,6 +111,12 @@ class MessageService
     Event.where(aggregate_id: aggregate.id).order(:occurred_at).map(&:message).select { |m| m.schema.type == Messages::EVENT }
   end
 
+  def self.trace_id_events(trace_id)
+    raise NotTraceIdError unless trace_id.is_a?(String)
+
+    Event.where(trace_id:).order(:occurred_at).map(&:message).select { |m| m.schema.type == Messages::EVENT }
+  end
+
   def self.migrate_event(schema:, &block)
     Event.where(event_type: schema.message_type, version: schema.version).find_each do |e|
       block.call(e.message)
@@ -108,6 +132,10 @@ class MessageService
   end
 
   private
+
+  def get_aggregate(aggregate:, schema:, **)
+    aggregate || schema.aggregate.new(**)
+  end
 
   def messages_to_publish
     @messages_to_publish ||= []

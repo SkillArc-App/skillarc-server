@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Seekers::Projections::OnboardingStatus do
+RSpec.describe Seekers::Projectors::OnboardingStatus do
   describe ".project" do
     subject { described_class.project(aggregate:) }
 

@@ -29,7 +29,7 @@ module Messages
     end
 
     def ==(other)
-      id == other.id && self.class == other.class
+      self.class == other.class && id == other.id
     end
 
     def serialize

@@ -14,16 +14,30 @@ module JobOrders
     ].freeze
   end
 
-  module CloseStatus
+  module ActivatedStatus
+    ALL = [
+      OPEN = "open"
+    ].freeze
+  end
+
+  module ClosedStatus
     ALL = [
       FILLED = "filled",
       NOT_FILLED = 'not_filled'
     ].freeze
   end
 
-  module IdleStatus
+  module StalledStatus
     ALL = [
       WAITING_ON_EMPLOYER = "waiting_on_employer"
+    ].freeze
+  end
+
+  module OrderStatus
+    ALL = [
+      *ActivatedStatus::ALL,
+      *ClosedStatus::ALL,
+      *StalledStatus::ALL
     ].freeze
   end
 end

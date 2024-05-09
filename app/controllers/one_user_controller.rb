@@ -26,7 +26,7 @@ class OneUserController < ApplicationController
     completed_at = nil
 
     if seeker&.id.present?
-      completed_at = Projections::GetFirst.project(
+      completed_at = Projectors::Aggregates::GetFirst.project(
         aggregate: Aggregates::Seeker.new(seeker_id: seeker&.id),
         schema: Events::OnboardingCompleted::V2
       )&.occurred_at

@@ -155,7 +155,7 @@ module Seekers
     end
 
     on_message Commands::AddSeeker::V1, :sync do |message|
-      return if ::Projections::HasOccurred.project(aggregate: message.aggregate, schema: Events::SeekerCreated::V1)
+      return if ::Projectors::Aggregates::HasOccurred.project(aggregate: message.aggregate, schema: Events::SeekerCreated::V1)
 
       message_service.create!(
         schema: Events::SeekerCreated::V1,
@@ -180,7 +180,7 @@ module Seekers
     end
 
     on_message Commands::StartOnboarding::V1, :sync do |message|
-      return if ::Projections::HasOccurred.project(aggregate: message.aggregate, schema: Events::OnboardingStarted::V1)
+      return if ::Projectors::Aggregates::HasOccurred.project(aggregate: message.aggregate, schema: Events::OnboardingStarted::V1)
 
       message_service.create!(
         schema: Events::OnboardingStarted::V1,
@@ -193,7 +193,7 @@ module Seekers
     end
 
     on_message Commands::CompleteOnboarding::V1, :sync do |message|
-      return if ::Projections::HasOccurred.project(aggregate: message.aggregate, schema: Events::OnboardingCompleted::V2)
+      return if ::Projectors::Aggregates::HasOccurred.project(aggregate: message.aggregate, schema: Events::OnboardingCompleted::V2)
 
       message_service.create!(
         schema: Events::OnboardingCompleted::V2,
@@ -234,9 +234,9 @@ module Seekers
     private
 
     def emit_complete_onboarding_if_applicable(message)
-      return if ::Projections::HasOccurred.project(aggregate: message.aggregate, schema: Events::OnboardingCompleted::V2)
+      return if ::Projectors::Aggregates::HasOccurred.project(aggregate: message.aggregate, schema: Events::OnboardingCompleted::V2)
 
-      status = Seekers::Projections::OnboardingStatus.project(aggregate: message.aggregate)
+      status = Seekers::Projectors::OnboardingStatus.project(aggregate: message.aggregate)
 
       return unless status.next_step == Onboarding::Steps::COMPLETE
 

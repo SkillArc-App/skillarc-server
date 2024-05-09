@@ -84,7 +84,7 @@ RSpec.describe Users::UsersReactor do
 
           it "emits a coach added event once" do
             expect(message_service)
-              .to receive(:create_once!)
+              .to receive(:create_once_for_aggregate!)
               .with(
                 trace_id: message.trace_id,
                 schema: Events::CoachAdded::V1,

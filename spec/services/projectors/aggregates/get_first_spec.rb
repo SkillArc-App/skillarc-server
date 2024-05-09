@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Projections::GetLast do
+RSpec.describe Projectors::Aggregates::GetFirst do
   describe ".project" do
     subject { described_class.project(aggregate:, schema:) }
 
@@ -73,8 +73,8 @@ RSpec.describe Projections::GetLast do
       let(:id1) { SecureRandom.uuid }
       let(:id2) { SecureRandom.uuid }
 
-      it "returns the second message" do
-        expect(subject).to eq(message2)
+      it "returns the first message" do
+        expect(subject).to eq(message1)
       end
     end
   end

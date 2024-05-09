@@ -107,7 +107,7 @@ class OnboardingSessionsController < ApplicationController
   private
 
   def serialize_onboarding_session(seeker_id)
-    status = Seekers::Projections::OnboardingStatus.project(aggregate: Aggregates::Seeker.new(seeker_id:))
+    status = Seekers::Projectors::OnboardingStatus.project(aggregate: Aggregates::Seeker.new(seeker_id:))
 
     {
       seeker_id:,

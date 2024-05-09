@@ -26,6 +26,7 @@ module PubSubInitializer
       DbStreamReactor.build(consumer: Slack::SlackReactor.new, listener_name: "slack_reactor"),
       DbStreamReactor.build(consumer: Contact::ContactReactor.new, listener_name: "contact_reactor"),
       DbStreamReactor.build(consumer: Seekers::SeekerReactor.new, listener_name: "seeker_reactor"),
+      DbStreamReactor.build(consumer: JobOrders::JobOrdersReactor.new, listener_name: "job_orders_reactor"),
       DbStreamReactor.build(consumer: Infrastructure::InfrastructureReactor.new, listener_name: "infrastructure_reactor"),
       DbStreamReactor.build(consumer: Contact::SmsReactor.new, listener_name: "contact_sms"),
       DbStreamReactor.build(consumer: Users::UsersReactor.new, listener_name: "users_reactor"),

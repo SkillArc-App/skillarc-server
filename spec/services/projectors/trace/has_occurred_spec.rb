@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Projections::HasOccurred do
+RSpec.describe Projectors::Trace::HasOccurred do
   describe ".project" do
-    subject { described_class.project(aggregate:, schema:) }
+    subject { described_class.project(trace_id:, schema:) }
 
     let(:user_id) { SecureRandom.uuid }
-    let(:aggregate) { Aggregates::User.new(user_id:) }
+    let(:trace_id) { SecureRandom.uuid }
     let(:schema) { Events::SessionStarted::V1 }
 
     context "when the event does not exist for the aggregate" do
@@ -14,7 +14,7 @@ RSpec.describe Projections::HasOccurred do
           build(
             :message,
             schema: Events::SeekerCreated::V1,
-            aggregate_id: user_id,
+            trace_id:,
             data: {
               id: SecureRandom.uuid,
               user_id:
@@ -42,7 +42,7 @@ RSpec.describe Projections::HasOccurred do
           build(
             :message,
             schema: Events::SeekerCreated::V1,
-            aggregate_id: user_id,
+            trace_id:,
             data: {
               id: SecureRandom.uuid,
               user_id:
@@ -53,7 +53,7 @@ RSpec.describe Projections::HasOccurred do
           build(
             :message,
             schema: Events::SessionStarted::V1,
-            aggregate_id: user_id,
+            trace_id:,
             data: Messages::Nothing
           )
         )

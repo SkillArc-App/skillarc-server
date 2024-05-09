@@ -51,7 +51,11 @@ module JobOrders
       # update job order status
     end
 
-    on_message Events::JobOrderClosed::V1 do |message|
+    on_message Events::JobOrderFilled::V1 do |message|
+      # update job order status
+    end
+
+    on_message Events::JobOrderNotFilled::V1 do |message|
       # update job order status
     end
   end

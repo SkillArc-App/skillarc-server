@@ -16,9 +16,106 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
   let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
   let(:version) { 3 }
 
-  describe "#create_once!" do
+  describe "#create_once_for_aggregate!" do
     subject do
-      instance.create_once!(
+      instance.create_once_for_aggregate!(
+        id:,
+        schema:,
+        user_id:,
+        trace_id:,
+        data:,
+        occurred_at:,
+        metadata:
+      )
+    end
+
+    let(:user_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+    let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
+    let(:occurred_at) { DateTime.new(2000, 1, 1) }
+    let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
+    let(:id) { SecureRandom.uuid }
+
+    context "when the event has not already occurred" do
+      it "calls build and save!" do
+        expect(instance)
+          .to receive(:build)
+          .with(
+            schema:,
+            data:,
+            aggregate: Aggregates::User.new(user_id:),
+            trace_id:,
+            id:,
+            occurred_at:,
+            metadata:,
+            user_id:
+          )
+          .and_call_original
+
+        expect(instance)
+          .to receive(:save!)
+          .with(
+            Message.new(
+              schema:,
+              data:,
+              trace_id:,
+              id:,
+              occurred_at:,
+              metadata:,
+              aggregate: Aggregates::User.new(user_id:)
+            )
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "when the event has already occured" do
+      before do
+        expect(described_class)
+          .to receive(:aggregate_events)
+          .with(Aggregates::User.new(user_id:))
+          .and_return([
+                        build(
+                          :message,
+                          schema:,
+                          data: {
+                            seeker_id: SecureRandom.uuid
+                          },
+                          metadata: {
+                            user_id: SecureRandom.uuid
+                          }
+                        )
+                      ])
+      end
+
+      it "calls build but not save!" do
+        expect(instance)
+          .to receive(:build)
+          .with(
+            schema:,
+            data:,
+            aggregate: Aggregates::User.new(user_id:),
+            trace_id:,
+            id:,
+            occurred_at:,
+            metadata:,
+            user_id:
+          )
+          .and_call_original
+
+        expect(instance)
+          .not_to receive(:save!)
+
+        subject
+      end
+    end
+  end
+
+  describe "#create_once_for_trace!" do
+    subject do
+      instance.create_once_for_trace!(
         id:,
         schema:,
         user_id:,
@@ -74,8 +171,8 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     context "when the event has already occured" do
       before do
         expect(described_class)
-          .to receive(:aggregate_events)
-          .with(Aggregates::User.new(user_id:))
+          .to receive(:trace_id_events)
+          .with(trace_id)
           .and_return([
                         build(
                           :message,
@@ -109,6 +206,73 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
           .not_to receive(:save!)
 
         subject
+      end
+    end
+  end
+
+  describe "#create_once!" do
+    subject do
+      instance.create_once_for_aggregate!(
+        id:,
+        schema:,
+        user_id:,
+        trace_id:,
+        data:,
+        occurred_at:,
+        metadata:,
+        projector:
+      )
+    end
+
+    let(:user_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+    let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
+    let(:occurred_at) { DateTime.new(2000, 1, 1) }
+    let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
+    let(:id) { SecureRandom.uuid }
+
+    context "when the projector returns a boolean" do
+      let(:projector) { Projectors::Aggregates::HasOccurred.new(aggregate: Aggregates::User.new(user_id:), schema:) }
+
+      it "calls build and save!" do
+        expect(instance)
+          .to receive(:build)
+          .with(
+            schema:,
+            data:,
+            aggregate: Aggregates::User.new(user_id:),
+            trace_id:,
+            id:,
+            occurred_at:,
+            metadata:,
+            user_id:
+          )
+          .and_call_original
+
+        expect(instance)
+          .to receive(:save!)
+          .with(
+            Message.new(
+              schema:,
+              data:,
+              trace_id:,
+              id:,
+              occurred_at:,
+              metadata:,
+              aggregate: Aggregates::User.new(user_id:)
+            )
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "when the projector does not returns a boolean" do
+      let(:projector) { Projectors::Aggregates::GetFirst.new(aggregate: Aggregates::User.new(user_id:), schema:) }
+
+      it "calls build and save!" do
+        expect { subject }.to raise_error(described_class::NotBooleanProjection)
       end
     end
   end
@@ -474,6 +638,61 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     context "when aggregate is not a aggregate" do
       it "raises a NotSchemaError" do
         expect { described_class.aggregate_events("cat") }.to raise_error(described_class::NotAggregateError)
+      end
+    end
+  end
+
+  describe ".trace_id_events" do
+    before do
+      Event.from_message!(message1)
+      Event.from_message!(message2)
+      Event.from_message!(message3)
+    end
+
+    let(:trace_id) { SecureRandom.uuid }
+    let(:message1) do
+      build(
+        :message,
+        trace_id:,
+        schema: Events::MessageSent::V1,
+        data: Messages::Nothing,
+        occurred_at: Time.zone.local(2021, 1, 1)
+      )
+    end
+    let(:message2) do
+      build(
+        :message,
+        trace_id:,
+        schema: Events::SlackMessageSent::V1,
+        data: {
+          channel: "#cool",
+          text: "Sup"
+        },
+        occurred_at: Time.zone.local(2020, 1, 1)
+      )
+    end
+    let(:message3) do
+      build(
+        :message,
+        trace_id:,
+        schema: Commands::SendSlackMessage::V1,
+        data: {
+          channel: "#cool",
+          text: "Sup"
+        },
+        occurred_at: Time.zone.local(2020, 1, 1)
+      )
+    end
+
+    context "when trace_id is a string" do
+      it "returns all the events for the trace_id in order" do
+        expect(described_class.trace_id_events(trace_id)).to eq([message2, message1])
+      end
+    end
+
+    context "when trace_id is not a string" do
+      it "raises a NotSchemaError" do
+        expect { described_class.trace_id_events(5) }.to raise_error(described_class::NotTraceIdError)
       end
     end
   end

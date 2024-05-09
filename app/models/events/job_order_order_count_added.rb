@@ -1,11 +1,11 @@
 module Events
-  module JobOrderAdded
+  module JobOrderOrderCountAdded
     module Data
       class V1
         extend Messages::Payload
 
         schema do
-          job_id Uuid
+          order_count 1..
         end
       end
     end
@@ -15,7 +15,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::JobOrder,
-      message_type: Messages::Types::JobOrders::JOB_ORDER_ADDED,
+      message_type: Messages::Types::JobOrders::JOB_ORDER_ORDER_COUNT_ADDED,
       version: 1
     )
   end

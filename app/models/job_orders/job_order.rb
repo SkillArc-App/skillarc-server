@@ -9,6 +9,7 @@
 #  hire_count         :integer          not null
 #  order_count        :integer
 #  recommended_count  :integer          not null
+#  status             :string
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  job_orders_jobs_id :uuid             not null

@@ -16,6 +16,7 @@ module JobOrders
 
   module ActivatedStatus
     ALL = [
+      NEEDS_ORDER_COUNT = "needs_order_count",
       OPEN = "open"
     ].freeze
   end

@@ -4,6 +4,7 @@ module PubSubInitializer
     PUBSUB_SYNC.reset
 
     aggregators = [
+      DbStreamAggregator.build(consumer: JobOrders::JobOrdersAggregator.new, listener_name: "job_orders_aggregator"),
       DbStreamAggregator.build(consumer: Analytics::AnalyticsAggregator.new, listener_name: "analytics"),
       DbStreamAggregator.build(consumer: Attributes::AttributesAggregator.new, listener_name: "attributes_aggregator"),
       DbStreamAggregator.build(consumer: Coaches::CoachesAggregator.new, listener_name: "coach_seekers"),

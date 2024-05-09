@@ -15,7 +15,7 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderAdded::V1 do |message|
+    on_message Events::JobOrderOrderCountAdded::V1 do |message|
       emit_new_status_if_necessary(message)
     end
 

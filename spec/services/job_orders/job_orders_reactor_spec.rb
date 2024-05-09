@@ -263,9 +263,8 @@ RSpec.describe JobOrders::JobOrdersReactor do
         let(:message) do
           build(
             :message,
-            schema: Events::JobOrderAdded::V1,
+            schema: Events::JobOrderOrderCountAdded::V1,
             data: {
-              job_id: SecureRandom.uuid,
               order_count: 2
             }
           )

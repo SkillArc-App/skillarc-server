@@ -82,6 +82,7 @@ module Messages
     module JobOrders
       EVENTS = [
         JOB_ORDER_ADDED = 'job_order_added',
+        JOB_ORDER_ORDER_COUNT_ADDED = 'job_order_order_count_added',
         JOB_ORDER_ACTIVATED = 'job_order_activated',
         JOB_ORDER_STALLED = 'job_order_stalled',
         JOB_ORDER_FILLED = 'job_order_filled',

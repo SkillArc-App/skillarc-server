@@ -48,7 +48,7 @@ module JobOrders
         )
       end
 
-      on_message Events::JobOrderAdded::V1 do |message, accumulator|
+      on_message Events::JobOrderOrderCountAdded::V1 do |message, accumulator|
         accumulator.with(order_count: message.data.order_count)
       end
 

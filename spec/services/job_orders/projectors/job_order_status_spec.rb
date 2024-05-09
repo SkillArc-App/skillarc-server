@@ -32,24 +32,22 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         data: Messages::Nothing
       )
     end
-    let(:job_order_added1) do
+    let(:job_order_order_count_added1) do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderAdded::V1,
+        schema: Events::JobOrderOrderCountAdded::V1,
         data: {
-          job_id: SecureRandom.uuid,
           order_count: 2
         }
       )
     end
-    let(:job_order_added2) do
+    let(:job_order_order_count_added2) do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderAdded::V1,
+        schema: Events::JobOrderOrderCountAdded::V1,
         data: {
-          job_id: SecureRandom.uuid,
           order_count: 3
         }
       )
@@ -164,7 +162,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       context "when no enough candidates have been recommended" do
         let(:messages) do
           [
-            job_order_added1,
+            job_order_order_count_added1,
             job_order_candidate_added1,
             job_order_candidate_recommended1
           ]
@@ -178,7 +176,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       context "when there enough candidates recommended" do
         let(:messages) do
           [
-            job_order_added1,
+            job_order_order_count_added1,
             job_order_candidate_added1,
             job_order_candidate_recommended1,
             job_order_candidate_hired1,
@@ -195,7 +193,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       context "when enough hires have occurred" do
         let(:messages) do
           [
-            job_order_added1,
+            job_order_order_count_added1,
             job_order_candidate_added1,
             job_order_candidate_recommended1,
             job_order_candidate_hired1,
@@ -213,7 +211,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       context "when a rescinded hires to be the total too low" do
         let(:messages) do
           [
-            job_order_added1,
+            job_order_order_count_added1,
             job_order_candidate_added1,
             job_order_candidate_recommended1,
             job_order_candidate_hired1,
@@ -232,14 +230,14 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       context "when job order hire count is increased" do
         let(:messages) do
           [
-            job_order_added1,
+            job_order_order_count_added1,
             job_order_candidate_added1,
             job_order_candidate_recommended1,
             job_order_candidate_hired1,
             job_order_candidate_added2,
             job_order_candidate_recommended2,
             job_order_candidate_hired2,
-            job_order_added2
+            job_order_order_count_added2
           ]
         end
 

@@ -60,7 +60,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
           context "when the current status and new status are the same" do
             let(:existing_status) do
-              JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
+              JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ActivatedStatus::OPEN)
             end
             let(:new_status) do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -84,7 +84,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
           context "when the current status and new status are the different" do
             context "when the new status should be activated" do
               let(:existing_status) do
-                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::IdleStatus::WAITING_ON_EMPLOYER)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER)
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -113,7 +113,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             context "when the new status should be stalled" do
               let(:existing_status) do
-                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ActivatedStatus::OPEN)
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -134,7 +134,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                     aggregate: message.aggregate,
                     schema: Events::JobOrderStalled::V1,
                     data: {
-                      status: JobOrders::IdleStatus::WAITING_ON_EMPLOYER
+                      status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
                     }
                   )
 
@@ -144,7 +144,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             context "when the new status should be filled" do
               let(:existing_status) do
-                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ActivatedStatus::OPEN)
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -173,7 +173,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             context "when the new status should be not filled" do
               let(:existing_status) do
-                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OpenStatus::OPEN)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ActivatedStatus::OPEN)
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(

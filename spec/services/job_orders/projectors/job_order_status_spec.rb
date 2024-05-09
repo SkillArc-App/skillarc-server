@@ -140,14 +140,14 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       let(:messages) { [job_order_not_filled] }
 
       it "reports the status as the closed status" do
-        expect(subject.status).to eq(JobOrders::CloseStatus::NOT_FILLED)
+        expect(subject.status).to eq(JobOrders::ClosedStatus::NOT_FILLED)
       end
 
       context "when it's followed by an activation" do
         let(:messages) { [job_order_not_filled, job_order_activated] }
 
         it "reports the status as appropriate" do
-          expect(subject.status).to eq(JobOrders::OpenStatus::OPEN)
+          expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
         end
       end
     end
@@ -156,7 +156,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       let(:messages) { [job_order_candidate_added1, job_order_candidate_recommended1, job_order_candidate_hired1] }
 
       it "reports the status as open" do
-        expect(subject.status).to eq(JobOrders::OpenStatus::OPEN)
+        expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
       end
     end
 
@@ -171,7 +171,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         end
 
         it "reports the status as open" do
-          expect(subject.status).to eq(JobOrders::OpenStatus::OPEN)
+          expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
         end
       end
 
@@ -188,7 +188,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         end
 
         it "reports the status as waiting on employer" do
-          expect(subject.status).to eq(JobOrders::IdleStatus::WAITING_ON_EMPLOYER)
+          expect(subject.status).to eq(JobOrders::StalledStatus::WAITING_ON_EMPLOYER)
         end
       end
 
@@ -206,7 +206,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         end
 
         it "reports the status closed filled" do
-          expect(subject.status).to eq(JobOrders::CloseStatus::FILLED)
+          expect(subject.status).to eq(JobOrders::ClosedStatus::FILLED)
         end
       end
 
@@ -225,7 +225,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         end
 
         it "reports the status open" do
-          expect(subject.status).to eq(JobOrders::OpenStatus::OPEN)
+          expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
         end
       end
 
@@ -244,7 +244,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         end
 
         it "reports the status open" do
-          expect(subject.status).to eq(JobOrders::OpenStatus::OPEN)
+          expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
         end
       end
     end

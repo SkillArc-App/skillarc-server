@@ -5,7 +5,7 @@ module Events
         extend Messages::Payload
 
         schema do
-          status Either(*JobOrders::IdleStatus::ALL)
+          status Either(*JobOrders::StalledStatus::ALL)
         end
       end
     end

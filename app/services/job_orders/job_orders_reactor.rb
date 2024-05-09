@@ -43,14 +43,14 @@ module JobOrders
       return if current_status == existing_status
 
       case current_status
-      when *JobOrders::OpenStatus::ALL
+      when *JobOrders::ActivatedStatus::ALL
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
           schema: Events::JobOrderActivated::V1,
           data: Messages::Nothing
         )
-      when *JobOrders::IdleStatus::ALL
+      when *JobOrders::StalledStatus::ALL
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
@@ -59,14 +59,14 @@ module JobOrders
             status: current_status
           }
         )
-      when JobOrders::CloseStatus::FILLED
+      when JobOrders::ClosedStatus::FILLED
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
           schema: Events::JobOrderFilled::V1,
           data: Messages::Nothing
         )
-      when JobOrders::CloseStatus::NOT_FILLED
+      when JobOrders::ClosedStatus::NOT_FILLED
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,

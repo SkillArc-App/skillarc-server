@@ -30,7 +30,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
         aggregate:,
         schema: Events::JobOrderStalled::V1,
         data: {
-          status: JobOrders::IdleStatus::WAITING_ON_EMPLOYER
+          status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
         }
       )
     end
@@ -55,7 +55,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
       let(:messages) { [job_order_filled, job_order_not_filled, job_order_stalled, job_order_activated] }
 
       it "return the open status" do
-        expect(subject.status).to eq(JobOrders::OpenStatus::OPEN)
+        expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
       let(:messages) { [job_order_activated, job_order_stalled, job_order_not_filled, job_order_filled] }
 
       it "return the open status" do
-        expect(subject.status).to eq(JobOrders::CloseStatus::FILLED)
+        expect(subject.status).to eq(JobOrders::ClosedStatus::FILLED)
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
       let(:messages) { [job_order_activated, job_order_stalled, job_order_filled, job_order_not_filled] }
 
       it "return the open status" do
-        expect(subject.status).to eq(JobOrders::CloseStatus::NOT_FILLED)
+        expect(subject.status).to eq(JobOrders::ClosedStatus::NOT_FILLED)
       end
     end
   end

@@ -21,12 +21,12 @@ module JobOrders
         def status
           assert_no_overlaps!
 
-          return CloseStatus::NOT_FILLED if not_filled?
-          return OpenStatus::OPEN if order_count.nil?
-          return CloseStatus::FILLED if hired_candidates.length >= order_count
-          return IdleStatus::WAITING_ON_EMPLOYER if recommended_candidates.length + hired_candidates.length >= order_count
+          return ClosedStatus::NOT_FILLED if not_filled?
+          return ActivatedStatus::OPEN if order_count.nil?
+          return ClosedStatus::FILLED if hired_candidates.length >= order_count
+          return StalledStatus::WAITING_ON_EMPLOYER if recommended_candidates.length + hired_candidates.length >= order_count
 
-          OpenStatus::OPEN
+          ActivatedStatus::OPEN
         end
 
         def assert_no_overlaps!

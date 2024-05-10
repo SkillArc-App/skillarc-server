@@ -67,12 +67,25 @@ class MessageService
   end
 
   def flush
-    while (message = messages_to_publish.shift)
-      schema_string = message.schema.to_s
+    # uniquely determine which event type have occurred
+    schema_strings = messages_to_publish.map { |m| m.schema.to_s }.uniq
+    @messages_to_publish = []
 
-      PUBSUB_SYNC.publish(schema_string:)
-      BroadcastEventJob.perform_later(schema_string) if broadcast?
-    end
+    # dedup all async subscribers
+    async_subscribers = schema_strings.flat_map do |schema_string|
+      ASYNC_SUBSCRIBERS.get_subscribers_for_schema(schema_string:)
+    end.uniq
+
+    # publish all execute job at once
+    ActiveJob.perform_all_later(async_subscribers.map { |subscriber| ExecuteSubscriberJob.new(subscriber_id: subscriber.id) }) if broadcast?
+
+    # get each sync subscriber uniquely
+    subscribers = schema_strings.flat_map do |schema_string|
+      SYNC_SUBSCRIBERS.get_subscribers_for_schema(schema_string:)
+    end.uniq
+
+    # play each once
+    subscribers.each(&:play)
   end
 
   def broadcast?

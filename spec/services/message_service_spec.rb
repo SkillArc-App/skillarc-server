@@ -443,22 +443,45 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
       expect(message.occurred_at).to eq(Event.last_created.message.occurred_at)
     end
 
-    it "queues the message to be published" do
-      allow(instance)
-        .to receive(:broadcast?)
-        .and_return(true)
+    context "enqueues messages to be published" do
+      before do
+        SYNC_SUBSCRIBERS.reset
+        ASYNC_SUBSCRIBERS.reset
 
-      expect(PUBSUB_SYNC)
-        .to receive(:publish)
-        .with(schema_string:)
+        SYNC_SUBSCRIBERS.subscribe(schema:, subscriber: sync_subscriber)
+        ASYNC_SUBSCRIBERS.subscribe(schema:, subscriber: async_subscriber)
+      end
 
-      expect(BroadcastEventJob)
-        .to receive(:perform_later)
-        .with(schema_string)
+      let(:sync_subscriber) { DbStreamListener.build(consumer: MessageConsumer.new, listener_name: SecureRandom.uuid) }
+      let(:async_subscriber) { DbStreamListener.build(consumer: MessageConsumer.new, listener_name: SecureRandom.uuid) }
 
-      subject
+      after do
+        SubscriberInitializer.run
+      end
 
-      instance.flush
+      it "queues the message to be published" do
+        allow(instance)
+          .to receive(:broadcast?)
+          .and_return(true)
+
+        expect(sync_subscriber)
+          .to receive(:play)
+          .and_call_original
+
+        expect(ExecuteSubscriberJob)
+          .to receive(:new)
+          .with(subscriber_id: async_subscriber.id)
+          .and_call_original
+
+        expect(ActiveJob)
+          .to receive(:perform_all_later)
+          .with([be_a(ExecuteSubscriberJob)])
+          .and_call_original
+
+        subject
+
+        instance.flush
+      end
     end
   end
 
@@ -472,15 +495,59 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     let(:metadata) { { user_id: SecureRandom.uuid } }
     let(:id) { SecureRandom.uuid }
 
+    let(:subscriber1) { DbStreamListener.build(consumer: MessageConsumer.new, listener_name: SecureRandom.uuid) }
+    let(:subscriber2) { DbStreamListener.build(consumer: MessageConsumer.new, listener_name: SecureRandom.uuid) }
+
+    let!(:other_schema) do
+      Messages::Schema.active(
+        data: Events::SeekerViewed::Data::V1,
+        metadata: Events::ApplicantStatusUpdated::MetaData::V1,
+        aggregate: Aggregates::User,
+        message_type:,
+        version: 10,
+        type:
+      )
+    end
+
+    after do
+      SubscriberInitializer.run
+    end
+
     before do
+      SYNC_SUBSCRIBERS.reset
+      ASYNC_SUBSCRIBERS.reset
+
+      SYNC_SUBSCRIBERS.subscribe(schema:, subscriber: subscriber1)
+      ASYNC_SUBSCRIBERS.subscribe(schema: other_schema, subscriber: subscriber1)
+      ASYNC_SUBSCRIBERS.subscribe(schema:, subscriber: subscriber2)
+
       allow(instance)
         .to receive(:broadcast?)
         .and_return(true)
 
       instance
         .create!(
-          id:,
           schema:,
+          user_id:,
+          trace_id:,
+          data:,
+          occurred_at:,
+          metadata:
+        )
+
+      instance
+        .create!(
+          schema:,
+          user_id:,
+          trace_id:,
+          data:,
+          occurred_at:,
+          metadata:
+        )
+
+      instance
+        .create!(
+          schema: other_schema,
           user_id:,
           trace_id:,
           data:,
@@ -490,8 +557,30 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     end
 
     it "calls pubsub" do
-      expect(PUBSUB_SYNC).to receive(:publish)
-      expect(BroadcastEventJob).to receive(:perform_later)
+      expect(subscriber1)
+        .to receive(:play)
+        .once
+        .and_call_original
+
+      expect(subscriber2)
+        .not_to receive(:play)
+
+      expect(ExecuteSubscriberJob)
+        .to receive(:new)
+        .with(subscriber_id: subscriber1.id)
+        .once
+        .and_call_original
+
+      expect(ExecuteSubscriberJob)
+        .to receive(:new)
+        .with(subscriber_id: subscriber2.id)
+        .once
+        .and_call_original
+
+      expect(ActiveJob)
+        .to receive(:perform_all_later)
+        .with([be_a(ExecuteSubscriberJob), be_a(ExecuteSubscriberJob)])
+        .and_call_original
 
       subject
     end

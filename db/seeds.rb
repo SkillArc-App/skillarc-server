@@ -18,22 +18,6 @@ sg_employer = Employer.create!(
     'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
 )
 
-employers_turner = Employers::Employer.create!(
-  employer_id: turner_employer.id,
-  name: turner_employer.name,
-  bio: turner_employer.bio,
-  location: turner_employer.location,
-  logo_url: turner_employer.logo_url
-)
-
-employers_sg = Employers::Employer.create!(
-  employer_id: sg_employer.id,
-  name: sg_employer.name,
-  bio: sg_employer.bio,
-  location: sg_employer.location,
-  logo_url: sg_employer.logo_url
-)
-
 recruiter_user = User.create!(
   id: SecureRandom.uuid,
   first_name: 'Recruiter',
@@ -42,26 +26,10 @@ recruiter_user = User.create!(
   sub: 'recruitersub'
 )
 
-message_service.create!(
-  user_id: recruiter_user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: recruiter_user.first_name,
-    last_name: recruiter_user.last_name,
-    email: recruiter_user.email,
-    sub: recruiter_user.sub
-  }
-)
-
-recruiter = Recruiter.create!(
+Recruiter.create!(
   id: SecureRandom.uuid,
   employer: turner_employer,
   user: recruiter_user
-)
-
-Employers::Recruiter.create!(
-  employer: employers_turner,
-  email: recruiter.user.email
 )
 
 mechanic_job = Job.create!(
@@ -115,73 +83,108 @@ contractor = Job.create!(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
 )
 
-employers_mechanic_job = Employers::Job.create!(
-  employer: employers_turner,
+message_service.create!(
+  employer_id: turner_employer.id,
+  schema: Events::EmployerCreated::V1,
+  data: {
+    name: turner_employer.name,
+    location: turner_employer.location,
+    bio: turner_employer.bio,
+    logo_url: turner_employer.logo_url
+  }
+)
+
+message_service.create!(
+  employer_id: sg_employer.id,
+  schema: Events::EmployerCreated::V1,
+  data: {
+    name: sg_employer.name,
+    location: sg_employer.location,
+    bio: sg_employer.bio,
+    logo_url: sg_employer.logo_url
+  }
+)
+
+message_service.create!(
+  user_id: recruiter_user.id,
+  schema: Events::UserCreated::V1,
+  data: {
+    first_name: recruiter_user.first_name,
+    last_name: recruiter_user.last_name,
+    email: recruiter_user.email,
+    sub: recruiter_user.sub
+  }
+)
+
+message_service.create!(
+  employer_id: turner_employer.id,
+  schema: Events::EmployerInviteAccepted::V1,
+  data: {
+    employer_invite_id: SecureRandom.uuid,
+    invite_email: recruiter_user.email,
+    employer_id: turner_employer.id,
+    employer_name: turner_employer.name
+  }
+)
+
+message_service.create!(
   job_id: mechanic_job.id,
-  employment_title: mechanic_job.employment_title,
-  location: mechanic_job.location,
-  employment_type: mechanic_job.employment_type,
-  hide_job: mechanic_job.hide_job,
-  benefits_description: mechanic_job.benefits_description,
-  responsibilities_description: mechanic_job.responsibilities_description,
-  industry: mechanic_job.industry,
-  schedule: mechanic_job.schedule,
-  work_days: mechanic_job.work_days,
-  requirements_description: mechanic_job.requirements_description
+  schema: Events::JobCreated::V3,
+  data: {
+    category: mechanic_job.category,
+    employment_title: mechanic_job.employment_title,
+    employer_name: mechanic_job.employer.name,
+    employer_id: mechanic_job.employer.id,
+    benefits_description: mechanic_job.benefits_description,
+    responsibilities_description: mechanic_job.responsibilities_description,
+    location: mechanic_job.location,
+    employment_type: mechanic_job.employment_type,
+    hide_job: mechanic_job.hide_job,
+    schedule: mechanic_job.schedule,
+    work_days: mechanic_job.work_days,
+    requirements_description: mechanic_job.requirements_description,
+    industry: mechanic_job.industry
+  }
 )
 
-Employers::Job.create!(
-  employer: employers_sg,
+message_service.create!(
   job_id: earthwork_job.id,
-  employment_title: earthwork_job.employment_title,
-  location: earthwork_job.location,
-  employment_type: earthwork_job.employment_type,
-  hide_job: earthwork_job.hide_job,
-  benefits_description: earthwork_job.benefits_description,
-  responsibilities_description: earthwork_job.responsibilities_description,
-  industry: earthwork_job.industry,
-  schedule: earthwork_job.schedule,
-  work_days: earthwork_job.work_days,
-  requirements_description: earthwork_job.requirements_description
+  schema: Events::JobCreated::V3,
+  data: {
+    category: earthwork_job.category,
+    employment_title: earthwork_job.employment_title,
+    employer_name: earthwork_job.employer.name,
+    employer_id: earthwork_job.employer.id,
+    benefits_description: earthwork_job.benefits_description,
+    responsibilities_description: earthwork_job.responsibilities_description,
+    location: earthwork_job.location,
+    employment_type: earthwork_job.employment_type,
+    hide_job: earthwork_job.hide_job,
+    schedule: earthwork_job.schedule,
+    work_days: earthwork_job.work_days,
+    requirements_description: earthwork_job.requirements_description,
+    industry: earthwork_job.industry
+  }
 )
 
-Employers::Job.create!(
-  employer: employers_sg,
+message_service.create!(
   job_id: contractor.id,
-  employment_title: contractor.employment_title,
-  location: contractor.location,
-  employment_type: contractor.employment_type,
-  hide_job: contractor.hide_job,
-  benefits_description: contractor.benefits_description,
-  responsibilities_description: contractor.responsibilities_description,
-  industry: contractor.industry,
-  schedule: contractor.schedule,
-  work_days: contractor.work_days,
-  requirements_description: contractor.requirements_description
-)
-
-Analytics::DimJob.create!(
-  category: mechanic_job.category,
-  employment_title: mechanic_job.employment_title,
-  employment_type: mechanic_job.employment_type,
-  job_id: mechanic_job.id,
-  job_created_at: mechanic_job.created_at
-)
-
-Analytics::DimJob.create!(
-  category: earthwork_job.category,
-  employment_title: earthwork_job.employment_title,
-  employment_type: earthwork_job.employment_type,
-  job_id: earthwork_job.id,
-  job_created_at: earthwork_job.created_at
-)
-
-Analytics::DimJob.create!(
-  category: contractor.category,
-  employment_title: contractor.employment_title,
-  employment_type: contractor.employment_type,
-  job_id: contractor.id,
-  job_created_at: contractor.created_at
+  schema: Events::JobCreated::V3,
+  data: {
+    category: contractor.category,
+    employment_title: contractor.employment_title,
+    employer_name: contractor.employer.name,
+    employer_id: contractor.employer.id,
+    benefits_description: contractor.benefits_description,
+    responsibilities_description: contractor.responsibilities_description,
+    location: contractor.location,
+    employment_type: contractor.employment_type,
+    hide_job: contractor.hide_job,
+    schedule: contractor.schedule,
+    work_days: contractor.work_days,
+    requirements_description: contractor.requirements_description,
+    industry: contractor.industry
+  }
 )
 
 tag = Tag.create!(
@@ -214,15 +217,24 @@ Tag.create!([
 
 JobTag.create!(
   id: SecureRandom.uuid,
-  job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+  job_id: mechanic_job.id,
   tag_id: tag.id
 )
 
-CareerPath.create!(
+message_service.create!(
+  job_id: mechanic_job.id,
+  schema: Events::JobTagCreated::V1,
+  data: {
+    job_id: mechanic_job.id,
+    tag_id: tag.id
+  }
+)
+
+career_paths = CareerPath.create!(
   [
     {
       id: SecureRandom.uuid,
-      job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+      job_id: mechanic_job.id,
       title: 'Level 1',
       upper_limit: '60000',
       lower_limit: '55000',
@@ -230,7 +242,7 @@ CareerPath.create!(
     },
     {
       id: SecureRandom.uuid,
-      job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+      job_id: mechanic_job.id,
       title: 'Level 2',
       upper_limit: '65000',
       lower_limit: '60000',
@@ -238,7 +250,7 @@ CareerPath.create!(
     },
     {
       id: SecureRandom.uuid,
-      job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+      job_id: mechanic_job.id,
       title: 'Level 3',
       upper_limit: '70000',
       lower_limit: '65000',
@@ -246,7 +258,7 @@ CareerPath.create!(
     },
     {
       id: SecureRandom.uuid,
-      job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+      job_id: earthwork_job.id,
       title: 'Apprentice',
       upper_limit: '50',
       lower_limit: '45',
@@ -254,7 +266,7 @@ CareerPath.create!(
     },
     {
       id: SecureRandom.uuid,
-      job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+      job_id: earthwork_job.id,
       title: 'Journeyman',
       upper_limit: '60',
       lower_limit: '50',
@@ -262,7 +274,7 @@ CareerPath.create!(
     },
     {
       id: SecureRandom.uuid,
-      job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+      job_id: earthwork_job.id,
       title: 'Super',
       upper_limit: '80',
       lower_limit: '60',
@@ -270,7 +282,7 @@ CareerPath.create!(
     },
     {
       id: SecureRandom.uuid,
-      job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+      job_id: contractor.id,
       title: 'Entry Level',
       upper_limit: '65000',
       lower_limit: '60000',
@@ -278,7 +290,7 @@ CareerPath.create!(
     },
     {
       id: SecureRandom.uuid,
-      job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+      job_id: contractor.id,
       title: 'Mid-Level',
       upper_limit: '75000',
       lower_limit: '70000',
@@ -287,52 +299,67 @@ CareerPath.create!(
   ]
 )
 
+career_paths.each do |career_path|
+  message_service.create!(
+    job_id: career_path.job_id,
+    schema: Events::CareerPathCreated::V1,
+    data: {
+      id: career_path.id,
+      job_id: career_path.job_id,
+      title: career_path.title,
+      lower_limit: career_path.lower_limit,
+      upper_limit: career_path.upper_limit,
+      order: career_path.order
+    }
+  )
+end
+
 JobPhoto.create!(
   [{
     id: SecureRandom.uuid,
-    job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+    job_id: mechanic_job.id,
     photo_url:
       'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
   },
    {
      id: SecureRandom.uuid,
-     job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+     job_id: mechanic_job.id,
      photo_url:
        'https://images.unsplash.com/photo-1632733711679-529326f6db12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fG1lY2hhbmljfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
    },
    {
      id: SecureRandom.uuid,
-     job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+     job_id: mechanic_job.id,
      photo_url:
        'https://images.unsplash.com/photo-1599474151975-1f978922fa02?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1lY2hhbmljfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
    },
    {
      id: SecureRandom.uuid,
-     job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+     job_id: earthwork_job.id,
      photo_url:
        'https://plus.unsplash.com/premium_photo-1661899566960-942b158bab49?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZWFydGh3b3JrfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
    },
    {
      id: SecureRandom.uuid,
-     job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+     job_id: earthwork_job.id,
      photo_url:
        'https://images.unsplash.com/photo-1675600653433-c9f0040f62b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGVhcnRod29ya3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60'
    },
    {
      id: SecureRandom.uuid,
-     job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+     job_id: earthwork_job.id,
      photo_url:
        'https://images.unsplash.com/photo-1612878100556-032bbf1b3bab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGVhcnRod29ya3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60'
    },
    {
      id: SecureRandom.uuid,
-     job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+     job_id: contractor.id,
      photo_url:
        'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29uc3RydWN0aW9uJTIwd29ya2VyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
    },
    {
      id: SecureRandom.uuid,
-     job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+     job_id: contractor.id,
      photo_url:
        'https://plus.unsplash.com/premium_photo-1664299941780-e8badc0b1617?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y29uc3RydWN0aW9uJTIwd29ya2VyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
    }]
@@ -341,7 +368,7 @@ JobPhoto.create!(
 Testimonial.create!([
                       {
                         id: SecureRandom.uuid,
-                        job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+                        job_id: mechanic_job.id,
                         name: 'Jane Doe',
                         testimonial:
                           'Ive worked here for 7 years and love it! This company is like a second family',
@@ -351,7 +378,7 @@ Testimonial.create!([
                       },
                       {
                         id: SecureRandom.uuid,
-                        job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+                        job_id: earthwork_job.id,
                         name: 'Jack Wilson',
                         testimonial: 'TSG is a great company. Fair pay, and great benefits!',
                         title: 'Plumber',
@@ -360,14 +387,14 @@ Testimonial.create!([
                       },
                       {
                         id: SecureRandom.uuid,
-                        job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+                        job_id: earthwork_job.id,
                         name: 'Lauren Jackson',
                         testimonial: 'I love my job.',
                         title: 'Project Accountant'
                       },
                       {
                         id: SecureRandom.uuid,
-                        job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+                        job_id: contractor.id,
                         name: 'John Doe',
                         testimonial: 'This is a great place to work!',
                         title: 'Project Manager'
@@ -605,72 +632,72 @@ MasterSkill.create!([
 DesiredSkill.create!([
                        {
                          id: SecureRandom.uuid,
-                         job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+                         job_id: mechanic_job.id,
                          master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+                         job_id: mechanic_job.id,
                          master_skill_id: 'e0627968-c5f8-4f2c-9b23-948d2374644f'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+                         job_id: mechanic_job.id,
                          master_skill_id: 'f33952cb-1f5b-4633-8697-095bd7a7d0ce'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+                         job_id: mechanic_job.id,
                          master_skill_id: '0148f08f-f9ca-41e9-ad06-22665714bdaf'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+                         job_id: mechanic_job.id,
                          master_skill_id: '731e5aa5-e8d4-4a4e-9acb-3de414a17773'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+                         job_id: earthwork_job.id,
                          master_skill_id: 'c4ca3bc7-b7e7-4193-ac90-532e0179a474'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+                         job_id: earthwork_job.id,
                          master_skill_id: 'f7b9b9a5-43a4-488d-a600-01a3018c2e1e'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+                         job_id: earthwork_job.id,
                          master_skill_id: 'c3dd6dbf-b974-4590-b5f8-3e316ea4e81e'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+                         job_id: earthwork_job.id,
                          master_skill_id: 'ebb772a4-e7e9-4bac-9110-95e895b5dfe7'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+                         job_id: contractor.id,
                          master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+                         job_id: contractor.id,
                          master_skill_id: 'a1f51ba9-3988-4e74-8fea-71bb1357a312'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+                         job_id: contractor.id,
                          master_skill_id: '7d76ec3e-2727-403b-9f0c-6fb75e31ebb7'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+                         job_id: contractor.id,
                          master_skill_id: 'c3dd6dbf-b974-4590-b5f8-3e316ea4e81e'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+                         job_id: contractor.id,
                          master_skill_id: '7d76ec3e-2727-403b-9f0c-6fb75e31ebb7'
                        },
                      ])
@@ -678,94 +705,40 @@ DesiredSkill.create!([
 LearnedSkill.create!([
                        {
                          id: SecureRandom.uuid,
-                         job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+                         job_id: mechanic_job.id,
                          master_skill_id: 'ef0b7921-171d-4157-93bf-bf309f73ad57'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+                         job_id: mechanic_job.id,
                          master_skill_id: 'ec27be9b-53df-4fc1-808b-850fc7b723b0'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+                         job_id: earthwork_job.id,
                          master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+                         job_id: earthwork_job.id,
                          master_skill_id: '5a12a33d-058b-4ba0-91c3-0725bade34ae'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+                         job_id: earthwork_job.id,
                          master_skill_id: 'f33952cb-1f5b-4633-8697-095bd7a7d0ce'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+                         job_id: contractor.id,
                          master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
                        },
                        {
                          id: SecureRandom.uuid,
-                         job_id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+                         job_id: contractor.id,
                          master_skill_id: '731e5aa5-e8d4-4a4e-9acb-3de414a17773'
                        },
                      ])
-
-Search::Job.create!(
-  job_id: mechanic_job.id,
-  employment_title: mechanic_job.employment_title,
-  location: mechanic_job.location,
-  employment_type: mechanic_job.employment_type,
-  industries: mechanic_job.industry,
-  hidden: mechanic_job.hide_job,
-  category: mechanic_job.category,
-  tags: [tag.name],
-
-  starting_upper_pay: '60000',
-  starting_lower_pay: '55000',
-
-  employer_id: turner_employer.id,
-  employer_name: turner_employer.name,
-  employer_logo_url: turner_employer.logo_url
-)
-
-Search::Job.create!(
-  job_id: earthwork_job.id,
-  employment_title: earthwork_job.employment_title,
-  location: earthwork_job.location,
-  employment_type: earthwork_job.employment_type,
-  industries: earthwork_job.industry,
-  hidden: earthwork_job.hide_job,
-  category: earthwork_job.category,
-  tags: [],
-
-  starting_upper_pay: '50',
-  starting_lower_pay: '45',
-
-  employer_id: sg_employer.id,
-  employer_name: sg_employer.name,
-  employer_logo_url: sg_employer.logo_url
-)
-
-Search::Job.create!(
-  job_id: contractor.id,
-  employment_title: contractor.employment_title,
-  location: contractor.location,
-  employment_type: contractor.employment_type,
-  industries: contractor.industry,
-  hidden: contractor.hide_job,
-  category: contractor.category,
-  tags: [],
-
-  starting_upper_pay: '65000',
-  starting_lower_pay: '60000',
-
-  employer_id: sg_employer.id,
-  employer_name: sg_employer.name,
-  employer_logo_url: sg_employer.logo_url
-)
 
 trained_seeker_with_reference = Seeker.create!(
   bio: "I learn stuff",
@@ -872,17 +845,6 @@ applicant = Applicant.create!(
   ]
 )
 
-Employers::Applicant.create!(
-  seeker_id: applicant.seeker.id,
-  job: employers_mechanic_job,
-  first_name: applicant.seeker.user.first_name,
-  last_name: applicant.seeker.user.last_name,
-  email: applicant.seeker.user.email,
-  phone_number: applicant.seeker.user.phone_number,
-  applicant_id: applicant.id,
-  status: 'new'
-)
-
 message_service.create!(
   schema: Events::OnboardingStarted::V1,
   seeker_id: seeker_with_profile.id,
@@ -895,6 +857,25 @@ message_service.create!(
   schema: Events::OnboardingCompleted::V2,
   seeker_id: seeker_with_profile.id,
   data: Messages::Nothing
+)
+
+message_service.create!(
+  application_id: applicant.id,
+  schema: Events::ApplicantStatusUpdated::V6,
+  data: {
+    applicant_first_name: seeker_with_profile.user.first_name,
+    applicant_last_name: seeker_with_profile.user.last_name,
+    applicant_email: seeker_with_profile.user.email,
+    applicant_phone_number: seeker_with_profile.user.phone_number,
+    seeker_id: seeker_with_profile.id,
+    user_id: seeker_with_profile.user.id,
+    job_id: mechanic_job.id,
+    employer_name: mechanic_job.employer.name,
+    employment_title: mechanic_job.employment_title,
+    status: ApplicantStatus::StatusTypes::NEW,
+    reasons: []
+  },
+  metadata: {}
 )
 
 megans_recruits = TrainingProvider.create!(

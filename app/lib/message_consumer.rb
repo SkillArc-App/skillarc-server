@@ -3,12 +3,6 @@ class MessageConsumer
   NotActiveSchemaError = Class.new(StandardError)
   NotValidSubscriberType = Class.new(StandardError)
 
-  def initialize(message_service: nil)
-    @message_service = message_service
-  end
-
-  attr_writer :message_service
-
   def call(message:)
     handle_message(message)
   end
@@ -50,6 +44,12 @@ class MessageConsumer
     self.class.handled_messages_sync
   end
 
+  def flush; end
+
+  def can_replay?
+    true
+  end
+
   def reset_for_replay
     raise NoMethodError
   end
@@ -61,8 +61,4 @@ class MessageConsumer
   def self.handled_messages_sync
     @handled_messages_sync ||= []
   end
-
-  private
-
-  attr_reader :message_service
 end

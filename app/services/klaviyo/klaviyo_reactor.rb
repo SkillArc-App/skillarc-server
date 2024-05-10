@@ -1,5 +1,9 @@
 module Klaviyo
-  class KlaviyoReactor < MessageConsumer # rubocop:disable Metrics/ClassLength
+  class KlaviyoReactor < MessageReactor # rubocop:disable Metrics/ClassLength
+    def can_replay?
+      true
+    end
+
     UnableToRetrieveEmailError = Class.new(StandardError)
 
     def initialize(client: Klaviyo::Gateway.build, **params)

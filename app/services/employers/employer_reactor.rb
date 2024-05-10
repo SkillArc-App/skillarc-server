@@ -1,7 +1,5 @@
 module Employers
-  class EmployerReactor < MessageConsumer
-    def reset_for_replay; end
-
+  class EmployerReactor < MessageReactor
     on_message Events::ApplicantStatusUpdated::V6 do |message|
       return unless message.data.status == Applicant::StatusTypes::NEW
 

@@ -1,7 +1,5 @@
 module Infrastructure
-  class InfrastructureReactor < MessageConsumer
-    def reset_for_replay; end
-
+  class InfrastructureReactor < MessageReactor
     on_message Commands::ScheduleTask::V1, :sync do |message|
       task = Infrastructure::Task.find_by(id: message.aggregate.task_id)
       return if task.present?

@@ -1,11 +1,4 @@
 class StreamListener
-  module Kind
-    ALL = [
-      AGGREAGTOR = 'aggregator'.freeze,
-      REACTOR = 'reactor'.freeze
-    ].freeze
-  end
-
   def initialize(consumer, listener_name) # rubocop:disable Lint/UnusedMethodArgument
     raise NoMethodError
   end
@@ -27,10 +20,6 @@ class StreamListener
   end
 
   def id
-    raise NoMethodError
-  end
-
-  def kind
     raise NoMethodError
   end
 

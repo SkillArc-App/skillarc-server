@@ -1,5 +1,5 @@
 module Slack
-  class SlackReactor < MessageConsumer
+  class SlackReactor < MessageReactor
     def initialize(client: Slack::Gateway.build, **params)
       super(**params)
       @client = client

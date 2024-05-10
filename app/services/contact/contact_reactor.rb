@@ -1,5 +1,5 @@
 module Contact
-  class ContactReactor < MessageConsumer
+  class ContactReactor < MessageReactor
     on_message Commands::SendMessage::V1 do |message|
       user_contact = Contact::UserContact.find_by!(user_id: message.data.user_id)
 

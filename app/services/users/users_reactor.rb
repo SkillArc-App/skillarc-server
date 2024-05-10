@@ -1,7 +1,7 @@
 module Users
-  class UsersReactor < MessageConsumer
-    def reset_for_replay
-      UserRole.delete_all
+  class UsersReactor < MessageReactor
+    def can_replay?
+      true
     end
 
     on_message Events::RoleAdded::V2 do |message|

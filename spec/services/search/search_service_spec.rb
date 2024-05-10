@@ -12,7 +12,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
       )
     end
 
-    let(:instance) { described_class.new(message_service: MessageService.new) }
+    let(:instance) { described_class.new }
 
     let(:search_terms) { nil }
     let(:industries) { nil }

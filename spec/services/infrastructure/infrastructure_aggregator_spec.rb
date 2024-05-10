@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Infrastructure::InfrastructureAggregator do
-  it_behaves_like "a message consumer"
+  it_behaves_like "a replayable message consumer"
 
   describe "#handle_message" do
     subject { described_class.new.handle_message(message) }

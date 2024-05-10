@@ -12,7 +12,7 @@ RSpec.describe Pubsub do
       schema = Events::UserCreated::Data::V1
       schema_string = schema.to_s
 
-      subscriber = DbStreamReactor.build(consumer: Contact::ContactReactor.new, listener_name: SecureRandom.uuid)
+      subscriber = DbStreamListener.build(consumer: Contact::ContactReactor.new, listener_name: SecureRandom.uuid)
       subject.subscribe(message_schema: schema, subscriber:)
 
       expect(subscriber)
@@ -29,7 +29,7 @@ RSpec.describe Pubsub do
       schema = Events::UserCreated::Data::V1
       schema_string = schema.to_s
 
-      subscriber = DbStreamReactor.build(consumer: Contact::ContactReactor.new, listener_name: SecureRandom.uuid)
+      subscriber = DbStreamListener.build(consumer: Contact::ContactReactor.new, listener_name: SecureRandom.uuid)
       allow(subscriber).to receive(:call)
 
       subject.subscribe(message_schema: schema, subscriber:)

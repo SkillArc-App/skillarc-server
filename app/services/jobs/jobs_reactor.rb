@@ -1,7 +1,5 @@
 module Jobs
-  class JobsReactor < MessageConsumer
-    def reset_for_replay; end
-
+  class JobsReactor < MessageReactor
     def create_job_attribute(job_id:, attribute_id:, acceptible_set:)
       attribute_name = Attributes::Attribute.find(attribute_id).name
 

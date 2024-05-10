@@ -131,11 +131,11 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
   let(:updated_note) { "This note was updated" }
   let(:employer_name1) { "Cool company" }
   let(:employer_name2) { "Fun company" }
-  let(:consumer) { described_class.new(message_service: MessageService.new) }
+  let(:consumer) { described_class.new }
 
   let(:id) { SecureRandom.uuid }
 
-  it_behaves_like "a message consumer"
+  it_behaves_like "a replayable message consumer"
 
   describe "#handle_message" do
     subject { consumer.handle_message(message) }

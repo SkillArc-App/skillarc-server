@@ -1,9 +1,5 @@
 module Applicants
-  class OrchestrationReactor < MessageConsumer
-    def reset_for_replay
-      # Can't do this yet because the applications are not totally event sourced yet
-    end
-
+  class OrchestrationReactor < MessageReactor
     on_message Events::ApplicantScreened::V1, :sync do |event|
       applicant = Applicant.find(event.aggregate.application_id)
       seeker = applicant.seeker

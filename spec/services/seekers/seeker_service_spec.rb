@@ -17,7 +17,7 @@ RSpec.describe Seekers::SeekerService do
   let(:seeker) { create(:seeker) }
   let!(:applicant) { create(:applicant, seeker:, job:) }
 
-  it_behaves_like "a message consumer"
+  it_behaves_like "a replayable message consumer"
 
   describe "elevator pitch added" do
     before do

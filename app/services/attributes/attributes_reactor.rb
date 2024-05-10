@@ -1,7 +1,5 @@
 module Attributes
-  class AttributesReactor < MessageConsumer
-    def reset_for_replay; end
-
+  class AttributesReactor < MessageReactor
     def create(attribute_id:, name:, description:, set:, default:)
       message_service.create!(
         schema: Events::AttributeCreated::V1,

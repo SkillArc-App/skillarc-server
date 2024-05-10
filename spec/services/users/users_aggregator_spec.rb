@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Users::UsersAggregator do
-  describe "#handle_message" do
-    subject { described_class.new(message_service:).handle_message(message) }
+  it_behaves_like "a replayable message consumer"
 
-    let(:message_service) { MessageService.new }
+  describe "#handle_message" do
+    subject { described_class.new.handle_message(message) }
 
     context "when message is role added" do
       let(:message) do

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Employers::EmployerReactor do
-  it_behaves_like "a message consumer"
+  it_behaves_like "a non replayable message consumer"
 
   describe "#handle_message" do
     subject { described_class.new(message_service: MessageService.new).handle_message(message) }

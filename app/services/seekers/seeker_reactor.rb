@@ -1,7 +1,5 @@
 module Seekers
-  class SeekerReactor < MessageConsumer # rubocop:disable Metrics/ClassLength
-    def reset_for_replay; end
-
+  class SeekerReactor < MessageReactor # rubocop:disable Metrics/ClassLength
     def add_education_experience(seeker_id:, organization_name:, title:, graduation_date:, gpa:, activities:, trace_id:, id: SecureRandom.uuid) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         schema: Events::EducationExperienceAdded::V1,

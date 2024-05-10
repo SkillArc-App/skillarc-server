@@ -16,7 +16,6 @@ RSpec.describe Projectors::Trace::HasOccurred do
             schema: Events::SeekerCreated::V1,
             trace_id:,
             data: {
-              id: SecureRandom.uuid,
               user_id:
             }
           )
@@ -44,7 +43,6 @@ RSpec.describe Projectors::Trace::HasOccurred do
             schema: Events::SeekerCreated::V1,
             trace_id:,
             data: {
-              id: SecureRandom.uuid,
               user_id:
             }
           )

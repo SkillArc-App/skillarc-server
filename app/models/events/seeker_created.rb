@@ -5,7 +5,6 @@ module Events
         extend Messages::Payload
 
         schema do
-          id Uuid
           user_id String
         end
       end
@@ -15,7 +14,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::User,
+      aggregate: Aggregates::Seeker,
       message_type: Messages::Types::Seekers::SEEKER_CREATED,
       version: 1
     )

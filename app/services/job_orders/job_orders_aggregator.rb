@@ -24,7 +24,7 @@ module JobOrders
     end
 
     on_message Events::SeekerCreated::V1 do |message|
-      Seeker.create!(id: message.data.id)
+      Seeker.create!(id: message.aggregate.id)
     end
 
     on_message Events::BasicInfoAdded::V1 do |message|

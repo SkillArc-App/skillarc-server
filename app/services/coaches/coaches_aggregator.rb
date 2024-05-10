@@ -231,11 +231,11 @@ module Coaches
     end
 
     on_message Events::SeekerCreated::V1 do |message|
-      csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
+      csc = CoachSeekerContext.find_by!(user_id: message.data.user_id)
 
       csc.update!(
         last_active_on: message.occurred_at,
-        seeker_id: message.data.id
+        seeker_id: message.aggregate.id
       )
     end
 

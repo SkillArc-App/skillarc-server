@@ -83,11 +83,11 @@ module Seekers
 
     def add_seeker(user_id:, seeker_id:, trace_id:)
       message_service.create!(
-        schema: Commands::AddSeeker::V1,
+        schema: Commands::AddSeeker::V2,
         trace_id:,
-        user_id:,
+        seeker_id:,
         data: {
-          id: seeker_id
+          user_id:
         }
       )
     end
@@ -152,16 +152,13 @@ module Seekers
       )
     end
 
-    on_message Commands::AddSeeker::V1, :sync do |message|
-      return if ::Projectors::Aggregates::HasOccurred.project(aggregate: message.aggregate, schema: Events::SeekerCreated::V1)
-
-      message_service.create!(
+    on_message Commands::AddSeeker::V2, :sync do |message|
+      message_service.create_once_for_aggregate!(
         schema: Events::SeekerCreated::V1,
         trace_id: message.trace_id,
         aggregate: message.aggregate,
         data: {
-          id: message.data.id,
-          user_id: message.aggregate.id
+          user_id: message.data.user_id
         }
       )
     end
@@ -170,9 +167,9 @@ module Seekers
       message_service.create!(
         schema: Commands::StartOnboarding::V1,
         trace_id: message.trace_id,
-        seeker_id: message.data.id,
+        seeker_id: message.aggregate.id,
         data: {
-          user_id: message.aggregate.id
+          user_id: message.data.user_id
         }
       )
     end

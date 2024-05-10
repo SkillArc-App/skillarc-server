@@ -5,12 +5,12 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
   let(:lead_added2) { build(:message, :lead_added, version: 2, aggregate_id: lead2.lead_id, data: lead2, occurred_at: time1) }
   let(:non_seeker_user_created) { build(:message, :user_created, aggregate_id: coach_user_id, data: { email: "f@f.f" }) }
   let(:user_without_email) { build(:message, :user_created, aggregate_id: user_without_email_id, data: { first_name: "Hannah", last_name: "Block" }) }
-  let(:seeker_without_email) { build(:message, :profile_created, aggregate_id: user_without_email_id, data: { id: seeker_without_email_id, user_id: user_without_email_id }) }
+  let(:seeker_without_email) { build(:message, schema: Events::SeekerCreated::V1, aggregate_id: seeker_without_email_id, data: { user_id: user_without_email_id }) }
   let(:user_created) { build(:message, :user_created, aggregate_id: user_id, data: { email: "hannah@blocktrainapp.com" }) }
   let(:basic_info_added) { build(:message, schema: Events::BasicInfoAdded::V1, aggregate_id: seeker_id, data: { first_name: "Hannah", last_name: "Block", phone_number: "1234567890", date_of_birth: "2000-10-10", user_id: }) }
   let(:other_user_created) { build(:message, :user_created, aggregate_id: other_user_id, data: { email: "katina@gmail.com", first_name: "Katina", last_name: "Hall" }) }
-  let(:seeker_created) { build(:message, :profile_created, aggregate_id: user_id, data: { id: seeker_id, user_id: }) }
-  let(:other_seeker_created) { build(:message, :profile_created, aggregate_id: other_user_id, data: { id: other_seeker_id, user_id: other_user_id }) }
+  let(:seeker_created) { build(:message, schema: Events::SeekerCreated::V1, aggregate_id: seeker_id, data: { user_id: }) }
+  let(:other_seeker_created) { build(:message, schema: Events::SeekerCreated::V1, aggregate_id: other_seeker_id, data: { user_id: other_user_id }) }
   let(:note_with_id_added1) { build(:message, :note_added, version: 3, aggregate_id: lead1.lead_id, data: { note: "This is a note with an id 1", note_id: note_id1, originator: "coach@blocktrainapp.com" }, occurred_at: time1) }
   let(:note_with_id_added2) { build(:message, :note_added, version: 3, aggregate_id: lead1.lead_id, data: { note: "This is a note with an id 2", note_id: note_id2, originator: "coach@blocktrainapp.com" }, occurred_at: time1) }
   let(:applicant_status_updated1) { build(:message, schema: Events::ApplicantStatusUpdated::V6, aggregate_id: applicant_id1, data: status_updated1, metadata: {}, occurred_at: time2) }

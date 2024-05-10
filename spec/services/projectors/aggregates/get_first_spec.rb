@@ -4,8 +4,8 @@ RSpec.describe Projectors::Aggregates::GetFirst do
   describe ".project" do
     subject { described_class.project(aggregate:, schema:) }
 
-    let(:user_id) { SecureRandom.uuid }
-    let(:aggregate) { Aggregates::User.new(user_id:) }
+    let(:seeker_id) { SecureRandom.uuid }
+    let(:aggregate) { Aggregates::Seeker.new(seeker_id:) }
     let(:schema) { Events::SeekerCreated::V1 }
 
     context "when the event does not exist for the aggregate" do
@@ -20,17 +20,18 @@ RSpec.describe Projectors::Aggregates::GetFirst do
           schema: Events::SeekerCreated::V1,
           aggregate_id: SecureRandom.uuid,
           data: {
-            id: SecureRandom.uuid,
-            user_id:
+            user_id: SecureRandom.uuid
           }
         )
       end
       let(:message2) do
         build(
           :message,
-          schema: Events::SessionStarted::V1,
-          aggregate_id: user_id,
-          data: Messages::Nothing
+          schema: Events::ZipAdded::V1,
+          aggregate_id: seeker_id,
+          data: {
+            zip_code: "43202"
+          }
         )
       end
 
@@ -49,10 +50,9 @@ RSpec.describe Projectors::Aggregates::GetFirst do
         build(
           :message,
           schema: Events::SeekerCreated::V1,
-          aggregate_id: user_id,
+          aggregate_id: seeker_id,
           data: {
-            id: id1,
-            user_id: id1
+            user_id: SecureRandom.uuid
           },
           occurred_at: Time.zone.local(2000, 10, 10)
         )
@@ -61,17 +61,13 @@ RSpec.describe Projectors::Aggregates::GetFirst do
         build(
           :message,
           schema: Events::SeekerCreated::V1,
-          aggregate_id: user_id,
+          aggregate_id: seeker_id,
           data: {
-            id: id2,
-            user_id: id2
+            user_id: SecureRandom.uuid
           },
           occurred_at: Time.zone.local(2000, 10, 11)
         )
       end
-
-      let(:id1) { SecureRandom.uuid }
-      let(:id2) { SecureRandom.uuid }
 
       it "returns the first message" do
         expect(subject).to eq(message1)

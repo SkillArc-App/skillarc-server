@@ -153,10 +153,10 @@ module Seekers
     end
 
     on_message Commands::AddSeeker::V1, :sync do |message|
-      return if ::Projectors::Aggregates::HasOccurred.project(aggregate: message.aggregate, schema: Events::SeekerCreated::V1)
+      return if ::Projectors::Aggregates::HasOccurred.project(aggregate: message.aggregate, schema: Events::ProfileCreated::V1)
 
       message_service.create!(
-        schema: Events::SeekerCreated::V1,
+        schema: Events::ProfileCreated::V1,
         trace_id: message.trace_id,
         aggregate: message.aggregate,
         data: {
@@ -166,7 +166,7 @@ module Seekers
       )
     end
 
-    on_message Events::SeekerCreated::V1, :sync do |message|
+    on_message Events::ProfileCreated::V1, :sync do |message|
       message_service.create!(
         schema: Commands::StartOnboarding::V1,
         trace_id: message.trace_id,

@@ -13,7 +13,7 @@ RSpec.describe Projectors::Aggregates::HasOccurred do
         Event.from_message!(
           build(
             :message,
-            schema: Events::SeekerCreated::V1,
+            schema: Events::ProfileCreated::V1,
             aggregate_id: user_id,
             data: {
               id: SecureRandom.uuid,
@@ -41,7 +41,7 @@ RSpec.describe Projectors::Aggregates::HasOccurred do
         Event.from_message!(
           build(
             :message,
-            schema: Events::SeekerCreated::V1,
+            schema: Events::ProfileCreated::V1,
             aggregate_id: user_id,
             data: {
               id: SecureRandom.uuid,

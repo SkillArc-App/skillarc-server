@@ -6,7 +6,7 @@ RSpec.describe Projectors::Aggregates::GetLast do
 
     let(:user_id) { SecureRandom.uuid }
     let(:aggregate) { Aggregates::User.new(user_id:) }
-    let(:schema) { Events::SeekerCreated::V1 }
+    let(:schema) { Events::ProfileCreated::V1 }
 
     context "when the event does not exist for the aggregate" do
       before do
@@ -17,7 +17,7 @@ RSpec.describe Projectors::Aggregates::GetLast do
       let(:message1) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
+          schema: Events::ProfileCreated::V1,
           aggregate_id: SecureRandom.uuid,
           data: {
             id: SecureRandom.uuid,
@@ -48,7 +48,7 @@ RSpec.describe Projectors::Aggregates::GetLast do
       let(:message1) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
+          schema: Events::ProfileCreated::V1,
           aggregate_id: user_id,
           data: {
             id: id1,
@@ -60,7 +60,7 @@ RSpec.describe Projectors::Aggregates::GetLast do
       let(:message2) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
+          schema: Events::ProfileCreated::V1,
           aggregate_id: user_id,
           data: {
             id: id2,

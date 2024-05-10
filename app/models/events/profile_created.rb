@@ -1,5 +1,5 @@
 module Events
-  module SeekerCreated
+  module ProfileCreated
     module Data
       class V1
         extend Messages::Payload
@@ -16,7 +16,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::Seekers::SEEKER_CREATED,
+      message_type: Messages::Types::Seekers::PROFILE_CREATED,
       version: 1
     )
   end

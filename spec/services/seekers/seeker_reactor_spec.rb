@@ -409,7 +409,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
           Event.from_message!(
             build(
               :message,
-              schema: Events::SeekerCreated::V1,
+              schema: Events::ProfileCreated::V1,
               aggregate_id: user_id,
               data: {
                 id: SecureRandom.uuid,
@@ -432,7 +432,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
           expect(message_service)
             .to receive(:create!)
             .with(
-              schema: Events::SeekerCreated::V1,
+              schema: Events::ProfileCreated::V1,
               trace_id: message.trace_id,
               aggregate: message.aggregate,
               data: {
@@ -450,7 +450,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
       let(:message) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
+          schema: Events::ProfileCreated::V1,
           data: {
             id: SecureRandom.uuid,
             user_id: SecureRandom.uuid

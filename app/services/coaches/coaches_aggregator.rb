@@ -230,7 +230,7 @@ module Coaches
       )
     end
 
-    on_message Events::SeekerCreated::V1 do |message|
+    on_message Events::ProfileCreated::V1 do |message|
       csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
 
       csc.update!(

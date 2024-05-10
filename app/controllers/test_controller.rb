@@ -164,7 +164,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     with_message_service do
       message_service.create!(
         user_id: user.id,
-        schema: Events::SeekerCreated::V1,
+        schema: Events::ProfileCreated::V1,
         data: {
           id: seeker.id,
           user_id: user.id

@@ -10,7 +10,7 @@ class OnboardingSessionsController < ApplicationController
         seeker = Seeker.create!(user: current_user)
 
         message_service.create!(
-          schema: Events::SeekerCreated::V1,
+          schema: Events::ProfileCreated::V1,
           trace_id: request.request_id,
           user_id: current_user.id,
           data: {

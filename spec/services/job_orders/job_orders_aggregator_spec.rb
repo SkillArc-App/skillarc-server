@@ -67,7 +67,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
+          schema: Events::ProfileCreated::V1,
           data: {
             id: SecureRandom.uuid,
             user_id: SecureRandom.uuid

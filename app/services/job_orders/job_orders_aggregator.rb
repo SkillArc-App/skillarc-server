@@ -23,7 +23,7 @@ module JobOrders
       job.update!(employment_title: message.data.employment_title)
     end
 
-    on_message Events::SeekerCreated::V1 do |message|
+    on_message Events::ProfileCreated::V1 do |message|
       Seeker.create!(id: message.data.id)
     end
 

@@ -764,7 +764,7 @@ message_service.create!(
 
 message_service.create!(
   user_id: trained_seeker_with_reference.user.id,
-  schema: Events::SeekerCreated::V1,
+  schema: Events::ProfileCreated::V1,
   data: {
     id: trained_seeker_with_reference.id,
     user_id: trained_seeker_with_reference.user.id
@@ -795,7 +795,7 @@ message_service.create!(
 
 message_service.create!(
   user_id: trained_seeker.user.id,
-  schema: Events::SeekerCreated::V1,
+  schema: Events::ProfileCreated::V1,
   data: {
     id: trained_seeker.id,
     user_id: trained_seeker.user.id
@@ -826,7 +826,7 @@ message_service.create!(
 
 message_service.create!(
   user_id: seeker_with_profile.user.id,
-  schema: Events::SeekerCreated::V1,
+  schema: Events::ProfileCreated::V1,
   data: {
     id: seeker_with_profile.id,
     user_id: seeker_with_profile.user.id

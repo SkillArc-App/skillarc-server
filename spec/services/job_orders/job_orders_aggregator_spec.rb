@@ -67,9 +67,8 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::ProfileCreated::V1,
+          schema: Events::SeekerCreated::V1,
           data: {
-            id: SecureRandom.uuid,
             user_id: SecureRandom.uuid
           }
         )
@@ -79,7 +78,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect { subject }.to change(JobOrders::Seeker, :count).from(0).to(1)
 
         seeker = JobOrders::Seeker.take(1).first
-        expect(seeker.id).to eq(message.data.id)
+        expect(seeker.id).to eq(message.aggregate.id)
       end
     end
 

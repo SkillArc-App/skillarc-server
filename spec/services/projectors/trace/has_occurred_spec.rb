@@ -13,10 +13,9 @@ RSpec.describe Projectors::Trace::HasOccurred do
         Event.from_message!(
           build(
             :message,
-            schema: Events::ProfileCreated::V1,
+            schema: Events::SeekerCreated::V1,
             trace_id:,
             data: {
-              id: SecureRandom.uuid,
               user_id:
             }
           )
@@ -41,10 +40,9 @@ RSpec.describe Projectors::Trace::HasOccurred do
         Event.from_message!(
           build(
             :message,
-            schema: Events::ProfileCreated::V1,
+            schema: Events::SeekerCreated::V1,
             trace_id:,
             data: {
-              id: SecureRandom.uuid,
               user_id:
             }
           )

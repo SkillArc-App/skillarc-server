@@ -137,6 +137,7 @@ module Messages
         SEEKER_APPLIED = 'seeker_applied',
         SEEKER_CONTEXT_VIEWED = 'seeker_context_viewed',
         PROFILE_CREATED = 'profile_created',
+        SEEKER_CREATED = 'seeker_created',
         SEEKER_SKILL_CREATED = 'seeker_skill_created',
         SEEKER_SKILL_DESTROYED = 'seeker_skill_destroyed',
         SEEKER_SKILL_UPDATED = 'seeker_skill_updated',

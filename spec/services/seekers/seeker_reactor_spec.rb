@@ -64,11 +64,11 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
       expect(message_service)
         .to receive(:create!)
         .with(
-          schema: Commands::AddSeeker::V1,
+          schema: Commands::AddSeeker::V2,
           trace_id:,
-          user_id:,
+          seeker_id:,
           data: {
-            id: seeker_id
+            user_id:
           }
         )
 
@@ -396,53 +396,27 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
       let(:message) do
         build(
           :message,
-          schema: Commands::AddSeeker::V1,
-          aggregate_id: user_id,
+          schema: Commands::AddSeeker::V2,
+          aggregate_id: seeker_id,
           data: {
-            id: SecureRandom.uuid
+            user_id: SecureRandom.uuid
           }
         )
       end
 
-      context "when a seeker created event has already occurred" do
-        before do
-          Event.from_message!(
-            build(
-              :message,
-              schema: Events::ProfileCreated::V1,
-              aggregate_id: user_id,
-              data: {
-                id: SecureRandom.uuid,
-                user_id:
-              }
-            )
+      it "creates a seeker created event once" do
+        expect(message_service)
+          .to receive(:create_once_for_aggregate!)
+          .with(
+            schema: Events::SeekerCreated::V1,
+            trace_id: message.trace_id,
+            aggregate: message.aggregate,
+            data: {
+              user_id: message.data.user_id
+            }
           )
-        end
 
-        it "does nothing" do
-          expect(message_service)
-            .not_to receive(:create!)
-
-          subject
-        end
-      end
-
-      context "when a seeker created event has not occurred" do
-        it "creates a seeker created event" do
-          expect(message_service)
-            .to receive(:create!)
-            .with(
-              schema: Events::ProfileCreated::V1,
-              trace_id: message.trace_id,
-              aggregate: message.aggregate,
-              data: {
-                id: message.data.id,
-                user_id: message.aggregate.id
-              }
-            )
-
-          subject
-        end
+        subject
       end
     end
 
@@ -450,9 +424,8 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
       let(:message) do
         build(
           :message,
-          schema: Events::ProfileCreated::V1,
+          schema: Events::SeekerCreated::V1,
           data: {
-            id: SecureRandom.uuid,
             user_id: SecureRandom.uuid
           }
         )
@@ -464,9 +437,9 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
           .with(
             schema: Commands::StartOnboarding::V1,
             trace_id: message.trace_id,
-            seeker_id: message.data.id,
+            seeker_id: message.aggregate.id,
             data: {
-              user_id: message.aggregate.id
+              user_id: message.data.user_id
             }
           )
 

@@ -61,12 +61,12 @@ module Analytics
       person.save!
     end
 
-    on_message Events::ProfileCreated::V1 do |message|
-      person = DimPerson.find_by!(user_id: message.aggregate_id)
+    on_message Events::SeekerCreated::V1 do |message|
+      person = DimPerson.find_by!(user_id: message.data.user_id)
 
       person.update!(
         last_active_at: message.occurred_at,
-        seeker_id: message.data.id,
+        seeker_id: message.aggregate.id,
         kind: DimPerson::Kind::SEEKER
       )
     end

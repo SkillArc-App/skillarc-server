@@ -121,22 +121,22 @@ module JobOrders
       job_order.update!(hire_count: job_order.hire_count - 1)
     end
 
-    on_message Events::JobOrderActivated::V1 do |message|
+    on_message Events::JobOrderActivated::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: ActivatedStatus::OPEN)
     end
 
-    on_message Events::JobOrderStalled::V1 do |message|
+    on_message Events::JobOrderStalled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: message.data.status)
     end
 
-    on_message Events::JobOrderFilled::V1 do |message|
+    on_message Events::JobOrderFilled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: ClosedStatus::FILLED)
     end
 
-    on_message Events::JobOrderNotFilled::V1 do |message|
+    on_message Events::JobOrderNotFilled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: ClosedStatus::NOT_FILLED)
     end

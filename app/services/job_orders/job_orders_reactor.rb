@@ -26,23 +26,23 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderOrderCountAdded::V1 do |message|
+    on_message Events::JobOrderOrderCountAdded::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateAdded::V1 do |message|
+    on_message Events::JobOrderCandidateAdded::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateRecommended::V1 do |message|
+    on_message Events::JobOrderCandidateRecommended::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateHired::V1 do |message|
+    on_message Events::JobOrderCandidateHired::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateRescinded::V1 do |message|
+    on_message Events::JobOrderCandidateRescinded::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 

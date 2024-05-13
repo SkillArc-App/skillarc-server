@@ -24,5 +24,13 @@ module JobOrders
   class Application < ApplicationRecord
     belongs_to :job, class_name: "JobOrders::Job", foreign_key: "job_orders_jobs_id", inverse_of: :applications
     belongs_to :seeker, class_name: "JobOrders::Seeker", foreign_key: "job_orders_seekers_id", inverse_of: :applications
+
+    def job_id
+      job_orders_jobs_id
+    end
+
+    def seeker_id
+      job_orders_seekers_id
+    end
   end
 end

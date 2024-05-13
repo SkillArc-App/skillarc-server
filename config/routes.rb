@@ -46,6 +46,10 @@ Rails.application.routes.draw do
     end
   end
 
+  scope module: 'job_orders', path: 'job_orders' do
+    resources :orders
+  end
+
   resources :employers
   resources :session, only: [:create]
 

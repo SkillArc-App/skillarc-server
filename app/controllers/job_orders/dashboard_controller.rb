@@ -1,7 +1,6 @@
 module JobOrders
-  class JobOrdersController < ApplicationController
+  class DashboardController < ApplicationController
     include Secured
-    include Admin
 
     before_action :authorize
     before_action :job_order_authorize

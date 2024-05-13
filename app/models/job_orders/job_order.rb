@@ -7,6 +7,7 @@
 #  candidate_count    :integer          not null
 #  closed_at          :datetime
 #  hire_count         :integer          not null
+#  opened_at          :datetime
 #  order_count        :integer
 #  recommended_count  :integer          not null
 #  status             :string

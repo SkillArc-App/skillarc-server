@@ -129,7 +129,8 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           },
           metadata: {
             user_id: SecureRandom.uuid
-          }
+          },
+          occurred_at: Time.zone.local(2000, 10, 10)
         )
       end
 
@@ -157,6 +158,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           expect { subject }.to change(JobOrders::Application, :count).from(0).to(1)
 
           application = JobOrders::Application.take(1).first
+          expect(application.opened_at).to eq(message.occurred_at)
           expect(application.id).to eq(application_id)
           expect(application.status).to eq(message.data.status)
           expect(application.job).to eq(job)
@@ -172,7 +174,8 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           schema: Events::JobOrderAdded::V1,
           data: {
             job_id: job.id
-          }
+          },
+          occurred_at: Time.zone.local(2000, 10, 10)
         )
       end
 
@@ -184,6 +187,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         job_order = JobOrders::JobOrder.take(1).first
         expect(job_order.id).to eq(message.aggregate.id)
         expect(job_order.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
+        expect(job_order.opened_at).to eq(message.occurred_at)
         expect(job_order.job).to eq(job)
         expect(job_order.order_count).to eq(nil)
         expect(job_order.recommended_count).to eq(0)

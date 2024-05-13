@@ -3,11 +3,36 @@ require 'rails_helper'
 RSpec.describe JobOrders::JobOrdersReactor do
   it_behaves_like "a replayable message consumer"
 
+  let(:instance) { described_class.new(message_service:) }
+  let(:message_service) { MessageService.new }
+
+  describe "#add_order_count" do
+    subject do
+      instance.add_order_count(job_order_id:, order_count:, trace_id:)
+    end
+
+    let(:job_order_id) { 10 }
+    let(:order_count) { 10 }
+    let(:trace_id) { SecureRandom.uuid }
+
+    it "fires off a job order order count added event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::JobOrderOrderCountAdded::V1,
+          job_order_id:,
+          trace_id:,
+          data: {
+            order_count:
+          }
+        )
+
+      subject
+    end
+  end
+
   describe "#handle_message" do
     subject { instance.handle_message(message) }
-
-    let(:instance) { described_class.new(message_service:) }
-    let(:message_service) { MessageService.new }
 
     context "when the message is job created" do
       let(:message) do

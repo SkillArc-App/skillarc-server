@@ -38,18 +38,30 @@ module JobOrders
     end
 
     on_message Events::ApplicantStatusUpdated::V6 do |message|
-      application = Application.find_or_initialize_by(id: message.aggregate.id)
-      application.update!(
-        status: message.data.status,
-        job_orders_jobs_id: message.data.job_id,
-        job_orders_seekers_id: message.data.seeker_id
-      )
+      application = Application.find_by(id: message.aggregate.id)
+
+      if application.present?
+        application.update!(
+          status: message.data.status,
+          job_orders_jobs_id: message.data.job_id,
+          job_orders_seekers_id: message.data.seeker_id
+        )
+      else
+        Application.create!(
+          id: message.aggregate.id,
+          opened_at: message.occurred_at,
+          status: message.data.status,
+          job_orders_jobs_id: message.data.job_id,
+          job_orders_seekers_id: message.data.seeker_id
+        )
+      end
     end
 
     on_message Events::JobOrderAdded::V1 do |message|
       JobOrder.create!(
         id: message.aggregate.id,
         job_orders_jobs_id: message.data.job_id,
+        opened_at: message.occurred_at,
         status: JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT,
         order_count: nil,
         recommended_count: 0,
@@ -59,7 +71,7 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderOrderCountAdded::V1 do |message|
+    on_message Events::JobOrderOrderCountAdded::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(
         order_count: message.data.order_count
@@ -109,22 +121,22 @@ module JobOrders
       job_order.update!(hire_count: job_order.hire_count - 1)
     end
 
-    on_message Events::JobOrderActivated::V1 do |message|
+    on_message Events::JobOrderActivated::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: ActivatedStatus::OPEN)
     end
 
-    on_message Events::JobOrderStalled::V1 do |message|
+    on_message Events::JobOrderStalled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: message.data.status)
     end
 
-    on_message Events::JobOrderFilled::V1 do |message|
+    on_message Events::JobOrderFilled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: ClosedStatus::FILLED)
     end
 
-    on_message Events::JobOrderNotFilled::V1 do |message|
+    on_message Events::JobOrderNotFilled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: ClosedStatus::NOT_FILLED)
     end

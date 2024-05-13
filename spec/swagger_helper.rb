@@ -1066,6 +1066,173 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
+          job_order_summary: {
+            type: :object,
+            additionalProperties: true,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              employmentTitle: {
+                type: :string
+              },
+              employerName: {
+                type: :string
+              },
+              openedAt: {
+                type: :string,
+                format: 'date-time'
+              },
+              closedAt: {
+                type: :string,
+                format: 'date-time'
+              },
+              orderCount: {
+                type: :integer
+              },
+              hireCount: {
+                type: :integer
+              },
+              recommendedCount: {
+                type: :integer
+              },
+              status: {
+                type: :string,
+                enum: JobOrders::OrderStatus::ALL
+              }
+            }
+          },
+          job_order: {
+            allOf: [
+              { '$ref' => '#/components/schemas/job_order_summary' },
+              {
+                type: :object,
+                additionalProperties: true,
+                properties: {
+                  candidates: {
+                    type: :array,
+                    items: {
+                      '$ref' => '#/components/schemas/job_order_candidate'
+                    }
+                  },
+                  applications: {
+                    type: :array,
+                    items: {
+                      '$ref' => '#/components/schemas/job_order_application'
+                    }
+                  },
+                  notes: {
+                    type: :array,
+                    items: {
+                      '$ref' => '#/components/schemas/job_order_note'
+                    }
+                  }
+                  # first_name: application.seeker.first_name,
+                  # last_name: application.seeker.last_name,
+                  # phone_number: application.seeker.phone_number,
+                  # email: application.seeker.email,
+                  # applied_at: applications.opened_at,
+                  # recommended_at: nil, # TODO
+                  # status: applications.status,
+                  # seeker_id: applications.seeker_id
+                }
+              }
+            ]
+          },
+          job_order_candidate: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              firstName: {
+                type: :string
+              },
+              lastName: {
+                type: :string
+              },
+              phoneNumber: {
+                type: :string
+              },
+              email: {
+                type: :string
+              },
+              appliedAt: {
+                type: :string,
+                format: "date-time",
+                nullable: true
+              },
+              recommendedAt: {
+                type: :string,
+                format: "date-time",
+                nullable: true
+              },
+              status: {
+                type: :string,
+                enum: JobOrders::CandidateStatus::ALL
+              },
+              seekerId: {
+                type: :string,
+                format: :uuid
+              }
+            }
+          },
+          job_order_application: {
+            type: :object,
+            properties: {
+              firstName: {
+                type: :string
+              },
+              lastName: {
+                type: :string
+              },
+              phoneNumber: {
+                type: :string
+              },
+              email: {
+                type: :string
+              },
+              appliedAt: {
+                type: :string,
+                format: "date-time",
+                nullable: true
+              },
+              recommendedAt: {
+                type: :string,
+                format: "date-time",
+                nullable: true
+              },
+              status: {
+                type: :string,
+                enum: ApplicantStatus::StatusTypes::ALL
+              },
+              seekerId: {
+                type: :string,
+                format: :uuid
+              }
+            }
+          },
+          job_order_note: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              content: {
+                type: :string
+              },
+              createdAt: {
+                type: :string,
+                format: "date-time"
+              },
+              noteTakenBy: {
+                type: :string
+              }
+            }
+          },
           master_certification: {
             type: :object,
             properties: {

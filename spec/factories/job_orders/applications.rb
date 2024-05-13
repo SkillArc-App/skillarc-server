@@ -3,6 +3,7 @@ FactoryBot.define do
     id { SecureRandom.uuid }
     association :job, factory: :job_orders__job
     association :seeker, factory: :job_orders__seeker
+    opened_at { Time.zone.now }
 
     status { ApplicantStatus::StatusTypes::NEW }
   end

@@ -4,6 +4,17 @@ module JobOrders
       true
     end
 
+    def add_order_count(job_order_id:, order_count:, trace_id:)
+      message_service.create!(
+        schema: Events::JobOrderOrderCountAdded::V1,
+        job_order_id:,
+        trace_id:,
+        data: {
+          order_count:
+        }
+      )
+    end
+
     on_message Events::JobCreated::V3 do |message|
       message_service.create_once_for_trace!(
         schema: Events::JobOrderAdded::V1,
@@ -15,23 +26,23 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderOrderCountAdded::V1 do |message|
+    on_message Events::JobOrderOrderCountAdded::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateAdded::V1 do |message|
+    on_message Events::JobOrderCandidateAdded::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateRecommended::V1 do |message|
+    on_message Events::JobOrderCandidateRecommended::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateHired::V1 do |message|
+    on_message Events::JobOrderCandidateHired::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateRescinded::V1 do |message|
+    on_message Events::JobOrderCandidateRescinded::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 

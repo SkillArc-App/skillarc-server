@@ -50,6 +50,7 @@ module JobOrders
       JobOrder.create!(
         id: message.aggregate.id,
         job_orders_jobs_id: message.data.job_id,
+        opened_at: message.occurred_at,
         status: JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT,
         order_count: nil,
         recommended_count: 0,

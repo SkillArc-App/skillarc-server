@@ -172,7 +172,8 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           schema: Events::JobOrderAdded::V1,
           data: {
             job_id: job.id
-          }
+          },
+          occurred_at: Time.zone.local(2000, 10, 10)
         )
       end
 
@@ -184,6 +185,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         job_order = JobOrders::JobOrder.take(1).first
         expect(job_order.id).to eq(message.aggregate.id)
         expect(job_order.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
+        expect(job_order.opened_at).to eq(message.occurred_at)
         expect(job_order.job).to eq(job)
         expect(job_order.order_count).to eq(nil)
         expect(job_order.recommended_count).to eq(0)

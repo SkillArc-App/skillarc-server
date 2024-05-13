@@ -1,15 +1,15 @@
-require 'pub_sub_initializer'
-require 'pubsub'
+require 'subscriber_initializer'
+require 'subscriber_registry'
 
-PUBSUB = Pubsub.new(sync: false)
-PUBSUB_SYNC = Pubsub.new(sync: true)
+ASYNC_SUBSCRIBERS = SubscriberRegistry.new
+SYNC_SUBSCRIBERS = SubscriberRegistry.new
 
 Rails.application.config.after_initialize do
-  PubSubInitializer.run
+  SubscriberInitializer.run
 end
 
 if Rails.env.development?
   Rails.application.reloader.to_prepare do
-    PubSubInitializer.run
+    SubscriberInitializer.run
   end
 end

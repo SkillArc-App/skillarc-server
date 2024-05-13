@@ -1,7 +1,7 @@
-module PubSubInitializer
+module SubscriberInitializer
   def self.run
-    PUBSUB.reset
-    PUBSUB_SYNC.reset
+    ASYNC_SUBSCRIBERS.reset
+    SYNC_SUBSCRIBERS.reset
 
     aggregators = [
       DbStreamListener.build(consumer: JobOrders::JobOrdersAggregator.new, listener_name: "job_orders_aggregator"),
@@ -37,16 +37,16 @@ module PubSubInitializer
     ]
 
     (aggregators + reactors).each do |listener|
-      listener.handled_messages_sync.each do |message_schema|
-        PUBSUB_SYNC.subscribe(
-          message_schema:,
+      listener.handled_messages_sync.each do |schema|
+        SYNC_SUBSCRIBERS.subscribe(
+          schema:,
           subscriber: listener
         )
       end
 
-      listener.handled_messages.each do |message_schema|
-        PUBSUB.subscribe(
-          message_schema:,
+      listener.handled_messages.each do |schema|
+        ASYNC_SUBSCRIBERS.subscribe(
+          schema:,
           subscriber: listener
         )
       end

@@ -2,6 +2,14 @@ class MessageConsumer
   NotSchemaError = Class.new(StandardError)
   NotActiveSchemaError = Class.new(StandardError)
   NotValidSubscriberType = Class.new(StandardError)
+  class FailedToHandleMessage < StandardError
+    attr_reader :erroring_message
+
+    def initialize(message, erroring_message)
+      @erroring_message = erroring_message
+      super(message)
+    end
+  end
 
   def call(message:)
     handle_message(message)
@@ -12,7 +20,13 @@ class MessageConsumer
     method_name = "#{schema.message_type}_#{schema.version}".to_sym
     return unless respond_to? method_name
 
-    send(method_name, message)
+    begin
+      send(method_name, message)
+    rescue StandardError => e
+      wrapped_message = FailedToHandleMessage.new(e.message, message)
+      wrapped_message.set_backtrace(e.backtrace)
+      raise wrapped_message
+    end
   end
 
   def all_handled_messages

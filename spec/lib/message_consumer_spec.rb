@@ -17,6 +17,25 @@ RSpec.describe MessageConsumer do
       sub_klass.new.handle_message(message)
     end
 
+    context "when the message causes an exception" do
+      let(:sub_klass) do
+        Class.new(described_class) do
+          on_message Events::SessionStarted::V1 do |_|
+            raise IndexError, "error"
+          end
+        end
+      end
+
+      it "captures the causing error in a wrapped exception" do
+        expect { sub_klass.new.handle_message(message) }.to raise_error do |error|
+          expect(error).to be_a(described_class::FailedToHandleMessage)
+          expect(error.message).to eq("error")
+          expect(error.erroring_message).to eq(message)
+          expect(error.cause).to be_a(IndexError)
+        end
+      end
+    end
+
     context "when on_message is subscribed to a deprecated message" do
       let(:sub_klass) do
         Class.new(described_class) do

@@ -68,7 +68,7 @@ RSpec.describe "JobOrders", type: :request do
       context "when authenticated" do
         include_context "job order authenticated"
 
-        response '404', 'Coach not found' do
+        response '404', 'Job Order not found' do
           let(:job_order_id) { SecureRandom.uuid }
 
           run_test!
@@ -89,6 +89,78 @@ RSpec.describe "JobOrders", type: :request do
               .with(id)
               .and_call_original
           end
+
+          run_test!
+        end
+      end
+    end
+
+    put "update a job order" do
+      tags 'Job Orders'
+      consumes 'application/json'
+      security [bearer_auth: []]
+      parameter name: 'id',
+                in: :path,
+                type: :string,
+                format: :uuid
+
+      parameter name: :order_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          orderOount: {
+            type: :integer
+          }
+        },
+        required: %w[order_count]
+      }
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      let(:id) { SecureRandom.uuid }
+      let(:order_params) do
+        {
+          orderCount: order_count
+        }
+      end
+      let(:order_count) { 10 }
+
+      it_behaves_like "an unauthenticated user"
+
+      context "when authenticated" do
+        include_context "job order authenticated"
+
+        response '404', 'Job Order not found' do
+          before do
+            expect_any_instance_of(JobOrders::JobOrdersReactor)
+              .to receive(:add_order_count)
+              .with(
+                job_order_id: id,
+                order_count:,
+                trace_id: be_a(String)
+              )
+              .and_call_original
+          end
+
+          let(:id) { SecureRandom.uuid }
+
+          run_test!
+        end
+
+        response '202', 'Update the job order' do
+          before do
+            expect_any_instance_of(JobOrders::JobOrdersReactor)
+              .to receive(:add_order_count)
+              .with(
+                job_order_id: id,
+                order_count:,
+                trace_id: be_a(String)
+              )
+              .and_call_original
+          end
+
+          let(:job_order) { create(:job_orders__job_order) }
+          let(:id) { job_order.id }
 
           run_test!
         end

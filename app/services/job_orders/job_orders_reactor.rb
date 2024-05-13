@@ -4,6 +4,17 @@ module JobOrders
       true
     end
 
+    def add_order_count(job_order_id:, order_count:, trace_id:)
+      message_service.create!(
+        schema: Events::JobOrderOrderCountAdded::V1,
+        job_order_id:,
+        trace_id:,
+        data: {
+          order_count:
+        }
+      )
+    end
+
     on_message Events::JobCreated::V3 do |message|
       message_service.create_once_for_trace!(
         schema: Events::JobOrderAdded::V1,

@@ -129,7 +129,8 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           },
           metadata: {
             user_id: SecureRandom.uuid
-          }
+          },
+          occurred_at: Time.zone.local(2000, 10, 10)
         )
       end
 
@@ -157,6 +158,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           expect { subject }.to change(JobOrders::Application, :count).from(0).to(1)
 
           application = JobOrders::Application.take(1).first
+          expect(application.opened_at).to eq(message.occurred_at)
           expect(application.id).to eq(application_id)
           expect(application.status).to eq(message.data.status)
           expect(application.job).to eq(job)

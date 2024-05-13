@@ -38,12 +38,23 @@ module JobOrders
     end
 
     on_message Events::ApplicantStatusUpdated::V6 do |message|
-      application = Application.find_or_initialize_by(id: message.aggregate.id)
-      application.update!(
-        status: message.data.status,
-        job_orders_jobs_id: message.data.job_id,
-        job_orders_seekers_id: message.data.seeker_id
-      )
+      application = Application.find_by(id: message.aggregate.id)
+
+      if application.present?
+        application.update!(
+          status: message.data.status,
+          job_orders_jobs_id: message.data.job_id,
+          job_orders_seekers_id: message.data.seeker_id
+        )
+      else
+        Application.create!(
+          id: message.aggregate.id,
+          opened_at: message.occurred_at,
+          status: message.data.status,
+          job_orders_jobs_id: message.data.job_id,
+          job_orders_seekers_id: message.data.seeker_id
+        )
+      end
     end
 
     on_message Events::JobOrderAdded::V1 do |message|

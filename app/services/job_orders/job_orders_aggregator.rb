@@ -71,7 +71,7 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderOrderCountAdded::V1 do |message|
+    on_message Events::JobOrderOrderCountAdded::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(
         order_count: message.data.order_count

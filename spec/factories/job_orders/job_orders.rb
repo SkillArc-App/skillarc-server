@@ -4,6 +4,7 @@ FactoryBot.define do
     association :job, factory: :job_orders__job
     opened_at { Time.zone.now }
 
+    status { JobOrders::ActivatedStatus::OPEN }
     applicant_count { 0 }
     candidate_count { 0 }
     closed_at { nil }

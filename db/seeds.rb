@@ -932,6 +932,10 @@ message_service.create!(
   }
 )
 
+Role::Types::ALL.each do |role|
+  Role.create!(id: SecureRandom.uuid, name: role)
+end
+
 admin_user = User.create!(
   id: SecureRandom.uuid,
   first_name: 'Jake',
@@ -951,10 +955,6 @@ message_service.create!(
   }
 )
 
-Role::Types::ALL.each do |role|
-  Role.create!(id: SecureRandom.uuid, name: role)
-end
-
 message_service.create!(
   user_id: admin_user.id,
   schema: Events::RoleAdded::V2,
@@ -967,6 +967,33 @@ message_service.create!(
   schema: Events::RoleAdded::V2,
   data: {
     role: Role::Types::EMPLOYER_ADMIN
+  }
+)
+
+job_order_admin = User.create!(
+  id: SecureRandom.uuid,
+  first_name: 'Job',
+  last_name: 'Master',
+  email: 'job_order@skillarc.com',
+  sub: 'job_oder'
+)
+
+message_service.create!(
+  user_id: job_order_admin.id,
+  schema: Events::UserCreated::V1,
+  data: {
+    first_name: job_order_admin.first_name,
+    last_name: job_order_admin.last_name,
+    email: job_order_admin.email,
+    sub: job_order_admin.sub
+  }
+)
+
+message_service.create!(
+  user_id: job_order_admin.id,
+  schema: Events::RoleAdded::V2,
+  data: {
+    role: Role::Types::JOB_ORDER_ADMIN
   }
 )
 

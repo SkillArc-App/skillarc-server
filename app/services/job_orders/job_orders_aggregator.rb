@@ -3,8 +3,8 @@ module JobOrders
     def reset_for_replay
       Candidate.delete_all
       Application.delete_all
-      Job.delete_all
       JobOrder.delete_all
+      Job.delete_all
       Seeker.delete_all
     end
 

@@ -48,18 +48,6 @@ module JobOrders
               seeker_id: candidate.seeker_id
             }
           end,
-          applications: applications.map do |application|
-            {
-              first_name: application.seeker.first_name,
-              last_name: application.seeker.last_name,
-              phone_number: application.seeker.phone_number,
-              email: application.seeker.email,
-              applied_at: application.opened_at,
-              recommended_at: nil, # TODO
-              status: application.status,
-              seeker_id: application.seeker_id
-            }
-          end,
           notes: [] # TODO
         }
       end

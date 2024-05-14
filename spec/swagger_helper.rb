@@ -1116,26 +1116,12 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                       '$ref' => '#/components/schemas/job_order_candidate'
                     }
                   },
-                  applications: {
-                    type: :array,
-                    items: {
-                      '$ref' => '#/components/schemas/job_order_application'
-                    }
-                  },
                   notes: {
                     type: :array,
                     items: {
                       '$ref' => '#/components/schemas/job_order_note'
                     }
                   }
-                  # first_name: application.seeker.first_name,
-                  # last_name: application.seeker.last_name,
-                  # phone_number: application.seeker.phone_number,
-                  # email: application.seeker.email,
-                  # applied_at: applications.opened_at,
-                  # recommended_at: nil, # TODO
-                  # status: applications.status,
-                  # seeker_id: applications.seeker_id
                 }
               }
             ]
@@ -1172,41 +1158,6 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               status: {
                 type: :string,
                 enum: JobOrders::CandidateStatus::ALL
-              },
-              seekerId: {
-                type: :string,
-                format: :uuid
-              }
-            }
-          },
-          job_order_application: {
-            type: :object,
-            properties: {
-              firstName: {
-                type: :string
-              },
-              lastName: {
-                type: :string
-              },
-              phoneNumber: {
-                type: :string
-              },
-              email: {
-                type: :string
-              },
-              appliedAt: {
-                type: :string,
-                format: "date-time",
-                nullable: true
-              },
-              recommendedAt: {
-                type: :string,
-                format: "date-time",
-                nullable: true
-              },
-              status: {
-                type: :string,
-                enum: ApplicantStatus::StatusTypes::ALL
               },
               seekerId: {
                 type: :string,

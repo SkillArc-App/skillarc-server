@@ -88,6 +88,7 @@ module Messages
         JOB_ORDER_FILLED = 'job_order_filled',
         JOB_ORDER_NOT_FILLED = 'job_order_not_filled',
         JOB_ORDER_CANDIDATE_ADDED = 'job_order_candidate_added',
+        JOB_ORDER_CANDIDATE_APPLIED = 'job_order_candidate_applied',
         JOB_ORDER_CANDIDATE_HIRED = 'job_order_candidate_hired',
         JOB_ORDER_CANDIDATE_RECOMMENDED = 'job_order_candidate_recommended',
         JOB_ORDER_CANDIDATE_RESCINDED = 'job_order_candidate_rescinded'

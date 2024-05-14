@@ -2,12 +2,13 @@
 #
 # Table name: job_orders_jobs
 #
-#  id               :uuid             not null, primary key
-#  employer_name    :string           not null
-#  employment_title :string           not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  employer_id      :uuid             not null
+#  id                        :uuid             not null, primary key
+#  applicable_for_job_orders :boolean
+#  employer_name             :string           not null
+#  employment_title          :string           not null
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  employer_id               :uuid             not null
 #
 # Indexes
 #

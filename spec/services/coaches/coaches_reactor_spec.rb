@@ -159,6 +159,21 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
         end
       end
 
+      context "when there is no coach" do
+        let(:lead_captured_by) { "cal.com" }
+
+        it "does nothing" do
+          expect(Coaches::CoachAssignmentService)
+            .to receive(:round_robin_assignment)
+            .and_return(nil)
+
+          expect(message_service)
+            .not_to receive(:create!)
+
+          subject
+        end
+      end
+
       context "when there is not a coach for that email" do
         let!(:coach) { create(:coaches__coach) }
         let(:lead_captured_by) { "cal.com" }
@@ -218,6 +233,19 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
       end
 
       let(:user_id) { SecureRandom.uuid }
+
+      context "when there is no coach" do
+        it "does nothing" do
+          expect(Coaches::CoachAssignmentService)
+            .to receive(:round_robin_assignment)
+            .and_return(nil)
+
+          expect(message_service)
+            .not_to receive(:create!)
+
+          subject
+        end
+      end
 
       context "when there is already a coach seeker context with an assigned coach" do
         before do

@@ -190,6 +190,31 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       end
     end
 
+    context "when the message is job order candidate applied" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobOrderCandidateApplied::V1,
+          aggregate_id: job_order.id,
+          data: {
+            seeker_id: seeker.id,
+            applied_at: Time.zone.local(2024, 1, 1)
+          }
+        )
+      end
+
+      let!(:job_order) { create(:job_orders__job_order, candidate_count: 1, recommended_count: 0) }
+      let!(:candidate) { create(:job_orders__candidate, seeker:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
+      let!(:seeker) { create(:job_orders__seeker) }
+
+      it "updates a candidate record and updates the job order" do
+        subject
+
+        candidate.reload
+        expect(candidate.applied_at).to eq(message.data.applied_at)
+      end
+    end
+
     context "when the message is job order candidate recommended" do
       let(:message) do
         build(

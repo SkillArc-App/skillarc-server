@@ -70,6 +70,11 @@ module JobOrders
       job_order.update!(candidate_count: job_order.candidate_count + 1)
     end
 
+    on_message Events::JobOrderCandidateApplied::V1 do |message|
+      candidate = Candidate.find_by!(job_orders_seekers_id: message.data.seeker_id)
+      candidate.update!(applied_at: message.data.applied_at)
+    end
+
     on_message Events::JobOrderCandidateRecommended::V1 do |message|
       job_order = JobOrder.find(message.aggregate.id)
       candidate = Candidate.find_by!(job_orders_seekers_id: message.data.seeker_id)

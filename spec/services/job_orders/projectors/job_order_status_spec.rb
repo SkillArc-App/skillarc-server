@@ -145,7 +145,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         let(:messages) { [job_order_not_filled, job_order_activated] }
 
         it "reports the status as appropriate" do
-          expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
+          expect(subject.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
         end
       end
     end
@@ -153,8 +153,8 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
     context "when a job order has not been set occured but no order count has been set" do
       let(:messages) { [job_order_candidate_added1, job_order_candidate_recommended1, job_order_candidate_hired1] }
 
-      it "reports the status as open" do
-        expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
+      it "reports the status as need order count" do
+        expect(subject.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
       end
     end
 

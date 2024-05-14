@@ -13,7 +13,7 @@ module JobOrders
 
       def init
         Projection.new(
-          status: nil
+          status: JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT
         )
       end
 

@@ -44,6 +44,42 @@ module JobOrders
       )
     end
 
+    on_message Events::ApplicantStatusUpdated::V6 do |message|
+      return if message.data.status != ApplicantStatus::StatusTypes::NEW
+
+      # Get all job order for this job
+      job_orders = Events::JobOrderAdded::V1
+                   .all_messages
+                   .select { |job_order| job_order.data.job_id == message.data.job_id }
+
+      # Grab the job order that is active
+      active_job_order = job_orders.detect do |job_order|
+        status = Projectors::JobOrderExistingStatus.project(aggregate: job_order.aggregate).status
+        JobOrders::ClosedStatus::ALL.exclude?(status)
+      end
+
+      return if active_job_order.nil?
+
+      message_service.create_once_for_trace!(
+        schema: Events::JobOrderCandidateAdded::V1,
+        trace_id: message.trace_id,
+        aggregate: active_job_order.aggregate,
+        data: {
+          seeker_id: message.data.seeker_id
+        }
+      )
+
+      message_service.create_once_for_trace!(
+        schema: Events::JobOrderCandidateApplied::V1,
+        trace_id: message.trace_id,
+        aggregate: active_job_order.aggregate,
+        data: {
+          seeker_id: message.data.seeker_id,
+          applied_at: message.occurred_at
+        }
+      )
+    end
+
     on_message Events::JobOrderOrderCountAdded::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
@@ -102,6 +138,12 @@ module JobOrders
           schema: Events::JobOrderNotFilled::V1,
           data: Messages::Nothing
         )
+      end
+    end
+
+    def canidate_added?(aggregate, seeker_id)
+      MessageService.aggregate_events(aggregate).any? do |m|
+        m.schema == Events::JobOrderCandidateAdded::V1 && m.data.seeker_id == seeker_id
       end
     end
   end

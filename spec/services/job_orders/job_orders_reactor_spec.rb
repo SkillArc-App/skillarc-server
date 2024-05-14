@@ -113,6 +113,128 @@ RSpec.describe JobOrders::JobOrdersReactor do
       end
     end
 
+    context "when the message is applicant status updated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::ApplicantStatusUpdated::V6,
+          occurred_at: Time.zone.local(2019, 1, 1),
+          data: {
+            applicant_first_name: "first_name",
+            applicant_last_name: "last_name",
+            applicant_email: "email",
+            applicant_phone_number: "phone_number",
+            seeker_id:,
+            user_id: "user_id",
+            job_id:,
+            employer_name: "employer_name",
+            employment_title: "employment_title",
+            status:,
+            reasons: []
+          },
+          metadata: {}
+        )
+      end
+
+      let(:seeker_id) { SecureRandom.uuid }
+      let(:job_id) { SecureRandom.uuid }
+
+      context "when status is not new" do
+        let(:status) { ApplicantStatus::StatusTypes::INTERVIEWING }
+
+        it "does nothing" do
+          expect(message_service)
+            .not_to receive(:create_once_for_trace!)
+
+          subject
+        end
+      end
+
+      context "when status is new" do
+        before do
+          messages.each do |message|
+            Event.from_message!(message)
+          end
+        end
+
+        let(:status) { ApplicantStatus::StatusTypes::NEW }
+
+        context "when there is not a job order for the job_id" do
+          let(:messages) { [] }
+
+          it "does nothing" do
+            expect(message_service)
+              .not_to receive(:create_once_for_trace!)
+
+            subject
+          end
+        end
+
+        context "when there are job orders for the job_id" do
+          let(:messages) { [job_order1, job_order1_closed, job_order2] }
+
+          let(:job_order1) do
+            build(
+              :message,
+              schema: Events::JobOrderAdded::V1,
+              occurred_at: Time.zone.local(2019, 1, 1),
+              data: {
+                job_id:
+              }
+            )
+          end
+          let(:job_order1_closed) do
+            build(
+              :message,
+              aggregate: job_order1.aggregate,
+              schema: Events::JobOrderNotFilled::V1,
+              occurred_at: Time.zone.local(2019, 6, 1),
+              data: Messages::Nothing
+            )
+          end
+          let(:job_order2) do
+            build(
+              :message,
+              schema: Events::JobOrderAdded::V1,
+              occurred_at: Time.zone.local(2020, 1, 1),
+              data: {
+                job_id:
+              }
+            )
+          end
+
+          it "emits the relevants messages" do
+            expect(message_service)
+              .to receive(:create_once_for_trace!)
+              .with(
+                schema: Events::JobOrderCandidateAdded::V1,
+                trace_id: message.trace_id,
+                aggregate: job_order2.aggregate,
+                data: {
+                  seeker_id: message.data.seeker_id
+                }
+              )
+              .and_call_original
+
+            expect(message_service)
+              .to receive(:create_once_for_trace!)
+              .with(
+                schema: Events::JobOrderCandidateApplied::V1,
+                trace_id: message.trace_id,
+                aggregate: job_order2.aggregate,
+                data: {
+                  seeker_id: message.data.seeker_id,
+                  applied_at: message.occurred_at
+                }
+              )
+              .and_call_original
+
+            subject
+          end
+        end
+      end
+    end
+
     context "for events that might trigger new job order status" do
       shared_examples "emits new status events if necessary" do
         context "when possible to emit a new status" do

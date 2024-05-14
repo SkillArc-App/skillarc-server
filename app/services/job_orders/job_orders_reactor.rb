@@ -15,6 +15,24 @@ module JobOrders
       )
     end
 
+    def activate_job_order(job_order_id:, trace_id:)
+      message_service.create!(
+        schema: Events::JobOrderActivated::V1,
+        job_order_id:,
+        trace_id:,
+        data: Messages::Nothing
+      )
+    end
+
+    def close_job_order_not_filled(job_order_id:, trace_id:)
+      message_service.create!(
+        schema: Events::JobOrderNotFilled::V1,
+        job_order_id:,
+        trace_id:,
+        data: Messages::Nothing
+      )
+    end
+
     on_message Events::JobCreated::V3 do |message|
       message_service.create_once_for_trace!(
         schema: Events::JobOrderAdded::V1,

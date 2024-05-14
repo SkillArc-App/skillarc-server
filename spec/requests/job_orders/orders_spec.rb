@@ -167,4 +167,94 @@ RSpec.describe "JobOrders", type: :request do
       end
     end
   end
+
+  path '/job_orders/orders/{id}/activate' do
+    post "activate a job order" do
+      tags 'Job Orders'
+      security [bearer_auth: []]
+      parameter name: 'id',
+                in: :path,
+                type: :string,
+                format: :uuid
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      let(:id) { SecureRandom.uuid }
+
+      it_behaves_like "an unauthenticated user"
+
+      context "when authenticated" do
+        include_context "job order authenticated"
+
+        before do
+          expect_any_instance_of(JobOrders::JobOrdersReactor)
+            .to receive(:activate_job_order)
+            .with(
+              job_order_id: id,
+              trace_id: be_a(String)
+            )
+            .and_call_original
+        end
+
+        response '404', 'Job Order not found' do
+          let(:id) { SecureRandom.uuid }
+
+          run_test!
+        end
+
+        response '202', 'activation accepted' do
+          let(:job_order) { create(:job_orders__job_order) }
+          let(:id) { job_order.id }
+
+          run_test!
+        end
+      end
+    end
+  end
+
+  path '/job_orders/orders/{id}/close_not_filled' do
+    post "activate a job order" do
+      tags 'Job Orders'
+      security [bearer_auth: []]
+      parameter name: 'id',
+                in: :path,
+                type: :string,
+                format: :uuid
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      let(:id) { SecureRandom.uuid }
+
+      it_behaves_like "an unauthenticated user"
+
+      context "when authenticated" do
+        include_context "job order authenticated"
+
+        before do
+          expect_any_instance_of(JobOrders::JobOrdersReactor)
+            .to receive(:close_job_order_not_filled)
+            .with(
+              job_order_id: id,
+              trace_id: be_a(String)
+            )
+            .and_call_original
+        end
+
+        response '404', 'Job Order not found' do
+          let(:id) { SecureRandom.uuid }
+
+          run_test!
+        end
+
+        response '202', 'close not filled accepted' do
+          let(:job_order) { create(:job_orders__job_order) }
+          let(:id) { job_order.id }
+
+          run_test!
+        end
+      end
+    end
+  end
 end

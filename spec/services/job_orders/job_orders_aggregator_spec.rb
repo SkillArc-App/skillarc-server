@@ -188,6 +188,23 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         job_order.reload
         expect(job_order.candidate_count).to eq(1)
       end
+
+      context "when a candidate record is added multiple times" do
+        it "creates a candidate record and updates the job order once" do
+          expect do
+            instance.handle_message(message)
+            instance.handle_message(message)
+          end.to change(JobOrders::Candidate, :count).from(0).to(1)
+
+          candidate = JobOrders::Candidate.take(1).first
+          expect(candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
+          expect(candidate.seeker).to eq(seeker)
+          expect(candidate.job_order).to eq(job_order)
+
+          job_order.reload
+          expect(job_order.candidate_count).to eq(1)
+        end
+      end
     end
 
     context "when the message is job order candidate applied" do

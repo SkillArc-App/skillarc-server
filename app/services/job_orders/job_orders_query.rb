@@ -29,10 +29,7 @@ module JobOrders
 
       def serialize_job_order(job_order)
         candidates = job_order.candidates
-        applications = job_order.job.applications
 
-        # To be clear I know this is going to be very inefficient
-        # I'll follow up with a performance pass t
         {
           **serialize_job_order_summary(job_order),
           candidates: candidates.map do |candidate|
@@ -42,7 +39,7 @@ module JobOrders
               last_name: candidate.seeker.last_name,
               phone_number: candidate.seeker.phone_number,
               email: candidate.seeker.email,
-              applied_at: applications.detect { |application| application.seeker == candidate.seeker }&.occurred_at,
+              applied_at: candidate.applied_at,
               recommended_at: nil, # TODO
               status: candidate.status,
               seeker_id: candidate.seeker_id

@@ -27,11 +27,9 @@ RSpec.describe "JobOrders", type: :request do
             job_order2 = create(:job_orders__job_order)
 
             create(:job_orders__candidate, job_order: job_order1)
-            create(:job_orders__candidate, job_order: job_order1)
-            create(:job_orders__application, job: job_order1.job)
+            create(:job_orders__candidate, :applied, job_order: job_order1)
 
-            create(:job_orders__candidate, job_order: job_order2)
-            create(:job_orders__application, job: job_order2.job)
+            create(:job_orders__candidate, :applied, job_order: job_order2)
           end
 
           let(:context_id) { reminder_context_id }
@@ -78,8 +76,7 @@ RSpec.describe "JobOrders", type: :request do
           schema '$ref' => '#/components/schemas/job_order'
 
           let(:job_order) { create(:job_orders__job_order) }
-          let!(:candidate) { create(:job_orders__candidate, job_order:) }
-          let!(:application) { create(:job_orders__application, job: job_order.job) }
+          let!(:candidate) { create(:job_orders__candidate, :applied, job_order:) }
 
           let(:id) { job_order.id }
 

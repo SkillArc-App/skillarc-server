@@ -28,6 +28,10 @@ module Messages
       @id = value
     end
 
+    def to_s
+      "#<#{self.class.name} #{self.class.id}: #{id}>"
+    end
+
     def ==(other)
       self.class == other.class && id == other.id
     end

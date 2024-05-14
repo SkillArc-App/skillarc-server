@@ -53,6 +53,13 @@ RSpec.describe Messages::Aggregate do
     end
   end
 
+  describe "#to_s" do
+    it "returns a human readable string" do
+      expect(sub_klass.new(test_id: "1").to_s).to eq("#< test_id: 1>")
+      # Note class name is missing because of anonymous class
+    end
+  end
+
   describe "#serialize" do
     it "returns the id" do
       expect(sub_klass.new(test_id: "1").serialize).to eq("1")

@@ -731,6 +731,65 @@ paths:
                   required:
                   - id
                   - seekerEmail
+  "/coaches/job_orders":
+    get:
+      summary: Retrieves all job orders
+      tags:
+      - Coaches
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: retrieves job seekers
+  "/coaches/job_orders/{id}/recommend":
+    post:
+      summary: Recommends a job order to a seeker
+      tags:
+      - Coaches
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: recommends a job order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seeker_id:
+                  type: string
+              required:
+              - seeker_id
   "/coaches/leads":
     get:
       summary: Retrieve all leads

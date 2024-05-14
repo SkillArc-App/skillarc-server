@@ -181,11 +181,5 @@ module JobOrders
         )
       end
     end
-
-    def canidate_added?(aggregate, seeker_id)
-      MessageService.aggregate_events(aggregate).any? do |m|
-        m.schema == Events::JobOrderCandidateAdded::V1 && m.data.seeker_id == seeker_id
-      end
-    end
   end
 end

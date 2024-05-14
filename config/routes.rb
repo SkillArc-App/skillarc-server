@@ -30,6 +30,9 @@ Rails.application.routes.draw do
     end
     resources :leads, only: %i[create index]
     resources :jobs, only: [:index], as: 'coaches_jobs'
+    resources :job_orders, only: %i[index recommend] do
+      post 'recommend' => 'job_orders#recommend'
+    end
   end
   resources :coaches
 

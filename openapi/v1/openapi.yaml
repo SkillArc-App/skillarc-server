@@ -314,6 +314,51 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/admin_job"
+  "/coaches/attributes":
+    get:
+      summary: Get all attributes
+      tags:
+      - Coaches
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns all attributes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    description:
+                      type: string
+                      nullable: true
+                    name:
+                      type: string
+                    set:
+                      type: array
+                      items:
+                        type: string
+                    default:
+                      type: array
+                      items:
+                        type: string
   "/coaches/seekers/{seeker_id}/attributes":
     post:
       summary: Add an attribute
@@ -350,7 +395,7 @@ paths:
                 attributeId:
                   type: string
                   format: uuid
-                value:
+                values:
                   type: array
                   items:
                     type: string
@@ -1330,6 +1375,167 @@ paths:
                 required:
                 - jobs
                 - applicants
+  "/job_orders/orders":
+    get:
+      summary: get all job orders
+      tags:
+      - Job Orders
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns all job orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/job_order_summary"
+  "/job_orders/orders/{id}":
+    get:
+      summary: get a job order
+      tags:
+      - Job Orders
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '404':
+          description: Job Order not found
+        '200':
+          description: Returns all job orders
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/job_order"
+    put:
+      summary: update a job order
+      tags:
+      - Job Orders
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '404':
+          description: Job Order not found
+        '202':
+          description: Update the job order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderOount:
+                  type: integer
+              required:
+              - order_count
+  "/job_orders/orders/{id}/activate":
+    post:
+      summary: activate a job order
+      tags:
+      - Job Orders
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '404':
+          description: Job Order not found
+        '202':
+          description: activation accepted
+  "/job_orders/orders/{id}/close_not_filled":
+    post:
+      summary: activate a job order
+      tags:
+      - Job Orders
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '404':
+          description: Job Order not found
+        '202':
+          description: close not filled accepted
   "/jobs/{id}":
     get:
       summary: Show a job
@@ -2684,6 +2890,7 @@ components:
                 enum:
                 - admin
                 - coach
+                - job_order_admin
                 - employer_admin
       notifications:
         type: object
@@ -3350,6 +3557,131 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/testimonial"
+    job_order_summary:
+      type: object
+      additionalProperties: true
+      properties:
+        id:
+          type: string
+          format: uuid
+        employmentTitle:
+          type: string
+        employerName:
+          type: string
+        openedAt:
+          type: string
+          format: date-time
+        closedAt:
+          type: string
+          format: date-time
+        orderCount:
+          type: integer
+        hireCount:
+          type: integer
+        recommendedCount:
+          type: integer
+        status:
+          type: string
+          enum:
+          - needs_order_count
+          - open
+          - filled
+          - not_filled
+          - waiting_on_employer
+    job_order:
+      allOf:
+      - "$ref": "#/components/schemas/job_order_summary"
+      - type: object
+        additionalProperties: true
+        properties:
+          candidates:
+            type: array
+            items:
+              "$ref": "#/components/schemas/job_order_candidate"
+          applications:
+            type: array
+            items:
+              "$ref": "#/components/schemas/job_order_application"
+          notes:
+            type: array
+            items:
+              "$ref": "#/components/schemas/job_order_note"
+    job_order_candidate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+        appliedAt:
+          type: string
+          format: date-time
+          nullable: true
+        recommendedAt:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum:
+          - added
+          - recommended
+          - hired
+          - rescinded
+        seekerId:
+          type: string
+          format: uuid
+    job_order_application:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+        appliedAt:
+          type: string
+          format: date-time
+          nullable: true
+        recommendedAt:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum:
+          - new
+          - pending intro
+          - intro made
+          - interviewing
+          - hire
+          - pass
+        seekerId:
+          type: string
+          format: uuid
+    job_order_note:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        noteTakenBy:
+          type: string
     master_certification:
       type: object
       properties:

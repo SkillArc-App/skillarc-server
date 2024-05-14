@@ -21,5 +21,27 @@ module JobOrders
 
       head :accepted
     end
+
+    def activate
+      with_message_service do
+        JobOrders::JobOrdersReactor.new(message_service:).activate_job_order(
+          job_order_id: params[:order_id],
+          trace_id: request.request_id
+        )
+      end
+
+      head :accepted
+    end
+
+    def close_not_filled
+      with_message_service do
+        JobOrders::JobOrdersReactor.new(message_service:).close_job_order_not_filled(
+          job_order_id: params[:order_id],
+          trace_id: request.request_id
+        )
+      end
+
+      head :accepted
+    end
   end
 end

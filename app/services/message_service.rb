@@ -115,19 +115,19 @@ class MessageService
   def self.all_messages(schema)
     raise NotSchemaError unless schema.is_a?(Messages::Schema)
 
-    Event.where(version: schema.version, event_type: schema.message_type).map(&:message)
+    order_and_map(Event.where(version: schema.version, event_type: schema.message_type))
   end
 
   def self.aggregate_events(aggregate)
     raise NotAggregateError unless aggregate.is_a?(Messages::Aggregate)
 
-    Event.where(aggregate_id: aggregate.id).order(:occurred_at).map(&:message).select { |m| m.schema.type == Messages::EVENT }
+    order_and_map(Event.where(aggregate_id: aggregate.id)).select { |m| m.schema.type == Messages::EVENT }
   end
 
   def self.trace_id_events(trace_id)
     raise NotTraceIdError unless trace_id.is_a?(String)
 
-    Event.where(trace_id:).order(:occurred_at).map(&:message).select { |m| m.schema.type == Messages::EVENT }
+    order_and_map(Event.where(trace_id:)).select { |m| m.schema.type == Messages::EVENT }
   end
 
   def self.migrate_event(schema:, &block)
@@ -156,6 +156,10 @@ class MessageService
 
   class << self
     private
+
+    def order_and_map(message_relation)
+      message_relation.order(:occurred_at).map(&:message)
+    end
 
     def registry
       @registry ||= {}

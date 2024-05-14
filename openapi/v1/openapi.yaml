@@ -3657,10 +3657,6 @@ components:
             type: array
             items:
               "$ref": "#/components/schemas/job_order_candidate"
-          applications:
-            type: array
-            items:
-              "$ref": "#/components/schemas/job_order_application"
           notes:
             type: array
             items:
@@ -3694,37 +3690,6 @@ components:
           - recommended
           - hired
           - rescinded
-        seekerId:
-          type: string
-          format: uuid
-    job_order_application:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        phoneNumber:
-          type: string
-        email:
-          type: string
-        appliedAt:
-          type: string
-          format: date-time
-          nullable: true
-        recommendedAt:
-          type: string
-          format: date-time
-          nullable: true
-        status:
-          type: string
-          enum:
-          - new
-          - pending intro
-          - intro made
-          - interviewing
-          - hire
-          - pass
         seekerId:
           type: string
           format: uuid

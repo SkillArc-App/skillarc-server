@@ -15,7 +15,6 @@
 #
 module JobOrders
   class Job < ApplicationRecord
-    has_many :applications, class_name: "JobOrders::Application", inverse_of: :job, dependent: :delete_all
     has_many :job_orders, class_name: "JobOrders::JobOrder", inverse_of: :job, dependent: :delete_all
   end
 end

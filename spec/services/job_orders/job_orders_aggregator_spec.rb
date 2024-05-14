@@ -110,63 +110,6 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       end
     end
 
-    context "when the message is applicant status updated" do
-      let(:message) do
-        build(
-          :message,
-          aggregate_id: application_id,
-          schema: Events::ApplicantStatusUpdated::V6,
-          data: {
-            applicant_first_name: "John",
-            applicant_last_name: "Chabot",
-            applicant_email: "john@skillarc.com",
-            seeker_id: seeker.id,
-            user_id: SecureRandom.uuid,
-            job_id: job.id,
-            employer_name: "Good Employer",
-            employment_title: "Plumber",
-            status: ApplicantStatus::StatusTypes::INTERVIEWING
-          },
-          metadata: {
-            user_id: SecureRandom.uuid
-          },
-          occurred_at: Time.zone.local(2000, 10, 10)
-        )
-      end
-
-      let(:job) { create(:job_orders__job) }
-      let(:seeker) { create(:job_orders__seeker) }
-
-      context "when an application already exists" do
-        let(:application_id) { application.id }
-        let!(:application) { create(:job_orders__application) }
-
-        it "updates a application record" do
-          expect { subject }.not_to change(JobOrders::Application, :count)
-
-          application.reload
-          expect(application.status).to eq(message.data.status)
-          expect(application.job).to eq(job)
-          expect(application.seeker).to eq(seeker)
-        end
-      end
-
-      context "when an application does not exist" do
-        let(:application_id) { SecureRandom.uuid }
-
-        it "creates a application record" do
-          expect { subject }.to change(JobOrders::Application, :count).from(0).to(1)
-
-          application = JobOrders::Application.take(1).first
-          expect(application.opened_at).to eq(message.occurred_at)
-          expect(application.id).to eq(application_id)
-          expect(application.status).to eq(message.data.status)
-          expect(application.job).to eq(job)
-          expect(application.seeker).to eq(seeker)
-        end
-      end
-    end
-
     context "when the message is job order added" do
       let(:message) do
         build(
@@ -244,6 +187,31 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
         job_order.reload
         expect(job_order.candidate_count).to eq(1)
+      end
+    end
+
+    context "when the message is job order candidate applied" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobOrderCandidateApplied::V1,
+          aggregate_id: job_order.id,
+          data: {
+            seeker_id: seeker.id,
+            applied_at: Time.zone.local(2024, 1, 1)
+          }
+        )
+      end
+
+      let!(:job_order) { create(:job_orders__job_order, candidate_count: 1, recommended_count: 0) }
+      let!(:candidate) { create(:job_orders__candidate, seeker:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
+      let!(:seeker) { create(:job_orders__seeker) }
+
+      it "updates a candidate record and updates the job order" do
+        subject
+
+        candidate.reload
+        expect(candidate.applied_at).to eq(message.data.applied_at)
       end
     end
 

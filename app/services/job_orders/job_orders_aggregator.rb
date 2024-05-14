@@ -2,7 +2,6 @@ module JobOrders
   class JobOrdersAggregator < MessageConsumer
     def reset_for_replay
       Candidate.delete_all
-      Application.delete_all
       JobOrder.delete_all
       Job.delete_all
       Seeker.delete_all
@@ -37,26 +36,6 @@ module JobOrders
       )
     end
 
-    on_message Events::ApplicantStatusUpdated::V6 do |message|
-      application = Application.find_by(id: message.aggregate.id)
-
-      if application.present?
-        application.update!(
-          status: message.data.status,
-          job_orders_jobs_id: message.data.job_id,
-          job_orders_seekers_id: message.data.seeker_id
-        )
-      else
-        Application.create!(
-          id: message.aggregate.id,
-          opened_at: message.occurred_at,
-          status: message.data.status,
-          job_orders_jobs_id: message.data.job_id,
-          job_orders_seekers_id: message.data.seeker_id
-        )
-      end
-    end
-
     on_message Events::JobOrderAdded::V1 do |message|
       JobOrder.create!(
         id: message.aggregate.id,
@@ -89,6 +68,11 @@ module JobOrders
       )
 
       job_order.update!(candidate_count: job_order.candidate_count + 1)
+    end
+
+    on_message Events::JobOrderCandidateApplied::V1 do |message|
+      candidate = Candidate.find_by!(job_orders_seekers_id: message.data.seeker_id)
+      candidate.update!(applied_at: message.data.applied_at)
     end
 
     on_message Events::JobOrderCandidateRecommended::V1 do |message|

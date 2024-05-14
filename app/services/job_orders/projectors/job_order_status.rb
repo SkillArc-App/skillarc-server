@@ -22,7 +22,7 @@ module JobOrders
           assert_no_overlaps!
 
           return ClosedStatus::NOT_FILLED if not_filled?
-          return ActivatedStatus::OPEN if order_count.nil?
+          return ActivatedStatus::NEEDS_ORDER_COUNT if order_count.nil?
           return ClosedStatus::FILLED if hired_candidates.length >= order_count
           return StalledStatus::WAITING_ON_EMPLOYER if recommended_candidates.length + hired_candidates.length >= order_count
 

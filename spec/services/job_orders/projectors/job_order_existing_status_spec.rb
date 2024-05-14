@@ -51,6 +51,14 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
       )
     end
 
+    context "when there are no events" do
+      let(:messages) { [] }
+
+      it "return the open status" do
+        expect(subject.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
+      end
+    end
+
     context "when the last event was activated" do
       let(:messages) { [job_order_filled, job_order_not_filled, job_order_stalled, job_order_activated] }
 

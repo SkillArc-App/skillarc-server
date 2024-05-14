@@ -12,7 +12,6 @@
 #
 module JobOrders
   class Seeker < ApplicationRecord
-    has_many :applications, class_name: "JobOrders::Application", inverse_of: :seeker, dependent: :delete_all
     has_many :candidates, class_name: "JobOrders::Candidate", inverse_of: :seeker, dependent: :delete_all
   end
 end

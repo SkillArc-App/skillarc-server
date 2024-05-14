@@ -3,6 +3,11 @@ FactoryBot.define do
     association :job_order, factory: :job_orders__job_order
     association :seeker, factory: :job_orders__seeker
 
+    applied_at { nil }
     status { JobOrders::CandidateStatus::ADDED }
+
+    trait :applied do
+      applied_at { Time.zone.local(2024, 1, 1) }
+    end
   end
 end

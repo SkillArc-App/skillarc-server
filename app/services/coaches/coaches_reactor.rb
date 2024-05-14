@@ -272,6 +272,8 @@ module Coaches
       coach = Coach.find_by(email: message.data.lead_captured_by)
       coach ||= CoachAssignmentService.round_robin_assignment
 
+      return if coach.nil?
+
       message_service.create!(
         trace_id: message.trace_id,
         context_id: message.aggregate.context_id,
@@ -287,6 +289,8 @@ module Coaches
       return if csc&.assigned_coach.present?
 
       coach = CoachAssignmentService.round_robin_assignment
+
+      return if coach.nil?
 
       message_service.create!(
         trace_id: message.trace_id,

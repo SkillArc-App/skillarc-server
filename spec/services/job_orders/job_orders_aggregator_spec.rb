@@ -32,6 +32,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
         job = JobOrders::Job.take(1).first
         expect(job.id).to eq(message.aggregate.id)
+        expect(job.applicable_for_job_orders).to eq(false)
         expect(job.employer_name).to eq(message.data.employer_name)
         expect(job.employment_title).to eq(message.data.employment_title)
         expect(job.employer_id).to eq(message.data.employer_id)
@@ -59,6 +60,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         subject
 
         job.reload
+        expect(job.applicable_for_job_orders).to eq(true)
         expect(job.employment_title).to eq(message.data.employment_title)
       end
     end

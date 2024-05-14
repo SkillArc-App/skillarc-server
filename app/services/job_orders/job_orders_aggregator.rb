@@ -10,6 +10,7 @@ module JobOrders
     on_message Events::JobCreated::V3 do |message|
       Job.create!(
         id: message.aggregate.id,
+        applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING,
         employer_name: message.data.employer_name,
         employment_title: message.data.employment_title,
         employer_id: message.data.employer_id
@@ -19,7 +20,10 @@ module JobOrders
     on_message Events::JobUpdated::V2 do |message|
       job = Job.find(message.aggregate.id)
 
-      job.update!(employment_title: message.data.employment_title)
+      job.update!(
+        employment_title: message.data.employment_title,
+        applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING
+      )
     end
 
     on_message Events::SeekerCreated::V1 do |message|

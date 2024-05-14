@@ -64,7 +64,8 @@ module JobOrders
         add_canidate(
           accumulator:,
           seeker_id: message.data.seeker_id,
-          to: :candidates
+          to: :candidates,
+          check: false
         )
       end
 
@@ -102,16 +103,18 @@ module JobOrders
         add_canidate(accumulator:, seeker_id:, to:)
       end
 
-      def remove_canidate(accumulator:, seeker_id:, from:)
+      def remove_canidate(accumulator:, seeker_id:, from:, check: true)
         from_bucket = accumulator.send(from)
-        raise InvalidTransitionError, "Attempted to remove seeker_id #{seeker_id} from #{from} for aggregate #{aggregate} which does not exist" if from_bucket.delete?(seeker_id).nil?
+        valid = from_bucket.delete?(seeker_id).nil?
+        raise InvalidTransitionError, "Attempted to remove seeker_id #{seeker_id} from #{from} for aggregate #{aggregate} which does not exist" if check && valid
 
         accumulator
       end
 
-      def add_canidate(accumulator:, seeker_id:, to:)
+      def add_canidate(accumulator:, seeker_id:, to:, check: true)
         to_bucket = accumulator.send(to)
-        raise InvalidTransitionError, "Attempted to add seeker_id #{seeker_id} to #{to} for aggregate #{aggregate} which already occurred" if to_bucket.add?(seeker_id).nil?
+        valid = to_bucket.add?(seeker_id).nil?
+        raise InvalidTransitionError, "Attempted to add seeker_id #{seeker_id} to #{to} for aggregate #{aggregate} which already occurred" if check && valid
 
         accumulator
       end

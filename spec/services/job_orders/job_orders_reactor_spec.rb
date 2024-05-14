@@ -31,6 +31,50 @@ RSpec.describe JobOrders::JobOrdersReactor do
     end
   end
 
+  describe "#activate_job_order" do
+    subject do
+      instance.activate_job_order(job_order_id:, trace_id:)
+    end
+
+    let(:job_order_id) { 10 }
+    let(:trace_id) { SecureRandom.uuid }
+
+    it "fires off a job order order activated event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::JobOrderActivated::V1,
+          job_order_id:,
+          trace_id:,
+          data: Messages::Nothing
+        )
+
+      subject
+    end
+  end
+
+  describe "#close_job_order_not_filled" do
+    subject do
+      instance.close_job_order_not_filled(job_order_id:, trace_id:)
+    end
+
+    let(:job_order_id) { 10 }
+    let(:trace_id) { SecureRandom.uuid }
+
+    it "fires off a job order order activated event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::JobOrderNotFilled::V1,
+          job_order_id:,
+          trace_id:,
+          data: Messages::Nothing
+        )
+
+      subject
+    end
+  end
+
   describe "#handle_message" do
     subject { instance.handle_message(message) }
 

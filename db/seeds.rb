@@ -746,6 +746,7 @@ trained_seeker_with_reference = Seeker.create!(
     id: SecureRandom.uuid,
     first_name: 'Tom',
     last_name: 'Hanks',
+    phone_number: "+16666666666",
     email: 'trained-seeker-with-reference@blocktrainapp.com',
     sub: 'tomsub'
   )
@@ -770,6 +771,18 @@ message_service.create!(
   }
 )
 
+message_service.create!(
+  seeker_id: trained_seeker_with_reference.id,
+  schema: Events::BasicInfoAdded::V1,
+  data: {
+    first_name: trained_seeker_with_reference.user.first_name,
+    last_name: trained_seeker_with_reference.user.last_name,
+    phone_number: trained_seeker_with_reference.user.phone_number,
+    user_id: trained_seeker_with_reference.user.id,
+    date_of_birth: "1963-06-14"
+  }
+)
+
 trained_seeker = Seeker.create!(
   bio: 'I learn stuff',
   user: User.new(
@@ -777,6 +790,7 @@ trained_seeker = Seeker.create!(
     first_name: 'Tim',
     last_name: 'Allen',
     email: 'trained-seeker@blocktrainapp.com',
+    phone_number: "+13333333333",
     sub: 'timsub'
   )
 )
@@ -800,12 +814,25 @@ message_service.create!(
   }
 )
 
+message_service.create!(
+  seeker_id: trained_seeker.id,
+  schema: Events::BasicInfoAdded::V1,
+  data: {
+    first_name: trained_seeker.user.first_name,
+    last_name: trained_seeker.user.last_name,
+    phone_number: trained_seeker.user.phone_number,
+    user_id: trained_seeker.user.id,
+    date_of_birth: "1990-10-09"
+  }
+)
+
 seeker_with_profile = Seeker.create!(
   bio: 'I learn stuff',
   user: User.new(
     id: 'cll0yrt890002aor2v4pwo4ia',
     first_name: 'Rita',
     last_name: 'Wilson',
+    phone_number: "+14444444444",
     email: 'seeker-with-profile@blocktrainapp.com',
     sub: 'ritasub'
   )
@@ -827,6 +854,18 @@ message_service.create!(
   schema: Events::SeekerCreated::V1,
   data: {
     user_id: seeker_with_profile.user.id
+  }
+)
+
+message_service.create!(
+  seeker_id: seeker_with_profile.id,
+  schema: Events::BasicInfoAdded::V1,
+  data: {
+    first_name: seeker_with_profile.user.first_name,
+    last_name: seeker_with_profile.user.last_name,
+    phone_number: seeker_with_profile.user.phone_number,
+    user_id: seeker_with_profile.user.id,
+    date_of_birth: "1993-01-01"
   }
 )
 

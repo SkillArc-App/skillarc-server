@@ -10,6 +10,18 @@ module JobOrders
       render json: JobOrdersQuery.find_order(params[:id])
     end
 
+    def create
+      with_message_service do
+        JobOrders::JobOrdersReactor.new(message_service:).add_job_order(
+          job_order_id: SecureRandom.uuid,
+          job_id: params[:job_id],
+          trace_id: request.request_id
+        )
+      end
+
+      head :created
+    end
+
     def update
       with_message_service do
         JobOrders::JobOrdersReactor.new(message_service:).add_order_count(

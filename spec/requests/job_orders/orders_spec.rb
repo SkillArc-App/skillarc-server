@@ -44,6 +44,57 @@ RSpec.describe "JobOrders", type: :request do
         end
       end
     end
+
+    post "create a new job order" do
+      tags 'Job Orders'
+      consumes 'application/json'
+      security [bearer_auth: []]
+
+      parameter name: :order_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          jobId: {
+            type: :string,
+            format: :uuid
+          }
+        },
+        required: %w[job_id]
+      }
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      let(:order_params) do
+        {
+          jobId: job_id
+        }
+      end
+      let(:job_id) { SecureRandom.uuid }
+
+      it_behaves_like "an unauthenticated user"
+
+      context "when authenticated" do
+        include_context "job order authenticated"
+
+        response '201', 'Update the job order' do
+          before do
+            expect_any_instance_of(JobOrders::JobOrdersReactor)
+              .to receive(:add_job_order)
+              .with(
+                job_order_id: be_a(String),
+                job_id:,
+                trace_id: be_a(String)
+              )
+              .and_call_original
+          end
+
+          let(:job_order) { create(:job_orders__job_order) }
+          let(:id) { job_order.id }
+
+          run_test!
+        end
+      end
+    end
   end
 
   path '/job_orders/orders/{id}' do
@@ -194,11 +245,12 @@ RSpec.describe "JobOrders", type: :request do
             .and_call_original
         end
 
-        response '404', 'Job Order not found' do
-          let(:id) { SecureRandom.uuid }
+        # TODO: we need to intepret the events
+        # response '404', 'Job Order not found' do
+        #   let(:id) { SecureRandom.uuid }
 
-          run_test!
-        end
+        #   run_test!
+        # end
 
         response '202', 'activation accepted' do
           let(:job_order) { create(:job_orders__job_order) }

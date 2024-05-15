@@ -40,7 +40,7 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderAdded::V1 do |message|
+    on_message Events::JobOrderAdded::V1, :sync do |message|
       JobOrder.create!(
         id: message.aggregate.id,
         job_orders_jobs_id: message.data.job_id,

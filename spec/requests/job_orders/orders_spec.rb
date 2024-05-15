@@ -76,6 +76,10 @@ RSpec.describe "JobOrders", type: :request do
       context "when authenticated" do
         include_context "job order authenticated"
 
+        before do
+          create(:job_orders__job, id: job_id)
+        end
+
         response '201', 'Update the job order' do
           before do
             expect_any_instance_of(JobOrders::JobOrdersReactor)

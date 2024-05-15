@@ -251,7 +251,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       schema: Events::JobCreated::V3,
       job_id:,
       data: {
-        category: Job::Categories::MARKETPLACE,
+        category: job.category,
         employment_title: job.employment_title,
         employer_name: "Acme Inc.",
         employer_id:,

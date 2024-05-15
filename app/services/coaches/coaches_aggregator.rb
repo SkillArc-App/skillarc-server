@@ -25,8 +25,14 @@ module Coaches
       Coach.create!(
         coach_id: message.data.coach_id,
         user_id: message.aggregate.id,
-        email: message.data.email
+        email: message.data.email,
+        assignment_weight: 0
       )
+    end
+
+    on_message Events::CoachAssignmentWeightAdded::V1 do |message|
+      coach = Coach.find_by!(coach_id: message.aggregate.id)
+      coach.update!(assignment_weight: message.data.weight)
     end
 
     on_message Events::CoachReminderScheduled::V1, :sync do |message|

@@ -32,6 +32,7 @@ module Messages
         BARRIER_ADDED = 'barrier_added',
         BARRIERS_UPDATED = 'barriers_updated',
         COACH_ADDED = 'coach_added',
+        COACH_ASSIGNMENT_WEIGHT_ADDED = 'coach_assignment_weight_added',
         COACH_ASSIGNED = 'coach_assigned',
         JOB_RECOMMENDED = 'job_recommended',
         COACH_REMINDER_SCHEDULED = 'coach_reminder_scheduled',

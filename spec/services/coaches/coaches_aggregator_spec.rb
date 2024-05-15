@@ -163,7 +163,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
       end
     end
 
-    context "when the message is role_added" do
+    context "when the message is coach added" do
       let(:message) do
         build(
           :message,
@@ -183,6 +183,29 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         coach = Coaches::Coach.last_created
         expect(coach.email).to eq("some@email.com")
         expect(coach.coach_id).to eq(id)
+        expect(coach.assignment_weight).to eq(0)
+      end
+    end
+
+    context "when the message is coach assignment weight added" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::CoachAssignmentWeightAdded::V1,
+          aggregate: Aggregates::Coach.new(coach_id: coach.coach_id),
+          data: {
+            weight: 0.35
+          }
+        )
+      end
+
+      let(:coach) { create(:coaches__coach) }
+
+      it "Updates a coach record" do
+        subject
+
+        coach.reload
+        expect(coach.assignment_weight).to eq(0.35)
       end
     end
 

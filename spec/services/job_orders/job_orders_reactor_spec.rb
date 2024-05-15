@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe JobOrders::JobOrdersReactor do
+RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLength
   it_behaves_like "a replayable message consumer"
 
   let(:instance) { described_class.new(message_service:) }
@@ -72,6 +72,92 @@ RSpec.describe JobOrders::JobOrdersReactor do
         )
 
       subject
+    end
+  end
+
+  describe "#update_status" do
+    subject do
+      instance.update_status(status:, job_order_id:, seeker_id:, trace_id:)
+    end
+    let(:candidate) { create(:job_orders__candidate) }
+    let(:seeker_id) { candidate.seeker_id }
+    let(:job_order_id) { candidate.job_order_id }
+    let(:trace_id) { SecureRandom.uuid }
+
+    context "added" do
+      let(:status) { "added" }
+
+      it "emits a added event" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: Events::JobOrderCandidateAdded::V1,
+            job_order_id:,
+            trace_id:,
+            data: {
+              seeker_id:
+            }
+          ).and_call_original
+
+        subject
+      end
+    end
+
+    context "recommended" do
+      let(:status) { "recommended" }
+
+      it "emits a recommended event" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: Events::JobOrderCandidateRecommended::V1,
+            job_order_id:,
+            trace_id:,
+            data: {
+              seeker_id:
+            }
+          ).and_call_original
+
+        subject
+      end
+    end
+
+    context "hired" do
+      let(:status) { "hired" }
+
+      it "emits a hired event" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: Events::JobOrderCandidateHired::V1,
+            job_order_id:,
+            trace_id:,
+            data: {
+              seeker_id:
+            }
+          ).and_call_original
+
+        subject
+      end
+    end
+
+    context "rescinded" do
+      let(:status) { "rescinded" }
+
+      it "emits a rescinded event" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: Events::JobOrderCandidateRescinded::V1,
+            job_order_id:,
+            trace_id:,
+            data: {
+              seeker_id:
+            }
+          ).and_call_original
+
+        subject
+      end
     end
   end
 
@@ -255,11 +341,8 @@ RSpec.describe JobOrders::JobOrdersReactor do
             end
             let(:new_status) do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
-                hired_candidates: Set[],
                 order_count: 1,
-                candidates: Set[],
-                recommended_candidates: Set[],
-                rescinded_candidates: Set[],
+                candidates: {},
                 not_filled?: false
               )
             end
@@ -279,11 +362,8 @@ RSpec.describe JobOrders::JobOrdersReactor do
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
-                  hired_candidates: Set[],
                   order_count: 2,
-                  candidates: Set[],
-                  recommended_candidates: Set[],
-                  rescinded_candidates: Set[],
+                  candidates: {},
                   not_filled?: false
                 )
               end
@@ -308,11 +388,8 @@ RSpec.describe JobOrders::JobOrdersReactor do
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
-                  hired_candidates: Set[],
                   order_count: 2,
-                  candidates: Set[],
-                  recommended_candidates: Set[1, 2],
-                  rescinded_candidates: Set[],
+                  candidates: { one: :recommended, two: :recommended },
                   not_filled?: false
                 )
               end
@@ -339,11 +416,8 @@ RSpec.describe JobOrders::JobOrdersReactor do
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
-                  hired_candidates: Set[1, 2],
-                  order_count: 2,
-                  candidates: Set[],
-                  recommended_candidates: Set[],
-                  rescinded_candidates: Set[],
+                  order_count: 1,
+                  candidates: { one: :hired },
                   not_filled?: false
                 )
               end
@@ -368,11 +442,8 @@ RSpec.describe JobOrders::JobOrdersReactor do
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
-                  hired_candidates: Set[1, 2],
-                  order_count: 2,
-                  candidates: Set[],
-                  recommended_candidates: Set[],
-                  rescinded_candidates: Set[],
+                  order_count: 1,
+                  candidates: { one: :hired },
                   not_filled?: true
                 )
               end

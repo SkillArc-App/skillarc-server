@@ -34,6 +34,7 @@ Recruiter.create!(
 
 mechanic_job = Job.create!(
   id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
+  category: Job::Categories::STAFFING,
   employer: turner_employer,
   benefits_description: 'Dental insurance Vision insurance Disability insurance 401(k)',
   responsibilities_description:
@@ -51,6 +52,7 @@ mechanic_job = Job.create!(
 
 earthwork_job = Job.create!(
   id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
+  category: Job::Categories::STAFFING,
   employer: sg_employer,
   benefits_description: 'Dental insurance Vision insurance Disability insurance 401(k)',
   responsibilities_description:
@@ -68,6 +70,7 @@ earthwork_job = Job.create!(
 
 contractor = Job.create!(
   id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
+  category: Job::Categories::STAFFING,
   employer: sg_employer,
   benefits_description: 'Dental insurance, Vision insurance, Disability insurance 401(k)',
   responsibilities_description:

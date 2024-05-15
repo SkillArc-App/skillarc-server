@@ -10,6 +10,12 @@ module JobOrders
       serialize_job_order(JobOrder.find(id))
     end
 
+    def self.all_jobs
+      Job.where(applicable_for_job_orders: true).map do |job|
+        serialize_job(job)
+      end
+    end
+
     class << self
       private
 
@@ -46,6 +52,15 @@ module JobOrders
             }
           end,
           notes: [] # TODO
+        }
+      end
+
+      def serialize_job(job)
+        {
+          id: job.id,
+          employer_name: job.employer_name,
+          employer_id: job.employer_id,
+          employment_title: job.employment_title
         }
       end
     end

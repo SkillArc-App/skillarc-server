@@ -1483,6 +1483,34 @@ paths:
                   - rescinded
               required:
               - status
+  "/job_orders/jobs":
+    get:
+      summary: get all job
+      tags:
+      - Job Orders
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns all job orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/job_order_job"
   "/job_orders/orders":
     get:
       summary: get all job orders
@@ -3785,6 +3813,19 @@ components:
           type: string
           format: date-time
         noteTakenBy:
+          type: string
+    job_order_job:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        employerName:
+          type: string
+        employerId:
+          type: string
+          format: uuid
+        employmentTitle:
           type: string
     master_certification:
       type: object

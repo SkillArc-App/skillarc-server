@@ -1185,6 +1185,25 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
+          job_order_job: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              employerName: {
+                type: :string
+              },
+              employerId: {
+                type: :string,
+                format: :uuid
+              },
+              employmentTitle: {
+                type: :string
+              }
+            }
+          },
           master_certification: {
             type: :object,
             properties: {

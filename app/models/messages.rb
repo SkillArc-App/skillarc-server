@@ -89,6 +89,7 @@ module Messages
         JOB_ORDER_STALLED = 'job_order_stalled',
         JOB_ORDER_FILLED = 'job_order_filled',
         JOB_ORDER_NOT_FILLED = 'job_order_not_filled',
+        JOB_ORDER_NOT_FOUND = 'job_order_not_found',
         JOB_ORDER_CANDIDATE_ADDED = 'job_order_candidate_added',
         JOB_ORDER_CANDIDATE_APPLIED = 'job_order_candidate_applied',
         JOB_ORDER_CANDIDATE_HIRED = 'job_order_candidate_hired',

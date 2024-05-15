@@ -4,6 +4,17 @@ module JobOrders
       true
     end
 
+    def add_job_order(job_order_id:, job_id:, trace_id:)
+      message_service.create!(
+        schema: Commands::AddJobOrder::V1,
+        job_order_id:,
+        trace_id:,
+        data: {
+          job_id:
+        }
+      )
+    end
+
     def add_order_count(job_order_id:, order_count:, trace_id:)
       message_service.create!(
         schema: Events::JobOrderOrderCountAdded::V1,
@@ -17,7 +28,7 @@ module JobOrders
 
     def activate_job_order(job_order_id:, trace_id:)
       message_service.create!(
-        schema: Events::JobOrderActivated::V1,
+        schema: Commands::ActivateJobOrder::V1,
         job_order_id:,
         trace_id:,
         data: Messages::Nothing
@@ -88,16 +99,8 @@ module JobOrders
     on_message Events::ApplicantStatusUpdated::V6 do |message|
       return if message.data.status != ApplicantStatus::StatusTypes::NEW
 
-      # Get all job order for this job
-      job_orders = Events::JobOrderAdded::V1
-                   .all_messages
-                   .select { |job_order| job_order.data.job_id == message.data.job_id }
-
-      # Grab the job order that is active
-      active_job_order = job_orders.detect do |job_order|
-        status = Projectors::JobOrderExistingStatus.project(aggregate: job_order.aggregate).status
-        JobOrders::ClosedStatus::ALL.exclude?(status)
-      end
+      # Grab any active job orders
+      active_job_order = active_job_order(message.data.job_id)
 
       return if active_job_order.nil?
 
@@ -119,6 +122,61 @@ module JobOrders
           applied_at: message.occurred_at
         }
       )
+    end
+
+    on_message Commands::ActivateJobOrder::V1, :sync do |message|
+      job_order_added = ::Projectors::Aggregates::GetFirst.project(
+        schema: Events::JobOrderAdded::V1,
+        aggregate: message.aggregate
+      )
+
+      if job_order_added.blank?
+        message_service.create_once_for_trace!(
+          schema: Events::JobOrderNotFound::V1,
+          trace_id: message.trace_id,
+          aggregate: message.aggregate,
+          data: Messages::Nothing
+        )
+      elsif active_job_order(job_order_added.data.job_id).present?
+        message_service.create_once_for_trace!(
+          schema: Events::JobOrderActivationFailed::V1,
+          trace_id: message.trace_id,
+          aggregate: message.aggregate,
+          data: {
+            reason: "There is an existing active job order present"
+          }
+        )
+      else
+        message_service.create_once_for_trace!(
+          schema: Events::JobOrderActivated::V1,
+          trace_id: message.trace_id,
+          aggregate: message.aggregate,
+          data: Messages::Nothing
+        )
+      end
+    end
+
+    on_message Commands::AddJobOrder::V1, :sync do |message|
+      if active_job_order(message.data.job_id).present?
+        message_service.create_once_for_trace!(
+          schema: Events::JobOrderCreationFailed::V1,
+          trace_id: message.trace_id,
+          aggregate: message.aggregate,
+          data: {
+            job_id: message.data.job_id,
+            reason: "There is an existing active job order present"
+          }
+        )
+      else
+        message_service.create_once_for_trace!(
+          schema: Events::JobOrderAdded::V1,
+          trace_id: message.trace_id,
+          aggregate: message.aggregate,
+          data: {
+            job_id: message.data.job_id
+          }
+        )
+      end
     end
 
     on_message Events::JobOrderOrderCountAdded::V1, :sync do |message|
@@ -179,6 +237,24 @@ module JobOrders
           schema: Events::JobOrderNotFilled::V1,
           data: Messages::Nothing
         )
+      end
+    end
+
+    def job_order_added_events(job_id)
+      # Get all job order for this job
+      Events::JobOrderAdded::V1
+        .all_messages
+        .select { |job_order| job_order.data.job_id == job_id }
+    end
+
+    def active_job_order(job_id)
+      # Get all job order for this job
+      job_orders = job_order_added_events(job_id)
+
+      # Grab the job order that is active
+      job_orders.detect do |job_order|
+        status = Projectors::JobOrderExistingStatus.project(aggregate: job_order.aggregate).status
+        JobOrders::ClosedStatus::ALL.exclude?(status)
       end
     end
   end

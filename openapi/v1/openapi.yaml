@@ -3633,6 +3633,7 @@ components:
         closedAt:
           type: string
           format: date-time
+          nullable: true
         orderCount:
           type: integer
         hireCount:

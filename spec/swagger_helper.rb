@@ -1086,7 +1086,8 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               },
               closedAt: {
                 type: :string,
-                format: 'date-time'
+                format: 'date-time',
+                nullable: true
               },
               orderCount: {
                 type: :integer

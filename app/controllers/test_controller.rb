@@ -89,7 +89,12 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_job
     with_message_service do
-      render json: create_job_with_messages(message_service:)
+      job = create_job_with_messages(message_service:)
+
+      render json: {
+        job:,
+        employer: job.employer
+      }
     end
   end
 
@@ -230,7 +235,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     employer_id = SecureRandom.uuid
     job_id = SecureRandom.uuid
 
-    employer = FactoryBot.create(:employer, id: employer_id, name: SecureRandom.uuid, bio: "We are a company.")
+    employer = FactoryBot.create(:employer, id: employer_id, location: "Columbus Ohio", name: SecureRandom.uuid, bio: "We are a company.")
     job = FactoryBot.create(:job, employer:, id: job_id,
                                   employment_title: SecureRandom.uuid,
                                   benefits_description: "We have benefits.",
@@ -241,8 +246,8 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       employer_id:,
       data: {
         name: employer.name,
-        location: "Columbus Ohio",
-        bio: "We are a company.",
+        location: employer.location,
+        bio: employer.bio,
         logo_url: "www.google.com"
       }
     )
@@ -251,13 +256,13 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       schema: Events::JobCreated::V3,
       job_id:,
       data: {
-        category: Job::Categories::MARKETPLACE,
+        category: job.category,
         employment_title: job.employment_title,
-        employer_name: "Acme Inc.",
+        employer_name: employer.name,
         employer_id:,
-        benefits_description: "We have benefits.",
-        location: "Columbus Ohio",
-        employment_type: Job::EmploymentTypes::FULLTIME,
+        benefits_description: job.benefits_description,
+        location: job.location,
+        employment_type: job.employment_type,
         hide_job: false
       }
     )

@@ -6,6 +6,31 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
   let(:instance) { described_class.new(message_service:) }
   let(:message_service) { MessageService.new }
 
+  describe "#add_job_order" do
+    subject do
+      instance.add_job_order(job_order_id:, job_id:, trace_id:)
+    end
+
+    let(:job_order_id) { SecureRandom.uuid }
+    let(:job_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+
+    it "fires off a job order order count added event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Commands::AddJobOrder::V1,
+          job_order_id:,
+          trace_id:,
+          data: {
+            job_id:
+          }
+        )
+
+      subject
+    end
+  end
+
   describe "#add_order_count" do
     subject do
       instance.add_order_count(job_order_id:, order_count:, trace_id:)
@@ -43,7 +68,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
       expect(message_service)
         .to receive(:create!)
         .with(
-          schema: Events::JobOrderActivated::V1,
+          schema: Commands::ActivateJobOrder::V1,
           job_order_id:,
           trace_id:,
           data: Messages::Nothing
@@ -161,7 +186,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
   end
 
-  describe "#handle_message" do
+  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { instance.handle_message(message) }
 
     context "when the message is job created" do
@@ -317,6 +342,185 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
 
             subject
           end
+        end
+      end
+    end
+
+    context "when the message is add job order" do
+      before do
+        messages.each do |message|
+          Event.from_message!(message)
+        end
+      end
+
+      let(:message) do
+        build(
+          :message,
+          schema: Commands::AddJobOrder::V1,
+          aggregate:,
+          data: {
+            job_id:
+          }
+        )
+      end
+      let(:job_id) { SecureRandom.uuid }
+      let(:aggregate) { Aggregates::JobOrder.new(job_order_id: SecureRandom.uuid) }
+
+      context "when there is an active job order" do
+        let(:messages) do
+          [
+            build(
+              :message,
+              schema: Events::JobOrderAdded::V1,
+              aggregate:,
+              occurred_at: Time.zone.local(2019, 1, 1),
+              data: {
+                job_id:
+              }
+            )
+          ]
+        end
+
+        it "emits a job order creation failed event" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              schema: Events::JobOrderCreationFailed::V1,
+              trace_id: message.trace_id,
+              aggregate: message.aggregate,
+              data: {
+                job_id: message.data.job_id,
+                reason: "There is an existing active job order present"
+              }
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when there is not an active job order" do
+        let(:messages) { [] }
+
+        it "emits a job order added event" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              schema: Events::JobOrderAdded::V1,
+              trace_id: message.trace_id,
+              aggregate: message.aggregate,
+              data: {
+                job_id: message.data.job_id
+              }
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+    end
+
+    context "when the message is activate job order" do
+      before do
+        messages.each do |message|
+          Event.from_message!(message)
+        end
+      end
+
+      let(:message) do
+        build(
+          :message,
+          schema: Commands::ActivateJobOrder::V1,
+          aggregate:,
+          data: Messages::Nothing
+        )
+      end
+      let(:job_id) { SecureRandom.uuid }
+      let(:aggregate) { Aggregates::JobOrder.new(job_order_id: SecureRandom.uuid) }
+
+      context "when there is an active job order" do
+        let(:messages) do
+          [
+            build(
+              :message,
+              schema: Events::JobOrderAdded::V1,
+              aggregate:,
+              occurred_at: Time.zone.local(2019, 1, 1),
+              data: {
+                job_id:
+              }
+            )
+          ]
+        end
+
+        it "emits a job order activation failed event" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              schema: Events::JobOrderActivationFailed::V1,
+              trace_id: message.trace_id,
+              aggregate: message.aggregate,
+              data: {
+                reason: "There is an existing active job order present"
+              }
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when there is not a job order" do
+        let(:messages) do
+          []
+        end
+
+        it "reports to sentry a job order was not found" do
+          expect(Sentry)
+            .to receive(:capture_exception)
+            .with(
+              MessageConsumer::FailedToHandleMessage.new("Job Order not found", message)
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when there is not an active job order" do
+        let(:messages) do
+          [
+            build(
+              :message,
+              schema: Events::JobOrderAdded::V1,
+              aggregate:,
+              occurred_at: Time.zone.local(2019, 1, 1),
+              data: {
+                job_id:
+              }
+            ),
+            build(
+              :message,
+              schema: Events::JobOrderNotFilled::V1,
+              aggregate:,
+              occurred_at: Time.zone.local(2019, 1, 1),
+              data: Messages::Nothing
+            )
+          ]
+        end
+
+        it "emits a job order activated event" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              schema: Events::JobOrderActivated::V1,
+              trace_id: message.trace_id,
+              aggregate: message.aggregate,
+              data: Messages::Nothing
+            )
+            .and_call_original
+
+          subject
         end
       end
     end

@@ -28,6 +28,26 @@ RSpec.describe JobOrders::JobOrdersQuery do
     end
   end
 
+  describe ".all_jobs" do
+    subject { described_class.all_jobs }
+
+    let!(:job1) { create(:job_orders__job, applicable_for_job_orders: true) }
+    let!(:job2) { create(:job_orders__job, applicable_for_job_orders: false) }
+
+    it "returns all orders which have applicable jobs" do
+      expected_response = [
+        {
+          id: job1.id,
+          employer_name: job1.employer_name,
+          employer_id: job1.employer_id,
+          employment_title: job1.employment_title
+        }
+      ]
+
+      expect(subject).to eq(expected_response)
+    end
+  end
+
   describe ".find_order" do
     # TODO
   end

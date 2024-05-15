@@ -44,6 +44,47 @@ module JobOrders
       )
     end
 
+    def update_status(job_order_id:, seeker_id:, status:, trace_id:)
+      case status
+      when CandidateStatus::ADDED
+        message_service.create!(
+          schema: Events::JobOrderCandidateAdded::V1,
+          job_order_id:,
+          trace_id:,
+          data: {
+            seeker_id:
+          }
+        )
+      when CandidateStatus::RECOMMENDED
+        message_service.create!(
+          schema: Events::JobOrderCandidateRecommended::V1,
+          job_order_id:,
+          trace_id:,
+          data: {
+            seeker_id:
+          }
+        )
+      when CandidateStatus::HIRED
+        message_service.create!(
+          schema: Events::JobOrderCandidateHired::V1,
+          job_order_id:,
+          trace_id:,
+          data: {
+            seeker_id:
+          }
+        )
+      when CandidateStatus::RESCINDED
+        message_service.create!(
+          schema: Events::JobOrderCandidateRescinded::V1,
+          job_order_id:,
+          trace_id:,
+          data: {
+            seeker_id:
+          }
+        )
+      end
+    end
+
     on_message Events::ApplicantStatusUpdated::V6 do |message|
       return if message.data.status != ApplicantStatus::StatusTypes::NEW
 

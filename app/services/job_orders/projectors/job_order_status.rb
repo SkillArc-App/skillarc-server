@@ -3,24 +3,16 @@ module JobOrders
     class JobOrderStatus < Projector
       projection_aggregator Aggregates::JobOrder
 
-      InvalidTransitionError = Class.new(StandardError)
-      DoubleCountingError = Class.new(StandardError)
-
       class Projection
         extend Record
 
         schema do
           order_count Either(Integer, nil)
-          hired_candidates Set
-          candidates Set
-          recommended_candidates Set
-          rescinded_candidates Set
+          candidates Hash
           not_filled? Bool()
         end
 
         def status
-          assert_no_overlaps!
-
           return ClosedStatus::NOT_FILLED if not_filled?
           return ActivatedStatus::NEEDS_ORDER_COUNT if order_count.nil?
           return ClosedStatus::FILLED if hired_candidates.length >= order_count
@@ -29,21 +21,25 @@ module JobOrders
           ActivatedStatus::OPEN
         end
 
-        def assert_no_overlaps!
-          total_count = hired_candidates.length + candidates.length + recommended_candidates.length + rescinded_candidates.length
-          unique_count = (hired_candidates | candidates | recommended_candidates | rescinded_candidates).length
+        private
 
-          raise DoubleCountingError if total_count != unique_count
+        def hired_candidates
+          candidates.select { |_, status| status == :hired }
+        end
+
+        def recommended_candidates
+          candidates.select { |_, status| status == :recommended }
+        end
+
+        def rescinded_candidates
+          candidates.select { |_, status| status == :rescinded }
         end
       end
 
       def init
         Projection.new(
-          hired_candidates: Set[],
           order_count: nil,
-          candidates: Set[],
-          recommended_candidates: Set[],
-          rescinded_candidates: Set[],
+          candidates: {},
           not_filled?: false
         )
       end
@@ -61,61 +57,22 @@ module JobOrders
       end
 
       on_message Events::JobOrderCandidateAdded::V1 do |message, accumulator|
-        add_canidate(
-          accumulator:,
-          seeker_id: message.data.seeker_id,
-          to: :candidates,
-          check: false
-        )
-      end
-
-      on_message Events::JobOrderCandidateRecommended::V1 do |message, accumulator|
-        move_canidate(
-          accumulator:,
-          seeker_id: message.data.seeker_id,
-          from: :candidates,
-          to: :recommended_candidates
-        )
-      end
-
-      on_message Events::JobOrderCandidateHired::V1 do |message, accumulator|
-        move_canidate(
-          accumulator:,
-          seeker_id: message.data.seeker_id,
-          from: :recommended_candidates,
-          to: :hired_candidates
-        )
-      end
-
-      on_message Events::JobOrderCandidateRescinded::V1 do |message, accumulator|
-        move_canidate(
-          accumulator:,
-          seeker_id: message.data.seeker_id,
-          from: :hired_candidates,
-          to: :rescinded_candidates
-        )
-      end
-
-      private
-
-      def move_canidate(accumulator:, seeker_id:, to:, from:)
-        accumulator = remove_canidate(accumulator:, seeker_id:, from:)
-        add_canidate(accumulator:, seeker_id:, to:)
-      end
-
-      def remove_canidate(accumulator:, seeker_id:, from:, check: true)
-        from_bucket = accumulator.send(from)
-        valid = from_bucket.delete?(seeker_id).nil?
-        raise InvalidTransitionError, "Attempted to remove seeker_id #{seeker_id} from #{from} for aggregate #{aggregate} which does not exist" if check && valid
-
+        accumulator.candidates[message.data.seeker_id] = :added
         accumulator
       end
 
-      def add_canidate(accumulator:, seeker_id:, to:, check: true)
-        to_bucket = accumulator.send(to)
-        valid = to_bucket.add?(seeker_id).nil?
-        raise InvalidTransitionError, "Attempted to add seeker_id #{seeker_id} to #{to} for aggregate #{aggregate} which already occurred" if check && valid
+      on_message Events::JobOrderCandidateRecommended::V1 do |message, accumulator|
+        accumulator.candidates[message.data.seeker_id] = :recommended
+        accumulator
+      end
 
+      on_message Events::JobOrderCandidateHired::V1 do |message, accumulator|
+        accumulator.candidates[message.data.seeker_id] = :hired
+        accumulator
+      end
+
+      on_message Events::JobOrderCandidateRescinded::V1 do |message, accumulator|
+        accumulator.candidates[message.data.seeker_id] = :rescinded
         accumulator
       end
     end

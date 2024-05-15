@@ -1434,6 +1434,55 @@ paths:
                 required:
                 - jobs
                 - applicants
+  "/job_orders/orders/{id}/candidates/{seeker_id}":
+    put:
+      summary: updates a candidate status
+      tags:
+      - Job Orders
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: seeker_id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '204':
+          description: Updates a candidate status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                  - added
+                  - recommended
+                  - hired
+                  - rescinded
+              required:
+              - status
   "/job_orders/orders":
     get:
       summary: get all job orders

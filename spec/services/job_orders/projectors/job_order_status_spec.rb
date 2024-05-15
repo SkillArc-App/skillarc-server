@@ -126,22 +126,6 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       )
     end
 
-    context "when an invalid transistion occurs" do
-      let(:messages) { [job_order_candidate_recommended1] }
-
-      it "raises and invalid transistion error" do
-        expect { subject }.to raise_error(described_class::InvalidTransitionError)
-      end
-    end
-
-    context "when a candidate is added multiple time" do
-      let(:messages) { [job_order_order_count_added1, job_order_candidate_added1, job_order_candidate_added1] }
-
-      it "does not raise an error" do
-        expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
-      end
-    end
-
     context "when a job order closed event has occured" do
       let(:messages) { [job_order_not_filled] }
 

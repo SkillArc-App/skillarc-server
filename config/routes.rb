@@ -53,6 +53,8 @@ Rails.application.routes.draw do
     resources :orders do
       post "activate" => "orders#activate"
       post "close_not_filled" => "orders#close_not_filled"
+
+      resources :candidates
     end
   end
 

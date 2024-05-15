@@ -23,8 +23,8 @@ RSpec.describe "JobOrders", type: :request do
                  }
 
           before do
-            job1 = create(:job_orders__job)
-            job2 = create(:job_orders__job)
+            create(:job_orders__job)
+            create(:job_orders__job)
           end
 
           before do

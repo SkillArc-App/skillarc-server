@@ -475,14 +475,11 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
           []
         end
 
-        it "emits a job order not found event" do
-          expect(message_service)
-            .to receive(:create_once_for_trace!)
+        it "reports to sentry a job order was not found" do
+          expect(Sentry)
+            .to receive(:capture_exception)
             .with(
-              schema: Events::JobOrderNotFound::V1,
-              trace_id: message.trace_id,
-              aggregate: message.aggregate,
-              data: Messages::Nothing
+              MessageConsumer::FailedToHandleMessage.new("Job Order not found", message)
             )
             .and_call_original
 

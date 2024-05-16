@@ -61,7 +61,7 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderCandidateAdded::V1 do |message|
+    on_message Events::JobOrderCandidateAdded::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       seeker = Seeker.find(message.data.seeker_id)
 
@@ -78,12 +78,12 @@ module JobOrders
       end
     end
 
-    on_message Events::JobOrderCandidateApplied::V1 do |message|
+    on_message Events::JobOrderCandidateApplied::V1, :sync do |message|
       candidate = Candidate.find_by!(job_orders_seekers_id: message.data.seeker_id, job_orders_job_orders_id: message.aggregate.id)
       candidate.update!(applied_at: message.data.applied_at)
     end
 
-    on_message Events::JobOrderCandidateRecommended::V1 do |message|
+    on_message Events::JobOrderCandidateRecommended::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       candidate = Candidate.find_by!(job_orders_seekers_id: message.data.seeker_id, job_orders_job_orders_id: message.aggregate.id)
 
@@ -94,7 +94,7 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderCandidateHired::V1 do |message|
+    on_message Events::JobOrderCandidateHired::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       candidate = Candidate.find_by!(job_orders_seekers_id: message.data.seeker_id, job_orders_job_orders_id: message.aggregate.id)
 
@@ -105,7 +105,7 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderCandidateRescinded::V1 do |message|
+    on_message Events::JobOrderCandidateRescinded::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       candidate = Candidate.find_by!(job_orders_seekers_id: message.data.seeker_id, job_orders_job_orders_id: message.aggregate.id)
 

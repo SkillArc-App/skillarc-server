@@ -178,6 +178,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
       let!(:job_order) { create(:job_orders__job_order, candidate_count: 0) }
       let!(:seeker) { create(:job_orders__seeker) }
+      let(:status) { JobOrders::ActivatedStatus::ADDED }
 
       it "creates a candidate record and updates the job order" do
         expect { subject }.to change(JobOrders::Candidate, :count).from(0).to(1)
@@ -189,6 +190,19 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
         job_order.reload
         expect(job_order.candidate_count).to eq(1)
+      end
+
+      context "when the candidate already exists" do
+        let!(:candidate) { create(:job_orders__candidate, seeker:, job_order:, status: JobOrders::CandidateStatus::RESCINDED) }
+
+        it "changes the status to added" do
+          candidate_count = job_order.candidate_count
+          expect { subject }
+            .to change { candidate.reload.status }
+            .from(JobOrders::CandidateStatus::RESCINDED).to(JobOrders::CandidateStatus::ADDED)
+
+          expect(job_order.reload.candidate_count).to eq(candidate_count)
+        end
       end
 
       context "when a candidate record is added multiple times" do

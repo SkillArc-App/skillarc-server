@@ -1169,14 +1169,14 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
           job_order_note: {
             type: :object,
             properties: {
-              id: {
+              noteId: {
                 type: :string,
                 format: :uuid
               },
-              content: {
+              note: {
                 type: :string
               },
-              createdAt: {
+              date: {
                 type: :string,
                 format: "date-time"
               },

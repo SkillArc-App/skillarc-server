@@ -35,6 +35,7 @@ module JobOrders
 
       def serialize_job_order(job_order)
         candidates = job_order.candidates
+        notes = job_order.notes
 
         {
           **serialize_job_order_summary(job_order),
@@ -51,7 +52,14 @@ module JobOrders
               seeker_id: candidate.seeker_id
             }
           end,
-          notes: [] # TODO
+          notes: notes.map do |note|
+            {
+              note: note.note,
+              note_id: note.id,
+              note_taken_by: note.note_taken_by,
+              date: note.note_taken_at
+            }
+          end
         }
       end
 

@@ -65,16 +65,14 @@ module JobOrders
       job_order = JobOrder.find(message.aggregate.id)
       seeker = Seeker.find(message.data.seeker_id)
 
-      candidate = JobOrders::Candidate.find_by(job_order:, seeker:)
+      JobOrders::Candidate.transaction do
+        candidate = JobOrders::Candidate.find_or_initialize_by(job_order:, seeker:)
 
-      if candidate.blank?
-        Candidate.create!(
-          status: CandidateStatus::ADDED,
-          seeker:,
-          job_order:
-        )
+        job_order.candidate_count += 1 if candidate.new_record?
 
-        job_order.update!(candidate_count: job_order.candidate_count + 1)
+        candidate.status = CandidateStatus::ADDED
+        candidate.save!
+        job_order.save!
       end
     end
 

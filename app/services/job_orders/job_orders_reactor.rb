@@ -100,7 +100,7 @@ module JobOrders
       return if message.data.status != ApplicantStatus::StatusTypes::NEW
 
       # Grab any active job orders
-      active_job_order = active_job_order(message.data.job_id)
+      active_job_order = active_job_order(message.occurred_at, message.data.job_id)
 
       return if active_job_order.nil?
 
@@ -132,7 +132,7 @@ module JobOrders
 
       if job_order_added.blank?
         Sentry.capture_exception(MessageConsumer::FailedToHandleMessage.new("Job Order not found", message))
-      elsif active_job_order(job_order_added&.data&.job_id).present?
+      elsif active_job_order(job_order_added.occurred_at, job_order_added.data.job_id).present?
         message_service.create_once_for_trace!(
           schema: Events::JobOrderActivationFailed::V1,
           trace_id: message.trace_id,
@@ -152,7 +152,7 @@ module JobOrders
     end
 
     on_message Commands::AddJobOrder::V1, :sync do |message|
-      if active_job_order(message.data.job_id).present?
+      if active_job_order(message.occurred_at, message.data.job_id).present?
         message_service.create_once_for_trace!(
           schema: Events::JobOrderCreationFailed::V1,
           trace_id: message.trace_id,
@@ -197,8 +197,9 @@ module JobOrders
     private
 
     def emit_new_status_if_necessary(message)
-      existing_status = Projectors::JobOrderExistingStatus.project(aggregate: message.aggregate).status
-      current_status = JobOrders::Projectors::JobOrderStatus.project(aggregate: message.aggregate).status
+      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+      existing_status = Projectors::JobOrderExistingStatus.new.project(messages).status
+      current_status = JobOrders::Projectors::JobOrderStatus.new.project(messages).status
       return if current_status == existing_status
 
       case current_status
@@ -242,13 +243,15 @@ module JobOrders
         .select { |job_order| job_order.data.job_id == job_id }
     end
 
-    def active_job_order(job_id)
+    def active_job_order(occurred_at, job_id)
       # Get all job order for this job
       job_orders = job_order_added_events(job_id)
 
       # Grab the job order that is active
       job_orders.detect do |job_order|
-        status = Projectors::JobOrderExistingStatus.project(aggregate: job_order.aggregate).status
+        messages = MessageService.aggregate_events(job_order.aggregate).select { |m| m.occurred_at <= occurred_at }
+
+        status = Projectors::JobOrderExistingStatus.new.project(messages).status
         JobOrders::ClosedStatus::ALL.exclude?(status)
       end
     end

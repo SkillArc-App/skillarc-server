@@ -106,7 +106,8 @@ class OnboardingSessionsController < ApplicationController
   private
 
   def serialize_onboarding_session(seeker_id)
-    status = Seekers::Projectors::OnboardingStatus.project(aggregate: Aggregates::Seeker.new(seeker_id:))
+    messages = MessageService.aggregate_events(Aggregates::Seeker.new(seeker_id:))
+    status = Seekers::Projectors::OnboardingStatus.new.project(messages)
 
     {
       seeker_id:,

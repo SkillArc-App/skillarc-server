@@ -547,7 +547,7 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
       end
     end
 
-    context "when message could trigger and onboarding complete" do
+    context "when message could trigger an onboarding complete" do
       let(:message) do
         build(
           :message,
@@ -558,16 +558,23 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
         )
       end
 
+      let(:messages) { [] }
+
       before do
-        expect(Seekers::Projectors::OnboardingStatus)
+        expect(MessageService)
+          .to receive(:aggregate_events)
+          .with(message.aggregate)
+          .and_return(messages)
+
+        expect_any_instance_of(Seekers::Projectors::OnboardingStatus)
           .to receive(:project)
-          .with(aggregate: message.aggregate)
+          .with(messages)
           .and_return(projection)
       end
 
       context "when onboarding status next step is not complete" do
         let(:projection) do
-          Seekers::Projectors::OnboardingStatus.new(message.aggregate).init
+          Seekers::Projectors::OnboardingStatus.new.init
         end
 
         it "does nothing" do

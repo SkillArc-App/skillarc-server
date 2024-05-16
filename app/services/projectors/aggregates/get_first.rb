@@ -1,20 +1,20 @@
 module Projectors
   module Aggregates
     class GetFirst
-      def project
-        MessageService.aggregate_events(aggregate)
-                      .select { |m| m.schema == schema }
-                      .first
+      def project(messages)
+        messages
+          .select { |m| m.schema == schema }
+          .first
       end
 
-      def initialize(schema:, aggregate:)
+      def initialize(schema:)
         @schema = schema
-        @aggregate = aggregate
       end
 
       def self.project(aggregate:, schema:)
-        instance = new(schema:, aggregate:)
-        instance.project
+        messages = MessageService.aggregate_events(aggregate)
+        instance = new(schema:)
+        instance.project(messages)
       end
 
       private

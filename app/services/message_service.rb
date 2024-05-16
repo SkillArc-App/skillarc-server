@@ -9,22 +9,22 @@ class MessageService
   NotBooleanProjection = Class.new(StandardError)
 
   def create_once_for_trace!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
-    projector = Projectors::Trace::HasOccurred.new(trace_id:, schema:)
+    aggregate = get_aggregate(aggregate:, schema:, **)
+    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
 
-    create_once!(schema:, data:, projector:, aggregate:, trace_id:, id:, occurred_at:, metadata:, **)
+    projection = Projectors::Trace::HasOccurred.project(trace_id:, schema:)
+    raise MessageService::NotBooleanProjection unless [true, false].include?(projection)
+
+    save!(message) unless projection
+
+    message
   end
 
   def create_once_for_aggregate!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     aggregate = get_aggregate(aggregate:, schema:, **)
-    projector = Projectors::Aggregates::HasOccurred.new(aggregate:, schema:)
-
-    create_once!(schema:, data:, projector:, aggregate:, trace_id:, id:, occurred_at:, metadata:, **)
-  end
-
-  def create_once!(schema:, data:, projector:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
 
-    projection = projector.project
+    projection = Projectors::Aggregates::HasOccurred.project(aggregate:, schema:)
     raise MessageService::NotBooleanProjection unless [true, false].include?(projection)
 
     save!(message) unless projection

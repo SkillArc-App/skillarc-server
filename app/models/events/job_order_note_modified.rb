@@ -12,7 +12,7 @@ module Events
       end
     end
 
-    V3 = Messages::Schema.active(
+    V1 = Messages::Schema.active(
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,

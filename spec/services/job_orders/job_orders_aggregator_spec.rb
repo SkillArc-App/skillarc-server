@@ -376,6 +376,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
         job_order.reload
         expect(job_order.status).to eq(JobOrders::ClosedStatus::FILLED)
+        expect(job_order.closed_at).to eq(message.occurred_at)
       end
     end
 
@@ -396,6 +397,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
         job_order.reload
         expect(job_order.status).to eq(JobOrders::ClosedStatus::NOT_FILLED)
+        expect(job_order.closed_at).to eq(message.occurred_at)
       end
     end
   end

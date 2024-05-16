@@ -125,12 +125,12 @@ module JobOrders
 
     on_message Events::JobOrderFilled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(status: ClosedStatus::FILLED)
+      job_order.update!(closed_at: message.occurred_at, status: ClosedStatus::FILLED)
     end
 
     on_message Events::JobOrderNotFilled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(status: ClosedStatus::NOT_FILLED)
+      job_order.update!(closed_at: message.occurred_at, status: ClosedStatus::NOT_FILLED)
     end
   end
 end

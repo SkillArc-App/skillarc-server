@@ -414,5 +414,78 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect(job_order.closed_at).to eq(message.occurred_at)
       end
     end
+
+    context "when the message is job order note added" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobOrderNoteAdded::V1,
+          aggregate_id: job_order.id,
+          data: {
+            originator: "john@skillarc.com",
+            note_id: SecureRandom.uuid,
+            note: "This is a note"
+          }
+        )
+      end
+
+      let!(:job_order) { create(:job_orders__job_order) }
+
+      it "updates the job order" do
+        expect { subject }.to change(JobOrders::Note, :count).from(0).to(1)
+
+        note = JobOrders::Note.take(1).first
+        expect(note.id).to eq(message.data.note_id)
+        expect(note.note).to eq(message.data.note)
+        expect(note.note_taken_by).to eq(message.data.originator)
+        expect(note.note_taken_at).to eq(message.occurred_at)
+      end
+    end
+
+    context "when the message is job order note modified" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobOrderNoteModified::V1,
+          aggregate_id: job_order.id,
+          data: {
+            originator: "john@skillarc.com",
+            note: "This is a new note",
+            note_id: note.id
+          }
+        )
+      end
+
+      let(:job_order) { create(:job_orders__job_order) }
+      let!(:note) { create(:job_orders__note, job_order:) }
+
+      it "updates the job order note" do
+        subject
+
+        note.reload
+        expect(note.note).to eq(message.data.note)
+      end
+    end
+
+    context "when the message is job order note removed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobOrderNoteRemoved::V1,
+          aggregate_id: job_order.id,
+          data: {
+            originator: "john@skillarc.com",
+            note_id: note.id
+          }
+        )
+      end
+
+      let(:job_order) { create(:job_orders__job_order) }
+      let!(:note) { create(:job_orders__note, job_order:) }
+
+      it "delete the job order note" do
+        expect { subject }.to change(JobOrders::Note, :count).from(1).to(0)
+      end
+    end
   end
 end

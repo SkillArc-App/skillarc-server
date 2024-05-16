@@ -130,5 +130,26 @@ module JobOrders
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(closed_at: message.occurred_at, status: ClosedStatus::NOT_FILLED)
     end
+
+    on_message Events::JobOrderNoteAdded::V1, :sync do |message|
+      job_order = JobOrder.find(message.aggregate.id)
+
+      Note.create!(
+        id: message.data.note_id,
+        job_order:,
+        note: message.data.note,
+        note_taken_by: message.data.originator,
+        note_taken_at: message.occurred_at
+      )
+    end
+
+    on_message Events::JobOrderNoteModified::V1, :sync do |message|
+      note = Note.find(message.data.note_id)
+      note.update!(note: message.data.note)
+    end
+
+    on_message Events::JobOrderNoteRemoved::V1, :sync do |message|
+      Note.find(message.data.note_id).destroy!
+    end
   end
 end

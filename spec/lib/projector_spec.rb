@@ -33,19 +33,7 @@ RSpec.describe Projector do
     end
   end
 
-  describe ".project" do
-    context "when the project aggregate and the provided aggregate don't match" do
-      let(:sub_klass) do
-        Class.new(described_class) do
-          projection_aggregator Aggregates::User
-        end
-      end
-
-      it "raises a WrongAggregatorError" do
-        expect { sub_klass.project(aggregate: Aggregates::Coach.new(coach_id: SecureRandom.uuid)) }.to raise_error(described_class::WrongAggregatorError)
-      end
-    end
-
+  describe "#project" do
     context "when called without an init method" do
       let(:sub_klass) do
         Class.new(described_class) do
@@ -54,22 +42,11 @@ RSpec.describe Projector do
       end
 
       it "raises a WrongAggregatorError" do
-        expect { sub_klass.project(aggregate: Aggregates::User.new(user_id: SecureRandom.uuid)) }.to raise_error(NoMethodError)
+        expect { sub_klass.new.project([]) }.to raise_error(NoMethodError)
       end
     end
 
     context "when the reduces changes the accumulation type" do
-      before do
-        Event.from_message!(
-          build(
-            :message,
-            schema: Events::SessionStarted::V1,
-            aggregate_id: user_id,
-            data: Messages::Nothing
-          )
-        )
-      end
-
       let(:sub_klass) do
         Class.new(described_class) do
           projection_aggregator Aggregates::User
@@ -84,27 +61,24 @@ RSpec.describe Projector do
         end
       end
 
+      let(:messages) do
+        [
+          build(
+            :message,
+            schema: Events::SessionStarted::V1,
+            aggregate_id: user_id,
+            data: Messages::Nothing
+          )
+        ]
+      end
       let(:user_id) { SecureRandom.uuid }
 
       it "raises a AccumulatorChangedError" do
-        expect { sub_klass.project(aggregate: Aggregates::User.new(user_id:)) }.to raise_error(described_class::AccumulatorChangedError)
+        expect { sub_klass.new.project(messages) }.to raise_error(described_class::AccumulatorChangedError)
       end
     end
 
     context "when everything works" do
-      before do
-        count.times do
-          Event.from_message!(
-            build(
-              :message,
-              schema: Events::SessionStarted::V1,
-              aggregate_id: user_id,
-              data: Messages::Nothing
-            )
-          )
-        end
-      end
-
       let(:sub_klass) do
         Class.new(described_class) do
           projection_aggregator Aggregates::User
@@ -120,9 +94,18 @@ RSpec.describe Projector do
       end
       let(:count) { 15 }
       let(:user_id) { SecureRandom.uuid }
+      let(:messages) do
+        build_list(
+          :message,
+          count,
+          schema: Events::SessionStarted::V1,
+          aggregate_id: user_id,
+          data: Messages::Nothing
+        )
+      end
 
       it "returns the projection value" do
-        expect(sub_klass.project(aggregate: Aggregates::User.new(user_id:))).to eq(count)
+        expect(sub_klass.new.project(messages)).to eq(count)
       end
     end
   end

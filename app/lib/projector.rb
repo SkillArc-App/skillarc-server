@@ -10,23 +10,17 @@ class Projector
     raise NoMethodError
   end
 
-  def project
+  def project(messages)
     accumulator = init
     accumulator_class = accumulator.class
 
-    MessageService.aggregate_events(aggregate).each do |message|
+    messages.each do |message|
       accumulator = project_message(message, accumulator)
 
       raise AccumulatorChangedError, "It was initially #{accumulator_class.name} and is now #{accumulator.class.name}" unless unchanged(accumulator_class, accumulator)
     end
 
     accumulator
-  end
-
-  def self.project(aggregate:)
-    raise WrongAggregatorError unless aggregate.is_a?(aggregator)
-
-    new(aggregate).project
   end
 
   def unchanged(accumulator_class, accumulator)
@@ -58,10 +52,6 @@ class Projector
   end
 
   private
-
-  def initialize(aggregate)
-    @aggregate = aggregate
-  end
 
   def project_message(message, accumulator)
     schema = message.schema

@@ -27,5 +27,6 @@ module JobOrders
   class JobOrder < ApplicationRecord
     belongs_to :job, class_name: "JobOrders::Job", foreign_key: "job_orders_jobs_id", inverse_of: :job_orders
     has_many :candidates, class_name: "JobOrders::Candidate", inverse_of: :job_order, dependent: :delete_all
+    has_many :notes, class_name: "JobOrders::Note", inverse_of: :job_order, dependent: :delete_all
   end
 end

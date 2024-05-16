@@ -2,17 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Seekers::Projectors::OnboardingStatus do
   describe ".project" do
-    subject { described_class.project(aggregate:) }
+    subject { described_class.new.project(messages) }
 
     let(:aggregate) { Aggregates::Seeker.new(seeker_id:) }
     let(:seeker_id) { SecureRandom.uuid }
-
-    before do
-      allow(MessageService)
-        .to receive(:aggregate_events)
-        .with(aggregate)
-        .and_return(messages)
-    end
 
     let(:onboarding_complete) do
       build(

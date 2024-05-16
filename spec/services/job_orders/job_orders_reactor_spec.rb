@@ -229,7 +229,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         build(
           :message,
           schema: Events::ApplicantStatusUpdated::V6,
-          occurred_at: Time.zone.local(2019, 1, 1),
           data: {
             applicant_first_name: "first_name",
             applicant_last_name: "last_name",
@@ -529,15 +528,44 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
       shared_examples "emits new status events if necessary" do
         context "when possible to emit a new status" do
           before do
-            expect(JobOrders::Projectors::JobOrderExistingStatus)
+            expect_any_instance_of(JobOrders::Projectors::JobOrderExistingStatus)
               .to receive(:project)
-              .with(aggregate: message.aggregate)
+              .with(filtered_messages)
               .and_return(existing_status)
-            expect(JobOrders::Projectors::JobOrderStatus)
+            expect_any_instance_of(JobOrders::Projectors::JobOrderStatus)
               .to receive(:project)
-              .with(aggregate: message.aggregate)
+              .with(filtered_messages)
               .and_return(new_status)
+
+            expect(MessageService)
+              .to receive(:aggregate_events)
+              .with(message.aggregate)
+              .and_return(messages)
           end
+
+          let(:message1) do
+            build(
+              :message,
+              schema: Events::JobOrderCandidateAdded::V1,
+              data: {
+                seeker_id: SecureRandom.uuid
+              },
+              occurred_at: message.occurred_at - 1.day
+            )
+          end
+          let(:message2) do
+            build(
+              :message,
+              schema: Events::JobOrderCandidateAdded::V1,
+              data: {
+                seeker_id: SecureRandom.uuid
+              },
+              occurred_at: message.occurred_at + 1.day
+            )
+          end
+
+          let(:messages) { [message1, message2] }
+          let(:filtered_messages) { [message1] }
 
           context "when the current status and new status are the same" do
             let(:existing_status) do

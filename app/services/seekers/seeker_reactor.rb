@@ -229,9 +229,11 @@ module Seekers
     private
 
     def emit_complete_onboarding_if_applicable(message)
-      return if ::Projectors::Aggregates::HasOccurred.project(aggregate: message.aggregate, schema: Events::OnboardingCompleted::V2)
+      messages = MessageService.aggregate_events(message.aggregate)
 
-      status = Seekers::Projectors::OnboardingStatus.project(aggregate: message.aggregate)
+      return if ::Projectors::Aggregates::HasOccurred.new(schema: Events::OnboardingCompleted::V2).project(messages)
+
+      status = Seekers::Projectors::OnboardingStatus.new.project(messages)
 
       return unless status.next_step == Onboarding::Steps::COMPLETE
 

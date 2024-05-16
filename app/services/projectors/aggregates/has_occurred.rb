@@ -1,18 +1,18 @@
 module Projectors
   module Aggregates
     class HasOccurred
-      def project
-        MessageService.aggregate_events(aggregate).detect { |m| m.schema == schema }.present?
+      def project(messages)
+        messages.detect { |m| m.schema == schema }.present?
       end
 
-      def initialize(schema:, aggregate:)
+      def initialize(schema:)
         @schema = schema
-        @aggregate = aggregate
       end
 
       def self.project(aggregate:, schema:)
-        instance = new(schema:, aggregate:)
-        instance.project
+        messages = MessageService.aggregate_events(aggregate)
+        instance = new(schema:)
+        instance.project(messages)
       end
 
       private

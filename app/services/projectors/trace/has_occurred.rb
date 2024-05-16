@@ -1,18 +1,18 @@
 module Projectors
   module Trace
     class HasOccurred
-      def project
-        MessageService.trace_id_events(trace_id).detect { |m| m.schema == schema }.present?
+      def project(messages)
+        messages.detect { |m| m.schema == schema }.present?
       end
 
-      def initialize(schema:, trace_id:)
+      def initialize(schema:)
         @schema = schema
-        @trace_id = trace_id
       end
 
       def self.project(trace_id:, schema:)
-        instance = new(schema:, trace_id:)
-        instance.project
+        messages = MessageService.trace_id_events(trace_id)
+        instance = new(schema:)
+        instance.project(messages)
       end
 
       private

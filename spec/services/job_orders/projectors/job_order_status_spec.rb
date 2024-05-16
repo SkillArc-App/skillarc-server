@@ -2,19 +2,12 @@ require 'rails_helper'
 
 RSpec.describe JobOrders::Projectors::JobOrderStatus do
   describe ".project" do
-    subject { described_class.project(aggregate:) }
+    subject { described_class.new.project(messages) }
 
     let(:aggregate) { Aggregates::JobOrder.new(job_order_id:) }
     let(:job_order_id) { SecureRandom.uuid }
     let(:seeker_id1) { SecureRandom.uuid }
     let(:seeker_id2) { SecureRandom.uuid }
-
-    before do
-      allow(MessageService)
-        .to receive(:aggregate_events)
-        .with(aggregate)
-        .and_return(messages)
-    end
 
     let(:job_order_not_filled) do
       build(

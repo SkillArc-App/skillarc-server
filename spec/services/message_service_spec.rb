@@ -140,7 +140,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
           .with(
             schema:,
             data:,
-            aggregate: nil,
+            aggregate: Aggregates::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -193,7 +193,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
           .with(
             schema:,
             data:,
-            aggregate: nil,
+            aggregate: Aggregates::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -206,73 +206,6 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
           .not_to receive(:save!)
 
         subject
-      end
-    end
-  end
-
-  describe "#create_once!" do
-    subject do
-      instance.create_once_for_aggregate!(
-        id:,
-        schema:,
-        user_id:,
-        trace_id:,
-        data:,
-        occurred_at:,
-        metadata:,
-        projector:
-      )
-    end
-
-    let(:user_id) { SecureRandom.uuid }
-    let(:trace_id) { SecureRandom.uuid }
-    let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
-    let(:occurred_at) { DateTime.new(2000, 1, 1) }
-    let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
-    let(:id) { SecureRandom.uuid }
-
-    context "when the projector returns a boolean" do
-      let(:projector) { Projectors::Aggregates::HasOccurred.new(aggregate: Aggregates::User.new(user_id:), schema:) }
-
-      it "calls build and save!" do
-        expect(instance)
-          .to receive(:build)
-          .with(
-            schema:,
-            data:,
-            aggregate: Aggregates::User.new(user_id:),
-            trace_id:,
-            id:,
-            occurred_at:,
-            metadata:,
-            user_id:
-          )
-          .and_call_original
-
-        expect(instance)
-          .to receive(:save!)
-          .with(
-            Message.new(
-              schema:,
-              data:,
-              trace_id:,
-              id:,
-              occurred_at:,
-              metadata:,
-              aggregate: Aggregates::User.new(user_id:)
-            )
-          )
-          .and_call_original
-
-        subject
-      end
-    end
-
-    context "when the projector does not returns a boolean" do
-      let(:projector) { Projectors::Aggregates::GetFirst.new(aggregate: Aggregates::User.new(user_id:), schema:) }
-
-      it "calls build and save!" do
-        expect { subject }.to raise_error(described_class::NotBooleanProjection)
       end
     end
   end

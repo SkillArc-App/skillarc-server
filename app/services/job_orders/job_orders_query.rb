@@ -7,7 +7,7 @@ module JobOrders
     end
 
     def self.find_order(id)
-      serialize_job_order(JobOrder.find(id))
+      serialize_job_order(JobOrder.includes(candidates: :seeker).find(id))
     end
 
     def self.all_jobs

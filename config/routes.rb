@@ -53,6 +53,7 @@ Rails.application.routes.draw do
     resources :jobs, only: [:index]
 
     resources :orders do
+      resources :notes
       post "activate" => "orders#activate"
       post "close_not_filled" => "orders#close_not_filled"
 

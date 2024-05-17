@@ -1,6 +1,7 @@
 module JobOrders
   class JobOrdersAggregator < MessageConsumer
     def reset_for_replay
+      Note.delete_all
       Candidate.delete_all
       JobOrder.delete_all
       Job.delete_all

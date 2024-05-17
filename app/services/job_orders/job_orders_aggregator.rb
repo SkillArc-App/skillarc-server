@@ -28,7 +28,7 @@ module JobOrders
     end
 
     on_message Events::LeadAdded::V2 do |message|
-      # HACK To allow leads to be see in the dashboard
+      # HACK: To allow leads to be see in the dashboard
       # We just pretend there are seekers
       # This may result in duplicates
       #

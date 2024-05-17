@@ -112,6 +112,35 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       end
     end
 
+    context "when the message is lead added" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::LeadAdded::V2,
+          aggregate_id: SecureRandom.uuid,
+          data: {
+            email: "A@B.C",
+            lead_id: SecureRandom.uuid,
+            first_name: "Chris",
+            last_name: "Brauns",
+            phone_number: "+1333333333",
+            lead_captured_by: "Cool lad 123"
+          }
+        )
+      end
+
+      it "creates a seeker record" do
+        expect { subject }.to change(JobOrders::Seeker, :count).from(0).to(1)
+
+        seeker = JobOrders::Seeker.take(1).first
+        expect(seeker.id).to eq(message.data.lead_id)
+        expect(seeker.email).to eq(message.data.email)
+        expect(seeker.first_name).to eq(message.data.first_name)
+        expect(seeker.last_name).to eq(message.data.last_name)
+        expect(seeker.phone_number).to eq(message.data.phone_number)
+      end
+    end
+
     context "when the message is job order added" do
       let(:message) do
         build(

@@ -27,6 +27,23 @@ module JobOrders
       )
     end
 
+    on_message Events::LeadAdded::V2 do |message|
+      # HACK To allow leads to be see in the dashboard
+      # We just pretend there are seekers
+      # This may result in duplicates
+      #
+      # this is meant to be temporary
+      # Event cleanup will likely need to happen once
+      # This is ripped out
+      Seeker.create!(
+        id: message.data.lead_id,
+        email: message.data.email,
+        phone_number: message.data.phone_number,
+        first_name: message.data.first_name,
+        last_name: message.data.last_name
+      )
+    end
+
     on_message Events::SeekerCreated::V1 do |message|
       Seeker.create!(id: message.aggregate.id)
     end

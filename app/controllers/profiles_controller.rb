@@ -11,7 +11,7 @@ class ProfilesController < ApplicationController
   before_action :set_current_user, only: [:show]
 
   def index
-    seekers = Seeker.includes(:seeker_training_providers).order(created_at: :desc).map do |seeker|
+    seekers = Seeker.includes(:seeker_training_providers, :user).order(created_at: :desc).map do |seeker|
       {
         id: seeker.id,
         first_name: seeker.user.first_name,

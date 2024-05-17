@@ -1073,19 +1073,6 @@ carpentry = Program.create!(
   training_provider_id: cul.id
 )
 
-ProgramSkill.create!([
-                       {
-                         id: SecureRandom.uuid,
-                         program_id: carpentry.id,
-                         skill_id: 'c0f0442f-e01f-4aab-82c8-91e41cee2bbd'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         program_id: carpentry.id,
-                         skill_id: 'ec27be9b-53df-4fc1-808b-850fc7b723b0'
-                       }
-                     ])
-
 message_service.create!(
   schema: Events::SeekerTrainingProviderCreated::V4,
   seeker_id: trained_seeker_with_reference.id,
@@ -1165,38 +1152,6 @@ message_service.create!(
   }
 )
 
-coach_seeker_context = Coaches::CoachSeekerContext.create!(
-  seeker_id: seeker_with_profile.id,
-  user_id: seeker_with_profile.user.id,
-  context_id: seeker_with_profile.user.id,
-  kind: Coaches::CoachSeekerContext::Kind::SEEKER,
-  first_name: seeker_with_profile.user.first_name,
-  last_name: seeker_with_profile.user.last_name,
-  email: seeker_with_profile.user.email,
-  phone_number: seeker_with_profile.user.phone_number,
-  seeker_captured_at: Time.zone.local(2000, 1, 1),
-  stage: 'profile_created',
-  assigned_coach: coach_user.email
-)
-
-Coaches::SeekerApplication.create!(
-  employer_name: mechanic_job.employer.name,
-  employment_title: mechanic_job.employment_title,
-  application_id: SecureRandom.uuid,
-  status: "pending intro",
-  job_id: mechanic_job.id,
-  coach_seeker_context:
-)
-
-Coaches::SeekerApplication.create!(
-  employer_name: earthwork_job.employer.name,
-  employment_title: earthwork_job.employment_title,
-  application_id: SecureRandom.uuid,
-  status: "pass",
-  job_id: earthwork_job.id,
-  coach_seeker_context:
-)
-
 message_service.create!(
   schema: Events::PassReasonAdded::V1,
   pass_reason_id: SecureRandom.uuid,
@@ -1244,9 +1199,22 @@ message_service.create!(
   }
 )
 
-FactoryBot.create(:barrier, name: "Background")
-FactoryBot.create(:barrier, name: "Unable to Drive")
+message_service.create!(
+  schema: Events::BarrierAdded::V1,
+  user_id: admin_user.id,
+  data: {
+    barrier_id: SecureRandom.uuid,
+    name: "Unable to Drive"
+  }
+)
 
-FactoryBot.create(:coaches__job, job_id: contractor.id, employer_name: contractor.employer.name, employment_title: contractor.employment_title)
+message_service.create!(
+  schema: Events::BarrierAdded::V1,
+  user_id: admin_user.id,
+  data: {
+    barrier_id: SecureRandom.uuid,
+    name: "Background"
+  }
+)
 
 message_service.flush

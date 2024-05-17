@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_16_160315) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_17_175957) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -724,13 +724,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_16_160315) do
     t.index ["user_id"], name: "Profile_user_id_key", unique: true
   end
 
-  create_table "program_skills", id: :text, force: :cascade do |t|
-    t.text "program_id", null: false
-    t.text "skill_id", null: false
-    t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 3, null: false
-  end
-
   create_table "programs", id: :text, force: :cascade do |t|
     t.text "name", null: false
     t.text "description", null: false
@@ -1035,8 +1028,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_16_160315) do
   add_foreign_key "profile_skills", "master_skills", name: "ProfileSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "profile_skills", "seekers"
   add_foreign_key "profiles", "users", name: "Profile_user_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "program_skills", "master_skills", column: "skill_id", name: "ProgramSkill_skill_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "program_skills", "programs", name: "ProgramSkill_program_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "programs", "training_providers", name: "Program_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "read_receipts", "chat_messages"
   add_foreign_key "read_receipts", "users"

@@ -170,7 +170,7 @@ module JobOrders
 
       if job_order_added.blank?
         Sentry.capture_exception(MessageConsumer::FailedToHandleMessage.new("Job Order not found", message))
-      elsif active_job_order(job_order_added.occurred_at, job_order_added.data.job_id).present?
+      elsif active_job_order(message.occurred_at, job_order_added.data.job_id).present?
         message_service.create_once_for_trace!(
           schema: Events::JobOrderActivationFailed::V1,
           trace_id: message.trace_id,

@@ -53,15 +53,6 @@ RSpec.describe "Skills", type: :request do
         include_context "profile owner openapi"
 
         response '201', 'skill created' do
-          schema type: :object, properties: {
-            id: { type: :string, format: :uuid },
-            masterSkillId: { type: :string, format: :uuid },
-            description: { type: :string },
-            createdAt: { type: :string, format: :datetime },
-            updatedAt: { type: :string, format: :datetime },
-            seekerId: { type: :string, format: :uuid }
-          }
-
           before do
             expect(Seekers::SkillService)
               .to receive(:new)
@@ -127,16 +118,7 @@ RSpec.describe "Skills", type: :request do
       context "when authenticated" do
         include_context "profile owner openapi"
 
-        response '200', 'skill updated' do
-          schema type: :object, properties: {
-            id: { type: :string, format: :uuid },
-            masterSkillId: { type: :string, format: :uuid },
-            description: { type: :string },
-            createdAt: { type: :string, format: :datetime },
-            updatedAt: { type: :string, format: :datetime },
-            seekerId: { type: :string, format: :uuid }
-          }
-
+        response '202', 'skill updated' do
           before do
             expect(Seekers::SkillService)
               .to receive(:new)
@@ -176,7 +158,7 @@ RSpec.describe "Skills", type: :request do
       context "when authenticated" do
         include_context "profile owner openapi"
 
-        response '204', 'skill destroyed' do
+        response '202', 'skill destroyed' do
           before do
             expect(Seekers::SkillService)
               .to receive(:new)

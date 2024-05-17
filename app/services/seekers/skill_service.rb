@@ -9,13 +9,6 @@ module Seekers
     def create(master_skill_id:, description:)
       master_skill = MasterSkill.find(master_skill_id)
 
-      skill = ProfileSkill.create!(
-        id: SecureRandom.uuid,
-        description:,
-        master_skill:,
-        seeker:
-      )
-
       message_service.create!(
         schema: Events::SeekerSkillCreated::V1,
         seeker_id: seeker.id,
@@ -26,13 +19,9 @@ module Seekers
           type: master_skill.type
         }
       )
-
-      skill
     end
 
     def update(skill, description:)
-      skill.update!(description:)
-
       message_service.create!(
         schema: Events::SeekerSkillUpdated::V1,
         seeker_id: seeker.id,
@@ -43,13 +32,9 @@ module Seekers
           type: skill.master_skill.type
         }
       )
-
-      skill
     end
 
     def destroy(skill)
-      skill.destroy!
-
       message_service.create!(
         schema: Events::SeekerSkillDestroyed::V1,
         seeker_id: seeker.id,
@@ -60,8 +45,6 @@ module Seekers
           type: skill.master_skill.type
         }
       )
-
-      skill
     end
 
     private

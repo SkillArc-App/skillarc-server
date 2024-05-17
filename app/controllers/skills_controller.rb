@@ -10,11 +10,11 @@ class SkillsController < ApplicationController
 
   def create
     with_message_service do
-      skill = Seekers::SkillService.new(seeker).create(
+      Seekers::SkillService.new(seeker).create(
         **params.require(:skill).permit(:description, :master_skill_id).to_h.symbolize_keys
       )
 
-      render json: skill, status: :created
+      head :created
     end
   end
 
@@ -22,6 +22,8 @@ class SkillsController < ApplicationController
     with_message_service do
       render json: Seekers::SkillService.new(seeker).update(skill, description: params[:skill][:description])
     end
+
+    head :accepted
   end
 
   def destroy
@@ -29,7 +31,7 @@ class SkillsController < ApplicationController
       Seekers::SkillService.new(seeker).destroy(skill)
     end
 
-    head :no_content
+    head :accepted
   end
 
   private

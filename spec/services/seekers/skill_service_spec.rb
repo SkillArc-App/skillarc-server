@@ -17,10 +17,6 @@ RSpec.describe Seekers::SkillService do
       )
     end
 
-    it "creates a skill" do
-      expect { subject }.to change(ProfileSkill, :count).by(1)
-    end
-
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::SeekerSkillCreated::V1,
@@ -46,12 +42,6 @@ RSpec.describe Seekers::SkillService do
     let(:skill) { create(:profile_skill, seeker:) }
     let(:description) { "This is a new description" }
 
-    it "updates the skill" do
-      subject
-
-      expect(skill.reload.description).to eq("This is a new description")
-    end
-
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::SeekerSkillUpdated::V1,
@@ -75,10 +65,6 @@ RSpec.describe Seekers::SkillService do
 
     let(:seeker) { create(:seeker) }
     let!(:skill) { create(:profile_skill, seeker:) }
-
-    it "deletes the skill" do
-      expect { subject }.to change(ProfileSkill, :count).by(-1)
-    end
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(

@@ -508,6 +508,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         expected_profile = {
           id: lead1.lead_id,
           seeker_id:,
+          lead_id: lead1.lead_id,
           first_name: "Hannah",
           last_name: "Block",
           kind: 'seeker',
@@ -544,6 +545,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         expected_other_profile = {
           id: other_user_id,
           seeker_id: other_seeker_id,
+          lead_id: nil,
           first_name: "Katina",
           last_name: "Hall",
           kind: 'seeker',
@@ -607,6 +609,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         expected_profile = {
           id: lead1.lead_id,
           seeker_id:,
+          lead_id: lead1.lead_id,
           first_name: "Hannah",
           last_name: "Block",
           kind: 'seeker',

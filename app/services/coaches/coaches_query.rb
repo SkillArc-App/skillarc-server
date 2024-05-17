@@ -89,6 +89,7 @@ module Coaches
           id: csc.context_id,
           kind: csc.kind,
           seeker_id: csc.seeker_id,
+          lead_id: csc.lead_id,
           first_name: csc.first_name,
           last_name: csc.last_name,
           email: csc.email,

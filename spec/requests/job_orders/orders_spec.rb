@@ -82,22 +82,39 @@ RSpec.describe "JobOrders", type: :request do
 
         before do
           create(:job_orders__job, id: job_id)
+
+          expect_any_instance_of(JobOrders::JobOrdersReactor)
+            .to receive(:add_job_order)
+            .with(
+              job_order_id: be_a(String),
+              job_id:,
+              trace_id: be_a(String)
+            )
+            .and_call_original
         end
 
-        response '201', 'Update the job order' do
-          before do
-            expect_any_instance_of(JobOrders::JobOrdersReactor)
-              .to receive(:add_job_order)
-              .with(
-                job_order_id: be_a(String),
-                job_id:,
-                trace_id: be_a(String)
-              )
-              .and_call_original
-          end
+        response '201', 'Create the job order' do
+          run_test!
+        end
 
-          let(:job_order) { create(:job_orders__job_order) }
-          let(:id) { job_order.id }
+        response '400', 'Already active job order' do
+          schema type: :object,
+                 properties: {
+                   reason: { type: :string }
+                 }
+
+          before do
+            Event.from_message!(
+              build(
+                :message,
+                schema: Events::JobOrderAdded::V1,
+                aggregate_id: SecureRandom.uuid,
+                data: {
+                  job_id:
+                }
+              )
+            )
+          end
 
           run_test!
         end
@@ -252,18 +269,60 @@ RSpec.describe "JobOrders", type: :request do
               trace_id: be_a(String)
             )
             .and_call_original
+
+          messages.each do |message|
+            Event.from_message!(message)
+          end
         end
 
-        # TODO: we need to intepret the events
-        # response '404', 'Job Order not found' do
-        #   let(:id) { SecureRandom.uuid }
+        let(:job) { create(:job_orders__job) }
+        let(:id) { SecureRandom.uuid }
 
-        #   run_test!
-        # end
+        let(:order_1_added) do
+          build(
+            :message,
+            schema: Events::JobOrderAdded::V1,
+            aggregate_id: id,
+            data: {
+              job_id: job.id
+            },
+            occurred_at: 5.minutes.ago
+          )
+        end
+        let(:order_1_not_filled) do
+          build(
+            :message,
+            schema: Events::JobOrderNotFilled::V1,
+            aggregate_id: id,
+            data: Messages::Nothing,
+            occurred_at: 4.minutes.ago
+          )
+        end
+        let(:order_2_added) do
+          build(
+            :message,
+            schema: Events::JobOrderAdded::V1,
+            aggregate_id: SecureRandom.uuid,
+            data: {
+              job_id: job.id
+            },
+            occurred_at: 3.minutes.ago
+          )
+        end
 
         response '202', 'activation accepted' do
-          let(:job_order) { create(:job_orders__job_order) }
-          let(:id) { job_order.id }
+          let(:messages) { [order_1_added, order_1_not_filled] }
+
+          run_test!
+        end
+
+        response '400', 'Already active job order' do
+          schema type: :object,
+                 properties: {
+                   reason: { type: :string }
+                 }
+
+          let(:messages) { [order_1_added, order_1_not_filled, order_2_added] }
 
           run_test!
         end

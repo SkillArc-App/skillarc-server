@@ -256,6 +256,7 @@ RSpec.describe Coaches::CoachesQuery do
       expected_profile = {
         id:,
         seeker_id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
+        lead_id: nil,
         first_name: "Hannah",
         last_name: "Block",
         kind: 'seeker',

@@ -460,6 +460,11 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                     type: :string,
                     nullable: true
                   },
+                  leadId: {
+                    type: :string,
+                    format: :uuid,
+                    nullable: true
+                  },
                   applications: {
                     type: :array,
                     items: {

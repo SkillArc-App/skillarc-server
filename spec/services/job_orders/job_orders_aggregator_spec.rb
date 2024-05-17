@@ -341,13 +341,14 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         )
       end
 
-      let!(:job_order) { create(:job_orders__job_order) }
+      let!(:job_order) { create(:job_orders__job_order, closed_at: Time.utc(2024, 1, 1)) }
 
       it "updates the job order" do
         subject
 
         job_order.reload
         expect(job_order.status).to eq(JobOrders::ActivatedStatus::OPEN)
+        expect(job_order.closed_at).to eq(nil)
       end
     end
 
@@ -363,13 +364,14 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         )
       end
 
-      let!(:job_order) { create(:job_orders__job_order) }
+      let!(:job_order) { create(:job_orders__job_order, closed_at: Time.utc(2024, 1, 1)) }
 
       it "updates the job order" do
         subject
 
         job_order.reload
         expect(job_order.status).to eq(JobOrders::StalledStatus::WAITING_ON_EMPLOYER)
+        expect(job_order.closed_at).to eq(nil)
       end
     end
 

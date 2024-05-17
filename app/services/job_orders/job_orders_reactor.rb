@@ -44,6 +44,44 @@ module JobOrders
       )
     end
 
+    def add_note(job_order_id:, originator:, note:, note_id:, trace_id:)
+      message_service.create!(
+        schema: Events::JobOrderNoteAdded::V1,
+        job_order_id:,
+        trace_id:,
+        data: {
+          originator:,
+          note:,
+          note_id:
+        }
+      )
+    end
+
+    def modify_note(job_order_id:, originator:, note_id:, note:, trace_id:)
+      message_service.create!(
+        schema: Events::JobOrderNoteModified::V1,
+        job_order_id:,
+        trace_id:,
+        data: {
+          originator:,
+          note:,
+          note_id:
+        }
+      )
+    end
+
+    def remove_note(job_order_id:, originator:, note_id:, trace_id:)
+      message_service.create!(
+        schema: Events::JobOrderNoteRemoved::V1,
+        job_order_id:,
+        trace_id:,
+        data: {
+          originator:,
+          note_id:
+        }
+      )
+    end
+
     on_message Events::JobCreated::V3 do |message|
       message_service.create_once_for_trace!(
         schema: Events::JobOrderAdded::V1,

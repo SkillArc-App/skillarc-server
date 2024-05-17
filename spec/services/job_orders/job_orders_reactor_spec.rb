@@ -100,6 +100,108 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
   end
 
+  describe "#add_note" do
+    subject do
+      instance.add_note(
+        job_order_id:,
+        originator:,
+        note:,
+        note_id:,
+        trace_id:
+      )
+    end
+
+    let(:job_order_id) { 10 }
+    let(:originator) { "hannah@skillar.com" }
+    let(:note) { "Great job order" }
+    let(:note_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+
+    it "fires off a job order note added event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::JobOrderNoteAdded::V1,
+          job_order_id:,
+          trace_id:,
+          data: {
+            originator:,
+            note:,
+            note_id:
+          }
+        )
+
+      subject
+    end
+  end
+
+  describe "#modify_note" do
+    subject do
+      instance.modify_note(
+        job_order_id:,
+        originator:,
+        note:,
+        note_id:,
+        trace_id:
+      )
+    end
+
+    let(:job_order_id) { 10 }
+    let(:originator) { "hannah@skillar.com" }
+    let(:note) { "Great job order" }
+    let(:note_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+
+    it "fires off a job order note added event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::JobOrderNoteModified::V1,
+          job_order_id:,
+          trace_id:,
+          data: {
+            originator:,
+            note:,
+            note_id:
+          }
+        )
+
+      subject
+    end
+  end
+
+  describe "#remove_note" do
+    subject do
+      instance.remove_note(
+        job_order_id:,
+        originator:,
+        note_id:,
+        trace_id:
+      )
+    end
+
+    let(:job_order_id) { 10 }
+    let(:originator) { "hannah@skillar.com" }
+    let(:note_id) { SecureRandom.uuid }
+    let(:trace_id) { SecureRandom.uuid }
+
+    it "fires off a job order note added event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::JobOrderNoteRemoved::V1,
+          job_order_id:,
+          trace_id:,
+          data: {
+            originator:,
+            note_id:
+          }
+        )
+
+      subject
+    end
+  end
+
   describe "#update_status" do
     subject do
       instance.update_status(status:, job_order_id:, seeker_id:, trace_id:)

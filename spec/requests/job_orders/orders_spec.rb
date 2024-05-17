@@ -29,6 +29,10 @@ RSpec.describe "JobOrders", type: :request do
             create(:job_orders__candidate, job_order: job_order1)
             create(:job_orders__candidate, :applied, job_order: job_order1)
 
+            create(:job_orders__note, job_order: job_order1)
+            create(:job_orders__note, job_order: job_order1)
+            create(:job_orders__note, job_order: job_order2)
+
             create(:job_orders__candidate, :applied, job_order: job_order2)
           end
 
@@ -132,6 +136,7 @@ RSpec.describe "JobOrders", type: :request do
 
           let(:job_order) { create(:job_orders__job_order) }
           let!(:candidate) { create(:job_orders__candidate, :applied, job_order:) }
+          let!(:note) { create(:job_orders__note, job_order:) }
 
           let(:id) { job_order.id }
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_14_204839) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_16_160315) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -566,6 +566,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_14_204839) do
     t.datetime "updated_at", null: false
     t.boolean "applicable_for_job_orders"
     t.index ["employer_id"], name: "index_job_orders_jobs_on_employer_id"
+  end
+
+  create_table "job_orders_notes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "job_orders_job_orders_id", null: false
+    t.datetime "note_taken_at", null: false
+    t.string "note_taken_by", null: false
+    t.string "note", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_orders_job_orders_id"], name: "index_job_orders_notes_on_job_orders_job_orders_id"
   end
 
   create_table "job_orders_seekers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

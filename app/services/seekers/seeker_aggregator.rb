@@ -75,6 +75,25 @@ module Seekers
       PersonalExperience.find(message.data.id).destroy!
     end
 
+    on_message Events::SeekerSkillCreated::V1, :sync do |message|
+      ProfileSkill.create!(
+        id: SecureRandom.uuid,
+        seeker_id: message.aggregate.id,
+        description: message.data.description,
+        master_skill_id: message.data.skill_id
+      )
+    end
+
+    on_message Events::SeekerSkillUpdated::V1, :sync do |message|
+      skill = ProfileSkill.find_by!(seeker_id: message.aggregate.id, master_skill_id: message.data.skill_id)
+
+      skill.update!(description: message.data.description)
+    end
+
+    on_message Events::SeekerSkillDestroyed::V1, :sync do |message|
+      ProfileSkill.find_by!(seeker_id: message.aggregate.id, master_skill_id: message.data.skill_id).destroy!
+    end
+
     on_message Events::SeekerTrainingProviderCreated::V4, :sync do |message|
       seeker_training_provider_created = SeekerTrainingProvider.find_or_initialize_by(id: message.data.id)
 

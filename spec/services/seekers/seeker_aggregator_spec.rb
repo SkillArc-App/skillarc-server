@@ -326,5 +326,81 @@ RSpec.describe Seekers::SeekerAggregator do
         end
       end
     end
+
+    context "when the message is seeker skill created" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::SeekerSkillCreated::V1,
+          aggregate_id: seeker.id,
+          data: {
+            skill_id: master_skill.id,
+            description: "some descriptions",
+            name: "Bob",
+            type: MasterSkill::SkillTypes::TECHNICAL
+          }
+        )
+      end
+
+      let(:master_skill) { create(:master_skill) }
+
+      it "creates a profile skill" do
+        expect { subject }.to change(ProfileSkill, :count).from(0).to(1)
+
+        profile_skill = ProfileSkill.take(1).first
+        expect(profile_skill.seeker_id).to eq(message.aggregate.id)
+        expect(profile_skill.description).to eq(message.data.description)
+        expect(profile_skill.master_skill_id).to eq(message.data.skill_id)
+      end
+    end
+
+    context "when the message is seeker skill update" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::SeekerSkillUpdated::V1,
+          aggregate_id: seeker.id,
+          data: {
+            skill_id: master_skill.id,
+            description: "some descriptions",
+            name: "Bob",
+            type: MasterSkill::SkillTypes::TECHNICAL
+          }
+        )
+      end
+
+      let(:master_skill) { create(:master_skill) }
+      let!(:profile_skill) { create(:profile_skill, seeker:, master_skill:) }
+
+      it "updates a profile skill" do
+        subject
+
+        profile_skill.reload
+        expect(profile_skill.description).to eq(message.data.description)
+      end
+    end
+
+    context "when the message is seeker skill destroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::SeekerSkillDestroyed::V1,
+          aggregate_id: seeker.id,
+          data: {
+            skill_id: master_skill.id,
+            description: "some descriptions",
+            name: "Bob",
+            type: MasterSkill::SkillTypes::TECHNICAL
+          }
+        )
+      end
+
+      let(:master_skill) { create(:master_skill) }
+      let!(:profile_skill) { create(:profile_skill, seeker:, master_skill:) }
+
+      it "updates a profile skill" do
+        expect { subject }.to change(ProfileSkill, :count).from(1).to(0)
+      end
+    end
   end
 end

@@ -19,7 +19,12 @@ module JobOrders
         )
       end
 
-      head :created
+      failure = ::Projectors::Trace::GetFirst.project(trace_id: request.request_id, schema: Events::JobOrderCreationFailed::V1)
+      if failure.present?
+        render json: { reason: failure.data.reason }, status: :bad_request
+      else
+        head :created
+      end
     end
 
     def update
@@ -42,7 +47,12 @@ module JobOrders
         )
       end
 
-      head :accepted
+      failure = ::Projectors::Trace::GetFirst.project(trace_id: request.request_id, schema: Events::JobOrderActivationFailed::V1)
+      if failure.present?
+        render json: { reason: failure.data.reason }, status: :bad_request
+      else
+        head :accepted
+      end
     end
 
     def close_not_filled

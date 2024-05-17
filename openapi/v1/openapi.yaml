@@ -1674,7 +1674,9 @@ paths:
         '401':
           description: unauthenticated
         '201':
-          description: Update the job order
+          description: Create the job order
+        '400':
+          description: Already active job order
       requestBody:
         content:
           application/json:
@@ -1787,6 +1789,8 @@ paths:
           description: unauthenticated
         '202':
           description: activation accepted
+        '400':
+          description: Already active job order
   "/job_orders/orders/{id}/close_not_filled":
     post:
       summary: activate a job order
@@ -2517,28 +2521,6 @@ paths:
           description: unauthenticated
         '201':
           description: skill created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  masterSkillId:
-                    type: string
-                    format: uuid
-                  description:
-                    type: string
-                  createdAt:
-                    type: string
-                    format: datetime
-                  updatedAt:
-                    type: string
-                    format: datetime
-                  seekerId:
-                    type: string
-                    format: uuid
       requestBody:
         content:
           application/json:
@@ -2589,30 +2571,8 @@ paths:
       responses:
         '401':
           description: unauthenticated
-        '200':
+        '202':
           description: skill updated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  masterSkillId:
-                    type: string
-                    format: uuid
-                  description:
-                    type: string
-                  createdAt:
-                    type: string
-                    format: datetime
-                  updatedAt:
-                    type: string
-                    format: datetime
-                  seekerId:
-                    type: string
-                    format: uuid
       requestBody:
         content:
           application/json:
@@ -2659,7 +2619,7 @@ paths:
       responses:
         '401':
           description: unauthenticated
-        '204':
+        '202':
           description: skill destroyed
   "/profiles/{profile_id}/stories/{story_id}":
     delete:
@@ -3396,6 +3356,10 @@ components:
         properties:
           skillLevel:
             type: string
+            nullable: true
+          leadId:
+            type: string
+            format: uuid
             nullable: true
           applications:
             type: array

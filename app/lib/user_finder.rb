@@ -32,7 +32,7 @@ class UserFinder
       end
 
       new_user
-    rescue ActiveRecord::RecordNotUnique => e
+    rescue ActiveRecord::RecordNotUnique
       # We had a race condition and a user was created
       # after the find occurred
       User.find_by!(sub:)

@@ -225,12 +225,11 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         let!(:candidate) { create(:job_orders__candidate, seeker:, job_order:, status: JobOrders::CandidateStatus::RESCINDED) }
 
         it "changes the status to added" do
-          candidate_count = job_order.candidate_count
           expect { subject }
             .to change { candidate.reload.status }
             .from(JobOrders::CandidateStatus::RESCINDED).to(JobOrders::CandidateStatus::ADDED)
 
-          expect(job_order.reload.candidate_count).to eq(candidate_count)
+          expect(job_order.reload.candidate_count).to eq(1)
         end
       end
 

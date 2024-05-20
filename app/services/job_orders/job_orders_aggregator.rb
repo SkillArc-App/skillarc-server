@@ -83,15 +83,11 @@ module JobOrders
       job_order = JobOrder.find(message.aggregate.id)
       seeker = Seeker.find(message.data.seeker_id)
 
-      JobOrders::Candidate.transaction do
-        candidate = JobOrders::Candidate.find_or_initialize_by(job_order:, seeker:)
+      candidate = JobOrders::Candidate.find_or_initialize_by(job_order:, seeker:)
+      candidate.status = CandidateStatus::ADDED
+      candidate.save!
 
-        job_order.candidate_count += 1 if candidate.new_record?
-
-        candidate.status = CandidateStatus::ADDED
-        candidate.save!
-        job_order.save!
-      end
+      update_job_order_counts(job_order)
     end
 
     on_message Events::JobOrderCandidateApplied::V1, :sync do |message|
@@ -104,10 +100,9 @@ module JobOrders
       candidate = Candidate.find_by!(job_orders_seekers_id: message.data.seeker_id, job_orders_job_orders_id: message.aggregate.id)
 
       candidate.update!(status: CandidateStatus::RECOMMENDED)
-      job_order.update!(
-        candidate_count: job_order.candidate_count - 1,
-        recommended_count: job_order.recommended_count + 1
-      )
+      job_order.candidates.group(:status).count
+
+      update_job_order_counts(job_order)
     end
 
     on_message Events::JobOrderCandidateHired::V1, :sync do |message|
@@ -115,10 +110,7 @@ module JobOrders
       candidate = Candidate.find_by!(job_orders_seekers_id: message.data.seeker_id, job_orders_job_orders_id: message.aggregate.id)
 
       candidate.update!(status: CandidateStatus::HIRED)
-      job_order.update!(
-        recommended_count: job_order.recommended_count - 1,
-        hire_count: job_order.hire_count + 1
-      )
+      update_job_order_counts(job_order)
     end
 
     on_message Events::JobOrderCandidateRescinded::V1, :sync do |message|
@@ -126,7 +118,7 @@ module JobOrders
       candidate = Candidate.find_by!(job_orders_seekers_id: message.data.seeker_id, job_orders_job_orders_id: message.aggregate.id)
 
       candidate.update!(status: CandidateStatus::RESCINDED)
-      job_order.update!(hire_count: job_order.hire_count - 1)
+      update_job_order_counts(job_order)
     end
 
     on_message Events::JobOrderActivated::V1, :sync do |message|
@@ -168,6 +160,18 @@ module JobOrders
 
     on_message Events::JobOrderNoteRemoved::V1, :sync do |message|
       Note.find(message.data.note_id).destroy!
+    end
+
+    private
+
+    def update_job_order_counts(job_order)
+      counts = job_order.candidates.group(:status).count
+
+      job_order.update!(
+        candidate_count: counts[JobOrders::CandidateStatus::ADDED] || 0,
+        recommended_count: counts[JobOrders::CandidateStatus::RECOMMENDED] || 0,
+        hire_count: counts[JobOrders::CandidateStatus::HIRED] || 0
+      )
     end
   end
 end

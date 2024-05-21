@@ -24,11 +24,11 @@ class DbStreamListener < StreamListener
 
       bookmark.with_lock do
         events = unplayed_messages(bookmark).take(stride)
+        event_length = events.length
         last_handled_event = nil
 
         events.each do |event|
           handle_message(event.message)
-          event_length += 1
           last_handled_event = event
         end
 

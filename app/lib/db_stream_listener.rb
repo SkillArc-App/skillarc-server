@@ -64,6 +64,7 @@ class DbStreamListener < StreamListener
   end
 
   def bookmark_timestamp(bookmark)
+    return bookmark.current_timestamp if bookmark.current_timestamp.present?
     return default_time unless bookmark.id
     return default_time unless bookmark.event_id
 
@@ -71,7 +72,10 @@ class DbStreamListener < StreamListener
   end
 
   def update_bookmark(bookmark, event)
-    bookmark.update!(event_id: event.id)
+    bookmark.update!(
+      event_id: event.id,
+      current_timestamp: event.message.occurred_at
+    )
   end
 
   attr_reader :default_time, :consumer

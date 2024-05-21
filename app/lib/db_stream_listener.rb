@@ -3,31 +3,39 @@ class DbStreamListener < StreamListener
   delegate :handled_messages, to: :consumer
   delegate :handled_messages_sync, to: :consumer
 
+  STRIDE = 500
+
   attr_reader :listener_name
 
   def id
     "db-stream-#{listener_name}"
   end
 
-  def self.build(consumer:, listener_name:, now: Time.zone.now)
-    listener = new(consumer:, listener_name:, now:)
+  def self.build(consumer:, listener_name:, stride: STRIDE, now: Time.zone.now)
+    listener = new(consumer:, listener_name:, now:, stride:)
     StreamListener.register(listener_name, listener)
     listener
   end
 
   def play
     bookmark = load_bookmark
-    bookmark.with_lock do
-      events = unplayed_messages(bookmark)
+    loop do
+      event_length = 0
 
-      last_handled_event = nil
+      bookmark.with_lock do
+        events = unplayed_messages(bookmark).take(stride)
+        last_handled_event = nil
 
-      events.each do |event|
-        handle_message(event.message)
-        last_handled_event = event
+        events.each do |event|
+          handle_message(event.message)
+          event_length += 1
+          last_handled_event = event
+        end
+
+        update_bookmark(bookmark, last_handled_event) if last_handled_event
       end
 
-      update_bookmark(bookmark, last_handled_event) if last_handled_event
+      break if event_length != stride
     end
 
     consumer.flush
@@ -57,10 +65,11 @@ class DbStreamListener < StreamListener
     Event.where("occurred_at > ?", bookmark_timestamp(bookmark)).order(:occurred_at)
   end
 
-  def initialize(consumer:, listener_name:, now:) # rubocop:disable Lint/MissingSuper
+  def initialize(consumer:, listener_name:, now:, stride:) # rubocop:disable Lint/MissingSuper
     @consumer = consumer
     @listener_name = listener_name
     @default_time = consumer.can_replay? ? Time.zone.at(0) : now
+    @stride = stride
   end
 
   def bookmark_timestamp(bookmark)
@@ -78,7 +87,7 @@ class DbStreamListener < StreamListener
     )
   end
 
-  attr_reader :default_time, :consumer
+  attr_reader :default_time, :consumer, :stride
 
   def handle_message(message)
     consumer.handle_message(message)

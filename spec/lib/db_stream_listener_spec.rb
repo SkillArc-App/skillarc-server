@@ -167,8 +167,6 @@ RSpec.describe DbStreamListener do
         end
       end
     end
-
-
   end
 
   describe "#replay" do

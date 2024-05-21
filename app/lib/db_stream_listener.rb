@@ -18,6 +18,13 @@ class DbStreamListener < StreamListener
   end
 
   def play
+    crumb = Sentry::Breadcrumb.new(
+      category: "event-sourcing",
+      message: "Playing stream #{id}",
+      level: "info"
+    )
+    Sentry.add_breadcrumb(crumb)
+
     bookmark = load_bookmark
     loop do
       event_length = 0

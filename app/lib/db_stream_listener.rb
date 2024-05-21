@@ -18,27 +18,37 @@ class DbStreamListener < StreamListener
   end
 
   def play
-    bookmark = load_bookmark
-    loop do
-      event_length = 0
+    Sentry.with_scope do |scope|
+      scope.set_tags(stream_listener: id)
+      crumb = Sentry::Breadcrumb.new(
+        category: "event-sourcing",
+        message: "Playing stream #{id}",
+        level: "info"
+      )
+      Sentry.add_breadcrumb(crumb)
 
-      bookmark.with_lock do
-        events = unplayed_messages(bookmark).take(stride)
-        event_length = events.length
-        last_handled_event = nil
+      bookmark = load_bookmark
+      loop do
+        event_length = 0
 
-        events.each do |event|
-          handle_message(event.message)
-          last_handled_event = event
+        bookmark.with_lock do
+          events = unplayed_messages(bookmark).take(stride)
+          event_length = events.length
+          last_handled_event = nil
+
+          events.each do |event|
+            handle_message(event.message)
+            last_handled_event = event
+          end
+
+          update_bookmark(bookmark, last_handled_event) if last_handled_event
         end
 
-        update_bookmark(bookmark, last_handled_event) if last_handled_event
+        break if event_length != stride
       end
 
-      break if event_length != stride
+      consumer.flush
     end
-
-    consumer.flush
   end
 
   def replay

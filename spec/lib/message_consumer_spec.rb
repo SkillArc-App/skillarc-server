@@ -27,6 +27,10 @@ RSpec.describe MessageConsumer do
       end
 
       it "captures the causing error in a wrapped exception" do
+        expect(Sentry)
+          .to receive(:capture_exception)
+          .with(be_a(described_class::FailedToHandleMessage))
+
         expect { sub_klass.new.handle_message(message) }.to raise_error do |error|
           expect(error).to be_a(described_class::FailedToHandleMessage)
           expect(error.message).to eq("error")

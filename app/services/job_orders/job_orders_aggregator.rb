@@ -84,6 +84,7 @@ module JobOrders
       seeker = Seeker.find(message.data.seeker_id)
 
       candidate = JobOrders::Candidate.find_or_initialize_by(job_order:, seeker:)
+      candidate.added_at = message.occurred_at
       candidate.status = CandidateStatus::ADDED
       candidate.save!
 

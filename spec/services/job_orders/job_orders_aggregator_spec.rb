@@ -216,6 +216,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect(candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
         expect(candidate.seeker).to eq(seeker)
         expect(candidate.job_order).to eq(job_order)
+        expect(candidate.added_at).to eq(message.occurred_at)
 
         job_order.reload
         expect(job_order.candidate_count).to eq(1)

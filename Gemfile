@@ -3,6 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.2.2"
 
+gem "barnes"
 gem "bootsnap", require: false
 gem 'e164'
 gem "importmap-rails"

@@ -7,7 +7,8 @@ RSpec.describe DbStreamListener do
   let!(:event2) { create(:event, :user_created, occurred_at: event_occurred_at + 2.days) }
 
   let(:event_occurred_at) { Date.new(2020, 1, 1) }
-  let(:instance) { described_class.build(consumer:, listener_name: "listener_name", now:) }
+  let(:instance) { described_class.build(consumer:, listener_name: "listener_name", now:, stride:) }
+  let(:stride) { 500 }
   let(:now) { Time.zone.now }
 
   describe "#play" do
@@ -42,6 +43,24 @@ RSpec.describe DbStreamListener do
         expect { subject }.to raise_error(StandardError)
 
         expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(nil)
+      end
+    end
+
+    context "when we need to process events in multiple passes" do
+      let(:stride) { 1 }
+
+      it "plays all events" do
+        expect(consumer).to receive(:handle_message).with(
+          event.message
+        )
+
+        expect(consumer).to receive(:handle_message).with(
+          event2.message
+        )
+
+        subject
+
+        # expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(event2.id)
       end
     end
 

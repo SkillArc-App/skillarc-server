@@ -109,6 +109,75 @@ RSpec.describe Seekers::SeekerAggregator do
       end
     end
 
+    context "when the message is story created" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::StoryCreated::V1,
+          aggregate_id: seeker.id,
+          data: {
+            id: SecureRandom.uuid,
+            prompt: "Disk Golf?",
+            response: "Yeah dawg"
+          }
+        )
+      end
+
+      it "creates a story" do
+        expect { subject }.to change(Story, :count).from(0).to(1)
+
+        story = Story.take(1).first
+        expect(story.id).to eq(message.data.id)
+        expect(story.seeker_id).to eq(message.aggregate.id)
+        expect(story.prompt).to eq(message.data.prompt)
+        expect(story.response).to eq(message.data.response)
+      end
+    end
+
+    context "when the message is story updated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::StoryUpdated::V1,
+          aggregate_id: seeker.id,
+          data: {
+            id: story.id,
+            prompt: "Disk Golf?",
+            response: "Yeah dawg"
+          }
+        )
+      end
+
+      let!(:story) { create(:story) }
+
+      it "updates a story" do
+        expect { subject }.not_to change(Story, :count)
+
+        story.reload
+        expect(story.prompt).to eq(message.data.prompt)
+        expect(story.response).to eq(message.data.response)
+      end
+    end
+
+    context "when the message is story destoryed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::StoryDestroyed::V1,
+          aggregate_id: seeker.id,
+          data: {
+            id: story.id
+          }
+        )
+      end
+
+      let!(:story) { create(:story) }
+
+      it "removes a story" do
+        expect { subject }.to change(Story, :count).from(1).to(0)
+      end
+    end
+
     context "when the message is education experience added" do
       let(:message) do
         build(

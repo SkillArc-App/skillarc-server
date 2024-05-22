@@ -26,16 +26,7 @@ RSpec.describe "Stories", type: :request do
       context "when authenticated" do
         include_context "profile owner openapi"
 
-        response '200', 'story deleted' do
-          schema type: :object, properties: {
-            id: { type: :string, format: :uuid },
-            prompt: { type: :string },
-            response: { type: :string },
-            createdAt: { type: :string, format: :datetime },
-            updatedAt: { type: :string, format: :datetime },
-            seekerId: { type: :string, format: :uuid }
-          }
-
+        response '202', 'story deleted' do
           before do
             expect(Seekers::StoriesService).to receive(:new).with(seeker).and_call_original
 
@@ -95,16 +86,7 @@ RSpec.describe "Stories", type: :request do
       context "when authenticated" do
         include_context "profile owner openapi"
 
-        response '200', 'story updated' do
-          schema type: :object, properties: {
-            id: { type: :string, format: :uuid },
-            prompt: { type: :string },
-            response: { type: :string },
-            createdAt: { type: :string, format: :datetime },
-            updatedAt: { type: :string, format: :datetime },
-            seekerId: { type: :string, format: :uuid }
-          }
-
+        response '202', 'story updated' do
           before do
             expect(Seekers::StoriesService).to receive(:new).with(seeker).and_call_original
 
@@ -166,15 +148,6 @@ RSpec.describe "Stories", type: :request do
         include_context "profile owner openapi"
 
         response '201', 'story created' do
-          schema type: :object, properties: {
-            id: { type: :string, format: :uuid },
-            prompt: { type: :string },
-            response: { type: :string },
-            createdAt: { type: :string, format: :datetime },
-            updatedAt: { type: :string, format: :datetime },
-            seekerId: { type: :string, format: :uuid }
-          }
-
           before do
             expect(Seekers::StoriesService).to receive(:new).with(seeker).and_call_original
 

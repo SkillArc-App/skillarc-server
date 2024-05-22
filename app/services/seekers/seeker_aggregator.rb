@@ -6,6 +6,7 @@ module Seekers
       PersonalExperience.delete_all
       SeekerTrainingProvider.delete_all
       ProfileSkill.delete_all
+      Story.delete_all
       OnboardingSession.delete_all
     end
 
@@ -37,6 +38,28 @@ module Seekers
 
     on_message Events::ExperienceRemoved::V1, :sync do |message|
       OtherExperience.find(message.data.id).destroy!
+    end
+
+    on_message Events::StoryCreated::V1, :sync do |message|
+      Story.create!(
+        id: message.data.id,
+        prompt: message.data.prompt,
+        seeker_id: message.aggregate.id,
+        response: message.data.response
+      )
+    end
+
+    on_message Events::StoryUpdated::V1, :sync do |message|
+      story = Story.find(message.data.id)
+
+      story.update!(
+        prompt: message.data.prompt,
+        response: message.data.response
+      )
+    end
+
+    on_message Events::StoryDestroyed::V1, :sync do |message|
+      Story.find(message.data.id).destroy!
     end
 
     # Ed experience

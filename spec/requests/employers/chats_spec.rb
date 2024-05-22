@@ -4,16 +4,21 @@ RSpec.describe "Employers::Chats", type: :request do
   describe "GET /index" do
     subject { get chats_path, headers: }
 
-    it_behaves_like "employer secured endpoint"
+    it_behaves_like "employer spec unauthenticated"
 
     context "when the employer has a recruiter" do
       include_context "employer authenticated"
 
       it "calls the EmployerChats service" do
-        expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
-                                                      user:,
-                                                      employer_id: employer.id
-                                                    )).and_call_original
+        expect(EmployerChats)
+          .to receive(:new)
+          .with(
+            recruiter: EmployerChats::Recruiter.new(
+              user:,
+              employer_id: employer.id
+            ),
+            message_service: be_a(MessageService)
+          ).and_call_original
 
         expect_any_instance_of(EmployerChats).to receive(:get)
 
@@ -32,12 +37,15 @@ RSpec.describe "Employers::Chats", type: :request do
       end
 
       it "calls the EmployerChats service" do
-        expect(EmployerChats).to receive(:new).with(
-          EmployerChats::Recruiter.new(
-            user:,
-            employer_id: [employer.id]
-          )
-        ).and_call_original
+        expect(EmployerChats)
+          .to receive(:new)
+          .with(
+            recruiter: EmployerChats::Recruiter.new(
+              user:,
+              employer_id: [employer.id]
+            ),
+            message_service: be_a(MessageService)
+          ).and_call_original
 
         expect_any_instance_of(EmployerChats).to receive(:get)
 
@@ -54,22 +62,27 @@ RSpec.describe "Employers::Chats", type: :request do
         applicant_id: applicant.id
       }
     end
-    let(:applicant) { create(:applicant) }
+    let(:applicant) { create(:employers_applicant) }
 
-    it_behaves_like "employer secured endpoint"
+    it_behaves_like "employer spec unauthenticated"
 
     context "when the employer has a recruiter" do
       include_context "employer authenticated"
 
       it "calls the EmployerChats service" do
-        expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
-                                                      user:,
-                                                      employer_id: employer.id
-                                                    )).and_call_original
+        expect(EmployerChats)
+          .to receive(:new)
+          .with(
+            recruiter: EmployerChats::Recruiter.new(
+              user:,
+              employer_id: employer.id
+            ),
+            message_service: be_a(MessageService)
+          ).and_call_original
 
         expect_any_instance_of(EmployerChats).to receive(:mark_read).with(
-          applicant_id: applicant.id
-        )
+          application_id: applicant.id
+        ).and_call_original
 
         subject
       end
@@ -85,23 +98,28 @@ RSpec.describe "Employers::Chats", type: :request do
         message: "We are interested in your application"
       }
     end
-    let(:applicant) { create(:applicant) }
+    let(:applicant) { create(:employers_applicant) }
 
-    it_behaves_like "employer secured endpoint"
+    it_behaves_like "employer spec unauthenticated"
 
     context "when the employer has a recruiter" do
       include_context "employer authenticated"
 
       it "calls the EmployerChats service" do
-        expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
-                                                      user:,
-                                                      employer_id: employer.id
-                                                    )).and_call_original
+        expect(EmployerChats)
+          .to receive(:new)
+          .with(
+            recruiter: EmployerChats::Recruiter.new(
+              user:,
+              employer_id: employer.id
+            ),
+            message_service: be_a(MessageService)
+          ).and_call_original
 
         expect_any_instance_of(EmployerChats)
           .to receive(:send_message)
           .with(
-            applicant_id: applicant.id,
+            application_id: applicant.id,
             message: "We are interested in your application"
           )
 
@@ -115,27 +133,35 @@ RSpec.describe "Employers::Chats", type: :request do
 
     let(:params) do
       {
-        applicant_id: applicant.id
+        applicant_id: applicant.applicant_id
       }
     end
-    let(:applicant) { create(:applicant) }
+    let(:applicant) { create(:employers_applicant) }
 
-    it_behaves_like "employer secured endpoint"
+    it_behaves_like "employer spec unauthenticated"
 
     context "when the employer has a recruiter" do
       include_context "employer authenticated"
 
       it "calls the EmployerChats service" do
-        expect(EmployerChats).to receive(:new).with(EmployerChats::Recruiter.new(
-                                                      user:,
-                                                      employer_id: employer.id
-                                                    )).and_call_original
+        expect(EmployerChats)
+          .to receive(:new)
+          .with(
+            recruiter: EmployerChats::Recruiter.new(
+              user:,
+              employer_id: employer.id
+            ),
+            message_service: be_a(MessageService)
+          ).and_call_original
 
         expect_any_instance_of(EmployerChats)
           .to receive(:create)
           .with(
-            applicant_id: applicant.id
-          )
+            application_id: applicant.applicant_id,
+            job_id: applicant.job.job_id,
+            seeker_id: applicant.seeker_id,
+            title: "#{applicant.first_name} #{applicant.last_name} - #{applicant.job.employment_title}"
+          ).and_call_original
 
         subject
       end

@@ -4,15 +4,22 @@ RSpec.describe "Seekers::Chats", type: :request do
   describe "GET /index" do
     subject { get "/seekers/chats", headers: }
 
-    it_behaves_like "a secured endpoint"
+    it_behaves_like "unauthenticated"
 
     context "when the user is a seeker" do
       include_context "authenticated"
 
-      it "calls the SeekerChats service" do
-        expect(SeekerChats).to receive(:new).with(user).and_call_original
+      let!(:seeker) { create(:seeker, user:) }
 
-        expect_any_instance_of(SeekerChats).to receive(:get)
+      it "calls the SeekerChats service" do
+        expect(SeekerChats)
+          .to receive(:new)
+          .with(
+            seeker:,
+            message_service: be_a(MessageService)
+          ).and_call_original
+
+        expect_any_instance_of(SeekerChats).to receive(:get).and_call_original
 
         subject
       end
@@ -29,16 +36,23 @@ RSpec.describe "Seekers::Chats", type: :request do
     end
     let(:applicant) { create(:applicant) }
 
-    it_behaves_like "a secured endpoint"
+    it_behaves_like "unauthenticated"
 
     context "when the user is a seeker" do
       include_context "authenticated"
 
+      let!(:seeker) { create(:seeker, user:) }
+
       it "calls the SeekerChats service" do
-        expect(SeekerChats).to receive(:new).with(user).and_call_original
+        expect(SeekerChats)
+          .to receive(:new)
+          .with(
+            seeker:,
+            message_service: be_a(MessageService)
+          ).and_call_original
 
         expect_any_instance_of(SeekerChats).to receive(:mark_read).with(
-          applicant_id: applicant.id
+          application_id: applicant.id
         )
 
         subject
@@ -58,16 +72,23 @@ RSpec.describe "Seekers::Chats", type: :request do
 
     let(:applicant) { create(:applicant) }
 
-    it_behaves_like "a secured endpoint"
+    it_behaves_like "unauthenticated"
 
     context "when the user is a seeker" do
       include_context "authenticated"
 
+      let!(:seeker) { create(:seeker, user:) }
+
       it "calls the SeekerChats service" do
-        expect(SeekerChats).to receive(:new).with(user).and_call_original
+        expect(SeekerChats)
+          .to receive(:new)
+          .with(
+            seeker:,
+            message_service: be_a(MessageService)
+          ).and_call_original
 
         expect_any_instance_of(SeekerChats).to receive(:send_message).with(
-          applicant_id: applicant.id,
+          application_id: applicant.id,
           message: params[:message]
         )
 

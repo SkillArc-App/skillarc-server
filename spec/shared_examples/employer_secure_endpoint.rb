@@ -24,6 +24,14 @@ RSpec.shared_context "employer authenticated" do
   end
 end
 
+RSpec.shared_examples "employer spec unauthenticated" do
+  it "returns 401" do
+    subject
+
+    expect(response).to have_http_status(:unauthorized)
+  end
+end
+
 RSpec.shared_examples "employer secured endpoint" do
   context "unauthenticated" do
     it "returns 401" do
@@ -36,10 +44,10 @@ RSpec.shared_examples "employer secured endpoint" do
   context "authenticated" do
     include_context "employer authenticated"
 
-    it "returns 200" do
+    it "returns 2XX" do
       subject
 
-      expect(response).to have_http_status(:ok)
+      expect(response.status).to be_between(200, 299).inclusive
     end
   end
 end

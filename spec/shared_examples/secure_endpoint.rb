@@ -41,6 +41,16 @@ RSpec.shared_examples "a secured endpoint" do
   end
 end
 
+RSpec.shared_context "unauthenticated" do
+  context "unauthenticated" do
+    it "returns 401" do
+      subject
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+end
+
 RSpec.shared_context "authenticated openapi" do
   let!(:user) do
     User.create!(

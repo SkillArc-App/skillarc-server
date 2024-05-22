@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_21_202653) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_22_184241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -142,13 +142,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_21_202653) do
     t.index ["job_id"], name: "index_applicant_analytics_on_job_id"
   end
 
-  create_table "applicant_chats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.text "applicant_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["applicant_id"], name: "index_applicant_chats_on_applicant_id", unique: true
-  end
-
   create_table "applicant_statuses", id: :text, force: :cascade do |t|
     t.text "applicant_id", null: false
     t.text "status", null: false
@@ -189,16 +182,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_21_202653) do
     t.text "job_id", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-  end
-
-  create_table "chat_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "applicant_chat_id", null: false
-    t.text "user_id", null: false
-    t.text "message", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["applicant_chat_id"], name: "index_chat_messages_on_applicant_chat_id"
-    t.index ["user_id"], name: "index_chat_messages_on_user_id"
   end
 
   create_table "coach_seeker_contexts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -734,16 +717,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_21_202653) do
     t.datetime "updated_at", precision: 3, null: false
   end
 
-  create_table "read_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "chat_message_id", null: false
-    t.text "user_id", null: false
-    t.datetime "read_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["chat_message_id"], name: "index_read_receipts_on_chat_message_id"
-    t.index ["user_id"], name: "index_read_receipts_on_user_id"
-  end
-
   create_table "reasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "description"
     t.datetime "created_at", null: false
@@ -984,13 +957,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_21_202653) do
   add_foreign_key "applicant_analytics", "applicants"
   add_foreign_key "applicant_analytics", "employers"
   add_foreign_key "applicant_analytics", "jobs"
-  add_foreign_key "applicant_chats", "applicants"
   add_foreign_key "applicant_statuses", "applicants", name: "ApplicantStatus_applicant_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "applicants", "jobs", name: "Applicant_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "applicants", "seekers"
   add_foreign_key "career_paths", "jobs", name: "CareerPath_job_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "chat_messages", "applicant_chats"
-  add_foreign_key "chat_messages", "users"
   add_foreign_key "coaches_reminders", "coaches"
   add_foreign_key "coaches_seeker_applications", "coach_seeker_contexts"
   add_foreign_key "coaches_seeker_attributes", "coach_seeker_contexts"
@@ -1031,8 +1001,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_21_202653) do
   add_foreign_key "profile_skills", "seekers"
   add_foreign_key "profiles", "users", name: "Profile_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "programs", "training_providers", name: "Program_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "read_receipts", "chat_messages"
-  add_foreign_key "read_receipts", "users"
   add_foreign_key "recruiters", "employers", name: "Recruiter_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "recruiters", "users", name: "Recruiter_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "search_applications", "search_jobs"

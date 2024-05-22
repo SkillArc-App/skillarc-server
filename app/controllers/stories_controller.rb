@@ -9,29 +9,25 @@ class StoriesController < ApplicationController
 
   def create
     with_message_service do
-      story = Seekers::StoriesService.new(seeker).create(
+      Seekers::StoriesService.new(seeker).create(
         **params.require(:story).permit(:prompt, :response).to_h.symbolize_keys
       )
 
-      render json: story, status: :created
+      head :created
     end
-  rescue StandardError => e
-    render json: { error: e.message }, status: :bad_request
   end
 
   def update
     story = Story.find(params[:id])
 
     with_message_service do
-      story = Seekers::StoriesService.new(seeker).update(
+      Seekers::StoriesService.new(seeker).update(
         story:,
         **params.require(:story).permit(:prompt, :response).to_h.symbolize_keys
       )
     end
 
-    render json: story
-  rescue StandardError => e
-    render json: { error: e.message }, status: :bad_request
+    head :accepted
   end
 
   def destroy
@@ -41,9 +37,7 @@ class StoriesController < ApplicationController
       Seekers::StoriesService.new(seeker).destroy(story:)
     end
 
-    render json: story
-  rescue StandardError => e
-    render json: { error: e.message }, status: :bad_request
+    head :accepted
   end
 
   private

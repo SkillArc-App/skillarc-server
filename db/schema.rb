@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_22_184241) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_22_185326) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -182,6 +182,35 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_184241) do
     t.text "job_id", null: false
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
+  end
+
+  create_table "chats_applicant_chats", force: :cascade do |t|
+    t.uuid "application_id", null: false
+    t.uuid "employer_id", null: false
+    t.uuid "seeker_id", null: false
+    t.string "title", null: false
+    t.datetime "chat_created_at", null: false
+    t.datetime "chat_updated_at", null: false
+    t.index ["application_id"], name: "index_chats_applicant_chats_on_application_id"
+    t.index ["employer_id"], name: "index_chats_applicant_chats_on_employer_id"
+    t.index ["seeker_id"], name: "index_chats_applicant_chats_on_seeker_id"
+  end
+
+  create_table "chats_messages", force: :cascade do |t|
+    t.bigint "chats_applicant_chats_id", null: false
+    t.string "from", null: false
+    t.string "user_id"
+    t.string "message", null: false
+    t.datetime "message_sent_at", null: false
+    t.index ["chats_applicant_chats_id"], name: "index_chats_messages_on_chats_applicant_chats_id"
+  end
+
+  create_table "chats_read_receipts", force: :cascade do |t|
+    t.bigint "chats_applicant_chats_id", null: false
+    t.string "user_id", null: false
+    t.datetime "read_until", null: false
+    t.index ["chats_applicant_chats_id"], name: "index_chats_read_receipts_on_chats_applicant_chats_id"
+    t.index ["user_id"], name: "index_chats_read_receipts_on_user_id"
   end
 
   create_table "coach_seeker_contexts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -961,6 +990,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_184241) do
   add_foreign_key "applicants", "jobs", name: "Applicant_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "applicants", "seekers"
   add_foreign_key "career_paths", "jobs", name: "CareerPath_job_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "chats_messages", "chats_applicant_chats", column: "chats_applicant_chats_id"
+  add_foreign_key "chats_read_receipts", "chats_applicant_chats", column: "chats_applicant_chats_id"
   add_foreign_key "coaches_reminders", "coaches"
   add_foreign_key "coaches_seeker_applications", "coach_seeker_contexts"
   add_foreign_key "coaches_seeker_attributes", "coach_seeker_contexts"

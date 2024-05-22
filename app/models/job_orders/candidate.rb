@@ -3,6 +3,7 @@
 # Table name: job_orders_candidates
 #
 #  id                       :uuid             not null, primary key
+#  added_at                 :datetime
 #  applied_at               :datetime
 #  status                   :string           not null
 #  created_at               :datetime         not null

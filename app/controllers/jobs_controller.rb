@@ -10,7 +10,7 @@ class JobsController < ApplicationController
       with_message_service do
         seeker = current_user.seeker
 
-        Seekers::ApplicantService.new(seeker).apply(job)
+        Seekers::ApplicationService.apply(job:, seeker:, message_service:)
       end
 
       head :ok

@@ -80,6 +80,16 @@ module Messages
       ].freeze
     end
 
+    module Chats
+      EVENTS = [
+        CHAT_CREATED = 'chat_created',
+        CHAT_MESSAGE_SENT = 'chat_message_sent',
+        CHAT_READ = 'chat_read'
+      ].freeze
+
+      COMMANDS = [].freeze
+    end
+
     module JobOrders
       EVENTS = [
         JOB_ORDER_ADDED = 'job_order_added',
@@ -217,8 +227,7 @@ module Messages
 
     EVENTS = [
       APPLICANT_STATUS_UPDATED = 'applicant_status_updated',
-      CHAT_CREATED = 'chat_created',
-      CHAT_MESSAGE_SENT = 'chat_message_sent',
+
       DAY_ELAPSED = 'day_elapsed',
       MET_CAREER_COACH_UPDATED = 'met_career_coach_updated',
       NOTIFICATION_CREATED = 'notification_created',
@@ -232,6 +241,7 @@ module Messages
       *Attributes::EVENTS,
       *Applications::EVENTS,
       *Coaches::EVENTS,
+      *Chats::EVENTS,
       *Jobs::EVENTS,
       *JobOrders::EVENTS,
       *Employers::EVENTS,
@@ -244,6 +254,7 @@ module Messages
     COMMANDS = [
       *Applications::COMMANDS,
       *Contact::COMMANDS,
+      *Chats::COMMANDS,
       *Coaches::COMMANDS,
       *Seekers::COMMANDS,
       *JobOrders::COMMANDS,

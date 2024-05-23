@@ -243,13 +243,11 @@ RSpec.describe Klaviyo::KlaviyoReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::ChatMessageSent::V1,
+          schema: Events::ChatMessageSent::V2,
+          aggregate_id: application_id,
           data: {
-            applicant_id: application_id,
-            seeker_id:,
+            from_name: "David",
             from_user_id:,
-            employer_name: "Name",
-            employment_title: "Title",
             message: "Sup?"
           }
         )
@@ -279,8 +277,8 @@ RSpec.describe Klaviyo::KlaviyoReactor do
             .with(
               applicant_id: application_id,
               email:,
-              employment_title: "Title",
-              employer_name: "Name",
+              employment_title: "Job",
+              employer_name: "Employer",
               event_id: message.id,
               occurred_at: message.occurred_at
             )

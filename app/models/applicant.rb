@@ -27,8 +27,6 @@ class Applicant < ApplicationRecord
 
   has_many :applicant_statuses, dependent: :destroy
 
-  validates :seeker_id, uniqueness: { scope: :job_id }
-
   def status
     applicant_statuses.last_created
   end

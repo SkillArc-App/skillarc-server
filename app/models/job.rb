@@ -49,7 +49,6 @@ class Job < ApplicationRecord
   belongs_to :employer
 
   has_many :job_attributes # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :applicants, dependent: :destroy
   has_many :career_paths, dependent: :destroy
   has_many :learned_skills, dependent: :destroy
   has_many :desired_skills, dependent: :destroy
@@ -65,13 +64,13 @@ class Job < ApplicationRecord
   validates :employment_type, presence: { in: EmploymentTypes::ALL }
   validate :industry_values_must_be_in_industries_all
 
+  def applicants
+    Applicant.where(job_id: id)
+  end
+
   def self.with_employer_info
     includes(
-      :employer,
-      applicants: [
-        { applicant_statuses: :applicant_status_reasons },
-        { seeker: :user }
-      ]
+      :employer
     )
   end
 
@@ -86,7 +85,6 @@ class Job < ApplicationRecord
 
   def self.with_everything
     includes(
-      :applicants,
       :career_paths,
       :employer,
       :job_photos,

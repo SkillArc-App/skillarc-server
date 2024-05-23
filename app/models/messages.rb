@@ -27,6 +27,34 @@ module Messages
       ].freeze
     end
 
+    module Person
+      EVENTS = [
+        PERSON_ADDED = 'person_added',
+        PERSON_ASSOCIATED_TO_USER = 'person_associated_to_user',
+        PERSON_ALREADY_ASSOCIATED_TO_USER = 'person_already_associated_to_user'
+      ].freeze
+
+      COMMANDS = [
+        ADD_PERSON = 'add_person'
+      ].freeze
+    end
+
+    module Phone
+      EVENTS = [
+        PERSON_ASSOCIATED_TO_PHONE_NUMBER = 'person_associated_to_phone_number'
+      ].freeze
+
+      COMMANDS = [].freeze
+    end
+
+    module Email
+      EVENTS = [
+        PERSON_ASSOCIATED_TO_EMAIL = 'person_associated_to_email'
+      ].freeze
+
+      COMMANDS = [].freeze
+    end
+
     module Coaches
       EVENTS = [
         BARRIER_ADDED = 'barrier_added',
@@ -238,6 +266,9 @@ module Messages
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created',
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted',
       *User::EVENTS,
+      *Person::EVENTS,
+      *Email::EVENTS,
+      *Phone::EVENTS,
       *Attributes::EVENTS,
       *Applications::EVENTS,
       *Coaches::EVENTS,
@@ -253,6 +284,9 @@ module Messages
 
     COMMANDS = [
       *Applications::COMMANDS,
+      *Person::COMMANDS,
+      *Email::COMMANDS,
+      *Phone::COMMANDS,
       *Contact::COMMANDS,
       *Chats::COMMANDS,
       *Coaches::COMMANDS,

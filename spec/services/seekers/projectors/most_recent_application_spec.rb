@@ -9,7 +9,7 @@ RSpec.describe Seekers::Projectors::MostRecentApplication do
     let(:job1_id) { SecureRandom.uuid }
     let(:job2_id) { SecureRandom.uuid }
 
-    let(:seeker_applied_job1_1) do
+    let(:seeker_applied_job11) do
       build(
         :message,
         aggregate:,
@@ -28,7 +28,7 @@ RSpec.describe Seekers::Projectors::MostRecentApplication do
         occurred_at: Time.zone.local(2010, 1, 1)
       )
     end
-    let(:seeker_applied_job1_2) do
+    let(:seeker_applied_job12) do
       build(
         :message,
         aggregate:,
@@ -47,7 +47,7 @@ RSpec.describe Seekers::Projectors::MostRecentApplication do
         occurred_at: Time.zone.local(2020, 1, 1)
       )
     end
-    let(:seeker_applied_job2_2) do
+    let(:seeker_applied_job22) do
       build(
         :message,
         aggregate:,
@@ -76,7 +76,7 @@ RSpec.describe Seekers::Projectors::MostRecentApplication do
     end
 
     context "when there are several applications" do
-      let(:messages) { [seeker_applied_job1_1, seeker_applied_job1_2, seeker_applied_job2_2] }
+      let(:messages) { [seeker_applied_job11, seeker_applied_job12, seeker_applied_job22] }
 
       it "returns the applied_at as the most recent timestamp" do
         expect(subject.applied_at(job1_id)).to eq(Time.zone.local(2020, 1, 1))

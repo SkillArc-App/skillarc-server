@@ -425,6 +425,29 @@ RSpec.describe Seekers::SeekerAggregator do
       end
     end
 
+    context "when the message is elevator pitch created" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::ElevatorPitchCreated::V1,
+          aggregate_id: seeker.id,
+          data: {
+            job_id: applicant.job_id,
+            pitch: "pitch"
+          }
+        )
+      end
+
+      let(:applicant) { create(:applicant, seeker:) }
+
+      it "update the applicant" do
+        subject
+
+        applicant.reload
+        expect(applicant.elevator_pitch).to eq("pitch")
+      end
+    end
+
     context "when the message is onboarding completed" do
       let(:message) do
         build(

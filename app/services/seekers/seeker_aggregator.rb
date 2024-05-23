@@ -81,6 +81,17 @@ module Seekers
       )
     end
 
+    on_message Events::ElevatorPitchCreated::V1, :sync do |message|
+      applicant = Applicant.find_by!(
+        job_id: message.data.job_id,
+        seeker_id: message.aggregate_id
+      )
+
+      applicant.update!(
+        elevator_pitch: message.data.pitch
+      )
+    end
+
     # Ed experience
     on_message Events::EducationExperienceAdded::V1, :sync do |message|
       education_experience = EducationExperience.find_or_initialize_by(id: message.data.id)

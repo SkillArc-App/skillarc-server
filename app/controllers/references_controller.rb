@@ -1,6 +1,7 @@
 class ReferencesController < ApplicationController
   include Secured
   include TrainingProviderAuth
+  include MessageEmitter
 
   before_action :authorize
   before_action :training_provider_authorize
@@ -10,22 +11,27 @@ class ReferencesController < ApplicationController
   end
 
   def create
-    r = Reference.create!(
-      id: SecureRandom.uuid,
-      author_profile: training_provider_profile,
-      reference_text: params[:reference],
-      seeker_id: params[:seeker_profile_id],
-      training_provider: training_provider_profile.training_provider
-    )
+    with_message_service do
+      TrainingProviders::TrainingProviderReactor.new(message_service:).create_reference(
+        seeker_id: params[:seeker_profile_id],
+        reference_text: params[:reference],
+        author_training_provider_profile_id: training_provider_profile.id,
+        trace_id: request.request_id
+      )
+    end
 
-    render json: r
+    head :created
   end
 
   def update
-    r = training_provider_profile.references.find(params[:id])
+    with_message_service do
+      TrainingProviders::TrainingProviderReactor.new(message_service:).update_reference(
+        reference_id: params[:id],
+        reference_text: params[:reference_text],
+        trace_id: request.request_id
+      )
+    end
 
-    r.update!(params.require(:reference).permit(:reference_text))
-
-    render json: r
+    head :ok
   end
 end

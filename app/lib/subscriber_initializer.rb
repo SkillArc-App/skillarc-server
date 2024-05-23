@@ -16,7 +16,8 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: Users::UsersAggregator.new, listener_name: "users_aggregator"),
       DbStreamListener.build(consumer: Infrastructure::InfrastructureAggregator.new, listener_name: "infrastructure_aggregator"),
       DbStreamListener.build(consumer: Employers::EmployerAggregator.new, listener_name: "employers"),
-      DbStreamListener.build(consumer: Seekers::SeekerService.new, listener_name: "seekers")
+      DbStreamListener.build(consumer: Seekers::SeekerService.new, listener_name: "seekers"),
+      DbStreamListener.build(consumer: TrainingProviders::TrainingProviderAggregator.new, listener_name: "training_provider_aggregator")
     ]
 
     reactors = [

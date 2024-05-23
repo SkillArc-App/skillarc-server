@@ -243,6 +243,13 @@ module Messages
       ].freeze
     end
 
+    module TrainingProviders
+      EVENTS = [
+        REFERENCE_CREATED = 'reference_created',
+        REFERENCE_UPDATED = 'reference_updated'
+      ].freeze
+    end
+
     # Because our instance amount to singleton
     # if we want to test actual creating an event we need to
     # make it accurate as rspec stubing occurs _after_
@@ -279,7 +286,8 @@ module Messages
       *Seekers::EVENTS,
       *Contact::EVENTS,
       *Infrastructure::EVENTS,
-      *TestingOnly::EVENTS
+      *TestingOnly::EVENTS,
+      *TrainingProviders::EVENTS
     ].freeze
 
     COMMANDS = [

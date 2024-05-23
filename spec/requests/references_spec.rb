@@ -1,78 +1,127 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "References", type: :request do
-  describe "GET /show" do
-    subject { get reference_path(reference), headers: }
+  path "/references/{id}" do
+    get "Retrieve a reference" do
+      tags "Training Providers"
+      produces "application/json"
+      parameter name: :id, in: :path, type: :string
+      security [bearer_auth: []]
 
-    let(:reference) { create(:reference, author_profile: training_provider_profile) }
-    let!(:training_provider_profile) do
-      TrainingProviderProfile.create!(
-        id: SecureRandom.uuid,
-        user:,
-        training_provider: create(:training_provider)
-      )
-    end
-    let!(:user) do
-      User.create!(
-        id: 'clem7u5uc0007mi0rne4h3be0',
-        first_name: 'Jake',
-        last_name: 'Not-Onboard',
-        email: 'jake@statefarm.com',
-        sub: 'jakesub'
-      )
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      let(:id) { create(:reference, author_profile: user.training_provider_profile).id }
+
+      context "when authenticated" do
+        include_context "training provider authenticated openapi"
+
+        response "200", "Returns a list of references" do
+          schema type: :object,
+                 items: {
+                   properties: {
+                     id: { type: :string, format: :uuid },
+                     reference_text: { type: :string },
+                     seeker_id: { type: :string, format: :uuid },
+                     author_profile_id: { type: :string, format: :uuid },
+                     training_provider_id: { type: :string, format: :uuid }
+                   }
+                 }
+
+          run_test!
+        end
+      end
     end
 
-    it_behaves_like "training provider secured endpoint"
+    put "Update a reference" do
+      tags "Training Providers"
+      produces "application/json"
+      consumes "application/json"
+      security [bearer_auth: []]
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      parameter name: :id, in: :path, type: :string
+      parameter name: :reference, in: :body, schema: {
+        type: :object,
+        properties: {
+          reference_text: {
+            type: :string
+          }
+        },
+        required: %w[reference_text]
+      }
+
+      let(:id) { create(:reference, author_profile: user.training_provider_profile).id }
+      let(:reference) { { reference_text: "This is a new reference" } }
+
+      context "when authenticated" do
+        include_context "training provider authenticated openapi"
+
+        response "200", "Reference updated" do
+          before do
+            expect_any_instance_of(TrainingProviders::TrainingProviderReactor)
+              .to receive(:update_reference)
+              .with(
+                reference_id: id,
+                reference_text: reference[:reference_text],
+                trace_id: be_a(String)
+              )
+              .and_call_original
+          end
+
+          run_test!
+        end
+      end
+    end
   end
 
-  describe "POST /create" do
-    subject { post references_path, params:, headers: }
+  path "/references" do
+    post "Create a reference" do
+      tags "Training Providers"
+      produces "application/json"
+      consumes "application/json"
+      security [bearer_auth: []]
 
-    include_context "training provider authenticated"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    let(:params) do
-      {
-        reference: "This is a reference",
-        seeker_profile_id: seeker.id
+      parameter name: :reference, in: :body, schema: {
+        type: :object,
+        properties: {
+          reference: {
+            type: :string
+          },
+          seeker_profile_id: {
+            type: :string,
+            format: :uuid
+          }
+        },
+        required: %w[reference seeker_profile_id]
       }
-    end
 
-    let(:seeker) { create(:seeker) }
+      let(:reference) { { reference: "This is a reference", seeker_profile_id: create(:seeker).id } }
 
-    it "returns 200" do
-      subject
+      context "when authenticated" do
+        include_context "training provider authenticated openapi"
 
-      expect(response).to have_http_status(:ok)
-    end
+        response "201", "Reference created" do
+          before do
+            expect_any_instance_of(TrainingProviders::TrainingProviderReactor)
+              .to receive(:create_reference)
+              .with(
+                reference_text: reference[:reference],
+                seeker_id: reference[:seeker_profile_id],
+                author_training_provider_profile_id: user.training_provider_profile.id,
+                trace_id: be_a(String)
+              ).and_call_original
+          end
 
-    it "creates a reference" do
-      expect { subject }.to change(Reference, :count).by(1)
-    end
-  end
-
-  describe "PUT /update" do
-    subject { put reference_path(reference), params:, headers: }
-
-    include_context "training provider authenticated"
-
-    let(:params) do
-      {
-        reference: {
-          reference_text: "This is a new reference"
-        }
-      }
-    end
-
-    let(:reference) { create(:reference, author_profile: training_provider_profile) }
-
-    it "returns 200" do
-      subject
-
-      expect(response).to have_http_status(:ok)
-    end
-
-    it "updates the reference" do
-      expect { subject }.to change { reference.reload.reference_text }.to("This is a new reference")
+          run_test!
+        end
+      end
     end
   end
 end

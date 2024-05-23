@@ -5,6 +5,8 @@ module Seekers
       EducationExperience.delete_all
       PersonalExperience.delete_all
       SeekerTrainingProvider.delete_all
+      ApplicantStatus.delete_all
+      Applicant.delete_all
       ProfileSkill.delete_all
       Story.delete_all
       OnboardingSession.delete_all

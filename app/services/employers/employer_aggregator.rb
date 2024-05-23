@@ -12,9 +12,7 @@ module Employers
     on_message Events::ApplicantStatusUpdated::V6, :sync do |message|
       job = Job.find_by!(job_id: message.data.job_id)
       applicant = Applicant.find_or_initialize_by(
-        applicant_id: message.aggregate.id,
-        seeker_id: message.data.seeker_id,
-        job:
+        applicant_id: message.aggregate.id
       )
 
       application_submit_at = if message.data.status == Applicant::StatusTypes::NEW
@@ -24,6 +22,8 @@ module Employers
                               end
 
       applicant.update!(
+        seeker_id: message.data.seeker_id,
+        job:,
         first_name: message.data.applicant_first_name,
         last_name: message.data.applicant_last_name,
         email: message.data.applicant_email,

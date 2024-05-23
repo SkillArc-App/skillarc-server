@@ -11,8 +11,8 @@
 #
 # Indexes
 #
-#  index_applicants_on_seeker_id             (seeker_id)
-#  index_applicants_on_seeker_id_and_job_id  (seeker_id,job_id) UNIQUE
+#  index_applicants_on_job_id     (job_id)
+#  index_applicants_on_seeker_id  (seeker_id)
 #
 # Foreign Keys
 #

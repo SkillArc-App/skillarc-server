@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_23_170045) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_23_170051) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -155,7 +155,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_170045) do
     t.datetime "updated_at", precision: 3, null: false
     t.uuid "seeker_id", null: false
     t.string "elevator_pitch"
-    t.index ["seeker_id", "job_id"], name: "index_applicants_on_seeker_id_and_job_id", unique: true
+    t.index ["job_id"], name: "index_applicants_on_job_id"
     t.index ["seeker_id"], name: "index_applicants_on_seeker_id"
   end
 
@@ -402,8 +402,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_170045) do
     t.string "certified_by"
     t.datetime "application_submit_at"
     t.string "status_reason"
+    t.index ["applicant_id"], name: "index_employers_applicants_on_applicant_id", unique: true
     t.index ["employers_job_id"], name: "index_employers_applicants_on_employers_job_id"
-    t.index ["seeker_id", "employers_job_id"], name: "index_employers_applicants_on_seeker_id_and_employers_job_id", unique: true
+    t.index ["seeker_id"], name: "index_employers_applicants_on_seeker_id"
   end
 
   create_table "employers_employers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -20,8 +20,9 @@
 #
 # Indexes
 #
-#  index_employers_applicants_on_employers_job_id                (employers_job_id)
-#  index_employers_applicants_on_seeker_id_and_employers_job_id  (seeker_id,employers_job_id) UNIQUE
+#  index_employers_applicants_on_applicant_id      (applicant_id) UNIQUE
+#  index_employers_applicants_on_employers_job_id  (employers_job_id)
+#  index_employers_applicants_on_seeker_id         (seeker_id)
 #
 # Foreign Keys
 #

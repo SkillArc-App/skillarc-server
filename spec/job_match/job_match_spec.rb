@@ -15,7 +15,7 @@ RSpec.describe JobMatch::JobMatch do
     create(:event, :job_unsaved, aggregate_id: user.id, data: { job_id: saved_job.id, employment_title: "A", employer_name: "B" })
     create(:event, :job_saved, aggregate_id: user.id, data: { job_id: saved_job.id, employment_title: "A", employer_name: "B" })
   end
-  let!(:applicant) { create(:applicant, seeker:, job: applied_job, elevator_pitch: "pitch") }
+  let!(:applicant) { create(:applicant, seeker:, job_id: applied_job.id, elevator_pitch: "pitch") }
 
   it "initializes with a list of jobs" do
     expect(subject.jobs).not_to be_nil
@@ -43,7 +43,7 @@ RSpec.describe JobMatch::JobMatch do
 
   context "pending intro application" do
     before do
-      create(:applicant_status, :pending_intro, applicant: applied_job.applicants.first)
+      create(:applicant_status, :pending_intro, applicant:)
     end
 
     it "returns a correct applied status" do
@@ -59,7 +59,7 @@ RSpec.describe JobMatch::JobMatch do
 
   context "interviewing application" do
     before do
-      create(:applicant_status, :interviewing, applicant: applied_job.applicants.first)
+      create(:applicant_status, :interviewing, applicant:)
     end
 
     it "returns a correct applied status" do

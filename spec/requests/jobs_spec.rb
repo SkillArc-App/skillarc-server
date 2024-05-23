@@ -50,7 +50,7 @@ RSpec.describe "Jobs", type: :request do
             create(:job_photo, job:)
             create(:testimonial, job:)
             create(:job_tag, job:)
-            create(:applicant, job:, seeker_id: seeker.id)
+            create(:applicant, job_id: job.id, seeker_id: seeker.id)
           end
 
           include_context "seeker authenticated openapi"
@@ -169,7 +169,7 @@ RSpec.describe "Jobs", type: :request do
         response '202', 'Add elevator pitch' do
           before do
             seeker = create(:seeker, user:)
-            create(:applicant, seeker:, job:)
+            create(:applicant, seeker:, job_id: job.id)
 
             expect(Seekers::JobService)
               .to receive(:new)

@@ -21,9 +21,9 @@ RSpec.describe "Employers::Jobs", type: :request do
           employers_job1 = create(:employers_job, employer: employers_employer, employment_title: job1.employment_title)
           employers_job2 = create(:employers_job, employer: employers_employer, employment_title: job2.employment_title)
 
-          create(:applicant, job: job1)
-          create(:applicant, job: job2)
-          create(:applicant, job: job2)
+          create(:applicant, job_id: job1.id)
+          create(:applicant, job_id: job2.id)
+          create(:applicant, job_id: job2.id)
 
           create(:employers_applicant, job: employers_job1)
           create(:employers_applicant, job: employers_job2)

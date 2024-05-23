@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationAnalytics do
-  let!(:applicant1) { create(:applicant, applicant_statuses: [a1_status1, a1_status2], seeker: seeker1) }
+  let!(:applicant1) { create(:applicant, job_id: create(:job).id, applicant_statuses: [a1_status1, a1_status2], seeker: seeker1) }
 
   let(:seeker1) { create(:seeker, user: user1) }
   let(:user1) { create(:user, first_name: "Tom", last_name: "Hanks") }
@@ -9,14 +9,14 @@ RSpec.describe ApplicationAnalytics do
   let(:a1_status1) { build(:applicant_status, status: ApplicantStatus::StatusTypes::NEW, created_at: Date.new(2020, 6, 1)) }
   let(:a1_status2) { build(:applicant_status, status: ApplicantStatus::StatusTypes::PENDING_INTRO, created_at: Date.new(2020, 6, 2)) }
 
-  let!(:applicant2) { create(:applicant, applicant_statuses: [a2_status1], seeker: seeker2) }
+  let!(:applicant2) { create(:applicant, job_id: create(:job).id, applicant_statuses: [a2_status1], seeker: seeker2) }
   let(:a2_status1) { build(:applicant_status, status: ApplicantStatus::StatusTypes::NEW, created_at: Date.new(2020, 6, 15)) }
 
   let(:seeker2) { create(:seeker, user: user2) }
   let(:user2) { create(:user, first_name: "Tim", last_name: "Allen") }
 
   let!(:hidden_job) { create(:job, hide_job: true) }
-  let!(:hidden_applicant) { create(:applicant, job: hidden_job) }
+  let!(:hidden_applicant) { create(:applicant, job_id: hidden_job.id) }
   let!(:hidden_applicant_status) { create(:applicant_status, status: ApplicantStatus::StatusTypes::NEW, applicant: hidden_applicant) }
 
   describe "#average_status_times" do

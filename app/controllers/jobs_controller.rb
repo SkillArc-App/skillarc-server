@@ -29,7 +29,6 @@ class JobsController < ApplicationController
 
   def show
     if_visible(Job.includes(
-      :applicants,
       :career_paths,
       :employer,
       :job_photos,

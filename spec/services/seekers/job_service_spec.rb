@@ -8,7 +8,7 @@ RSpec.describe Seekers::JobService do
 
     let(:job) { create(:job) }
     let(:seeker) { create(:seeker) }
-    let!(:applicant) { create(:applicant, job:, seeker:) }
+    let!(:applicant) { create(:applicant, job_id: job.id, seeker:) }
 
     let(:elevator_pitch) { "New Elevator Pitch" }
 

@@ -25,7 +25,6 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (applicant_id => applicants.id)
 #  fk_rails_...  (employer_id => employers.id)
 #  fk_rails_...  (job_id => jobs.id)
 #

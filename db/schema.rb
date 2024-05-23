@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_23_170044) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_23_170045) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -983,7 +983,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_170044) do
   add_foreign_key "analytics_fact_job_visibilities", "analytics_dim_jobs"
   add_foreign_key "analytics_fact_person_vieweds", "analytics_dim_people", column: "analytics_dim_person_viewed_id"
   add_foreign_key "analytics_fact_person_vieweds", "analytics_dim_people", column: "analytics_dim_person_viewer_id"
-  add_foreign_key "applicant_analytics", "applicants"
   add_foreign_key "applicant_analytics", "employers"
   add_foreign_key "applicant_analytics", "jobs"
   add_foreign_key "applicant_statuses", "applicants", name: "ApplicantStatus_applicant_id_fkey", on_update: :cascade, on_delete: :restrict

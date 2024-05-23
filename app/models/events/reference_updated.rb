@@ -1,13 +1,11 @@
 module Events
-  module ReferenceCreated
+  module ReferenceUpdated
     module Data
       class V1
         extend Messages::Payload
 
         schema do
-          author_training_provider_profile_id Uuid
           reference_text String
-          seeker_id Uuid
         end
       end
     end
@@ -17,7 +15,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Reference,
-      message_type: Messages::Types::TrainingProviders::REFERENCE_CREATED,
+      message_type: Messages::Types::TrainingProviders::REFERENCE_UPDATED,
       version: 1
     )
   end

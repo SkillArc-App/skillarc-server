@@ -286,7 +286,8 @@ module Messages
       *Seekers::EVENTS,
       *Contact::EVENTS,
       *Infrastructure::EVENTS,
-      *TestingOnly::EVENTS
+      *TestingOnly::EVENTS,
+      *TrainingProviders::EVENTS
     ].freeze
 
     COMMANDS = [

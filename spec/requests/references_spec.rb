@@ -61,16 +61,16 @@ RSpec.describe "References", type: :request do
         include_context "training provider authenticated openapi"
 
         response "200", "Reference updated" do
-          schema type: :object,
-                 properties: {
-                   id: { type: :string, format: :uuid },
-                   referenceText: { type: :string },
-                   seekerId: { type: :string, format: :uuid },
-                   authorProfileId: { type: :string, format: :uuid },
-                   trainingProviderId: { type: :string, format: :uuid },
-                   createdAt: { type: :string, format: :datetime },
-                   updatedAt: { type: :string, format: :datetime }
-                 }
+          before do
+            expect_any_instance_of(TrainingProviders::TrainingProviderReactor)
+              .to receive(:update_reference)
+              .with(
+                reference_id: id,
+                reference_text: reference[:reference_text],
+                trace_id: be_a(String)
+              )
+              .and_call_original
+          end
 
           run_test!
         end
@@ -107,17 +107,17 @@ RSpec.describe "References", type: :request do
       context "when authenticated" do
         include_context "training provider authenticated openapi"
 
-        response "200", "Reference created" do
-          schema type: :object,
-                 properties: {
-                   id: { type: :string, format: :uuid },
-                   referenceText: { type: :string },
-                   seekerId: { type: :string, format: :uuid },
-                   authorProfileId: { type: :string, format: :uuid },
-                   trainingProviderId: { type: :string, format: :uuid },
-                   createdAt: { type: :string, format: :datetime },
-                   updatedAt: { type: :string, format: :datetime }
-                 }
+        response "201", "Reference created" do
+          before do
+            expect_any_instance_of(TrainingProviders::TrainingProviderReactor)
+              .to receive(:create_reference)
+              .with(
+                reference_text: reference[:reference],
+                seeker_id: reference[:seeker_profile_id],
+                author_training_provider_profile_id: user.training_provider_profile.id,
+                trace_id: be_a(String)
+              ).and_call_original
+          end
 
           run_test!
         end

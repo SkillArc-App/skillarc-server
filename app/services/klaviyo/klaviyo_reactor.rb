@@ -113,20 +113,21 @@ module Klaviyo
       end
     end
 
-    on_message Events::ChatMessageSent::V1 do |message|
+    on_message Events::ChatMessageSent::V2 do |message|
       dedup_messages(message) do
         applicant_status_updated = Projectors::Aggregates::GetFirst.project(
-          aggregate: Aggregates::Application.new(application_id: message.data.applicant_id),
+          aggregate: Aggregates::Application.new(application_id: message.aggregate.id),
           schema: Events::ApplicantStatusUpdated::V6
         )
 
+        return if applicant_status_updated.blank?
         return if applicant_status_updated.data.user_id == message.data.from_user_id
 
         client.chat_message_received(
-          applicant_id: message.data.applicant_id,
+          applicant_id: message.aggregate.id,
           email: applicant_status_updated.data.applicant_email,
-          employment_title: message.data.employment_title,
-          employer_name: message.data.employer_name,
+          employment_title: applicant_status_updated.data.employment_title,
+          employer_name: applicant_status_updated.data.employer_name,
           event_id: message.id,
           occurred_at: message.occurred_at
         )

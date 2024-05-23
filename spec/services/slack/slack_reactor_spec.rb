@@ -84,33 +84,57 @@ RSpec.describe Slack::SlackReactor do
     end
 
     context "when the message is chat message sent" do
+      before do
+        Event.from_message!(applicant_status_updated)
+      end
+
+      let(:applicant_status_updated) do
+        build(
+          :message,
+          aggregate_id: application_id,
+          schema: Events::ApplicantStatusUpdated::V6,
+          data: {
+            applicant_first_name: "John",
+            applicant_last_name: "Chabot",
+            applicant_email: "some@email.com",
+            seeker_id:,
+            user_id: SecureRandom.uuid,
+            job_id: SecureRandom.uuid,
+            employer_name: "Employer",
+            employment_title: "A job",
+            status: ApplicantStatus::StatusTypes::NEW
+          },
+          metadata: {
+            user_id: SecureRandom.uuid
+          }
+        )
+      end
+
       let(:message) do
         build(
           :message,
-          schema: Events::ChatMessageSent::V1,
+          aggregate_id: application_id,
+          schema: Events::ChatMessageSent::V2,
           data: {
-            applicant_id: SecureRandom.uuid,
-            seeker_id: seeker.id,
+            from_name: "Yo Boi",
             from_user_id:,
-            employer_name: "Employer",
-            employment_title: "A job",
             message: "yo"
           }
         )
       end
 
-      let(:user) { create(:user, email: "some@email.com") }
-      let(:seeker) { create(:seeker, user:) }
+      let(:application_id) { SecureRandom.uuid }
+      let(:seeker_id) { SecureRandom.uuid }
 
       context "when the from_user_id is the seeker" do
-        let(:from_user_id) { seeker.user_id }
+        let(:from_user_id) { applicant_status_updated.data.user_id }
 
         it "sends a slack message to the #feed channel" do
           expect(client)
             .to receive(:chat_postMessage)
             .with(
               channel: '#feed',
-              text: "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker.id}|some@email.com> has *sent* a message to *Employer* for their applcation to *A job*.",
+              text: "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker_id}|some@email.com> has *sent* a message to *Employer* for their applcation to *A job*.",
               as_user: true
             )
 
@@ -126,7 +150,7 @@ RSpec.describe Slack::SlackReactor do
             .to receive(:chat_postMessage)
             .with(
               channel: '#feed',
-              text: "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker.id}|some@email.com> has *received* a message from *Employer* for their applcation to *A job*.",
+              text: "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker_id}|some@email.com> has *received* a message from *Employer* for their applcation to *A job*.",
               as_user: true
             )
 

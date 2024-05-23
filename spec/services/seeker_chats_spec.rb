@@ -2,42 +2,23 @@ require 'rails_helper'
 
 RSpec.describe SeekerChats do
   let(:user) { create(:user, first_name: "Jake", last_name: "Not-Onboard") }
+  let(:seeker) { create(:seeker, user:) }
+  let(:instance) { described_class.new(seeker:, message_service:) }
+  let(:message_service) { MessageService.new }
 
   describe "#send_message" do
-    subject { described_class.new(user).send_message(applicant_id: applicant.id, message:) }
+    subject { instance.send_message(application_id:, message:) }
 
-    include_context "event emitter"
+    let(:application_id) { SecureRandom.uuid }
+    let(:message) { "Some message" }
 
-    let(:message) { "This is a message" }
-    let!(:applicant) { create(:applicant, job:, seeker:) }
-    let(:seeker) { create(:seeker, user:) }
-
-    let!(:applicant_chat) { create(:applicant_chat, applicant:) }
-
-    let(:job) { create(:job, employment_title: "Welder", employer:) }
-
-    let(:employer) { create(:employer, name: "Acme, Inc") }
-
-    it "creates a chat message" do
-      expect { subject }.to change(ChatMessage, :count).by(1)
-
-      expect(ChatMessage.last).to have_attributes(
-        applicant_chat:,
-        message:,
-        user:
-      )
-    end
-
-    it "creates a chat message event" do
-      expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::ChatMessageSent::V1,
-        job_id: job.id,
+    it "emits a chat message sent event" do
+      expect(message_service).to receive(:create!).with(
+        schema: Events::ChatMessageSent::V2,
+        application_id:,
         data: {
-          applicant_id: applicant.id,
-          seeker_id: seeker.id,
+          from_name: "Jake Not-Onboard",
           from_user_id: user.id,
-          employer_name: employer.name,
-          employment_title: job.employment_title,
           message:
         }
       ).and_call_original
@@ -47,40 +28,64 @@ RSpec.describe SeekerChats do
   end
 
   describe "#get" do
-    subject { described_class.new(user).get }
+    subject { instance.get }
 
-    include_context "event emitter"
+    let!(:applicant_chat) do
+      create(
+        :chats__applicant_chat,
+        application_id:,
+        seeker_id: seeker.id,
+        title: "Acme, Inc - Welder",
+        chat_updated_at: Time.zone.local(2000, 1, 1)
+      )
+    end
+    let!(:message1) do
+      create(
+        :chats__message,
+        applicant_chat:,
+        message: "This is a message from the applicant",
+        from: "Jake Not-Onboard",
+        user_id: user.id,
+        message_sent_at: Time.zone.local(2000, 1, 1)
+      )
+    end
+    let!(:message2) do
+      create(
+        :chats__message,
+        applicant_chat:,
+        message: "This is a message from the employer",
+        from: "John Doe",
+        user_id: SecureRandom.uuid,
+        message_sent_at: Time.zone.local(2010, 1, 1)
+      )
+    end
+    let!(:read_receipt) do
+      create(
+        :chats__read_receipt,
+        applicant_chat:,
+        user_id: user.id,
+        read_until: Time.zone.local(2005, 1, 1)
+      )
+    end
 
-    let!(:applicant) { create(:applicant, job:, seeker:) }
-    let(:job) { create(:job, employment_title: "Welder", employer:) }
-    let(:employer) { create(:employer, name: "Acme, Inc") }
-    let!(:seeker) { create(:seeker, user:) }
-
-    let!(:applicant_chat) { create(:applicant_chat, applicant:) }
-
-    let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }
-    let!(:chat_message2) { create(:chat_message, applicant_chat:, message: "This is a message from the employer", user: employer_user, created_at: chat_message.created_at + 1.minute) }
-
-    let(:employer_user) { create(:user, first_name: "John", last_name: "Doe") }
-
-    let!(:read_receipt) { create(:read_receipt, chat_message:, user:) }
+    let(:application_id) { SecureRandom.uuid }
 
     it "returns the applicant chat" do
       expect(subject.first).to match(
         {
-          id: applicant_chat.applicant.id,
+          id: application_id,
           name: "Acme, Inc - Welder",
-          updatedAt: chat_message2.created_at,
+          updatedAt: Time.zone.local(2000, 1, 1),
           messages: [
             {
-              id: chat_message.id,
+              id: message1.id,
               text: "This is a message from the applicant",
               isUser: true,
               isRead: true,
               sender: "Jake Not-Onboard"
             },
             {
-              id: chat_message2.id,
+              id: message2.id,
               text: "This is a message from the employer",
               isUser: false,
               isRead: false,
@@ -93,30 +98,22 @@ RSpec.describe SeekerChats do
   end
 
   describe "#mark_read" do
-    subject { described_class.new(user).mark_read(applicant_id: applicant.id) }
+    subject { instance.mark_read(application_id:) }
 
-    include_context "event emitter"
+    let(:application_id) { SecureRandom.uuid }
 
-    let!(:applicant_chat) { create(:applicant_chat, applicant:) }
-    let!(:chat_message) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant", user:) }
-    let!(:chat_message2) { create(:chat_message, applicant_chat:, message: "This is a message from the applicant") }
-
-    let!(:applicant) { create(:applicant, seeker:) }
-    let(:seeker) { create(:seeker, user:) }
-
-    it "creates a read receipt for each message" do
-      expect { subject }.to change(ReadReceipt, :count).by(2)
-
-      expect(ReadReceipt.last(2)).to include(
-        have_attributes(
-          user:,
-          chat_message:
-        ),
-        have_attributes(
-          user:,
-          chat_message: chat_message2
+    it "emits a chat read event" do
+      expect(message_service)
+        .to receive(:create!)
+        .with(
+          schema: Events::ChatRead::V1,
+          application_id:,
+          data: {
+            read_by_user_id: user.id
+          }
         )
-      )
+
+      subject
     end
   end
 end

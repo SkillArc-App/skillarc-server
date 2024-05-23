@@ -45,7 +45,6 @@ module Employers
     end
 
     validates :status, inclusion: { in: StatusTypes::ALL }
-    validates :seeker_id, uniqueness: { scope: :employers_job_id }
 
     scope :active, -> { where.not(status: StatusTypes::TERMINAL) }
   end

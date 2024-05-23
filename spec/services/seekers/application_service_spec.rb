@@ -1,11 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Seekers::ApplicantService do
-  describe "#apply" do
-    subject { described_class.new(seeker).apply(job) }
+RSpec.describe Seekers::ApplicationService do
+  describe ".apply" do
+    subject { described_class.apply(job:, seeker:, message_service:) }
 
-    include_context "event emitter", false
-
+    let(:message_service) { MessageService.new }
     let(:seeker) { create(:seeker, user:) }
     let(:user) do
       create(
@@ -25,23 +24,22 @@ RSpec.describe Seekers::ApplicantService do
     end
 
     it "publishes an event" do
-      expect_any_instance_of(MessageService)
+      expect(message_service)
         .to receive(:create!)
         .with(
           seeker_id: seeker.id,
-          schema: Events::SeekerApplied::V1,
+          schema: Events::SeekerApplied::V2,
           data: {
+            application_id: be_a(String),
             seeker_first_name: "Katina",
             seeker_last_name: "Hall",
             seeker_email: "katina.hall@skillarc.com",
             seeker_phone_number: "123-456-7890",
-            seeker_id: seeker.id,
+            user_id: seeker.user.id,
             job_id: job.id,
             employer_name: "Skillarc",
             employment_title: "Welder"
-          },
-          metadata: Messages::Nothing,
-          version: 1
+          }
         ).and_call_original
 
       subject

@@ -1,8 +1,9 @@
 FactoryBot.define do
   factory :applicant do
     id { SecureRandom.uuid }
-    job
+    job_id { SecureRandom.uuid }
     seeker
+
     applicant_statuses do
       [
         build(:applicant_status, :new)

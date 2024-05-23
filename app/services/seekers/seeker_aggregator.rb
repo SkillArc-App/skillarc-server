@@ -40,6 +40,7 @@ module Seekers
       OtherExperience.find(message.data.id).destroy!
     end
 
+    # Stories
     on_message Events::StoryCreated::V1, :sync do |message|
       Story.create!(
         id: message.data.id,
@@ -60,6 +61,22 @@ module Seekers
 
     on_message Events::StoryDestroyed::V1, :sync do |message|
       Story.find(message.data.id).destroy!
+    end
+
+    on_message Events::ApplicantStatusUpdated::V6, :sync do |message|
+      application = Applicant.find_or_initialize_by(
+        id: message.aggregate.id
+      )
+
+      application.update!(
+        job_id: message.data.job_id,
+        seeker_id: message.data.seeker_id
+      )
+
+      application.applicant_statuses.create!(
+        id: SecureRandom.uuid,
+        status: message.data.status
+      )
     end
 
     # Ed experience

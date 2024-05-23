@@ -159,6 +159,65 @@ RSpec.describe Seekers::SeekerAggregator do
       end
     end
 
+    context "when the message is applicant status updated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::ApplicantStatusUpdated::V6,
+          aggregate_id: application_id,
+          data: {
+            applicant_first_name: "First",
+            applicant_last_name: "Last",
+            applicant_email: "a@b.c",
+            applicant_phone_number: "333-333-3333",
+            seeker_id: seeker.id,
+            user_id: SecureRandom.uuid,
+            job_id: SecureRandom.uuid,
+            employer_name: "Employer",
+            employment_title: "Job",
+            status: ApplicantStatus::StatusTypes::NEW,
+            reasons: []
+          },
+          metadata: {
+            user_id: SecureRandom.uuid
+          }
+        )
+      end
+
+      let(:application_id) { SecureRandom.uuid }
+
+      context "when an 'Applicant' already exists" do
+        let(:application_id) { applicant.id }
+        let!(:applicant) { create(:applicant) }
+
+        it "creates a new status for the existing applicant" do
+          expect do
+            expect do
+              subject
+            end.not_to change(Applicant, :count)
+          end.to change(ApplicantStatus, :count).from(1).to(2)
+
+          applicant.reload
+          expect(applicant.status.status).to eq(ApplicantStatus::StatusTypes::NEW)
+        end
+      end
+
+      context "when an 'Applicant' does not exists" do
+        let(:application_id) { SecureRandom.uuid }
+
+        it "creates a new status for the existing applicant" do
+          expect do
+            expect do
+              subject
+            end.to change(Applicant, :count).from(0).to(1)
+          end.to change(ApplicantStatus, :count).from(0).to(1)
+
+          applicant = Applicant.take(1).first
+          expect(applicant.status.status).to eq(ApplicantStatus::StatusTypes::NEW)
+        end
+      end
+    end
+
     context "when the message is story destoryed" do
       let(:message) do
         build(

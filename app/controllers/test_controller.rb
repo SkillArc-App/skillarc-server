@@ -55,13 +55,13 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       )
 
       seeker = create_seeker_with_messages(message_service:)
-      applicant = create_application_with_message(message_service:, job:, seeker:)
+      status = create_application_with_message(message_service:, job:, seeker:)
 
       render json: {
         recruiter: recruiter_user,
         job:,
-        applicant: applicant.seeker.user,
-        applicant_status: applicant.status
+        applicant: seeker.user,
+        applicant_status: { status: }
       }
     end
   end
@@ -205,11 +205,9 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   end
 
   def create_application_with_message(message_service:, job:, seeker:)
-    applicant = FactoryBot.create(:applicant, job:, seeker:)
-
     message_service.create!(
       schema: Events::ApplicantStatusUpdated::V6,
-      application_id: applicant.id,
+      application_id: SecureRandom.uuid,
       data: {
         applicant_first_name: seeker.user.first_name,
         applicant_last_name: seeker.user.last_name,
@@ -228,7 +226,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       }
     )
 
-    applicant
+    ApplicantStatus::StatusTypes::NEW
   end
 
   def create_job_with_messages(message_service:)

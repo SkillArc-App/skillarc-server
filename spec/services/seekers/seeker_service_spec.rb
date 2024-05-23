@@ -15,7 +15,7 @@ RSpec.describe Seekers::SeekerService do
   let(:job) { create(:job) }
   let(:job_id) { job.id }
   let(:seeker) { create(:seeker) }
-  let!(:applicant) { create(:applicant, seeker:, job:) }
+  let!(:applicant) { create(:applicant, seeker:, job_id: job.id) }
 
   it_behaves_like "a replayable message consumer"
 

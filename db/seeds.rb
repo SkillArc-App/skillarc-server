@@ -872,18 +872,6 @@ message_service.create!(
   }
 )
 
-applicant = Applicant.create!(
-  id: SecureRandom.uuid,
-  seeker: seeker_with_profile,
-  job: mechanic_job,
-  applicant_statuses: [
-    ApplicantStatus.new(
-      id: SecureRandom.uuid,
-      status: 'new'
-    )
-  ]
-)
-
 message_service.create!(
   schema: Events::OnboardingStarted::V1,
   seeker_id: seeker_with_profile.id,
@@ -899,7 +887,7 @@ message_service.create!(
 )
 
 message_service.create!(
-  application_id: applicant.id,
+  application_id: SecureRandom.uuid,
   schema: Events::ApplicantStatusUpdated::V6,
   data: {
     applicant_first_name: seeker_with_profile.user.first_name,

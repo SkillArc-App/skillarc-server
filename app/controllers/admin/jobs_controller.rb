@@ -4,7 +4,6 @@ module Admin # rubocop:disable Metrics/ModuleLength
 
     def index
       jobs = Job.includes(
-        :applicants,
         :career_paths,
         :employer,
         :job_photos,
@@ -135,7 +134,7 @@ module Admin # rubocop:disable Metrics/ModuleLength
           }
         }
       end,
-      number_of_applicants: job.applicants.length,
+      number_of_applicants: job.applicants.count,
       testimonials: job.testimonials.map { |t| serialize_testimonial(t) }
     }
   end
@@ -171,7 +170,7 @@ module Admin # rubocop:disable Metrics/ModuleLength
           tag: jt.tag.as_json
         }
       end.as_json,
-      number_of_applicants: job.applicants.length,
+      number_of_applicants: job.applicants.count,
       testimonials: job.testimonials.as_json
     }
   end

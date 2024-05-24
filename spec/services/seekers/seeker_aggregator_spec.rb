@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Seekers::SeekerAggregator do
+RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLength
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new }
@@ -8,7 +8,7 @@ RSpec.describe Seekers::SeekerAggregator do
   let(:user) { create(:user, onboarding_session: nil) }
   let(:seeker) { create(:seeker, user:) }
 
-  describe "#handle_message" do
+  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { consumer.handle_message(message) }
 
     context "when the message is basic info added" do

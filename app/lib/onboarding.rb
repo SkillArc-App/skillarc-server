@@ -1,13 +1,13 @@
 class Onboarding
   module Steps
     ALL = [
-      START = "start".freeze,
-      NAME = 'name'.freeze,
+      START = 'start'.freeze,
       RELIABILITY = 'reliability'.freeze,
       EMPLOYMENT = 'employment'.freeze,
       EDUCATION = "education".freeze,
       TRAINING = "training".freeze,
       OPPORTUNITIES = "opportunities".freeze,
+      COMPLETE_LOADING = "complete_loading".freeze,
       COMPLETE = "complete".freeze
     ].freeze
   end

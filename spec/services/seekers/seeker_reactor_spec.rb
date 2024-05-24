@@ -585,16 +585,16 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
         end
       end
 
-      context "when onboarding status next step is complete" do
+      context "when onboarding status next step is complete_loading" do
         let(:projection) do
           Seekers::Projectors::OnboardingStatus::Projection.new(
             start: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true),
-            name: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true),
             reliability: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true),
             employment: Seekers::Projectors::OnboardingStatus::Step.new(needed: false, provided: true),
             education: Seekers::Projectors::OnboardingStatus::Step.new(needed: false, provided: true),
             training: Seekers::Projectors::OnboardingStatus::Step.new(needed: false, provided: true),
-            opportunities: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true)
+            opportunities: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true),
+            complete: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: false)
           )
         end
 

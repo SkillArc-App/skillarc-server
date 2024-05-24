@@ -80,6 +80,7 @@ Rails.application.routes.draw do
 
   post 'onboarding_sessions' => 'onboarding_sessions#create'
   put 'onboarding_sessions' => 'onboarding_sessions#update'
+  get 'onboarding_sessions' => 'onboarding_sessions#show'
 
   resources :users
   resources :profiles, only: %i[index show] do

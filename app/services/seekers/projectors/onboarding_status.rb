@@ -25,22 +25,22 @@ module Seekers
 
         schema do
           start Step
-          name Step
           reliability Step
           employment Step
           education Step
           training Step
           opportunities Step
+          complete Step
         end
 
         def next_step
           return Onboarding::Steps::START unless start.done?
-          return Onboarding::Steps::NAME unless name.done?
           return Onboarding::Steps::RELIABILITY unless reliability.done?
           return Onboarding::Steps::EMPLOYMENT unless employment.done?
           return Onboarding::Steps::TRAINING unless training.done?
           return Onboarding::Steps::EDUCATION unless education.done?
           return Onboarding::Steps::OPPORTUNITIES unless opportunities.done?
+          return Onboarding::Steps::COMPLETE_LOADING unless complete.done?
 
           Onboarding::Steps::COMPLETE
         end
@@ -49,10 +49,8 @@ module Seekers
           case next_step
           when Onboarding::Steps::START
             0
-          when Onboarding::Steps::NAME
-            10
           when Onboarding::Steps::RELIABILITY
-            30
+            20
           when Onboarding::Steps::EMPLOYMENT
             40
           when Onboarding::Steps::TRAINING
@@ -61,7 +59,7 @@ module Seekers
             70
           when Onboarding::Steps::OPPORTUNITIES
             90
-          when Onboarding::Steps::COMPLETE
+          when Onboarding::Steps::COMPLETE_LOADING, Onboarding::Steps::COMPLETE
             100
           end
         end
@@ -70,21 +68,17 @@ module Seekers
       def init
         Projection.new(
           start: Step.new(needed: true),
-          name: Step.new(needed: true),
           reliability: Step.new(needed: true),
           employment: Step.new(needed: false),
           education: Step.new(needed: false),
           training: Step.new(needed: false),
-          opportunities: Step.new(needed: true)
+          opportunities: Step.new(needed: true),
+          complete: Step.new(needed: true)
         )
       end
 
-      on_message Events::OnboardingStarted::V1 do |_, accumulator|
-        set_provided(accumulator, :start)
-      end
-
       on_message Events::BasicInfoAdded::V1 do |_, accumulator|
-        set_provided(accumulator, :name)
+        set_provided(accumulator, :start)
       end
 
       on_message Events::ReliabilityAdded::V1 do |message, accumulator|
@@ -114,12 +108,12 @@ module Seekers
 
       on_message Events::OnboardingCompleted::V2 do |_, accumulator|
         accumulator = set_provided(accumulator, :start)
-        accumulator = set_provided(accumulator, :name)
         accumulator = set_provided(accumulator, :reliability)
         accumulator = set_provided(accumulator, :employment)
         accumulator = set_provided(accumulator, :education)
         accumulator = set_provided(accumulator, :training)
-        set_provided(accumulator, :opportunities)
+        accumulator = set_provided(accumulator, :opportunities)
+        set_provided(accumulator, :complete)
       end
 
       private

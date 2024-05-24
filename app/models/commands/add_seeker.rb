@@ -18,7 +18,7 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.inactive(
+    V1 = Messages::Schema.destroy!(
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,

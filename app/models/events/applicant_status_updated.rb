@@ -125,7 +125,7 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.inactive(
+    V1 = Messages::Schema.destroy!(
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
@@ -134,7 +134,7 @@ module Events
       version: 1
     )
 
-    V2 = Messages::Schema.inactive(
+    V2 = Messages::Schema.destroy!(
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,
@@ -143,7 +143,7 @@ module Events
       version: 2
     )
 
-    V3 = Messages::Schema.inactive(
+    V3 = Messages::Schema.destroy!(
       type: Messages::EVENT,
       data: Data::V3,
       metadata: Messages::Nothing,
@@ -152,7 +152,7 @@ module Events
       version: 3
     )
 
-    V4 = Messages::Schema.inactive(
+    V4 = Messages::Schema.destroy!(
       type: Messages::EVENT,
       data: Data::V4,
       metadata: Messages::Nothing,
@@ -161,7 +161,7 @@ module Events
       version: 4
     )
 
-    V5 = Messages::Schema.inactive(
+    V5 = Messages::Schema.destroy!(
       type: Messages::EVENT,
       data: Data::V4,
       metadata: MetaData::V1,

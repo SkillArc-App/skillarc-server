@@ -11,7 +11,7 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.inactive(
+    V1 = Messages::Schema.destroy!(
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
@@ -19,7 +19,7 @@ module Commands
       message_type: Messages::Types::Contact::SEND_SMS_MESSAGE,
       version: 1
     )
-    V2 = Messages::Schema.inactive(
+    V2 = Messages::Schema.destroy!(
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,

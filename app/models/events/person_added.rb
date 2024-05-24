@@ -12,9 +12,8 @@ module Events
         end
 
         def initialize(**kwarg)
-          raise ArgumentError unless kwarg[:email].present? || kwarg[:phone_number].present?
-
           super(**kwarg)
+          raise ArgumentError unless kwarg[:email].present? || kwarg[:phone_number].present?
         end
       end
     end

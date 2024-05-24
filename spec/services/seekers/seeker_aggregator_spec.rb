@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Seekers::SeekerAggregator do
+RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLength
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new }
@@ -8,7 +8,7 @@ RSpec.describe Seekers::SeekerAggregator do
   let(:user) { create(:user, onboarding_session: nil) }
   let(:seeker) { create(:seeker, user:) }
 
-  describe "#handle_message" do
+  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { consumer.handle_message(message) }
 
     context "when the message is basic info added" do
@@ -422,6 +422,29 @@ RSpec.describe Seekers::SeekerAggregator do
         expect(onboarding_session.user_id).to eq(message.data.user_id)
         expect(onboarding_session.seeker_id).to eq(message.aggregate.id)
         expect(onboarding_session.started_at).to eq(message.occurred_at)
+      end
+    end
+
+    context "when the message is elevator pitch created" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::ElevatorPitchCreated::V1,
+          aggregate_id: seeker.id,
+          data: {
+            job_id: applicant.job_id,
+            pitch: "pitch"
+          }
+        )
+      end
+
+      let(:applicant) { create(:applicant, seeker:) }
+
+      it "update the applicant" do
+        subject
+
+        applicant.reload
+        expect(applicant.elevator_pitch).to eq("pitch")
       end
     end
 

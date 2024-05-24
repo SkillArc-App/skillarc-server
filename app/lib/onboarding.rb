@@ -1,8 +1,7 @@
 class Onboarding
   module Steps
     ALL = [
-      START = "start".freeze,
-      NAME = 'name'.freeze,
+      START = 'start'.freeze,
       RELIABILITY = 'reliability'.freeze,
       EMPLOYMENT = 'employment'.freeze,
       EDUCATION = "education".freeze,

@@ -15,16 +15,6 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
         data: Messages::Nothing
       )
     end
-    let(:onboarding_start) do
-      build(
-        :message,
-        aggregate:,
-        schema: Events::OnboardingStarted::V1,
-        data: {
-          user_id: SecureRandom.uuid
-        }
-      )
-    end
     let(:basic_info_added) do
       build(
         :message,
@@ -113,26 +103,17 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
       end
     end
 
-    context "when an onboarding complete event present" do
-      let(:messages) { [onboarding_start] }
-
-      it "reports the next step is name and progress at 10%" do
-        expect(subject.next_step).to eq(Onboarding::Steps::NAME)
-        expect(subject.progress).to eq(10)
-      end
-    end
-
     context "when a basic info added event is present" do
-      let(:messages) { [onboarding_start, basic_info_added] }
+      let(:messages) { [basic_info_added] }
 
       it "reports the next step is reliability and progress at 30%" do
         expect(subject.next_step).to eq(Onboarding::Steps::RELIABILITY)
-        expect(subject.progress).to eq(30)
+        expect(subject.progress).to eq(20)
       end
     end
 
     context "when a reliability is present" do
-      let(:messages) { [onboarding_start, basic_info_added, reliability_added] }
+      let(:messages) { [basic_info_added, reliability_added] }
 
       context "when reliabilities only mention job" do
         let(:reliabilities) { [Reliability::JOB] }
@@ -180,7 +161,6 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
     context "when reliability and experience has been provided" do
       let(:messages) do
         [
-          onboarding_start,
           basic_info_added,
           reliability_added,
           education_experience_added,
@@ -205,7 +185,6 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
     context "when reliability and experience has been provided and opprotunity" do
       let(:messages) do
         [
-          onboarding_start,
           basic_info_added,
           reliability_added,
           education_experience_added,

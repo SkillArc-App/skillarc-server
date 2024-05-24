@@ -5,6 +5,7 @@ module Commands
         extend Messages::Payload
 
         schema do
+          user_id Either(String, nil)
           first_name String
           last_name String
           email Either(String, nil)
@@ -12,9 +13,8 @@ module Commands
         end
 
         def initialize(**kwarg)
-          raise ArgumentError unless kwarg[:email].present? || kwarg[:phone_number].present?
-
           super(**kwarg)
+          raise ArgumentError unless kwarg[:email].present? || kwarg[:phone_number].present?
         end
       end
     end

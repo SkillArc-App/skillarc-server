@@ -106,6 +106,41 @@ RSpec.describe Messages::Schema do
     end
   end
 
+  describe ".destroy!" do
+    subject do
+      described_class.destroy!(
+        data:,
+        metadata:,
+        message_type:,
+        version:,
+        aggregate:,
+        type:
+      )
+    end
+
+    let(:data) { String }
+    let(:metadata) { Hash }
+    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:version) { 1 }
+    let(:aggregate) { Aggregates::User }
+    let(:type) { Messages::EVENT }
+
+    it "returns the schema and registers it" do
+      expect(MessageService)
+        .to receive(:register)
+        .with(
+          schema: be_a(described_class)
+        ).and_call_original
+
+      expect(subject.data).to eq(data)
+      expect(subject.metadata).to eq(metadata)
+      expect(subject.status).to eq(described_class::Status::DESTROYED)
+      expect(subject.message_type).to eq(message_type)
+      expect(subject.version).to eq(version)
+      expect(subject.aggregate).to eq(aggregate)
+    end
+  end
+
   describe "#all_messages" do
     let(:instance) do
       described_class.active(

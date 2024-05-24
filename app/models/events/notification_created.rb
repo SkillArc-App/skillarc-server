@@ -35,7 +35,7 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.inactive(
+    V1 = Messages::Schema.destroy!(
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
@@ -43,7 +43,7 @@ module Events
       message_type: Messages::Types::NOTIFICATION_CREATED,
       version: 1
     )
-    V2 = Messages::Schema.inactive(
+    V2 = Messages::Schema.destroy!(
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,

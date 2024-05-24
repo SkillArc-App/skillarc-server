@@ -11,7 +11,7 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.inactive(
+    V1 = Messages::Schema.destroy!(
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,

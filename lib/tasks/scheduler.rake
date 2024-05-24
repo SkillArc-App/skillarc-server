@@ -13,3 +13,7 @@ end
 task execute_scheduled_tasks: :environment do
   ExecuteTasksJob.perform_later
 end
+
+task cleanup_destroyed_messages: :environment do
+  CleanupDestroyedMessagesJob.perform_later
+end

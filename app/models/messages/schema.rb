@@ -4,7 +4,8 @@ module Messages
       ALL = [
         ACTIVE = "active".freeze,
         DEPRECATED = "deprecated".freeze,
-        INACTIVE = "inactive".freeze
+        INACTIVE = "inactive".freeze,
+        DESTROYED = "destroyed".freeze
       ].freeze
     end
 
@@ -47,6 +48,12 @@ module Messages
       schema
     end
 
+    def self.destroy!(data:, metadata:, message_type:, version:, aggregate:, type:) # rubocop:disable Metrics/ParameterLists
+      schema = new(data:, metadata:, message_type:, version:, aggregate:, type:, status: Status::DESTROYED)
+      MessageService.register(schema:)
+      schema
+    end
+
     def all_messages
       MessageService.all_messages(self)
     end
@@ -61,6 +68,10 @@ module Messages
 
     def inactive?
       status == Status::INACTIVE
+    end
+
+    def destroyed?
+      status == Status::DESTROYED
     end
 
     def to_s

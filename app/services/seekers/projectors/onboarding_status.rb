@@ -30,6 +30,7 @@ module Seekers
           education Step
           training Step
           opportunities Step
+          complete Step
         end
 
         def next_step
@@ -39,6 +40,7 @@ module Seekers
           return Onboarding::Steps::TRAINING unless training.done?
           return Onboarding::Steps::EDUCATION unless education.done?
           return Onboarding::Steps::OPPORTUNITIES unless opportunities.done?
+          return Onboarding::Steps::COMPLETE_LOADING unless complete.done?
 
           Onboarding::Steps::COMPLETE
         end
@@ -57,7 +59,7 @@ module Seekers
             70
           when Onboarding::Steps::OPPORTUNITIES
             90
-          when Onboarding::Steps::COMPLETE
+          when Onboarding::Steps::COMPLETE_LOADING, Onboarding::Steps::COMPLETE
             100
           end
         end
@@ -70,7 +72,8 @@ module Seekers
           employment: Step.new(needed: false),
           education: Step.new(needed: false),
           training: Step.new(needed: false),
-          opportunities: Step.new(needed: true)
+          opportunities: Step.new(needed: true),
+          complete: Step.new(needed: true)
         )
       end
 
@@ -109,7 +112,8 @@ module Seekers
         accumulator = set_provided(accumulator, :employment)
         accumulator = set_provided(accumulator, :education)
         accumulator = set_provided(accumulator, :training)
-        set_provided(accumulator, :opportunities)
+        accumulator = set_provided(accumulator, :opportunities)
+        set_provided(accumulator, :complete)
       end
 
       private

@@ -234,8 +234,7 @@ module Seekers
       return if ::Projectors::Aggregates::HasOccurred.new(schema: Events::OnboardingCompleted::V2).project(messages)
 
       status = Seekers::Projectors::OnboardingStatus.new.project(messages)
-
-      return unless status.next_step == Onboarding::Steps::COMPLETE
+      return unless status.next_step == Onboarding::Steps::COMPLETE_LOADING
 
       message_service.create!(
         schema: Commands::CompleteOnboarding::V1,

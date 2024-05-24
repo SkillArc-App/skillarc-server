@@ -201,8 +201,8 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
         ]
       end
 
-      it "reports the next step is opprotunies and progress is 90" do
-        expect(subject.next_step).to eq(Onboarding::Steps::COMPLETE)
+      it "reports the next step is complete loading and progress is 100" do
+        expect(subject.next_step).to eq(Onboarding::Steps::COMPLETE_LOADING)
         expect(subject.progress).to eq(100)
       end
     end

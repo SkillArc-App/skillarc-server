@@ -163,7 +163,7 @@ module Seekers
       )
     end
 
-    on_message Events::SeekerCreated::V1, :sync do |message|
+    on_message Events::SeekerCreated::V1 do |message|
       message_service.create!(
         schema: Commands::StartOnboarding::V1,
         trace_id: message.trace_id,
@@ -174,7 +174,7 @@ module Seekers
       )
     end
 
-    on_message Commands::StartOnboarding::V1, :sync do |message|
+    on_message Commands::StartOnboarding::V1 do |message|
       return if ::Projectors::Aggregates::HasOccurred.project(aggregate: message.aggregate, schema: Events::OnboardingStarted::V1)
 
       message_service.create!(

@@ -4,7 +4,13 @@ class OnboardingSessionsController < ApplicationController
 
   before_action :authorize
 
+  def show
+    render json: serialize_onboarding_session(current_user.seeker&.id)
+  end
+
   def create
+    filtered = params.permit(:first_name, :last_name, :phone_number, :date_of_birth).to_h.symbolize_keys
+
     with_message_service do
       if current_user.seeker.blank?
         seeker = Seeker.create!(user: current_user)
@@ -27,9 +33,22 @@ class OnboardingSessionsController < ApplicationController
           user_id: current_user.id
         }
       )
+
+      message_service.create!(
+        seeker_id: current_user.seeker.id,
+        trace_id: request.request_id,
+        schema: Events::BasicInfoAdded::V1,
+        data: {
+          user_id: current_user.id,
+          first_name: filtered[:first_name],
+          last_name: filtered[:last_name],
+          phone_number: filtered[:phone_number],
+          date_of_birth: filtered[:date_of_birth]
+        }
+      )
     end
 
-    render json: serialize_onboarding_session(current_user.seeker.id)
+    head :created
   end
 
   def update
@@ -106,7 +125,11 @@ class OnboardingSessionsController < ApplicationController
   private
 
   def serialize_onboarding_session(seeker_id)
-    messages = MessageService.aggregate_events(Aggregates::Seeker.new(seeker_id:))
+    messages = if seeker_id.nil?
+                 []
+               else
+                 MessageService.aggregate_events(Aggregates::Seeker.new(seeker_id:))
+               end
     status = Seekers::Projectors::OnboardingStatus.new.project(messages)
 
     {

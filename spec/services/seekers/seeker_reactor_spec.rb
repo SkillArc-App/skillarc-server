@@ -589,7 +589,6 @@ RSpec.describe Seekers::SeekerReactor do # rubocop:disable Metrics/BlockLength
         let(:projection) do
           Seekers::Projectors::OnboardingStatus::Projection.new(
             start: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true),
-            name: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true),
             reliability: Seekers::Projectors::OnboardingStatus::Step.new(needed: true, provided: true),
             employment: Seekers::Projectors::OnboardingStatus::Step.new(needed: false, provided: true),
             education: Seekers::Projectors::OnboardingStatus::Step.new(needed: false, provided: true),

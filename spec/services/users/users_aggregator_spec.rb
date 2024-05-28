@@ -39,5 +39,28 @@ RSpec.describe Users::UsersAggregator do
         end
       end
     end
+
+    context "when message is seeker created" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::SeekerCreated::V1,
+          aggregate_id: id,
+          data: {
+            user_id: user.id
+          }
+        )
+      end
+
+      let(:user) { create(:user) }
+      let(:id) { SecureRandom.uuid }
+
+      it "stamps the user with person_id" do
+        subject
+
+        user.reload
+        expect(user.person_id).to eq(id)
+      end
+    end
   end
 end

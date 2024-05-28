@@ -14,7 +14,6 @@ RSpec.describe SeekerService do
         email: "seeker@blocktrainapp.com",
         first_name: "First",
         last_name: "Last",
-        onboarding_session: nil,
         phone_number: "1234567890",
         sub: "sub",
         zip_code: "43210"
@@ -24,7 +23,7 @@ RSpec.describe SeekerService do
     before do
       create(
         :onboarding_session,
-        user: seeker.user,
+        seeker:,
         responses: {
           "opportunityInterests" => {
             "response" => %w[

@@ -161,7 +161,6 @@ module Seekers
     on_message Events::OnboardingStarted::V1, :sync do |message|
       OnboardingSession.create!(
         id: SecureRandom.uuid,
-        user_id: message.data.user_id,
         seeker_id: message.aggregate.id,
         started_at: message.occurred_at
       )
@@ -175,11 +174,8 @@ module Seekers
           completed_at: message.occurred_at
         )
       else
-        user = Seeker.find(message.aggregate.id).user
-
         OnboardingSession.create!(
           id: SecureRandom.uuid,
-          user_id: user.id,
           seeker_id: message.aggregate.id,
           started_at: message.occurred_at,
           completed_at: message.occurred_at

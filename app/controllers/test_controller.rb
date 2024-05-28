@@ -161,7 +161,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   private
 
   def create_user_with_messages(message_service:)
-    user = FactoryBot.create(:user, onboarding_session: nil)
+    user = FactoryBot.create(:user)
 
     message_service.create!(
       user_id: user.id,

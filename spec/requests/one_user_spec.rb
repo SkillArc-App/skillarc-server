@@ -25,8 +25,8 @@ RSpec.describe "OneUsers", type: :request do
 
           context "fully loaded" do
             before do
-              create(:seeker, user:)
-              create(:onboarding_session, user:)
+              seeker = create(:seeker, user:)
+              create(:onboarding_session, seeker:)
               create(:recruiter, user:)
               create(:training_provider_profile, user:)
             end

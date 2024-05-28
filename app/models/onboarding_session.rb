@@ -15,7 +15,7 @@
 #  index_onboarding_sessions_on_seeker_id  (seeker_id) UNIQUE
 #
 class OnboardingSession < ApplicationRecord
-  belongs_to :user
+  belongs_to :seeker
 
   def industry_interests
     # begin

@@ -5,6 +5,7 @@ RSpec.describe JobMatch::JobMatch do
 
   let(:user) { create(:user) }
   let!(:seeker) { create(:seeker, user:) }
+  let!(:onboarding_session) { create(:onboarding_session, seeker:) }
 
   let(:saved_job) { create(:job) }
   let!(:unsaved_job) { create(:job) }

@@ -29,15 +29,12 @@ class Seeker < ApplicationRecord
   has_many :references, class_name: "Reference", dependent: :destroy
   has_many :stories, dependent: :destroy
   has_many :seeker_training_providers, dependent: :destroy
+  has_one :onboarding_session, dependent: :destroy
 
   delegate :email, to: :user
   delegate :first_name, to: :user
   delegate :last_name, to: :user
   delegate :phone_number, to: :user
-
-  def onboarding_session
-    OnboardingSession.where(user_id:).first
-  end
 
   def hiring_status
     return 'Interviewing' if applicants.includes(:applicant_statuses).any? { |a| a.status.status == 'interviewing' }

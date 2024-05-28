@@ -6,7 +6,7 @@ class SeekerService
   end
 
   def get(user_id: nil, seeker_editor: false)
-    industry_interests = seeker.user.onboarding_session&.responses&.dig("opportunityInterests", "response") || []
+    industry_interests = seeker.onboarding_session&.responses&.dig("opportunityInterests", "response") || []
 
     if user_id.present? && user_id != seeker.user.id
       message_service.create!(

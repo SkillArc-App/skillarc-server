@@ -5,7 +5,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
 
   let(:consumer) { described_class.new }
 
-  let(:user) { create(:user, onboarding_session: nil) }
+  let(:user) { create(:user) }
   let(:seeker) { create(:seeker, user:) }
 
   describe "#handle_message" do # rubocop:disable Metrics/BlockLength
@@ -419,7 +419,6 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         expect { subject }.to change(OnboardingSession, :count).from(0).to(1)
 
         onboarding_session = OnboardingSession.last_created
-        expect(onboarding_session.user_id).to eq(message.data.user_id)
         expect(onboarding_session.seeker_id).to eq(message.aggregate.id)
         expect(onboarding_session.started_at).to eq(message.occurred_at)
       end
@@ -459,7 +458,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
       end
 
       context "when an onboarding session exists" do
-        let!(:onboarding_session) { create(:onboarding_session, user:, seeker_id: seeker.id) }
+        let!(:onboarding_session) { create(:onboarding_session, seeker:) }
 
         it "updates the completed at time" do
           subject

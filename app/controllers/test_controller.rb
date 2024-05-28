@@ -234,10 +234,10 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     job_id = SecureRandom.uuid
 
     employer = FactoryBot.create(:employer, id: employer_id, location: "Columbus Ohio", name: SecureRandom.uuid, bio: "We are a company.")
-    job = FactoryBot.create(:job, employer:, id: job_id,
-                                  employment_title: SecureRandom.uuid,
-                                  benefits_description: "We have benefits.",
-                                  location: "Columbus Ohio")
+    job = FactoryBot.build(:job, employer:, id: job_id,
+                                 employment_title: SecureRandom.uuid,
+                                 benefits_description: "We have benefits.",
+                                 location: "Columbus Ohio")
 
     message_service.create!(
       schema: Events::EmployerCreated::V1,

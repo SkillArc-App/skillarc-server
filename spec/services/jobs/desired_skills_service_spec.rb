@@ -9,15 +9,6 @@ RSpec.describe Jobs::DesiredSkillService do
     let(:job) { create(:job) }
     let(:master_skill_id) { create(:master_skill).id }
 
-    it "creates a desired skill" do
-      expect { subject }.to change { job.desired_skills.count }.by(1)
-
-      desired_skill = job.desired_skills.last
-
-      expect(desired_skill.master_skill_id).to eq(master_skill_id)
-      expect(desired_skill.job).to eq(job)
-    end
-
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::DesiredSkillCreated::V1,
@@ -39,10 +30,6 @@ RSpec.describe Jobs::DesiredSkillService do
     include_context "event emitter"
 
     let!(:desired_skill) { create(:desired_skill) }
-
-    it "destroys the desired skill" do
-      expect { subject }.to change { DesiredSkill.count }.by(-1)
-    end
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(

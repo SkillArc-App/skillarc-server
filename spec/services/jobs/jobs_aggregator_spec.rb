@@ -8,6 +8,52 @@ RSpec.describe Jobs::JobsAggregator do
   describe "#handle_message" do
     subject { consumer.handle_message(message) }
 
+    context "DesiredSkillCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::DesiredSkillCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id:,
+            job_id: job.id,
+            master_skill_id: master_skill.id
+          }
+        )
+      end
+      let(:id) { SecureRandom.uuid }
+      let(:job) { create(:job) }
+      let(:master_skill) { create(:master_skill) }
+
+      it "creates a desired skill" do
+        expect { subject }.to change { DesiredSkill.count }.by(1)
+
+        desired_skill = DesiredSkill.last
+
+        expect(desired_skill.id).to eq(id)
+        expect(desired_skill.job_id).to eq(job.id)
+        expect(desired_skill.master_skill_id).to eq(master_skill.id)
+      end
+    end
+
+    context "DesiredSkillDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::DesiredSkillDestroyed::V1,
+          aggregate_id: desired_skill.job_id,
+          data: {
+            id: desired_skill.id
+          }
+        )
+      end
+      let!(:desired_skill) { create(:desired_skill) }
+
+      it "destroys a desired skill" do
+        expect { subject }.to change { DesiredSkill.count }.by(-1)
+      end
+    end
+
     context "JobCreated" do
       let(:message) do
         build(

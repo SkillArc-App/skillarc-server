@@ -8,5 +8,9 @@ FactoryBot.define do
       build(:onboarding_session)
     end
     sub { Faker::Internet.uuid }
+
+    trait :with_person do
+      person_id { SecureRandom.uuid }
+    end
   end
 end

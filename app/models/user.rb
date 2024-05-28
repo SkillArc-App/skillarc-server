@@ -13,6 +13,7 @@
 #  zip_code       :text
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  person_id      :uuid
 #
 # Indexes
 #

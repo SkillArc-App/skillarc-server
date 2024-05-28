@@ -54,6 +54,53 @@ RSpec.describe Jobs::JobsAggregator do
       end
     end
 
+    context "LearnedSkillCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::LearnedSkillCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id:,
+            job_id: job.id,
+            master_skill_id: master_skill.id
+          }
+        )
+      end
+      let(:id) { SecureRandom.uuid }
+      let(:job) { create(:job) }
+      let(:master_skill) { create(:master_skill) }
+
+      it "creates a learned skill" do
+        expect { subject }.to change { LearnedSkill.count }.by(1)
+
+        learned_skill = LearnedSkill.last
+
+        expect(learned_skill.id).to eq(id)
+        expect(learned_skill.job_id).to eq(job.id)
+        expect(learned_skill.master_skill_id).to eq(master_skill.id)
+      end
+    end
+
+    context "LearnedSkillDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::LearnedSkillDestroyed::V1,
+          aggregate_id: learned_skill.job_id,
+          data: {
+            id: learned_skill.id
+          }
+        )
+      end
+      let!(:learned_skill) { create(:learned_skill) }
+
+      it "destroys a learned skill" do
+        expect { subject }.to change { LearnedSkill.count }.by(-1)
+      end
+    end
+
+
     context "JobCreated" do
       let(:message) do
         build(

@@ -1,5 +1,5 @@
 module Seekers
-  class SeekerAggregator < MessageConsumer
+  class SeekerAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay
       OtherExperience.delete_all
       EducationExperience.delete_all

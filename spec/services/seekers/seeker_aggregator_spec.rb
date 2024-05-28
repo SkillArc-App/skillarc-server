@@ -106,7 +106,6 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         end
       end
 
-
       context "when the message is experience added" do
         let(:message) do
           build(

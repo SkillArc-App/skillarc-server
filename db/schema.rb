@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_28_133901) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_28_134331) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -668,6 +668,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_133901) do
     t.datetime "updated_at", precision: 3, null: false
     t.jsonb "responses", default: {}, null: false
     t.uuid "seeker_id", null: false
+    t.index ["seeker_id"], name: "index_onboarding_sessions_on_seeker_id", unique: true
     t.index ["user_id"], name: "OnboardingSession_user_id_key", unique: true
   end
 

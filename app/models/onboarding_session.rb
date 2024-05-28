@@ -13,7 +13,8 @@
 #
 # Indexes
 #
-#  OnboardingSession_user_id_key  (user_id) UNIQUE
+#  OnboardingSession_user_id_key           (user_id) UNIQUE
+#  index_onboarding_sessions_on_seeker_id  (seeker_id) UNIQUE
 #
 # Foreign Keys
 #

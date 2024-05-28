@@ -10,13 +10,36 @@ module Seekers
       ProfileSkill.delete_all
       Story.delete_all
       OnboardingSession.delete_all
+      Seeker.delete_all
+    end
+
+    on_message Events::SeekerCreated::V1, :sync do |message|
+      Seeker.create!(
+        id: message.aggregate.id,
+        user_id: message.data.user_id
+      )
+    end
+
+    on_message Events::SeekerUpdated::V1, :sync do |message|
+      Seeker.update!(message.aggregate.id, about: message.data.about)
+    end
+
+    on_message Events::ZipAdded::V1, :sync do |message|
+      Seeker.update!(message.aggregate.id, zip_code: message.data.zip_code)
     end
 
     on_message Events::BasicInfoAdded::V1, :sync do |message|
       seeker = Seeker.find(message.aggregate.id)
-      user = seeker.user
-
+      # Hack until we cut over to person added
+      user = User.find(seeker.user_id)
       user.update!(
+        first_name: message.data.first_name,
+        last_name: message.data.last_name,
+        phone_number: message.data.phone_number
+      )
+
+      seeker.update!(
+        email: user.email,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
         phone_number: message.data.phone_number

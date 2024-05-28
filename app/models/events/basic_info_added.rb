@@ -8,7 +8,7 @@ module Events
           user_id String
           first_name String
           last_name String
-          phone_number String
+          phone_number Either(String, nil)
           date_of_birth Either(Date, nil), coerce: Messages::DateCoercer
         end
       end

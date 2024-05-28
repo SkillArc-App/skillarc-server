@@ -32,7 +32,24 @@ Recruiter.create!(
   user: recruiter_user
 )
 
-mechanic_job = Job.create!(
+JobStruct = Struct.new(
+  :id,
+  :category,
+  :employer,
+  :benefits_description,
+  :responsibilities_description,
+  :employment_title,
+  :location,
+  :employment_type,
+  :hide_job,
+  :industry,
+  :schedule,
+  :work_days,
+  :requirements_description,
+  keyword_init: true
+)
+
+mechanic_job = JobStruct.new(
   id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
   category: Job::Categories::STAFFING,
   employer: turner_employer,
@@ -50,7 +67,7 @@ mechanic_job = Job.create!(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
 )
 
-earthwork_job = Job.create!(
+earthwork_job = JobStruct.new(
   id: 'c2c2d40d-4028-409e-8145-e77384a44daf',
   category: Job::Categories::STAFFING,
   employer: sg_employer,
@@ -68,7 +85,7 @@ earthwork_job = Job.create!(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
 )
 
-contractor = Job.create!(
+contractor = JobStruct.new(
   id: '25ecbccf-9043-4da8-91b1-a5eee5c63634',
   category: Job::Categories::STAFFING,
   employer: sg_employer,
@@ -217,6 +234,470 @@ Tag.create!([
                 name: 'Fair chance employer'
               }
             ])
+
+trained_seeker_with_reference = Seeker.create!(
+  bio: "I learn stuff",
+  user: User.new(
+    id: SecureRandom.uuid,
+    first_name: 'Tom',
+    last_name: 'Hanks',
+    phone_number: "+16666666666",
+    email: 'trained-seeker-with-reference@blocktrainapp.com',
+    sub: 'tomsub'
+  )
+)
+
+message_service.create!(
+  user_id: trained_seeker_with_reference.user.id,
+  schema: Events::UserCreated::V1,
+  data: {
+    first_name: trained_seeker_with_reference.user.first_name,
+    last_name: trained_seeker_with_reference.user.last_name,
+    email: trained_seeker_with_reference.user.email,
+    sub: trained_seeker_with_reference.user.sub
+  }
+)
+
+message_service.create!(
+  seeker_id: trained_seeker_with_reference.id,
+  schema: Events::SeekerCreated::V1,
+  data: {
+    user_id: trained_seeker_with_reference.user.id
+  }
+)
+
+message_service.create!(
+  seeker_id: trained_seeker_with_reference.id,
+  schema: Events::BasicInfoAdded::V1,
+  data: {
+    first_name: trained_seeker_with_reference.user.first_name,
+    last_name: trained_seeker_with_reference.user.last_name,
+    phone_number: trained_seeker_with_reference.user.phone_number,
+    user_id: trained_seeker_with_reference.user.id,
+    date_of_birth: "1963-06-14"
+  }
+)
+
+trained_seeker = Seeker.create!(
+  bio: 'I learn stuff',
+  user: User.new(
+    id: 'cll2k67ub0000ao24lvmbzcqs',
+    first_name: 'Tim',
+    last_name: 'Allen',
+    email: 'trained-seeker@blocktrainapp.com',
+    phone_number: "+13333333333",
+    sub: 'timsub'
+  )
+)
+
+message_service.create!(
+  user_id: trained_seeker.user.id,
+  schema: Events::UserCreated::V1,
+  data: {
+    first_name: trained_seeker.user.first_name,
+    last_name: trained_seeker.user.last_name,
+    email: trained_seeker.user.email,
+    sub: trained_seeker.user.sub
+  }
+)
+
+message_service.create!(
+  seeker_id: trained_seeker.id,
+  schema: Events::SeekerCreated::V1,
+  data: {
+    user_id: trained_seeker.user.id
+  }
+)
+
+message_service.create!(
+  seeker_id: trained_seeker.id,
+  schema: Events::BasicInfoAdded::V1,
+  data: {
+    first_name: trained_seeker.user.first_name,
+    last_name: trained_seeker.user.last_name,
+    phone_number: trained_seeker.user.phone_number,
+    user_id: trained_seeker.user.id,
+    date_of_birth: "1990-10-09"
+  }
+)
+
+seeker_with_profile = Seeker.create!(
+  bio: 'I learn stuff',
+  user: User.new(
+    id: 'cll0yrt890002aor2v4pwo4ia',
+    first_name: 'Rita',
+    last_name: 'Wilson',
+    phone_number: "+14444444444",
+    email: 'seeker-with-profile@blocktrainapp.com',
+    sub: 'ritasub'
+  )
+)
+
+message_service.create!(
+  user_id: seeker_with_profile.user.id,
+  schema: Events::UserCreated::V1,
+  data: {
+    first_name: seeker_with_profile.user.first_name,
+    last_name: seeker_with_profile.user.last_name,
+    email: seeker_with_profile.user.email,
+    sub: seeker_with_profile.user.sub
+  }
+)
+
+message_service.create!(
+  seeker_id: seeker_with_profile.id,
+  schema: Events::SeekerCreated::V1,
+  data: {
+    user_id: seeker_with_profile.user.id
+  }
+)
+
+message_service.create!(
+  seeker_id: seeker_with_profile.id,
+  schema: Events::BasicInfoAdded::V1,
+  data: {
+    first_name: seeker_with_profile.user.first_name,
+    last_name: seeker_with_profile.user.last_name,
+    phone_number: seeker_with_profile.user.phone_number,
+    user_id: seeker_with_profile.user.id,
+    date_of_birth: "1993-01-01"
+  }
+)
+
+message_service.create!(
+  schema: Events::OnboardingStarted::V1,
+  seeker_id: seeker_with_profile.id,
+  data: {
+    user_id: seeker_with_profile.user.id
+  }
+)
+
+message_service.create!(
+  schema: Events::OnboardingCompleted::V2,
+  seeker_id: seeker_with_profile.id,
+  data: Messages::Nothing
+)
+
+message_service.create!(
+  application_id: SecureRandom.uuid,
+  schema: Events::ApplicantStatusUpdated::V6,
+  data: {
+    applicant_first_name: seeker_with_profile.user.first_name,
+    applicant_last_name: seeker_with_profile.user.last_name,
+    applicant_email: seeker_with_profile.user.email,
+    applicant_phone_number: seeker_with_profile.user.phone_number,
+    seeker_id: seeker_with_profile.id,
+    user_id: seeker_with_profile.user.id,
+    job_id: mechanic_job.id,
+    employer_name: mechanic_job.employer.name,
+    employment_title: mechanic_job.employment_title,
+    status: ApplicantStatus::StatusTypes::NEW,
+    reasons: []
+  },
+  metadata: {}
+)
+
+megans_recruits = TrainingProvider.create!(
+  id: SecureRandom.uuid,
+  name: "Megan's Recruits",
+  description: "We train people to help them get jobs"
+)
+
+cul = TrainingProvider.create!(
+  id: SecureRandom.uuid,
+  name: 'Columbus Urban League',
+  description:
+    'We are super good at doing the thing we do which is to help the people we work with get jobs'
+)
+
+trainer = User.create!(
+  id: SecureRandom.uuid,
+  first_name: 'Meghan',
+  last_name: 'Trainer',
+  email: 'trainer@blocktrainapp.com',
+  sub: 'megsub'
+)
+
+message_service.create!(
+  user_id: trainer.id,
+  schema: Events::UserCreated::V1,
+  data: {
+    first_name: trainer.first_name,
+    last_name: trainer.last_name,
+    email: trainer.email,
+    sub: trainer.sub
+  }
+)
+
+TrainingProviderProfile.create!(
+  id: SecureRandom.uuid,
+  training_provider_id: cul.id,
+  user_id: trainer.id
+)
+
+trainer_with_reference = User.create!(
+  id: SecureRandom.uuid,
+  first_name: 'Bill',
+  last_name: 'Traynor',
+  email: 'trainer-with-reference@blocktrainapp.com',
+  sub: 'billsub'
+)
+
+message_service.create!(
+  user_id: trainer_with_reference.id,
+  schema: Events::UserCreated::V1,
+  data: {
+    first_name: trainer_with_reference.first_name,
+    last_name: trainer_with_reference.last_name,
+    email: trainer_with_reference.email,
+    sub: trainer_with_reference.sub
+  }
+)
+
+Role::Types::ALL.each do |role|
+  Role.create!(id: SecureRandom.uuid, name: role)
+end
+
+admin_user = User.create!(
+  id: SecureRandom.uuid,
+  first_name: 'Jake',
+  last_name: 'Not-Onboard',
+  email: 'admin@blocktrainapp.com',
+  sub: 'jakesub'
+)
+
+message_service.create!(
+  user_id: admin_user.id,
+  schema: Events::UserCreated::V1,
+  data: {
+    first_name: admin_user.first_name,
+    last_name: admin_user.last_name,
+    email: admin_user.email,
+    sub: admin_user.sub
+  }
+)
+
+message_service.create!(
+  user_id: admin_user.id,
+  schema: Events::RoleAdded::V2,
+  data: {
+    role: Role::Types::ADMIN
+  }
+)
+message_service.create!(
+  user_id: admin_user.id,
+  schema: Events::RoleAdded::V2,
+  data: {
+    role: Role::Types::EMPLOYER_ADMIN
+  }
+)
+
+job_order_admin = User.create!(
+  id: SecureRandom.uuid,
+  first_name: 'Job',
+  last_name: 'Master',
+  email: 'job_order@skillarc.com',
+  sub: 'job_oder'
+)
+
+message_service.create!(
+  user_id: job_order_admin.id,
+  schema: Events::UserCreated::V1,
+  data: {
+    first_name: job_order_admin.first_name,
+    last_name: job_order_admin.last_name,
+    email: job_order_admin.email,
+    sub: job_order_admin.sub
+  }
+)
+
+message_service.create!(
+  user_id: job_order_admin.id,
+  schema: Events::RoleAdded::V2,
+  data: {
+    role: Role::Types::JOB_ORDER_ADMIN
+  }
+)
+
+bill_trainer_profile = TrainingProviderProfile.create!(
+  id: SecureRandom.uuid,
+  training_provider_id: megans_recruits.id,
+  user_id: trainer_with_reference.id
+)
+
+cool_program = Program.create!(
+  id: SecureRandom.uuid,
+  name: 'Cool Program',
+  description: 'You learn stuff',
+  training_provider_id: megans_recruits.id
+)
+
+welding = Program.create!(
+  id: SecureRandom.uuid,
+  name: 'Welding Class 2023 Q1',
+  description: 'You weld stuff',
+  training_provider_id: cul.id
+)
+
+plumbing = Program.create!(
+  id: SecureRandom.uuid,
+  name: 'Plumbing Class 2023 Q1',
+  description: 'You plumb stuff',
+  training_provider_id: cul.id
+)
+
+carpentry = Program.create!(
+  id: SecureRandom.uuid,
+  name: 'Carpentry Class 2023 Q1',
+  description: 'You carp stuff',
+  training_provider_id: cul.id
+)
+
+message_service.create!(
+  schema: Events::SeekerTrainingProviderCreated::V4,
+  seeker_id: trained_seeker_with_reference.id,
+  data: {
+    id: SecureRandom.uuid,
+    program_id: cool_program.id,
+    training_provider_id: megans_recruits.id,
+    status: "Enrolled"
+  }
+)
+
+message_service.create!(
+  schema: Events::SeekerTrainingProviderCreated::V4,
+  seeker_id: trained_seeker.id,
+  data: {
+    id: SecureRandom.uuid,
+    program_id: plumbing.id,
+    training_provider_id: cul.id,
+    status: "Enrolled"
+  }
+)
+
+message_service.create!(
+  schema: Events::SeekerTrainingProviderCreated::V4,
+  seeker_id: trained_seeker.id,
+  data: {
+    id: SecureRandom.uuid,
+    program_id: welding.id,
+    training_provider_id: cul.id,
+    status: "Enrolled"
+  }
+)
+
+message_service.create!(
+  schema: Events::SeekerTrainingProviderCreated::V4,
+  seeker_id: trained_seeker_with_reference.id,
+  data: {
+    id: SecureRandom.uuid,
+    program_id: carpentry.id,
+    training_provider_id: cul.id,
+    status: "Enrolled"
+  }
+)
+
+Reference.create!(
+  id: SecureRandom.uuid,
+  training_provider_id: cul.id,
+  seeker: trained_seeker_with_reference,
+  author_profile_id: bill_trainer_profile.id,
+  reference_text: 'This person is good at carpentry'
+)
+
+coach_user = User.create!(
+  id: SecureRandom.uuid,
+  first_name: 'Coach',
+  last_name: 'User',
+  email: 'coach@blocktrainapp.com',
+  sub: 'coachsub'
+)
+
+message_service.create!(
+  user_id: coach_user.id,
+  schema: Events::UserCreated::V1,
+  data: {
+    first_name: coach_user.first_name,
+    last_name: coach_user.last_name,
+    email: coach_user.email,
+    sub: coach_user.sub
+  }
+)
+
+message_service.create!(
+  user_id: coach_user.id,
+  schema: Events::RoleAdded::V2,
+  data: {
+    role: Role::Types::COACH
+  }
+)
+
+message_service.create!(
+  schema: Events::PassReasonAdded::V1,
+  pass_reason_id: SecureRandom.uuid,
+  data: {
+    description: "This candidate does not meet the role requirements"
+  }
+)
+message_service.create!(
+  schema: Events::PassReasonAdded::V1,
+  pass_reason_id: SecureRandom.uuid,
+  data: {
+    description: "The role is filled, no longer accepting applications"
+  }
+)
+message_service.create!(
+  schema: Events::PassReasonAdded::V1,
+  pass_reason_id: SecureRandom.uuid,
+  data: {
+    description: "The role is seasonal or pausing accepting candidates"
+  }
+)
+message_service.create!(
+  schema: Events::PassReasonAdded::V1,
+  pass_reason_id: SecureRandom.uuid,
+  data: {
+    description: "This candidate is a better for another role"
+  }
+)
+message_service.create!(
+  schema: Events::PassReasonAdded::V1,
+  pass_reason_id: SecureRandom.uuid,
+  data: {
+    description: "The candidate did not show up for the interview"
+  }
+)
+
+message_service.create!(
+  schema: Events::AttributeCreated::V1,
+  attribute_id: SecureRandom.uuid,
+  data: {
+    name: "Background",
+    description: "The candidate has a criminal background that may be a barrier to employment",
+    set: %w[Misdemeanor Felony Violent],
+    default: ["Misdemeanor"]
+  }
+)
+
+message_service.create!(
+  schema: Events::BarrierAdded::V1,
+  user_id: admin_user.id,
+  data: {
+    barrier_id: SecureRandom.uuid,
+    name: "Unable to Drive"
+  }
+)
+
+message_service.create!(
+  schema: Events::BarrierAdded::V1,
+  user_id: admin_user.id,
+  data: {
+    barrier_id: SecureRandom.uuid,
+    name: "Background"
+  }
+)
+
+message_service.flush
 
 JobTag.create!(
   id: SecureRandom.uuid,
@@ -742,467 +1223,5 @@ LearnedSkill.create!([
                          master_skill_id: '731e5aa5-e8d4-4a4e-9acb-3de414a17773'
                        },
                      ])
-
-trained_seeker_with_reference = Seeker.create!(
-  bio: "I learn stuff",
-  user: User.new(
-    id: SecureRandom.uuid,
-    first_name: 'Tom',
-    last_name: 'Hanks',
-    phone_number: "+16666666666",
-    email: 'trained-seeker-with-reference@blocktrainapp.com',
-    sub: 'tomsub'
-  )
-)
-
-message_service.create!(
-  user_id: trained_seeker_with_reference.user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: trained_seeker_with_reference.user.first_name,
-    last_name: trained_seeker_with_reference.user.last_name,
-    email: trained_seeker_with_reference.user.email,
-    sub: trained_seeker_with_reference.user.sub
-  }
-)
-
-message_service.create!(
-  seeker_id: trained_seeker_with_reference.id,
-  schema: Events::SeekerCreated::V1,
-  data: {
-    user_id: trained_seeker_with_reference.user.id
-  }
-)
-
-message_service.create!(
-  seeker_id: trained_seeker_with_reference.id,
-  schema: Events::BasicInfoAdded::V1,
-  data: {
-    first_name: trained_seeker_with_reference.user.first_name,
-    last_name: trained_seeker_with_reference.user.last_name,
-    phone_number: trained_seeker_with_reference.user.phone_number,
-    user_id: trained_seeker_with_reference.user.id,
-    date_of_birth: "1963-06-14"
-  }
-)
-
-trained_seeker = Seeker.create!(
-  bio: 'I learn stuff',
-  user: User.new(
-    id: 'cll2k67ub0000ao24lvmbzcqs',
-    first_name: 'Tim',
-    last_name: 'Allen',
-    email: 'trained-seeker@blocktrainapp.com',
-    phone_number: "+13333333333",
-    sub: 'timsub'
-  )
-)
-
-message_service.create!(
-  user_id: trained_seeker.user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: trained_seeker.user.first_name,
-    last_name: trained_seeker.user.last_name,
-    email: trained_seeker.user.email,
-    sub: trained_seeker.user.sub
-  }
-)
-
-message_service.create!(
-  seeker_id: trained_seeker.id,
-  schema: Events::SeekerCreated::V1,
-  data: {
-    user_id: trained_seeker.user.id
-  }
-)
-
-message_service.create!(
-  seeker_id: trained_seeker.id,
-  schema: Events::BasicInfoAdded::V1,
-  data: {
-    first_name: trained_seeker.user.first_name,
-    last_name: trained_seeker.user.last_name,
-    phone_number: trained_seeker.user.phone_number,
-    user_id: trained_seeker.user.id,
-    date_of_birth: "1990-10-09"
-  }
-)
-
-seeker_with_profile = Seeker.create!(
-  bio: 'I learn stuff',
-  user: User.new(
-    id: 'cll0yrt890002aor2v4pwo4ia',
-    first_name: 'Rita',
-    last_name: 'Wilson',
-    phone_number: "+14444444444",
-    email: 'seeker-with-profile@blocktrainapp.com',
-    sub: 'ritasub'
-  )
-)
-
-message_service.create!(
-  user_id: seeker_with_profile.user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: seeker_with_profile.user.first_name,
-    last_name: seeker_with_profile.user.last_name,
-    email: seeker_with_profile.user.email,
-    sub: seeker_with_profile.user.sub
-  }
-)
-
-message_service.create!(
-  seeker_id: seeker_with_profile.id,
-  schema: Events::SeekerCreated::V1,
-  data: {
-    user_id: seeker_with_profile.user.id
-  }
-)
-
-message_service.create!(
-  seeker_id: seeker_with_profile.id,
-  schema: Events::BasicInfoAdded::V1,
-  data: {
-    first_name: seeker_with_profile.user.first_name,
-    last_name: seeker_with_profile.user.last_name,
-    phone_number: seeker_with_profile.user.phone_number,
-    user_id: seeker_with_profile.user.id,
-    date_of_birth: "1993-01-01"
-  }
-)
-
-message_service.create!(
-  schema: Events::OnboardingStarted::V1,
-  seeker_id: seeker_with_profile.id,
-  data: {
-    user_id: seeker_with_profile.user.id
-  }
-)
-
-message_service.create!(
-  schema: Events::OnboardingCompleted::V2,
-  seeker_id: seeker_with_profile.id,
-  data: Messages::Nothing
-)
-
-message_service.create!(
-  application_id: SecureRandom.uuid,
-  schema: Events::ApplicantStatusUpdated::V6,
-  data: {
-    applicant_first_name: seeker_with_profile.user.first_name,
-    applicant_last_name: seeker_with_profile.user.last_name,
-    applicant_email: seeker_with_profile.user.email,
-    applicant_phone_number: seeker_with_profile.user.phone_number,
-    seeker_id: seeker_with_profile.id,
-    user_id: seeker_with_profile.user.id,
-    job_id: mechanic_job.id,
-    employer_name: mechanic_job.employer.name,
-    employment_title: mechanic_job.employment_title,
-    status: ApplicantStatus::StatusTypes::NEW,
-    reasons: []
-  },
-  metadata: {}
-)
-
-megans_recruits = TrainingProvider.create!(
-  id: SecureRandom.uuid,
-  name: "Megan's Recruits",
-  description: "We train people to help them get jobs"
-)
-
-cul = TrainingProvider.create!(
-  id: SecureRandom.uuid,
-  name: 'Columbus Urban League',
-  description:
-    'We are super good at doing the thing we do which is to help the people we work with get jobs'
-)
-
-trainer = User.create!(
-  id: SecureRandom.uuid,
-  first_name: 'Meghan',
-  last_name: 'Trainer',
-  email: 'trainer@blocktrainapp.com',
-  sub: 'megsub'
-)
-
-message_service.create!(
-  user_id: trainer.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: trainer.first_name,
-    last_name: trainer.last_name,
-    email: trainer.email,
-    sub: trainer.sub
-  }
-)
-
-TrainingProviderProfile.create!(
-  id: SecureRandom.uuid,
-  training_provider_id: cul.id,
-  user_id: trainer.id
-)
-
-trainer_with_reference = User.create!(
-  id: SecureRandom.uuid,
-  first_name: 'Bill',
-  last_name: 'Traynor',
-  email: 'trainer-with-reference@blocktrainapp.com',
-  sub: 'billsub'
-)
-
-message_service.create!(
-  user_id: trainer_with_reference.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: trainer_with_reference.first_name,
-    last_name: trainer_with_reference.last_name,
-    email: trainer_with_reference.email,
-    sub: trainer_with_reference.sub
-  }
-)
-
-Role::Types::ALL.each do |role|
-  Role.create!(id: SecureRandom.uuid, name: role)
-end
-
-admin_user = User.create!(
-  id: SecureRandom.uuid,
-  first_name: 'Jake',
-  last_name: 'Not-Onboard',
-  email: 'admin@blocktrainapp.com',
-  sub: 'jakesub'
-)
-
-message_service.create!(
-  user_id: admin_user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: admin_user.first_name,
-    last_name: admin_user.last_name,
-    email: admin_user.email,
-    sub: admin_user.sub
-  }
-)
-
-message_service.create!(
-  user_id: admin_user.id,
-  schema: Events::RoleAdded::V2,
-  data: {
-    role: Role::Types::ADMIN
-  }
-)
-message_service.create!(
-  user_id: admin_user.id,
-  schema: Events::RoleAdded::V2,
-  data: {
-    role: Role::Types::EMPLOYER_ADMIN
-  }
-)
-
-job_order_admin = User.create!(
-  id: SecureRandom.uuid,
-  first_name: 'Job',
-  last_name: 'Master',
-  email: 'job_order@skillarc.com',
-  sub: 'job_oder'
-)
-
-message_service.create!(
-  user_id: job_order_admin.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: job_order_admin.first_name,
-    last_name: job_order_admin.last_name,
-    email: job_order_admin.email,
-    sub: job_order_admin.sub
-  }
-)
-
-message_service.create!(
-  user_id: job_order_admin.id,
-  schema: Events::RoleAdded::V2,
-  data: {
-    role: Role::Types::JOB_ORDER_ADMIN
-  }
-)
-
-bill_trainer_profile = TrainingProviderProfile.create!(
-  id: SecureRandom.uuid,
-  training_provider_id: megans_recruits.id,
-  user_id: trainer_with_reference.id
-)
-
-cool_program = Program.create!(
-  id: SecureRandom.uuid,
-  name: 'Cool Program',
-  description: 'You learn stuff',
-  training_provider_id: megans_recruits.id
-)
-
-welding = Program.create!(
-  id: SecureRandom.uuid,
-  name: 'Welding Class 2023 Q1',
-  description: 'You weld stuff',
-  training_provider_id: cul.id
-)
-
-plumbing = Program.create!(
-  id: SecureRandom.uuid,
-  name: 'Plumbing Class 2023 Q1',
-  description: 'You plumb stuff',
-  training_provider_id: cul.id
-)
-
-carpentry = Program.create!(
-  id: SecureRandom.uuid,
-  name: 'Carpentry Class 2023 Q1',
-  description: 'You carp stuff',
-  training_provider_id: cul.id
-)
-
-message_service.create!(
-  schema: Events::SeekerTrainingProviderCreated::V4,
-  seeker_id: trained_seeker_with_reference.id,
-  data: {
-    id: SecureRandom.uuid,
-    program_id: cool_program.id,
-    training_provider_id: megans_recruits.id,
-    status: "Enrolled"
-  }
-)
-
-message_service.create!(
-  schema: Events::SeekerTrainingProviderCreated::V4,
-  seeker_id: trained_seeker.id,
-  data: {
-    id: SecureRandom.uuid,
-    program_id: plumbing.id,
-    training_provider_id: cul.id,
-    status: "Enrolled"
-  }
-)
-
-message_service.create!(
-  schema: Events::SeekerTrainingProviderCreated::V4,
-  seeker_id: trained_seeker.id,
-  data: {
-    id: SecureRandom.uuid,
-    program_id: welding.id,
-    training_provider_id: cul.id,
-    status: "Enrolled"
-  }
-)
-
-message_service.create!(
-  schema: Events::SeekerTrainingProviderCreated::V4,
-  seeker_id: trained_seeker_with_reference.id,
-  data: {
-    id: SecureRandom.uuid,
-    program_id: carpentry.id,
-    training_provider_id: cul.id,
-    status: "Enrolled"
-  }
-)
-
-Reference.create!(
-  id: SecureRandom.uuid,
-  training_provider_id: cul.id,
-  seeker: trained_seeker_with_reference,
-  author_profile_id: bill_trainer_profile.id,
-  reference_text: 'This person is good at carpentry'
-)
-
-coach_user = User.create!(
-  id: SecureRandom.uuid,
-  first_name: 'Coach',
-  last_name: 'User',
-  email: 'coach@blocktrainapp.com',
-  sub: 'coachsub'
-)
-
-message_service.create!(
-  user_id: coach_user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: coach_user.first_name,
-    last_name: coach_user.last_name,
-    email: coach_user.email,
-    sub: coach_user.sub
-  }
-)
-
-message_service.create!(
-  user_id: coach_user.id,
-  schema: Events::RoleAdded::V2,
-  data: {
-    role: Role::Types::COACH
-  }
-)
-
-message_service.create!(
-  schema: Events::PassReasonAdded::V1,
-  pass_reason_id: SecureRandom.uuid,
-  data: {
-    description: "This candidate does not meet the role requirements"
-  }
-)
-message_service.create!(
-  schema: Events::PassReasonAdded::V1,
-  pass_reason_id: SecureRandom.uuid,
-  data: {
-    description: "The role is filled, no longer accepting applications"
-  }
-)
-message_service.create!(
-  schema: Events::PassReasonAdded::V1,
-  pass_reason_id: SecureRandom.uuid,
-  data: {
-    description: "The role is seasonal or pausing accepting candidates"
-  }
-)
-message_service.create!(
-  schema: Events::PassReasonAdded::V1,
-  pass_reason_id: SecureRandom.uuid,
-  data: {
-    description: "This candidate is a better for another role"
-  }
-)
-message_service.create!(
-  schema: Events::PassReasonAdded::V1,
-  pass_reason_id: SecureRandom.uuid,
-  data: {
-    description: "The candidate did not show up for the interview"
-  }
-)
-
-message_service.create!(
-  schema: Events::AttributeCreated::V1,
-  attribute_id: SecureRandom.uuid,
-  data: {
-    name: "Background",
-    description: "The candidate has a criminal background that may be a barrier to employment",
-    set: %w[Misdemeanor Felony Violent],
-    default: ["Misdemeanor"]
-  }
-)
-
-message_service.create!(
-  schema: Events::BarrierAdded::V1,
-  user_id: admin_user.id,
-  data: {
-    barrier_id: SecureRandom.uuid,
-    name: "Unable to Drive"
-  }
-)
-
-message_service.create!(
-  schema: Events::BarrierAdded::V1,
-  user_id: admin_user.id,
-  data: {
-    barrier_id: SecureRandom.uuid,
-    name: "Background"
-  }
-)
 
 message_service.flush

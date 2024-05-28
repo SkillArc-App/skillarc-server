@@ -2,59 +2,53 @@ module Jobs
   class JobService
     include MessageEmitter
 
-    def create(params)
-      job = Job.create!(
-        **params,
-        id: SecureRandom.uuid
-      )
+    def create(category:, employment_title:, employer_id:, benefits_description:, responsibilities_description:, location:, employment_type:, schedule:, work_days:, requirements_description:, trace_id:, hide_job: false, industry: []) # rubocop:disable Metrics/ParameterLists
+      employer = Employer.find(employer_id)
 
       message_service.create!(
         schema: Events::JobCreated::V3,
-        job_id: job.id,
+        job_id: SecureRandom.uuid,
+        trace_id:,
         data: {
-          category: job.category,
-          employment_title: job.employment_title,
-          employer_name: job.employer.name,
-          employer_id: job.employer_id,
-          benefits_description: job.benefits_description,
-          responsibilities_description: job.responsibilities_description,
-          location: job.location,
-          employment_type: job.employment_type,
-          hide_job: job.hide_job,
-          schedule: job.schedule,
-          work_days: job.work_days,
-          requirements_description: job.requirements_description,
-          industry: job.industry
-        },
-        occurred_at: job.created_at
+          category:,
+          employment_title:,
+          employer_name: employer.name,
+          employer_id:,
+          benefits_description:,
+          responsibilities_description:,
+          location:,
+          employment_type:,
+          hide_job:,
+          schedule:,
+          work_days:,
+          requirements_description:,
+          industry:
+        }
       )
 
-      job
+      nil
     end
 
-    def update(job, params)
-      job.update!(**params)
-
+    def update(job_id:, category:, employment_title:, benefits_description:, responsibilities_description:, location:, employment_type:, schedule:, work_days:, requirements_description:, hide_job: false, industry: []) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         schema: Events::JobUpdated::V2,
-        job_id: job.id,
+        job_id:,
         data: {
-          category: job.category,
-          employment_title: job.employment_title,
-          benefits_description: job.benefits_description,
-          responsibilities_description: job.responsibilities_description,
-          location: job.location,
-          employment_type: job.employment_type,
-          hide_job: job.hide_job,
-          schedule: job.schedule,
-          work_days: job.work_days,
-          requirements_description: job.requirements_description,
-          industry: job.industry
-        },
-        occurred_at: job.updated_at
+          category:,
+          employment_title:,
+          benefits_description:,
+          responsibilities_description:,
+          location:,
+          employment_type:,
+          hide_job:,
+          schedule:,
+          work_days:,
+          requirements_description:,
+          industry:
+        }
       )
 
-      job
+      nil
     end
   end
 end

@@ -2,12 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Jobs::JobService do
   describe "#create" do
-    subject { described_class.new.create(params) }
+    subject { described_class.new.create(**params) }
 
     include_context "event emitter"
 
     let(:params) do
       {
+        trace_id: SecureRandom.uuid,
         category:,
         employment_title:,
         employer_id:,
@@ -38,29 +39,11 @@ RSpec.describe Jobs::JobService do
     let(:requirements_description) { "Requirements" }
     let(:industry) { ["manufacturing"] }
 
-    it "creates a job" do
-      expect { subject }.to change(Job, :count).by(1)
-
-      job = Job.last
-
-      expect(job.employment_title).to eq(employment_title)
-      expect(job.employer_id).to eq(employer_id)
-      expect(job.benefits_description).to eq(benefits_description)
-      expect(job.responsibilities_description).to eq(responsibilities_description)
-      expect(job.employment_title).to eq(employment_title)
-      expect(job.location).to eq(location)
-      expect(job.employment_type).to eq(employment_type)
-      expect(job.hide_job).to eq(hide_job)
-      expect(job.schedule).to eq(schedule)
-      expect(job.work_days).to eq(work_days)
-      expect(job.requirements_description).to eq(requirements_description)
-      expect(job.industry).to eq(industry)
-    end
-
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::JobCreated::V3,
-        job_id: be_present,
+        job_id: be_a(String),
+        trace_id: be_a(String),
         data: {
           category:,
           employment_title:,
@@ -75,8 +58,7 @@ RSpec.describe Jobs::JobService do
           work_days:,
           requirements_description:,
           industry:
-        },
-        occurred_at: be_present
+        }
       ).and_call_original
 
       subject
@@ -84,13 +66,14 @@ RSpec.describe Jobs::JobService do
   end
 
   describe "#update" do
-    subject { described_class.new.update(job, params) }
+    subject { described_class.new.update(**params) }
 
     include_context "event emitter"
 
     let(:job) { create(:job) }
     let(:params) do
       {
+        job_id: job.id,
         category:,
         employment_title:,
         benefits_description:,
@@ -117,25 +100,6 @@ RSpec.describe Jobs::JobService do
     let(:requirements_description) { "NEW Requirements" }
     let(:industry) { [Job::Industries::HEALTHCARE] }
 
-    it "updates the job" do
-      subject
-
-      job.reload
-
-      expect(job.category).to eq(category)
-      expect(job.employment_title).to eq(employment_title)
-      expect(job.benefits_description).to eq(benefits_description)
-      expect(job.responsibilities_description).to eq(responsibilities_description)
-      expect(job.employment_title).to eq(employment_title)
-      expect(job.location).to eq(location)
-      expect(job.employment_type).to eq(employment_type)
-      expect(job.hide_job).to eq(hide_job)
-      expect(job.schedule).to eq(schedule)
-      expect(job.work_days).to eq(work_days)
-      expect(job.requirements_description).to eq(requirements_description)
-      expect(job.industry).to eq(industry)
-    end
-
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::JobUpdated::V2,
@@ -152,8 +116,7 @@ RSpec.describe Jobs::JobService do
           work_days:,
           requirements_description:,
           industry:
-        },
-        occurred_at: be_present
+        }
       ).and_call_original
 
       subject

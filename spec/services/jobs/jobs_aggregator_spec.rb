@@ -8,6 +8,114 @@ RSpec.describe Jobs::JobsAggregator do
   describe "#handle_message" do
     subject { consumer.handle_message(message) }
 
+    context "JobCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobCreated::V3,
+          aggregate_id: id,
+          data: {
+            category:,
+            employer_name:,
+            employment_title:,
+            employer_id:,
+            benefits_description:,
+            responsibilities_description:,
+            location:,
+            employment_type:,
+            hide_job:,
+            schedule:,
+            work_days:,
+            requirements_description:,
+            industry:
+          }
+        )
+      end
+      let(:id) { SecureRandom.uuid }
+      let(:category) { Job::Categories::MARKETPLACE }
+      let(:employer_name) { "employer" }
+      let(:employment_title) { "title" }
+      let(:employer_id) { create(:employer).id }
+      let(:benefits_description) { "benefits" }
+      let(:responsibilities_description) { "responsibilities" }
+      let(:location) { "location" }
+      let(:employment_type) { Job::EmploymentTypes::FULLTIME }
+      let(:hide_job) { false }
+      let(:schedule) { "schedule" }
+      let(:work_days) { "work_days" }
+      let(:requirements_description) { "requirements" }
+      let(:industry) { [Job::Industries::MANUFACTURING] }
+
+      it "creates a job" do
+        expect { subject }.to change { Job.count }.by(1)
+
+        job = Job.last
+
+        expect(job.id).to eq(id)
+        expect(job.employment_title).to eq(employment_title)
+        expect(job.employer_id).to eq(employer_id)
+        expect(job.benefits_description).to eq(benefits_description)
+        expect(job.responsibilities_description).to eq(responsibilities_description)
+        expect(job.location).to eq(location)
+        expect(job.employment_type).to eq(employment_type)
+        expect(job.hide_job).to eq(hide_job)
+        expect(job.schedule).to eq(schedule)
+        expect(job.work_days).to eq(work_days)
+        expect(job.requirements_description).to eq(requirements_description)
+        expect(job.industry).to eq(industry)
+      end
+    end
+
+    context "JobUpdated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobUpdated::V2,
+          aggregate_id: job.id,
+          data: {
+            category:,
+            employment_title:,
+            benefits_description:,
+            responsibilities_description:,
+            location:,
+            employment_type:,
+            hide_job:,
+            schedule:,
+            work_days:,
+            requirements_description:,
+            industry:
+          }
+        )
+      end
+      let(:job) { create(:job) }
+      let(:category) { Job::Categories::MARKETPLACE }
+      let(:employment_title) { "title" }
+      let(:benefits_description) { "benefits" }
+      let(:responsibilities_description) { "responsibilities" }
+      let(:location) { "location" }
+      let(:employment_type) { Job::EmploymentTypes::FULLTIME }
+      let(:hide_job) { false }
+      let(:schedule) { "schedule" }
+      let(:work_days) { "work_days" }
+      let(:requirements_description) { "requirements" }
+      let(:industry) { [Job::Industries::MANUFACTURING] }
+
+      it "updates a job" do
+        subject
+
+        expect(job.reload.employment_title).to eq(employment_title)
+        expect(job.benefits_description).to eq(benefits_description)
+        expect(job.responsibilities_description).to eq(responsibilities_description)
+        expect(job.location).to eq(location)
+        expect(job.employment_type).to eq(employment_type)
+        expect(job.hide_job).to eq(hide_job)
+        expect(job.schedule).to eq(schedule)
+        expect(job.work_days).to eq(work_days)
+        expect(job.requirements_description).to eq(requirements_description)
+        expect(job.industry).to eq(industry)
+      end
+    end
+
     context "JobAttributeCreated" do
       let(:message) do
         build(

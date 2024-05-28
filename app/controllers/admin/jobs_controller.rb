@@ -25,7 +25,7 @@ module Admin # rubocop:disable Metrics/ModuleLength
 
     def create
       with_message_service do
-        job = Jobs::JobService.new.create(
+        Jobs::JobService.new.create(
           **params.require(:job).permit(
             :category,
             :employment_title,
@@ -40,38 +40,51 @@ module Admin # rubocop:disable Metrics/ModuleLength
             :work_days,
             :requirements_description,
             industry: []
-          ).to_h.symbolize_keys
+          ).to_h.symbolize_keys,
+          trace_id: request.request_id
         )
-
-        render json: serialize_job(job)
       end
+
+      head :created
     end
 
     def update
       job = Job.find(params[:id])
 
+      job_params = params.require(:job).permit(
+        :category,
+        :employment_title,
+        :benefits_description,
+        :responsibilities_description,
+        :location,
+        :employment_type,
+        :hide_job,
+        :schedule,
+        :work_days,
+        :requirements_description,
+        industry: []
+      ).to_h.symbolize_keys
+
+      update_params = {
+        job_id: job.id,
+        category: job_params[:category] || job.category,
+        employment_title: job_params[:employment_title] || job.employment_title,
+        benefits_description: job_params[:benefits_description] || job.benefits_description,
+        responsibilities_description: job_params[:responsibilities_description] || job.responsibilities_description,
+        location: job_params[:location] || job.location,
+        employment_type: job_params[:employment_type] || job.employment_type,
+        hide_job: job_params[:hide_job] || job.hide_job,
+        schedule: job_params[:schedule] || job.schedule,
+        work_days: job_params[:work_days] || job.work_days,
+        requirements_description: job_params[:requirements_description] || job.requirements_description,
+        industry: job_params[:industry] || job.industry
+      }
+
       with_message_service do
-        render json: serialize_job(
-          Jobs::JobService.new.update(
-            job,
-            **params.require(:job).permit(
-              :category,
-              :employment_title,
-              :employer_id,
-              :benefits_description,
-              :responsibilities_description,
-              :employment_title,
-              :location,
-              :employment_type,
-              :hide_job,
-              :schedule,
-              :work_day,
-              :requirements_description,
-              industry: []
-            ).to_h.symbolize_keys
-          )
-        )
+        Jobs::JobService.new.update(**update_params)
       end
+
+      head :ok
     end
   end
 

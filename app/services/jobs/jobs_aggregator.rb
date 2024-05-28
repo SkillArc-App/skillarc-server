@@ -2,6 +2,41 @@ module Jobs
   class JobsAggregator < MessageConsumer
     def reset_for_replay
       JobAttribute.delete_all
+      Job.delete_all
+    end
+
+    on_message Events::JobCreated::V3, :sync do |message|
+      Job.create!(
+        id: message.aggregate.job_id,
+        employment_title: message.data.employment_title,
+        employer_id: message.data.employer_id,
+        benefits_description: message.data.benefits_description,
+        responsibilities_description: message.data.responsibilities_description,
+        location: message.data.location,
+        employment_type: message.data.employment_type,
+        hide_job: message.data.hide_job,
+        schedule: message.data.schedule,
+        work_days: message.data.work_days,
+        requirements_description: message.data.requirements_description,
+        industry: message.data.industry
+      )
+    end
+
+    on_message Events::JobUpdated::V2, :sync do |message|
+      job = Job.find(message.aggregate.job_id)
+
+      job.update!(
+        employment_title: message.data.employment_title,
+        benefits_description: message.data.benefits_description,
+        responsibilities_description: message.data.responsibilities_description,
+        location: message.data.location,
+        employment_type: message.data.employment_type,
+        hide_job: message.data.hide_job,
+        schedule: message.data.schedule,
+        work_days: message.data.work_days,
+        requirements_description: message.data.requirements_description,
+        industry: message.data.industry
+      )
     end
 
     on_message Events::JobAttributeCreated::V1, :sync do |message|

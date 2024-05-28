@@ -13,17 +13,6 @@ module Seekers
       aggregate = Aggregates::Seeker.new(seeker_id: seeker.id)
       date_of_birth = ::Projectors::Aggregates::GetLast.project(schema: Events::BasicInfoAdded::V1, aggregate:)&.data&.date_of_birth
 
-      user.update!(
-        first_name:,
-        last_name:,
-        phone_number:,
-        zip_code:
-      )
-
-      seeker.update!(
-        about:
-      )
-
       message_service.create!(
         schema: Events::BasicInfoAdded::V1,
         aggregate:,

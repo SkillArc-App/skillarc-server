@@ -9,7 +9,7 @@ RSpec.describe "Seekers::Chats", type: :request do
     context "when the user is a seeker" do
       include_context "authenticated"
 
-      let!(:seeker) { create(:seeker, user:) }
+      let!(:seeker) { create(:seeker, user_id: user.id) }
 
       it "calls the SeekerChats service" do
         expect(SeekerChats)
@@ -41,7 +41,7 @@ RSpec.describe "Seekers::Chats", type: :request do
     context "when the user is a seeker" do
       include_context "authenticated"
 
-      let!(:seeker) { create(:seeker, user:) }
+      let!(:seeker) { create(:seeker, user_id: user.id) }
 
       it "calls the SeekerChats service" do
         expect(SeekerChats)
@@ -77,7 +77,7 @@ RSpec.describe "Seekers::Chats", type: :request do
     context "when the user is a seeker" do
       include_context "authenticated"
 
-      let!(:seeker) { create(:seeker, user:) }
+      let!(:seeker) { create(:seeker, user_id: user.id) }
 
       it "calls the SeekerChats service" do
         expect(SeekerChats)

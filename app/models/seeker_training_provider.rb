@@ -17,7 +17,10 @@
 #  index_seeker_training_providers_on_training_provider_id  (training_provider_id)
 #
 class SeekerTrainingProvider < ApplicationRecord
-  belongs_to :seeker
   belongs_to :training_provider
   belongs_to :program, optional: true
+
+  def seeker
+    Seeker.find(seeker_id)
+  end
 end

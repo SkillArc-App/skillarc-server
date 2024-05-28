@@ -1,13 +1,13 @@
 RSpec.shared_context "profile owner" do
   include_context "authenticated"
 
-  let(:seeker) { create(:seeker, user:) }
+  let(:seeker) { create(:seeker, user_id: user.id) }
 end
 
 RSpec.shared_context "profile owner openapi" do
   include_context "authenticated openapi"
 
-  let(:seeker) { create(:seeker, user:) }
+  let(:seeker) { create(:seeker, user_id: user.id) }
 end
 
 RSpec.shared_examples "a seeker secured endpoint" do
@@ -66,7 +66,7 @@ RSpec.shared_context "seeker authenticated openapi" do
       sub: 'jakesub'
     )
   end
-  let!(:seeker) { create(:seeker, user:) }
+  let!(:seeker) { create(:seeker, user_id: user.id) }
   let(:Authorization) { "Bearer #{user.sub}" }
 
   around do |example|

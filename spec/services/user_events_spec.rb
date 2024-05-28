@@ -5,7 +5,7 @@ RSpec.describe UserEvents do
     subject { described_class.new(user).all }
 
     let(:user) { create(:user) }
-    let(:seeker) { create(:seeker, user:) }
+    let(:seeker) { create(:seeker, user_id: user.id) }
 
     let!(:event) { create(:event, :user_created, occurred_at:, aggregate_id: user.id) }
     let!(:education_experience_created_event) do

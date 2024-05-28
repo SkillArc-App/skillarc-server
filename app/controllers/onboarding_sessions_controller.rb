@@ -12,30 +12,19 @@ class OnboardingSessionsController < ApplicationController
     filtered = params.permit(:first_name, :last_name, :phone_number, :date_of_birth).to_h.symbolize_keys
 
     with_message_service do
-      if current_user.seeker.blank?
-        seeker = Seeker.create!(user: current_user)
-
-        message_service.create!(
-          schema: Events::SeekerCreated::V1,
-          trace_id: request.request_id,
-          seeker_id: seeker.id,
-          data: {
-            user_id: current_user.id
-          }
-        )
-      end
+      person_id = find_or_create_person_id(request.request_id)
 
       message_service.create!(
         schema: Commands::StartOnboarding::V1,
         trace_id: request.request_id,
-        seeker_id: current_user.seeker.id,
+        seeker_id: person_id,
         data: {
           user_id: current_user.id
         }
       )
 
       message_service.create!(
-        seeker_id: current_user.seeker.id,
+        seeker_id: person_id,
         trace_id: request.request_id,
         schema: Events::BasicInfoAdded::V1,
         data: {
@@ -52,9 +41,9 @@ class OnboardingSessionsController < ApplicationController
   end
 
   def update
-    seeker_id = current_user.seeker&.id
+    person_id = find_person_id
 
-    if seeker_id.blank?
+    if person_id.blank?
       render json: { error: 'Seeker not found' }, status: :bad_request
       return
     end
@@ -113,27 +102,55 @@ class OnboardingSessionsController < ApplicationController
     with_message_service do
       Onboarding.new(
         message_service:,
-        seeker_id:,
+        seeker_id: person_id,
         user_id: current_user.id,
         trace_id: request.request_id
       ).update(responses:)
     end
 
-    render json: serialize_onboarding_session(seeker_id)
+    render json: serialize_onboarding_session(person_id)
   end
 
   private
 
-  def serialize_onboarding_session(seeker_id)
-    messages = if seeker_id.nil?
+  def find_or_create_person_id(trace_id)
+    person_id = find_person_id
+
+    return person_id if person_id.present?
+
+    person_id = SecureRandom.uuid
+
+    message_service.create!(
+      schema: Events::SeekerCreated::V1,
+      trace_id:,
+      seeker_id: person_id,
+      data: {
+        user_id: current_user.id
+      }
+    )
+
+    person_id
+  end
+
+  def find_person_id
+    return current_user.person_id if current_user.person_id.present?
+
+    # Temp slow code path while we cut over
+    Events::SeekerCreated::V1.all_messages.detect do |m|
+      m.data.user_id == current_user.id
+    end&.aggregate&.id
+  end
+
+  def serialize_onboarding_session(person_id)
+    messages = if person_id.nil?
                  []
                else
-                 MessageService.aggregate_events(Aggregates::Seeker.new(seeker_id:))
+                 MessageService.aggregate_events(Aggregates::Seeker.new(seeker_id: person_id))
                end
     status = Seekers::Projectors::OnboardingStatus.new.project(messages)
 
     {
-      seeker_id:,
+      seeker_id: person_id,
       next_step: status.next_step,
       progress: status.progress
     }

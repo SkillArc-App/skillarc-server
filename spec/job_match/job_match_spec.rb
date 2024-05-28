@@ -4,7 +4,7 @@ RSpec.describe JobMatch::JobMatch do
   subject { described_class.new(user:) }
 
   let(:user) { create(:user) }
-  let!(:seeker) { create(:seeker, user:) }
+  let!(:seeker) { create(:seeker, user_id: user.id) }
   let!(:onboarding_session) { create(:onboarding_session, seeker:) }
 
   let(:saved_job) { create(:job) }

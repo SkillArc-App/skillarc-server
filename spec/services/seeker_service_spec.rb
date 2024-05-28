@@ -7,16 +7,21 @@ RSpec.describe SeekerService do
     include_context "event emitter"
 
     let(:user_id) { SecureRandom.uuid }
-    let(:seeker) { create(:seeker, user:) }
-    let(:user) do
+    let(:seeker) do
       create(
-        :user,
+        :seeker,
+        user_id: user.id,
         email: "seeker@blocktrainapp.com",
         first_name: "First",
         last_name: "Last",
         phone_number: "1234567890",
-        sub: "sub",
         zip_code: "43210"
+      )
+    end
+    let(:user) do
+      create(
+        :user,
+        sub: "sub"
       )
     end
 
@@ -81,7 +86,7 @@ RSpec.describe SeekerService do
       tp = create(:training_provider, name: "Training Provider")
       create(
         :seeker_training_provider,
-        seeker:,
+        seeker_id: seeker.id,
         training_provider: tp,
         program: create(:program, name: "Program", training_provider: tp)
       )
@@ -90,7 +95,7 @@ RSpec.describe SeekerService do
 
       create(
         :seeker_training_provider,
-        seeker:,
+        seeker_id: seeker.id,
         training_provider: second_tp,
         program: nil
       )
@@ -179,7 +184,7 @@ RSpec.describe SeekerService do
     end
 
     context "when the user_id is for the seeker" do
-      let(:user_id) { seeker.user.id }
+      let(:user_id) { seeker.user_id }
 
       it "does not emits a SeekerViewed event" do
         expect_any_instance_of(MessageService)

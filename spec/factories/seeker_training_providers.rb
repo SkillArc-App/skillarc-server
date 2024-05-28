@@ -5,6 +5,6 @@ FactoryBot.define do
 
     program
     training_provider
-    seeker
+    seeker_id { create(:seeker).id }
   end
 end

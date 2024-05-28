@@ -9,12 +9,7 @@ class StudentsController < ApplicationController
     training_provider = TrainingProvider.includes(
       programs: {
         seeker_invites: {},
-        students: {
-          seeker: {
-            applicants: :applicant_statuses,
-            references: {}
-          }
-        }
+        students: {}
       }
     ).find(training_provider_profile.training_provider_id)
 
@@ -24,9 +19,9 @@ class StudentsController < ApplicationController
         reference = stp.seeker.references.find_by(author_profile: training_provider_profile)
 
         {
-          email: stp.seeker.user.email,
-          firstName: stp.seeker.user.first_name,
-          lastName: stp.seeker.user.last_name,
+          email: stp.seeker.email,
+          firstName: stp.seeker.first_name,
+          lastName: stp.seeker.last_name,
           profileId: stp.seeker_id,
           reference: {
             referenceText: reference&.reference_text,

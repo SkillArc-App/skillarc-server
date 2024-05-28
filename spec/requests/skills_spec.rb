@@ -3,7 +3,7 @@ require 'swagger_helper'
 
 RSpec.describe "Skills", type: :request do
   let(:master_skill) { create(:master_skill) }
-  let(:seeker) { create(:seeker, user: user_to_edit) }
+  let(:seeker) { create(:seeker, user_id: user_to_edit.id) }
   let(:user_to_edit) { create(:user) }
 
   path '/profiles/{profile_id}/skills' do

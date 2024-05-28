@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_28_134331) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_28_134613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -661,7 +661,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_134331) do
   end
 
   create_table "onboarding_sessions", id: :text, force: :cascade do |t|
-    t.text "user_id", null: false
     t.datetime "started_at", precision: 3, null: false
     t.datetime "completed_at", precision: 3
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
@@ -669,7 +668,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_134331) do
     t.jsonb "responses", default: {}, null: false
     t.uuid "seeker_id", null: false
     t.index ["seeker_id"], name: "index_onboarding_sessions_on_seeker_id", unique: true
-    t.index ["user_id"], name: "OnboardingSession_user_id_key", unique: true
   end
 
   create_table "organizations", id: :text, force: :cascade do |t|
@@ -1022,7 +1020,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_134331) do
   add_foreign_key "jobs", "employers", name: "Job_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "learned_skills", "jobs", name: "LearnedSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "learned_skills", "master_skills", name: "LearnedSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "onboarding_sessions", "users", name: "OnboardingSession_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "other_experiences", "organizations", name: "OtherExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "other_experiences", "seekers"
   add_foreign_key "personal_experiences", "seekers"

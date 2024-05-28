@@ -235,26 +235,28 @@ Tag.create!([
               }
             ])
 
+trained_user_with_reference = User.create(
+  id: SecureRandom.uuid,
+  first_name: 'Tom',
+  last_name: 'Hanks',
+  phone_number: "+16666666666",
+  email: 'trained-seeker-with-reference@blocktrainapp.com',
+  sub: 'tomsub'
+)
+
 trained_seeker_with_reference = Seeker.create!(
   bio: "I learn stuff",
-  user: User.new(
-    id: SecureRandom.uuid,
-    first_name: 'Tom',
-    last_name: 'Hanks',
-    phone_number: "+16666666666",
-    email: 'trained-seeker-with-reference@blocktrainapp.com',
-    sub: 'tomsub'
-  )
+  user_id: trained_user_with_reference.id
 )
 
 message_service.create!(
-  user_id: trained_seeker_with_reference.user.id,
+  user_id: trained_user_with_reference.id,
   schema: Events::UserCreated::V1,
   data: {
-    first_name: trained_seeker_with_reference.user.first_name,
-    last_name: trained_seeker_with_reference.user.last_name,
-    email: trained_seeker_with_reference.user.email,
-    sub: trained_seeker_with_reference.user.sub
+    first_name: trained_user_with_reference.first_name,
+    last_name: trained_user_with_reference.last_name,
+    email: trained_user_with_reference.email,
+    sub: trained_user_with_reference.sub
   }
 )
 
@@ -262,7 +264,7 @@ message_service.create!(
   seeker_id: trained_seeker_with_reference.id,
   schema: Events::SeekerCreated::V1,
   data: {
-    user_id: trained_seeker_with_reference.user.id
+    user_id: trained_user_with_reference.id
   }
 )
 
@@ -270,34 +272,36 @@ message_service.create!(
   seeker_id: trained_seeker_with_reference.id,
   schema: Events::BasicInfoAdded::V1,
   data: {
-    first_name: trained_seeker_with_reference.user.first_name,
-    last_name: trained_seeker_with_reference.user.last_name,
-    phone_number: trained_seeker_with_reference.user.phone_number,
-    user_id: trained_seeker_with_reference.user.id,
+    first_name: trained_user_with_reference.first_name,
+    last_name: trained_user_with_reference.last_name,
+    phone_number: trained_user_with_reference.phone_number,
+    user_id: trained_user_with_reference.id,
     date_of_birth: "1963-06-14"
   }
 )
 
+trained_user = User.create!(
+  id: 'cll2k67ub0000ao24lvmbzcqs',
+  first_name: 'Tim',
+  last_name: 'Allen',
+  email: 'trained-seeker@blocktrainapp.com',
+  phone_number: "+13333333333",
+  sub: 'timsub'
+)
+
 trained_seeker = Seeker.create!(
   bio: 'I learn stuff',
-  user: User.new(
-    id: 'cll2k67ub0000ao24lvmbzcqs',
-    first_name: 'Tim',
-    last_name: 'Allen',
-    email: 'trained-seeker@blocktrainapp.com',
-    phone_number: "+13333333333",
-    sub: 'timsub'
-  )
+  user_id: trained_user.id
 )
 
 message_service.create!(
-  user_id: trained_seeker.user.id,
+  user_id: trained_user.id,
   schema: Events::UserCreated::V1,
   data: {
-    first_name: trained_seeker.user.first_name,
-    last_name: trained_seeker.user.last_name,
-    email: trained_seeker.user.email,
-    sub: trained_seeker.user.sub
+    first_name: trained_user.first_name,
+    last_name: trained_user.last_name,
+    email: trained_user.email,
+    sub: trained_user.sub
   }
 )
 
@@ -305,7 +309,7 @@ message_service.create!(
   seeker_id: trained_seeker.id,
   schema: Events::SeekerCreated::V1,
   data: {
-    user_id: trained_seeker.user.id
+    user_id: trained_user.id
   }
 )
 
@@ -313,34 +317,36 @@ message_service.create!(
   seeker_id: trained_seeker.id,
   schema: Events::BasicInfoAdded::V1,
   data: {
-    first_name: trained_seeker.user.first_name,
-    last_name: trained_seeker.user.last_name,
-    phone_number: trained_seeker.user.phone_number,
-    user_id: trained_seeker.user.id,
+    first_name: trained_user.first_name,
+    last_name: trained_user.last_name,
+    phone_number: trained_user.phone_number,
+    user_id: trained_user.id,
     date_of_birth: "1990-10-09"
   }
 )
 
+user_with_profile = User.create!(
+  id: 'cll0yrt890002aor2v4pwo4ia',
+  first_name: 'Rita',
+  last_name: 'Wilson',
+  phone_number: "+14444444444",
+  email: 'seeker-with-profile@blocktrainapp.com',
+  sub: 'ritasub'
+)
+
 seeker_with_profile = Seeker.create!(
   bio: 'I learn stuff',
-  user: User.new(
-    id: 'cll0yrt890002aor2v4pwo4ia',
-    first_name: 'Rita',
-    last_name: 'Wilson',
-    phone_number: "+14444444444",
-    email: 'seeker-with-profile@blocktrainapp.com',
-    sub: 'ritasub'
-  )
+  user_id: user_with_profile.id
 )
 
 message_service.create!(
-  user_id: seeker_with_profile.user.id,
+  user_id: user_with_profile.id,
   schema: Events::UserCreated::V1,
   data: {
-    first_name: seeker_with_profile.user.first_name,
-    last_name: seeker_with_profile.user.last_name,
-    email: seeker_with_profile.user.email,
-    sub: seeker_with_profile.user.sub
+    first_name: user_with_profile.first_name,
+    last_name: user_with_profile.last_name,
+    email: user_with_profile.email,
+    sub: user_with_profile.sub
   }
 )
 
@@ -348,7 +354,7 @@ message_service.create!(
   seeker_id: seeker_with_profile.id,
   schema: Events::SeekerCreated::V1,
   data: {
-    user_id: seeker_with_profile.user.id
+    user_id: user_with_profile.id
   }
 )
 
@@ -356,10 +362,10 @@ message_service.create!(
   seeker_id: seeker_with_profile.id,
   schema: Events::BasicInfoAdded::V1,
   data: {
-    first_name: seeker_with_profile.user.first_name,
-    last_name: seeker_with_profile.user.last_name,
-    phone_number: seeker_with_profile.user.phone_number,
-    user_id: seeker_with_profile.user.id,
+    first_name: user_with_profile.first_name,
+    last_name: user_with_profile.last_name,
+    phone_number: user_with_profile.phone_number,
+    user_id: user_with_profile.id,
     date_of_birth: "1993-01-01"
   }
 )
@@ -368,7 +374,7 @@ message_service.create!(
   schema: Events::OnboardingStarted::V1,
   seeker_id: seeker_with_profile.id,
   data: {
-    user_id: seeker_with_profile.user.id
+    user_id: user_with_profile.id
   }
 )
 
@@ -382,12 +388,12 @@ message_service.create!(
   application_id: SecureRandom.uuid,
   schema: Events::ApplicantStatusUpdated::V6,
   data: {
-    applicant_first_name: seeker_with_profile.user.first_name,
-    applicant_last_name: seeker_with_profile.user.last_name,
-    applicant_email: seeker_with_profile.user.email,
-    applicant_phone_number: seeker_with_profile.user.phone_number,
+    applicant_first_name: user_with_profile.first_name,
+    applicant_last_name: user_with_profile.last_name,
+    applicant_email: user_with_profile.email,
+    applicant_phone_number: user_with_profile.phone_number,
     seeker_id: seeker_with_profile.id,
-    user_id: seeker_with_profile.user.id,
+    user_id: user_with_profile.id,
     job_id: mechanic_job.id,
     employer_name: mechanic_job.employer.name,
     employment_title: mechanic_job.employment_title,

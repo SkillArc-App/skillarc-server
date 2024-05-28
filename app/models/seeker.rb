@@ -14,10 +14,6 @@
 #
 #  index_seekers_on_user_id  (user_id)
 #
-# Foreign Keys
-#
-#  fk_rails_...  (user_id => users.id)
-#
 class Seeker < ApplicationRecord
   belongs_to :user
 
@@ -31,10 +27,9 @@ class Seeker < ApplicationRecord
   has_many :seeker_training_providers, dependent: :destroy
   has_one :onboarding_session, dependent: :destroy
 
-  delegate :email, to: :user
-  delegate :first_name, to: :user
-  delegate :last_name, to: :user
-  delegate :phone_number, to: :user
+  def user
+    User.find(user_id)
+  end
 
   def hiring_status
     return 'Interviewing' if applicants.includes(:applicant_statuses).any? { |a| a.status.status == 'interviewing' }

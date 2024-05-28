@@ -8,16 +8,18 @@ module Seekers
 
       return if most_recent_applicaiton.present?
 
+      user = seeker.user
+
       message_service.create!(
         aggregate:,
         schema: Events::SeekerApplied::V2,
         data: {
           application_id: SecureRandom.uuid,
-          seeker_first_name: seeker.first_name,
-          seeker_last_name: seeker.last_name,
-          seeker_email: seeker.email,
-          seeker_phone_number: seeker.phone_number,
-          user_id: seeker.user.id,
+          seeker_first_name: user.first_name,
+          seeker_last_name: user.last_name,
+          seeker_email: user.email,
+          seeker_phone_number: user.phone_number,
+          user_id: user.id,
           job_id: job.id,
           employer_name: job.employer.name,
           employment_title: job.employment_title

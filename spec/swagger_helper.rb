@@ -236,6 +236,11 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 format: :uuid,
                 nullable: true
               },
+              personId: {
+                type: :string,
+                format: :uuid,
+                nullable: true
+              },
               nextStep: {
                 type: :string,
                 enum: Onboarding::Steps::ALL

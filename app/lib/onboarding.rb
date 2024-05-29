@@ -12,15 +12,14 @@ class Onboarding
     ].freeze
   end
 
-  def initialize(message_service:, seeker_id:, user_id:, trace_id:)
-    @seeker_id = seeker_id
+  def initialize(message_service:, person_id:, user_id:, trace_id:)
+    @person_id = person_id
     @trace_id = trace_id
     @user_id = user_id
-    @seeker_reactor = Seekers::SeekerReactor.new(message_service:)
+    @event_emitter = People::PersonEventEmitter.new(message_service:)
   end
 
   def update(responses:)
-    update_name(retrieve_response_for(responses, "name")) if response_for?(responses, "name")
     update_reliability(retrieve_response_for(responses, "reliability")) if response_for?(responses, "reliability")
     update_experience(retrieve_response_for(responses, "experience")) if response_for?(responses, "experience")
     update_education(retrieve_response_for(responses, "education")) if response_for?(responses, "education")
@@ -31,24 +30,11 @@ class Onboarding
 
   private
 
-  attr_reader :seeker_reactor, :user_id, :seeker_id, :trace_id
-
-  def update_name(name_response)
-    seeker_reactor.add_basic_info(
-      seeker_id:,
-      trace_id:,
-      user_id:,
-
-      first_name: name_response["first_name"],
-      last_name: name_response["last_name"],
-      phone_number: name_response["phone_number"],
-      date_of_birth: Date.strptime(name_response["date_of_birth"], "%m/%d/%Y")
-    )
-  end
+  attr_reader :event_emitter, :user_id, :person_id, :trace_id
 
   def update_reliability(reliabilities)
-    seeker_reactor.add_reliability(
-      seeker_id:,
+    event_emitter.add_reliability(
+      person_id:,
       trace_id:,
       reliabilities: reliabilities.map { |r| map_reliabilities(r) }
     )
@@ -67,8 +53,8 @@ class Onboarding
 
   def update_experience(work_responses)
     work_responses.each do |wr|
-      seeker_reactor.add_experience(
-        seeker_id:,
+      event_emitter.add_experience(
+        person_id:,
         trace_id:,
 
         organization_name: wr["company"],
@@ -83,8 +69,8 @@ class Onboarding
 
   def update_education(education_responses)
     education_responses.each do |er|
-      seeker_reactor.add_education_experience(
-        seeker_id:,
+      event_emitter.add_education_experience(
+        person_id:,
         trace_id:,
 
         organization_name: er["org"],
@@ -98,8 +84,8 @@ class Onboarding
 
   def update_training_provider(tp_responses)
     tp_responses.each do |tr|
-      seeker_reactor.add_seeker_training_provider(
-        seeker_id:,
+      event_emitter.add_person_training_provider(
+        person_id:,
         trace_id:,
         program_id: nil,
         status: "Enrolled",
@@ -111,8 +97,8 @@ class Onboarding
 
   def update_other(other_responses)
     other_responses.each do |oth_r|
-      seeker_reactor.add_personal_experience(
-        seeker_id:,
+      event_emitter.add_personal_experience(
+        person_id:,
         trace_id:,
 
         activity: oth_r["activity"],
@@ -124,8 +110,8 @@ class Onboarding
   end
 
   def update_interests(opportunity_interests_response)
-    seeker_reactor.add_professional_interests(
-      seeker_id:,
+    event_emitter.add_professional_interests(
+      person_id:,
       trace_id:,
 
       interests: opportunity_interests_response

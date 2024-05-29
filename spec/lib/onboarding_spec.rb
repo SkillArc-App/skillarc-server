@@ -3,45 +3,11 @@ require 'rails_helper'
 RSpec.describe Onboarding do
   let(:message_service) { MessageService.new }
   let(:user_id) { SecureRandom.uuid }
-  let(:seeker_id) { SecureRandom.uuid }
+  let(:person_id) { SecureRandom.uuid }
   let(:trace_id) { SecureRandom.uuid }
 
   describe "#update" do
-    subject { described_class.new(message_service:, seeker_id:, user_id:, trace_id:).update(responses:) }
-
-    context "when the responses include name" do
-      let(:responses) do
-        {
-          "name" => {
-            "response" => {
-              "first_name" => "John",
-              "last_name" => "Doe",
-              "phone_number" => "1234567890",
-              "date_of_birth" => "01/01/2000"
-            }
-          }
-        }
-      end
-
-      it "publishes an event" do
-        expect_any_instance_of(MessageService)
-          .to receive(:create!)
-          .with(
-            seeker_id:,
-            schema: Events::BasicInfoAdded::V1,
-            trace_id:,
-            data: {
-              first_name: "John",
-              last_name: "Doe",
-              phone_number: "1234567890",
-              user_id:,
-              date_of_birth: Date.new(2000, 1, 1)
-            }
-          ).and_call_original
-
-        subject
-      end
-    end
+    subject { described_class.new(message_service:, person_id:, user_id:, trace_id:).update(responses:) }
 
     context "when the responses include experience" do
       let(:responses) do
@@ -63,9 +29,9 @@ RSpec.describe Onboarding do
         expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
-            seeker_id:,
+            person_id:,
             trace_id:,
-            schema: Events::ExperienceAdded::V1,
+            schema: Events::ExperienceAdded::V2,
             data: {
               id: be_present,
               organization_name: "Company",
@@ -100,9 +66,9 @@ RSpec.describe Onboarding do
         expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
-            seeker_id:,
+            person_id:,
             trace_id:,
-            schema: Events::EducationExperienceAdded::V1,
+            schema: Events::EducationExperienceAdded::V2,
             data: {
               id: be_present,
               activities: "Football",
@@ -133,9 +99,9 @@ RSpec.describe Onboarding do
         expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
-            seeker_id:,
+            person_id:,
             trace_id:,
-            schema: Events::SeekerTrainingProviderCreated::V4,
+            schema: Events::PersonTrainingProviderAdded::V1,
             data: {
               id: be_present,
               status: "Enrolled",
@@ -161,9 +127,9 @@ RSpec.describe Onboarding do
         expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
-            seeker_id:,
+            person_id:,
             trace_id:,
-            schema: Events::ProfessionalInterestsAdded::V1,
+            schema: Events::ProfessionalInterestsAdded::V2,
             data: {
               interests: ["construction"]
             }
@@ -191,9 +157,9 @@ RSpec.describe Onboarding do
         expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
-            seeker_id:,
+            person_id:,
             trace_id:,
-            schema: Events::PersonalExperienceAdded::V1,
+            schema: Events::PersonalExperienceAdded::V2,
             data: {
               id: be_present,
               activity: "Activity",
@@ -225,9 +191,9 @@ RSpec.describe Onboarding do
           expect_any_instance_of(MessageService)
             .to receive(:create!)
             .with(
-              seeker_id:,
+              person_id:,
               trace_id:,
-              schema: Events::ReliabilityAdded::V1,
+              schema: Events::ReliabilityAdded::V2,
               data: {
                 reliabilities: [Reliability::JOB, Reliability::EDUCATION, Reliability::TRAINING_PROGRAM]
               }
@@ -241,48 +207,42 @@ RSpec.describe Onboarding do
     context "when there are repetitive responses" do
       let(:responses1) do
         {
-          "name" => {
-            "response" => {
-              "first_name" => "John",
-              "last_name" => "Doe",
-              "phone_number" => "1234567890",
-              "date_of_birth" => "01/01/2000"
-            }
+          "reliability" => {
+            "response" => [
+              "I've had or currently have a job",
+              'I have a High School Diploma / GED',
+              "I've attended a Training Program"
+            ]
           }
         }
       end
       let(:responses2) do
         {
-          "name" => {
-            "response" => {
-              "first_name" => "John",
-              "last_name" => "Doe",
-              "phone_number" => "1234567890",
-              "date_of_birth" => "01/01/2000"
-            }
+          "reliability" => {
+            "response" => [
+              "I've had or currently have a job",
+              'I have a High School Diploma / GED',
+              "I've attended a Training Program"
+            ]
           }
         }
       end
 
       it "emits two events" do
-        expect_any_instance_of(MessageService)
+        expect(message_service)
           .to receive(:create!)
           .with(
-            seeker_id:,
+            person_id:,
             trace_id:,
-            schema: Events::BasicInfoAdded::V1,
+            schema: Events::ReliabilityAdded::V2,
             data: {
-              first_name: "John",
-              last_name: "Doe",
-              phone_number: "1234567890",
-              date_of_birth: Date.new(2000, 1, 1),
-              user_id:
+              reliabilities: [Reliability::JOB, Reliability::EDUCATION, Reliability::TRAINING_PROGRAM]
             }
           )
           .twice
           .and_call_original
 
-        onboarding = described_class.new(message_service:, seeker_id:, user_id:, trace_id:)
+        onboarding = described_class.new(message_service:, person_id:, user_id:, trace_id:)
 
         onboarding.update(responses: responses1)
         onboarding.update(responses: responses2)

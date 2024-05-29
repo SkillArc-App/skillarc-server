@@ -38,40 +38,37 @@ RSpec.describe "OnboardingSessions", type: :request do
         include_context "authenticated openapi"
 
         response '201', 'Create an experience' do
-          before do
-            expect_any_instance_of(MessageService)
-              .to receive(:create!)
-              .with(
-                schema: Commands::StartOnboarding::V1,
-                trace_id: be_a(String),
-                seeker_id: be_a(String),
-                data: {
-                  user_id: user.id
-                }
-              )
-              .and_call_original
-
-            expect_any_instance_of(MessageService)
-              .to receive(:create!)
-              .with(
-                schema: Events::BasicInfoAdded::V1,
-                trace_id: be_a(String),
-                seeker_id: be_a(String),
-                data: {
-                  user_id: user.id,
-                  first_name: "John",
-                  last_name: "Chabot",
-                  phone_number: "333-333-3333",
-                  date_of_birth: "10/09/1990"
-                }
-              )
-              .and_call_original
-          end
-
-          context "when there is already a seeker" do
+          context "when there is already a person" do
             before do
               seeker = create(:seeker, user_id: user.id)
               user.update!(person_id: seeker.id)
+
+              expect_any_instance_of(MessageService)
+                .to receive(:create!)
+                .with(
+                  schema: Events::BasicInfoAdded::V1,
+                  trace_id: be_a(String),
+                  person_id: be_a(String),
+                  data: {
+                    first_name: "John",
+                    last_name: "Chabot",
+                    phone_number: "333-333-3333",
+                    email: user.email
+                  }
+                )
+                .and_call_original
+
+              expect_any_instance_of(MessageService)
+                .to receive(:create!)
+                .with(
+                  schema: Events::DateOfBirthAdded::V1,
+                  trace_id: be_a(String),
+                  person_id: be_a(String),
+                  data: {
+                    date_of_birth: "10/09/1990"
+                  }
+                )
+                .and_call_original
             end
 
             run_test!
@@ -82,11 +79,15 @@ RSpec.describe "OnboardingSessions", type: :request do
               expect_any_instance_of(MessageService)
                 .to receive(:create!)
                 .with(
-                  schema: Events::SeekerCreated::V1,
+                  schema: Commands::AddPerson::V1,
                   trace_id: be_a(String),
-                  seeker_id: be_a(String),
+                  person_id: be_a(String),
                   data: {
-                    user_id: user.id
+                    user_id: user.id,
+                    first_name: "John",
+                    last_name: "Chabot",
+                    phone_number: "333-333-3333",
+                    email: user.email
                   }
                 )
                 .and_call_original

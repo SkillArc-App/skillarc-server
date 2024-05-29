@@ -33,7 +33,10 @@ RSpec.describe "DesiredSkills", type: :request do
 
         response '200', 'desired skill created' do
           before do
-            expect(Jobs::DesiredSkillService).to receive(:create).and_call_original
+            expect(Jobs::DesiredSkillService)
+              .to receive(:create)
+              .with(job, master_skill.id)
+              .and_call_original
           end
 
           run_test!
@@ -63,7 +66,10 @@ RSpec.describe "DesiredSkills", type: :request do
 
         response '200', 'desired skill destroyed' do
           before do
-            expect(Jobs::DesiredSkillService).to receive(:destroy).and_call_original
+            expect(Jobs::DesiredSkillService)
+              .to receive(:destroy)
+              .with(desired_skill)
+              .and_call_original
           end
 
           run_test!

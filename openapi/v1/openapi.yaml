@@ -285,6 +285,215 @@ paths:
       responses:
         '204':
           description: Destroys a job attribute
+  "/admin/jobs":
+    get:
+      summary: Retreives all jobs
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: Retreives all jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    category:
+                      type: string
+                    employerId:
+                      type: string
+                      format: uuid
+                    employmentTitle:
+                      type: string
+                    benefitsDescription:
+                      type: string
+                    responsibilitiesDescription:
+                      type: string
+                    requirementsDescription:
+                      type: string
+                    location:
+                      type: string
+                    employmentType:
+                      type: string
+                    employer:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        bio:
+                          type: string
+                        location:
+                          type: string
+                        logoUrl:
+                          type: string
+                        chatEnabled:
+                          type: boolean
+                        createdAt:
+                          type: string
+                          format: date_time
+                        updatedAt:
+                          type: string
+                          format: date_time
+                    hideJob:
+                      type: boolean
+                    schedule:
+                      type: string
+                    workDays:
+                      type: string
+                    industry:
+                      type: array
+                      items:
+                        type: string
+                    numberOfApplicants:
+                      type: integer
+                    careerPaths:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                          lower_limit:
+                            type: string
+                          upper_limit:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: date_time
+                          updatedAt:
+                            type: string
+                            format: date_time
+                    desiredCertifications:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                          description:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: date_time
+                          updatedAt:
+                            type: string
+                            format: date_time
+                    testimonials:
+                      type: array
+                      items:
+                        type: object
+                    jobPhotos:
+                      type: array
+                      items:
+                        type: object
+                    jobTag:
+                      type: array
+                      items:
+                        type: object
+                    learnedSkills:
+                      type: array
+                      items:
+                        type: object
+                    desiredSkills:
+                      type: array
+                      items:
+                        type: object
+                    createdAt:
+                      type: string
+                      format: date_time
+                    updatedAt:
+                      type: string
+                      format: date_time
+    post:
+      summary: Create a job
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '201':
+          description: Job created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job:
+                  type: object
+                  properties:
+                    category:
+                      type: string
+                    employment_title:
+                      type: string
+                    employer_id:
+                      type: string
+                    location:
+                      type: string
+                    benefits_description:
+                      type: string
+                    responsibilities_description:
+                      type: string
+                    employment_type:
+                      type: string
+                    schedule:
+                      type: string
+                    work_days:
+                      type: string
+                    requirements_description:
+                      type: string
+                    industry:
+                      type: array
+                      items:
+                        type: string
+              required:
+              - category
+              - employment_title
+              - employer_id
+              - location
+              - benefits_description
+              - responsibilities_description
+              - employment_type
+              - schedule
+              - work_days
+              - requirements_description
+              - industry
   "/admin/jobs/{id}":
     get:
       summary: Show a job
@@ -314,6 +523,75 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/admin_job"
+    put:
+      summary: Update a job
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: Job updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job:
+                  type: object
+                  properties:
+                    category:
+                      type: string
+                    employment_title:
+                      type: string
+                    employer_id:
+                      type: string
+                    location:
+                      type: string
+                    benefits_description:
+                      type: string
+                    responsibilities_description:
+                      type: string
+                    employment_type:
+                      type: string
+                    schedule:
+                      type: string
+                    work_days:
+                      type: string
+                    requirements_description:
+                      type: string
+                    industry:
+                      type: array
+                      items:
+                        type: string
+              required:
+              - category
+              - employment_title
+              - employer_id
+              - location
+              - benefits_description
+              - responsibilities_description
+              - employment_type
+              - schedule
+              - work_days
+              - requirements_description
+              - industry
   "/coaches/attributes":
     get:
       summary: Get all attributes
@@ -1189,6 +1467,71 @@ paths:
                   format: datetime
                 payload:
                   type: object
+  "/jobs/{job_id}/desired_skills":
+    post:
+      summary: Create a desired skill
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: desired skill created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                master_skill_id:
+                  type: string
+              required:
+              - master_skill_id
+  "/jobs/{job_id}/desired_skills/{id}":
+    delete:
+      summary: Destroy a desired skill
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '200':
+          description: desired skill destroyed
   "/profiles/{seeker_id}/education_experiences":
     post:
       summary: Create experience
@@ -1346,12 +1689,8 @@ paths:
       responses:
         '401':
           description: unauthenticated
-        '200':
+        '202':
           description: Applicant updated
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/applicant"
       requestBody:
         content:
           application/json:
@@ -1942,8 +2281,48 @@ paths:
       responses:
         '401':
           description: unauthenticated
-        '200':
+        '201':
           description: Create an experience
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                phone_number:
+                  type: string
+                date_of_birth:
+                  type: string
+              required:
+              - first_name
+              - last_name
+              - phone_number
+              - date_of_birth
+    get:
+      summary: Get the onboarding session
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns the onboarding session
           content:
             application/json:
               schema:
@@ -1978,7 +2357,7 @@ paths:
                     error:
                       type: string
         '200':
-          description: Create an experience
+          description: Update the onboarding session
           content:
             application/json:
               schema:
@@ -2363,6 +2742,119 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/seeker"
+  "/references/{id}":
+    get:
+      summary: Retrieve a reference
+      tags:
+      - Training Providers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: Returns a list of references
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    reference_text:
+                      type: string
+                    seeker_id:
+                      type: string
+                      format: uuid
+                    author_profile_id:
+                      type: string
+                      format: uuid
+                    training_provider_id:
+                      type: string
+                      format: uuid
+    put:
+      summary: Update a reference
+      tags:
+      - Training Providers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Reference updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reference_text:
+                  type: string
+              required:
+              - reference_text
+  "/references":
+    post:
+      summary: Create a reference
+      tags:
+      - Training Providers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '201':
+          description: Reference created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reference:
+                  type: string
+                seeker_profile_id:
+                  type: string
+                  format: uuid
+              required:
+              - reference
+              - seeker_profile_id
   "/seekers/jobs":
     get:
       summary: Search jobs
@@ -2653,29 +3145,8 @@ paths:
       responses:
         '401':
           description: unauthenticated
-        '200':
+        '202':
           description: story deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  prompt:
-                    type: string
-                  response:
-                    type: string
-                  createdAt:
-                    type: string
-                    format: datetime
-                  updatedAt:
-                    type: string
-                    format: datetime
-                  seekerId:
-                    type: string
-                    format: uuid
     put:
       summary: Updates a story
       tags:
@@ -2707,29 +3178,8 @@ paths:
       responses:
         '401':
           description: unauthenticated
-        '200':
+        '202':
           description: story updated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  prompt:
-                    type: string
-                  response:
-                    type: string
-                  createdAt:
-                    type: string
-                    format: datetime
-                  updatedAt:
-                    type: string
-                    format: datetime
-                  seekerId:
-                    type: string
-                    format: uuid
       requestBody:
         content:
           application/json:
@@ -2776,27 +3226,6 @@ paths:
           description: unauthenticated
         '201':
           description: story created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  prompt:
-                    type: string
-                  response:
-                    type: string
-                  createdAt:
-                    type: string
-                    format: datetime
-                  updatedAt:
-                    type: string
-                    format: datetime
-                  seekerId:
-                    type: string
-                    format: uuid
       requestBody:
         content:
           application/json:
@@ -3184,16 +3613,17 @@ components:
         seekerId:
           type: string
           format: uuid
+          nullable: true
         nextStep:
           type: string
           enum:
           - start
-          - name
           - reliability
           - employment
           - education
           - training
           - opportunities
+          - complete_loading
           - complete
         progress:
           type: integer

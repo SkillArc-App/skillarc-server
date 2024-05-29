@@ -6,7 +6,7 @@ module People
 
     on_message Commands::AddPerson::V1 do |message|
       # If we already created the person return
-      return if Projectors::Aggregates::HasOccurred.project(
+      return if ::Projectors::Aggregates::HasOccurred.project(
         aggregate: message.aggregate,
         schema: Events::PersonAdded::V1
       )
@@ -62,7 +62,7 @@ module People
 
     def matching_email?(email, user_id, trace_id)
       aggregate = Aggregates::Email.new(email:)
-      person_associated_email = Projectors::Aggregates::GetLast.project(
+      person_associated_email = ::Projectors::Aggregates::GetLast.project(
         aggregate:,
         schema: Events::PersonAssociatedToEmail::V1
       )
@@ -76,7 +76,7 @@ module People
 
     def matching_phone_number?(phone_number, user_id, trace_id)
       aggregate = Aggregates::Phone.new(phone_number:)
-      person_associated_email = Projectors::Aggregates::GetLast.project(
+      person_associated_email = ::Projectors::Aggregates::GetLast.project(
         aggregate:,
         schema: Events::PersonAssociatedToPhoneNumber::V1
       )
@@ -91,7 +91,7 @@ module People
     def emit_association_event(person_id, user_id, trace_id)
       return if user_id.nil?
 
-      person_associated_user = Projectors::Aggregates::GetLast.project(
+      person_associated_user = ::Projectors::Aggregates::GetLast.project(
         aggregate: Aggregates::Person.new(person_id:),
         schema: Events::PersonAssociatedToPhoneNumber::V1
       )

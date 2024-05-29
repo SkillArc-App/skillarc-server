@@ -13,8 +13,8 @@ RSpec.describe Seekers::StoriesService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::StoryCreated::V1,
-        seeker_id: seeker.id,
+        schema: Events::StoryCreated::V2,
+        person_id: seeker.id,
         data: {
           id: kind_of(String),
           prompt: "This is a prompt",
@@ -35,8 +35,8 @@ RSpec.describe Seekers::StoriesService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::StoryUpdated::V1,
-        seeker_id: seeker.id,
+        schema: Events::StoryUpdated::V2,
+        person_id: seeker.id,
         data: {
           id: story.id,
           prompt: "This is a new prompt",
@@ -55,8 +55,8 @@ RSpec.describe Seekers::StoriesService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::StoryDestroyed::V1,
-        seeker_id: seeker.id,
+        schema: Events::StoryDestroyed::V2,
+        person_id: seeker.id,
         data: {
           id: story.id
         }

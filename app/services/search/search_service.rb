@@ -179,9 +179,9 @@ module Search
       )
     end
 
-    on_message Events::ElevatorPitchCreated::V1, :sync do |message|
+    on_message Events::ElevatorPitchCreated::V2, :sync do |message|
       data = message.data
-      application = Application.find_by(job_id: data.job_id, seeker_id: message.aggregate.seeker_id)
+      application = Application.find_by(job_id: data.job_id, seeker_id: message.aggregate.id)
       return unless application
 
       application.update!(elevator_pitch: data.pitch)

@@ -19,8 +19,8 @@ RSpec.describe Seekers::SkillService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::SeekerSkillCreated::V1,
-        seeker_id: seeker.id,
+        schema: Events::PersonSkillAdded::V1,
+        person_id: seeker.id,
         data: {
           skill_id: master_skill.id,
           name: "Skill",
@@ -44,8 +44,8 @@ RSpec.describe Seekers::SkillService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::SeekerSkillUpdated::V1,
-        seeker_id: seeker.id,
+        schema: Events::PersonSkillUpdated::V1,
+        person_id: seeker.id,
         data: {
           skill_id: skill.master_skill.id,
           description: "This is a new description",
@@ -68,8 +68,8 @@ RSpec.describe Seekers::SkillService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::SeekerSkillDestroyed::V1,
-        seeker_id: seeker.id,
+        schema: Events::PersonSkillRemoved::V1,
+        person_id: seeker.id,
         data: {
           skill_id: skill.master_skill.id,
           description: skill.description,

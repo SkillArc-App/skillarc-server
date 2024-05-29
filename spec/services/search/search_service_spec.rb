@@ -263,7 +263,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
       build(
         :message,
         aggregate_id: seeker_id2,
-        schema: Events::ElevatorPitchCreated::V1,
+        schema: Events::ElevatorPitchCreated::V2,
         data: {
           job_id: job_id2,
           pitch: "I'm going to be the very best"

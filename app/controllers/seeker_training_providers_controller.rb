@@ -11,9 +11,9 @@ class SeekerTrainingProvidersController < ApplicationController
 
     with_message_service do
       message_service.create!(
-        schema: Events::SeekerTrainingProviderCreated::V4,
+        schema: Events::PersonTrainingProviderAdded::V1,
         trace_id: request.request_id,
-        seeker_id: params["seeker_id"],
+        person_id: params["seeker_id"],
         data: {
           id: SecureRandom.uuid,
           program_id: params["programId"],
@@ -31,9 +31,9 @@ class SeekerTrainingProvidersController < ApplicationController
 
     with_message_service do
       message_service.create!(
-        schema: Events::SeekerTrainingProviderCreated::V4,
+        schema: Events::PersonTrainingProviderAdded::V1,
         trace_id: request.request_id,
-        seeker_id: params["seeker_id"],
+        person_id: params["seeker_id"],
         data: {
           id: stp.id,
           program_id: params["programId"],

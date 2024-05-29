@@ -88,7 +88,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           build(
             :message,
             aggregate_id: seeker_id,
-            schema: Events::BasicInfoAdded::V1,
+            schema: Events::UserBasicInfoAdded::V1,
             data: {
               user_id: SecureRandom.uuid,
               first_name: "Hannah",

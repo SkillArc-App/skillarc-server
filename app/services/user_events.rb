@@ -4,16 +4,18 @@ class UserEvents
   end
 
   def all
-    user_events = Event.where(aggregate_id: user.id).order(occurred_at: :desc).map(&:message)
-    seeker_events = Event.where(aggregate_id: user.seeker&.id).order(occurred_at: :desc).map(&:message)
+    user_messages = MessageService.aggregate_events(Aggregates::User.new(user_id: user.id))
+    person_messages = if user.person_id.present?
+                        MessageService.aggregate_events(Aggregates::Person.new(person_id: user.person_id))
+                      else
+                        []
+                      end
 
-    events = user_events + seeker_events
+    applicant_messages = Events::ApplicantStatusUpdated::V6.all_messages.select { |m| m.data.user_id == user.id }
 
-    applicant_events = Event.where(event_type: Messages::Types::APPLICANT_STATUS_UPDATED)
-                            .where("data->>'user_id' = ?", user.id)
-                            .map(&:message)
+    messages = user_messages + person_messages + applicant_messages
 
-    (events + applicant_events).sort_by(&:occurred_at).reverse.map do |event|
+    messages.sort_by(&:occurred_at).reverse.map do |event|
       event_message = event_message(event)
 
       next unless event_message
@@ -31,13 +33,13 @@ class UserEvents
     case message.schema
     when Events::ApplicantStatusUpdated::V6
       "Applicant Status Updated: #{message.data.employment_title} - #{message.data.status}"
-    when Events::EducationExperienceAdded::V1
+    when Events::EducationExperienceAdded::V2
       "Education Experience Created: #{message.data.organization_name}"
-    when Events::ExperienceAdded::V1
+    when Events::ExperienceAdded::V2
       "Work Experience Created: #{message.data.organization_name}"
     when Events::JobSaved::V1
       "Job Saved: #{message.data.employment_title}"
-    when Events::OnboardingCompleted::V1
+    when Events::OnboardingCompleted::V3
       "Onboarding Complete"
     when Events::UserCreated::V1
       "Signed Up"

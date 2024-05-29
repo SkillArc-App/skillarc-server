@@ -103,7 +103,7 @@ RSpec.describe Contact::ContactAggregator do
         build(
           :message,
           aggregate_id: SecureRandom.uuid,
-          schema: Events::BasicInfoAdded::V1,
+          schema: Events::UserBasicInfoAdded::V1,
           data:
         )
       end

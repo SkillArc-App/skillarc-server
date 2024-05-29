@@ -9,8 +9,8 @@ module Seekers
 
     def add_elevator_pitch(elevator_pitch)
       message_service.create!(
-        schema: Events::ElevatorPitchCreated::V1,
-        seeker_id: seeker.id,
+        schema: Events::ElevatorPitchCreated::V2,
+        person_id: seeker.id,
         data: {
           job_id: job.id,
           pitch: elevator_pitch

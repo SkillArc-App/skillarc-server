@@ -8,6 +8,52 @@ RSpec.describe Jobs::JobsAggregator do
   describe "#handle_message" do
     subject { consumer.handle_message(message) }
 
+    context "DesiredCertificationCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::DesiredCertificationCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id:,
+            job_id: job.id,
+            master_certification_id: master_certification.id
+          }
+        )
+      end
+      let(:id) { SecureRandom.uuid }
+      let(:job) { create(:job) }
+      let(:master_certification) { create(:master_certification) }
+
+      it "creates a desired certification" do
+        expect { subject }.to change { DesiredCertification.count }.by(1)
+
+        desired_certification = DesiredCertification.last
+
+        expect(desired_certification.id).to eq(id)
+        expect(desired_certification.job_id).to eq(job.id)
+        expect(desired_certification.master_certification_id).to eq(master_certification.id)
+      end
+    end
+
+    context "DesiredCertificationDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::DesiredCertificationDestroyed::V1,
+          aggregate_id: desired_certification.job_id,
+          data: {
+            id: desired_certification.id
+          }
+        )
+      end
+      let!(:desired_certification) { create(:desired_certification) }
+
+      it "destroys a desired certification" do
+        expect { subject }.to change { DesiredCertification.count }.by(-1)
+      end
+    end
+
     context "DesiredSkillCreated" do
       let(:message) do
         build(

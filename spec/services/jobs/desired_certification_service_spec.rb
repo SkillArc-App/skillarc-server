@@ -9,10 +9,6 @@ RSpec.describe Jobs::DesiredCertificationService do
     let(:job) { create(:job) }
     let(:master_certification_id) { create(:master_certification).id }
 
-    it "creates a desired certification" do
-      expect { subject }.to change { job.desired_certifications.count }.by(1)
-    end
-
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::DesiredCertificationCreated::V1,
@@ -34,10 +30,6 @@ RSpec.describe Jobs::DesiredCertificationService do
     include_context "event emitter"
 
     let!(:desired_certification) { create(:desired_certification) }
-
-    it "destroys the desired certification" do
-      expect { subject }.to change { DesiredCertification.count }.by(-1)
-    end
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(

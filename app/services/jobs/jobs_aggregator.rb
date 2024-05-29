@@ -8,6 +8,18 @@ module Jobs
       Job.delete_all
     end
 
+    on_message Events::DesiredCertificationCreated::V1, :sync do |message|
+      DesiredCertification.create!(
+        id: message.data.id,
+        job_id: message.aggregate.job_id,
+        master_certification_id: message.data.master_certification_id
+      )
+    end
+
+    on_message Events::DesiredCertificationDestroyed::V1, :sync do |message|
+      DesiredCertification.find(message.data.id).destroy!
+    end
+
     on_message Events::DesiredSkillCreated::V1, :sync do |message|
       DesiredSkill.create!(
         id: message.data.id,

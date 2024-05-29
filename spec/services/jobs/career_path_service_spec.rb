@@ -11,17 +11,6 @@ RSpec.describe Jobs::CareerPathService do
     let(:lower_limit) { "1" }
     let(:upper_limit) { "2" }
 
-    it "creates a career path" do
-      expect { subject }.to change { job.career_paths.count }.by(1)
-
-      career_path = job.career_paths.last
-
-      expect(career_path.title).to eq(title)
-      expect(career_path.lower_limit).to eq(lower_limit)
-      expect(career_path.upper_limit).to eq(upper_limit)
-      expect(career_path.order).to eq(0)
-    end
-
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::CareerPathCreated::V1,
@@ -52,25 +41,9 @@ RSpec.describe Jobs::CareerPathService do
     context "career path is already at the top" do
       let(:order) { 0 }
 
-      it "does not update the order of the career path" do
-        expect { subject }.not_to(change { career_path.reload.order })
-      end
-
-      it "does not update the order of the upper career path" do
-        expect { subject }.not_to(change { upper_career_path.reload.order })
-      end
-
       it "does not publish events" do
         expect_any_instance_of(MessageService).not_to receive(:create!)
       end
-    end
-
-    it "updates the order of the lower career path" do
-      expect { subject }.to change { upper_career_path.reload.order }.from(0).to(1)
-    end
-
-    it "updates the order of the career path" do
-      expect { subject }.to change { career_path.reload.order }.from(1).to(0)
     end
 
     it "publishes events" do
@@ -104,10 +77,6 @@ RSpec.describe Jobs::CareerPathService do
     let!(:career_path) { create(:career_path) }
 
     context "career path is already at the bottom" do
-      it "does not update the order of the career path" do
-        expect { subject }.not_to(change { career_path.reload.order })
-      end
-
       it "does not publish events" do
         expect_any_instance_of(MessageService).not_to receive(:create!)
       end
@@ -115,14 +84,6 @@ RSpec.describe Jobs::CareerPathService do
 
     context "career path is not at the bottom" do
       let!(:lower_career_path) { create(:career_path, job: career_path.job, order: career_path.order + 1) }
-
-      it "updates the order of the lower career path" do
-        expect { subject }.to change { lower_career_path.reload.order }.from(1).to(0)
-      end
-
-      it "updates the order of the career path" do
-        expect { subject }.to change { career_path.reload.order }.from(0).to(1)
-      end
 
       it "publishes events" do
         expect_any_instance_of(MessageService).to receive(:create!).with(
@@ -154,27 +115,36 @@ RSpec.describe Jobs::CareerPathService do
     include_context "event emitter"
 
     let!(:career_path) { create(:career_path) }
-    let!(:higher_career_path) { create(:career_path, job: career_path.job, order: career_path.order + 1) }
+    # let!(:higher_career_path) { create(:career_path, job: career_path.job, order: career_path.order + 1) }
+    let!(:higher_career_path_created) do
+      message = build(
+        :message,
+        schema: Events::CareerPathCreated::V1,
+        aggregate_id: career_path.job_id,
+        data: {
+          id: SecureRandom.uuid,
+          job_id: career_path.job_id,
+          title: "title",
+          lower_limit: "1",
+          upper_limit: "2",
+          order: career_path.order + 1
+        }
+      )
 
-    it "destroys the career path" do
-      expect { subject }.to change { CareerPath.count }.by(-1)
-    end
-
-    it "updates the order of the higher career path" do
-      expect { subject }.to change { higher_career_path.reload.order }.from(1).to(0)
+      Event.from_message!(message)
     end
 
     it "publishes events" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::CareerPathUpdated::V1,
-        job_id: higher_career_path.job_id,
+        job_id: career_path.job_id,
         data: {
-          id: higher_career_path.id,
-          job_id: higher_career_path.job_id,
-          title: higher_career_path.title,
-          lower_limit: higher_career_path.lower_limit,
-          upper_limit: higher_career_path.upper_limit,
-          order: higher_career_path.order - 1
+          id: be_a(String),
+          job_id: career_path.job_id,
+          title: "title",
+          lower_limit: "1",
+          upper_limit: "2",
+          order: career_path.order
         }
       ).and_call_original
 

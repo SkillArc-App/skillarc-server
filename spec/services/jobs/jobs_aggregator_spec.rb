@@ -8,6 +8,67 @@ RSpec.describe Jobs::JobsAggregator do
   describe "#handle_message" do
     subject { consumer.handle_message(message) }
 
+    context "CareerPathCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::CareerPathCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id:,
+            job_id: job.id,
+            title: "title",
+            order: 0,
+            lower_limit: "1",
+            upper_limit: "2"
+          }
+        )
+      end
+      let(:id) { SecureRandom.uuid }
+      let(:job) { create(:job) }
+
+      it "creates a career path" do
+        expect { subject }.to change { CareerPath.count }.by(1)
+      end
+    end
+
+    context "CareerPathUpdated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::CareerPathUpdated::V1,
+          aggregate_id: career_path.job_id,
+          data: {
+            id: career_path.id,
+            order: 1
+          }
+        )
+      end
+      let(:career_path) { create(:career_path) }
+
+      it "updates a career path" do
+        expect { subject }.to change { career_path.reload.order }.from(0).to(1)
+      end
+    end
+
+    context "CareerPathDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::CareerPathDestroyed::V1,
+          aggregate_id: career_path.job_id,
+          data: {
+            id: career_path.id
+          }
+        )
+      end
+      let!(:career_path) { create(:career_path) }
+
+      it "destroys a career path" do
+        expect { subject }.to change { CareerPath.count }.by(-1)
+      end
+    end
+
     context "DesiredCertificationCreated" do
       let(:message) do
         build(

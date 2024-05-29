@@ -1,11 +1,34 @@
 module Jobs
   class JobsAggregator < MessageConsumer
     def reset_for_replay
+      CareerPath.delete_all
+      DesiredCertification.delete_all
+      JobPhoto.delete_all
+      JobTag.delete_all
       Testimonial.delete_all
       LearnedSkill.delete_all
       DesiredSkill.delete_all
       JobAttribute.delete_all
       Job.delete_all
+    end
+
+    on_message Events::CareerPathCreated::V1, :sync do |message|
+      CareerPath.create!(
+        id: message.data.id,
+        job_id: message.aggregate.job_id,
+        title: message.data.title,
+        lower_limit: message.data.lower_limit,
+        upper_limit: message.data.upper_limit,
+        order: message.data.order
+      )
+    end
+
+    on_message Events::CareerPathUpdated::V1, :sync do |message|
+      CareerPath.find(message.data.id).update!(order: message.data.order)
+    end
+
+    on_message Events::CareerPathDestroyed::V1, :sync do |message|
+      CareerPath.find(message.data.id).destroy!
     end
 
     on_message Events::DesiredCertificationCreated::V1, :sync do |message|

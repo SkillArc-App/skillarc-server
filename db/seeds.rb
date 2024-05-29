@@ -595,86 +595,84 @@ message_service.create!(
   }
 )
 
-career_paths = CareerPath.create!(
-  [
-    {
-      id: SecureRandom.uuid,
-      job_id: mechanic_job.id,
-      title: 'Level 1',
-      upper_limit: '60000',
-      lower_limit: '55000',
-      order: 0
-    },
-    {
-      id: SecureRandom.uuid,
-      job_id: mechanic_job.id,
-      title: 'Level 2',
-      upper_limit: '65000',
-      lower_limit: '60000',
-      order: 1
-    },
-    {
-      id: SecureRandom.uuid,
-      job_id: mechanic_job.id,
-      title: 'Level 3',
-      upper_limit: '70000',
-      lower_limit: '65000',
-      order: 2
-    },
-    {
-      id: SecureRandom.uuid,
-      job_id: earthwork_job.id,
-      title: 'Apprentice',
-      upper_limit: '50',
-      lower_limit: '45',
-      order: 0
-    },
-    {
-      id: SecureRandom.uuid,
-      job_id: earthwork_job.id,
-      title: 'Journeyman',
-      upper_limit: '60',
-      lower_limit: '50',
-      order: 1
-    },
-    {
-      id: SecureRandom.uuid,
-      job_id: earthwork_job.id,
-      title: 'Super',
-      upper_limit: '80',
-      lower_limit: '60',
-      order: 2
-    },
-    {
-      id: SecureRandom.uuid,
-      job_id: contractor.id,
-      title: 'Entry Level',
-      upper_limit: '65000',
-      lower_limit: '60000',
-      order: 0
-    },
-    {
-      id: SecureRandom.uuid,
-      job_id: contractor.id,
-      title: 'Mid-Level',
-      upper_limit: '75000',
-      lower_limit: '70000',
-      order: 1
-    }
-  ]
-)
+career_paths = [
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    title: 'Level 1',
+    upper_limit: '60000',
+    lower_limit: '55000',
+    order: 0
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    title: 'Level 2',
+    upper_limit: '65000',
+    lower_limit: '60000',
+    order: 1
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    title: 'Level 3',
+    upper_limit: '70000',
+    lower_limit: '65000',
+    order: 2
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    title: 'Apprentice',
+    upper_limit: '50',
+    lower_limit: '45',
+    order: 0
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    title: 'Journeyman',
+    upper_limit: '60',
+    lower_limit: '50',
+    order: 1
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    title: 'Super',
+    upper_limit: '80',
+    lower_limit: '60',
+    order: 2
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    title: 'Entry Level',
+    upper_limit: '65000',
+    lower_limit: '60000',
+    order: 0
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    title: 'Mid-Level',
+    upper_limit: '75000',
+    lower_limit: '70000',
+    order: 1
+  }
+]
 
 career_paths.each do |career_path|
   message_service.create!(
-    job_id: career_path.job_id,
+    job_id: career_path[:job_id],
     schema: Events::CareerPathCreated::V1,
     data: {
-      id: career_path.id,
-      job_id: career_path.job_id,
-      title: career_path.title,
-      lower_limit: career_path.lower_limit,
-      upper_limit: career_path.upper_limit,
-      order: career_path.order
+      id: career_path[:id],
+      job_id: career_path[:job_id],
+      title: career_path[:title],
+      lower_limit: career_path[:lower_limit],
+      upper_limit: career_path[:upper_limit],
+      order: career_path[:order]
     }
   )
 end

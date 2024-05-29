@@ -1,3 +1,6 @@
+load 'spec/builders/user_builder.rb'
+load 'spec/builders/seeker_builder.rb'
+
 message_service = MessageService.new
 
 turner_employer = Employer.create!(
@@ -235,159 +238,40 @@ Tag.create!([
               }
             ])
 
-trained_seeker_with_reference = Seeker.create!(
-  bio: "I learn stuff",
-  user: User.new(
-    id: SecureRandom.uuid,
-    first_name: 'Tom',
-    last_name: 'Hanks',
-    phone_number: "+16666666666",
-    email: 'trained-seeker-with-reference@blocktrainapp.com',
-    sub: 'tomsub'
-  )
+trained_seeker_with_reference = Builders::SeekerBuilder.new(message_service).build(
+  first_name: 'Tom',
+  last_name: 'Hanks',
+  phone_number: "+16666666666",
+  email: 'trained-seeker-with-reference@blocktrainapp.com',
+  date_of_birth: "1963-06-14"
 )
 
-message_service.create!(
-  user_id: trained_seeker_with_reference.user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: trained_seeker_with_reference.user.first_name,
-    last_name: trained_seeker_with_reference.user.last_name,
-    email: trained_seeker_with_reference.user.email,
-    sub: trained_seeker_with_reference.user.sub
-  }
+trained_seeker = Builders::SeekerBuilder.new(message_service).build(
+  first_name: 'Tim',
+  last_name: 'Allen',
+  email: 'trained-seeker@blocktrainapp.com',
+  phone_number: "+13333333333",
+  date_of_birth: "1990-10-09"
 )
 
-message_service.create!(
-  seeker_id: trained_seeker_with_reference.id,
-  schema: Events::SeekerCreated::V1,
-  data: {
-    user_id: trained_seeker_with_reference.user.id
-  }
-)
-
-message_service.create!(
-  seeker_id: trained_seeker_with_reference.id,
-  schema: Events::BasicInfoAdded::V1,
-  data: {
-    first_name: trained_seeker_with_reference.user.first_name,
-    last_name: trained_seeker_with_reference.user.last_name,
-    phone_number: trained_seeker_with_reference.user.phone_number,
-    user_id: trained_seeker_with_reference.user.id,
-    date_of_birth: "1963-06-14"
-  }
-)
-
-trained_seeker = Seeker.create!(
-  bio: 'I learn stuff',
-  user: User.new(
-    id: 'cll2k67ub0000ao24lvmbzcqs',
-    first_name: 'Tim',
-    last_name: 'Allen',
-    email: 'trained-seeker@blocktrainapp.com',
-    phone_number: "+13333333333",
-    sub: 'timsub'
-  )
-)
-
-message_service.create!(
-  user_id: trained_seeker.user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: trained_seeker.user.first_name,
-    last_name: trained_seeker.user.last_name,
-    email: trained_seeker.user.email,
-    sub: trained_seeker.user.sub
-  }
-)
-
-message_service.create!(
-  seeker_id: trained_seeker.id,
-  schema: Events::SeekerCreated::V1,
-  data: {
-    user_id: trained_seeker.user.id
-  }
-)
-
-message_service.create!(
-  seeker_id: trained_seeker.id,
-  schema: Events::BasicInfoAdded::V1,
-  data: {
-    first_name: trained_seeker.user.first_name,
-    last_name: trained_seeker.user.last_name,
-    phone_number: trained_seeker.user.phone_number,
-    user_id: trained_seeker.user.id,
-    date_of_birth: "1990-10-09"
-  }
-)
-
-seeker_with_profile = Seeker.create!(
-  bio: 'I learn stuff',
-  user: User.new(
-    id: 'cll0yrt890002aor2v4pwo4ia',
-    first_name: 'Rita',
-    last_name: 'Wilson',
-    phone_number: "+14444444444",
-    email: 'seeker-with-profile@blocktrainapp.com',
-    sub: 'ritasub'
-  )
-)
-
-message_service.create!(
-  user_id: seeker_with_profile.user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: seeker_with_profile.user.first_name,
-    last_name: seeker_with_profile.user.last_name,
-    email: seeker_with_profile.user.email,
-    sub: seeker_with_profile.user.sub
-  }
-)
-
-message_service.create!(
-  seeker_id: seeker_with_profile.id,
-  schema: Events::SeekerCreated::V1,
-  data: {
-    user_id: seeker_with_profile.user.id
-  }
-)
-
-message_service.create!(
-  seeker_id: seeker_with_profile.id,
-  schema: Events::BasicInfoAdded::V1,
-  data: {
-    first_name: seeker_with_profile.user.first_name,
-    last_name: seeker_with_profile.user.last_name,
-    phone_number: seeker_with_profile.user.phone_number,
-    user_id: seeker_with_profile.user.id,
-    date_of_birth: "1993-01-01"
-  }
-)
-
-message_service.create!(
-  schema: Events::OnboardingStarted::V1,
-  seeker_id: seeker_with_profile.id,
-  data: {
-    user_id: seeker_with_profile.user.id
-  }
-)
-
-message_service.create!(
-  schema: Events::OnboardingCompleted::V2,
-  seeker_id: seeker_with_profile.id,
-  data: Messages::Nothing
+seeker_with_profile = Builders::SeekerBuilder.new(message_service).build(
+  first_name: 'Rita',
+  last_name: 'Wilson',
+  phone_number: "+14444444444",
+  email: 'seeker-with-profile@blocktrainapp.com',
+  date_of_birth: "1993-01-01"
 )
 
 message_service.create!(
   application_id: SecureRandom.uuid,
   schema: Events::ApplicantStatusUpdated::V6,
   data: {
-    applicant_first_name: seeker_with_profile.user.first_name,
-    applicant_last_name: seeker_with_profile.user.last_name,
-    applicant_email: seeker_with_profile.user.email,
-    applicant_phone_number: seeker_with_profile.user.phone_number,
+    applicant_first_name: seeker_with_profile.first_name,
+    applicant_last_name: seeker_with_profile.last_name,
+    applicant_email: seeker_with_profile.email,
+    applicant_phone_number: seeker_with_profile.phone_number,
     seeker_id: seeker_with_profile.id,
-    user_id: seeker_with_profile.user.id,
+    user_id: seeker_with_profile.user_id,
     job_id: mechanic_job.id,
     employer_name: mechanic_job.employer.name,
     employment_title: mechanic_job.employment_title,
@@ -597,12 +481,14 @@ message_service.create!(
   }
 )
 
-Reference.create!(
-  id: SecureRandom.uuid,
-  training_provider_id: cul.id,
-  seeker: trained_seeker_with_reference,
-  author_profile_id: bill_trainer_profile.id,
-  reference_text: 'This person is good at carpentry'
+message_service.create!(
+  reference_id: SecureRandom.uuid,
+  schema: Events::ReferenceCreated::V1,
+  data: {
+    seeker_id: trained_seeker_with_reference.id,
+    author_training_provider_profile_id: bill_trainer_profile.id,
+    reference_text: 'This person is good at carpentry'
+  }
 )
 
 coach_user = User.create!(

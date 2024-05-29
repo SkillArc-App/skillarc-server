@@ -5,10 +5,9 @@ RSpec.describe Seekers::ApplicationService do
     subject { described_class.apply(job:, seeker:, message_service:) }
 
     let(:message_service) { MessageService.new }
-    let(:seeker) { create(:seeker, user:) }
-    let(:user) do
+    let(:seeker) do
       create(
-        :user,
+        :seeker,
         first_name: "Katina",
         last_name: "Hall",
         email: "katina.hall@skillarc.com",
@@ -36,7 +35,7 @@ RSpec.describe Seekers::ApplicationService do
               seeker_last_name: "Hall",
               seeker_email: "katina.hall@skillarc.com",
               seeker_phone_number: "123-456-7890",
-              user_id: seeker.user.id,
+              user_id: seeker.user_id,
               job_id: job.id,
               employer_name: "Skillarc",
               employment_title: "Welder"
@@ -60,7 +59,7 @@ RSpec.describe Seekers::ApplicationService do
               seeker_last_name: "Hall",
               seeker_email: "katina.hall@skillarc.com",
               seeker_phone_number: "123-456-7890",
-              user_id: seeker.user.id,
+              user_id: seeker.user_id,
               job_id: job.id,
               employer_name: "Skillarc",
               employment_title: "Welder"

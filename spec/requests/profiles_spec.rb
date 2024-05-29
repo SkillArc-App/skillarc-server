@@ -15,11 +15,10 @@ RSpec.describe "Profiles", type: :request do
 
       context "when authenticated" do
         before do
-          create(:seeker)
           seeker = create(:seeker)
 
           program = create(:program)
-          create(:seeker_training_provider, seeker:, program:, training_provider: program.training_provider)
+          create(:seeker_training_provider, seeker_id: seeker.id, program:, training_provider: program.training_provider)
         end
 
         include_context "admin authenticated openapi"
@@ -114,7 +113,7 @@ RSpec.describe "Profiles", type: :request do
               create(:personal_experience, seeker:)
               create(:profile_skill, seeker:)
               create(:reference, seeker:)
-              create(:seeker_training_provider, seeker:)
+              create(:seeker_training_provider, seeker_id: seeker.id)
             end
 
             let(:seeker) { create(:seeker) }
@@ -135,7 +134,7 @@ RSpec.describe "Profiles", type: :request do
             end
 
             context "when seeker is empty" do
-              let(:seeker) { create(:seeker, user:) }
+              let(:seeker) { create(:seeker, user_id: user.id) }
 
               run_test!
             end
@@ -147,10 +146,10 @@ RSpec.describe "Profiles", type: :request do
                 create(:personal_experience, seeker:)
                 create(:profile_skill, seeker:)
                 create(:reference, seeker:)
-                create(:seeker_training_provider, seeker:)
+                create(:seeker_training_provider, seeker_id: seeker.id)
               end
 
-              let(:seeker) { create(:seeker, user:) }
+              let(:seeker) { create(:seeker, user_id: user.id) }
 
               run_test!
             end
@@ -179,7 +178,7 @@ RSpec.describe "Profiles", type: :request do
                 create(:personal_experience, seeker:)
                 create(:profile_skill, seeker:)
                 create(:reference, seeker:)
-                create(:seeker_training_provider, seeker:)
+                create(:seeker_training_provider, seeker_id: seeker.id)
               end
 
               let(:seeker) { create(:seeker) }

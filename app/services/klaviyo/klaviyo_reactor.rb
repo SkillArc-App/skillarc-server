@@ -30,7 +30,7 @@ module Klaviyo
           profile_attributes: {
             first_name: message.data.first_name,
             last_name: message.data.last_name,
-            phone_number: E164.normalize(message.data.phone_number)
+            phone_number: message.data.phone_number && E164.normalize(message.data.phone_number)
           },
           profile_properties: {
             date_of_birth: message.data.date_of_birth

@@ -8,19 +8,14 @@
 #  started_at   :datetime         not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  seeker_id    :uuid
-#  user_id      :text             not null
+#  seeker_id    :uuid             not null
 #
 # Indexes
 #
-#  OnboardingSession_user_id_key  (user_id) UNIQUE
-#
-# Foreign Keys
-#
-#  OnboardingSession_user_id_fkey  (user_id => users.id) ON DELETE => restrict ON UPDATE => cascade
+#  index_onboarding_sessions_on_seeker_id  (seeker_id) UNIQUE
 #
 class OnboardingSession < ApplicationRecord
-  belongs_to :user
+  belongs_to :seeker
 
   def industry_interests
     # begin

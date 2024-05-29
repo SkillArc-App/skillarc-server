@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe SeekerChats do
-  let(:user) { create(:user, first_name: "Jake", last_name: "Not-Onboard") }
-  let(:seeker) { create(:seeker, user:) }
+  let(:user) { create(:user) }
+  let(:seeker) { create(:seeker, first_name: "Jake", last_name: "Not-Onboard", user_id: user.id) }
   let(:instance) { described_class.new(seeker:, message_service:) }
   let(:message_service) { MessageService.new }
 

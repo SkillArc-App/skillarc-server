@@ -1,9 +1,12 @@
+load 'spec/builders/user_builder.rb'
+load 'spec/builders/seeker_builder.rb'
+
 class TestController < ApplicationController # rubocop:disable Metrics/ClassLength
   include MessageEmitter
 
   def create_test_user
     with_message_service do
-      user = create_user_with_messages(message_service:)
+      user = Builders::UserBuilder.new(message_service).build
 
       render json: user
     end
@@ -11,7 +14,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_coach
     with_message_service do
-      user = create_user_with_messages(message_service:)
+      user = Builders::UserBuilder.new(message_service).build
 
       message_service.create!(
         user_id: user.id,
@@ -27,10 +30,10 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_seeker
     with_message_service do
-      seeker = create_seeker_with_messages(message_service:)
+      seeker = Builders::SeekerBuilder.new(message_service).build
 
       render json: {
-        user: seeker.user,
+        user: seeker,
         seeker:
       }
     end
@@ -40,7 +43,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     with_message_service do
       job = create_job_with_messages(message_service:)
 
-      recruiter_user = create_user_with_messages(message_service:)
+      recruiter_user = Builders::UserBuilder.new(message_service).build
       FactoryBot.create(:recruiter, employer: job.employer, user: recruiter_user)
 
       message_service.create!(
@@ -54,13 +57,13 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
         }
       )
 
-      seeker = create_seeker_with_messages(message_service:)
+      seeker = Builders::SeekerBuilder.new(message_service).build
       status = create_application_with_message(message_service:, job:, seeker:)
 
       render json: {
         recruiter: recruiter_user,
         job:,
-        applicant: seeker.user,
+        applicant: seeker,
         applicant_status: { status: }
       }
     end
@@ -72,15 +75,15 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
       training_provider = program.training_provider
 
-      trainer_user = create_user_with_messages(message_service:)
-      student_seeker = create_seeker_with_messages(message_service:)
+      trainer_user = Builders::UserBuilder.new(message_service).build
+      student_seeker = Builders::SeekerBuilder.new(message_service).build
 
       FactoryBot.create(:training_provider_profile, training_provider:, user: trainer_user)
-      FactoryBot.create(:seeker_training_provider, training_provider:, program:, seeker: student_seeker)
+      FactoryBot.create(:seeker_training_provider, training_provider:, program:, seeker_id: student_seeker.id)
 
       render json: {
         trainer: trainer_user,
-        student: student_seeker.user,
+        student: student_seeker,
         training_provider:,
         program:
       }
@@ -121,12 +124,12 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_active_seeker
     with_message_service do
-      seeker = create_seeker_with_messages(message_service:)
+      seeker = Builders::SeekerBuilder.new(message_service).build(phone_number: nil)
 
       job = create_job_with_messages(message_service:)
       create_application_with_message(message_service:, job:, seeker:)
 
-      render json: seeker.user
+      render json: seeker
     end
   end
 
@@ -160,61 +163,17 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   private
 
-  def create_user_with_messages(message_service:)
-    user = FactoryBot.create(:user, onboarding_session: nil)
-
-    message_service.create!(
-      user_id: user.id,
-      schema: Events::UserCreated::V1,
-      data: {
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        sub: user.sub
-      }
-    )
-
-    user
-  end
-
-  def create_seeker_with_messages(message_service:)
-    user = create_user_with_messages(message_service:)
-    seeker = FactoryBot.create(:seeker, user:)
-
-    message_service.create!(
-      seeker_id: seeker.id,
-      schema: Events::SeekerCreated::V1,
-      data: {
-        user_id: user.id
-      }
-    )
-    message_service.create!(
-      seeker_id: seeker.id,
-      schema: Events::OnboardingStarted::V1,
-      data: {
-        user_id: user.id
-      }
-    )
-    message_service.create!(
-      seeker_id: seeker.id,
-      schema: Events::OnboardingCompleted::V2,
-      data: Messages::Nothing
-    )
-
-    seeker
-  end
-
   def create_application_with_message(message_service:, job:, seeker:)
     message_service.create!(
       schema: Events::ApplicantStatusUpdated::V6,
       application_id: SecureRandom.uuid,
       data: {
-        applicant_first_name: seeker.user.first_name,
-        applicant_last_name: seeker.user.last_name,
-        applicant_email: seeker.user.email,
-        applicant_phone_number: seeker.user.phone_number,
+        applicant_first_name: seeker.first_name,
+        applicant_last_name: seeker.last_name,
+        applicant_email: seeker.email,
+        applicant_phone_number: seeker.phone_number,
         seeker_id: seeker.id,
-        user_id: seeker.user.id,
+        user_id: seeker.user_id,
         job_id: job.id,
         employer_name: job.employer.name,
         employment_title: job.employment_title,

@@ -27,8 +27,7 @@ class SeekerTrainingProvidersController < ApplicationController
   end
 
   def update
-    seeker = Seeker.find(params["seeker_id"])
-    stp = SeekerTrainingProvider.find_by!(seeker:)
+    stp = SeekerTrainingProvider.find_by!(seeker_id: params["seeker_id"])
 
     with_message_service do
       message_service.create!(

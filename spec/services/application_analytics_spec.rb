@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe ApplicationAnalytics do
   let!(:applicant1) { create(:applicant, job_id: create(:job).id, applicant_statuses: [a1_status1, a1_status2], seeker: seeker1) }
 
-  let(:seeker1) { create(:seeker, user: user1) }
-  let(:user1) { create(:user, first_name: "Tom", last_name: "Hanks") }
+  let(:seeker1) { create(:seeker, first_name: "Tom", last_name: "Hanks") }
 
   let(:a1_status1) { build(:applicant_status, status: ApplicantStatus::StatusTypes::NEW, created_at: Date.new(2020, 6, 1)) }
   let(:a1_status2) { build(:applicant_status, status: ApplicantStatus::StatusTypes::PENDING_INTRO, created_at: Date.new(2020, 6, 2)) }
@@ -12,8 +11,7 @@ RSpec.describe ApplicationAnalytics do
   let!(:applicant2) { create(:applicant, job_id: create(:job).id, applicant_statuses: [a2_status1], seeker: seeker2) }
   let(:a2_status1) { build(:applicant_status, status: ApplicantStatus::StatusTypes::NEW, created_at: Date.new(2020, 6, 15)) }
 
-  let(:seeker2) { create(:seeker, user: user2) }
-  let(:user2) { create(:user, first_name: "Tim", last_name: "Allen") }
+  let(:seeker2) { create(:seeker, first_name: "Tim", last_name: "Allen") }
 
   let!(:hidden_job) { create(:job, hide_job: true) }
   let!(:hidden_applicant) { create(:applicant, job_id: hidden_job.id) }
@@ -87,7 +85,7 @@ RSpec.describe ApplicationAnalytics do
             employer_name: applicant1.job.employer.name,
             employment_title: applicant1.job.employment_title,
             applicant_name: "Tom Hanks",
-            applicant_email: user1.email,
+            applicant_email: seeker1.email,
             status: ApplicantStatus::StatusTypes::PENDING_INTRO,
             days: 29,
             hours: 0
@@ -100,7 +98,7 @@ RSpec.describe ApplicationAnalytics do
             employer_name: applicant2.job.employer.name,
             employment_title: applicant2.job.employment_title,
             applicant_name: "Tim Allen",
-            applicant_email: user2.email,
+            applicant_email: seeker2.email,
             status: ApplicantStatus::StatusTypes::NEW,
             days: 16,
             hours: 0

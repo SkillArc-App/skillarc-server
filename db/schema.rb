@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_23_170051) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_28_152621) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -661,14 +661,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_170051) do
   end
 
   create_table "onboarding_sessions", id: :text, force: :cascade do |t|
-    t.text "user_id", null: false
     t.datetime "started_at", precision: 3, null: false
     t.datetime "completed_at", precision: 3
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.jsonb "responses", default: {}, null: false
-    t.uuid "seeker_id"
-    t.index ["user_id"], name: "OnboardingSession_user_id_key", unique: true
+    t.uuid "seeker_id", null: false
+    t.index ["seeker_id"], name: "index_onboarding_sessions_on_seeker_id", unique: true
   end
 
   create_table "organizations", id: :text, force: :cascade do |t|
@@ -875,6 +874,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_170051) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "about"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "phone_number"
+    t.string "zip_code"
     t.index ["user_id"], name: "index_seekers_on_user_id"
   end
 
@@ -956,6 +960,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_170051) do
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
     t.string "sub", null: false
+    t.uuid "person_id"
     t.index ["email"], name: "User_email_key", unique: true
     t.index ["sub"], name: "index_users_on_sub", unique: true
   end
@@ -1020,7 +1025,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_170051) do
   add_foreign_key "jobs", "employers", name: "Job_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "learned_skills", "jobs", name: "LearnedSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "learned_skills", "master_skills", name: "LearnedSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "onboarding_sessions", "users", name: "OnboardingSession_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "other_experiences", "organizations", name: "OtherExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "other_experiences", "seekers"
   add_foreign_key "personal_experiences", "seekers"
@@ -1043,7 +1047,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_170051) do
   add_foreign_key "seeker_references", "seekers"
   add_foreign_key "seeker_references", "training_provider_profiles", column: "author_profile_id", name: "Reference_author_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_references", "training_providers", name: "Reference_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "seekers", "users"
   add_foreign_key "sessions", "users", name: "Session_user_id_fkey", on_update: :cascade, on_delete: :cascade
   add_foreign_key "stories", "seekers"
   add_foreign_key "testimonials", "jobs", name: "Testimonial_job_id_fkey", on_update: :cascade, on_delete: :restrict

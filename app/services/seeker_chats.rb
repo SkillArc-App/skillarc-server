@@ -9,8 +9,8 @@ class SeekerChats
       schema: Events::ChatMessageSent::V2,
       application_id:,
       data: {
-        from_user_id: seeker.user.id,
-        from_name: "#{seeker.user.first_name} #{seeker.user.last_name}",
+        from_user_id: seeker.user_id,
+        from_name: "#{seeker.first_name} #{seeker.last_name}",
         message:
       }
     )
@@ -20,7 +20,7 @@ class SeekerChats
     Chats::ApplicantChat
       .includes(:messages, :read_receipts)
       .where(seeker_id: seeker.id).map do |applicant_chat|
-      read_until = applicant_chat.read_receipts.select { |r| r.user_id == seeker.user.id }.first&.read_until || Time.zone.at(0)
+      read_until = applicant_chat.read_receipts.select { |r| r.user_id == seeker.user_id }.first&.read_until || Time.zone.at(0)
 
       {
         id: applicant_chat.application_id,
@@ -30,7 +30,7 @@ class SeekerChats
           {
             id: message.id,
             text: message.message,
-            isUser: message.user_id == seeker.user.id,
+            isUser: message.user_id == seeker.user_id,
             isRead: read_until > message.message_sent_at,
             sender: message.from
           }
@@ -44,7 +44,7 @@ class SeekerChats
       schema: Events::ChatRead::V1,
       application_id:,
       data: {
-        read_by_user_id: seeker.user.id
+        read_by_user_id: seeker.user_id
       }
     )
   end

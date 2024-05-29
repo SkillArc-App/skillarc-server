@@ -70,7 +70,8 @@ RSpec.describe "OnboardingSessions", type: :request do
 
           context "when there is already a seeker" do
             before do
-              create(:seeker, user:)
+              seeker = create(:seeker, user_id: user.id)
+              user.update!(person_id: seeker.id)
             end
 
             run_test!
@@ -174,7 +175,10 @@ RSpec.describe "OnboardingSessions", type: :request do
         response '200', 'Update the onboarding session' do
           schema '$ref' => '#/components/schemas/onboarding_session'
 
-          let!(:seeker) { create(:seeker, user:) }
+          before do
+            seeker = create(:seeker, user_id: user.id)
+            user.update!(person_id: seeker.id)
+          end
 
           run_test!
         end

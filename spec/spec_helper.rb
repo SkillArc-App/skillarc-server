@@ -28,6 +28,8 @@ require "shared_examples/default_headers_context"
 require "shared_examples/message_consumer"
 require "shared_examples/event_emitter"
 require "shared_examples/command_emitter"
+require "builders/user_builder"
+require "builders/seeker_builder"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

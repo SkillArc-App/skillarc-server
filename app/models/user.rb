@@ -13,6 +13,7 @@
 #  zip_code       :text
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  person_id      :uuid
 #
 # Indexes
 #
@@ -22,7 +23,6 @@
 class User < ApplicationRecord
   has_one :recruiter, dependent: :destroy
   has_one :seeker, dependent: :destroy
-  has_one :onboarding_session, dependent: :destroy
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
   has_many :training_provider_profiles, dependent: :destroy

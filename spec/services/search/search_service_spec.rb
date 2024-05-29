@@ -423,8 +423,8 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
       end
 
       context "when user does have a seeker" do
-        let(:user) { seeker.user }
-        let(:seeker) { create(:seeker) }
+        let(:user) { create(:user) }
+        let!(:seeker) { create(:seeker, user_id: user.id) }
 
         it "emits a search event for a non-seeker" do
           expect_any_instance_of(MessageService)
@@ -530,7 +530,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
 
       context "when user with a seeker is provided" do
         let(:user) { create(:user, id: user_id1) }
-        let!(:seeker) { create(:seeker, id: seeker_id2, user:) }
+        let!(:seeker) { create(:seeker, id: seeker_id2, user_id: user.id) }
 
         it "returns all jobs with saved jobs" do
           expected_result = [

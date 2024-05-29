@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'swagger_helper'
 
 RSpec.describe "Stories", type: :request do
-  let(:seeker) { create(:seeker, user: user_to_edit) }
+  let(:seeker) { create(:seeker, user_id: user_to_edit.id) }
   let(:user_to_edit) { create(:user) }
 
   path '/profiles/{profile_id}/stories/{story_id}' do

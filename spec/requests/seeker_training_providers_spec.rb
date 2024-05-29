@@ -6,7 +6,7 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
   let!(:training_provider) { create(:training_provider) }
   let!(:program) { create(:program, training_provider:) }
 
-  let(:seeker) { create(:seeker, user:) }
+  let(:seeker) { create(:seeker, user_id: user.id) }
 
   describe "POST /create" do
     subject { post seeker_training_providers_path(seeker), params:, headers: }
@@ -47,7 +47,7 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
   describe "PUT /update" do
     subject { put seeker_training_provider_path(seeker, stp), params:, headers: }
 
-    let(:stp) { create(:seeker_training_provider, seeker:, training_provider:, program:) }
+    let(:stp) { create(:seeker_training_provider, seeker_id: seeker.id, training_provider:, program:) }
     let!(:new_training_provider) { create(:training_provider) }
     let!(:new_program) { create(:program, training_provider:) }
 

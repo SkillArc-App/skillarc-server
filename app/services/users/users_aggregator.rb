@@ -4,6 +4,12 @@ module Users
       UserRole.delete_all
     end
 
+    on_message Events::SeekerCreated::V1 do |message|
+      user = User.find(message.data.user_id)
+
+      user.update!(person_id: message.aggregate.id)
+    end
+
     on_message Events::RoleAdded::V2 do |message|
       user = User.find(message.aggregate.id)
 

@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Jobs::JobsAggregator do
+RSpec.describe Jobs::JobsAggregator do # rubocop:disable Metrics/BlockLength
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new }
 
-  describe "#handle_message" do
+  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { consumer.handle_message(message) }
 
     context "CareerPathCreated" do

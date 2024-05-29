@@ -23,6 +23,7 @@ RSpec.describe Jobs::JobTagService do
         schema: Events::JobTagCreated::V1,
         job_id: be_present,
         data: {
+          id: be_a(String),
           job_id: job.id,
           tag_id: tag.id
         }

@@ -585,7 +585,7 @@ message_service.create!(
 
 message_service.flush
 
-JobTag.create!(
+jt = JobTag.create!(
   id: SecureRandom.uuid,
   job_id: mechanic_job.id,
   tag_id: tag.id
@@ -595,6 +595,7 @@ message_service.create!(
   job_id: mechanic_job.id,
   schema: Events::JobTagCreated::V1,
   data: {
+    id: jt.id,
     job_id: mechanic_job.id,
     tag_id: tag.id
   }

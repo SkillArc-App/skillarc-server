@@ -3,24 +3,22 @@ module Jobs
     extend MessageEmitter
 
     def self.create(job, title:, lower_limit:, upper_limit:)
-      order = job.career_paths.count
-
-      career_path = job.career_paths.create!(id: SecureRandom.uuid, title:, lower_limit:, upper_limit:, order:)
+      career_paths_projection = Projectors::CareerPaths.new.project(job_messages(job))
 
       message_service.create!(
         schema: Events::CareerPathCreated::V1,
         job_id: job.id,
         data: {
-          id: career_path.id,
+          id: SecureRandom.uuid,
           job_id: job.id,
-          title: career_path.title,
-          lower_limit: career_path.lower_limit,
-          upper_limit: career_path.upper_limit,
-          order: career_path.order
+          title:,
+          lower_limit:,
+          upper_limit:,
+          order: career_paths_projection.paths.count
         }
       )
 
-      career_path
+      nil
     end
 
     def self.up(career_path)
@@ -78,23 +76,21 @@ module Jobs
     end
 
     def self.destroy(career_path)
-      career_path.destroy!
-
-      paths = career_path.job.career_paths.where('"order" > ?', career_path.order)
+      job = career_path.job
+      career_paths_projection = Projectors::CareerPaths.new.project(job_messages(job))
+      paths = career_paths_projection.paths.select { |path| path.order > career_path.order }
 
       paths.each do |path|
-        path.update!(order: path.order - 1)
-
         message_service.create!(
           schema: Events::CareerPathUpdated::V1,
-          job_id: path.job_id,
+          job_id: job.id,
           data: {
             id: path.id,
-            job_id: path.job_id,
+            job_id: job.id,
             title: path.title,
             lower_limit: path.lower_limit,
             upper_limit: path.upper_limit,
-            order: path.order
+            order: path.order - 1
           }
         )
       end
@@ -106,6 +102,14 @@ module Jobs
           id: career_path.id
         }
       )
+    end
+
+    class << self
+      private
+
+      def job_messages(job)
+        MessageService.aggregate_events(Aggregates::Job.new(job_id: job.id))
+      end
     end
   end
 end

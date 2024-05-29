@@ -1,12 +1,353 @@
 require 'rails_helper'
 
-RSpec.describe Jobs::JobsAggregator do
+RSpec.describe Jobs::JobsAggregator do # rubocop:disable Metrics/BlockLength
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new }
 
-  describe "#handle_message" do
+  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { consumer.handle_message(message) }
+
+    context "CareerPathCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::CareerPathCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id:,
+            job_id: job.id,
+            title: "title",
+            order: 0,
+            lower_limit: "1",
+            upper_limit: "2"
+          }
+        )
+      end
+      let(:id) { SecureRandom.uuid }
+      let(:job) { create(:job) }
+
+      it "creates a career path" do
+        expect { subject }.to change { CareerPath.count }.by(1)
+      end
+    end
+
+    context "CareerPathUpdated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::CareerPathUpdated::V1,
+          aggregate_id: career_path.job_id,
+          data: {
+            id: career_path.id,
+            order: 1
+          }
+        )
+      end
+      let(:career_path) { create(:career_path) }
+
+      it "updates a career path" do
+        expect { subject }.to change { career_path.reload.order }.from(0).to(1)
+      end
+    end
+
+    context "CareerPathDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::CareerPathDestroyed::V1,
+          aggregate_id: career_path.job_id,
+          data: {
+            id: career_path.id
+          }
+        )
+      end
+      let!(:career_path) { create(:career_path) }
+
+      it "destroys a career path" do
+        expect { subject }.to change { CareerPath.count }.by(-1)
+      end
+    end
+
+    context "DesiredCertificationCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::DesiredCertificationCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id:,
+            job_id: job.id,
+            master_certification_id: master_certification.id
+          }
+        )
+      end
+      let(:id) { SecureRandom.uuid }
+      let(:job) { create(:job) }
+      let(:master_certification) { create(:master_certification) }
+
+      it "creates a desired certification" do
+        expect { subject }.to change { DesiredCertification.count }.by(1)
+
+        desired_certification = DesiredCertification.last
+
+        expect(desired_certification.id).to eq(id)
+        expect(desired_certification.job_id).to eq(job.id)
+        expect(desired_certification.master_certification_id).to eq(master_certification.id)
+      end
+    end
+
+    context "DesiredCertificationDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::DesiredCertificationDestroyed::V1,
+          aggregate_id: desired_certification.job_id,
+          data: {
+            id: desired_certification.id
+          }
+        )
+      end
+      let!(:desired_certification) { create(:desired_certification) }
+
+      it "destroys a desired certification" do
+        expect { subject }.to change { DesiredCertification.count }.by(-1)
+      end
+    end
+
+    context "DesiredSkillCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::DesiredSkillCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id:,
+            job_id: job.id,
+            master_skill_id: master_skill.id
+          }
+        )
+      end
+      let(:id) { SecureRandom.uuid }
+      let(:job) { create(:job) }
+      let(:master_skill) { create(:master_skill) }
+
+      it "creates a desired skill" do
+        expect { subject }.to change { DesiredSkill.count }.by(1)
+
+        desired_skill = DesiredSkill.last
+
+        expect(desired_skill.id).to eq(id)
+        expect(desired_skill.job_id).to eq(job.id)
+        expect(desired_skill.master_skill_id).to eq(master_skill.id)
+      end
+    end
+
+    context "DesiredSkillDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::DesiredSkillDestroyed::V1,
+          aggregate_id: desired_skill.job_id,
+          data: {
+            id: desired_skill.id
+          }
+        )
+      end
+      let!(:desired_skill) { create(:desired_skill) }
+
+      it "destroys a desired skill" do
+        expect { subject }.to change { DesiredSkill.count }.by(-1)
+      end
+    end
+
+    context "JobPhotoCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobPhotoCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id: SecureRandom.uuid,
+            job_id: job.id,
+            photo_url: "photo_url"
+          }
+        )
+      end
+      let(:job) { create(:job) }
+
+      it "creates a job photo" do
+        expect { subject }.to change { JobPhoto.count }.by(1)
+
+        job_photo = JobPhoto.last
+
+        expect(job_photo.id).to eq(message.data[:id])
+        expect(job_photo.job_id).to eq(message.data[:job_id])
+        expect(job_photo.photo_url).to eq(message.data[:photo_url])
+      end
+    end
+
+    context "JobPhotoDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobPhotoDestroyed::V1,
+          aggregate_id: job_photo.job_id,
+          data: {
+            id: job_photo.id
+          }
+        )
+      end
+      let!(:job_photo) { create(:job_photo) }
+
+      it "destroys a job photo" do
+        expect { subject }.to change { JobPhoto.count }.by(-1)
+      end
+    end
+
+    context "JobTagCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobTagCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id: SecureRandom.uuid,
+            job_id: job.id,
+            tag_id: tag.id
+          }
+        )
+      end
+      let(:job) { create(:job) }
+      let(:tag) { create(:tag) }
+
+      it "creates a job tag" do
+        expect { subject }.to change { JobTag.count }.by(1)
+
+        job_tag = JobTag.last
+
+        expect(job_tag.id).to eq(message.data[:id])
+        expect(job_tag.job_id).to eq(message.data[:job_id])
+        expect(job_tag.tag_id).to eq(message.data[:tag_id])
+      end
+    end
+
+    context "JobTagDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobTagDestroyed::V2,
+          aggregate_id: job_tag.job_id,
+          data: {
+            job_id: job_tag.job_id,
+            job_tag_id: job_tag.id,
+            tag_id: job_tag.tag_id
+          }
+        )
+      end
+      let!(:job_tag) { create(:job_tag) }
+
+      it "destroys a job tag" do
+        expect { subject }.to change { JobTag.count }.by(-1)
+      end
+    end
+
+    context "LearnedSkillCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::LearnedSkillCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id:,
+            job_id: job.id,
+            master_skill_id: master_skill.id
+          }
+        )
+      end
+      let(:id) { SecureRandom.uuid }
+      let(:job) { create(:job) }
+      let(:master_skill) { create(:master_skill) }
+
+      it "creates a learned skill" do
+        expect { subject }.to change { LearnedSkill.count }.by(1)
+
+        learned_skill = LearnedSkill.last
+
+        expect(learned_skill.id).to eq(id)
+        expect(learned_skill.job_id).to eq(job.id)
+        expect(learned_skill.master_skill_id).to eq(master_skill.id)
+      end
+    end
+
+    context "LearnedSkillDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::LearnedSkillDestroyed::V1,
+          aggregate_id: learned_skill.job_id,
+          data: {
+            id: learned_skill.id
+          }
+        )
+      end
+      let!(:learned_skill) { create(:learned_skill) }
+
+      it "destroys a learned skill" do
+        expect { subject }.to change { LearnedSkill.count }.by(-1)
+      end
+    end
+
+    context "TestimonialCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::TestimonialCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id:,
+            job_id: job.id,
+            name: "name",
+            title: "title",
+            testimonial: "testimonial",
+            photo_url: "photo_url"
+          }
+        )
+      end
+      let(:job) { create(:job) }
+      let(:id) { SecureRandom.uuid }
+
+      it "creates a testimonial" do
+        expect { subject }.to change { Testimonial.count }.by(1)
+
+        testimonial = Testimonial.last
+
+        expect(testimonial.id).to eq(message.data[:id])
+        expect(testimonial.job_id).to eq(message.data[:job_id])
+        expect(testimonial.name).to eq(message.data[:name])
+        expect(testimonial.title).to eq(message.data[:title])
+        expect(testimonial.testimonial).to eq(message.data[:testimonial])
+        expect(testimonial.photo_url).to eq(message.data[:photo_url])
+      end
+    end
+
+    context "TestimonialDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::TestimonialDestroyed::V1,
+          aggregate_id: testimonial.job_id,
+          data: {
+            id: testimonial.id
+          }
+        )
+      end
+      let!(:testimonial) { create(:testimonial) }
+
+      it "destroys a testimonial" do
+        expect { subject }.to change { Testimonial.count }.by(-1)
+      end
+    end
 
     context "JobCreated" do
       let(:message) do

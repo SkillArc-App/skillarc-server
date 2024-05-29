@@ -9,15 +9,6 @@ RSpec.describe Jobs::JobTagService do
     let(:job) { create(:job) }
     let!(:tag) { create(:tag) }
 
-    it "creates a job tag" do
-      expect { subject }.to change(JobTag, :count).by(1)
-
-      job_tag = JobTag.last
-
-      expect(job_tag.job_id).to eq(job.id)
-      expect(job_tag.tag_id).to eq(tag.id)
-    end
-
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::JobTagCreated::V1,
@@ -39,10 +30,6 @@ RSpec.describe Jobs::JobTagService do
     include_context "event emitter"
 
     let!(:job_tag) { create(:job_tag) }
-
-    it "destroys the job tag" do
-      expect { subject }.to change(JobTag, :count).by(-1)
-    end
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(

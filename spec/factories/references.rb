@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :reference do
     id { SecureRandom.uuid }
-    seeker
+    seeker_id { SecureRandom.uuid }
 
     author_profile { build(:training_provider_profile) }
     training_provider

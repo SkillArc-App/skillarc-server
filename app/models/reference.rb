@@ -18,7 +18,6 @@
 #
 #  Reference_author_profile_id_fkey     (author_profile_id => training_provider_profiles.id) ON DELETE => restrict ON UPDATE => cascade
 #  Reference_training_provider_id_fkey  (training_provider_id => training_providers.id) ON DELETE => restrict ON UPDATE => cascade
-#  fk_rails_...                         (seeker_id => seekers.id)
 #
 class Reference < ApplicationRecord
   self.table_name = "seeker_references"
@@ -26,5 +25,4 @@ class Reference < ApplicationRecord
   belongs_to :author_profile, class_name: "TrainingProviderProfile"
   has_one :user, through: :author_profile
   belongs_to :training_provider
-  belongs_to :seeker
 end

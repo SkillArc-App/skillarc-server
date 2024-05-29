@@ -1,7 +1,7 @@
-module Seekers
+module People
   module Projectors
     class OnboardingStatus < Projector
-      projection_aggregator Aggregates::Seeker
+      projection_aggregator Aggregates::Person
 
       class Step
         extend Record
@@ -77,11 +77,11 @@ module Seekers
         )
       end
 
-      on_message Events::BasicInfoAdded::V1 do |_, accumulator|
+      on_message Events::OnboardingStarted::V2 do |_, accumulator|
         set_provided(accumulator, :start)
       end
 
-      on_message Events::ReliabilityAdded::V1 do |message, accumulator|
+      on_message Events::ReliabilityAdded::V2 do |message, accumulator|
         accumulator = set_provided(accumulator, :reliability)
         accumulator = set_needed(accumulator, :employment) if message.data.reliabilities.include?(Reliability::JOB)
         accumulator = set_needed(accumulator, :education) if message.data.reliabilities.include?(Reliability::EDUCATION)
@@ -90,23 +90,23 @@ module Seekers
         accumulator
       end
 
-      on_message Events::ExperienceAdded::V1 do |_, accumulator|
+      on_message Events::ExperienceAdded::V2 do |_, accumulator|
         set_provided(accumulator, :employment)
       end
 
-      on_message Events::EducationExperienceAdded::V1 do |_, accumulator|
+      on_message Events::EducationExperienceAdded::V2 do |_, accumulator|
         set_provided(accumulator, :education)
       end
 
-      on_message Events::SeekerTrainingProviderCreated::V4 do |_, accumulator|
+      on_message Events::PersonTrainingProviderAdded::V1 do |_, accumulator|
         set_provided(accumulator, :training)
       end
 
-      on_message Events::ProfessionalInterestsAdded::V1 do |_, accumulator|
+      on_message Events::ProfessionalInterestsAdded::V2 do |_, accumulator|
         set_provided(accumulator, :opportunities)
       end
 
-      on_message Events::OnboardingCompleted::V2 do |_, accumulator|
+      on_message Events::OnboardingCompleted::V3 do |_, accumulator|
         accumulator = set_provided(accumulator, :start)
         accumulator = set_provided(accumulator, :reliability)
         accumulator = set_provided(accumulator, :employment)

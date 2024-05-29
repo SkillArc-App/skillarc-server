@@ -13,17 +13,6 @@ RSpec.describe Jobs::TestimonialService do
     let(:testimonial) { "This is a testimonial" }
     let(:photo_url) { "https://example.com/photo.jpg" }
 
-    it "creates a testimonial" do
-      expect { subject }.to change { Testimonial.count }.by(1)
-
-      t = Testimonial.last_created
-
-      expect(t.job_id).to eq(job.id)
-      expect(t.name).to eq(name)
-      expect(t.title).to eq(title)
-      expect(t.testimonial).to eq(testimonial)
-    end
-
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::TestimonialCreated::V1,
@@ -48,10 +37,6 @@ RSpec.describe Jobs::TestimonialService do
     include_context "event emitter"
 
     let!(:testimonial) { create(:testimonial) }
-
-    it "destroys the testimonial" do
-      expect { subject }.to change { Testimonial.count }.by(-1)
-    end
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(

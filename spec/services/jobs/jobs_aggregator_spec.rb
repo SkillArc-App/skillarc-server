@@ -100,6 +100,56 @@ RSpec.describe Jobs::JobsAggregator do
       end
     end
 
+    context "TestimonialCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::TestimonialCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id:,
+            job_id: job.id,
+            name: "name",
+            title: "title",
+            testimonial: "testimonial",
+            photo_url: "photo_url"
+          }
+        )
+      end
+      let(:job) { create(:job) }
+      let(:id) { SecureRandom.uuid }
+
+      it "creates a testimonial" do
+        expect { subject }.to change { Testimonial.count }.by(1)
+
+        testimonial = Testimonial.last
+
+        expect(testimonial.id).to eq(message.data[:id])
+        expect(testimonial.job_id).to eq(message.data[:job_id])
+        expect(testimonial.name).to eq(message.data[:name])
+        expect(testimonial.title).to eq(message.data[:title])
+        expect(testimonial.testimonial).to eq(message.data[:testimonial])
+        expect(testimonial.photo_url).to eq(message.data[:photo_url])
+      end
+    end
+
+    context "TestimonialDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::TestimonialDestroyed::V1,
+          aggregate_id: testimonial.job_id,
+          data: {
+            id: testimonial.id
+          }
+        )
+      end
+      let!(:testimonial) { create(:testimonial) }
+
+      it "destroys a testimonial" do
+        expect { subject }.to change { Testimonial.count }.by(-1)
+      end
+    end
 
     context "JobCreated" do
       let(:message) do

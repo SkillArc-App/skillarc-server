@@ -1,6 +1,7 @@
 module Jobs
   class JobsAggregator < MessageConsumer
     def reset_for_replay
+      Testimonial.delete_all
       LearnedSkill.delete_all
       DesiredSkill.delete_all
       JobAttribute.delete_all
@@ -29,6 +30,21 @@ module Jobs
 
     on_message Events::LearnedSkillDestroyed::V1, :sync do |message|
       LearnedSkill.find(message.data.id).destroy!
+    end
+
+    on_message Events::TestimonialCreated::V1, :sync do |message|
+      Testimonial.create!(
+        id: message.data.id,
+        job_id: message.aggregate.job_id,
+        name: message.data.name,
+        title: message.data.title,
+        testimonial: message.data.testimonial,
+        photo_url: message.data.photo_url
+      )
+    end
+
+    on_message Events::TestimonialDestroyed::V1, :sync do |message|
+      Testimonial.find(message.data.id).destroy!
     end
 
     on_message Events::JobCreated::V3, :sync do |message|

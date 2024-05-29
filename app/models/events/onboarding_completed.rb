@@ -20,16 +20,24 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::Seekers::ONBOARDING_COMPLETED,
+      message_type: Messages::Types::Person::ONBOARDING_COMPLETED,
       version: 1
     )
-    V2 = Messages::Schema.active(
+    V2 = Messages::Schema.deprecated(
       type: Messages::EVENT,
       data: Messages::Nothing,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Seekers::ONBOARDING_COMPLETED,
+      message_type: Messages::Types::Person::ONBOARDING_COMPLETED,
       version: 2
+    )
+    V3 = Messages::Schema.active(
+      type: Messages::EVENT,
+      data: Messages::Nothing,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Person,
+      message_type: Messages::Types::Person::ONBOARDING_COMPLETED,
+      version: 3
     )
   end
 end

@@ -29,13 +29,41 @@ module Messages
 
     module Person
       EVENTS = [
+        BASIC_INFO_ADDED = 'basic_info_added',
+        DATE_OF_BIRTH_ADDED = 'date_of_birth_added',
+        EDUCATION_EXPERIENCE_ADDED = 'education_experience_added',
+        EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted',
+        ELEVATOR_PITCH_CREATED = 'elevator_pitch_created',
+        EXPERIENCE_ADDED = 'experience_added',
+        EXPERIENCE_REMOVED = 'experience_removed',
+        ONBOARDING_COMPLETED = 'onboarding_completed',
+        ONBOARDING_STARTED = 'onboarding_started',
+        PERSON_ABOUT_ADDED = 'person_about_added',
         PERSON_ADDED = 'person_added',
+        PERSON_ALREADY_ASSOCIATED_TO_USER = 'person_already_associated_to_user',
+        PERSON_APPLIED = 'person_applied',
         PERSON_ASSOCIATED_TO_USER = 'person_associated_to_user',
-        PERSON_ALREADY_ASSOCIATED_TO_USER = 'person_already_associated_to_user'
+        PERSON_ATTRIBUTE_ADDED = 'person_attribute_added',
+        PERSON_ATTRIBUTE_REMOVED = 'person_attribute_removed',
+        PERSON_SKILL_ADDED = 'person_skill_added',
+        PERSON_SKILL_REMOVED = 'person_skill_removed',
+        PERSON_SKILL_UPDATED = 'person_skill_updated',
+        PERSON_TRAINING_PROVIDER_ADDED = 'person_training_provider_added',
+        PERSON_VIEWED = 'person_viewed',
+        PERSONAL_EXPERIENCE_ADDED = 'personal_experience_added',
+        PERSONAL_EXPERIENCE_REMOVED = 'personal_experience_removed',
+        PROFESSIONAL_INTERESTS = "professional_interests",
+        RELIABILITY_ADDED = 'relability_added',
+        STORY_CREATED = 'story_created',
+        STORY_DESTROYED = 'story_destroyed',
+        STORY_UPDATED = 'story_updated',
+        ZIP_ADDED = 'zip_added'
       ].freeze
 
       COMMANDS = [
-        ADD_PERSON = 'add_person'
+        ADD_PERSON = 'add_person',
+        COMPLETE_ONBOARDING = 'complete_onboarding',
+        START_ONBOARDING = "start_onboarding"
       ].freeze
     end
 
@@ -155,46 +183,26 @@ module Messages
 
     module Seekers
       COMMANDS = [
-        ADD_SEEKER = "add_seeker",
-        START_ONBOARDING = "start_onboarding",
-        COMPLETE_ONBOARDING = 'complete_onboarding'
+        ADD_SEEKER = "add_seeker"
       ].freeze
 
       EVENTS = [
-        BASIC_INFO_ADDED = 'user_basic_info_added',
-        EDUCATION_EXPERIENCE_ADDED = 'education_experience_added',
         EDUCATION_EXPERIENCE_CREATED = 'education_experience_created',
-        EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted',
         EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated',
-        ELEVATOR_PITCH_CREATED = 'elevator_pitch_created',
-        EXPERIENCE_ADDED = 'experience_added',
-        EXPERIENCE_REMOVED = 'experience_removed',
         EXPERIENCE_CREATED = 'experience_created',
-        PROFESSIONAL_INTERESTS = "professional_interests",
+        PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created',
+        PROFILE_CREATED = 'profile_created',
+        SEEKER_APPLIED = 'seeker_applied',
         SEEKER_ATTRIBUTE_ADDED = 'seeker_attribute_added',
         SEEKER_ATTRIBUTE_REMOVED = 'seeker_attribute_removed',
-        JOB_SAVED = 'job_saved',
-        JOB_SEARCH = 'job_search',
-        JOB_UNSAVED = 'job_unsaved',
-        ONBOARDING_STARTED = 'onboarding_started',
-        ONBOARDING_COMPLETED = 'onboarding_completed',
-        PERSONAL_EXPERIENCE_ADDED = 'personal_experience_added',
-        PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created',
-        PERSONAL_EXPERIENCE_REMOVED = 'personal_experience_removed',
-        RELIABILITY_ADDED = 'relability_added',
-        SEEKER_APPLIED = 'seeker_applied',
         SEEKER_CONTEXT_VIEWED = 'seeker_context_viewed',
-        PROFILE_CREATED = 'profile_created',
         SEEKER_CREATED = 'seeker_created',
         SEEKER_SKILL_CREATED = 'seeker_skill_created',
         SEEKER_SKILL_DESTROYED = 'seeker_skill_destroyed',
         SEEKER_SKILL_UPDATED = 'seeker_skill_updated',
         SEEKER_UPDATED = 'seeker_updated',
         SEEKER_VIEWED = 'seeker_viewed',
-        STORY_CREATED = 'story_created',
-        STORY_DESTROYED = 'story_destroyed',
-        STORY_UPDATED = 'story_updated',
-        ZIP_ADDED = 'zip_added'
+        USER_BASIC_INFO_ADDED = 'user_basic_info_added'
       ].freeze
     end
 
@@ -238,9 +246,21 @@ module Messages
 
     module User
       EVENTS = [
+        JOB_SAVED = 'job_saved',
+        JOB_SEARCH = 'job_search',
+        JOB_UNSAVED = 'job_unsaved',
+        ROLE_ADDED = 'role_added',
         USER_CREATED = 'user_created',
         USER_UPDATED = 'user_updated'
       ].freeze
+    end
+
+    module Search
+      EVENTS = [
+        JOB_SEARCH = 'job_search'
+      ].freeze
+
+      COMMANDS = [].freeze
     end
 
     module TrainingProviders
@@ -269,7 +289,6 @@ module Messages
       NOTIFICATIONS_MARKED_READ = 'notifications_marked_read',
       REASON_CREATED = 'reason_created',
       SESSION_STARTED = 'session_started',
-      ROLE_ADDED = 'role_added',
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created',
       TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted',
       *User::EVENTS,
@@ -285,6 +304,7 @@ module Messages
       *Employers::EVENTS,
       *Seekers::EVENTS,
       *Contact::EVENTS,
+      *Search::EVENTS,
       *Infrastructure::EVENTS,
       *TestingOnly::EVENTS,
       *TrainingProviders::EVENTS
@@ -300,6 +320,7 @@ module Messages
       *Coaches::COMMANDS,
       *Seekers::COMMANDS,
       *JobOrders::COMMANDS,
+      *Search::COMMANDS,
       *Infrastructure::COMMANDS
     ].freeze
 

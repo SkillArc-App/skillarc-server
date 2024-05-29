@@ -1,13 +1,11 @@
 module Events
-  module JobSaved
+  module PersonViewed
     module Data
       class V1
         extend Messages::Payload
 
         schema do
-          job_id Uuid
-          employment_title String
-          employer_name String
+          person_id Uuid
         end
       end
     end
@@ -17,7 +15,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::User::JOB_SAVED,
+      message_type: Messages::Types::Person::PERSON_VIEWED,
       version: 1
     )
   end

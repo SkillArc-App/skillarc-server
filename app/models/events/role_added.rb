@@ -25,7 +25,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::ROLE_ADDED,
+      message_type: Messages::Types::User::ROLE_ADDED,
       version: 1
     )
     V2 = Messages::Schema.active(
@@ -33,7 +33,7 @@ module Events
       data: Data::V2,
       metadata: Messages::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::ROLE_ADDED,
+      message_type: Messages::Types::User::ROLE_ADDED,
       version: 2
     )
   end

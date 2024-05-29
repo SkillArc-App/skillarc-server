@@ -16,13 +16,21 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
+    V1 = Messages::Schema.deprecated(
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Seekers::EXPERIENCE_ADDED,
+      message_type: Messages::Types::Person::EXPERIENCE_ADDED,
       version: 1
+    )
+    V2 = Messages::Schema.active(
+      type: Messages::EVENT,
+      data: Data::V1,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Person,
+      message_type: Messages::Types::Person::EXPERIENCE_ADDED,
+      version: 2
     )
   end
 end

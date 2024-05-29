@@ -1,13 +1,14 @@
 module Events
-  module JobSaved
+  module PersonSkillRemoved
     module Data
       class V1
         extend Messages::Payload
 
         schema do
-          job_id Uuid
-          employment_title String
-          employer_name String
+          skill_id Uuid
+          name String
+          description Either(String, nil)
+          type Either(*MasterSkill::SkillTypes::ALL)
         end
       end
     end
@@ -16,8 +17,8 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::User,
-      message_type: Messages::Types::User::JOB_SAVED,
+      aggregate: Aggregates::Person,
+      message_type: Messages::Types::Person::PERSON_SKILL_REMOVED,
       version: 1
     )
   end

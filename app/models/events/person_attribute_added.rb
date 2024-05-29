@@ -1,13 +1,14 @@
 module Events
-  module JobSaved
+  module PersonAttributeAdded
     module Data
       class V1
         extend Messages::Payload
 
         schema do
-          job_id Uuid
-          employment_title String
-          employer_name String
+          id Uuid
+          attribute_id Uuid
+          attribute_name String
+          attribute_values ArrayOf(String)
         end
       end
     end
@@ -16,8 +17,8 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::User,
-      message_type: Messages::Types::User::JOB_SAVED,
+      aggregate: Aggregates::Person,
+      message_type: Messages::Types::Person::PERSON_ATTRIBUTE_ADDED,
       version: 1
     )
   end

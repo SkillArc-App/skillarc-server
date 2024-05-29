@@ -1,13 +1,11 @@
 module Events
-  module JobSaved
+  module DateOfBirthAdded
     module Data
       class V1
         extend Messages::Payload
 
         schema do
-          job_id Uuid
-          employment_title String
-          employer_name String
+          date_of_birth Date, coerce: Messages::DateCoercer
         end
       end
     end
@@ -16,8 +14,8 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::User,
-      message_type: Messages::Types::User::JOB_SAVED,
+      aggregate: Aggregates::Person,
+      message_type: Messages::Types::Person::DATE_OF_BIRTH_ADDED,
       version: 1
     )
   end

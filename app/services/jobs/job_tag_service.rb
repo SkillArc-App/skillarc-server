@@ -13,6 +13,7 @@ module Jobs
         schema: Events::JobTagCreated::V1,
         job_id: job.id,
         data: {
+          id: job_tag.id,
           job_id: job.id,
           tag_id: tag.id
         }

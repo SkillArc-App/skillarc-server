@@ -134,6 +134,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         aggregate_id: job_id2,
         schema: Events::JobTagCreated::V1,
         data: {
+          id: SecureRandom.uuid,
           job_id: job_id2,
           tag_id: tag1.id
         }
@@ -145,6 +146,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         aggregate_id: job_id2,
         schema: Events::JobTagCreated::V1,
         data: {
+          id: SecureRandom.uuid,
           job_id: job_id2,
           tag_id: tag2.id
         }
@@ -156,6 +158,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         aggregate_id: job_id1,
         schema: Events::JobTagCreated::V1,
         data: {
+          id: SecureRandom.uuid,
           job_id: job_id1,
           tag_id: tag1.id
         }

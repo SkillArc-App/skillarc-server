@@ -5,6 +5,7 @@ module Events
         extend Messages::Payload
 
         schema do
+          id Uuid
           job_id Uuid
           tag_id Uuid
         end

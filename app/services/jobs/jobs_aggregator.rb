@@ -20,6 +20,18 @@ module Jobs
       DesiredSkill.find(message.data.id).destroy!
     end
 
+    on_message Events::JobPhotoCreated::V1, :sync do |message|
+      JobPhoto.create!(
+        id: message.data.id,
+        job_id: message.data.job_id,
+        photo_url: message.data.photo_url
+      )
+    end
+
+    on_message Events::JobPhotoDestroyed::V1, :sync do |message|
+      JobPhoto.find(message.data.id).destroy!
+    end
+
     on_message Events::JobTagCreated::V1, :sync do |message|
       JobTag.create!(
         id: message.data.id,

@@ -54,6 +54,50 @@ RSpec.describe Jobs::JobsAggregator do
       end
     end
 
+    context "JobPhotoCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobPhotoCreated::V1,
+          aggregate_id: job.id,
+          data: {
+            id: SecureRandom.uuid,
+            job_id: job.id,
+            photo_url: "photo_url"
+          }
+        )
+      end
+      let(:job) { create(:job) }
+
+      it "creates a job photo" do
+        expect { subject }.to change { JobPhoto.count }.by(1)
+
+        job_photo = JobPhoto.last
+
+        expect(job_photo.id).to eq(message.data[:id])
+        expect(job_photo.job_id).to eq(message.data[:job_id])
+        expect(job_photo.photo_url).to eq(message.data[:photo_url])
+      end
+    end
+
+    context "JobPhotoDestroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobPhotoDestroyed::V1,
+          aggregate_id: job_photo.job_id,
+          data: {
+            id: job_photo.id
+          }
+        )
+      end
+      let!(:job_photo) { create(:job_photo) }
+
+      it "destroys a job photo" do
+        expect { subject }.to change { JobPhoto.count }.by(-1)
+      end
+    end
+
     context "JobTagCreated" do
       let(:message) do
         build(

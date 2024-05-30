@@ -41,7 +41,7 @@ module Events
       message_type: Messages::Types::Seekers::SEEKER_APPLIED,
       version: 1
     )
-    V2 = Messages::Schema.deprecated(
+    V2 = Messages::Schema.inactive(
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,

@@ -1,6 +1,6 @@
 module Commands
   module CompleteOnboarding
-    V1 = Messages::Schema.deprecated(
+    V1 = Messages::Schema.inactive(
       type: Messages::COMMAND,
       data: Messages::Nothing,
       metadata: Messages::Nothing,

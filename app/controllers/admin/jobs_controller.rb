@@ -183,7 +183,6 @@ module Admin # rubocop:disable Metrics/ModuleLength
           tag: jt.tag.as_json
         }
       end.as_json,
-      number_of_applicants: job.applicants.count,
       testimonials: job.testimonials.as_json
     }
   end

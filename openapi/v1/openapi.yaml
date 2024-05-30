@@ -364,8 +364,6 @@ paths:
                       type: array
                       items:
                         type: string
-                    numberOfApplicants:
-                      type: integer
                     careerPaths:
                       type: array
                       items:

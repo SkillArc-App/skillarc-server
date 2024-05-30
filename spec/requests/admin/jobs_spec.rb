@@ -47,7 +47,6 @@ RSpec.describe "Admin::Jobs", type: :request do
                      schedule: { type: :string },
                      workDays: { type: :string },
                      industry: { type: :array, items: { type: :string } },
-                     numberOfApplicants: { type: :integer },
                      careerPaths: {
                        type: :array, items: {
                          type: :object,

@@ -22,7 +22,8 @@ module Builders
           first_name:,
           last_name:,
           email:,
-          phone_number:
+          phone_number:,
+          date_of_birth:
         }
       )
       message_service.create!(
@@ -30,14 +31,6 @@ module Builders
         schema: Events::PersonAssociatedToUser::V1,
         data: {
           user_id:
-        }
-      )
-
-      message_service.create!(
-        person_id: id,
-        schema: Events::DateOfBirthAdded::V1,
-        data: {
-          date_of_birth:
         }
       )
 

@@ -27,7 +27,8 @@ RSpec.describe People::PersonDedupingReactor do
             first_name: "Jim",
             last_name: "Bo",
             email:,
-            phone_number:
+            phone_number:,
+            date_of_birth:
           }
         )
       end
@@ -40,6 +41,7 @@ RSpec.describe People::PersonDedupingReactor do
 
       let(:user_id) { nil }
       let(:phone_number) { "333-333-3333" }
+      let(:date_of_birth) { Time.zone.parse("10/09/1990") }
       let(:email) { "a@b.c" }
       let(:messages) { [] }
 
@@ -52,7 +54,8 @@ RSpec.describe People::PersonDedupingReactor do
             first_name: "Jim",
             last_name: "Bo",
             email:,
-            phone_number:
+            phone_number:,
+            date_of_birth: Time.zone.parse("1/1/2000")
           }
         )
       end
@@ -94,7 +97,7 @@ RSpec.describe People::PersonDedupingReactor do
 
           it "emits a person associated to user event" do
             expect(message_service)
-              .to receive(:create_once_for_trace!)
+              .to receive(:create_once_for_aggregate!)
               .with(
                 schema: Events::PersonAssociatedToUser::V1,
                 trace_id:,
@@ -118,9 +121,9 @@ RSpec.describe People::PersonDedupingReactor do
         context "when there is a matching phone" do
           let(:messages) { [person_associated_phone_number] }
 
-          it "does nothing" do
+          it "associates the user" do
             expect(message_service)
-              .to receive(:create_once_for_trace!)
+              .to receive(:create_once_for_aggregate!)
               .with(
                 schema: Events::PersonAssociatedToUser::V1,
                 trace_id:,
@@ -153,13 +156,14 @@ RSpec.describe People::PersonDedupingReactor do
                   first_name: "Jim",
                   last_name: "Bo",
                   email: message.data.email,
-                  phone_number: message.data.phone_number
+                  phone_number: message.data.phone_number,
+                  date_of_birth: message.data.date_of_birth
                 }
               )
               .and_call_original
 
             expect(message_service)
-              .to receive(:create_once_for_trace!)
+              .to receive(:create_once_for_aggregate!)
               .with(
                 schema: Events::PersonAssociatedToUser::V1,
                 trace_id:,
@@ -208,7 +212,8 @@ RSpec.describe People::PersonDedupingReactor do
                   first_name: message.data.first_name,
                   last_name: message.data.last_name,
                   email: message.data.email,
-                  phone_number: message.data.phone_number
+                  phone_number: message.data.phone_number,
+                  date_of_birth: message.data.date_of_birth
                 }
               )
               .and_call_original
@@ -230,7 +235,8 @@ RSpec.describe People::PersonDedupingReactor do
             first_name: "Jim",
             last_name: "Bo",
             email:,
-            phone_number:
+            phone_number:,
+            date_of_birth: "10/09/1990"
           }
         )
       end

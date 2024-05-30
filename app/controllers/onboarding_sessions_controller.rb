@@ -44,6 +44,7 @@ class OnboardingSessionsController < ApplicationController
             first_name: filtered[:first_name],
             last_name: filtered[:last_name],
             phone_number: filtered[:phone_number],
+            date_of_birth: filtered[:date_of_birth],
             email: current_user.email
           }
         )

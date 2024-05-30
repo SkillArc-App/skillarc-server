@@ -20,6 +20,7 @@ RSpec.describe People::PersonAggregator do # rubocop:disable Metrics/BlockLength
             first_name: "John",
             last_name: "Skillz",
             email: "john@skillarc.com",
+            date_of_birth: "10/09/1990",
             phone_number: "2222222222"
           }
         )

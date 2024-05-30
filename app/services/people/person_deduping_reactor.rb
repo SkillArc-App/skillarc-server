@@ -24,7 +24,8 @@ module People
           first_name: message.data.first_name,
           last_name: message.data.last_name,
           email: message.data.email,
-          phone_number: message.data.phone_number
+          phone_number: message.data.phone_number,
+          date_of_birth: message.data.date_of_birth
         }
       )
 
@@ -104,7 +105,7 @@ module People
     end
 
     def emit_associated_to_user(person_id, user_id, trace_id)
-      message_service.create_once_for_trace!(
+      message_service.create_once_for_aggregate!(
         schema: Events::PersonAssociatedToUser::V1,
         trace_id:,
         person_id:,

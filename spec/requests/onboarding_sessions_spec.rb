@@ -87,6 +87,7 @@ RSpec.describe "OnboardingSessions", type: :request do
                     first_name: "John",
                     last_name: "Chabot",
                     phone_number: "333-333-3333",
+                    date_of_birth: "10/09/1990",
                     email: user.email
                   }
                 )

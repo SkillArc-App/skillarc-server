@@ -73,6 +73,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           data: {
             first_name: "King",
             last_name: "David",
+            date_of_birth: "10/09/1990",
             email: "A@B.c",
             phone_number: "4444444444"
           }

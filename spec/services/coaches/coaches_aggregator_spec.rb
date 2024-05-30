@@ -41,6 +41,7 @@ RSpec.describe Coaches::CoachesAggregator do
             first_name: "Hannah",
             last_name: "Block",
             email: "Some@email.com",
+            date_of_birth: "10/09/1990",
             phone_number: "333-333-3333"
           }
         )

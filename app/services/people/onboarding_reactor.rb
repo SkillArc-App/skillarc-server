@@ -1,5 +1,5 @@
 module People
-  class OnboardingComponent < MessageReactor
+  class OnboardingReactor < MessageReactor
     def can_replay?
       true
     end

@@ -1,5 +1,5 @@
 module People
-  class PersonDedupingComponent < MessageReactor
+  class PersonDedupingReactor < MessageReactor
     def can_replay?
       true
     end

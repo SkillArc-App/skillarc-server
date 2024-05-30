@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe People::PersonDedupingComponent do
+RSpec.describe People::PersonDedupingReactor do
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new(message_service:) }

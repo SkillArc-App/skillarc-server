@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe People::OnboardingComponent do
+RSpec.describe People::OnboardingReactor do
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new(message_service:) }

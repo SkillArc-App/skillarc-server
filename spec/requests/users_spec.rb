@@ -45,7 +45,7 @@ RSpec.describe "Users", type: :request do
           end
 
           it "calls UserService.update" do
-            expect_any_instance_of(Seekers::UserService).to receive(:update).with(
+            expect_any_instance_of(People::BasicInfoService).to receive(:update).with(
               about: "New About",
               first_name: "New First Name",
               last_name: "Name Last Name",
@@ -68,7 +68,7 @@ RSpec.describe "Users", type: :request do
         end
 
         it "calls UserService.update" do
-          expect_any_instance_of(Seekers::UserService).to receive(:update).with(
+          expect_any_instance_of(People::BasicInfoService).to receive(:update).with(
             about: "New About",
             first_name: "New First Name",
             last_name: "Name Last Name",

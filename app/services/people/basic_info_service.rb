@@ -1,17 +1,16 @@
-module Seekers
-  class UserService
-    include MessageEmitter
-
-    def initialize(user_id)
+module People
+  class BasicInfoService
+    def initialize(user_id, message_service)
       @user = User.find(user_id)
+      @message_service = message_service
     end
 
     def update(about:, first_name:, last_name:, phone_number:, zip_code:)
       seeker = user.seeker
       return unless seeker
 
-      aggregate = Aggregates::Seeker.new(seeker_id: seeker.id)
-      date_of_birth = ::Projectors::Aggregates::GetLast.project(schema: Events::BasicInfoAdded::V1, aggregate:)&.data&.date_of_birth
+      aggregate = Aggregates::Person.new(person_id: seeker.id)
+      email = ::Projectors::Aggregates::GetLast.project(schema: Events::BasicInfoAdded::V1, aggregate:)&.data&.email
 
       message_service.create!(
         schema: Events::BasicInfoAdded::V1,
@@ -20,13 +19,12 @@ module Seekers
           first_name:,
           last_name:,
           phone_number:,
-          date_of_birth:,
-          user_id: user.id
+          email:
         }
       )
 
       message_service.create!(
-        schema: Events::ZipAdded::V1,
+        schema: Events::ZipAdded::V2,
         aggregate:,
         data: {
           zip_code:
@@ -34,7 +32,7 @@ module Seekers
       )
 
       message_service.create!(
-        schema: Events::SeekerUpdated::V1,
+        schema: Events::PersonAboutAdded::V1,
         aggregate:,
         data: {
           about:
@@ -44,6 +42,6 @@ module Seekers
 
     private
 
-    attr_reader :user
+    attr_reader :user, :message_service
   end
 end

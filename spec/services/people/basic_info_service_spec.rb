@@ -1,11 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Seekers::UserService do
+RSpec.describe People::BasicInfoService do
   describe ".update" do
-    subject { described_class.new(user_id).update(about:, first_name:, last_name:, phone_number:, zip_code:) }
+    subject { described_class.new(user_id, message_service).update(about:, first_name:, last_name:, phone_number:, zip_code:) }
 
-    include_context "event emitter"
-
+    let(:message_service) { MessageService.new }
     let(:user_id) { user.id }
     let(:user) { create(:user) }
     let!(:seeker) { create(:seeker, user_id: user.id) }
@@ -14,7 +13,7 @@ RSpec.describe Seekers::UserService do
     let(:last_name) { "New Last Name" }
     let(:phone_number) { "1234567890" }
     let(:zip_code) { "12345" }
-    let(:aggregate) { Aggregates::Seeker.new(seeker_id: seeker.id) }
+    let(:aggregate) { Aggregates::Person.new(person_id: seeker.id) }
 
     before do
       allow(MessageService)
@@ -27,11 +26,10 @@ RSpec.describe Seekers::UserService do
               schema: Events::BasicInfoAdded::V1,
               aggregate_id: seeker.id,
               data: {
-                user_id:,
                 first_name: "A name",
                 last_name: "A name",
                 phone_number: "333-333-3333",
-                date_of_birth: "2000-10-10"
+                email: "cool@beans.com"
               }
             )
           ]
@@ -39,30 +37,29 @@ RSpec.describe Seekers::UserService do
     end
 
     it "publishes a basic info added event" do
-      allow_any_instance_of(MessageService).to receive(:create!)
-      expect_any_instance_of(MessageService).to receive(:create!).with(
+      allow(message_service).to receive(:create!)
+      expect(message_service).to receive(:create!).with(
         schema: Events::BasicInfoAdded::V1,
-        aggregate: Aggregates::Seeker.new(seeker_id: seeker.id),
+        aggregate:,
         data: {
           first_name:,
           last_name:,
           phone_number:,
-          date_of_birth: Date.new(2000, 10, 10),
-          user_id:
+          email: "cool@beans.com"
         }
       ).and_call_original
 
-      expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::ZipAdded::V1,
-        aggregate: Aggregates::Seeker.new(seeker_id: seeker.id),
+      expect(message_service).to receive(:create!).with(
+        schema: Events::ZipAdded::V2,
+        aggregate:,
         data: {
           zip_code:
         }
       ).and_call_original
 
-      expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::SeekerUpdated::V1,
-        aggregate: Aggregates::Seeker.new(seeker_id: seeker.id),
+      expect(message_service).to receive(:create!).with(
+        schema: Events::PersonAboutAdded::V1,
+        aggregate:,
         data: {
           about:
         }

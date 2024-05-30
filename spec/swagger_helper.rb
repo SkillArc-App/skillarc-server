@@ -290,9 +290,6 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                   '$ref' => '#/components/schemas/education_experience'
                 }
               },
-              hiringStatus: {
-                type: :string
-              },
               industryInterests: {
                 type: :array,
                 items: {

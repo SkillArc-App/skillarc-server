@@ -25,7 +25,6 @@ class SeekerService
       education_experiences: seeker.education_experiences.map do |ee|
         ee.slice(:id, :organization_name, :title, :graduation_date, :gpa, :activities).symbolize_keys
       end,
-      hiring_status: seeker.hiring_status,
       industry_interests:,
       is_profile_editor: seeker_editor,
       other_experiences: seeker.other_experiences.map do |oe|

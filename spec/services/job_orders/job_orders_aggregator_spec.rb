@@ -65,13 +65,16 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       end
     end
 
-    context "when the message is seeker created" do
+    context "when the message is person added" do
       let(:message) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
+          schema: Events::PersonAdded::V1,
           data: {
-            user_id: SecureRandom.uuid
+            first_name: "King",
+            last_name: "David",
+            email: "A@B.c",
+            phone_number: "4444444444"
           }
         )
       end
@@ -81,6 +84,10 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
         seeker = JobOrders::Seeker.take(1).first
         expect(seeker.id).to eq(message.aggregate.id)
+        expect(seeker.first_name).to eq(message.data.first_name)
+        expect(seeker.last_name).to eq(message.data.last_name)
+        expect(seeker.email).to eq(message.data.email)
+        expect(seeker.phone_number).to eq(message.data.phone_number)
       end
     end
 
@@ -91,24 +98,24 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           schema: Events::BasicInfoAdded::V1,
           aggregate_id: seeker.id,
           data: {
-            user_id: SecureRandom.uuid,
             first_name: "Chris",
             last_name: "Brauns",
             phone_number: "+1333333333",
-            date_of_birth: nil
+            email: "top@dawg.com"
           }
         )
       end
 
       let!(:seeker) { create(:job_orders__seeker) }
 
-      it "creates a seeker record" do
+      it "updates a seeker record" do
         subject
 
         seeker.reload
         expect(seeker.first_name).to eq(message.data.first_name)
         expect(seeker.last_name).to eq(message.data.last_name)
         expect(seeker.phone_number).to eq(message.data.phone_number)
+        expect(seeker.email).to eq(message.data.email)
       end
     end
 

@@ -44,17 +44,23 @@ module JobOrders
       )
     end
 
-    on_message Events::SeekerCreated::V1 do |message|
-      Seeker.create!(id: message.aggregate.id)
+    on_message Events::PersonAdded::V1 do |message|
+      Seeker.create!(
+        id: message.aggregate.id,
+        first_name: message.data.first_name,
+        last_name: message.data.last_name,
+        phone_number: message.data.phone_number,
+        email: message.data.email
+      )
     end
 
     on_message Events::BasicInfoAdded::V1 do |message|
-      seeker = Seeker.find(message.aggregate.id)
-
-      seeker.update!(
+      Seeker.update(
+        message.aggregate.id,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
-        phone_number: message.data.phone_number
+        phone_number: message.data.phone_number,
+        email: message.data.email
       )
     end
 
@@ -81,7 +87,8 @@ module JobOrders
 
     on_message Events::JobOrderCandidateAdded::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
-      seeker = Seeker.find(message.data.seeker_id)
+      seeker = Seeker.find_by(id: message.data.seeker_id)
+      return if seeker.nil?
 
       candidate = JobOrders::Candidate.find_or_initialize_by(job_order:, seeker:)
       candidate.added_at = message.occurred_at

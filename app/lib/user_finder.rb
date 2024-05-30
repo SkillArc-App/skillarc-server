@@ -35,7 +35,7 @@ class UserFinder
     rescue ActiveRecord::RecordNotUnique
       # We had a race condition and a user was created
       # after the find occurred
-      User.find_by!(sub:)
+      User.includes(user_roles: :roles).find_by!(sub:)
     end
   end
 end

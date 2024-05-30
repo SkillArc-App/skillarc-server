@@ -50,7 +50,7 @@ module Analytics
       person.save!
     end
 
-    on_message Events::BasicInfoAdded::V1 do |message|
+    on_message Events::UserBasicInfoAdded::V1 do |message|
       person = DimPerson.find_by!(user_id: message.data.user_id)
 
       person.last_active_at = message.occurred_at

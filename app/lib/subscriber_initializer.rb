@@ -5,7 +5,7 @@ module SubscriberInitializer
 
     aggregators = [
       DbStreamListener.build(consumer: JobOrders::JobOrdersAggregator.new, listener_name: "job_orders_aggregator"),
-      DbStreamListener.build(consumer: Analytics::AnalyticsAggregator.new, listener_name: "analytics"),
+      # DbStreamListener.build(consumer: Analytics::AnalyticsAggregator.new, listener_name: "analytics"),
       DbStreamListener.build(consumer: Attributes::AttributesAggregator.new, listener_name: "attributes_aggregator"),
       DbStreamListener.build(consumer: Coaches::CoachesAggregator.new, listener_name: "coach_seekers"),
       DbStreamListener.build(consumer: Jobs::JobsAggregator.new, listener_name: "jobs_aggregator"),

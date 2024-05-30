@@ -177,7 +177,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           build(
             :message,
             aggregate_id: seeker_id,
-            schema: Events::BasicInfoAdded::V1,
+            schema: Events::UserBasicInfoAdded::V1,
             data: {
               user_id:,
               first_name: "John",

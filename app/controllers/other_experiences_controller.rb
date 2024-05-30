@@ -9,10 +9,10 @@ class OtherExperiencesController < ApplicationController
 
   def create
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).add_experience(
+      People::PersonEventEmitter.new(message_service:).add_experience(
         id: SecureRandom.uuid,
         trace_id: request.request_id,
-        seeker_id: params[:profile_id],
+        person_id: params[:profile_id],
         organization_name: work_experience_params[:organization_name],
         position: work_experience_params[:position],
         start_date: work_experience_params[:start_date],
@@ -27,10 +27,10 @@ class OtherExperiencesController < ApplicationController
 
   def update
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).add_experience(
+      People::PersonEventEmitter.new(message_service:).add_experience(
         id: params[:id],
         trace_id: request.request_id,
-        seeker_id: params[:profile_id],
+        person_id: params[:profile_id],
         organization_name: work_experience_params[:organization_name],
         position: work_experience_params[:position],
         start_date: work_experience_params[:start_date],
@@ -45,10 +45,10 @@ class OtherExperiencesController < ApplicationController
 
   def destroy
     with_message_service do
-      Seekers::SeekerReactor.new(message_service:).remove_experience(
+      People::PersonEventEmitter.new(message_service:).remove_experience(
         trace_id: request.request_id,
         experience_id: params[:id],
-        seeker_id: params[:profile_id]
+        person_id: params[:profile_id]
       )
     end
 

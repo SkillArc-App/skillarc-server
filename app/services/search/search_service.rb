@@ -1,5 +1,5 @@
 module Search
-  class SearchService < MessageConsumer # rubocop:disable Metrics/ClassLength
+  class SearchService < MessageConsumer
     include MessageEmitter
 
     def reset_for_replay
@@ -158,18 +158,6 @@ module Search
     on_message Events::CareerPathCreated::V1 do |message|
       data = message.data
       return unless data.order.zero?
-
-      job = Job.find_by!(job_id: message.aggregate.job_id)
-
-      job.update!(
-        starting_lower_pay: data.lower_limit.to_i,
-        starting_upper_pay: data.upper_limit.to_i
-      )
-    end
-
-    on_message Events::CareerPathUpdated::V1 do |message|
-      data = message.data
-      return unless data.order&.zero?
 
       job = Job.find_by!(job_id: message.aggregate.job_id)
 

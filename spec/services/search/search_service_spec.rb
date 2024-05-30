@@ -213,10 +213,6 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         schema: Events::CareerPathUpdated::V1,
         data: {
           id: SecureRandom.uuid,
-          job_id: job_id2,
-          title: "Top Grunt",
-          lower_limit: "12",
-          upper_limit: "17",
           order: 0
         }
       )
@@ -343,8 +339,8 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         location: "Columbus, OH",
         starting_pay: {
           employment_type: "hourly",
-          lower_limit: 12,
-          upper_limit: 17
+          lower_limit: 10,
+          upper_limit: 15
         },
         tags: %w[Tag1 Tag2],
         application_status: nil,
@@ -473,8 +469,8 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               location: "Columbus, OH",
               starting_pay: {
                 employment_type: "hourly",
-                lower_limit: 12,
-                upper_limit: 17
+                lower_limit: 10,
+                upper_limit: 15
               },
               tags: %w[Tag1 Tag2],
               application_status: nil,
@@ -545,8 +541,8 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               location: "Columbus, OH",
               starting_pay: {
                 employment_type: "hourly",
-                lower_limit: 12,
-                upper_limit: 17
+                lower_limit: 10,
+                upper_limit: 15
               },
               tags: %w[Tag1 Tag2],
               application_status: "interviewing",

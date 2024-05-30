@@ -86,10 +86,6 @@ module Jobs
           job_id: job.id,
           data: {
             id: path.id,
-            job_id: job.id,
-            title: path.title,
-            lower_limit: path.lower_limit,
-            upper_limit: path.upper_limit,
             order: path.order - 1
           }
         )

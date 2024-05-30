@@ -140,10 +140,6 @@ RSpec.describe Jobs::CareerPathService do
         job_id: career_path.job_id,
         data: {
           id: be_a(String),
-          job_id: career_path.job_id,
-          title: "title",
-          lower_limit: "1",
-          upper_limit: "2",
           order: career_path.order
         }
       ).and_call_original

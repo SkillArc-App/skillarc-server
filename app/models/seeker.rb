@@ -29,12 +29,4 @@ class Seeker < ApplicationRecord
   has_many :stories, dependent: :destroy
   has_many :seeker_training_providers, dependent: :destroy
   has_one :onboarding_session, dependent: :destroy
-
-  def hiring_status
-    return 'Interviewing' if applicants.includes(:applicant_statuses).any? { |a| a.status.status == 'interviewing' }
-
-    return 'Applying to Jobs' unless applicants.empty?
-
-    'Profile Complete'
-  end
 end

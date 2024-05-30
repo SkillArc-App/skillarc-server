@@ -40,11 +40,11 @@ RSpec.describe Users::UsersAggregator do
       end
     end
 
-    context "when message is seeker created" do
+    context "when message is person associated to user" do
       let(:message) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
+          schema: Events::PersonAssociatedToUser::V1,
           aggregate_id: id,
           data: {
             user_id: user.id

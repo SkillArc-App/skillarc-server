@@ -265,43 +265,6 @@ module Coaches
       )
     end
 
-    on_message Events::LeadAdded::V2 do |message|
-      csc = Coaches::CoachSeekerContext.find_by(lead_id: message.aggregate.context_id)
-      return if csc&.assigned_coach.present?
-
-      coach = Coach.find_by(email: message.data.lead_captured_by)
-      coach ||= CoachAssignmentService.round_robin_assignment
-
-      return if coach.nil?
-
-      message_service.create!(
-        trace_id: message.trace_id,
-        context_id: message.aggregate.context_id,
-        schema: Commands::AssignCoach::V1,
-        data: {
-          coach_email: coach.email
-        }
-      )
-    end
-
-    on_message Events::UserCreated::V1 do |message|
-      csc = Coaches::CoachSeekerContext.find_by(user_id: message.aggregate.user_id)
-      return if csc&.assigned_coach.present?
-
-      coach = CoachAssignmentService.round_robin_assignment
-
-      return if coach.nil?
-
-      message_service.create!(
-        trace_id: message.trace_id,
-        context_id: message.aggregate.user_id,
-        schema: Commands::AssignCoach::V1,
-        data: {
-          coach_email: coach.email
-        }
-      )
-    end
-
     on_message Events::JobRecommended::V2 do |message|
       job_id = message.data.job_id
 

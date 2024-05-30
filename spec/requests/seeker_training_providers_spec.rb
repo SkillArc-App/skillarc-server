@@ -28,9 +28,9 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          schema: Events::SeekerTrainingProviderCreated::V4,
+          schema: Events::PersonTrainingProviderAdded::V1,
           trace_id: be_a(String),
-          seeker_id: seeker.id,
+          person_id: seeker.id,
           data: {
             id: be_a(String),
             program_id: params[:programId],
@@ -68,9 +68,9 @@ RSpec.describe "SeekerTrainingProviders", type: :request do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          schema: Events::SeekerTrainingProviderCreated::V4,
+          schema: Events::PersonTrainingProviderAdded::V1,
           trace_id: be_a(String),
-          seeker_id: seeker.id,
+          person_id: seeker.id,
           data: {
             id: be_a(String),
             program_id: params[:programId],

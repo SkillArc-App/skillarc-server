@@ -65,8 +65,8 @@ RSpec.describe "PersonalExperiences", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::PersonalExperienceAdded::V1,
-                seeker_id: seeker.id,
+                schema: Events::PersonalExperienceAdded::V2,
+                person_id: seeker.id,
                 trace_id: be_a(String),
                 data: {
                   id: be_a(String),
@@ -131,7 +131,6 @@ RSpec.describe "PersonalExperiences", type: :request do
       let(:id) { SecureRandom.uuid }
       let(:seeker_id) { SecureRandom.uuid }
 
-      let(:seeker_id) { SecureRandom.uuid }
       let(:activity) { "Picking up sticks" }
       let(:start_date) { "May" }
       let(:end_date) { "Sam I am" }
@@ -154,8 +153,8 @@ RSpec.describe "PersonalExperiences", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::PersonalExperienceAdded::V1,
-                seeker_id: seeker.id,
+                schema: Events::PersonalExperienceAdded::V2,
+                person_id: seeker.id,
                 trace_id: be_a(String),
                 data: {
                   id:,
@@ -200,8 +199,8 @@ RSpec.describe "PersonalExperiences", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::PersonalExperienceRemoved::V1,
-                seeker_id: seeker.id,
+                schema: Events::PersonalExperienceRemoved::V2,
+                person_id: seeker.id,
                 trace_id: be_a(String),
                 data: {
                   id:

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLength
+RSpec.describe People::PersonAggregator do # rubocop:disable Metrics/BlockLength
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new }
@@ -10,14 +10,18 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
   describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { consumer.handle_message(message) }
 
-    context "when the message is seeker created" do
+    context "when the message is person added" do
       let(:message) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
+          schema: Events::PersonAdded::V1,
           aggregate_id: SecureRandom.uuid,
           data: {
-            user_id: user.id
+            first_name: "John",
+            last_name: "Skillz",
+            email: "john@skillarc.com",
+            date_of_birth: "10/09/1990",
+            phone_number: "2222222222"
           }
         )
       end
@@ -27,12 +31,35 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
 
         seeker = Seeker.take(1).first
         expect(seeker.id).to eq(message.aggregate.id)
-        expect(seeker.user_id).to eq(message.data.user_id)
+        expect(seeker.first_name).to eq(message.data.first_name)
+        expect(seeker.last_name).to eq(message.data.last_name)
+        expect(seeker.email).to eq(message.data.email)
+        expect(seeker.phone_number).to eq(message.data.phone_number)
       end
     end
 
-    context "when the seeker exists" do # rubocop:disable Metrics/BlockLength
-      let(:seeker) { create(:seeker, user_id: user.id) }
+    context "when the person exists" do # rubocop:disable Metrics/BlockLength
+      let(:seeker) { create(:seeker) }
+
+      context "when the message is person associated with user" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::PersonAssociatedToUser::V1,
+            aggregate_id: seeker.id,
+            data: {
+              user_id: user.id
+            }
+          )
+        end
+
+        it "updates the seekers user id" do
+          subject
+
+          seeker.reload
+          expect(seeker.user_id).to eq(message.data.user_id)
+        end
+      end
 
       context "when the message is basic info added" do
         let(:message) do
@@ -41,11 +68,10 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
             schema: Events::BasicInfoAdded::V1,
             aggregate_id: seeker.id,
             data: {
-              user_id: user.id,
               first_name: "John",
               last_name: "Chabot",
               phone_number: "333-333-3333",
-              date_of_birth: "2000-10-10"
+              email: "A@B.com"
             }
           )
         end
@@ -53,13 +79,8 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         it "updates the seekers basic info" do
           subject
 
-          user.reload
-          expect(user.first_name).to eq(message.data.first_name)
-          expect(user.last_name).to eq(message.data.last_name)
-          expect(user.phone_number).to eq(message.data.phone_number)
-
           seeker.reload
-          expect(seeker.email).to eq(user.email)
+          expect(seeker.email).to eq(message.data.email)
           expect(seeker.first_name).to eq(message.data.first_name)
           expect(seeker.last_name).to eq(message.data.last_name)
           expect(seeker.phone_number).to eq(message.data.phone_number)
@@ -70,7 +91,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::ZipAdded::V1,
+            schema: Events::ZipAdded::V2,
             aggregate_id: seeker.id,
             data: {
               zip_code: "43202"
@@ -86,11 +107,11 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         end
       end
 
-      context "when the message seeker updated" do
+      context "when the message person about added" do
         let(:message) do
           build(
             :message,
-            schema: Events::SeekerUpdated::V1,
+            schema: Events::PersonAboutAdded::V1,
             aggregate_id: seeker.id,
             data: {
               about: "I'm pretty cool"
@@ -110,7 +131,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::ExperienceAdded::V1,
+            schema: Events::ExperienceAdded::V2,
             aggregate_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
@@ -163,7 +184,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::ExperienceRemoved::V1,
+            schema: Events::ExperienceRemoved::V2,
             aggregate_id: seeker.id,
             data: {
               id:
@@ -182,7 +203,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::StoryCreated::V1,
+            schema: Events::StoryCreated::V2,
             aggregate_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
@@ -207,7 +228,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::StoryUpdated::V1,
+            schema: Events::StoryUpdated::V2,
             aggregate_id: seeker.id,
             data: {
               id: story.id,
@@ -291,7 +312,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::StoryDestroyed::V1,
+            schema: Events::StoryDestroyed::V2,
             aggregate_id: seeker.id,
             data: {
               id: story.id
@@ -310,7 +331,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::EducationExperienceAdded::V1,
+            schema: Events::EducationExperienceAdded::V2,
             aggregate_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
@@ -360,7 +381,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::EducationExperienceDeleted::V1,
+            schema: Events::EducationExperienceDeleted::V2,
             aggregate_id: seeker.id,
             data: {
               id:
@@ -379,7 +400,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::PersonalExperienceAdded::V1,
+            schema: Events::PersonalExperienceAdded::V2,
             aggregate_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
@@ -426,7 +447,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::PersonalExperienceRemoved::V1,
+            schema: Events::PersonalExperienceRemoved::V2,
             aggregate_id: seeker.id,
             data: {
               id:
@@ -441,11 +462,11 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         end
       end
 
-      context "when the message is seeker training provider created" do
+      context "when the message is person training provider created" do
         let(:message) do
           build(
             :message,
-            schema: Events::SeekerTrainingProviderCreated::V4,
+            schema: Events::PersonTrainingProviderAdded::V1,
             aggregate_id: seeker.id,
             data: {
               id:,
@@ -476,11 +497,9 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::OnboardingStarted::V1,
+            schema: Events::OnboardingStarted::V2,
             aggregate_id: seeker.id,
-            data: {
-              user_id: user.id
-            }
+            data: Messages::Nothing
           )
         end
 
@@ -497,7 +516,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::ElevatorPitchCreated::V1,
+            schema: Events::ElevatorPitchCreated::V2,
             aggregate_id: seeker.id,
             data: {
               job_id: applicant.job_id,
@@ -520,7 +539,7 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         let(:message) do
           build(
             :message,
-            schema: Events::OnboardingCompleted::V2,
+            schema: Events::OnboardingCompleted::V3,
             aggregate_id: seeker.id,
             data: Messages::Nothing
           )
@@ -546,11 +565,11 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         end
       end
 
-      context "when the message is seeker skill created" do
+      context "when the message is person skill created" do
         let(:message) do
           build(
             :message,
-            schema: Events::SeekerSkillCreated::V1,
+            schema: Events::PersonSkillAdded::V1,
             aggregate_id: seeker.id,
             data: {
               skill_id: master_skill.id,
@@ -573,11 +592,11 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         end
       end
 
-      context "when the message is seeker skill update" do
+      context "when the message is person skill update" do
         let(:message) do
           build(
             :message,
-            schema: Events::SeekerSkillUpdated::V1,
+            schema: Events::PersonSkillUpdated::V1,
             aggregate_id: seeker.id,
             data: {
               skill_id: master_skill.id,
@@ -599,11 +618,11 @@ RSpec.describe Seekers::SeekerAggregator do # rubocop:disable Metrics/BlockLengt
         end
       end
 
-      context "when the message is seeker skill destroyed" do
+      context "when the message is person skill removed" do
         let(:message) do
           build(
             :message,
-            schema: Events::SeekerSkillDestroyed::V1,
+            schema: Events::PersonSkillRemoved::V1,
             aggregate_id: seeker.id,
             data: {
               skill_id: master_skill.id,

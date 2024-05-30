@@ -34,7 +34,7 @@ module Contact
       )
     end
 
-    on_message Events::BasicInfoAdded::V1 do |message|
+    on_message Events::UserBasicInfoAdded::V1 do |message|
       user_contact = Contact::UserContact.find_by!(user_id: message.data.user_id)
 
       user_contact.update!(

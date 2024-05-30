@@ -8,8 +8,8 @@ module Seekers
 
     def create(prompt:, response:)
       message_service.create!(
-        schema: Events::StoryCreated::V1,
-        seeker_id: seeker.id,
+        schema: Events::StoryCreated::V2,
+        person_id: seeker.id,
         data: {
           id: SecureRandom.uuid,
           prompt:,
@@ -20,8 +20,8 @@ module Seekers
 
     def update(story:, prompt:, response:)
       message_service.create!(
-        schema: Events::StoryUpdated::V1,
-        seeker_id: seeker.id,
+        schema: Events::StoryUpdated::V2,
+        person_id: seeker.id,
         data: {
           id: story.id,
           prompt:,
@@ -32,8 +32,8 @@ module Seekers
 
     def destroy(story:)
       message_service.create!(
-        schema: Events::StoryDestroyed::V1,
-        seeker_id: seeker.id,
+        schema: Events::StoryDestroyed::V2,
+        person_id: seeker.id,
         data: {
           id: story.id
         }

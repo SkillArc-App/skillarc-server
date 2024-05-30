@@ -5,11 +5,10 @@ module Events
         extend Messages::Payload
 
         schema do
-          user_id String
           first_name String
           last_name String
           phone_number Either(String, nil)
-          date_of_birth Either(Date, nil), coerce: Messages::DateCoercer
+          email Either(String, nil)
         end
       end
     end
@@ -18,8 +17,8 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Seekers::BASIC_INFO_ADDED,
+      aggregate: Aggregates::Person,
+      message_type: Messages::Types::Person::BASIC_INFO_ADDED,
       version: 1
     )
   end

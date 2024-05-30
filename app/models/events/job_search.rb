@@ -38,7 +38,7 @@ module Events
       data: Data::V1,
       metadata: MetaData::V1,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::Seekers::JOB_SEARCH,
+      message_type: Messages::Types::Search::JOB_SEARCH,
       version: 1
     )
     V2 = Messages::Schema.active(
@@ -46,7 +46,7 @@ module Events
       data: Data::V1,
       metadata: MetaData::V2,
       aggregate: Aggregates::Search,
-      message_type: Messages::Types::Seekers::JOB_SEARCH,
+      message_type: Messages::Types::Search::JOB_SEARCH,
       version: 2
     )
   end

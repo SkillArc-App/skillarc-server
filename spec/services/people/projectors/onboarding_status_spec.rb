@@ -1,39 +1,33 @@
 require 'rails_helper'
 
-RSpec.describe Seekers::Projectors::OnboardingStatus do
+RSpec.describe People::Projectors::OnboardingStatus do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Aggregates::Seeker.new(seeker_id:) }
-    let(:seeker_id) { SecureRandom.uuid }
+    let(:aggregate) { Aggregates::Person.new(person_id:) }
+    let(:person_id) { SecureRandom.uuid }
 
     let(:onboarding_complete) do
       build(
         :message,
         aggregate:,
-        schema: Events::OnboardingCompleted::V2,
+        schema: Events::OnboardingCompleted::V3,
         data: Messages::Nothing
       )
     end
-    let(:basic_info_added) do
+    let(:onboarding_started) do
       build(
         :message,
         aggregate:,
-        schema: Events::BasicInfoAdded::V1,
-        data: {
-          user_id: SecureRandom.uuid,
-          first_name: "A",
-          last_name: "B",
-          phone_number: "333-333-3333",
-          date_of_birth: "2000-10-10"
-        }
+        schema: Events::OnboardingStarted::V2,
+        data: Messages::Nothing
       )
     end
     let(:reliability_added) do
       build(
         :message,
         aggregate:,
-        schema: Events::ReliabilityAdded::V1,
+        schema: Events::ReliabilityAdded::V2,
         data: {
           reliabilities:
         }
@@ -43,7 +37,7 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::EducationExperienceAdded::V1,
+        schema: Events::EducationExperienceAdded::V2,
         data: {
           id: SecureRandom.uuid
         }
@@ -53,7 +47,7 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::ExperienceAdded::V1,
+        schema: Events::ExperienceAdded::V2,
         data: {
           id: SecureRandom.uuid
         }
@@ -63,7 +57,7 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::SeekerTrainingProviderCreated::V4,
+        schema: Events::PersonTrainingProviderAdded::V1,
         data: {
           id: SecureRandom.uuid,
           status: "cool beans",
@@ -76,7 +70,7 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::ProfessionalInterestsAdded::V1,
+        schema: Events::ProfessionalInterestsAdded::V2,
         data: {
           interests: []
         }
@@ -103,8 +97,8 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
       end
     end
 
-    context "when a basic info added event is present" do
-      let(:messages) { [basic_info_added] }
+    context "when a onboarding started event is present" do
+      let(:messages) { [onboarding_started] }
 
       it "reports the next step is reliability and progress at 30%" do
         expect(subject.next_step).to eq(Onboarding::Steps::RELIABILITY)
@@ -113,7 +107,7 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
     end
 
     context "when a reliability is present" do
-      let(:messages) { [basic_info_added, reliability_added] }
+      let(:messages) { [onboarding_started, reliability_added] }
 
       context "when reliabilities only mention job" do
         let(:reliabilities) { [Reliability::JOB] }
@@ -161,7 +155,7 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
     context "when reliability and experience has been provided" do
       let(:messages) do
         [
-          basic_info_added,
+          onboarding_started,
           reliability_added,
           education_experience_added,
           experience_added,
@@ -185,7 +179,7 @@ RSpec.describe Seekers::Projectors::OnboardingStatus do
     context "when reliability and experience has been provided and opprotunity" do
       let(:messages) do
         [
-          basic_info_added,
+          onboarding_started,
           reliability_added,
           education_experience_added,
           experience_added,

@@ -21,7 +21,7 @@ module Klaviyo
       end
     end
 
-    on_message Events::BasicInfoAdded::V1 do |message|
+    on_message Events::UserBasicInfoAdded::V1 do |message|
       dedup_messages(message) do
         client.user_updated(
           email: email_for_seeker_aggregate(message.aggregate),

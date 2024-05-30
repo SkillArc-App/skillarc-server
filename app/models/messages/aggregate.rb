@@ -23,7 +23,7 @@ module Messages
 
     def initialize(**kwarg)
       value = kwarg[self.class.id]
-      raise ArgumentError, "Expected keyword argument #{self.class.id} for #{self.class.name}" if value.blank?
+      raise ArgumentError, "Expected keyword argument #{self.class.id} for #{self.class.name}" unless kwarg.key?(self.class.id)
 
       @id = value
     end

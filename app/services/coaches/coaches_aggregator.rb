@@ -93,8 +93,7 @@ module Coaches
 
     on_message Events::ApplicantStatusUpdated::V6 do |message|
       data = message.data
-      csc = CoachSeekerContext.find_by!(user_id: data.user_id)
-      csc.update!(last_active_on: message.occurred_at)
+      csc = CoachSeekerContext.find_by!(seeker_id: data.seeker_id)
 
       first_name = data.applicant_first_name
       last_name = data.applicant_last_name
@@ -199,50 +198,42 @@ module Coaches
       )
     end
 
-    on_message Events::UserCreated::V1 do |message|
-      lead = CoachSeekerContext.find_by(email: message.data.email) if message.data.email.present?
-
-      if lead.present?
-        lead.update!(
-          user_id: message.aggregate_id,
-          email: message.data.email,
-          first_name: message.data.first_name,
-          last_name: message.data.last_name,
-          last_active_on: message.occurred_at,
-          kind: CoachSeekerContext::Kind::SEEKER
-        )
-      else
-        CoachSeekerContext.create!(
-          user_id: message.aggregate_id,
-          context_id: message.aggregate_id,
-          email: message.data.email,
-          seeker_captured_at: message.occurred_at,
-          first_name: message.data.first_name,
-          last_name: message.data.last_name,
-          last_active_on: message.occurred_at,
-          kind: CoachSeekerContext::Kind::SEEKER
-        )
-      end
-    end
-
     on_message Events::BasicInfoAdded::V1 do |message|
-      csc = CoachSeekerContext.find_by!(user_id: message.data.user_id)
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
 
       csc.update!(
-        last_active_on: message.occurred_at,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
-        phone_number: message.data.phone_number
+        phone_number: message.data.phone_number,
+        email: message.data.email
       )
     end
 
-    on_message Events::SeekerCreated::V1 do |message|
-      csc = CoachSeekerContext.find_by!(user_id: message.data.user_id)
-
-      csc.update!(
+    on_message Events::PersonAdded::V1 do |message|
+      CoachSeekerContext.create!(
+        seeker_id: message.aggregate_id,
+        context_id: message.aggregate_id,
+        email: message.data.email,
+        phone_number: message.data.phone_number,
+        seeker_captured_at: message.occurred_at,
+        first_name: message.data.first_name,
+        last_name: message.data.last_name,
         last_active_on: message.occurred_at,
-        seeker_id: message.aggregate.id
+        kind: CoachSeekerContext::Kind::SEEKER
       )
+    end
+
+    on_message Events::PersonAssociatedToUser::V1 do |message|
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
+
+      csc.update!(user_id: message.data.user_id)
+    end
+
+    on_message Events::SessionStarted::V1 do |message|
+      csc = CoachSeekerContext.find_by(user_id: message.aggregate.id)
+      return if csc.nil?
+
+      csc.update!(last_active_on: message.occurred_at)
     end
 
     on_message Events::SkillLevelUpdated::V2, :sync do |message|
@@ -250,51 +241,6 @@ module Coaches
 
       csc.update!(
         skill_level: message.data.skill_level
-      )
-    end
-
-    on_message Events::EducationExperienceAdded::V1 do |message|
-      handle_last_active_updated(message)
-    end
-
-    on_message Events::JobSaved::V1 do |message|
-      handle_last_active_updated(message)
-    end
-
-    on_message Events::JobUnsaved::V1 do |message|
-      handle_last_active_updated(message)
-    end
-
-    on_message Events::PersonalExperienceAdded::V1 do |message|
-      handle_last_active_updated(message)
-    end
-
-    on_message Events::OnboardingCompleted::V2 do |message|
-      handle_last_active_updated(message)
-    end
-
-    on_message Events::JobSearch::V2 do |message|
-      return unless Uuid === message.aggregate_id # rubocop:disable Style/CaseEquality
-
-      handle_last_active_updated(message)
-    end
-
-    on_message Events::SeekerUpdated::V1 do |message|
-      handle_last_active_updated(message)
-    end
-
-    private
-
-    def handle_last_active_updated(message)
-      case message.aggregate
-      when Aggregates::User, Aggregates::Search
-        csc = CoachSeekerContext.find_by!(user_id: message.aggregate_id)
-      when Aggregates::Seeker
-        csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate_id)
-      end
-
-      csc.update!(
-        last_active_on: message.occurred_at
       )
     end
   end

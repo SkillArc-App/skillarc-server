@@ -9,6 +9,7 @@ module Events
           last_name String
           email Either(String, nil)
           phone_number Either(String, nil)
+          date_of_birth Either(Date, nil), coerce: Messages::DateCoercer
         end
 
         def initialize(**kwarg)

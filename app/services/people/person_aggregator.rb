@@ -1,5 +1,5 @@
-module Seekers
-  class SeekerAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
+module People
+  class PersonAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay
       OtherExperience.delete_all
       EducationExperience.delete_all
@@ -13,41 +13,40 @@ module Seekers
       Seeker.delete_all
     end
 
-    on_message Events::SeekerCreated::V1, :sync do |message|
+    on_message Events::PersonAdded::V1 do |message|
       Seeker.create!(
         id: message.aggregate.id,
-        user_id: message.data.user_id
+        first_name: message.data.first_name,
+        last_name: message.data.last_name,
+        email: message.data.email,
+        phone_number: message.data.phone_number
       )
     end
 
-    on_message Events::SeekerUpdated::V1, :sync do |message|
+    on_message Events::PersonAssociatedToUser::V1 do |message|
+      Seeker.update!(message.aggregate.id, user_id: message.data.user_id)
+    end
+
+    on_message Events::PersonAboutAdded::V1, :sync do |message|
       Seeker.update!(message.aggregate.id, about: message.data.about)
     end
 
-    on_message Events::ZipAdded::V1, :sync do |message|
+    on_message Events::ZipAdded::V2, :sync do |message|
       Seeker.update!(message.aggregate.id, zip_code: message.data.zip_code)
     end
 
     on_message Events::BasicInfoAdded::V1, :sync do |message|
-      seeker = Seeker.find(message.aggregate.id)
-      # Hack until we cut over to person added
-      user = User.find(seeker.user_id)
-      user.update!(
+      Seeker.update!(
+        message.aggregate.id,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
-        phone_number: message.data.phone_number
-      )
-
-      seeker.update!(
-        email: user.email,
-        first_name: message.data.first_name,
-        last_name: message.data.last_name,
-        phone_number: message.data.phone_number
+        phone_number: message.data.phone_number,
+        email: message.data.email
       )
     end
 
     # Job experience
-    on_message Events::ExperienceAdded::V1, :sync do |message|
+    on_message Events::ExperienceAdded::V2, :sync do |message|
       other_expereince = OtherExperience.find_or_initialize_by(id: message.data.id)
 
       other_expereince.update!(
@@ -61,12 +60,12 @@ module Seekers
       )
     end
 
-    on_message Events::ExperienceRemoved::V1, :sync do |message|
+    on_message Events::ExperienceRemoved::V2, :sync do |message|
       OtherExperience.find(message.data.id).destroy!
     end
 
     # Stories
-    on_message Events::StoryCreated::V1, :sync do |message|
+    on_message Events::StoryCreated::V2, :sync do |message|
       Story.create!(
         id: message.data.id,
         prompt: message.data.prompt,
@@ -75,7 +74,7 @@ module Seekers
       )
     end
 
-    on_message Events::StoryUpdated::V1, :sync do |message|
+    on_message Events::StoryUpdated::V2, :sync do |message|
       story = Story.find(message.data.id)
 
       story.update!(
@@ -84,7 +83,7 @@ module Seekers
       )
     end
 
-    on_message Events::StoryDestroyed::V1, :sync do |message|
+    on_message Events::StoryDestroyed::V2, :sync do |message|
       Story.find(message.data.id).destroy!
     end
 
@@ -104,7 +103,7 @@ module Seekers
       )
     end
 
-    on_message Events::ElevatorPitchCreated::V1, :sync do |message|
+    on_message Events::ElevatorPitchCreated::V2, :sync do |message|
       applicant = Applicant.find_by!(
         job_id: message.data.job_id,
         seeker_id: message.aggregate_id
@@ -116,7 +115,7 @@ module Seekers
     end
 
     # Ed experience
-    on_message Events::EducationExperienceAdded::V1, :sync do |message|
+    on_message Events::EducationExperienceAdded::V2, :sync do |message|
       education_experience = EducationExperience.find_or_initialize_by(id: message.data.id)
 
       education_experience.update!(
@@ -130,12 +129,12 @@ module Seekers
       )
     end
 
-    on_message Events::EducationExperienceDeleted::V1, :sync do |message|
+    on_message Events::EducationExperienceDeleted::V2, :sync do |message|
       EducationExperience.find(message.data.id).destroy!
     end
 
     # Personal experience
-    on_message Events::PersonalExperienceAdded::V1, :sync do |message|
+    on_message Events::PersonalExperienceAdded::V2, :sync do |message|
       personal_experience = PersonalExperience.find_or_initialize_by(id: message.data.id)
 
       personal_experience.update!(
@@ -147,11 +146,11 @@ module Seekers
       )
     end
 
-    on_message Events::PersonalExperienceRemoved::V1, :sync do |message|
+    on_message Events::PersonalExperienceRemoved::V2, :sync do |message|
       PersonalExperience.find(message.data.id).destroy!
     end
 
-    on_message Events::SeekerSkillCreated::V1, :sync do |message|
+    on_message Events::PersonSkillAdded::V1, :sync do |message|
       ProfileSkill.create!(
         id: SecureRandom.uuid,
         seeker_id: message.aggregate.id,
@@ -160,17 +159,17 @@ module Seekers
       )
     end
 
-    on_message Events::SeekerSkillUpdated::V1, :sync do |message|
+    on_message Events::PersonSkillUpdated::V1, :sync do |message|
       skill = ProfileSkill.find_by!(seeker_id: message.aggregate.id, master_skill_id: message.data.skill_id)
 
       skill.update!(description: message.data.description)
     end
 
-    on_message Events::SeekerSkillDestroyed::V1, :sync do |message|
+    on_message Events::PersonSkillRemoved::V1, :sync do |message|
       ProfileSkill.find_by!(seeker_id: message.aggregate.id, master_skill_id: message.data.skill_id).destroy!
     end
 
-    on_message Events::SeekerTrainingProviderCreated::V4, :sync do |message|
+    on_message Events::PersonTrainingProviderAdded::V1, :sync do |message|
       seeker_training_provider_created = SeekerTrainingProvider.find_or_initialize_by(id: message.data.id)
 
       seeker_training_provider_created.update!(
@@ -181,7 +180,7 @@ module Seekers
       )
     end
 
-    on_message Events::OnboardingStarted::V1, :sync do |message|
+    on_message Events::OnboardingStarted::V2, :sync do |message|
       OnboardingSession.create!(
         id: SecureRandom.uuid,
         seeker_id: message.aggregate.id,
@@ -189,7 +188,7 @@ module Seekers
       )
     end
 
-    on_message Events::OnboardingCompleted::V2, :sync do |message|
+    on_message Events::OnboardingCompleted::V3, :sync do |message|
       onboarding_session = OnboardingSession.find_by(seeker_id: message.aggregate.id)
 
       if onboarding_session.present?

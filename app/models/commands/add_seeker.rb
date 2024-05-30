@@ -26,7 +26,7 @@ module Commands
       message_type: Messages::Types::Seekers::ADD_SEEKER,
       version: 1
     )
-    V2 = Messages::Schema.active(
+    V2 = Messages::Schema.destroy!(
       type: Messages::COMMAND,
       data: Data::V2,
       metadata: Messages::Nothing,

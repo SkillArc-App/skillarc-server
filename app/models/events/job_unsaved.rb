@@ -17,7 +17,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::Seekers::JOB_UNSAVED,
+      message_type: Messages::Types::User::JOB_UNSAVED,
       version: 1
     )
   end

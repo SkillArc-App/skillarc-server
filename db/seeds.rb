@@ -438,8 +438,8 @@ carpentry = Program.create!(
 )
 
 message_service.create!(
-  schema: Events::SeekerTrainingProviderCreated::V4,
-  seeker_id: trained_seeker_with_reference.id,
+  schema: Events::PersonTrainingProviderAdded::V1,
+  person_id: trained_seeker_with_reference.id,
   data: {
     id: SecureRandom.uuid,
     program_id: cool_program.id,
@@ -449,8 +449,8 @@ message_service.create!(
 )
 
 message_service.create!(
-  schema: Events::SeekerTrainingProviderCreated::V4,
-  seeker_id: trained_seeker.id,
+  schema: Events::PersonTrainingProviderAdded::V1,
+  person_id: trained_seeker.id,
   data: {
     id: SecureRandom.uuid,
     program_id: plumbing.id,
@@ -460,8 +460,8 @@ message_service.create!(
 )
 
 message_service.create!(
-  schema: Events::SeekerTrainingProviderCreated::V4,
-  seeker_id: trained_seeker.id,
+  schema: Events::PersonTrainingProviderAdded::V1,
+  person_id: trained_seeker.id,
   data: {
     id: SecureRandom.uuid,
     program_id: welding.id,
@@ -471,8 +471,8 @@ message_service.create!(
 )
 
 message_service.create!(
-  schema: Events::SeekerTrainingProviderCreated::V4,
-  seeker_id: trained_seeker_with_reference.id,
+  schema: Events::PersonTrainingProviderAdded::V1,
+  person_id: trained_seeker_with_reference.id,
   data: {
     id: SecureRandom.uuid,
     program_id: carpentry.id,

@@ -10,8 +10,8 @@ module Seekers
       master_skill = MasterSkill.find(master_skill_id)
 
       message_service.create!(
-        schema: Events::SeekerSkillCreated::V1,
-        seeker_id: seeker.id,
+        schema: Events::PersonSkillAdded::V1,
+        person_id: seeker.id,
         data: {
           description:,
           skill_id: master_skill.id,
@@ -23,8 +23,8 @@ module Seekers
 
     def update(skill, description:)
       message_service.create!(
-        schema: Events::SeekerSkillUpdated::V1,
-        seeker_id: seeker.id,
+        schema: Events::PersonSkillUpdated::V1,
+        person_id: seeker.id,
         data: {
           description:,
           skill_id: skill.master_skill_id,
@@ -36,8 +36,8 @@ module Seekers
 
     def destroy(skill)
       message_service.create!(
-        schema: Events::SeekerSkillDestroyed::V1,
-        seeker_id: seeker.id,
+        schema: Events::PersonSkillRemoved::V1,
+        person_id: seeker.id,
         data: {
           description: skill.description,
           skill_id: skill.master_skill_id,

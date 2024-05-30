@@ -10,13 +10,21 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.active(
+    V1 = Messages::Schema.inactive(
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Seekers::START_ONBOARDING,
+      message_type: Messages::Types::Person::START_ONBOARDING,
       version: 1
+    )
+    V2 = Messages::Schema.active(
+      type: Messages::COMMAND,
+      data: Messages::Nothing,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Person,
+      message_type: Messages::Types::Person::START_ONBOARDING,
+      version: 2
     )
   end
 end

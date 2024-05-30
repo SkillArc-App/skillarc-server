@@ -12,38 +12,36 @@ module Builders
       phone_number: Faker::PhoneNumber.phone_number,
       date_of_birth: "10/09/1990"
     )
-      user = UserBuilder.new(message_service).build(first_name:, last_name:, email:, phone_number:, person_id: id)
+      user_id = SecureRandom.uuid
+      user = UserBuilder.new(message_service).build(id: user_id, first_name:, last_name:, email:, phone_number:, person_id: id)
 
       message_service.create!(
-        seeker_id: id,
-        schema: Events::SeekerCreated::V1,
+        person_id: id,
+        schema: Events::PersonAdded::V1,
         data: {
-          user_id: user.id
-        }
-      )
-
-      message_service.create!(
-        seeker_id: id,
-        schema: Events::BasicInfoAdded::V1,
-        data: {
-          user_id: user.id,
-          date_of_birth:,
           first_name:,
           last_name:,
-          phone_number:
+          email:,
+          phone_number:,
+          date_of_birth:
+        }
+      )
+      message_service.create!(
+        person_id: id,
+        schema: Events::PersonAssociatedToUser::V1,
+        data: {
+          user_id:
         }
       )
 
       message_service.create!(
-        seeker_id: id,
-        schema: Events::OnboardingStarted::V1,
-        data: {
-          user_id: user.id
-        }
+        person_id: id,
+        schema: Events::OnboardingStarted::V2,
+        data: Messages::Nothing
       )
       message_service.create!(
-        seeker_id: id,
-        schema: Events::OnboardingCompleted::V2,
+        person_id: id,
+        schema: Events::OnboardingCompleted::V3,
         data: Messages::Nothing
       )
 

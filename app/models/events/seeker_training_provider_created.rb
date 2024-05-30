@@ -58,7 +58,7 @@ module Events
       message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 3
     )
-    V4 = Messages::Schema.active(
+    V4 = Messages::Schema.inactive(
       type: Messages::EVENT,
       data: Data::V3,
       metadata: Messages::Nothing,

@@ -1,12 +1,12 @@
 module People
-  class PersonDedupingComponent < MessageReactor
+  class PersonDedupingReactor < MessageReactor
     def can_replay?
       true
     end
 
     on_message Commands::AddPerson::V1 do |message|
       # If we already created the person return
-      return if Projectors::Aggregates::HasOccurred.project(
+      return if ::Projectors::Aggregates::HasOccurred.project(
         aggregate: message.aggregate,
         schema: Events::PersonAdded::V1
       )
@@ -24,7 +24,8 @@ module People
           first_name: message.data.first_name,
           last_name: message.data.last_name,
           email: message.data.email,
-          phone_number: message.data.phone_number
+          phone_number: message.data.phone_number,
+          date_of_birth: message.data.date_of_birth
         }
       )
 
@@ -62,7 +63,7 @@ module People
 
     def matching_email?(email, user_id, trace_id)
       aggregate = Aggregates::Email.new(email:)
-      person_associated_email = Projectors::Aggregates::GetLast.project(
+      person_associated_email = ::Projectors::Aggregates::GetLast.project(
         aggregate:,
         schema: Events::PersonAssociatedToEmail::V1
       )
@@ -76,7 +77,7 @@ module People
 
     def matching_phone_number?(phone_number, user_id, trace_id)
       aggregate = Aggregates::Phone.new(phone_number:)
-      person_associated_email = Projectors::Aggregates::GetLast.project(
+      person_associated_email = ::Projectors::Aggregates::GetLast.project(
         aggregate:,
         schema: Events::PersonAssociatedToPhoneNumber::V1
       )
@@ -91,7 +92,7 @@ module People
     def emit_association_event(person_id, user_id, trace_id)
       return if user_id.nil?
 
-      person_associated_user = Projectors::Aggregates::GetLast.project(
+      person_associated_user = ::Projectors::Aggregates::GetLast.project(
         aggregate: Aggregates::Person.new(person_id:),
         schema: Events::PersonAssociatedToPhoneNumber::V1
       )
@@ -104,7 +105,7 @@ module People
     end
 
     def emit_associated_to_user(person_id, user_id, trace_id)
-      message_service.create_once_for_trace!(
+      message_service.create_once_for_aggregate!(
         schema: Events::PersonAssociatedToUser::V1,
         trace_id:,
         person_id:,

@@ -4,14 +4,14 @@ RSpec.describe UserEvents do
   describe "#all" do
     subject { described_class.new(user).all }
 
-    let(:user) { create(:user) }
-    let(:seeker) { create(:seeker, user_id: user.id) }
+    let(:user) { create(:user, person_id: seeker.id) }
+    let(:seeker) { create(:seeker) }
 
-    let!(:event) { create(:event, :user_created, occurred_at:, aggregate_id: user.id) }
+    let!(:event) { create(:event, schema: Events::UserCreated::V1, occurred_at:, aggregate_id: user.id) }
     let!(:education_experience_created_event) do
       create(
         :event,
-        schema: Events::EducationExperienceAdded::V1,
+        schema: Events::EducationExperienceAdded::V2,
         occurred_at:,
         aggregate_id: seeker.id,
         data: {
@@ -28,7 +28,7 @@ RSpec.describe UserEvents do
     let!(:work_experience) do
       create(
         :event,
-        schema: Events::ExperienceAdded::V1,
+        schema: Events::ExperienceAdded::V2,
         occurred_at:,
         aggregate_id: seeker.id,
         data: {
@@ -45,9 +45,9 @@ RSpec.describe UserEvents do
     let!(:onboarding_complete_event) do
       create(
         :event,
-        schema: Events::OnboardingCompleted::V1,
+        schema: Events::OnboardingCompleted::V3,
         occurred_at:,
-        aggregate_id: user.id,
+        aggregate_id: seeker.id,
         data: {
           name: {},
           experience: nil,

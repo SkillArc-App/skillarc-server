@@ -4,7 +4,7 @@ module People
       true
     end
 
-    on_message Commands::AddPerson::V1 do |message|
+    on_message Commands::AddPerson::V2 do |message|
       # If we already created the person return
       return if ::Projectors::Aggregates::HasOccurred.project(
         aggregate: message.aggregate,
@@ -31,6 +31,7 @@ module People
 
       # If the command contained a user associate them
       emit_associated_to_user(message.aggregate.id, message.data.user_id, message.trace_id) if message.data.user_id.present?
+      emit_person_source(message.aggregate.id, message.data.source_kind, message.data.source_identifier, message.trace_id) if message.data.source_kind.present?
     end
 
     on_message Events::PersonAdded::V1 do |message|
@@ -111,6 +112,18 @@ module People
         person_id:,
         data: {
           user_id:
+        }
+      )
+    end
+
+    def emit_person_source(person_id, source_kind, source_identifier, trace_id)
+      message_service.create_once_for_aggregate!(
+        schema: Events::PersonSourced::V1,
+        trace_id:,
+        person_id:,
+        data: {
+          source_kind:,
+          source_identifier:
         }
       )
     end

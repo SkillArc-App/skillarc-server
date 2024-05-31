@@ -19,7 +19,7 @@ RSpec.describe People::PersonDedupingReactor do
       let(:message) do
         build(
           :message,
-          schema: Commands::AddPerson::V1,
+          schema: Commands::AddPerson::V2,
           aggregate_id: person_id,
           trace_id:,
           data: {
@@ -28,6 +28,8 @@ RSpec.describe People::PersonDedupingReactor do
             last_name: "Bo",
             email:,
             phone_number:,
+            source_kind:,
+            source_identifier:,
             date_of_birth:
           }
         )
@@ -44,6 +46,8 @@ RSpec.describe People::PersonDedupingReactor do
       let(:date_of_birth) { Time.zone.parse("10/09/1990") }
       let(:email) { "a@b.c" }
       let(:messages) { [] }
+      let(:source_identifier) { "an identifier" }
+      let(:source_kind) { People::SourceKind::COACH }
 
       let(:person_added) do
         build(
@@ -145,7 +149,7 @@ RSpec.describe People::PersonDedupingReactor do
         end
 
         context "when there is not a match" do
-          it "emits a person added event" do
+          it "emits a person added, sourced and associated with user events" do
             expect(message_service)
               .to receive(:create_once_for_trace!)
               .with(
@@ -170,6 +174,19 @@ RSpec.describe People::PersonDedupingReactor do
                 person_id:,
                 data: {
                   user_id:
+                }
+              )
+              .and_call_original
+
+            expect(message_service)
+              .to receive(:create_once_for_aggregate!)
+              .with(
+                schema: Events::PersonSourced::V1,
+                trace_id:,
+                person_id:,
+                data: {
+                  source_kind:,
+                  source_identifier:
                 }
               )
               .and_call_original
@@ -201,7 +218,7 @@ RSpec.describe People::PersonDedupingReactor do
         end
 
         context "when there is not a match" do
-          it "emits a person added event" do
+          it "emits a person added and sourced events" do
             expect(message_service)
               .to receive(:create_once_for_trace!)
               .with(
@@ -217,6 +234,21 @@ RSpec.describe People::PersonDedupingReactor do
                 }
               )
               .and_call_original
+
+            expect(message_service)
+              .to receive(:create_once_for_aggregate!)
+              .with(
+                schema: Events::PersonSourced::V1,
+                trace_id:,
+                person_id:,
+                data: {
+                  source_kind:,
+                  source_identifier:
+                }
+              )
+              .and_call_original
+
+            subject
 
             subject
           end

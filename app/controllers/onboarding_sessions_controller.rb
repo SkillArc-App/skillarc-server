@@ -37,7 +37,7 @@ class OnboardingSessionsController < ApplicationController
       else
         message_service.create!(
           person_id: SecureRandom.uuid,
-          schema: Commands::AddPerson::V1,
+          schema: Commands::AddPerson::V2,
           trace_id: request.request_id,
           data: {
             user_id: current_user.id,
@@ -45,6 +45,8 @@ class OnboardingSessionsController < ApplicationController
             last_name: filtered[:last_name],
             phone_number: filtered[:phone_number],
             date_of_birth: filtered[:date_of_birth],
+            source_kind: People::SourceKind::USER,
+            source_identifier: current_user.id,
             email: current_user.email
           }
         )

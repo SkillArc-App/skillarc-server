@@ -12,14 +12,14 @@ module Coaches
       end
     end
 
-    def self.find_context(id)
-      csc = CoachSeekerContext.find_by!(context_id: id)
+    def self.find_person(id)
+      csc = CoachSeekerContext.find_by!(seeker_id: id)
 
       serialize_coach_seeker_context(csc)
     end
 
-    def self.tasks(coach:, context_id: nil)
-      serialize_coach_tasks(coach, context_id)
+    def self.tasks(coach:, person_id: nil)
+      serialize_coach_tasks(coach, person_id)
     end
 
     def self.all_barriers
@@ -55,7 +55,7 @@ module Coaches
 
       def serialize_coach_seeker_table_context(csc)
         {
-          id: csc.context_id,
+          id: csc.seeker_id,
           seeker_id: csc.seeker_id,
           first_name: csc.first_name,
           last_name: csc.last_name,
@@ -69,9 +69,9 @@ module Coaches
         }
       end
 
-      def serialize_coach_tasks(coach, context_id)
+      def serialize_coach_tasks(coach, person_id)
         reminders = coach.reminders
-        reminders = reminders.where(context_id:) if context_id.present?
+        reminders = reminders.where(person_id:) if person_id.present?
 
         reminders.map do |reminder|
           {
@@ -79,14 +79,14 @@ module Coaches
             note: reminder.note,
             state: reminder.state,
             reminder_at: reminder.reminder_at,
-            context_id: reminder.context_id
+            context_id: reminder.person_id
           }
         end
       end
 
       def serialize_coach_seeker_context(csc)
         {
-          id: csc.context_id,
+          id: csc.seeker_id,
           kind: csc.kind,
           seeker_id: csc.seeker_id,
           lead_id: csc.lead_id,
@@ -123,7 +123,7 @@ module Coaches
 
       def serialize_seeker_lead(csc)
         {
-          id: csc.context_id,
+          id: csc.seeker_id,
           email: csc.email,
           assigned_coach: csc.assigned_coach || 'none',
           phone_number: csc.phone_number,

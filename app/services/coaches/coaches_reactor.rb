@@ -1,9 +1,9 @@
 module Coaches
   class CoachesReactor < MessageReactor # rubocop:disable Metrics/ClassLength
-    def add_attribute(seeker_id:, seeker_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) # rubocop:disable Metrics/ParameterLists
+    def add_attribute(person_id:, seeker_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
-        schema: Events::SeekerAttributeAdded::V1,
-        seeker_id:,
+        schema: Events::PersonAttributeAdded::V1,
+        person_id:,
         trace_id:,
         data: {
           id: seeker_attribute_id,
@@ -25,10 +25,10 @@ module Coaches
       )
     end
 
-    def remove_attribute(seeker_id:, seeker_attribute_id:, trace_id:)
+    def remove_attribute(person_id:, seeker_attribute_id:, trace_id:)
       message_service.create!(
-        schema: Events::SeekerAttributeRemoved::V1,
-        seeker_id:,
+        schema: Events::PersonAttributeRemoved::V1,
+        person_id:,
         trace_id:,
         data: {
           id: seeker_attribute_id
@@ -36,26 +36,10 @@ module Coaches
       )
     end
 
-    def add_lead(lead_captured_by:, lead_id:, phone_number:, first_name:, last_name:, trace_id:, email: nil) # rubocop:disable Metrics/ParameterLists
+    def add_note(person_id:, originator:, note:, note_id:, trace_id:)
       message_service.create!(
-        schema: Events::LeadAdded::V2,
-        context_id: lead_id,
-        trace_id:,
-        data: {
-          email:,
-          lead_id:,
-          phone_number:,
-          first_name:,
-          last_name:,
-          lead_captured_by:
-        }
-      )
-    end
-
-    def add_note(context_id:, originator:, note:, note_id:, trace_id:)
-      message_service.create!(
-        schema: Events::NoteAdded::V3,
-        context_id:,
+        schema: Events::NoteAdded::V4,
+        person_id:,
         trace_id:,
         data: {
           originator:,
@@ -65,10 +49,10 @@ module Coaches
       )
     end
 
-    def delete_note(context_id:, originator:, note_id:, trace_id:)
+    def delete_note(person_id:, originator:, note_id:, trace_id:)
       message_service.create!(
-        schema: Events::NoteDeleted::V3,
-        context_id:,
+        schema: Events::NoteDeleted::V4,
+        person_id:,
         trace_id:,
         data: {
           originator:,
@@ -77,10 +61,10 @@ module Coaches
       )
     end
 
-    def modify_note(context_id:, originator:, note_id:, note:, trace_id:)
+    def modify_note(person_id:, originator:, note_id:, note:, trace_id:)
       message_service.create!(
-        schema: Events::NoteModified::V3,
-        context_id:,
+        schema: Events::NoteModified::V4,
+        person_id:,
         trace_id:,
         data: {
           originator:,
@@ -90,12 +74,12 @@ module Coaches
       )
     end
 
-    def certify(seeker_id:, coach:, trace_id:)
+    def certify(person_id:, coach:, trace_id:)
       user = User.find(coach.user_id)
 
       message_service.create!(
-        schema: Events::SeekerCertified::V1,
-        seeker_id:,
+        schema: Events::PersonCertified::V1,
+        person_id:,
         trace_id:,
         data: {
           coach_id: coach.coach_id,
@@ -106,10 +90,10 @@ module Coaches
       )
     end
 
-    def recommend_job(context_id:, job_id:, coach:, trace_id:)
+    def recommend_job(person_id:, job_id:, coach:, trace_id:)
       message_service.create!(
-        schema: Events::JobRecommended::V2,
-        context_id:,
+        schema: Events::JobRecommended::V3,
+        person_id:,
         trace_id:,
         data: {
           coach_id: coach.coach_id,
@@ -118,10 +102,10 @@ module Coaches
       )
     end
 
-    def update_barriers(context_id:, barriers:, trace_id:)
+    def update_barriers(person_id:, barriers:, trace_id:)
       message_service.create!(
-        schema: Events::BarrierUpdated::V2,
-        context_id:,
+        schema: Events::BarrierUpdated::V3,
+        person_id:,
         trace_id:,
         data: {
           barriers:
@@ -129,22 +113,21 @@ module Coaches
       )
     end
 
-    def assign_coach(context_id:, coach_id:, coach_email:, trace_id:)
+    def assign_coach(person_id:, coach_id:, trace_id:)
       message_service.create!(
-        schema: Events::CoachAssigned::V2,
-        context_id:,
+        schema: Events::CoachAssigned::V3,
+        person_id:,
         trace_id:,
         data: {
-          coach_id:,
-          email: coach_email
+          coach_id:
         }
       )
     end
 
-    def update_skill_level(context_id:, skill_level:, trace_id:)
+    def update_skill_level(person_id:, skill_level:, trace_id:)
       message_service.create!(
-        schema: Events::SkillLevelUpdated::V2,
-        context_id:,
+        schema: Events::SkillLevelUpdated::V3,
+        person_id:,
         trace_id:,
         data: {
           skill_level:
@@ -152,16 +135,16 @@ module Coaches
       )
     end
 
-    def create_reminder(coach:, note:, reminder_at:, trace_id:, context_id: nil)
+    def create_reminder(coach:, note:, reminder_at:, trace_id:, person_id: nil)
       message_task_id = SecureRandom.uuid
 
       message_service.create!(
-        schema: Events::CoachReminderScheduled::V1,
+        schema: Events::CoachReminderScheduled::V2,
         coach_id: coach.coach_id,
         trace_id:,
         data: {
           reminder_id: SecureRandom.uuid,
-          context_id:,
+          person_id:,
           note:,
           message_task_id:,
           reminder_at:
@@ -182,7 +165,7 @@ module Coaches
               user_id: coach.user_id,
               title: "Reminder",
               body: "At #{reminder_at.to_fs(:long)}: #{note}",
-              url: context_id && "#{ENV.fetch('FRONTEND_URL', nil)}/coaches/contexts/#{context_id}"
+              url: person_id && "#{ENV.fetch('FRONTEND_URL', nil)}/coaches/contexts/#{person_id}"
             },
             metadata: {
               requestor_type: Requestor::Kinds::USER,
@@ -208,76 +191,62 @@ module Coaches
       )
     end
 
-    on_message Commands::AddLead::V1 do |message|
-      data = message.data
-      add_lead(
-        lead_captured_by: data.lead_captured_by,
-        lead_id: data.lead_id,
-        phone_number: data.phone_number,
-        first_name: data.first_name,
-        last_name: data.last_name,
-        email: data.email,
-        trace_id: message.trace_id
-      )
-    end
+    on_message Commands::AssignCoach::V2 do |message|
+      messages = MessageService.aggregate_events(message.aggregate)
 
-    on_message Commands::AddNote::V1 do |message|
-      data = message.data
+      person_added = Projectors::Aggregates::HasOccurred.new(schema: Events::PersonAdded::V1)
+      return unless person_added.project(messages)
 
-      add_note(
-        context_id: message.aggregate.context_id,
-        originator: data.originator,
-        note: data.note,
-        note_id: data.note_id,
-        trace_id: message.trace_id
-      )
-    end
-
-    on_message Commands::AssignCoach::V1 do |message|
-      data = message.data
-
-      coach = Coaches::Coach.find_by(email: data.coach_email)
-      return if coach.blank?
-
-      assign_coach(
-        context_id: message.aggregate.context_id,
-        coach_id: coach.coach_id,
-        coach_email: data.coach_email,
-        trace_id: message.trace_id
-      )
-    end
-
-    on_message Events::CoachReminderCompleted::V1 do |message|
-      reminder = Reminder.find_by(id: message.data.reminder_id)
-      return if reminder.blank?
-
-      coach = Coach.find_by(coach_id: message.aggregate.coach_id)
-
-      message_service.create!(
-        schema: Commands::CancelTask::V1,
-        trace_id: message.trace_id,
-        task_id: reminder.message_task_id,
-        data: Messages::Nothing,
-        metadata: {
-          requestor_type: Requestor::Kinds::USER,
-          requestor_id: coach&.user_id
+      message_service.create_once_for_trace!(
+        schema: Events::CoachAssigned::V3,
+        aggregate: message.aggregate,
+        data: {
+          coach_id: message.data.coach_id
         }
       )
     end
 
-    on_message Events::JobRecommended::V2 do |message|
+    on_message Events::CoachReminderCompleted::V1 do |message|
+      reminder = MessageService
+                 .aggregate_events(message.aggregate)
+                 .detect { |m| m.schema == Events::CoachReminderScheduled::V2 && message.data.reminder_id == m.data.reminder_id }
+
+      return if reminder.nil?
+
+      message_service.create_once_for_trace!(
+        schema: Commands::CancelTask::V1,
+        trace_id: message.trace_id,
+        task_id: reminder.data.message_task_id,
+        data: Messages::Nothing,
+        metadata: {
+          requestor_type: Requestor::Kinds::COACH,
+          requestor_id: message.aggregate.id
+        }
+      )
+    end
+
+    on_message Events::JobRecommended::V3 do |message|
       job_id = message.data.job_id
+      person_associated_to_user = Projectors::Aggregates::GetFirst.project(
+        schema: Events::PersonAssociatedToUser::V1,
+        aggregate: message.aggregate
+      )
 
-      csc = CoachSeekerContext.find_by(context_id: message.aggregate_id)
-      return if csc&.phone_number.nil?
+      return if person_associated_to_user.blank?
 
-      message_service.create!(
-        schema: Commands::SendSmsMessage::V3,
+      message_service.create_once_for_trace!(
+        schema: Commands::SendMessage::V1,
         message_id: SecureRandom.uuid,
         trace_id: message.trace_id,
         data: {
-          phone_number: csc.phone_number,
-          message: "From your SkillArc career coach. Check out this job: #{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
+          user_id: person_associated_to_user.data.user_id,
+          title: "From your SkillArc career coach",
+          body: "Check out this job",
+          url: "#{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
+        },
+        metadata: {
+          requestor_type: Requestor::Kinds::COACH,
+          requestor_id: message.data.coach_id
         }
       )
     end

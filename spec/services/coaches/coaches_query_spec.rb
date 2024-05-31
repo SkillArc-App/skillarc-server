@@ -113,7 +113,7 @@ RSpec.describe Coaches::CoachesQuery do
 
     it "returns an empty array" do
       expected_profile = {
-        id: "07f0f251-599a-4b59-920f-5b2054f32ca2",
+        id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
         seeker_id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
         first_name: "Hannah",
         last_name: "Block",
@@ -129,7 +129,7 @@ RSpec.describe Coaches::CoachesQuery do
         }]
       }
       expected_other_profile = {
-        id: "1a8d105a-6b9a-4842-ab02-8daf3fcb0c1f",
+        id: "3e7cccaa-ec0e-4c59-a7ad-2b187b3acc4c",
         seeker_id: "3e7cccaa-ec0e-4c59-a7ad-2b187b3acc4c",
         first_name: "Katina",
         last_name: "Hall",
@@ -155,6 +155,7 @@ RSpec.describe Coaches::CoachesQuery do
       create(
         :coaches__coach_seeker_context,
         context_id: "8628daea-7af8-41d1-b5b4-456336a7ed61",
+        seeker_id: "2df13b05-fff6-43be-b4fd-2c688ca4ee38",
         phone_number: "0987654321",
         first_name: "Not",
         last_name: "Converted",
@@ -168,7 +169,7 @@ RSpec.describe Coaches::CoachesQuery do
 
     it "returns all leads" do
       expected_lead = {
-        id: "8628daea-7af8-41d1-b5b4-456336a7ed61",
+        id: "2df13b05-fff6-43be-b4fd-2c688ca4ee38",
         phone_number: "0987654321",
         assigned_coach: 'none',
         first_name: "Not",
@@ -184,16 +185,16 @@ RSpec.describe Coaches::CoachesQuery do
     end
   end
 
-  describe ".find_context" do
-    subject { described_class.find_context(id) }
+  describe ".find_person" do
+    subject { described_class.find_person(id) }
 
     let(:id) { SecureRandom.uuid }
 
     before do
       csc1 = create(
         :coaches__coach_seeker_context,
-        context_id: id,
-        seeker_id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
+        context_id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
+        seeker_id: id,
         phone_number: "1234567890",
         first_name: "Hannah",
         last_name: "Block",
@@ -255,7 +256,7 @@ RSpec.describe Coaches::CoachesQuery do
     it "returns the context" do
       expected_profile = {
         id:,
-        seeker_id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
+        seeker_id: id,
         lead_id: nil,
         first_name: "Hannah",
         last_name: "Block",
@@ -324,7 +325,7 @@ RSpec.describe Coaches::CoachesQuery do
   end
 
   describe ".tasks" do
-    subject { described_class.tasks(coach:, context_id:) }
+    subject { described_class.tasks(coach:, person_id:) }
 
     let(:coach) { create(:coaches__coach) }
 
@@ -334,7 +335,7 @@ RSpec.describe Coaches::CoachesQuery do
         note: "Do the thing",
         state: Coaches::ReminderState::SET,
         reminder_at: Time.zone.local(2024, 1, 1),
-        context_id: SecureRandom.uuid,
+        person_id: SecureRandom.uuid,
         coach:
       )
     end
@@ -344,13 +345,13 @@ RSpec.describe Coaches::CoachesQuery do
         note: "Call X",
         state: Coaches::ReminderState::COMPLETE,
         reminder_at: Time.zone.local(2022, 1, 1),
-        context_id: nil,
+        person_id: nil,
         coach:
       )
     end
 
-    context "when a context_id is not provided" do
-      let(:context_id) { nil }
+    context "when a person_id is not provided" do
+      let(:person_id) { nil }
 
       it "returns tasks for the coach" do
         expected_tasks = [
@@ -359,7 +360,7 @@ RSpec.describe Coaches::CoachesQuery do
             note: "Do the thing",
             state: Coaches::ReminderState::SET,
             reminder_at: Time.zone.local(2024, 1, 1),
-            context_id: reminder1.context_id
+            context_id: reminder1.person_id
           },
           {
             id: reminder2.id,
@@ -374,8 +375,8 @@ RSpec.describe Coaches::CoachesQuery do
       end
     end
 
-    context "when a context_id is provided" do
-      let(:context_id) { reminder1.context_id }
+    context "when a person_id is provided" do
+      let(:person_id) { reminder1.person_id }
 
       it "returns tasks for the coach" do
         expected_tasks = [
@@ -384,7 +385,7 @@ RSpec.describe Coaches::CoachesQuery do
             note: "Do the thing",
             state: Coaches::ReminderState::SET,
             reminder_at: Time.zone.local(2024, 1, 1),
-            context_id: reminder1.context_id
+            context_id: reminder1.person_id
           }
         ]
 

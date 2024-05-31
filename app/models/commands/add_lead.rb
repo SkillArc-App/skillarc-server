@@ -15,7 +15,7 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.active(
+    V1 = Messages::Schema.inactive(
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,

@@ -39,13 +39,21 @@ module Events
       message_type: Messages::Types::Coaches::NOTE_MODIFIED,
       version: 2
     )
-    V3 = Messages::Schema.active(
+    V3 = Messages::Schema.inactive(
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,
       message_type: Messages::Types::Coaches::NOTE_MODIFIED,
       version: 3
+    )
+    V4 = Messages::Schema.active(
+      type: Messages::EVENT,
+      data: Data::V2,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Person,
+      message_type: Messages::Types::Coaches::NOTE_MODIFIED,
+      version: 4
     )
   end
 end

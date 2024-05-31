@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe Coaches::CoachesAggregator do
+RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLength
   let(:consumer) { described_class.new }
   let(:id) { SecureRandom.uuid }
 
   it_behaves_like "a replayable message consumer"
 
-  describe "#handle_message" do
+  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { consumer.handle_message(message) }
 
     context "when the message is barrier_added" do
@@ -62,7 +62,7 @@ RSpec.describe Coaches::CoachesAggregator do
         expect(csc.first_name).to eq(message.data.first_name)
         expect(csc.last_name).to eq(message.data.last_name)
         expect(csc.last_active_on).to eq(message.occurred_at)
-        expect(csc.kind).to eq(Coaches::CoachSeekerContext::Kind::SEEKER)
+        expect(csc.kind).to eq(Coaches::CoachSeekerContext::Kind::LEAD)
       end
     end
 
@@ -192,11 +192,11 @@ RSpec.describe Coaches::CoachesAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::CoachReminderScheduled::V1,
+            schema: Events::CoachReminderScheduled::V2,
             aggregate_id: coach.coach_id,
             data: {
               reminder_id: SecureRandom.uuid,
-              context_id: nil,
+              person_id: nil,
               note: "Remember to do this later",
               message_task_id: SecureRandom.uuid,
               reminder_at: Time.zone.local(2100, 1, 1)
@@ -212,7 +212,7 @@ RSpec.describe Coaches::CoachesAggregator do
           reminder = Coaches::Reminder.last_created
           expect(reminder.coach).to eq(coach)
           expect(reminder.id).to eq(message.data.reminder_id)
-          expect(reminder.context_id).to eq(message.data.context_id)
+          expect(reminder.person_id).to eq(message.data.person_id)
           expect(reminder.note).to eq(message.data.note)
           expect(reminder.message_task_id).to eq(message.data.message_task_id)
           expect(reminder.reminder_at).to eq(message.data.reminder_at)
@@ -299,11 +299,104 @@ RSpec.describe Coaches::CoachesAggregator do
         end
       end
 
+      context "when the message is note added" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::NoteAdded::V4,
+            aggregate_id: seeker_id,
+            data: {
+              note_id: SecureRandom.uuid,
+              note: "A note",
+              originator: "the universe"
+            }
+          )
+        end
+
+        it "Creates a Seeker Note" do
+          expect { subject }.to change(Coaches::SeekerNote, :count).from(0).to(1)
+
+          seeker_note = Coaches::SeekerNote.take(1).first
+          expect(seeker_note.coach_seeker_context).to eq(coach_seeker_context)
+          expect(seeker_note.note_taken_at).to eq(message.occurred_at)
+          expect(seeker_note.note_taken_by).to eq(message.data.originator)
+          expect(seeker_note.note_id).to eq(message.data.note_id)
+          expect(seeker_note.note).to eq(message.data.note)
+        end
+      end
+
+      context "when the message is person sourced" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::PersonSourced::V1,
+            aggregate_id: seeker_id,
+            data: {
+              source_kind: People::SourceKind::COACH,
+              source_identifier: coach.coach_id
+            }
+          )
+        end
+
+        let(:coach) { create(:coaches__coach) }
+
+        it "Updates the coach seeker context" do
+          subject
+
+          coach_seeker_context.reload
+          expect(coach_seeker_context.lead_captured_by).to eq(coach.email)
+        end
+      end
+
+      context "when the message is note modified" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::NoteModified::V4,
+            aggregate_id: seeker_id,
+            data: {
+              note_id: seeker_note.note_id,
+              note: "A new note",
+              originator: "your friend"
+            }
+          )
+        end
+
+        let(:seeker_note) { create(:coaches__seeker_note, coach_seeker_context:) }
+
+        it "Modifies a Seeker Note" do
+          subject
+
+          seeker_note.reload
+          expect(seeker_note.note).to eq(message.data.note)
+        end
+      end
+
+      context "when the message is note deleted" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::NoteDeleted::V4,
+            aggregate_id: seeker_id,
+            data: {
+              note_id: seeker_note.note_id,
+              originator: "your enemy"
+            }
+          )
+        end
+
+        let!(:seeker_note) { create(:coaches__seeker_note, coach_seeker_context:) }
+
+        it "Removes a Seeker Note" do
+          expect { subject }.to change(Coaches::SeekerNote, :count).from(1).to(0)
+        end
+      end
+
       context "when the message is seeker attribute added" do
         let(:message) do
           build(
             :message,
-            schema: Events::SeekerAttributeAdded::V1,
+            schema: Events::PersonAttributeAdded::V1,
             aggregate_id: seeker_id,
             data: {
               id: SecureRandom.uuid,
@@ -343,6 +436,98 @@ RSpec.describe Coaches::CoachesAggregator do
         end
       end
 
+      context "when the message is session started" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::SkillLevelUpdated::V3,
+            aggregate_id: seeker_id,
+            data: {
+              skill_level: "the bee's knees"
+            }
+          )
+        end
+
+        it "Updates the coach seeker context" do
+          subject
+
+          coach_seeker_context.reload
+          expect(coach_seeker_context.skill_level).to eq(message.data.skill_level)
+        end
+      end
+
+      context "when the message is person certified" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::PersonCertified::V1,
+            aggregate_id: seeker_id,
+            data: {
+              coach_first_name: "Coach",
+              coach_last_name: "K",
+              coach_email: "katina@skillarc.com",
+              coach_id: coach.coach_id
+            }
+          )
+        end
+
+        let(:coach) { create(:coaches__coach) }
+
+        it "Updates certified by" do
+          subject
+
+          coach_seeker_context.reload
+          expect(coach_seeker_context.certified_by).to eq(coach.email)
+        end
+      end
+
+      context "when the message is coach assigned" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::CoachAssigned::V3,
+            aggregate_id: seeker_id,
+            data: {
+              coach_id: coach.coach_id
+            }
+          )
+        end
+
+        let(:coach) { create(:coaches__coach) }
+
+        it "Updates the assigned coach" do
+          subject
+
+          coach_seeker_context.reload
+          expect(coach_seeker_context.assigned_coach).to eq(coach.email)
+        end
+      end
+
+      context "when the message is job recommended" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::JobRecommended::V3,
+            aggregate_id: seeker_id,
+            data: {
+              coach_id: coach.coach_id,
+              job_id: job.job_id
+            }
+          )
+        end
+
+        let(:coach) { create(:coaches__coach) }
+        let(:job) { create(:coaches__job) }
+
+        it "Creates a recommendation" do
+          expect { subject }.to change(Coaches::SeekerJobRecommendation, :count).from(0).to(1)
+
+          recommendation = Coaches::SeekerJobRecommendation.take(1).first
+          expect(recommendation.job).to eq(job)
+          expect(recommendation.coach).to eq(coach)
+        end
+      end
+
       context "when the message is person associated with user" do
         let(:message) do
           build(
@@ -362,6 +547,7 @@ RSpec.describe Coaches::CoachesAggregator do
 
           coach_seeker_context.reload
           expect(coach_seeker_context.user_id).to eq(message.data.user_id)
+          expect(coach_seeker_context.kind).to eq(Coaches::CoachSeekerContext::Kind::SEEKER)
         end
       end
 
@@ -395,7 +581,7 @@ RSpec.describe Coaches::CoachesAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::SeekerAttributeRemoved::V1,
+            schema: Events::PersonAttributeRemoved::V1,
             aggregate_id: seeker_id,
             data: {
               id: seeker_attribute.id

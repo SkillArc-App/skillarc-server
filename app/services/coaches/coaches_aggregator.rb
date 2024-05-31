@@ -35,13 +35,13 @@ module Coaches
       coach.update!(assignment_weight: message.data.weight)
     end
 
-    on_message Events::CoachReminderScheduled::V1, :sync do |message|
+    on_message Events::CoachReminderScheduled::V2, :sync do |message|
       coach = Coach.find_by!(coach_id: message.aggregate.coach_id)
 
       Reminder.create!(
         id: message.data.reminder_id,
         coach:,
-        context_id: message.data.context_id,
+        person_id: message.data.person_id,
         note: message.data.note,
         state: ReminderState::SET,
         message_task_id: message.data.message_task_id,
@@ -57,7 +57,7 @@ module Coaches
       )
     end
 
-    on_message Events::SeekerAttributeAdded::V1, :sync do |message|
+    on_message Events::PersonAttributeAdded::V1, :sync do |message|
       csc = Coaches::CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
       seeker_attribute = SeekerAttribute.find_or_initialize_by(id: message.data.attribute_id)
 
@@ -69,7 +69,7 @@ module Coaches
       )
     end
 
-    on_message Events::SeekerAttributeRemoved::V1, :sync do |message|
+    on_message Events::PersonAttributeRemoved::V1, :sync do |message|
       SeekerAttribute.find(message.data.id).destroy!
     end
 
@@ -121,8 +121,8 @@ module Coaches
       )
     end
 
-    on_message Events::BarrierUpdated::V2, :sync do |message|
-      csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
+    on_message Events::BarrierUpdated::V3, :sync do |message|
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
 
       csc.seeker_barriers.destroy_all
       message.data.barriers.each do |barrier|
@@ -135,15 +135,15 @@ module Coaches
       end
     end
 
-    on_message Events::CoachAssigned::V2, :sync do |message|
-      csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
+    on_message Events::CoachAssigned::V3, :sync do |message|
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
+      coach = Coach.find_by(coach_id: message.data.coach_id)
 
-      csc.assigned_coach = message.data.email
-      csc.save!
+      csc.update!(assigned_coach: coach.email)
     end
 
-    on_message Events::JobRecommended::V2, :sync do |message|
-      csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
+    on_message Events::JobRecommended::V3, :sync do |message|
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
 
       job_recommendation = Coaches::Job.find_by!(job_id: message.data.job_id)
 
@@ -154,41 +154,23 @@ module Coaches
       )
     end
 
-    on_message Events::SeekerCertified::V1, :sync do |message|
-      CoachSeekerContext.find_by!(seeker_id: message.aggregate_id).update!(
-        certified_by: Coach.find_by!(coach_id: message.data.coach_id).email
-      )
+    on_message Events::PersonCertified::V1, :sync do |message|
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
+      csc.update!(certified_by: Coach.find_by!(coach_id: message.data.coach_id).email)
     end
 
-    on_message Events::LeadAdded::V2, :sync do |message|
-      return if message.data.email.present? && CoachSeekerContext.find_by(email: message.data.email)
-      return if CoachSeekerContext.find_by(phone_number: message.data.phone_number)
-
-      CoachSeekerContext.create!(
-        email: message.data.email,
-        context_id: message.data.lead_id,
-        phone_number: message.data.phone_number,
-        lead_captured_by: message.data.lead_captured_by,
-        seeker_captured_at: message.occurred_at,
-        first_name: message.data.first_name,
-        last_name: message.data.last_name,
-        lead_id: message.data.lead_id,
-        kind: CoachSeekerContext::Kind::LEAD
-      )
-    end
-
-    on_message Events::NoteDeleted::V3, :sync do |message|
+    on_message Events::NoteDeleted::V4, :sync do |message|
       SeekerNote.find_by!(note_id: message.data.note_id).destroy
     end
 
-    on_message Events::NoteModified::V3, :sync do |message|
+    on_message Events::NoteModified::V4, :sync do |message|
       SeekerNote.find_by!(note_id: message.data.note_id).update!(note: message.data.note)
     end
 
-    on_message Events::NoteAdded::V3, :sync do |message|
-      csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
-
+    on_message Events::NoteAdded::V4, :sync do |message|
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
       csc.update!(last_contacted_at: message.occurred_at)
+
       csc.seeker_notes << SeekerNote.create!(
         coach_seeker_context: csc,
         note_taken_at: message.occurred_at,
@@ -219,14 +201,28 @@ module Coaches
         first_name: message.data.first_name,
         last_name: message.data.last_name,
         last_active_on: message.occurred_at,
-        kind: CoachSeekerContext::Kind::SEEKER
+        kind: CoachSeekerContext::Kind::LEAD
+      )
+    end
+
+    on_message Events::PersonSourced::V1 do |message|
+      return if message.data.source_kind != People::SourceKind::COACH
+
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
+      coach = Coach.find_by!(coach_id: message.data.source_identifier)
+
+      csc.update!(
+        lead_captured_by: coach.email
       )
     end
 
     on_message Events::PersonAssociatedToUser::V1 do |message|
       csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate.id)
 
-      csc.update!(user_id: message.data.user_id)
+      csc.update!(
+        user_id: message.data.user_id,
+        kind: CoachSeekerContext::Kind::SEEKER
+      )
     end
 
     on_message Events::SessionStarted::V1 do |message|
@@ -236,12 +232,10 @@ module Coaches
       csc.update!(last_active_on: message.occurred_at)
     end
 
-    on_message Events::SkillLevelUpdated::V2, :sync do |message|
-      csc = CoachSeekerContext.find_by!(context_id: message.aggregate.context_id)
+    on_message Events::SkillLevelUpdated::V3, :sync do |message|
+      csc = CoachSeekerContext.find_by!(seeker_id: message.aggregate.person_id)
 
-      csc.update!(
-        skill_level: message.data.skill_level
-      )
+      csc.update!(skill_level: message.data.skill_level)
     end
   end
 end

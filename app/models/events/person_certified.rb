@@ -1,24 +1,24 @@
 module Events
-  module SeekerCertified
+  module PersonCertified
     module Data
       class V1
         extend Messages::Payload
 
         schema do
-          coach_first_name Either(String, nil), default: nil
-          coach_last_name Either(String, nil), default: nil
+          coach_first_name Either(String, nil)
+          coach_last_name Either(String, nil)
           coach_email String
           coach_id Uuid
         end
       end
     end
 
-    V1 = Messages::Schema.deprecated(
+    V1 = Messages::Schema.active(
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Coaches::SEEKER_CERTIFIED,
+      aggregate: Aggregates::Person,
+      message_type: Messages::Types::Person::PERSON_CERTIFIED,
       version: 1
     )
   end

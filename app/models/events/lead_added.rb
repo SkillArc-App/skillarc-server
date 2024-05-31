@@ -23,7 +23,7 @@ module Events
       message_type: Messages::Types::Coaches::LEAD_ADDED,
       version: 1
     )
-    V2 = Messages::Schema.active(
+    V2 = Messages::Schema.inactive(
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,

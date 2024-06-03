@@ -110,11 +110,17 @@ RSpec.describe Employers::EmployerAggregator do
             },
             metadata: Events::ApplicantStatusUpdated::MetaData::V1.new)
     end
-    let(:seeker_certified) do
-      build(:message, :seeker_certified, version: 1, data: {
-              coach_email: "hannah@skillarc.com",
-              coach_id: SecureRandom.uuid
-            })
+    let(:person_certified) do
+      build(
+        :message,
+        schema: Events::PersonCertified::V1,
+        data: {
+          coach_first_name: nil,
+          coach_last_name: nil,
+          coach_email: "hannah@skillarc.com",
+          coach_id: SecureRandom.uuid
+        }
+      )
     end
 
     let(:employer_id) { SecureRandom.uuid }
@@ -132,7 +138,7 @@ RSpec.describe Employers::EmployerAggregator do
         consumer.handle_message(job_created)
         consumer.handle_message(job_updated)
         consumer.handle_message(applicant_status_updated)
-        consumer.handle_message(seeker_certified)
+        consumer.handle_message(person_certified)
       end
         .to change { Employers::Job.count }.by(1)
         .and change { Employers::Employer.count }.by(1)
@@ -176,7 +182,7 @@ RSpec.describe Employers::EmployerAggregator do
       )
 
       expect(Employers::Seeker.last_created).to have_attributes(
-        seeker_id: seeker_certified.aggregate_id,
+        seeker_id: person_certified.aggregate_id,
         certified_by: "hannah@skillarc.com"
       )
 

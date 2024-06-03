@@ -18,34 +18,20 @@ module Contact
 
       def handle_career_consolutation(trace_id, payload)
         attendee = payload.dig(:attendees, 0)
-        phone_number = payload[:location]
-
-        lead_id = SecureRandom.uuid
 
         message_service.create!(
           trace_id:,
-          context_id: lead_id,
-          schema: Commands::AddLead::V1,
+          person_id: SecureRandom.uuid,
+          schema: Commands::AddPerson::V2,
           data: {
+            user_id: nil,
+            date_of_birth: nil,
             email: attendee[:email],
-            lead_id:,
-            phone_number:,
+            phone_number: payload[:location],
             first_name: attendee[:firstName],
             last_name: attendee[:lastName],
-            lead_captured_by: "cal.com"
-          }
-        )
-
-        return if payload[:additionalNotes].blank?
-
-        message_service.create!(
-          trace_id:,
-          context_id: lead_id,
-          schema: Commands::AddNote::V1,
-          data: {
-            originator: "cal.com",
-            note: "From #{attendee[:firstName]} #{attendee[:lastName]} on the meeting invite: #{payload[:additionalNotes]}",
-            note_id: SecureRandom.uuid
+            source_kind: People::SourceKind::THIRD_PARTY_INTEGRATION,
+            source_identifier: "cal.com"
           }
         )
       end

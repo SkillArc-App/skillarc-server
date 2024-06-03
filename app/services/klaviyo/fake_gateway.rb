@@ -6,15 +6,15 @@ module Klaviyo
     def chat_message_received(email:, event_id:, occurred_at:, applicant_id:, employment_title:, employer_name:) # rubocop:disable Metrics/ParameterLists
     end
 
-    def job_saved(email:, event_id:, event_properties:, occurred_at:); end
+    def person_added(email:, occurred_at:, event_id:, profile_attributes:, profile_properties:); end
 
-    def met_with_career_coach_updated(email:, occurred_at:, event_id:, profile_properties:); end
+    def job_saved(email:, event_id:, event_properties:, occurred_at:); end
 
     def user_signup(email:, occurred_at:, event_id:); end
 
     def lead_captured(email:, occurred_at:, event_id:, profile_attributes:); end
 
-    def user_updated(email:, occurred_at:, event_id:, profile_properties:, profile_attributes:); end
+    def user_updated(email:, occurred_at:, event_id:, profile_attributes:); end
 
     def education_experience_entered(email:, occurred_at:, event_id:); end
 

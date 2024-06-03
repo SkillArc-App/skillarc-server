@@ -1,5 +1,5 @@
 module Klaviyo
-  class KlaviyoReactor < MessageReactor
+  class KlaviyoReactor < MessageReactor # rubocop:disable Metrics/ClassLength
     def can_replay?
       true
     end
@@ -21,12 +21,15 @@ module Klaviyo
       end
     end
 
-    on_message Events::UserBasicInfoAdded::V1 do |message|
+    on_message Events::PersonAdded::V1 do |message|
+      email = email_for_person_aggregate(message.aggregate)
+      return if email.blank?
+
       dedup_messages(message) do
-        client.user_updated(
-          email: email_for_seeker_aggregate(message.aggregate),
-          event_id: message.id,
+        client.person_added(
+          email:,
           occurred_at: message.occurred_at,
+          event_id: message.id,
           profile_attributes: {
             first_name: message.data.first_name,
             last_name: message.data.last_name,
@@ -39,10 +42,31 @@ module Klaviyo
       end
     end
 
-    on_message Events::EducationExperienceAdded::V1 do |message|
+    on_message Events::BasicInfoAdded::V1 do |message|
+      email = email_for_person_aggregate(message.aggregate)
+      return if email.blank?
+
+      dedup_messages(message) do
+        client.user_updated(
+          email:,
+          event_id: message.id,
+          occurred_at: message.occurred_at,
+          profile_attributes: {
+            first_name: message.data.first_name,
+            last_name: message.data.last_name,
+            phone_number: message.data.phone_number && E164.normalize(message.data.phone_number)
+          }
+        )
+      end
+    end
+
+    on_message Events::EducationExperienceAdded::V2 do |message|
+      email = email_for_person_aggregate(message.aggregate)
+      return if email.blank?
+
       dedup_messages(message) do
         client.education_experience_entered(
-          email: email_for_seeker_aggregate(message.aggregate),
+          email:,
           event_id: message.id,
           occurred_at: message.occurred_at
         )
@@ -79,20 +103,26 @@ module Klaviyo
       end
     end
 
-    on_message Events::ExperienceAdded::V1 do |message|
+    on_message Events::ExperienceAdded::V2 do |message|
+      email = email_for_person_aggregate(message.aggregate)
+      return if email.blank?
+
       dedup_messages(message) do
         client.experience_entered(
-          email: email_for_seeker_aggregate(message.aggregate),
+          email:,
           event_id: message.id,
           occurred_at: message.occurred_at
         )
       end
     end
 
-    on_message Events::OnboardingCompleted::V2 do |message|
+    on_message Events::OnboardingCompleted::V3 do |message|
+      email = email_for_person_aggregate(message.aggregate)
+      return if email.blank?
+
       dedup_messages(message) do
         client.onboarding_complete(
-          email: email_for_seeker_aggregate(message.aggregate),
+          email:,
           event_id: message.id,
           occurred_at: message.occurred_at
         )
@@ -166,15 +196,11 @@ module Klaviyo
       )
     end
 
-    def email_for_seeker_aggregate(aggregate)
-      onboarding_started = Projectors::Aggregates::GetFirst.project(
-        aggregate:,
-        schema: Events::OnboardingStarted::V1
-      )
+    def email_for_person_aggregate(aggregate)
+      messages = MessageService.aggregate_events(aggregate)
+      result = People::Projectors::Email.new.project(messages)
 
-      raise UnableToRetrieveEmailError if onboarding_started.nil?
-
-      email_for_user_aggregate(Aggregates::User.new(user_id: onboarding_started.data.user_id))
+      result.initial_email
     end
 
     def email_for_user_aggregate(aggregate)

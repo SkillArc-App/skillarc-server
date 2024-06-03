@@ -6,81 +6,6 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
   describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { described_class.new.handle_message(message) }
 
-    describe "when the message is lead_added" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::LeadAdded::V2,
-          data: {
-            email: "an@email.com",
-            lead_id: SecureRandom.uuid,
-            phone_number: Faker::PhoneNumber.phone_number,
-            first_name: "John",
-            last_name: "Chabot",
-            lead_captured_by: "netsanet@chevers.com"
-          }
-        )
-      end
-
-      context "when there is an existing dim person for the lead email" do
-        before do
-          create(
-            :analytics__dim_person,
-            email: message.data.email
-          )
-        end
-
-        it "does nothing" do
-          expect { subject }.not_to change(Analytics::DimPerson, :count)
-        end
-      end
-
-      context "when there is an existing dim person for the lead phone_number" do
-        before do
-          create(
-            :analytics__dim_person,
-            phone_number: message.data.phone_number
-          )
-        end
-
-        it "does nothing" do
-          expect { subject }.not_to change(Analytics::DimPerson, :count)
-        end
-      end
-
-      context "when there is not an existing lead for the provided info" do
-        it "creates a dim person from the message" do
-          expect { subject }.to change(Analytics::DimPerson, :count).from(0).to(1)
-
-          person = Analytics::DimPerson.take(1).first
-
-          expect(person.lead_id).to eq(message.data.lead_id)
-          expect(person.lead_created_at).to eq(message.occurred_at)
-          expect(person.phone_number).to eq(message.data.phone_number)
-          expect(person.email).to eq(message.data.email)
-          expect(person.first_name).to eq(message.data.first_name)
-          expect(person.last_name).to eq(message.data.last_name)
-          expect(person.kind).to eq(Analytics::DimPerson::Kind::LEAD)
-        end
-      end
-
-      context "when lead_captured_by cooresponds to a dim person" do
-        let!(:dim_person_executor) { create(:analytics__dim_person, email: message.data.lead_captured_by) }
-
-        it "creates a fact coach action record" do
-          expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)
-
-          fact_coach_action = Analytics::FactCoachAction.take(1).first
-
-          expect(fact_coach_action.dim_person_target).not_to eq(dim_person_executor)
-          expect(fact_coach_action.dim_person_target).to be_a(Analytics::DimPerson)
-          expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
-          expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
-          expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::LEAD_ADDED)
-        end
-      end
-    end
-
     describe "when the message is user_created" do
       let(:message) do
         build(
@@ -608,161 +533,161 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       end
     end
 
-    context "when the message is seeker_context_viewed" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::SeekerContextViewed::V1,
-          aggregate_id: coach_id,
-          data: {
-            context_id:
-          }
-        )
-      end
+    # context "when the message is seeker_context_viewed" do
+    #   let(:message) do
+    #     build(
+    #       :message,
+    #       schema: Events::SeekerContextViewed::V1,
+    #       aggregate_id: coach_id,
+    #       data: {
+    #         context_id:
+    #       }
+    #     )
+    #   end
 
-      let(:coach_id) { SecureRandom.uuid }
-      let(:context_id) { SecureRandom.uuid }
+    #   let(:coach_id) { SecureRandom.uuid }
+    #   let(:context_id) { SecureRandom.uuid }
 
-      let!(:dim_person_viewer) { create(:analytics__dim_person, coach_id:) }
-      let!(:dim_person_viewed) { create(:analytics__dim_person, lead_id: context_id) }
+    #   let!(:dim_person_viewer) { create(:analytics__dim_person, coach_id:) }
+    #   let!(:dim_person_viewed) { create(:analytics__dim_person, lead_id: context_id) }
 
-      it "creates a fact person viewed record" do
-        expect { subject }.to change(Analytics::FactPersonViewed, :count).from(0).to(1)
+    #   it "creates a fact person viewed record" do
+    #     expect { subject }.to change(Analytics::FactPersonViewed, :count).from(0).to(1)
 
-        fact_person_viewed = Analytics::FactPersonViewed.take(1).first
+    #     fact_person_viewed = Analytics::FactPersonViewed.take(1).first
 
-        expect(fact_person_viewed.dim_person_viewed).to eq(dim_person_viewed)
-        expect(fact_person_viewed.dim_person_viewer).to eq(dim_person_viewer)
-        expect(fact_person_viewed.viewed_at).to eq(message.occurred_at)
-        expect(fact_person_viewed.viewing_context).to eq(Analytics::FactPersonViewed::Contexts::COACHES_DASHBOARD)
-      end
-    end
+    #     expect(fact_person_viewed.dim_person_viewed).to eq(dim_person_viewed)
+    #     expect(fact_person_viewed.dim_person_viewer).to eq(dim_person_viewer)
+    #     expect(fact_person_viewed.viewed_at).to eq(message.occurred_at)
+    #     expect(fact_person_viewed.viewing_context).to eq(Analytics::FactPersonViewed::Contexts::COACHES_DASHBOARD)
+    #   end
+    # end
 
-    context "when the message is note_added" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::NoteAdded::V3,
-          aggregate_id: lead_id,
-          data: {
-            originator: email,
-            note: "Some note",
-            note_id: SecureRandom.uuid
-          }
-        )
-      end
+    # context "when the message is note_added" do
+    #   let(:message) do
+    #     build(
+    #       :message,
+    #       schema: Events::NoteAdded::V3,
+    #       aggregate_id: lead_id,
+    #       data: {
+    #         originator: email,
+    #         note: "Some note",
+    #         note_id: SecureRandom.uuid
+    #       }
+    #     )
+    #   end
 
-      let(:email) { Faker::Internet.email }
-      let(:lead_id) { SecureRandom.uuid }
+    #   let(:email) { Faker::Internet.email }
+    #   let(:lead_id) { SecureRandom.uuid }
 
-      let!(:dim_person_executor) { create(:analytics__dim_person, email:) }
-      let!(:dim_person_target) { create(:analytics__dim_person, lead_id:) }
+    #   let!(:dim_person_executor) { create(:analytics__dim_person, email:) }
+    #   let!(:dim_person_target) { create(:analytics__dim_person, lead_id:) }
 
-      it "creates a fact coach action record" do
-        expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)
+    #   it "creates a fact coach action record" do
+    #     expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)
 
-        fact_coach_action = Analytics::FactCoachAction.take(1).first
+    #     fact_coach_action = Analytics::FactCoachAction.take(1).first
 
-        expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
-        expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
-        expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
-        expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::NOTE_ADDED)
-      end
-    end
+    #     expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
+    #     expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
+    #     expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
+    #     expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::NOTE_ADDED)
+    #   end
+    # end
 
-    context "when the message is note_modified" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::NoteModified::V3,
-          aggregate_id: lead_id,
-          data: {
-            originator: email,
-            note: "Some note",
-            note_id: SecureRandom.uuid
-          }
-        )
-      end
+    # context "when the message is note_modified" do
+    #   let(:message) do
+    #     build(
+    #       :message,
+    #       schema: Events::NoteModified::V3,
+    #       aggregate_id: lead_id,
+    #       data: {
+    #         originator: email,
+    #         note: "Some note",
+    #         note_id: SecureRandom.uuid
+    #       }
+    #     )
+    #   end
 
-      let(:email) { Faker::Internet.email }
-      let(:lead_id) { SecureRandom.uuid }
+    #   let(:email) { Faker::Internet.email }
+    #   let(:lead_id) { SecureRandom.uuid }
 
-      let!(:dim_person_executor) { create(:analytics__dim_person, email:) }
-      let!(:dim_person_target) { create(:analytics__dim_person, lead_id:) }
+    #   let!(:dim_person_executor) { create(:analytics__dim_person, email:) }
+    #   let!(:dim_person_target) { create(:analytics__dim_person, lead_id:) }
 
-      it "creates a fact coach action record" do
-        expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)
+    #   it "creates a fact coach action record" do
+    #     expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)
 
-        fact_coach_action = Analytics::FactCoachAction.take(1).first
+    #     fact_coach_action = Analytics::FactCoachAction.take(1).first
 
-        expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
-        expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
-        expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
-        expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::NOTE_MODIFIED)
-      end
-    end
+    #     expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
+    #     expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
+    #     expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
+    #     expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::NOTE_MODIFIED)
+    #   end
+    # end
 
-    context "when the message is note_deleted" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::NoteDeleted::V3,
-          aggregate_id: lead_id,
-          data: {
-            originator: email,
-            note_id: SecureRandom.uuid
-          }
-        )
-      end
+    # context "when the message is note_deleted" do
+    #   let(:message) do
+    #     build(
+    #       :message,
+    #       schema: Events::NoteDeleted::V3,
+    #       aggregate_id: lead_id,
+    #       data: {
+    #         originator: email,
+    #         note_id: SecureRandom.uuid
+    #       }
+    #     )
+    #   end
 
-      let(:email) { Faker::Internet.email }
-      let(:lead_id) { SecureRandom.uuid }
+    #   let(:email) { Faker::Internet.email }
+    #   let(:lead_id) { SecureRandom.uuid }
 
-      let!(:dim_person_executor) { create(:analytics__dim_person, email:) }
-      let!(:dim_person_target) { create(:analytics__dim_person, lead_id:) }
+    #   let!(:dim_person_executor) { create(:analytics__dim_person, email:) }
+    #   let!(:dim_person_target) { create(:analytics__dim_person, lead_id:) }
 
-      it "creates a fact coach action record" do
-        expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)
+    #   it "creates a fact coach action record" do
+    #     expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)
 
-        fact_coach_action = Analytics::FactCoachAction.take(1).first
+    #     fact_coach_action = Analytics::FactCoachAction.take(1).first
 
-        expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
-        expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
-        expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
-        expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::NOTE_DELETED)
-      end
-    end
+    #     expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
+    #     expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
+    #     expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
+    #     expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::NOTE_DELETED)
+    #   end
+    # end
 
-    context "when the message is job_recommended" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::JobRecommended::V2,
-          aggregate_id: user_id,
-          data: {
-            job_id: SecureRandom.uuid,
-            coach_id:
-          }
-        )
-      end
+    # context "when the message is job_recommended" do
+    #   let(:message) do
+    #     build(
+    #       :message,
+    #       schema: Events::JobRecommended::V2,
+    #       aggregate_id: user_id,
+    #       data: {
+    #         job_id: SecureRandom.uuid,
+    #         coach_id:
+    #       }
+    #     )
+    #   end
 
-      let(:coach_id) { SecureRandom.uuid }
-      let(:user_id) { SecureRandom.uuid }
+    #   let(:coach_id) { SecureRandom.uuid }
+    #   let(:user_id) { SecureRandom.uuid }
 
-      let!(:dim_person_executor) { create(:analytics__dim_person, coach_id:) }
-      let!(:dim_person_target) { create(:analytics__dim_person, user_id:) }
+    #   let!(:dim_person_executor) { create(:analytics__dim_person, coach_id:) }
+    #   let!(:dim_person_target) { create(:analytics__dim_person, user_id:) }
 
-      it "creates a fact coach action record" do
-        expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)
+    #   it "creates a fact coach action record" do
+    #     expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)
 
-        fact_coach_action = Analytics::FactCoachAction.take(1).first
+    #     fact_coach_action = Analytics::FactCoachAction.take(1).first
 
-        expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
-        expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
-        expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
-        expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::JOB_RECOMMENDED)
-      end
-    end
+    #     expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
+    #     expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
+    #     expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
+    #     expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::JOB_RECOMMENDED)
+    #   end
+    # end
 
     context "when the message is seeker_context" do
       let(:message) do

@@ -1,5 +1,5 @@
 module Analytics
-  class AnalyticsAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
+  class AnalyticsAggregator < MessageConsumer
     def reset_for_replay
       Analytics::FactApplication.delete_all
       Analytics::FactJobVisibility.delete_all
@@ -7,31 +7,6 @@ module Analytics
       Analytics::FactCoachAction.delete_all
       Analytics::DimPerson.delete_all
       Analytics::DimJob.delete_all
-    end
-
-    on_message Events::LeadAdded::V2 do |message|
-      return if message.data.email.present? && DimPerson.find_by(email: message.data.email)
-      return if DimPerson.find_by(phone_number: message.data.phone_number)
-
-      dim_person_target = DimPerson.create!(
-        lead_id: message.data.lead_id,
-        lead_created_at: message.occurred_at,
-        phone_number: message.data.phone_number,
-        email: message.data.email,
-        first_name: message.data.first_name,
-        last_name: message.data.last_name,
-        kind: DimPerson::Kind::LEAD
-      )
-
-      dim_person_executor = DimPerson.find_by(email: message.data.lead_captured_by)
-      return if dim_person_executor.blank?
-
-      Analytics::FactCoachAction.create!(
-        dim_person_target:,
-        dim_person_executor:,
-        action: Analytics::FactCoachAction::Actions::LEAD_ADDED,
-        action_taken_at: message.occurred_at
-      )
     end
 
     on_message Events::UserCreated::V1 do |message|
@@ -188,56 +163,57 @@ module Analytics
       )
     end
 
-    on_message Events::SeekerContextViewed::V1 do |message|
-      dim_person_viewer = Analytics::DimPerson.find_by!(coach_id: message.aggregate.coach_id)
-      dim_person_viewed = find_dim_person_by_context_id!(message.data.context_id)
+    # on_message Events::PersonViewedInCoaching::V1 do |message|
+    #   dim_person_viewer = Analytics::DimPerson.find_by!(coach_id: message.aggregate.coach_id)
+    #   dim_person_viewed = find_dim_person_by_context_id!(message.data.context_id)
 
-      Analytics::FactPersonViewed.create!(
-        dim_person_viewer:,
-        dim_person_viewed:,
-        viewed_at: message.occurred_at,
-        viewing_context: Analytics::FactPersonViewed::Contexts::COACHES_DASHBOARD
-      )
-    end
+    #   Analytics::FactPersonViewed.create!(
+    #     dim_person_viewer:,
+    #     dim_person_viewed:,
+    #     viewed_at: message.occurred_at,
+    #     viewing_context: Analytics::FactPersonViewed::Contexts::COACHES_DASHBOARD
+    #   )
+    # end
 
-    on_message Events::NoteAdded::V3 do |message|
-      note_action(
-        context_id: message.aggregate.context_id,
-        originator: message.data.originator,
-        action: Analytics::FactCoachAction::Actions::NOTE_ADDED,
-        occurred_at: message.occurred_at
-      )
-    end
+    # Will update later
+    # on_message Events::NoteAdded::V3 do |message|
+    #   note_action(
+    #     context_id: message.aggregate.context_id,
+    #     originator: message.data.originator,
+    #     action: Analytics::FactCoachAction::Actions::NOTE_ADDED,
+    #     occurred_at: message.occurred_at
+    #   )
+    # end
 
-    on_message Events::NoteModified::V3 do |message|
-      note_action(
-        context_id: message.aggregate.context_id,
-        originator: message.data.originator,
-        action: Analytics::FactCoachAction::Actions::NOTE_MODIFIED,
-        occurred_at: message.occurred_at
-      )
-    end
+    # on_message Events::NoteModified::V3 do |message|
+    #   note_action(
+    #     context_id: message.aggregate.context_id,
+    #     originator: message.data.originator,
+    #     action: Analytics::FactCoachAction::Actions::NOTE_MODIFIED,
+    #     occurred_at: message.occurred_at
+    #   )
+    # end
 
-    on_message Events::NoteDeleted::V3 do |message|
-      note_action(
-        context_id: message.aggregate.context_id,
-        originator: message.data.originator,
-        action: Analytics::FactCoachAction::Actions::NOTE_DELETED,
-        occurred_at: message.occurred_at
-      )
-    end
+    # on_message Events::NoteDeleted::V3 do |message|
+    #   note_action(
+    #     context_id: message.aggregate.context_id,
+    #     originator: message.data.originator,
+    #     action: Analytics::FactCoachAction::Actions::NOTE_DELETED,
+    #     occurred_at: message.occurred_at
+    #   )
+    # end
 
-    on_message Events::JobRecommended::V2 do |message|
-      dim_person_executor = Analytics::DimPerson.find_by!(coach_id: message.data.coach_id)
-      dim_person_target = find_dim_person_by_context_id!(message.aggregate.context_id)
+    # on_message Events::JobRecommended::V2 do |message|
+    #   dim_person_executor = Analytics::DimPerson.find_by!(coach_id: message.data.coach_id)
+    #   dim_person_target = find_dim_person_by_context_id!(message.aggregate.context_id)
 
-      Analytics::FactCoachAction.create!(
-        dim_person_executor:,
-        dim_person_target:,
-        action: Analytics::FactCoachAction::Actions::JOB_RECOMMENDED,
-        action_taken_at: message.occurred_at
-      )
-    end
+    #   Analytics::FactCoachAction.create!(
+    #     dim_person_executor:,
+    #     dim_person_target:,
+    #     action: Analytics::FactCoachAction::Actions::JOB_RECOMMENDED,
+    #     action_taken_at: message.occurred_at
+    #   )
+    # end
 
     on_message Events::SeekerCertified::V1 do |message|
       dim_person_executor = Analytics::DimPerson.find_by!(coach_id: message.data.coach_id)

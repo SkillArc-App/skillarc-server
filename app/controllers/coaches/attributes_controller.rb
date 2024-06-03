@@ -18,7 +18,7 @@ module Coaches
       with_message_service do
         CoachesReactor.new(message_service:).add_attribute(
           seeker_attribute_id: SecureRandom.uuid,
-          seeker_id: params[:seeker_id],
+          person_id: params[:seeker_id],
           attribute_id: params[:attribute_id],
           attribute_values: params[:values],
           attribute_name:,
@@ -35,7 +35,7 @@ module Coaches
       with_message_service do
         CoachesReactor.new(message_service:).add_attribute(
           seeker_attribute_id: params[:id],
-          seeker_id: params[:seeker_id],
+          person_id: params[:seeker_id],
           attribute_id: params[:attribute_id],
           attribute_name:,
           attribute_values: params[:values],
@@ -50,7 +50,7 @@ module Coaches
       with_message_service do
         CoachesReactor.new(message_service:).remove_attribute(
           seeker_attribute_id: params[:id],
-          seeker_id: params[:seeker_id],
+          person_id: params[:seeker_id],
           trace_id: request.request_id
         )
       end

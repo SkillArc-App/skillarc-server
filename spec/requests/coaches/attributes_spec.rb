@@ -93,7 +93,7 @@ RSpec.describe "Attributes", type: :request do
               .to receive(:add_attribute)
               .with(
                 seeker_attribute_id: be_a(String),
-                seeker_id:,
+                person_id: seeker_id,
                 attribute_id:,
                 attribute_name: attribute.name,
                 attribute_values: values,
@@ -161,7 +161,7 @@ RSpec.describe "Attributes", type: :request do
               .to receive(:add_attribute)
               .with(
                 seeker_attribute_id: id,
-                seeker_id:,
+                person_id: seeker_id,
                 attribute_id:,
                 attribute_name: attribute.name,
                 attribute_values: values,
@@ -200,7 +200,7 @@ RSpec.describe "Attributes", type: :request do
               .to receive(:remove_attribute)
               .with(
                 seeker_attribute_id: id,
-                seeker_id:,
+                person_id: seeker_id,
                 trace_id: be_a(String)
               )
               .and_call_original

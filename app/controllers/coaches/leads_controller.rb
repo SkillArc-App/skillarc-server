@@ -13,11 +13,29 @@ module Coaches
     end
 
     def create
+      lead = params.require(:lead).permit(
+        :lead_id,
+        :email,
+        :phone_number,
+        :first_name,
+        :last_name
+      ).to_h.symbolize_keys
+
       with_message_service do
-        CoachesReactor.new(message_service:).add_lead(
-          **lead_hash,
-          lead_captured_by: coach.email,
-          trace_id: request.request_id
+        message_service.create!(
+          person_id: SecureRandom.uuid,
+          trace_id: request.request_id,
+          schema: Commands::AddPerson::V2,
+          data: {
+            user_id: nil,
+            date_of_birth: nil,
+            email: lead[:email],
+            phone_number: lead[:phone_number],
+            first_name: lead[:first_name],
+            last_name: lead[:last_name],
+            source_kind: People::SourceKind::COACH,
+            source_identifier: coach.coach_id
+          }
         )
       end
 
@@ -27,19 +45,6 @@ module Coaches
     private
 
     attr_reader :coach
-
-    def lead_hash
-      lead = params.require(:lead).permit(
-        :lead_id,
-        :email,
-        :phone_number,
-        :first_name,
-        :last_name
-      ).to_h.symbolize_keys
-      lead[:lead_id] ||= SecureRandom.uuid
-
-      lead
-    end
 
     def set_coach
       @coach = Coach.find_by(user_id: current_user.id)

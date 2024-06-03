@@ -28,7 +28,7 @@ RSpec.describe "Notes", type: :request do
       it_behaves_like "coach spec unauthenticated openapi"
 
       let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.context_id }
+      let(:id) { coach_seeker_context.seeker_id }
       let(:note_params) do
         {
           note:,
@@ -45,7 +45,7 @@ RSpec.describe "Notes", type: :request do
           before do
             expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:add_note)
-              .with(originator: coach.email, context_id: id, note:, note_id:, trace_id: be_a(String))
+              .with(originator: coach.email, person_id: id, note:, note_id:, trace_id: be_a(String))
               .and_call_original
           end
 
@@ -78,7 +78,7 @@ RSpec.describe "Notes", type: :request do
       it_behaves_like "coach spec unauthenticated openapi"
 
       let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.context_id }
+      let(:id) { coach_seeker_context.seeker_id }
       let(:note_params) do
         {
           note:
@@ -98,7 +98,7 @@ RSpec.describe "Notes", type: :request do
           before do
             expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:modify_note)
-              .with(originator: coach.email, context_id: id, note:, note_id:, trace_id: be_a(String))
+              .with(originator: coach.email, person_id: id, note:, note_id:, trace_id: be_a(String))
               .and_call_original
           end
 
@@ -129,7 +129,7 @@ RSpec.describe "Notes", type: :request do
       it_behaves_like "coach spec unauthenticated openapi"
 
       let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.context_id }
+      let(:id) { coach_seeker_context.seeker_id }
       let(:note_params) do
         {
           note:
@@ -150,7 +150,7 @@ RSpec.describe "Notes", type: :request do
             expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:delete_note)
               .with(
-                context_id: id,
+                person_id: id,
                 originator: coach.email,
                 note_id:,
                 trace_id: be_a(String)

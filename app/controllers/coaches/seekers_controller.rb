@@ -10,7 +10,7 @@ module Coaches
 
     def certify
       with_message_service do
-        CoachesReactor.new(message_service:).certify(seeker_id: params[:seeker_id], coach:, trace_id: request.request_id)
+        CoachesReactor.new(message_service:).certify(person_id: params[:seeker_id], coach:, trace_id: request.request_id)
       end
 
       head :accepted

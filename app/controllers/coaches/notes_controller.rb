@@ -12,7 +12,7 @@ module Coaches
       with_message_service do
         CoachesReactor.new(message_service:).add_note(
           originator: coach.email,
-          context_id: params[:context_id],
+          person_id: params[:context_id],
           note: params[:note],
           note_id: params[:note_id] || SecureRandom.uuid,
           trace_id: request.request_id
@@ -25,7 +25,7 @@ module Coaches
     def update
       with_message_service do
         CoachesReactor.new(message_service:).modify_note(
-          context_id: params[:context_id],
+          person_id: params[:context_id],
           originator: coach.email,
           note_id: params[:id],
           note: params[:note],
@@ -40,7 +40,7 @@ module Coaches
       with_message_service do
         CoachesReactor.new(message_service:).delete_note(
           originator: coach.email,
-          context_id: params[:context_id],
+          person_id: params[:context_id],
           note_id: params[:id],
           trace_id: request.request_id
         )

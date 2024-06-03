@@ -27,18 +27,18 @@ RSpec.describe "Tasks", type: :request do
                    '$ref' => '#/components/schemas/reminder'
                  }
 
-          let(:reminder_context_id) { SecureRandom.uuid }
+          let(:reminder_person_id) { SecureRandom.uuid }
 
           before do
             create(:coaches__reminder, coach:)
-            create(:coaches__reminder, coach:, context_id: reminder_context_id)
+            create(:coaches__reminder, coach:, person_id: reminder_person_id)
           end
 
           context "when no context id is provided" do
             before do
               expect(Coaches::CoachesQuery)
                 .to receive(:tasks)
-                .with(coach:, context_id: nil)
+                .with(coach:, person_id: nil)
                 .and_call_original
             end
 
@@ -46,12 +46,12 @@ RSpec.describe "Tasks", type: :request do
           end
 
           context "when a context id is provided" do
-            let(:context_id) { reminder_context_id }
+            let(:context_id) { reminder_person_id }
 
             before do
               expect(Coaches::CoachesQuery)
                 .to receive(:tasks)
-                .with(coach:, context_id: reminder_context_id)
+                .with(coach:, person_id: reminder_person_id)
                 .and_call_original
             end
 
@@ -102,13 +102,13 @@ RSpec.describe "Tasks", type: :request do
           reminder: {
             note:,
             reminderAt: reminder_at.to_s,
-            contextId: context_id
+            contextId: person_id
           }
         }
       end
       let(:note) { "A note" }
       let(:reminder_at) { Time.zone.local(2025, 1, 1) }
-      let(:context_id) { SecureRandom.uuid }
+      let(:person_id) { SecureRandom.uuid }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -117,7 +117,7 @@ RSpec.describe "Tasks", type: :request do
           before do
             expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:create_reminder)
-              .with(coach:, note:, reminder_at:, context_id:, trace_id: be_a(String))
+              .with(coach:, note:, reminder_at:, person_id:, trace_id: be_a(String))
               .and_call_original
           end
 

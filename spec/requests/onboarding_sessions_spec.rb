@@ -79,7 +79,7 @@ RSpec.describe "OnboardingSessions", type: :request do
               expect_any_instance_of(MessageService)
                 .to receive(:create!)
                 .with(
-                  schema: Commands::AddPerson::V1,
+                  schema: Commands::AddPerson::V2,
                   trace_id: be_a(String),
                   person_id: be_a(String),
                   data: {
@@ -88,6 +88,8 @@ RSpec.describe "OnboardingSessions", type: :request do
                     last_name: "Chabot",
                     phone_number: "333-333-3333",
                     date_of_birth: "10/09/1990",
+                    source_kind: People::SourceKind::USER,
+                    source_identifier: user.id,
                     email: user.email
                   }
                 )

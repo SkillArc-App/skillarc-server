@@ -45,6 +45,7 @@ module Messages
         PERSON_ASSOCIATED_TO_USER = 'person_associated_to_user',
         PERSON_ATTRIBUTE_ADDED = 'person_attribute_added',
         PERSON_ATTRIBUTE_REMOVED = 'person_attribute_removed',
+        PERSON_SOURCED = 'person_sourced',
         PERSON_SKILL_ADDED = 'person_skill_added',
         PERSON_SKILL_REMOVED = 'person_skill_removed',
         PERSON_SKILL_UPDATED = 'person_skill_updated',

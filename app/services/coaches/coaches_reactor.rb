@@ -1,5 +1,7 @@
 module Coaches
   class CoachesReactor < MessageReactor # rubocop:disable Metrics/ClassLength
+    NoPersonForCoachError = Class.new(StandardError)
+
     def add_attribute(person_id:, seeker_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         schema: Events::PersonAttributeAdded::V1,
@@ -137,6 +139,9 @@ module Coaches
 
     def create_reminder(coach:, note:, reminder_at:, trace_id:, person_id: nil)
       message_task_id = SecureRandom.uuid
+      coach_person_id = User.find(coach.user_id)&.person_id
+
+      raise NoPersonForCoachError if coach_person_id.blank?
 
       message_service.create!(
         schema: Events::CoachReminderScheduled::V2,
@@ -158,11 +163,11 @@ module Coaches
         data: {
           execute_at: reminder_at - 1.hour,
           command: message_service.build(
-            schema: Commands::SendMessage::V1,
+            schema: Commands::SendMessage::V2,
             trace_id:,
             message_id: SecureRandom.uuid,
             data: {
-              user_id: coach.user_id,
+              person_id: coach_person_id,
               title: "Reminder",
               body: "At #{reminder_at.to_fs(:long)}: #{note}",
               url: person_id && "#{ENV.fetch('FRONTEND_URL', nil)}/coaches/contexts/#{person_id}"
@@ -227,19 +232,13 @@ module Coaches
 
     on_message Events::JobRecommended::V3 do |message|
       job_id = message.data.job_id
-      person_associated_to_user = Projectors::Aggregates::GetFirst.project(
-        schema: Events::PersonAssociatedToUser::V1,
-        aggregate: message.aggregate
-      )
-
-      return if person_associated_to_user.blank?
 
       message_service.create_once_for_trace!(
-        schema: Commands::SendMessage::V1,
+        schema: Commands::SendMessage::V2,
         message_id: SecureRandom.uuid,
         trace_id: message.trace_id,
         data: {
-          user_id: person_associated_to_user.data.user_id,
+          person_id: message.aggregate.id,
           title: "From your SkillArc career coach",
           body: "Check out this job",
           url: "#{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"

@@ -1,5 +1,5 @@
 module Klaviyo
-  class KlaviyoReactor < MessageReactor # rubocop:disable Metrics/ClassLength
+  class KlaviyoReactor < MessageReactor
     def can_replay?
       true
     end
@@ -143,23 +143,6 @@ module Klaviyo
             job_id: message.data.job_id,
             employment_title: message.data.employment_title,
             employer_name: message.data.employer_name
-          },
-          occurred_at: message.occurred_at
-        )
-      end
-    end
-
-    on_message Events::LeadAdded::V2 do |message|
-      return if message.data.email.nil?
-
-      dedup_messages(message) do
-        client.lead_captured(
-          email: message.data.email,
-          event_id: message.id,
-          profile_attributes: {
-            first_name: message.data.first_name,
-            last_name: message.data.last_name,
-            phone_number: E164.normalize(message.data.phone_number)
           },
           occurred_at: message.occurred_at
         )

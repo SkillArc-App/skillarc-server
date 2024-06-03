@@ -9,7 +9,7 @@ module Coaches
     before_action :set_coach
 
     def index
-      render json: CoachesQuery.tasks(coach:, context_id: params[:context_id])
+      render json: CoachesQuery.tasks(coach:, person_id: params[:context_id])
     end
 
     def create_reminder
@@ -20,7 +20,7 @@ module Coaches
           coach:,
           note: reminder[:note],
           reminder_at: Time.zone.parse(reminder[:reminder_at]),
-          context_id: reminder[:context_id],
+          person_id: reminder[:context_id],
           trace_id: request.request_id
         )
       end

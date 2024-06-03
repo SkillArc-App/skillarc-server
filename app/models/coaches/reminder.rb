@@ -9,8 +9,8 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  coach_id        :uuid             not null
-#  context_id      :string
 #  message_task_id :uuid             not null
+#  person_id       :uuid
 #
 # Indexes
 #

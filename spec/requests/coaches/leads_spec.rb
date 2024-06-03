@@ -97,16 +97,22 @@ RSpec.describe "Leads", type: :request do
 
         response '201', 'lead created' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
-              .to receive(:add_lead)
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
               .with(
-                lead_captured_by: coach.email,
-                email: "john.chabot@blocktrainapp.com",
-                phone_number: "333-333-3333",
-                first_name: "john",
-                last_name: "Chabot",
-                lead_id: "eaa9b128-4285-4ae9-abb1-9fd548a5b9d5",
-                trace_id: be_a(String)
+                person_id: be_a(String),
+                trace_id: be_a(String),
+                schema: Commands::AddPerson::V2,
+                data: {
+                  user_id: nil,
+                  date_of_birth: nil,
+                  email: "john.chabot@blocktrainapp.com",
+                  phone_number: "333-333-3333",
+                  first_name: "john",
+                  last_name: "Chabot",
+                  source_kind: People::SourceKind::COACH,
+                  source_identifier: coach.coach_id
+                }
               )
               .and_call_original
           end

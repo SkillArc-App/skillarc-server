@@ -7,20 +7,20 @@ RSpec.describe ExecuteTasksJob do
   let(:message1) do
     build(
       :message,
-      schema: Commands::AssignCoach::V1,
+      schema: Commands::AssignCoach::V2,
       aggregate_id: SecureRandom.uuid,
       data: {
-        coach_email: "coach1@skillarc.com"
+        coach_id: SecureRandom.uuid
       }
     )
   end
   let(:message2) do
     build(
       :message,
-      schema: Commands::AssignCoach::V1,
+      schema: Commands::AssignCoach::V2,
       aggregate_id: SecureRandom.uuid,
       data: {
-        coach_email: "coach2@skillarc.com"
+        coach_id: SecureRandom.uuid
       }
     )
   end
@@ -32,7 +32,7 @@ RSpec.describe ExecuteTasksJob do
         schema: message1.schema,
         data: message1.data,
         trace_id: message1.trace_id,
-        context_id: message1.aggregate.id,
+        person_id: message1.aggregate.id,
         id: message1.id,
         metadata: message1.metadata
       )
@@ -54,7 +54,7 @@ RSpec.describe ExecuteTasksJob do
         schema: message2.schema,
         data: message2.data,
         trace_id: message2.trace_id,
-        context_id: message2.aggregate.id,
+        person_id: message2.aggregate.id,
         id: message2.id,
         metadata: message2.metadata
       )

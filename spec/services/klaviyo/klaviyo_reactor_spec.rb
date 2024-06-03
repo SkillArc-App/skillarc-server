@@ -336,60 +336,6 @@ RSpec.describe Klaviyo::KlaviyoReactor do
       end
     end
 
-    context "when the message is lead added" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::LeadAdded::V2,
-          data: {
-            email: lead_email,
-            lead_id: SecureRandom.uuid,
-            phone_number: "333-333-3333",
-            first_name: "Chris",
-            last_name: "Brauns",
-            lead_captured_by: "AI overlord"
-          }
-        )
-      end
-
-      let(:lead_email) { "A@B.com" }
-
-      it_behaves_like "emits Klaviyo event pushed once"
-
-      context "when email is present" do
-        let(:lead_email) { "A@B.com" }
-
-        it "calls the Klaviyo gateway" do
-          expect(client)
-            .to receive(:lead_captured)
-            .with(
-              email: lead_email,
-              event_id: message.id,
-              profile_attributes: {
-                first_name: "Chris",
-                last_name: "Brauns",
-                phone_number: "+13333333333"
-              },
-              occurred_at: message.occurred_at
-            )
-            .and_call_original
-
-          subject
-        end
-      end
-
-      context "when email is absent" do
-        let(:lead_email) { nil }
-
-        it "calls the Klaviyo gateway" do
-          expect(client)
-            .not_to receive(:lead_captured)
-
-          subject
-        end
-      end
-    end
-
     context "when the message is employer invite accepted" do
       let(:message) do
         build(

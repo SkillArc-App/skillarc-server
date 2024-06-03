@@ -103,18 +103,15 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_seeker_lead
     with_message_service do
-      lead_id = SecureRandom.uuid
-
       message = message_service.create!(
-        schema: Events::LeadAdded::V2,
-        context_id: lead_id,
+        schema: Events::PersonAdded::V1,
+        person_id: SecureRandom.uuid,
         data: {
           first_name: Faker::Name.first_name,
           last_name: Faker::Name.first_name,
-          lead_id:,
           phone_number: Faker::PhoneNumber.phone_number,
           email: Faker::Internet.email,
-          lead_captured_by: "cal.com"
+          date_of_birth: nil
         }
       )
 

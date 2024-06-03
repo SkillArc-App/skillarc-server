@@ -27,7 +27,7 @@ RSpec.describe "Coaches::SeekerBarriersController", type: :request do
       it_behaves_like "coach spec unauthenticated openapi"
 
       let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.context_id }
+      let(:id) { coach_seeker_context.seeker_id }
       let(:barriers_params) do
         {
           barriers:
@@ -44,7 +44,7 @@ RSpec.describe "Coaches::SeekerBarriersController", type: :request do
           before do
             expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:update_barriers)
-              .with(context_id: id, barriers:, trace_id: be_a(String))
+              .with(person_id: id, barriers:, trace_id: be_a(String))
               .and_call_original
           end
 

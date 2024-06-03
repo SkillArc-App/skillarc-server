@@ -1,21 +1,21 @@
 module Events
-  module SeekerContextViewed
+  module PersonViewedInCoaching
     module Data
       class V1
         extend Messages::Payload
 
         schema do
-          context_id String
+          person_id Uuid
         end
       end
     end
 
-    V1 = Messages::Schema.inactive(
+    V1 = Messages::Schema.active(
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Coach,
-      message_type: Messages::Types::Seekers::SEEKER_CONTEXT_VIEWED,
+      message_type: Messages::Types::Coaches::PERSON_VIEWED_IN_COACHING,
       version: 1
     )
   end

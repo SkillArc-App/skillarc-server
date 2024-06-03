@@ -24,7 +24,7 @@ RSpec.describe "Coaches::Seekers", type: :request do
             expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:certify)
               .with(
-                seeker_id: id,
+                person_id: id,
                 coach:,
                 trace_id: be_a(String)
               ).and_call_original

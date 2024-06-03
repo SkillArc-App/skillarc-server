@@ -57,7 +57,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
       it_behaves_like "coach spec unauthenticated openapi"
 
       let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.context_id }
+      let(:id) { coach_seeker_context.seeker_id }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -80,15 +80,15 @@ RSpec.describe "Coaches::Contexts", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::SeekerContextViewed::V1,
+                schema: Events::PersonViewedInCoaching::V1,
                 coach_id: coach.coach_id,
                 data: {
-                  context_id: id
+                  person_id: id
                 }
               )
 
             expect(Coaches::CoachesQuery)
-              .to receive(:find_context)
+              .to receive(:find_person)
               .with(id)
               .and_call_original
           end
@@ -121,7 +121,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
       it_behaves_like "coach spec unauthenticated openapi"
 
       let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.context_id }
+      let(:id) { coach_seeker_context.seeker_id }
       let(:update) do
         {
           level: "advanced"
@@ -135,7 +135,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
           before do
             expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:update_skill_level)
-              .with(context_id: id, skill_level: update[:level], trace_id: be_a(String))
+              .with(person_id: id, skill_level: update[:level], trace_id: be_a(String))
               .and_call_original
           end
 
@@ -190,7 +190,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
           before do
             expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:assign_coach)
-              .with(context_id: id, coach_id:, coach_email: coach.email, trace_id: be_a(String))
+              .with(person_id: id, coach_id:, trace_id: be_a(String))
           end
 
           run_test!
@@ -222,7 +222,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
       it_behaves_like "coach spec unauthenticated openapi"
 
       let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.context_id }
+      let(:id) { coach_seeker_context.seeker_id }
       let(:job_id) { job.job_id }
       let(:job) { create(:coaches__job) }
       let(:update) do
@@ -239,43 +239,8 @@ RSpec.describe "Coaches::Contexts", type: :request do
             expect_any_instance_of(Coaches::CoachesReactor)
               .to receive(:recommend_job)
               .with(
-                context_id: id,
+                person_id: id,
                 job_id:,
-                coach:,
-                trace_id: be_a(String)
-              ).and_call_original
-          end
-
-          run_test!
-        end
-      end
-    end
-  end
-
-  path '/coaches/contexts/{id}/certify' do
-    post "Certify a seeker" do
-      tags 'Seekers'
-      parameter name: :id, in: :path, type: :string
-      security [bearer_auth: []]
-
-      include_context "olive branch casing parameter"
-      include_context "olive branch camelcasing"
-
-      it_behaves_like "coach spec unauthenticated openapi"
-
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.context_id }
-      let(:seeker_id) { coach_seeker_context.seeker_id }
-
-      context "when authenticated" do
-        include_context "coach authenticated openapi"
-
-        response '202', 'certifies a seeker' do
-          before do
-            expect_any_instance_of(Coaches::CoachesReactor)
-              .to receive(:certify)
-              .with(
-                seeker_id:,
                 coach:,
                 trace_id: be_a(String)
               ).and_call_original

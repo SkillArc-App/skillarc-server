@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_04_190343) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_04_220836) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -65,7 +65,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_190343) do
     t.string "kind", null: false
     t.datetime "lead_created_at"
     t.datetime "onboarding_completed_at"
-    t.datetime "last_active_at"
     t.uuid "lead_id"
     t.uuid "seeker_id"
     t.uuid "coach_id"
@@ -87,6 +86,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_190343) do
     t.string "first_name"
     t.string "last_name"
     t.datetime "user_created_at", precision: nil, null: false
+    t.datetime "last_active_at"
   end
 
   create_table "analytics_fact_applications", force: :cascade do |t|

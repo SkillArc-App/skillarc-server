@@ -44,13 +44,14 @@ module Klaviyo
       post(url, data)
     end
 
-    def job_saved(email:, event_id:, event_properties:, occurred_at:)
+    def person_added(email:, occurred_at:, event_id:, profile_attributes:, profile_properties:)
       data = event_data(
-        event_type: 'Job Saved',
+        event_type: 'Person Added',
         email:,
         time: occurred_at,
         event_id:,
-        event_properties:
+        profile_properties:,
+        profile_attributes:
       )
 
       url = URI("https://a.klaviyo.com/api/events/")
@@ -58,13 +59,13 @@ module Klaviyo
       post(url, data)
     end
 
-    def met_with_career_coach_updated(email:, occurred_at:, event_id:, profile_properties:)
+    def job_saved(email:, event_id:, event_properties:, occurred_at:)
       data = event_data(
-        event_type: 'Met With Career Coach Updated',
+        event_type: 'Job Saved',
         email:,
         time: occurred_at,
         event_id:,
-        profile_properties:
+        event_properties:
       )
 
       url = URI("https://a.klaviyo.com/api/events/")

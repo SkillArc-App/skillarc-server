@@ -10,13 +10,21 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
+    V1 = Messages::Schema.inactive(
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::User,
       message_type: Messages::Types::Contact::CONTACT_PREFERENCE_SET,
       version: 1
+    )
+    V2 = Messages::Schema.active(
+      type: Messages::EVENT,
+      data: Data::V1,
+      metadata: Messages::Nothing,
+      aggregate: Aggregates::Person,
+      message_type: Messages::Types::Contact::CONTACT_PREFERENCE_SET,
+      version: 2
     )
   end
 end

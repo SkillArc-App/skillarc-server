@@ -1,5 +1,5 @@
 load 'spec/builders/user_builder.rb'
-load 'spec/builders/seeker_builder.rb'
+load 'spec/builders/person_builder.rb'
 
 class TestController < ApplicationController # rubocop:disable Metrics/ClassLength
   include MessageEmitter
@@ -14,23 +14,23 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_coach
     with_message_service do
-      user = Builders::UserBuilder.new(message_service).build
+      person = Builders::PersonBuilder.new(message_service).build
 
       message_service.create!(
-        user_id: user.id,
+        user_id: person.user_id,
         schema: Events::RoleAdded::V2,
         data: {
           role: Role::Types::COACH
         }
       )
 
-      render json: user
+      render json: person
     end
   end
 
   def create_seeker
     with_message_service do
-      seeker = Builders::SeekerBuilder.new(message_service).build
+      seeker = Builders::PersonBuilder.new(message_service).build
 
       render json: {
         user: seeker,
@@ -57,7 +57,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
         }
       )
 
-      seeker = Builders::SeekerBuilder.new(message_service).build
+      seeker = Builders::PersonBuilder.new(message_service).build
       status = create_application_with_message(message_service:, job:, seeker:)
 
       render json: {
@@ -76,7 +76,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       training_provider = program.training_provider
 
       trainer_user = Builders::UserBuilder.new(message_service).build
-      student_seeker = Builders::SeekerBuilder.new(message_service).build
+      student_seeker = Builders::PersonBuilder.new(message_service).build
 
       FactoryBot.create(:training_provider_profile, training_provider:, user: trainer_user)
       FactoryBot.create(:seeker_training_provider, training_provider:, program:, seeker_id: student_seeker.id)
@@ -121,7 +121,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_active_seeker
     with_message_service do
-      seeker = Builders::SeekerBuilder.new(message_service).build(phone_number: nil)
+      seeker = Builders::PersonBuilder.new(message_service).build(phone_number: nil)
 
       job = create_job_with_messages(message_service:)
       create_application_with_message(message_service:, job:, seeker:)

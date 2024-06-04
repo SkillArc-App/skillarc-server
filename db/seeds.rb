@@ -1,5 +1,5 @@
 load 'spec/builders/user_builder.rb'
-load 'spec/builders/seeker_builder.rb'
+load 'spec/builders/person_builder.rb'
 
 message_service = MessageService.new
 
@@ -238,7 +238,7 @@ Tag.create!([
               }
             ])
 
-trained_seeker_with_reference = Builders::SeekerBuilder.new(message_service).build(
+trained_seeker_with_reference = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Tom',
   last_name: 'Hanks',
   phone_number: "+16666666666",
@@ -246,7 +246,7 @@ trained_seeker_with_reference = Builders::SeekerBuilder.new(message_service).bui
   date_of_birth: "1963-06-14"
 )
 
-trained_seeker = Builders::SeekerBuilder.new(message_service).build(
+trained_seeker = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Tim',
   last_name: 'Allen',
   email: 'trained-seeker@blocktrainapp.com',
@@ -254,7 +254,7 @@ trained_seeker = Builders::SeekerBuilder.new(message_service).build(
   date_of_birth: "1990-10-09"
 )
 
-seeker_with_profile = Builders::SeekerBuilder.new(message_service).build(
+seeker_with_profile = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Rita',
   last_name: 'Wilson',
   phone_number: "+14444444444",
@@ -491,27 +491,14 @@ message_service.create!(
   }
 )
 
-coach_user = User.create!(
-  id: SecureRandom.uuid,
+coach_person = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Coach',
   last_name: 'User',
-  email: 'coach@blocktrainapp.com',
-  sub: 'coachsub'
+  email: 'coach@blocktrainapp.com'
 )
 
 message_service.create!(
-  user_id: coach_user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: coach_user.first_name,
-    last_name: coach_user.last_name,
-    email: coach_user.email,
-    sub: coach_user.sub
-  }
-)
-
-message_service.create!(
-  user_id: coach_user.id,
+  user_id: coach_person.user_id,
   schema: Events::RoleAdded::V2,
   data: {
     role: Role::Types::COACH

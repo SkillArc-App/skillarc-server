@@ -101,52 +101,28 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
       let(:coach_id) { SecureRandom.uuid }
       let(:person_id) { SecureRandom.uuid }
 
-      context "when there is a user associated with this person" do
-        let(:messages) do
-          [
-            build(
-              :message,
-              schema: Events::PersonAssociatedToUser::V1,
-              aggregate_id: person_id,
-              data: {
-                user_id:
-              }
-            )
-          ]
-        end
-        let(:user_id) { SecureRandom.uuid }
+      it "emits a send message command" do
+        expect(message_service)
+          .to receive(:create_once_for_trace!)
+          .with(
+            schema: Commands::SendMessage::V2,
+            message_id: be_a(String),
+            trace_id: message.trace_id,
+            data: {
+              person_id: message.aggregate.id,
+              title: "From your SkillArc career coach",
+              body: "Check out this job",
+              url: "#{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
+            },
+            metadata: {
+              requestor_type: Requestor::Kinds::COACH,
+              requestor_id: message.data.coach_id
+            }
+          )
+          .twice
+          .and_call_original
 
-        it "emits a send message command" do
-          expect(message_service)
-            .to receive(:create_once_for_trace!)
-            .with(
-              schema: Commands::SendMessage::V1,
-              message_id: be_a(String),
-              trace_id: message.trace_id,
-              data: {
-                user_id:,
-                title: "From your SkillArc career coach",
-                body: "Check out this job",
-                url: "#{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
-              },
-              metadata: {
-                requestor_type: Requestor::Kinds::COACH,
-                requestor_id: message.data.coach_id
-              }
-            )
-            .twice
-            .and_call_original
-
-          subject
-        end
-      end
-
-      context "when there isn't a user associated with this person" do
-        let(:message_service) { double }
-
-        it "does nothing" do
-          subject
-        end
+        subject
       end
     end
 
@@ -344,7 +320,9 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
   describe "#create_reminder" do
     subject { consumer.create_reminder(coach:, note:, reminder_at:, trace_id:, person_id:) }
 
-    let(:coach) { create(:coaches__coach) }
+    let(:coach) { create(:coaches__coach, user_id: user.id) }
+    let(:user) { create(:user, person_id: coach_person_id) }
+    let(:coach_person_id) { SecureRandom.uuid }
     let(:note) { "Do this thing" }
     let(:reminder_at) { Time.zone.local(2020, 1, 1) }
     let(:trace_id) { SecureRandom.uuid }
@@ -383,6 +361,14 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
       subject
     end
 
+    context "when the coach doesn't have a person_id" do
+      let(:coach_person_id) { nil }
+
+      it "raises a NoPersonForCoachError" do
+        expect { subject }.to raise_error(described_class::NoPersonForCoachError)
+      end
+    end
+
     context "when context_id is nil" do
       it "The message does not includes a link to the context page" do
         allow(message_service)
@@ -391,11 +377,11 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
 
         expect(message_service)
           .to receive(:build).with(
-            schema: Commands::SendMessage::V1,
+            schema: Commands::SendMessage::V2,
             trace_id:,
             message_id: be_a(String),
             data: {
-              user_id: coach.user_id,
+              person_id: coach_person_id,
               title: "Reminder",
               body: "At January 01, 2020 00:00: Do this thing",
               url: nil
@@ -420,11 +406,11 @@ RSpec.describe Coaches::CoachesReactor do # rubocop:disable Metrics/BlockLength
 
         expect(message_service)
           .to receive(:build).with(
-            schema: Commands::SendMessage::V1,
+            schema: Commands::SendMessage::V2,
             trace_id:,
             message_id: be_a(String),
             data: {
-              user_id: coach.user_id,
+              person_id: coach_person_id,
               title: "Reminder",
               body: "At January 01, 2020 00:00: Do this thing",
               url: "#{ENV.fetch('FRONTEND_URL', nil)}/coaches/contexts/#{person_id}"

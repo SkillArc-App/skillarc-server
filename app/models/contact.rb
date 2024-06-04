@@ -4,7 +4,8 @@ module Contact
       SLACK = "slack".freeze,
       EMAIL = "email".freeze,
       SMS = "sms".freeze,
-      IN_APP_NOTIFICATION = "in_app_notification".freeze
+      IN_APP_NOTIFICATION = "in_app_notification".freeze,
+      NONE = "none".freeze
     ].freeze
   end
 

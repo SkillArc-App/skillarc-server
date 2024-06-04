@@ -12,7 +12,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
     subject { instance.handle_message(message) }
 
     let(:user_id) { SecureRandom.uuid }
-    let(:seeker_id) { SecureRandom.uuid }
+    let(:person_id) { SecureRandom.uuid }
     let(:email) { "an@email.com" }
 
     shared_examples "emits Klaviyo event pushed once" do
@@ -63,38 +63,71 @@ RSpec.describe Klaviyo::KlaviyoReactor do
       end
     end
 
-    context "seeker messages" do
+    context "people messages" do
       before do
-        message_service.create!(
-          schema: Events::UserCreated::V1,
-          user_id:,
-          data: {
-            email:,
-            first_name: "Cool",
-            last_name: "Seeker"
-          }
+        allow_any_instance_of(People::Projectors::Email)
+          .to receive(:project)
+          .and_return(projection)
+      end
+
+      let(:projection) do
+        People::Projectors::Email::Projection.new(
+          initial_email: email,
+          current_email: "another@email.com"
         )
-        message_service.create!(
-          schema: Events::OnboardingStarted::V1,
-          seeker_id:,
-          data: {
-            user_id:
-          }
-        )
+      end
+
+      context "when the message is person added" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: person_id,
+            schema: Events::PersonAdded::V1,
+            data: {
+              first_name: "Hannah",
+              last_name: "Skillz",
+              phone_number: "222-222-2222",
+              email: "some@email.com",
+              date_of_birth: Time.zone.local(2020, 1, 1)
+            }
+          )
+        end
+
+        it_behaves_like "emits Klaviyo event pushed once"
+
+        it "calls the Klaviyo gateway" do
+          expect(client)
+            .to receive(:person_added)
+            .with(
+              email:,
+              event_id: message.id,
+              occurred_at: message.occurred_at,
+              profile_attributes: {
+                first_name: "Hannah",
+                last_name: "Skillz",
+                phone_number: '+12222222222'
+              },
+              profile_properties: {
+                date_of_birth: Time.zone.local(2020, 1, 1)
+              }
+            )
+            .and_call_original
+
+          subject
+        end
       end
 
       context "when the message is basic info added" do
         let(:message) do
           build(
             :message,
-            aggregate_id: seeker_id,
-            schema: Events::UserBasicInfoAdded::V1,
+            aggregate_id: person_id,
+            schema: Events::BasicInfoAdded::V1,
             data: {
-              user_id: SecureRandom.uuid,
               first_name: "Hannah",
               last_name: "Skillz",
               phone_number: "222-222-2222",
-              date_of_birth: "2000-10-10"
+              email: "some@email.com"
             }
           )
         end
@@ -112,9 +145,6 @@ RSpec.describe Klaviyo::KlaviyoReactor do
                 first_name: "Hannah",
                 last_name: "Skillz",
                 phone_number: '+12222222222'
-              },
-              profile_properties: {
-                date_of_birth: Date.new(2000, 10, 10)
               }
             )
             .and_call_original
@@ -127,8 +157,8 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         let(:message) do
           build(
             :message,
-            aggregate_id: seeker_id,
-            schema: Events::EducationExperienceAdded::V1,
+            aggregate_id: person_id,
+            schema: Events::EducationExperienceAdded::V2,
             data: {
               id: SecureRandom.uuid,
               organization_name: "School",
@@ -160,8 +190,8 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         let(:message) do
           build(
             :message,
-            aggregate_id: seeker_id,
-            schema: Events::ExperienceAdded::V1,
+            aggregate_id: person_id,
+            schema: Events::ExperienceAdded::V2,
             data: {
               id: SecureRandom.uuid,
               organization_name: "Employers",
@@ -193,8 +223,8 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         let(:message) do
           build(
             :message,
-            aggregate_id: seeker_id,
-            schema: Events::OnboardingCompleted::V2,
+            aggregate_id: person_id,
+            schema: Events::OnboardingCompleted::V3,
             data: Messages::Nothing
           )
         end

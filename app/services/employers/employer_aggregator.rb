@@ -62,7 +62,7 @@ module Employers
       )
     end
 
-    on_message Events::SeekerCertified::V1 do |message|
+    on_message Events::PersonCertified::V1 do |message|
       e = Seeker.find_or_initialize_by(
         seeker_id: message.aggregate_id
       )

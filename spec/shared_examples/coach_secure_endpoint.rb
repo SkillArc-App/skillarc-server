@@ -67,7 +67,8 @@ RSpec.shared_context "coach authenticated openapi" do
       first_name: 'Jake',
       last_name: 'Not-Onboard',
       email: 'jake@statefarm.com',
-      sub: 'jakesub'
+      sub: 'jakesub',
+      person_id: SecureRandom.uuid
     )
 
     UserRole.create!(

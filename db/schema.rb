@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_03_153202) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_04_125402) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -63,21 +63,30 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_03_153202) do
     t.string "phone_number"
     t.string "email"
     t.string "kind", null: false
-    t.datetime "user_created_at"
     t.datetime "lead_created_at"
     t.datetime "onboarding_completed_at"
     t.datetime "last_active_at"
     t.uuid "lead_id"
     t.uuid "seeker_id"
     t.uuid "coach_id"
-    t.text "user_id"
+    t.uuid "person_id", null: false
+    t.bigint "analytics_dim_user_id"
+    t.index ["analytics_dim_user_id"], name: "index_analytics_dim_people_on_analytics_dim_user_id"
     t.index ["coach_id"], name: "index_analytics_dim_people_on_coach_id"
     t.index ["email"], name: "index_analytics_dim_people_on_email"
     t.index ["kind"], name: "index_analytics_dim_people_on_kind"
     t.index ["lead_id"], name: "index_analytics_dim_people_on_lead_id"
+    t.index ["person_id"], name: "index_analytics_dim_people_on_person_id"
     t.index ["phone_number"], name: "index_analytics_dim_people_on_phone_number"
     t.index ["seeker_id"], name: "index_analytics_dim_people_on_seeker_id"
-    t.index ["user_id"], name: "index_analytics_dim_people_on_user_id"
+  end
+
+  create_table "analytics_dim_users", force: :cascade do |t|
+    t.string "user_id", null: false
+    t.string "email", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.datetime "user_created_at", precision: nil, null: false
   end
 
   create_table "analytics_fact_applications", force: :cascade do |t|
@@ -944,6 +953,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_03_153202) do
   end
 
   add_foreign_key "accounts", "users", name: "Account_user_id_fkey", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "analytics_dim_people", "analytics_dim_users"
   add_foreign_key "analytics_fact_applications", "analytics_dim_jobs"
   add_foreign_key "analytics_fact_applications", "analytics_dim_people"
   add_foreign_key "analytics_fact_coach_actions", "analytics_dim_people", column: "analytics_dim_person_executor_id"

@@ -12,9 +12,9 @@ RSpec.describe Coaches::CoachesEventEmitter do
   let(:message_service) { MessageService.new }
 
   describe "#add_attribute" do
-    subject { instance.add_attribute(person_id:, seeker_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) }
+    subject { instance.add_attribute(person_id:, person_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) }
 
-    let(:seeker_attribute_id) { SecureRandom.uuid }
+    let(:person_attribute_id) { SecureRandom.uuid }
     let(:attribute_id) { SecureRandom.uuid }
     let(:attribute_name) { "Cool factor" }
     let(:attribute_values) { ["Cool"] }
@@ -25,7 +25,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
         person_id:,
         trace_id:,
         data: {
-          id: seeker_attribute_id,
+          id: person_attribute_id,
           attribute_id:,
           attribute_name:,
           attribute_values:
@@ -37,18 +37,18 @@ RSpec.describe Coaches::CoachesEventEmitter do
   end
 
   describe "#recommend_for_job_order" do
-    subject { instance.recommend_for_job_order(seeker_id:, job_order_id:, trace_id:) }
+    subject { instance.recommend_for_job_order(person_id:, job_order_id:, trace_id:) }
 
     let(:job_order_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::JobOrderCandidateAdded::V1,
+        schema: Events::JobOrderCandidateAdded::V2,
         job_order_id:,
         trace_id:,
         data: {
-          seeker_id:
+          person_id:
         }
       ).and_call_original
 
@@ -57,9 +57,9 @@ RSpec.describe Coaches::CoachesEventEmitter do
   end
 
   describe "#remove_attribute" do
-    subject { instance.remove_attribute(person_id:, seeker_attribute_id:, trace_id:) }
+    subject { instance.remove_attribute(person_id:, person_attribute_id:, trace_id:) }
 
-    let(:seeker_attribute_id) { SecureRandom.uuid }
+    let(:person_attribute_id) { SecureRandom.uuid }
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
@@ -67,7 +67,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
         person_id:,
         trace_id:,
         data: {
-          id: seeker_attribute_id
+          id: person_attribute_id
         }
       ).and_call_original
 

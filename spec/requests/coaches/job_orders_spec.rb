@@ -15,7 +15,7 @@ RSpec.describe "Coaches::JobOrders", type: :request do
       context "when authenticated" do
         include_context "coach authenticated openapi"
 
-        response '200', 'retrieves job seekers' do
+        response '200', 'retrieves job orders' do
           before do
             expect(JobOrders::JobOrdersQuery)
               .to receive(:all_orders)
@@ -45,7 +45,7 @@ RSpec.describe "Coaches::JobOrders", type: :request do
 
       let(:recommend_params) do
         {
-          seeker_id:
+          seeker_id: person_id
         }
       end
 
@@ -56,7 +56,7 @@ RSpec.describe "Coaches::JobOrders", type: :request do
 
       let(:job_order) { create(:job_orders__job_order) }
       let(:id) { job_order.id }
-      let(:seeker_id) { create(:job_orders__seeker).id }
+      let(:person_id) { create(:job_orders__person).id }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -67,7 +67,7 @@ RSpec.describe "Coaches::JobOrders", type: :request do
               .to receive(:recommend_for_job_order)
               .with(
                 job_order_id: job_order.id,
-                seeker_id:,
+                person_id:,
                 trace_id: be_a(String)
               )
               .and_call_original

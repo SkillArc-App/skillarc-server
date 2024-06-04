@@ -6,13 +6,13 @@ module Coaches
       @message_service = message_service
     end
 
-    def add_attribute(person_id:, seeker_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) # rubocop:disable Metrics/ParameterLists
+    def add_attribute(person_id:, person_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
         schema: Events::PersonAttributeAdded::V1,
         person_id:,
         trace_id:,
         data: {
-          id: seeker_attribute_id,
+          id: person_attribute_id,
           attribute_id:,
           attribute_name:,
           attribute_values:
@@ -20,24 +20,24 @@ module Coaches
       )
     end
 
-    def recommend_for_job_order(seeker_id:, job_order_id:, trace_id:)
+    def recommend_for_job_order(person_id:, job_order_id:, trace_id:)
       message_service.create!(
-        schema: Events::JobOrderCandidateAdded::V1,
+        schema: Events::JobOrderCandidateAdded::V2,
         job_order_id:,
         trace_id:,
         data: {
-          seeker_id:
+          person_id:
         }
       )
     end
 
-    def remove_attribute(person_id:, seeker_attribute_id:, trace_id:)
+    def remove_attribute(person_id:, person_attribute_id:, trace_id:)
       message_service.create!(
         schema: Events::PersonAttributeRemoved::V1,
         person_id:,
         trace_id:,
         data: {
-          id: seeker_attribute_id
+          id: person_attribute_id
         }
       )
     end

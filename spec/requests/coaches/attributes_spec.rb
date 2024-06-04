@@ -92,7 +92,7 @@ RSpec.describe "Attributes", type: :request do
             expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:add_attribute)
               .with(
-                seeker_attribute_id: be_a(String),
+                person_attribute_id: be_a(String),
                 person_id: seeker_id,
                 attribute_id:,
                 attribute_name: attribute.name,
@@ -160,7 +160,7 @@ RSpec.describe "Attributes", type: :request do
             expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:add_attribute)
               .with(
-                seeker_attribute_id: id,
+                person_attribute_id: id,
                 person_id: seeker_id,
                 attribute_id:,
                 attribute_name: attribute.name,
@@ -199,7 +199,7 @@ RSpec.describe "Attributes", type: :request do
             expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:remove_attribute)
               .with(
-                seeker_attribute_id: id,
+                person_attribute_id: id,
                 person_id: seeker_id,
                 trace_id: be_a(String)
               )

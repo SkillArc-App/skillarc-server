@@ -115,7 +115,7 @@ RSpec.describe "Tasks", type: :request do
 
         response '202', 'Creates a reminder' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:create_reminder)
               .with(coach:, note:, reminder_at:, person_id:, trace_id: be_a(String))
               .and_call_original
@@ -148,7 +148,7 @@ RSpec.describe "Tasks", type: :request do
 
         response '202', 'Completes a reminder' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:complete_reminder)
               .with(coach:, reminder_id: id, trace_id: be_a(String))
               .and_call_original

@@ -21,7 +21,7 @@ RSpec.describe "Coaches::Seekers", type: :request do
 
         response '202', 'certifies a seeker' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:certify)
               .with(
                 person_id: id,

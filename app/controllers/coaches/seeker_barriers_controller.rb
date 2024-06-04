@@ -9,7 +9,7 @@ module Coaches
 
     def update_all
       with_message_service do
-        CoachesReactor.new(message_service:).update_barriers(
+        CoachesEventEmitter.new(message_service:).update_barriers(
           person_id: params[:context_id],
           barriers: params[:barriers],
           trace_id: request.request_id

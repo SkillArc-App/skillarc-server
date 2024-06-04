@@ -16,7 +16,7 @@ module Coaches
       attribute_name = Attributes::AttributesQuery.find(params[:attribute_id]).name
 
       with_message_service do
-        CoachesReactor.new(message_service:).add_attribute(
+        CoachesEventEmitter.new(message_service:).add_attribute(
           seeker_attribute_id: SecureRandom.uuid,
           person_id: params[:seeker_id],
           attribute_id: params[:attribute_id],
@@ -33,7 +33,7 @@ module Coaches
       attribute_name = Attributes::AttributesQuery.find(params[:attribute_id]).name
 
       with_message_service do
-        CoachesReactor.new(message_service:).add_attribute(
+        CoachesEventEmitter.new(message_service:).add_attribute(
           seeker_attribute_id: params[:id],
           person_id: params[:seeker_id],
           attribute_id: params[:attribute_id],
@@ -48,7 +48,7 @@ module Coaches
 
     def destroy
       with_message_service do
-        CoachesReactor.new(message_service:).remove_attribute(
+        CoachesEventEmitter.new(message_service:).remove_attribute(
           seeker_attribute_id: params[:id],
           person_id: params[:seeker_id],
           trace_id: request.request_id

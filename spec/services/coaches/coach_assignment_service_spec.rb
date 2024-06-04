@@ -26,7 +26,7 @@ RSpec.describe Coaches::CoachAssignmentService do
         end
 
         it "returns the coach with the highest weight" do
-          expect(subject).to eq(coach1)
+          expect(subject).to eq(coach1.id)
         end
       end
 
@@ -37,7 +37,7 @@ RSpec.describe Coaches::CoachAssignmentService do
         end
 
         it "returns the coach with the highest weight" do
-          expect(subject).to eq(coach1)
+          expect(subject).to eq(coach1.id)
         end
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe Coaches::CoachAssignmentService do
       end
 
       it "returns the other coach" do
-        expect(subject).to eq(coach2)
+        expect(subject).to eq(coach2.id)
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe Coaches::CoachAssignmentService do
         end
 
         it "returns coach furthest from target" do
-          expect(subject).to eq(coach2)
+          expect(subject).to eq(coach2.id)
         end
       end
 
@@ -76,7 +76,7 @@ RSpec.describe Coaches::CoachAssignmentService do
         end
 
         it "returns coach furthest from target" do
-          expect(subject).to eq(coach1)
+          expect(subject).to eq(coach1.id)
         end
       end
     end

@@ -32,7 +32,7 @@ module Coaches
       coach = Coach.find_by!(coach_id: params[:coach_id])
 
       with_message_service do
-        CoachesReactor.new(message_service:).assign_coach(
+        CoachesEventEmitter.new(message_service:).assign_coach(
           person_id: params[:context_id],
           coach_id: coach.coach_id,
           trace_id: request.request_id
@@ -44,7 +44,7 @@ module Coaches
 
     def recommend_job
       with_message_service do
-        CoachesReactor.new(message_service:).recommend_job(
+        CoachesEventEmitter.new(message_service:).recommend_job(
           person_id: params[:context_id],
           job_id: params[:job_id],
           coach:,
@@ -57,7 +57,7 @@ module Coaches
 
     def update_skill_level
       with_message_service do
-        CoachesReactor.new(message_service:).update_skill_level(
+        CoachesEventEmitter.new(message_service:).update_skill_level(
           person_id: params[:context_id],
           skill_level: params[:level],
           trace_id: request.request_id

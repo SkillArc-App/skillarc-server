@@ -89,7 +89,7 @@ RSpec.describe "Attributes", type: :request do
 
         response '201', 'Adds an attribute' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:add_attribute)
               .with(
                 seeker_attribute_id: be_a(String),
@@ -157,7 +157,7 @@ RSpec.describe "Attributes", type: :request do
 
         response '202', 'Adds an attribute' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:add_attribute)
               .with(
                 seeker_attribute_id: id,
@@ -196,7 +196,7 @@ RSpec.describe "Attributes", type: :request do
 
         response '202', 'Removes an attribute' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:remove_attribute)
               .with(
                 seeker_attribute_id: id,

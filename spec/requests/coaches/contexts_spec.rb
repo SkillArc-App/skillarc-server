@@ -133,7 +133,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
         response '202', 'retrieve all seekers' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:update_skill_level)
               .with(person_id: id, skill_level: update[:level], trace_id: be_a(String))
               .and_call_original
@@ -188,7 +188,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
         response '202', 'retrieve all seekers' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:assign_coach)
               .with(person_id: id, coach_id:, trace_id: be_a(String))
           end
@@ -236,7 +236,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
         response '202', 'retrieve all seekers' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:recommend_job)
               .with(
                 person_id: id,

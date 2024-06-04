@@ -63,7 +63,7 @@ RSpec.describe "Coaches::JobOrders", type: :request do
 
         response '202', 'recommends a job order' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:recommend_for_job_order)
               .with(
                 job_order_id: job_order.id,

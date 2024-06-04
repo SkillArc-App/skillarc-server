@@ -3,7 +3,7 @@
 # Table name: analytics_dim_users
 #
 #  id              :bigint           not null, primary key
-#  email           :string           not null
+#  email           :string
 #  first_name      :string
 #  last_name       :string
 #  user_created_at :datetime         not null

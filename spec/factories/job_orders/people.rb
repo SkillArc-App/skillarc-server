@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :job_orders__seeker, class: "JobOrders::Seeker" do
+  factory :job_orders__person, class: "JobOrders::Person" do
     id { SecureRandom.uuid }
     email { "seeker@skillarc.com" }
     first_name { "Seeker" }

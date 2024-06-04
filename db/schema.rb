@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_04_220836) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_04_235232) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -526,14 +526,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_220836) do
 
   create_table "job_orders_candidates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "job_orders_job_orders_id", null: false
-    t.uuid "job_orders_seekers_id", null: false
+    t.uuid "job_orders_people_id", null: false
     t.string "status", null: false
+    t.datetime "added_at", null: false
+    t.datetime "applied_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "applied_at"
-    t.datetime "added_at"
     t.index ["job_orders_job_orders_id"], name: "index_job_orders_candidates_on_job_orders_job_orders_id"
-    t.index ["job_orders_seekers_id"], name: "index_job_orders_candidates_on_job_orders_seekers_id"
+    t.index ["job_orders_people_id"], name: "index_job_orders_candidates_on_job_orders_people_id"
   end
 
   create_table "job_orders_job_orders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -571,7 +571,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_220836) do
     t.index ["job_orders_job_orders_id"], name: "index_job_orders_notes_on_job_orders_job_orders_id"
   end
 
-  create_table "job_orders_seekers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "job_orders_people", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email"
     t.string "phone_number"
     t.string "first_name"
@@ -987,7 +987,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_220836) do
   add_foreign_key "employers_recruiters", "employers_employers"
   add_foreign_key "job_attributes", "jobs"
   add_foreign_key "job_orders_candidates", "job_orders_job_orders", column: "job_orders_job_orders_id"
-  add_foreign_key "job_orders_candidates", "job_orders_seekers", column: "job_orders_seekers_id"
+  add_foreign_key "job_orders_candidates", "job_orders_people", column: "job_orders_people_id"
   add_foreign_key "job_orders_job_orders", "job_orders_jobs", column: "job_orders_jobs_id"
   add_foreign_key "job_photos", "jobs", name: "JobPhoto_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "job_tags", "jobs", name: "JobTag_job_id_fkey", on_update: :cascade, on_delete: :restrict

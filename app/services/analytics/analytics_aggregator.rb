@@ -1,32 +1,37 @@
 module Analytics
-  class AnalyticsAggregator < MessageConsumer
+  class AnalyticsAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay
       Analytics::FactApplication.delete_all
       Analytics::FactJobVisibility.delete_all
       Analytics::FactPersonViewed.delete_all
       Analytics::FactCoachAction.delete_all
+      Analytics::DimUser.delete_all
       Analytics::DimPerson.delete_all
       Analytics::DimJob.delete_all
     end
 
-    on_message Events::UserCreated::V1 do |message|
-      data = message.data
-      person = DimPerson.find_by(email: data.email) if data.email.present?
-      person ||= DimPerson.new(email: data.email)
+    on_message Events::PersonAssociatedToUser::V1 do |message|
+      person = DimPerson.find_by!(person_id: message.aggregate.person_id)
+      user = DimUser.find_by!(user_id: message.data.user_id)
 
-      person.kind = DimPerson::Kind::USER
-      person.last_active_at = message.occurred_at
-      person.user_created_at = message.occurred_at
-      person.user_id = message.aggregate.user_id
-      person.first_name = data.first_name if data.first_name.present?
-      person.last_name = data.last_name if data.last_name.present?
-      person.email = data.email if data.email.present?
-
+      person.dim_user = user
       person.save!
     end
 
-    on_message Events::UserBasicInfoAdded::V1 do |message|
-      person = DimPerson.find_by!(user_id: message.data.user_id)
+    on_message Events::UserCreated::V1 do |message|
+      data = message.data
+
+      DimUser.create!(
+        user_id: message.aggregate.user_id,
+        email: data.email,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        user_created_at: message.occurred_at
+      )
+    end
+
+    on_message Events::BasicInfoAdded::V1 do |message|
+      person = DimPerson.find_by!(person_id: message.aggregate.person_id)
 
       person.last_active_at = message.occurred_at
       person.first_name = message.data.first_name
@@ -36,18 +41,20 @@ module Analytics
       person.save!
     end
 
-    on_message Events::SeekerCreated::V1 do |message|
-      person = DimPerson.find_by!(user_id: message.data.user_id)
-
-      person.update!(
+    on_message Events::PersonAdded::V1 do |message|
+      DimPerson.create!(
+        person_id: message.aggregate.person_id,
+        email: message.data.email,
+        first_name: message.data.first_name,
+        last_name: message.data.last_name,
         last_active_at: message.occurred_at,
         seeker_id: message.aggregate.id,
         kind: DimPerson::Kind::SEEKER
       )
     end
 
-    on_message Events::OnboardingCompleted::V2 do |message|
-      person = DimPerson.find_by!(seeker_id: message.aggregate_id)
+    on_message Events::OnboardingCompleted::V3 do |message|
+      person = DimPerson.find_by!(person_id: message.aggregate.person_id)
 
       person.update!(
         last_active_at: message.occurred_at,
@@ -56,13 +63,13 @@ module Analytics
     end
 
     on_message Events::SessionStarted::V1 do |message|
-      person = DimPerson.find_by!(user_id: message.aggregate_id)
+      person = DimPerson.joins(:dim_user).find_by!(analytics_dim_users: { user_id: message.aggregate.user_id })
 
       person.update!(last_active_at: message.occurred_at)
     end
 
     on_message Events::CoachAdded::V1 do |message|
-      person = DimPerson.find_by!(user_id: message.aggregate_id)
+      person = DimPerson.joins(:dim_user).find_by!(analytics_dim_users: { user_id: message.aggregate.user_id })
 
       person.update!(
         kind: DimPerson::Kind::COACH,
@@ -151,9 +158,9 @@ module Analytics
       end
     end
 
-    on_message Events::SeekerViewed::V1 do |message|
-      dim_person_viewer = Analytics::DimPerson.find_by!(user_id: message.aggregate.user_id)
-      dim_person_viewed = Analytics::DimPerson.find_by!(seeker_id: message.data.seeker_id)
+    on_message Events::PersonViewed::V1 do |message|
+      dim_person_viewer = Analytics::DimPerson.joins(:dim_user).find_by!(analytics_dim_users: { user_id: message.aggregate.user_id })
+      dim_person_viewed = Analytics::DimPerson.find_by!(person_id: message.data.person_id)
 
       Analytics::FactPersonViewed.create!(
         dim_person_viewer:,
@@ -163,61 +170,60 @@ module Analytics
       )
     end
 
-    # on_message Events::PersonViewedInCoaching::V1 do |message|
-    #   dim_person_viewer = Analytics::DimPerson.find_by!(coach_id: message.aggregate.coach_id)
-    #   dim_person_viewed = find_dim_person_by_context_id!(message.data.context_id)
+    on_message Events::PersonViewedInCoaching::V1 do |message|
+      dim_person_viewer = Analytics::DimPerson.find_by!(coach_id: message.aggregate.coach_id)
+      dim_person_viewed = DimPerson.find_by(person_id: message.data.person_id)
 
-    #   Analytics::FactPersonViewed.create!(
-    #     dim_person_viewer:,
-    #     dim_person_viewed:,
-    #     viewed_at: message.occurred_at,
-    #     viewing_context: Analytics::FactPersonViewed::Contexts::COACHES_DASHBOARD
-    #   )
-    # end
+      Analytics::FactPersonViewed.create!(
+        dim_person_viewer:,
+        dim_person_viewed:,
+        viewed_at: message.occurred_at,
+        viewing_context: Analytics::FactPersonViewed::Contexts::COACHES_DASHBOARD
+      )
+    end
 
-    # Will update later
-    # on_message Events::NoteAdded::V3 do |message|
-    #   note_action(
-    #     context_id: message.aggregate.context_id,
-    #     originator: message.data.originator,
-    #     action: Analytics::FactCoachAction::Actions::NOTE_ADDED,
-    #     occurred_at: message.occurred_at
-    #   )
-    # end
+    on_message Events::NoteAdded::V4 do |message|
+      note_action(
+        person_id: message.aggregate.person_id,
+        originator: message.data.originator,
+        action: Analytics::FactCoachAction::Actions::NOTE_ADDED,
+        occurred_at: message.occurred_at
+      )
+    end
 
-    # on_message Events::NoteModified::V3 do |message|
-    #   note_action(
-    #     context_id: message.aggregate.context_id,
-    #     originator: message.data.originator,
-    #     action: Analytics::FactCoachAction::Actions::NOTE_MODIFIED,
-    #     occurred_at: message.occurred_at
-    #   )
-    # end
+    on_message Events::NoteModified::V4 do |message|
+      note_action(
+        person_id: message.aggregate.person_id,
+        originator: message.data.originator,
+        action: Analytics::FactCoachAction::Actions::NOTE_MODIFIED,
+        occurred_at: message.occurred_at
+      )
+    end
 
-    # on_message Events::NoteDeleted::V3 do |message|
-    #   note_action(
-    #     context_id: message.aggregate.context_id,
-    #     originator: message.data.originator,
-    #     action: Analytics::FactCoachAction::Actions::NOTE_DELETED,
-    #     occurred_at: message.occurred_at
-    #   )
-    # end
+    on_message Events::NoteDeleted::V4 do |message|
+      note_action(
+        person_id: message.aggregate.person_id,
+        originator: message.data.originator,
+        action: Analytics::FactCoachAction::Actions::NOTE_DELETED,
+        occurred_at: message.occurred_at
+      )
+    end
 
-    # on_message Events::JobRecommended::V2 do |message|
-    #   dim_person_executor = Analytics::DimPerson.find_by!(coach_id: message.data.coach_id)
-    #   dim_person_target = find_dim_person_by_context_id!(message.aggregate.context_id)
-
-    #   Analytics::FactCoachAction.create!(
-    #     dim_person_executor:,
-    #     dim_person_target:,
-    #     action: Analytics::FactCoachAction::Actions::JOB_RECOMMENDED,
-    #     action_taken_at: message.occurred_at
-    #   )
-    # end
-
-    on_message Events::SeekerCertified::V1 do |message|
+    on_message Events::JobRecommended::V3 do |message|
       dim_person_executor = Analytics::DimPerson.find_by!(coach_id: message.data.coach_id)
-      dim_person_target = Analytics::DimPerson.find_by!(seeker_id: message.aggregate.seeker_id)
+      dim_person_target = Analytics::DimPerson.find_by!(person_id: message.aggregate.person_id)
+
+      Analytics::FactCoachAction.create!(
+        dim_person_executor:,
+        dim_person_target:,
+        action: Analytics::FactCoachAction::Actions::JOB_RECOMMENDED,
+        action_taken_at: message.occurred_at
+      )
+    end
+
+    on_message Events::PersonCertified::V1 do |message|
+      dim_person_executor = Analytics::DimPerson.find_by!(coach_id: message.data.coach_id)
+      dim_person_target = Analytics::DimPerson.find_by!(person_id: message.aggregate.person_id)
 
       Analytics::FactCoachAction.create!(
         dim_person_executor:,
@@ -229,11 +235,11 @@ module Analytics
 
     private
 
-    def note_action(context_id:, originator:, action:, occurred_at:)
+    def note_action(person_id:, originator:, action:, occurred_at:)
       dim_person_executor = Analytics::DimPerson.find_by(email: originator)
       return if dim_person_executor.blank?
 
-      dim_person_target = find_dim_person_by_context_id!(context_id)
+      dim_person_target = DimPerson.find_by!(person_id:)
       return if dim_person_target.blank?
 
       Analytics::FactCoachAction.create!(
@@ -242,17 +248,6 @@ module Analytics
         action:,
         action_taken_at: occurred_at
       )
-    end
-
-    def find_dim_person_by_context_id(context_id)
-      Analytics::DimPerson.where(user_id: context_id).or(Analytics::DimPerson.where(lead_id: context_id)).first
-    end
-
-    def find_dim_person_by_context_id!(context_id)
-      dim_person_target = find_dim_person_by_context_id(context_id)
-      raise ActiveRecord::RecordNotFound if dim_person_target.blank?
-
-      dim_person_target
     end
   end
 end

@@ -93,42 +93,42 @@ module JobOrders
       )
     end
 
-    def update_status(job_order_id:, seeker_id:, status:, trace_id:)
+    def update_status(job_order_id:, person_id:, status:, trace_id:)
       case status
       when CandidateStatus::ADDED
         message_service.create!(
-          schema: Events::JobOrderCandidateAdded::V1,
+          schema: Events::JobOrderCandidateAdded::V2,
           job_order_id:,
           trace_id:,
           data: {
-            seeker_id:
+            person_id:
           }
         )
       when CandidateStatus::RECOMMENDED
         message_service.create!(
-          schema: Events::JobOrderCandidateRecommended::V1,
+          schema: Events::JobOrderCandidateRecommended::V2,
           job_order_id:,
           trace_id:,
           data: {
-            seeker_id:
+            person_id:
           }
         )
       when CandidateStatus::HIRED
         message_service.create!(
-          schema: Events::JobOrderCandidateHired::V1,
+          schema: Events::JobOrderCandidateHired::V2,
           job_order_id:,
           trace_id:,
           data: {
-            seeker_id:
+            person_id:
           }
         )
       when CandidateStatus::RESCINDED
         message_service.create!(
-          schema: Events::JobOrderCandidateRescinded::V1,
+          schema: Events::JobOrderCandidateRescinded::V2,
           job_order_id:,
           trace_id:,
           data: {
-            seeker_id:
+            person_id:
           }
         )
       end
@@ -143,20 +143,20 @@ module JobOrders
       return if active_job_order.nil?
 
       message_service.create_once_for_trace!(
-        schema: Events::JobOrderCandidateAdded::V1,
+        schema: Events::JobOrderCandidateAdded::V2,
         trace_id: message.trace_id,
         aggregate: active_job_order.aggregate,
         data: {
-          seeker_id: message.data.seeker_id
+          person_id: message.data.seeker_id
         }
       )
 
       message_service.create_once_for_trace!(
-        schema: Events::JobOrderCandidateApplied::V1,
+        schema: Events::JobOrderCandidateApplied::V2,
         trace_id: message.trace_id,
         aggregate: active_job_order.aggregate,
         data: {
-          seeker_id: message.data.seeker_id,
+          person_id: message.data.seeker_id,
           applied_at: message.occurred_at
         }
       )
@@ -216,19 +216,19 @@ module JobOrders
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateAdded::V1, :sync do |message|
+    on_message Events::JobOrderCandidateAdded::V2, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateRecommended::V1, :sync do |message|
+    on_message Events::JobOrderCandidateRecommended::V2, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateHired::V1, :sync do |message|
+    on_message Events::JobOrderCandidateHired::V2, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateRescinded::V1, :sync do |message|
+    on_message Events::JobOrderCandidateRescinded::V2, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 

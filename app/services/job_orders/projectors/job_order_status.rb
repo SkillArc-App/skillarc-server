@@ -56,23 +56,23 @@ module JobOrders
         accumulator.with(not_filled?: false)
       end
 
-      on_message Events::JobOrderCandidateAdded::V1 do |message, accumulator|
-        accumulator.candidates[message.data.seeker_id] = :added
+      on_message Events::JobOrderCandidateAdded::V2 do |message, accumulator|
+        accumulator.candidates[message.data.person_id] = :added
         accumulator
       end
 
-      on_message Events::JobOrderCandidateRecommended::V1 do |message, accumulator|
-        accumulator.candidates[message.data.seeker_id] = :recommended
+      on_message Events::JobOrderCandidateRecommended::V2 do |message, accumulator|
+        accumulator.candidates[message.data.person_id] = :recommended
         accumulator
       end
 
-      on_message Events::JobOrderCandidateHired::V1 do |message, accumulator|
-        accumulator.candidates[message.data.seeker_id] = :hired
+      on_message Events::JobOrderCandidateHired::V2 do |message, accumulator|
+        accumulator.candidates[message.data.person_id] = :hired
         accumulator
       end
 
-      on_message Events::JobOrderCandidateRescinded::V1 do |message, accumulator|
-        accumulator.candidates[message.data.seeker_id] = :rescinded
+      on_message Events::JobOrderCandidateRescinded::V2 do |message, accumulator|
+        accumulator.candidates[message.data.person_id] = :rescinded
         accumulator
       end
     end

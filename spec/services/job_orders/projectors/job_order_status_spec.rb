@@ -6,8 +6,8 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
 
     let(:aggregate) { Aggregates::JobOrder.new(job_order_id:) }
     let(:job_order_id) { SecureRandom.uuid }
-    let(:seeker_id1) { SecureRandom.uuid }
-    let(:seeker_id2) { SecureRandom.uuid }
+    let(:person_id1) { SecureRandom.uuid }
+    let(:person_id2) { SecureRandom.uuid }
 
     let(:job_order_not_filled) do
       build(
@@ -49,9 +49,9 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateAdded::V1,
+        schema: Events::JobOrderCandidateAdded::V2,
         data: {
-          seeker_id: seeker_id1
+          person_id: person_id1
         }
       )
     end
@@ -59,9 +59,9 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateAdded::V1,
+        schema: Events::JobOrderCandidateAdded::V2,
         data: {
-          seeker_id: seeker_id2
+          person_id: person_id2
         }
       )
     end
@@ -70,9 +70,9 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateRecommended::V1,
+        schema: Events::JobOrderCandidateRecommended::V2,
         data: {
-          seeker_id: seeker_id1
+          person_id: person_id1
         }
       )
     end
@@ -80,9 +80,9 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateRecommended::V1,
+        schema: Events::JobOrderCandidateRecommended::V2,
         data: {
-          seeker_id: seeker_id2
+          person_id: person_id2
         }
       )
     end
@@ -91,9 +91,9 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateHired::V1,
+        schema: Events::JobOrderCandidateHired::V2,
         data: {
-          seeker_id: seeker_id1
+          person_id: person_id1
         }
       )
     end
@@ -101,9 +101,9 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateHired::V1,
+        schema: Events::JobOrderCandidateHired::V2,
         data: {
-          seeker_id: seeker_id2
+          person_id: person_id2
         }
       )
     end
@@ -112,9 +112,9 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateRescinded::V1,
+        schema: Events::JobOrderCandidateRescinded::V2,
         data: {
-          seeker_id: seeker_id1
+          person_id: person_id1
         }
       )
     end

@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'swagger_helper'
 
 RSpec.describe "JobOrders", type: :request do
-  path '/job_orders/orders/{id}/candidates/{seeker_id}' do
+  path '/job_orders/orders/{id}/candidates/{person_id}' do
     put "updates a candidate status" do
       tags 'Job Orders'
       consumes 'application/json'
@@ -11,7 +11,7 @@ RSpec.describe "JobOrders", type: :request do
                 in: :path,
                 type: :string,
                 format: :uuid
-      parameter name: 'seeker_id',
+      parameter name: 'person_id',
                 in: :path,
                 type: :string,
                 format: :uuid
@@ -33,7 +33,7 @@ RSpec.describe "JobOrders", type: :request do
       let(:job_order) { create(:job_orders__job_order) }
       let(:id) { job_order.id }
       let(:candidate) { create(:job_orders__candidate, job_order:) }
-      let(:seeker_id) { candidate.seeker_id } # See TODO on controller
+      let(:person_id) { candidate.person_id } # See TODO on controller
 
       let(:update_params) do
         {
@@ -55,7 +55,7 @@ RSpec.describe "JobOrders", type: :request do
               .to receive(:update_status)
               .with(
                 job_order_id: id,
-                seeker_id: candidate.seeker_id,
+                person_id: candidate.person_id,
                 status:,
                 trace_id: be_a(String)
               )

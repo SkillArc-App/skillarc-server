@@ -7,7 +7,7 @@ module JobOrders
     end
 
     def self.find_order(id)
-      serialize_job_order(JobOrder.includes(candidates: :seeker).find(id))
+      serialize_job_order(JobOrder.includes(candidates: :person).find(id))
     end
 
     def self.all_jobs
@@ -42,14 +42,14 @@ module JobOrders
           candidates: candidates.map do |candidate|
             {
               id: candidate.id,
-              first_name: candidate.seeker.first_name,
-              last_name: candidate.seeker.last_name,
-              phone_number: candidate.seeker.phone_number,
-              email: candidate.seeker.email,
+              first_name: candidate.person.first_name,
+              last_name: candidate.person.last_name,
+              phone_number: candidate.person.phone_number,
+              email: candidate.person.email,
               applied_at: candidate.applied_at,
               recommended_at: nil, # TODO
               status: candidate.status,
-              seeker_id: candidate.seeker_id
+              person_id: candidate.person_id
             }
           end,
           notes: notes.map do |note|

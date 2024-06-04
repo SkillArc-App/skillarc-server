@@ -494,7 +494,7 @@ message_service.create!(
 coach_person = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Coach',
   last_name: 'User',
-  email: 'coach@blocktrainapp.com',
+  email: 'coach@blocktrainapp.com'
 )
 
 message_service.create!(

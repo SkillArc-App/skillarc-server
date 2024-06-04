@@ -56,7 +56,7 @@ module Coaches
       end
 
       def select_coach(coaches, actual_ratios, target_ratios)
-        selected_coaches = coaches.first
+        selected_coach = coaches.first
         max_ratio_mismatch = 0.0
 
         coaches.each do |coach|
@@ -64,12 +64,12 @@ module Coaches
 
           # Here we are picking the coach who is under their ratio the most
           if ratio_mismatch > max_ratio_mismatch
-            selected_coaches = coach
+            selected_coach = coach
             max_ratio_mismatch = ratio_mismatch
           end
         end
 
-        selected_coaches
+        selected_coach.id
       end
     end
   end

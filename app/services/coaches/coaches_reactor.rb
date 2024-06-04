@@ -197,16 +197,46 @@ module Coaches
     end
 
     on_message Commands::AssignCoach::V2 do |message|
-      messages = MessageService.aggregate_events(message.aggregate)
+      return unless Projectors::Aggregates::HasOccurred.project(
+        schema: Events::PersonAdded::V1,
+        aggregate: message.aggregate
+      )
 
-      person_added = Projectors::Aggregates::HasOccurred.new(schema: Events::PersonAdded::V1)
-      return unless person_added.project(messages)
+      return if Events::CoachAdded::V1.all_messages.none? { |m| m.data.coach_id == message.data.coach_id }
 
       message_service.create_once_for_trace!(
         schema: Events::CoachAssigned::V3,
         aggregate: message.aggregate,
         data: {
           coach_id: message.data.coach_id
+        }
+      )
+    end
+
+    on_message Events::PersonAdded::V1 do |message|
+      coach_id = CoachAssignmentService.round_robin_assignment
+
+      return if coach_id.nil?
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        aggregate: message.aggregate,
+        schema: Commands::AssignCoach::V2,
+        data: {
+          coach_id:
+        }
+      )
+    end
+
+    on_message Events::PersonSourced::V1 do |message|
+      return if message.data.source_kind != People::SourceKind::COACH
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        aggregate: message.aggregate,
+        schema: Commands::AssignCoach::V2,
+        data: {
+          coach_id: message.data.source_identifier
         }
       )
     end

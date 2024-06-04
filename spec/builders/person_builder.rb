@@ -1,5 +1,5 @@
 module Builders
-  class SeekerBuilder
+  class PersonBuilder
     def initialize(message_service)
       @message_service = message_service
     end

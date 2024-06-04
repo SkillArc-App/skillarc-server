@@ -10,7 +10,7 @@ module Coaches
 
     def create
       with_message_service do
-        CoachesReactor.new(message_service:).add_note(
+        CoachesEventEmitter.new(message_service:).add_note(
           originator: coach.email,
           person_id: params[:context_id],
           note: params[:note],
@@ -24,7 +24,7 @@ module Coaches
 
     def update
       with_message_service do
-        CoachesReactor.new(message_service:).modify_note(
+        CoachesEventEmitter.new(message_service:).modify_note(
           person_id: params[:context_id],
           originator: coach.email,
           note_id: params[:id],
@@ -38,7 +38,7 @@ module Coaches
 
     def destroy
       with_message_service do
-        CoachesReactor.new(message_service:).delete_note(
+        CoachesEventEmitter.new(message_service:).delete_note(
           originator: coach.email,
           person_id: params[:context_id],
           note_id: params[:id],

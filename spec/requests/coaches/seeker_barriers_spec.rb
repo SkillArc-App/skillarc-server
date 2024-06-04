@@ -42,7 +42,7 @@ RSpec.describe "Coaches::SeekerBarriersController", type: :request do
 
         response '202', 'Update barriers' do
           before do
-            expect_any_instance_of(Coaches::CoachesReactor)
+            expect_any_instance_of(Coaches::CoachesEventEmitter)
               .to receive(:update_barriers)
               .with(person_id: id, barriers:, trace_id: be_a(String))
               .and_call_original

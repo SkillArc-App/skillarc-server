@@ -78,13 +78,17 @@ module Analytics
     end
 
     on_message Events::EmployerInviteAccepted::V1 do |message|
-      person = DimPerson.find_by!(email: message.data.invite_email)
+      person = DimPerson.find_by(email: message.data.invite_email)
+
+      return unless person
 
       person.update!(kind: DimPerson::Kind::RECRUITER)
     end
 
     on_message Events::TrainingProviderInviteAccepted::V1 do |message|
-      person = DimPerson.find_by!(email: message.data.invite_email)
+      person = DimPerson.find_by(email: message.data.invite_email)
+
+      return unless person
 
       person.update!(kind: DimPerson::Kind::TRAINING_PROVIDER)
     end

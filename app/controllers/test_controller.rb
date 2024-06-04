@@ -14,17 +14,17 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_coach
     with_message_service do
-      user = Builders::UserBuilder.new(message_service).build
+      person = Builders::PersonBuilder.new(message_service).build
 
       message_service.create!(
-        user_id: user.id,
+        user_id: person.user_id,
         schema: Events::RoleAdded::V2,
         data: {
           role: Role::Types::COACH
         }
       )
 
-      render json: user
+      render json: person
     end
   end
 

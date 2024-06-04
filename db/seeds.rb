@@ -491,27 +491,14 @@ message_service.create!(
   }
 )
 
-coach_user = User.create!(
-  id: SecureRandom.uuid,
+coach_person = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Coach',
   last_name: 'User',
   email: 'coach@blocktrainapp.com',
-  sub: 'coachsub'
 )
 
 message_service.create!(
-  user_id: coach_user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: coach_user.first_name,
-    last_name: coach_user.last_name,
-    email: coach_user.email,
-    sub: coach_user.sub
-  }
-)
-
-message_service.create!(
-  user_id: coach_user.id,
+  user_id: coach_person.user_id,
   schema: Events::RoleAdded::V2,
   data: {
     role: Role::Types::COACH

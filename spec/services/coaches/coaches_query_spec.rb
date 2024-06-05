@@ -5,81 +5,69 @@ RSpec.describe Coaches::CoachesQuery do
     subject { described_class.all_seekers }
 
     before do
-      csc1 = create(
-        :coaches__coach_seeker_context,
-        context_id: "07f0f251-599a-4b59-920f-5b2054f32ca2",
-        seeker_id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
+      barrier = create(:barrier, id: "81f43abc-67b6-4531-af45-293d3fc053e5", name: "barrier2")
+
+      person_context1 = create(
+        :coaches__person_context,
+        id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
         phone_number: "1234567890",
         first_name: "Hannah",
         last_name: "Block",
         assigned_coach: "coach@blocktrainapp.com",
-        seeker_captured_at: Time.zone.local(2000, 1, 1),
-        skill_level: "advanced",
+        person_captured_at: Time.zone.local(2000, 1, 1),
         email: "hannah@blocktrainapp.com",
-        lead_captured_by: "someone@skillarc.com",
+        captured_by: "someone@skillarc.com",
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted_at: Time.zone.local(2010, 1, 1),
-        kind: Coaches::CoachSeekerContext::Kind::SEEKER,
+        kind: Coaches::PersonContext::Kind::SEEKER,
+        barriers: [barrier.id],
         certified_by: "person@skillarc.com"
       )
 
-      csc2 = create(
-        :coaches__coach_seeker_context,
-        context_id: "1a8d105a-6b9a-4842-ab02-8daf3fcb0c1f",
-        seeker_id: "3e7cccaa-ec0e-4c59-a7ad-2b187b3acc4c",
+      person_context2 = create(
+        :coaches__person_context,
+        id: "3e7cccaa-ec0e-4c59-a7ad-2b187b3acc4c",
         phone_number: nil,
         first_name: "Katina",
         last_name: "Hall",
         assigned_coach: nil,
-        seeker_captured_at: Time.zone.local(2001, 1, 1),
-        skill_level: "beginner",
+        person_captured_at: Time.zone.local(2001, 1, 1),
         email: "katina@gmail.com",
-        lead_captured_by: "someone@skillarc.com",
+        captured_by: "someone@skillarc.com",
         last_active_on: Time.zone.local(2008, 1, 1),
         last_contacted_at: nil,
-        kind: Coaches::CoachSeekerContext::Kind::SEEKER,
+        kind: Coaches::PersonContext::Kind::SEEKER,
         certified_by: nil
       )
 
       create(
-        :coaches__coach_seeker_context,
-        context_id: "ec9ea4ff-7655-435b-a6dc-0de8427d6cb6",
+        :coaches__person_context,
+        id: "ec9ea4ff-7655-435b-a6dc-0de8427d6cb6",
         phone_number: "1234567890",
         first_name: "Jim",
         last_name: "Jimson",
         assigned_coach: nil,
-        seeker_captured_at: Time.zone.local(2000, 1, 1),
-        skill_level: "advanced",
+        person_captured_at: Time.zone.local(2000, 1, 1),
         email: "hannah@blocktrainapp.com",
-        lead_captured_by: "someone@skillarc.com",
+        captured_by: "someone@skillarc.com",
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted_at: Time.zone.local(2010, 1, 1),
-        kind: Coaches::CoachSeekerContext::Kind::LEAD,
+        kind: Coaches::PersonContext::Kind::LEAD,
         certified_by: "person@skillarc.com"
       )
 
       create(
-        :coaches__seeker_barrier,
-        coach_seeker_context: csc1,
-        barrier: create(
-          :barrier,
-          barrier_id: "81f43abc-67b6-4531-af45-293d3fc053e5",
-          name: "barrier2"
-        )
-      )
-
-      create(
-        :coaches__seeker_note,
-        coach_seeker_context: csc1,
+        :coaches__person_note,
+        person_context: person_context1,
         note: "This note was updated",
-        note_id: "a2dd7180-6c3d-46ad-9bd7-413314b7a849",
+        id: "a2dd7180-6c3d-46ad-9bd7-413314b7a849",
         note_taken_at: Time.zone.local(2020, 1, 1),
         note_taken_by: "coach@blocktrainapp.com"
       )
 
       create(
-        :coaches__seeker_application,
-        coach_seeker_context: csc1,
+        :coaches__person_application,
+        person_context: person_context1,
         job_id: "2e6a7696-08e6-4e95-aa95-166fc2b43dcf",
         status: "Actively failing an interview",
         employer_name: "Cool",
@@ -87,8 +75,8 @@ RSpec.describe Coaches::CoachesQuery do
       )
 
       create(
-        :coaches__seeker_application,
-        coach_seeker_context: csc2,
+        :coaches__person_application,
+        person_context: person_context2,
         job_id: "23642aea-8f58-4a0c-8799-5d80591b84ad",
         status: "Actively failing an interview",
         employer_name: "Not Cool",
@@ -96,8 +84,8 @@ RSpec.describe Coaches::CoachesQuery do
       )
 
       create(
-        :coaches__seeker_application,
-        coach_seeker_context: csc2,
+        :coaches__person_application,
+        person_context: person_context2,
         job_id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
         status: "Actively chillin at an interview",
         employer_name: "Cool",
@@ -105,9 +93,9 @@ RSpec.describe Coaches::CoachesQuery do
       )
 
       create(
-        :coaches__seeker_job_recommendation,
-        coach_seeker_context: csc1,
-        job: create(:coaches__job, job_id: "d4cd7594-bc68-44cd-b22c-246979a9ea0f")
+        :coaches__person_job_recommendation,
+        person_context: person_context1,
+        job: create(:coaches__job, id: "d4cd7594-bc68-44cd-b22c-246979a9ea0f")
       )
     end
 
@@ -153,17 +141,16 @@ RSpec.describe Coaches::CoachesQuery do
 
     before do
       create(
-        :coaches__coach_seeker_context,
-        context_id: "8628daea-7af8-41d1-b5b4-456336a7ed61",
-        seeker_id: "2df13b05-fff6-43be-b4fd-2c688ca4ee38",
+        :coaches__person_context,
+        id: "2df13b05-fff6-43be-b4fd-2c688ca4ee38",
         phone_number: "0987654321",
         first_name: "Not",
         last_name: "Converted",
         assigned_coach: nil,
-        seeker_captured_at: Time.zone.local(2000, 1, 1),
+        person_captured_at: Time.zone.local(2000, 1, 1),
         email: nil,
-        lead_captured_by: "someone@skillarc.com",
-        kind: Coaches::CoachSeekerContext::Kind::LEAD
+        captured_by: "someone@skillarc.com",
+        kind: Coaches::PersonContext::Kind::LEAD
       )
     end
 
@@ -177,7 +164,7 @@ RSpec.describe Coaches::CoachesQuery do
         email: nil,
         lead_captured_at: Time.zone.local(2000, 1, 1),
         lead_captured_by: "someone@skillarc.com",
-        kind: Coaches::CoachSeekerContext::Kind::LEAD,
+        kind: Coaches::PersonContext::Kind::LEAD,
         status: "new"
       }
 
@@ -191,46 +178,37 @@ RSpec.describe Coaches::CoachesQuery do
     let(:id) { SecureRandom.uuid }
 
     before do
-      csc1 = create(
-        :coaches__coach_seeker_context,
-        context_id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
-        seeker_id: id,
+      barrier = create(:barrier, id: "81f43abc-67b6-4531-af45-293d3fc053e5", name: "barrier2" )
+
+      person_context1 = create(
+        :coaches__person_context,
+        id: id,
         phone_number: "1234567890",
         first_name: "Hannah",
         last_name: "Block",
         assigned_coach: "coach@blocktrainapp.com",
-        seeker_captured_at: Time.zone.local(2000, 1, 1),
-        skill_level: "advanced",
+        person_captured_at: Time.zone.local(2000, 1, 1),
         email: "hannah@blocktrainapp.com",
-        lead_captured_by: "someone@skillarc.com",
+        captured_by: "someone@skillarc.com",
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted_at: Time.zone.local(2010, 1, 1),
-        kind: Coaches::CoachSeekerContext::Kind::SEEKER,
+        kind: Coaches::PersonContext::Kind::SEEKER,
+        barriers: [barrier.id],
         certified_by: "person@skillarc.com"
       )
 
       create(
-        :coaches__seeker_barrier,
-        coach_seeker_context: csc1,
-        barrier: create(
-          :barrier,
-          barrier_id: "81f43abc-67b6-4531-af45-293d3fc053e5",
-          name: "barrier2"
-        )
-      )
-
-      create(
-        :coaches__seeker_note,
-        coach_seeker_context: csc1,
+        :coaches__person_note,
+        person_context: person_context1,
         note: "This note was updated",
-        note_id: "a2dd7180-6c3d-46ad-9bd7-413314b7a849",
+        id: "a2dd7180-6c3d-46ad-9bd7-413314b7a849",
         note_taken_at: Time.zone.local(2020, 1, 1),
         note_taken_by: "coach@blocktrainapp.com"
       )
 
       create(
-        :coaches__seeker_application,
-        coach_seeker_context: csc1,
+        :coaches__person_application,
+        person_context: person_context1,
         job_id: "2e6a7696-08e6-4e95-aa95-166fc2b43dcf",
         status: "Actively failing an interview",
         employer_name: "Cool",
@@ -238,17 +216,17 @@ RSpec.describe Coaches::CoachesQuery do
       )
 
       create(
-        :coaches__seeker_job_recommendation,
-        coach_seeker_context: csc1,
+        :coaches__person_job_recommendation,
+        person_context: person_context1,
         job: create(:coaches__job, job_id: "d4cd7594-bc68-44cd-b22c-246979a9ea0f")
       )
 
       create(
-        :coaches__seeker_attribute,
+        :coaches__person_attribute,
         id: '2527d624-d0c4-48d4-856b-369ff767f29d',
-        coach_seeker_context: csc1,
-        attribute_name: "Education Level",
-        attribute_values: ["High School"],
+        person_context: person_context1,
+        name: "Education Level",
+        values: ["High School"],
         attribute_id: "3f48a475-b711-4265-9cc5-02fcfc0c40d1"
       )
     end
@@ -257,13 +235,11 @@ RSpec.describe Coaches::CoachesQuery do
       expected_profile = {
         id:,
         seeker_id: id,
-        lead_id: nil,
         first_name: "Hannah",
         last_name: "Block",
         kind: 'seeker',
         email: "hannah@blocktrainapp.com",
         phone_number: "1234567890",
-        skill_level: 'advanced',
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted: Time.zone.local(2010, 1, 1),
         assigned_coach: "coach@blocktrainapp.com",
@@ -400,7 +376,7 @@ RSpec.describe Coaches::CoachesQuery do
     before do
       create(
         :coaches__coach,
-        coach_id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
+        id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
         email: "an@email.com"
       )
     end

@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :analytics__dim_user, class: "Analytics::DimUser" do
+    kind { Analytics::DimUser::Kind::USER }
     email { "an@email.com" }
     first_name { "Khushi" }
     last_name { "Mohapatra" }

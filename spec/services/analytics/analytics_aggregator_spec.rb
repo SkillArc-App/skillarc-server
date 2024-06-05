@@ -64,7 +64,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       before do
         create(
           :analytics__dim_person,
-          :user,
+          :seeker,
           email:,
           person_id:
         )
@@ -180,14 +180,14 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
             }
           )
         end
-        let!(:person) { create(:analytics__dim_person, dim_user: build(:analytics__dim_user)) }
-        let(:user_id) { person.dim_user.user_id }
+        let!(:dim_user) { create(:analytics__dim_user) }
+        let(:user_id) { dim_user.user_id }
 
-        it "updates a dim person from the message" do
-          expect { subject }.not_to change(Analytics::DimPerson, :count)
+        it "updates a dim user from the message" do
+          expect { subject }.not_to change(Analytics::DimUser, :count)
 
-          expect(person.reload.kind).to eq(Analytics::DimPerson::Kind::COACH)
-          expect(person.reload.coach_id).to eq(message.data.coach_id)
+          expect(dim_user.reload.kind).to eq(Analytics::DimUser::Kind::COACH)
+          expect(dim_user.reload.coach_id).to eq(message.data.coach_id)
         end
       end
 
@@ -195,46 +195,44 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         let(:message) do
           build(
             :message,
-            aggregate_id: user_id,
+            aggregate_id: user.user_id,
             schema: Events::EmployerInviteAccepted::V1,
             data: {
               employer_invite_id: SecureRandom.uuid,
-              invite_email: email,
+              invite_email: user.email,
               employer_id: SecureRandom.uuid,
               employer_name: "something"
             }
           )
         end
+        let!(:user) { create(:analytics__dim_user) }
 
         it "updates a dim person from the message" do
-          expect { subject }.not_to change(Analytics::DimPerson, :count)
+          expect { subject }.not_to change(Analytics::DimUser, :count)
 
-          person = Analytics::DimPerson.take(1).first
-
-          expect(person.kind).to eq(Analytics::DimPerson::Kind::RECRUITER)
+          expect(user.reload.kind).to eq(Analytics::DimUser::Kind::RECRUITER)
         end
       end
 
-      describe "when the message is employer_invite_accepted" do
+      describe "when the message is training_provider_invite_accepted" do
         let(:message) do
           build(
             :message,
-            aggregate_id: user_id,
+            aggregate_id: dim_user.user_id,
             schema: Events::TrainingProviderInviteAccepted::V1,
             data: {
-              invite_email: email,
+              invite_email: dim_user.email,
               training_provider_id: SecureRandom.uuid,
               training_provider_name: "dawg"
             }
           )
         end
+        let!(:dim_user) { create(:analytics__dim_user) }
 
         it "updates a dim person from the message" do
-          expect { subject }.not_to change(Analytics::DimPerson, :count)
+          expect { subject }.not_to change(Analytics::DimUser, :count)
 
-          person = Analytics::DimPerson.take(1).first
-
-          expect(person.kind).to eq(Analytics::DimPerson::Kind::TRAINING_PROVIDER)
+          expect(dim_user.reload.kind).to eq(Analytics::DimUser::Kind::TRAINING_PROVIDER)
         end
       end
     end
@@ -418,7 +416,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         create(
           :analytics__dim_person,
           :seeker,
-          seeker_id:
+          person_id: seeker_id
         )
       end
 
@@ -530,7 +528,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       let(:email) { Faker::Internet.email }
       let(:lead_id) { SecureRandom.uuid }
 
-      let!(:dim_person_executor) { create(:analytics__dim_person, email:) }
+      let!(:dim_user_executor) { create(:analytics__dim_user, email:) }
       let!(:dim_person_target) { create(:analytics__dim_person, lead_id:) }
 
       it "creates a fact coach action record" do
@@ -538,7 +536,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
         fact_coach_action = Analytics::FactCoachAction.take(1).first
 
-        expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
+        expect(fact_coach_action.dim_user_executor).to eq(dim_user_executor)
         expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
         expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
         expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::NOTE_ADDED)
@@ -562,7 +560,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       let(:email) { Faker::Internet.email }
       let(:person_id) { SecureRandom.uuid }
 
-      let!(:dim_person_executor) { create(:analytics__dim_person, email:) }
+      let!(:dim_user_executor) { create(:analytics__dim_user, email:) }
       let!(:dim_person_target) { create(:analytics__dim_person, person_id:) }
 
       it "creates a fact coach action record" do
@@ -570,7 +568,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
         fact_coach_action = Analytics::FactCoachAction.take(1).first
 
-        expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
+        expect(fact_coach_action.dim_user_executor).to eq(dim_user_executor)
         expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
         expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
         expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::NOTE_MODIFIED)
@@ -593,7 +591,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       let(:email) { Faker::Internet.email }
       let(:person_id) { SecureRandom.uuid }
 
-      let!(:dim_person_executor) { create(:analytics__dim_person, email:) }
+      let!(:dim_user_executor) { create(:analytics__dim_user, email:) }
       let!(:dim_person_target) { create(:analytics__dim_person, person_id:) }
 
       it "creates a fact coach action record" do
@@ -601,7 +599,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
         fact_coach_action = Analytics::FactCoachAction.take(1).first
 
-        expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
+        expect(fact_coach_action.dim_user_executor).to eq(dim_user_executor)
         expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
         expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
         expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::NOTE_DELETED)
@@ -624,7 +622,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       let(:coach_id) { SecureRandom.uuid }
       let(:person_id) { SecureRandom.uuid }
 
-      let!(:dim_person_executor) { create(:analytics__dim_person, coach_id:) }
+      let!(:dim_user_executor) { create(:analytics__dim_user, coach_id:) }
       let!(:dim_person_target) { create(:analytics__dim_person, person_id:) }
 
       it "creates a fact coach action record" do
@@ -632,7 +630,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
         fact_coach_action = Analytics::FactCoachAction.take(1).first
 
-        expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
+        expect(fact_coach_action.dim_user_executor).to eq(dim_user_executor)
         expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
         expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
         expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::JOB_RECOMMENDED)
@@ -657,7 +655,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       let(:coach_id) { SecureRandom.uuid }
       let(:person_id) { SecureRandom.uuid }
 
-      let!(:dim_person_executor) { create(:analytics__dim_person, coach_id:) }
+      let!(:dim_user_executor) { create(:analytics__dim_user, coach_id:) }
       let!(:dim_person_target) { create(:analytics__dim_person, person_id:) }
 
       it "creates a fact coach action record" do
@@ -665,7 +663,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
         fact_coach_action = Analytics::FactCoachAction.take(1).first
 
-        expect(fact_coach_action.dim_person_executor).to eq(dim_person_executor)
+        expect(fact_coach_action.dim_user_executor).to eq(dim_user_executor)
         expect(fact_coach_action.dim_person_target).to eq(dim_person_target)
         expect(fact_coach_action.action_taken_at).to eq(message.occurred_at)
         expect(fact_coach_action.action).to eq(Analytics::FactCoachAction::Actions::SEEKER_CERTIFIED)

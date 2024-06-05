@@ -106,6 +106,26 @@ module Jobs
       Testimonial.find(message.data.id).destroy!
     end
 
+    on_message Events::EmployerCreated::V1 do |message|
+      Employer.create!(
+        id: message.aggregate.id,
+        name: message.data.name,
+        location: message.data.location,
+        bio: message.data.bio,
+        logo_url: message.data.logo_url,
+      )
+    end
+
+    on_message Events::EmployerUpdated::V1 do |message|
+      Employer.update!(
+        message.aggregate.id,
+        name: message.data.name,
+        location: message.data.location,
+        bio: message.data.bio,
+        logo_url: message.data.logo_url,
+      )
+    end
+
     on_message Events::JobCreated::V3, :sync do |message|
       Job.create!(
         id: message.aggregate.job_id,

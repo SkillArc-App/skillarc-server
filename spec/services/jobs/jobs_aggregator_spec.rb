@@ -4,6 +4,7 @@ RSpec.describe Jobs::JobsAggregator do # rubocop:disable Metrics/BlockLength
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new }
+  let(:id) { SecureRandom.uuid }
 
   describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { consumer.handle_message(message) }
@@ -346,6 +347,63 @@ RSpec.describe Jobs::JobsAggregator do # rubocop:disable Metrics/BlockLength
 
       it "destroys a testimonial" do
         expect { subject }.to change { Testimonial.count }.by(-1)
+      end
+    end
+
+    context "EmployerCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::EmployerCreated::V1,
+          aggregate_id: id,
+          data: {
+            name: "Cool employer",
+            location: "The best place",
+            bio: "We do great stuff",
+            logo_url: "www.google.com"
+          }
+        )
+      end
+
+      it "creates an employer" do
+        expect { subject }.to change { Employer.count }.from(0).to(1)
+
+        employer = Employer.last
+
+        expect(employer.id).to eq(id)
+        expect(employer.name).to eq(message.data.name)
+        expect(employer.location).to eq(message.data.location)
+        expect(employer.bio).to eq(message.data.bio)
+        expect(employer.logo_url).to eq(message.data.logo_url)
+      end
+    end
+
+    context "EmployerUpdated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::EmployerUpdated::V1,
+          aggregate_id: id,
+          data: {
+            name: "Cool employer",
+            location: "The best place",
+            bio: "We do great stuff",
+            logo_url: "www.google.com"
+          }
+        )
+      end
+
+      let(:id) { employer.id }
+      let(:employer) { create(:employer) }
+
+      it "updates a employer" do
+        subject
+
+        employer.reload
+        expect(employer.name).to eq(message.data.name)
+        expect(employer.location).to eq(message.data.location)
+        expect(employer.bio).to eq(message.data.bio)
+        expect(employer.logo_url).to eq(message.data.logo_url)
       end
     end
 

@@ -3,7 +3,32 @@ load 'spec/builders/person_builder.rb'
 
 message_service = MessageService.new
 
-turner_employer = Employer.create!(
+JobStruct = Struct.new(
+  :id,
+  :category,
+  :employer,
+  :benefits_description,
+  :responsibilities_description,
+  :employment_title,
+  :location,
+  :employment_type,
+  :hide_job,
+  :industry,
+  :schedule,
+  :work_days,
+  :requirements_description,
+  keyword_init: true
+)
+
+EmployerStruct = Struct.new(
+  :id,
+  :name,
+  :bio,
+  :location,
+  :logo_url
+)
+
+turner_employer = EmployerStruct.new(
   id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
   name: 'Turner Construction Company',
   bio: 'Turner is a North America-based, international construction services company and is a leading builder in diverse and numerous market segments. The company has earned recognition for undertaking large, complex projects, fostering',
@@ -12,7 +37,7 @@ turner_employer = Employer.create!(
     'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
 )
 
-sg_employer = Employer.create!(
+sg_employer = EmployerStruct.new(
   id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
   name: 'The Superior Group',
   bio: 'The Superior Group is a ​national leader in electrical construction, engineering, and technology services.',
@@ -33,23 +58,6 @@ Recruiter.create!(
   id: SecureRandom.uuid,
   employer: turner_employer,
   user: recruiter_user
-)
-
-JobStruct = Struct.new(
-  :id,
-  :category,
-  :employer,
-  :benefits_description,
-  :responsibilities_description,
-  :employment_title,
-  :location,
-  :employment_type,
-  :hide_job,
-  :industry,
-  :schedule,
-  :work_days,
-  :requirements_description,
-  keyword_init: true
 )
 
 mechanic_job = JobStruct.new(

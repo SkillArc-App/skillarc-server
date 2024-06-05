@@ -26,8 +26,8 @@ RSpec.describe "Coaches::SeekerBarriersController", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.seeker_id }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:id) { person_context.id }
       let(:barriers_params) do
         {
           barriers:

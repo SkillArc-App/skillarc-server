@@ -43,13 +43,13 @@ RSpec.describe "Attributes", type: :request do
     end
   end
 
-  path '/coaches/seekers/{seeker_id}/attributes' do
+  path '/coaches/seekers/{person_id}/attributes' do
     let(:attribute) { create(:attributes_attribute) }
 
     post "Add an attribute" do
       tags 'Coaches'
       consumes 'application/json'
-      parameter name: :seeker_id, in: :path, type: :string
+      parameter name: :person_id, in: :path, type: :string
       parameter name: :attribute_params, in: :body, schema: {
         type: :object,
         properties: {
@@ -73,8 +73,8 @@ RSpec.describe "Attributes", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let!(:coach_seeker_context) { create(:coaches__coach_seeker_context, seeker_id:) }
-      let(:seeker_id) { SecureRandom.uuid }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:person_id) { person_context.id }
       let(:attribute_params) do
         {
           attributeId: attribute_id,
@@ -93,7 +93,7 @@ RSpec.describe "Attributes", type: :request do
               .to receive(:add_attribute)
               .with(
                 person_attribute_id: be_a(String),
-                person_id: seeker_id,
+                person_id: person_id,
                 attribute_id:,
                 attribute_name: attribute.name,
                 attribute_values: values,
@@ -108,13 +108,13 @@ RSpec.describe "Attributes", type: :request do
     end
   end
 
-  path '/coaches/seekers/{seeker_id}/attributes/{id}' do
+  path '/coaches/seekers/{person_id}/attributes/{id}' do
     let(:attribute) { create(:attributes_attribute) }
 
     put "update an attribute" do
       tags 'Coaches'
       consumes 'application/json'
-      parameter name: :seeker_id, in: :path, type: :string
+      parameter name: :person_id, in: :path, type: :string
       parameter name: :id, in: :path, type: :string
       parameter name: :attribute_params, in: :body, schema: {
         type: :object,
@@ -139,10 +139,10 @@ RSpec.describe "Attributes", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context, seeker_id: SecureRandom.uuid) }
-      let(:seeker_id) { coach_seeker_context.seeker_id }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:person_id) { person_context.id }
       let(:id) { seeker_attribute.id }
-      let(:seeker_attribute) { create(:coaches__seeker_attribute) }
+      let(:seeker_attribute) { create(:coaches__person_attribute) }
       let(:attribute_params) do
         {
           attributeId: attribute_id,
@@ -161,7 +161,7 @@ RSpec.describe "Attributes", type: :request do
               .to receive(:add_attribute)
               .with(
                 person_attribute_id: id,
-                person_id: seeker_id,
+                person_id: person_id,
                 attribute_id:,
                 attribute_name: attribute.name,
                 attribute_values: values,
@@ -177,7 +177,7 @@ RSpec.describe "Attributes", type: :request do
 
     delete "remove an attribute" do
       tags 'Coaches'
-      parameter name: :seeker_id, in: :path, type: :string
+      parameter name: :person_id, in: :path, type: :string
       parameter name: :id, in: :path, type: :string
       security [bearer_auth: []]
 
@@ -186,10 +186,10 @@ RSpec.describe "Attributes", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context, seeker_id: SecureRandom.uuid) }
-      let(:seeker_id) { coach_seeker_context.seeker_id }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:person_id) { person_context.id }
       let(:id) { seeker_attribute.id }
-      let(:seeker_attribute) { create(:coaches__seeker_attribute) }
+      let(:seeker_attribute) { create(:coaches__person_attribute) }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -200,7 +200,7 @@ RSpec.describe "Attributes", type: :request do
               .to receive(:remove_attribute)
               .with(
                 person_attribute_id: id,
-                person_id: seeker_id,
+                person_id: person_id,
                 trace_id: be_a(String)
               )
               .and_call_original

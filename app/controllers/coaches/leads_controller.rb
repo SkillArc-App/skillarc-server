@@ -34,7 +34,7 @@ module Coaches
             first_name: lead[:first_name],
             last_name: lead[:last_name],
             source_kind: People::SourceKind::COACH,
-            source_identifier: coach.coach_id
+            source_identifier: coach.id
           }
         )
       end

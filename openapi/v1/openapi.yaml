@@ -635,13 +635,13 @@ paths:
                       type: array
                       items:
                         type: string
-  "/coaches/seekers/{seeker_id}/attributes":
+  "/coaches/seekers/{person_id}/attributes":
     post:
       summary: Add an attribute
       tags:
       - Coaches
       parameters:
-      - name: seeker_id
+      - name: person_id
         in: path
         required: true
         schema:
@@ -679,13 +679,13 @@ paths:
               - attributesId
               - name
               - value
-  "/coaches/seekers/{seeker_id}/attributes/{id}":
+  "/coaches/seekers/{person_id}/attributes/{id}":
     put:
       summary: update an attribute
       tags:
       - Coaches
       parameters:
-      - name: seeker_id
+      - name: person_id
         in: path
         required: true
         schema:
@@ -733,7 +733,7 @@ paths:
       tags:
       - Coaches
       parameters:
-      - name: seeker_id
+      - name: person_id
         in: path
         required: true
         schema:
@@ -935,33 +935,6 @@ paths:
                   format: uuid
               required:
               - jobId
-  "/coaches/contexts/{id}/certify":
-    post:
-      summary: Certify a seeker
-      tags:
-      - Seekers
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      security:
-      - bearer_auth: []
-      responses:
-        '401':
-          description: unauthenticated
-        '202':
-          description: certifies a seeker
   "/coaches/feeds":
     get:
       summary: retrieve all feeds
@@ -1028,7 +1001,7 @@ paths:
         '401':
           description: unauthenticated
         '200':
-          description: retrieves job seekers
+          description: retrieves job orders
   "/coaches/job_orders/{id}/recommend":
     post:
       summary: Recommends a job order to a seeker
@@ -1771,7 +1744,7 @@ paths:
                 required:
                 - jobs
                 - applicants
-  "/job_orders/orders/{id}/candidates/{seeker_id}":
+  "/job_orders/orders/{id}/candidates/{person_id}":
     put:
       summary: updates a candidate status
       tags:
@@ -1785,7 +1758,7 @@ paths:
         required: true
         schema:
           type: string
-      - name: seeker_id
+      - name: person_id
         in: path
         format: uuid
         required: true
@@ -2740,119 +2713,6 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/seeker"
-  "/references/{id}":
-    get:
-      summary: Retrieve a reference
-      tags:
-      - Training Providers
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      security:
-      - bearer_auth: []
-      responses:
-        '200':
-          description: Returns a list of references
-          content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  properties:
-                    id:
-                      type: string
-                      format: uuid
-                    reference_text:
-                      type: string
-                    seeker_id:
-                      type: string
-                      format: uuid
-                    author_profile_id:
-                      type: string
-                      format: uuid
-                    training_provider_id:
-                      type: string
-                      format: uuid
-    put:
-      summary: Update a reference
-      tags:
-      - Training Providers
-      security:
-      - bearer_auth: []
-      parameters:
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: Reference updated
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                reference_text:
-                  type: string
-              required:
-              - reference_text
-  "/references":
-    post:
-      summary: Create a reference
-      tags:
-      - Training Providers
-      security:
-      - bearer_auth: []
-      parameters:
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      responses:
-        '201':
-          description: Reference created
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                reference:
-                  type: string
-                seeker_profile_id:
-                  type: string
-                  format: uuid
-              required:
-              - reference
-              - seeker_profile_id
   "/seekers/jobs":
     get:
       summary: Search jobs
@@ -3612,6 +3472,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        personId:
+          type: string
+          format: uuid
+          nullable: true
         nextStep:
           type: string
           enum:
@@ -3660,8 +3524,6 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/education_experience"
-        hiringStatus:
-          type: string
         industryInterests:
           type: array
           items:
@@ -3782,13 +3644,6 @@ components:
       - type: object
         additionalProperties: true
         properties:
-          skillLevel:
-            type: string
-            nullable: true
-          leadId:
-            type: string
-            format: uuid
-            nullable: true
           applications:
             type: array
             items:
@@ -4305,7 +4160,7 @@ components:
           - recommended
           - hired
           - rescinded
-        seekerId:
+        personId:
           type: string
           format: uuid
     job_order_note:

@@ -27,8 +27,8 @@ RSpec.describe "Notes", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.seeker_id }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:id) { person_context.id }
       let(:note_params) do
         {
           note:,
@@ -77,8 +77,8 @@ RSpec.describe "Notes", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.seeker_id }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:id) { person_context.id }
       let(:note_params) do
         {
           note:
@@ -91,7 +91,7 @@ RSpec.describe "Notes", type: :request do
         include_context "coach authenticated openapi"
 
         before do
-          create(:coaches__seeker_note, note_id:)
+          create(:coaches__person_note, id: note_id)
         end
 
         response '202', 'Creates a note' do
@@ -128,8 +128,8 @@ RSpec.describe "Notes", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.seeker_id }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:id) { person_context.id }
       let(:note_params) do
         {
           note:
@@ -142,7 +142,7 @@ RSpec.describe "Notes", type: :request do
         include_context "coach authenticated openapi"
 
         before do
-          create(:coaches__seeker_note, note_id:)
+          create(:coaches__person_note, id: note_id)
         end
 
         response '202', 'Creates a note' do

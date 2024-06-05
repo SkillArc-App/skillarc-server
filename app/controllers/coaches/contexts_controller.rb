@@ -18,7 +18,7 @@ module Coaches
       with_message_service do
         message_service.create!(
           schema: Events::PersonViewedInCoaching::V1,
-          coach_id: coach.coach_id,
+          coach_id: coach.id,
           data: {
             person_id: params[:id]
           }
@@ -29,12 +29,12 @@ module Coaches
     end
 
     def assign
-      coach = Coach.find_by!(coach_id: params[:coach_id])
+      coach = Coach.find(params[:coach_id])
 
       with_message_service do
         CoachesEventEmitter.new(message_service:).assign_coach(
           person_id: params[:context_id],
-          coach_id: coach.coach_id,
+          coach_id: coach.id,
           trace_id: request.request_id
         )
       end

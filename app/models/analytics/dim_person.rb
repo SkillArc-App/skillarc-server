@@ -11,21 +11,17 @@
 #  onboarding_completed_at :datetime
 #  phone_number            :string
 #  analytics_dim_user_id   :bigint
-#  coach_id                :uuid
 #  lead_id                 :uuid
 #  person_id               :uuid             not null
-#  seeker_id               :uuid
 #
 # Indexes
 #
 #  index_analytics_dim_people_on_analytics_dim_user_id  (analytics_dim_user_id)
-#  index_analytics_dim_people_on_coach_id               (coach_id)
 #  index_analytics_dim_people_on_email                  (email)
 #  index_analytics_dim_people_on_kind                   (kind)
 #  index_analytics_dim_people_on_lead_id                (lead_id)
 #  index_analytics_dim_people_on_person_id              (person_id)
 #  index_analytics_dim_people_on_phone_number           (phone_number)
-#  index_analytics_dim_people_on_seeker_id              (seeker_id)
 #
 # Foreign Keys
 #
@@ -38,11 +34,7 @@ module Analytics
     module Kind
       ALL = [
         LEAD = 'lead'.freeze,
-        USER = 'user'.freeze,
-        SEEKER = 'seeker'.freeze,
-        COACH = 'coach'.freeze,
-        RECRUITER = 'recruiter'.freeze,
-        TRAINING_PROVIDER = 'training_provider'.freeze
+        SEEKER = 'seeker'.freeze
       ].freeze
     end
 

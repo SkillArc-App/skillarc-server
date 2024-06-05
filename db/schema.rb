@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_04_235232) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_05_135443) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,18 +66,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_235232) do
     t.datetime "lead_created_at"
     t.datetime "onboarding_completed_at"
     t.uuid "lead_id"
-    t.uuid "seeker_id"
-    t.uuid "coach_id"
     t.uuid "person_id", null: false
     t.bigint "analytics_dim_user_id"
     t.index ["analytics_dim_user_id"], name: "index_analytics_dim_people_on_analytics_dim_user_id"
-    t.index ["coach_id"], name: "index_analytics_dim_people_on_coach_id"
     t.index ["email"], name: "index_analytics_dim_people_on_email"
     t.index ["kind"], name: "index_analytics_dim_people_on_kind"
     t.index ["lead_id"], name: "index_analytics_dim_people_on_lead_id"
     t.index ["person_id"], name: "index_analytics_dim_people_on_person_id"
     t.index ["phone_number"], name: "index_analytics_dim_people_on_phone_number"
-    t.index ["seeker_id"], name: "index_analytics_dim_people_on_seeker_id"
   end
 
   create_table "analytics_dim_users", force: :cascade do |t|
@@ -87,6 +83,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_235232) do
     t.string "last_name"
     t.datetime "user_created_at", precision: nil, null: false
     t.datetime "last_active_at"
+    t.string "kind"
+    t.uuid "coach_id"
   end
 
   create_table "analytics_fact_applications", force: :cascade do |t|
@@ -107,13 +105,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_235232) do
   end
 
   create_table "analytics_fact_coach_actions", force: :cascade do |t|
-    t.bigint "analytics_dim_person_executor_id", null: false
     t.bigint "analytics_dim_person_target_id"
     t.string "action", null: false
     t.datetime "action_taken_at", null: false
+    t.bigint "analytics_dim_users_id", null: false
     t.index ["action"], name: "index_analytics_fact_coach_actions_on_action"
-    t.index ["analytics_dim_person_executor_id"], name: "idx_on_analytics_dim_person_executor_id_59e17d9678"
     t.index ["analytics_dim_person_target_id"], name: "idx_on_analytics_dim_person_target_id_a665f20399"
+    t.index ["analytics_dim_users_id"], name: "index_analytics_fact_coach_actions_on_analytics_dim_users_id"
   end
 
   create_table "analytics_fact_job_visibilities", force: :cascade do |t|
@@ -956,7 +954,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_235232) do
   add_foreign_key "analytics_dim_people", "analytics_dim_users"
   add_foreign_key "analytics_fact_applications", "analytics_dim_jobs"
   add_foreign_key "analytics_fact_applications", "analytics_dim_people"
-  add_foreign_key "analytics_fact_coach_actions", "analytics_dim_people", column: "analytics_dim_person_executor_id"
   add_foreign_key "analytics_fact_coach_actions", "analytics_dim_people", column: "analytics_dim_person_target_id"
   add_foreign_key "analytics_fact_job_visibilities", "analytics_dim_jobs"
   add_foreign_key "analytics_fact_person_vieweds", "analytics_dim_people", column: "analytics_dim_person_viewed_id"

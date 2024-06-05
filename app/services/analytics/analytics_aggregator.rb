@@ -5,9 +5,9 @@ module Analytics
       Analytics::FactJobVisibility.delete_all
       Analytics::FactPersonViewed.delete_all
       Analytics::FactCoachAction.delete_all
-      Analytics::DimUser.delete_all
       Analytics::DimPerson.delete_all
       Analytics::DimJob.delete_all
+      Analytics::DimUser.delete_all
     end
 
     on_message Events::PersonAssociatedToUser::V1 do |message|
@@ -24,6 +24,7 @@ module Analytics
       DimUser.create!(
         user_id: message.aggregate.user_id,
         email: data.email,
+        kind: DimUser::Kind::USER,
         first_name: data.first_name,
         last_name: data.last_name,
         user_created_at: message.occurred_at
@@ -47,7 +48,6 @@ module Analytics
         email: message.data.email,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
-        seeker_id: message.aggregate.id,
         kind: DimPerson::Kind::SEEKER
       )
     end
@@ -67,28 +67,23 @@ module Analytics
     end
 
     on_message Events::CoachAdded::V1 do |message|
-      person = DimPerson.joins(:dim_user).find_by!(analytics_dim_users: { user_id: message.aggregate.user_id })
+      user = DimUser.find_by!(user_id: message.aggregate.user_id)
 
-      person.update!(
-        kind: DimPerson::Kind::COACH,
-        coach_id: message.data.coach_id
-      )
+      user.update!(kind: DimUser::Kind::COACH, coach_id: message.data.coach_id)
     end
 
     on_message Events::EmployerInviteAccepted::V1 do |message|
-      person = DimPerson.find_by(email: message.data.invite_email)
+      user = DimUser.find_by!(email: message.data.invite_email)
 
-      return unless person
-
-      person.update!(kind: DimPerson::Kind::RECRUITER)
+      user.update!(kind: DimUser::Kind::RECRUITER)
     end
 
     on_message Events::TrainingProviderInviteAccepted::V1 do |message|
-      person = DimPerson.find_by(email: message.data.invite_email)
+      user = DimUser.find_by!(email: message.data.invite_email)
 
-      return unless person
+      return unless user
 
-      person.update!(kind: DimPerson::Kind::TRAINING_PROVIDER)
+      user.update!(kind: DimUser::Kind::TRAINING_PROVIDER)
     end
 
     on_message Events::JobCreated::V3 do |message|
@@ -142,7 +137,7 @@ module Analytics
       if fact_application.present?
         fact_application.update!(status: data.status, application_updated_at: message.occurred_at)
       else
-        dim_person = Analytics::DimPerson.find_by!(seeker_id: data.seeker_id)
+        dim_person = Analytics::DimPerson.find_by!(person_id: data.seeker_id)
         dim_job = Analytics::DimJob.find_by!(job_id: data.job_id)
         application_number = (dim_person.fact_applications.pluck(:application_number).max || 0) + 1
 
@@ -212,11 +207,11 @@ module Analytics
     end
 
     on_message Events::JobRecommended::V3 do |message|
-      dim_person_executor = Analytics::DimPerson.find_by!(coach_id: message.data.coach_id)
+      dim_user_executor = Analytics::DimUser.find_by!(coach_id: message.data.coach_id)
       dim_person_target = Analytics::DimPerson.find_by!(person_id: message.aggregate.person_id)
 
       Analytics::FactCoachAction.create!(
-        dim_person_executor:,
+        dim_user_executor:,
         dim_person_target:,
         action: Analytics::FactCoachAction::Actions::JOB_RECOMMENDED,
         action_taken_at: message.occurred_at
@@ -224,11 +219,11 @@ module Analytics
     end
 
     on_message Events::PersonCertified::V1 do |message|
-      dim_person_executor = Analytics::DimPerson.find_by!(coach_id: message.data.coach_id)
+      dim_user_executor = Analytics::DimUser.find_by!(coach_id: message.data.coach_id)
       dim_person_target = Analytics::DimPerson.find_by!(person_id: message.aggregate.person_id)
 
       Analytics::FactCoachAction.create!(
-        dim_person_executor:,
+        dim_user_executor:,
         dim_person_target:,
         action: Analytics::FactCoachAction::Actions::SEEKER_CERTIFIED,
         action_taken_at: message.occurred_at
@@ -238,14 +233,14 @@ module Analytics
     private
 
     def note_action(person_id:, originator:, action:, occurred_at:)
-      dim_person_executor = Analytics::DimPerson.find_by(email: originator)
-      return if dim_person_executor.blank?
+      dim_user_executor = Analytics::DimUser.find_by(email: originator)
+      return if dim_user_executor.blank?
 
       dim_person_target = DimPerson.find_by!(person_id:)
       return if dim_person_target.blank?
 
       Analytics::FactCoachAction.create!(
-        dim_person_executor:,
+        dim_user_executor:,
         dim_person_target:,
         action:,
         action_taken_at: occurred_at

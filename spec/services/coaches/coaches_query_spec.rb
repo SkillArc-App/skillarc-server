@@ -178,11 +178,11 @@ RSpec.describe Coaches::CoachesQuery do
     let(:id) { SecureRandom.uuid }
 
     before do
-      barrier = create(:barrier, id: "81f43abc-67b6-4531-af45-293d3fc053e5", name: "barrier2" )
+      barrier = create(:barrier, id: "81f43abc-67b6-4531-af45-293d3fc053e5", name: "barrier2")
 
       person_context1 = create(
         :coaches__person_context,
-        id: id,
+        id:,
         phone_number: "1234567890",
         first_name: "Hannah",
         last_name: "Block",

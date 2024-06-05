@@ -67,7 +67,7 @@ module Coaches
           last_contacted: person_context.last_contacted_at || "Never",
           assigned_coach: person_context.assigned_coach || 'none',
           certified_by: person_context.certified_by,
-          barriers: person_context.barriers.map { |id| { id: id, name: barriers.detect { |b| b.barrier_id }&.name } }
+          barriers: person_context.barriers.map { |id| { id:, name: barriers.detect(&:barrier_id)&.name } }
         }
       end
 
@@ -101,7 +101,7 @@ module Coaches
           last_active_on: person_context.last_active_on,
           last_contacted: person_context.last_contacted_at || "Never",
           assigned_coach: person_context.assigned_coach || 'none',
-          barriers: person_context.barriers.map { |id| { id: id, name: barriers.detect { |b| b.barrier_id }&.name } },
+          barriers: person_context.barriers.map { |id| { id:, name: barriers.detect(&:barrier_id)&.name } },
           attributes: person_context.person_attributes.map { |a| { name: a.name, id: a.id, attribute_id: a.attribute_id, value: a.values } },
           notes: person_context.notes.map do |note|
             {

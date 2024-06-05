@@ -61,7 +61,7 @@ module Coaches
       seeker_attribute = PersonAttribute.find_or_initialize_by(id: message.data.id)
 
       seeker_attribute.update!(
-        person_context: person_context,
+        person_context:,
         attribute_id: message.data.attribute_id,
         name: message.data.attribute_name,
         values: message.data.attribute_values
@@ -100,7 +100,7 @@ module Coaches
       status = data.status
 
       application = PersonApplication.find_or_initialize_by(
-        person_context: person_context,
+        person_context:,
         id: message.aggregate.id
       )
 
@@ -123,7 +123,7 @@ module Coaches
     on_message Events::BarrierUpdated::V3, :sync do |message|
       person_context = PersonContext.find(message.aggregate.id)
 
-      person_context.update!(:barriers => [message.data.barriers])
+      person_context.update!(barriers: [message.data.barriers])
     end
 
     on_message Events::CoachAssigned::V3, :sync do |message|
@@ -138,9 +138,9 @@ module Coaches
       job = Coaches::Job.find_by!(job_id: message.data.job_id)
 
       PersonJobRecommendation.create!(
-        person_context: person_context,
+        person_context:,
         coaches_coaches_id: message.data.coach_id,
-        job: job
+        job:
       )
     end
 
@@ -162,7 +162,7 @@ module Coaches
       person_context.update!(last_contacted_at: message.occurred_at)
 
       PersonNote.create!(
-        person_context: person_context,
+        person_context:,
         note_taken_at: message.occurred_at,
         note_taken_by: message.data.originator,
         id: message.data.note_id,

@@ -71,7 +71,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
           schema '$ref' => '#/components/schemas/coach_seeker'
 
           before do
-            person_context.update(:barriers => [create(:barrier).id])
+            person_context.update(barriers: [create(:barrier).id])
             create(:coaches__person_note, person_context:)
             create(:coaches__person_application, person_context:)
             create(:coaches__person_job_recommendation, person_context:)

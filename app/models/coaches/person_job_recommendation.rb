@@ -16,8 +16,8 @@
 module Coaches
   class PersonJobRecommendation < ApplicationRecord
     belongs_to :person_context, class_name: "Coaches::PersonContext", foreign_key: "coaches_person_contexts_id", inverse_of: :job_recommendations
-    belongs_to :job, class_name: "Coaches::Job", foreign_key: "coaches_jobs_id"
+    belongs_to :job, class_name: "Coaches::Job", foreign_key: "coaches_jobs_id", inverse_of: :job_recommendations
 
-    belongs_to :coach, class_name: "Coaches::Coach", foreign_key: "coaches_coaches_id"
+    belongs_to :coach, class_name: "Coaches::Coach", foreign_key: "coaches_coaches_id", inverse_of: :job_recommendations
   end
 end

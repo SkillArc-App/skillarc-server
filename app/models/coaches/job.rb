@@ -16,7 +16,7 @@
 #
 module Coaches
   class Job < ApplicationRecord
-    self.table_name = "coaches_jobs"
+    has_many :job_recommendations, class_name: "Coaches::PersonJobRecommendation", dependent: :destroy, inverse_of: :job
 
     scope :visible, -> { where(hide_job: false) }
   end

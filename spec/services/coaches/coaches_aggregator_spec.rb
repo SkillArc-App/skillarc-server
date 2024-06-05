@@ -49,20 +49,19 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
 
       it "Creates a barrier record" do
         expect { subject }
-          .to change(Coaches::CoachSeekerContext, :count)
+          .to change(Coaches::PersonContext, :count)
           .from(0).to(1)
 
-        csc = Coaches::CoachSeekerContext.last_created
+        person_context = Coaches::PersonContext.first
 
-        expect(csc.seeker_id).to eq(message.aggregate_id)
-        expect(csc.context_id).to eq(message.aggregate_id)
-        expect(csc.email).to eq(message.data.email)
-        expect(csc.phone_number).to eq(message.data.phone_number)
-        expect(csc.seeker_captured_at).to eq(message.occurred_at)
-        expect(csc.first_name).to eq(message.data.first_name)
-        expect(csc.last_name).to eq(message.data.last_name)
-        expect(csc.last_active_on).to eq(message.occurred_at)
-        expect(csc.kind).to eq(Coaches::CoachSeekerContext::Kind::LEAD)
+        expect(person_context.id).to eq(message.aggregate_id)
+        expect(person_context.email).to eq(message.data.email)
+        expect(person_context.phone_number).to eq(message.data.phone_number)
+        expect(person_context.person_captured_at).to eq(message.occurred_at)
+        expect(person_context.first_name).to eq(message.data.first_name)
+        expect(person_context.last_name).to eq(message.data.last_name)
+        expect(person_context.last_active_on).to eq(message.occurred_at)
+        expect(person_context.kind).to eq(Coaches::PersonContext::Kind::LEAD)
       end
     end
 
@@ -83,9 +82,9 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           Coaches::Coach.count
         }.from(0).to(1)
 
-        coach = Coaches::Coach.last_created
+        coach = Coaches::Coach.first
         expect(coach.email).to eq("some@email.com")
-        expect(coach.coach_id).to eq(id)
+        expect(coach.id).to eq(id)
         expect(coach.assignment_weight).to eq(0)
       end
     end
@@ -95,7 +94,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         build(
           :message,
           schema: Events::CoachAssignmentWeightAdded::V1,
-          aggregate: Aggregates::Coach.new(coach_id: coach.coach_id),
+          aggregate: Aggregates::Coach.new(coach_id: coach.id),
           data: {
             weight: 0.35
           }
@@ -193,7 +192,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::CoachReminderScheduled::V2,
-            aggregate_id: coach.coach_id,
+            aggregate_id: coach.id,
             data: {
               reminder_id: SecureRandom.uuid,
               person_id: nil,
@@ -209,7 +208,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
             Coaches::Reminder.count
           }.from(0).to(1)
 
-          reminder = Coaches::Reminder.last_created
+          reminder = Coaches::Reminder.first
           expect(reminder.coach).to eq(coach)
           expect(reminder.id).to eq(message.data.reminder_id)
           expect(reminder.person_id).to eq(message.data.person_id)
@@ -222,8 +221,8 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
     end
 
     context "for coach seekers context" do
-      let!(:coach_seeker_context) { create(:coaches__coach_seeker_context, user_id:, seeker_id:) }
-      let(:seeker_id) { SecureRandom.uuid }
+      let!(:person_context) { create(:coaches__person_context, user_id:, id: person_id) }
+      let(:person_id) { SecureRandom.uuid }
       let(:user_id) { SecureRandom.uuid }
 
       context "when the message is applicant_status_updated" do
@@ -239,8 +238,8 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
               applicant_email: "hannah@hannah.com",
               applicant_phone_number: "1234567890",
               employer_name: "Employer",
-              seeker_id: coach_seeker_context.seeker_id,
-              user_id: coach_seeker_context.user_id,
+              seeker_id: person_context.id,
+              user_id: person_context.user_id,
               employment_title: "Software Engineer",
               status: ApplicantStatus::StatusTypes::NEW
             },
@@ -256,7 +255,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           }.from(0).to(1)
 
           feed_event = Coaches::FeedEvent.last_created
-          expect(feed_event.context_id).to eq(coach_seeker_context.context_id)
+          expect(feed_event.context_id).to eq(person_context.id)
           expect(feed_event.occurred_at).to eq(message.occurred_at)
           expect(feed_event.seeker_email).to eq("hannah@hannah.com")
           expect(feed_event.description).to eq("Hannah Block's application for Software Engineer at Employer has been updated to new.")
@@ -265,36 +264,36 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         context "when there is an existing seeker application" do
           before do
             create(
-              :coaches__seeker_application,
-              coach_seeker_context:,
-              application_id: applicant_id
+              :coaches__person_application,
+              person_context:,
+              id: applicant_id
             )
           end
 
           it "Update the seeker application" do
             expect { subject }.not_to(change do
-              Coaches::SeekerApplication.count
+              Coaches::PersonApplication.count
             end)
 
-            seeker_applications = Coaches::SeekerApplication.last_created
-            expect(seeker_applications.status).to eq(ApplicantStatus::StatusTypes::NEW)
-            expect(seeker_applications.employer_name).to eq("Employer")
-            expect(seeker_applications.job_id).to eq(job_id)
-            expect(seeker_applications.employment_title).to eq("Software Engineer")
+            applications = Coaches::PersonApplication.first
+            expect(applications.status).to eq(ApplicantStatus::StatusTypes::NEW)
+            expect(applications.employer_name).to eq("Employer")
+            expect(applications.job_id).to eq(job_id)
+            expect(applications.employment_title).to eq("Software Engineer")
           end
         end
 
         context "when there isn't an existing seeker application" do
           it "Creates the seeker application" do
             expect { subject }.to change {
-                                    Coaches::SeekerApplication.count
+                                    Coaches::PersonApplication.count
                                   }.from(0).to(1)
 
-            seeker_applications = Coaches::SeekerApplication.last_created
-            expect(seeker_applications.status).to eq(ApplicantStatus::StatusTypes::NEW)
-            expect(seeker_applications.employer_name).to eq("Employer")
-            expect(seeker_applications.job_id).to eq(job_id)
-            expect(seeker_applications.employment_title).to eq("Software Engineer")
+            applications = Coaches::PersonApplication.first
+            expect(applications.status).to eq(ApplicantStatus::StatusTypes::NEW)
+            expect(applications.employer_name).to eq("Employer")
+            expect(applications.job_id).to eq(job_id)
+            expect(applications.employment_title).to eq("Software Engineer")
           end
         end
       end
@@ -304,7 +303,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::NoteAdded::V4,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
               note_id: SecureRandom.uuid,
               note: "A note",
@@ -314,13 +313,13 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         end
 
         it "Creates a Seeker Note" do
-          expect { subject }.to change(Coaches::SeekerNote, :count).from(0).to(1)
+          expect { subject }.to change(Coaches::PersonNote, :count).from(0).to(1)
 
-          seeker_note = Coaches::SeekerNote.take(1).first
-          expect(seeker_note.coach_seeker_context).to eq(coach_seeker_context)
+          seeker_note = Coaches::PersonNote.first
+          expect(seeker_note.person_context).to eq(person_context)
           expect(seeker_note.note_taken_at).to eq(message.occurred_at)
           expect(seeker_note.note_taken_by).to eq(message.data.originator)
-          expect(seeker_note.note_id).to eq(message.data.note_id)
+          expect(seeker_note.id).to eq(message.data.note_id)
           expect(seeker_note.note).to eq(message.data.note)
         end
       end
@@ -330,10 +329,10 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::PersonSourced::V1,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
               source_kind: People::SourceKind::COACH,
-              source_identifier: coach.coach_id
+              source_identifier: coach.id
             }
           )
         end
@@ -343,8 +342,8 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         it "Updates the coach seeker context" do
           subject
 
-          coach_seeker_context.reload
-          expect(coach_seeker_context.lead_captured_by).to eq(coach.email)
+          person_context.reload
+          expect(person_context.captured_by).to eq(coach.email)
         end
       end
 
@@ -353,16 +352,16 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::NoteModified::V4,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
-              note_id: seeker_note.note_id,
+              note_id: seeker_note.id,
               note: "A new note",
               originator: "your friend"
             }
           )
         end
 
-        let(:seeker_note) { create(:coaches__seeker_note, coach_seeker_context:) }
+        let(:seeker_note) { create(:coaches__person_note, person_context:) }
 
         it "Modifies a Seeker Note" do
           subject
@@ -377,18 +376,18 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::NoteDeleted::V4,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
-              note_id: seeker_note.note_id,
+              note_id: seeker_note.id,
               originator: "your enemy"
             }
           )
         end
 
-        let!(:seeker_note) { create(:coaches__seeker_note, coach_seeker_context:) }
+        let!(:seeker_note) { create(:coaches__person_note, person_context:) }
 
         it "Removes a Seeker Note" do
-          expect { subject }.to change(Coaches::SeekerNote, :count).from(1).to(0)
+          expect { subject }.to change(Coaches::PersonNote, :count).from(1).to(0)
         end
       end
 
@@ -397,7 +396,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::PersonAttributeAdded::V1,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
               id: SecureRandom.uuid,
               attribute_id: SecureRandom.uuid,
@@ -408,13 +407,14 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         end
 
         it "Creates a Seeker Attribute" do
-          expect { subject }.to change(Coaches::SeekerAttribute, :count).from(0).to(1)
+          expect { subject }.to change(Coaches::PersonAttribute, :count).from(0).to(1)
 
-          seeker_attribute = Coaches::SeekerAttribute.take(1).first
-          expect(seeker_attribute.coach_seeker_context).to eq(coach_seeker_context)
+          seeker_attribute = Coaches::PersonAttribute.first
+          expect(seeker_attribute.person_context).to eq(person_context)
+          expect(seeker_attribute.id).to eq(message.data.id)
           expect(seeker_attribute.attribute_id).to eq(message.data.attribute_id)
-          expect(seeker_attribute.attribute_name).to eq("HS Cliques")
-          expect(seeker_attribute.attribute_values).to eq(["Jock"])
+          expect(seeker_attribute.name).to eq("HS Cliques")
+          expect(seeker_attribute.values).to eq(["Jock"])
         end
       end
 
@@ -431,28 +431,8 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         it "Updates the coach seeker context" do
           subject
 
-          coach_seeker_context.reload
-          expect(coach_seeker_context.last_active_on).to eq(message.occurred_at)
-        end
-      end
-
-      context "when the message is session started" do
-        let(:message) do
-          build(
-            :message,
-            schema: Events::SkillLevelUpdated::V3,
-            aggregate_id: seeker_id,
-            data: {
-              skill_level: "the bee's knees"
-            }
-          )
-        end
-
-        it "Updates the coach seeker context" do
-          subject
-
-          coach_seeker_context.reload
-          expect(coach_seeker_context.skill_level).to eq(message.data.skill_level)
+          person_context.reload
+          expect(person_context.last_active_on).to eq(message.occurred_at)
         end
       end
 
@@ -461,12 +441,12 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::PersonCertified::V1,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
               coach_first_name: "Coach",
               coach_last_name: "K",
               coach_email: "katina@skillarc.com",
-              coach_id: coach.coach_id
+              coach_id: coach.id
             }
           )
         end
@@ -476,8 +456,8 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         it "Updates certified by" do
           subject
 
-          coach_seeker_context.reload
-          expect(coach_seeker_context.certified_by).to eq(coach.email)
+          person_context.reload
+          expect(person_context.certified_by).to eq(coach.email)
         end
       end
 
@@ -486,9 +466,9 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::CoachAssigned::V3,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
-              coach_id: coach.coach_id
+              coach_id: coach.id
             }
           )
         end
@@ -498,8 +478,8 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         it "Updates the assigned coach" do
           subject
 
-          coach_seeker_context.reload
-          expect(coach_seeker_context.assigned_coach).to eq(coach.email)
+          person_context.reload
+          expect(person_context.assigned_coach).to eq(coach.email)
         end
       end
 
@@ -508,9 +488,9 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::JobRecommended::V3,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
-              coach_id: coach.coach_id,
+              coach_id: coach.id,
               job_id: job.job_id
             }
           )
@@ -520,9 +500,9 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         let(:job) { create(:coaches__job) }
 
         it "Creates a recommendation" do
-          expect { subject }.to change(Coaches::SeekerJobRecommendation, :count).from(0).to(1)
+          expect { subject }.to change(Coaches::PersonJobRecommendation, :count).from(0).to(1)
 
-          recommendation = Coaches::SeekerJobRecommendation.take(1).first
+          recommendation = Coaches::PersonJobRecommendation.take(1).first
           expect(recommendation.job).to eq(job)
           expect(recommendation.coach).to eq(coach)
         end
@@ -533,7 +513,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::PersonAssociatedToUser::V1,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
               user_id: SecureRandom.uuid
             }
@@ -545,9 +525,9 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         it "Updates the coach seeker context" do
           subject
 
-          coach_seeker_context.reload
-          expect(coach_seeker_context.user_id).to eq(message.data.user_id)
-          expect(coach_seeker_context.kind).to eq(Coaches::CoachSeekerContext::Kind::SEEKER)
+          person_context.reload
+          expect(person_context.user_id).to eq(message.data.user_id)
+          expect(person_context.kind).to eq(Coaches::PersonContext::Kind::SEEKER)
         end
       end
 
@@ -556,7 +536,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::BasicInfoAdded::V1,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
               first_name: "Jim",
               last_name: "Bob",
@@ -569,11 +549,11 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         it "Updates the coach seeker context" do
           subject
 
-          coach_seeker_context.reload
-          expect(coach_seeker_context.first_name).to eq(message.data.first_name)
-          expect(coach_seeker_context.last_name).to eq(message.data.last_name)
-          expect(coach_seeker_context.phone_number).to eq(message.data.phone_number)
-          expect(coach_seeker_context.email).to eq(message.data.email)
+          person_context.reload
+          expect(person_context.first_name).to eq(message.data.first_name)
+          expect(person_context.last_name).to eq(message.data.last_name)
+          expect(person_context.phone_number).to eq(message.data.phone_number)
+          expect(person_context.email).to eq(message.data.email)
         end
       end
 
@@ -582,17 +562,17 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
           build(
             :message,
             schema: Events::PersonAttributeRemoved::V1,
-            aggregate_id: seeker_id,
+            aggregate_id: person_id,
             data: {
               id: seeker_attribute.id
             }
           )
         end
 
-        let!(:seeker_attribute) { create(:coaches__seeker_attribute, coach_seeker_context:) }
+        let!(:seeker_attribute) { create(:coaches__person_attribute, person_context:) }
 
         it "Creates a Seeker Attribute" do
-          expect { subject }.to change(Coaches::SeekerAttribute, :count).from(1).to(0)
+          expect { subject }.to change(Coaches::PersonAttribute, :count).from(1).to(0)
         end
       end
     end

@@ -12,6 +12,5 @@
 #
 module Coaches
   class FeedEvent < ApplicationRecord
-    self.table_name = "coaches_feed_events"
   end
 end

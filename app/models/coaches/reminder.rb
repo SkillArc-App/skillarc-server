@@ -2,29 +2,21 @@
 #
 # Table name: coaches_reminders
 #
-#  id              :uuid             not null, primary key
-#  note            :string           not null
-#  reminder_at     :datetime         not null
-#  state           :string           not null
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  coach_id        :uuid             not null
-#  message_task_id :uuid             not null
-#  person_id       :uuid
+#  id                 :uuid             not null, primary key
+#  note               :text             not null
+#  reminder_at        :datetime         not null
+#  state              :string           not null
+#  coaches_coaches_id :uuid             not null
+#  message_task_id    :uuid             not null
+#  person_id          :uuid
 #
 # Indexes
 #
-#  index_coaches_reminders_on_coach_id  (coach_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (coach_id => coaches.id)
+#  index_coaches_reminders_on_coaches_coaches_id  (coaches_coaches_id)
 #
 module Coaches
   class Reminder < ApplicationRecord
-    self.table_name = "coaches_reminders"
-
-    belongs_to :coach, class_name: "Coaches::Coach"
+    belongs_to :coach, class_name: "Coaches::Coach", foreign_key: "coaches_coaches_id", inverse_of: :reminders
 
     validates :state, inclusion: { in: ReminderState::ALL }
   end

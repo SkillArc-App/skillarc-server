@@ -5,9 +5,9 @@ module Analytics
       Analytics::FactJobVisibility.delete_all
       Analytics::FactPersonViewed.delete_all
       Analytics::FactCoachAction.delete_all
-      Analytics::DimUser.delete_all
       Analytics::DimPerson.delete_all
       Analytics::DimJob.delete_all
+      Analytics::DimUser.delete_all
     end
 
     on_message Events::PersonAssociatedToUser::V1 do |message|

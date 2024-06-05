@@ -37,7 +37,7 @@ module Analytics
         first_name: message.data.first_name,
         last_name: message.data.last_name,
         phone_number: message.data.phone_number,
-        email: message.data.email,
+        email: message.data.email
       )
     end
 

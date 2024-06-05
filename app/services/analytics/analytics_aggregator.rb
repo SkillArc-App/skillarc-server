@@ -33,12 +33,12 @@ module Analytics
     on_message Events::BasicInfoAdded::V1 do |message|
       person = DimPerson.find_by!(person_id: message.aggregate.person_id)
 
-      person.last_active_at = message.occurred_at
-      person.first_name = message.data.first_name
-      person.last_name = message.data.last_name
-      person.phone_number = message.data.phone_number
-
-      person.save!
+      person.update!(
+        first_name: message.data.first_name,
+        last_name: message.data.last_name,
+        phone_number: message.data.phone_number,
+        email: message.data.email
+      )
     end
 
     on_message Events::PersonAdded::V1 do |message|
@@ -47,7 +47,6 @@ module Analytics
         email: message.data.email,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
-        last_active_at: message.occurred_at,
         seeker_id: message.aggregate.id,
         kind: DimPerson::Kind::SEEKER
       )
@@ -57,15 +56,14 @@ module Analytics
       person = DimPerson.find_by!(person_id: message.aggregate.person_id)
 
       person.update!(
-        last_active_at: message.occurred_at,
         onboarding_completed_at: message.occurred_at
       )
     end
 
     on_message Events::SessionStarted::V1 do |message|
-      person = DimPerson.joins(:dim_user).find_by!(analytics_dim_users: { user_id: message.aggregate.user_id })
+      user = DimUser.find_by!(user_id: message.aggregate.user_id)
 
-      person.update!(last_active_at: message.occurred_at)
+      user.update!(last_active_at: message.occurred_at)
     end
 
     on_message Events::CoachAdded::V1 do |message|

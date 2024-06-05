@@ -94,7 +94,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
           person = Analytics::DimPerson.take(1).first
 
-          expect(person.last_active_at).to eq(message.occurred_at)
+          expect(person.email).to eq(message.data.email)
           expect(person.phone_number).to eq(message.data.phone_number)
           expect(person.first_name).to eq(message.data.first_name)
           expect(person.last_name).to eq(message.data.last_name)
@@ -123,7 +123,6 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
           person = Analytics::DimPerson.find_by(email: message.data.email)
 
-          expect(person.last_active_at).to eq(message.occurred_at)
           expect(person.first_name).to eq(message.data.first_name)
           expect(person.last_name).to eq(message.data.last_name)
           expect(person.email).to eq(message.data.email)
@@ -147,7 +146,6 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
           person = Analytics::DimPerson.take(1).first
 
-          expect(person.last_active_at).to eq(message.occurred_at)
           expect(person.onboarding_completed_at).to eq(message.occurred_at)
         end
       end
@@ -156,17 +154,17 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         let(:message) do
           build(
             :message,
-            aggregate_id: person.dim_user.user_id,
+            aggregate_id: user.user_id,
             schema: Events::SessionStarted::V1,
             data: Messages::Nothing
           )
         end
-        let!(:person) { create(:analytics__dim_person, dim_user: build(:analytics__dim_user)) }
+        let!(:user) { create(:analytics__dim_user) }
 
-        it "updates a dim person from the message" do
-          expect { subject }.not_to change(Analytics::DimPerson, :count)
+        it "updates a dim user from the message" do
+          subject
 
-          expect(person.reload.last_active_at).to eq(message.occurred_at)
+          expect(user.reload.last_active_at).to eq(message.occurred_at)
         end
       end
 

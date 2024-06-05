@@ -6,7 +6,6 @@
 #  email                   :string
 #  first_name              :string
 #  kind                    :string           not null
-#  last_active_at          :datetime
 #  last_name               :string
 #  lead_created_at         :datetime
 #  onboarding_completed_at :datetime

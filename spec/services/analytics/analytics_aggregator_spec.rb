@@ -493,21 +493,49 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         )
       end
 
-      let(:user_id) { dim_person_viewer.dim_user.user_id }
+      let(:user_id) { SecureRandom.uuid }
       let(:person_id) { SecureRandom.uuid }
 
-      let!(:dim_person_viewer) { create(:analytics__dim_person, dim_user: build(:analytics__dim_user)) }
+      let!(:dim_user_viewer) { create(:analytics__dim_user, user_id:) }
       let!(:dim_person_viewed) { create(:analytics__dim_person, person_id:) }
 
       it "creates a fact person viewed record" do
         expect { subject }.to change(Analytics::FactPersonViewed, :count).from(0).to(1)
 
-        fact_person_viewed = Analytics::FactPersonViewed.take(1).first
+        fact_person_viewed = Analytics::FactPersonViewed.take
 
         expect(fact_person_viewed.dim_person_viewed).to eq(dim_person_viewed)
-        expect(fact_person_viewed.dim_person_viewer).to eq(dim_person_viewer)
+        expect(fact_person_viewed.dim_user_viewer).to eq(dim_user_viewer)
         expect(fact_person_viewed.viewed_at).to eq(message.occurred_at)
         expect(fact_person_viewed.viewing_context).to eq(Analytics::FactPersonViewed::Contexts::PUBLIC_PROFILE)
+      end
+    end
+
+    context "when the message is person_viewed_in_coaching" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::PersonViewedInCoaching::V1,
+          aggregate_id: coach_id,
+          data: {
+            person_id:
+          }
+        )
+      end
+      let(:coach_id) { SecureRandom.uuid }
+      let!(:dim_coach_user) { create(:analytics__dim_user, coach_id:) }
+      let(:person_id) { dim_person.person_id }
+      let(:dim_person) { create(:analytics__dim_person) }
+
+      it "creates a fact person viewed" do
+        expect { subject }.to change(Analytics::FactPersonViewed, :count).from(0).to(1)
+
+        fact_person_viewed = Analytics::FactPersonViewed.take
+
+        expect(fact_person_viewed.dim_person_viewed).to eq(dim_person)
+        expect(fact_person_viewed.dim_user_viewer).to eq(dim_coach_user)
+        expect(fact_person_viewed.viewed_at).to eq(message.occurred_at)
+        expect(fact_person_viewed.viewing_context).to eq(Analytics::FactPersonViewed::Contexts::COACHES_DASHBOARD)
       end
     end
 

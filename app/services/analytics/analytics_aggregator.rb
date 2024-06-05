@@ -156,11 +156,11 @@ module Analytics
     end
 
     on_message Events::PersonViewed::V1 do |message|
-      dim_person_viewer = Analytics::DimPerson.joins(:dim_user).find_by!(analytics_dim_users: { user_id: message.aggregate.user_id })
+      dim_user_viewer = Analytics::DimUser.find_by!(user_id: message.aggregate.user_id)
       dim_person_viewed = Analytics::DimPerson.find_by!(person_id: message.data.person_id)
 
       Analytics::FactPersonViewed.create!(
-        dim_person_viewer:,
+        dim_user_viewer:,
         dim_person_viewed:,
         viewed_at: message.occurred_at,
         viewing_context: Analytics::FactPersonViewed::Contexts::PUBLIC_PROFILE
@@ -168,11 +168,11 @@ module Analytics
     end
 
     on_message Events::PersonViewedInCoaching::V1 do |message|
-      dim_person_viewer = Analytics::DimPerson.find_by!(coach_id: message.aggregate.coach_id)
+      dim_user_viewer = Analytics::DimUser.find_by!(coach_id: message.aggregate.coach_id)
       dim_person_viewed = DimPerson.find_by(person_id: message.data.person_id)
 
       Analytics::FactPersonViewed.create!(
-        dim_person_viewer:,
+        dim_user_viewer:,
         dim_person_viewed:,
         viewed_at: message.occurred_at,
         viewing_context: Analytics::FactPersonViewed::Contexts::COACHES_DASHBOARD

@@ -13,12 +13,12 @@ module Coaches
 
     def recommend
       job_order_id = params[:job_order_id]
-      seeker_id = params[:seeker_id]
+      person_id = params[:seeker_id]
 
       with_message_service do
         CoachesEventEmitter.new(message_service:).recommend_for_job_order(
           job_order_id:,
-          seeker_id:,
+          person_id:,
           trace_id: request.request_id
         )
       end

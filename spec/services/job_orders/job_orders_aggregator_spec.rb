@@ -80,15 +80,15 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         )
       end
 
-      it "creates a seeker record" do
-        expect { subject }.to change(JobOrders::Seeker, :count).from(0).to(1)
+      it "creates a person record" do
+        expect { subject }.to change(JobOrders::Person, :count).from(0).to(1)
 
-        seeker = JobOrders::Seeker.take(1).first
-        expect(seeker.id).to eq(message.aggregate.id)
-        expect(seeker.first_name).to eq(message.data.first_name)
-        expect(seeker.last_name).to eq(message.data.last_name)
-        expect(seeker.email).to eq(message.data.email)
-        expect(seeker.phone_number).to eq(message.data.phone_number)
+        person = JobOrders::Person.take(1).first
+        expect(person.id).to eq(message.aggregate.id)
+        expect(person.first_name).to eq(message.data.first_name)
+        expect(person.last_name).to eq(message.data.last_name)
+        expect(person.email).to eq(message.data.email)
+        expect(person.phone_number).to eq(message.data.phone_number)
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: Events::BasicInfoAdded::V1,
-          aggregate_id: seeker.id,
+          aggregate_id: person.id,
           data: {
             first_name: "Chris",
             last_name: "Brauns",
@@ -107,16 +107,16 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         )
       end
 
-      let!(:seeker) { create(:job_orders__seeker) }
+      let!(:person) { create(:job_orders__person) }
 
-      it "updates a seeker record" do
+      it "updates a person record" do
         subject
 
-        seeker.reload
-        expect(seeker.first_name).to eq(message.data.first_name)
-        expect(seeker.last_name).to eq(message.data.last_name)
-        expect(seeker.phone_number).to eq(message.data.phone_number)
-        expect(seeker.email).to eq(message.data.email)
+        person.reload
+        expect(person.first_name).to eq(message.data.first_name)
+        expect(person.last_name).to eq(message.data.last_name)
+        expect(person.phone_number).to eq(message.data.phone_number)
+        expect(person.email).to eq(message.data.email)
       end
     end
 
@@ -176,16 +176,16 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderCandidateAdded::V1,
+          schema: Events::JobOrderCandidateAdded::V2,
           aggregate_id: job_order.id,
           data: {
-            seeker_id: seeker.id
+            person_id: person.id
           }
         )
       end
 
       let!(:job_order) { create(:job_orders__job_order, candidate_count: 0) }
-      let!(:seeker) { create(:job_orders__seeker) }
+      let!(:person) { create(:job_orders__person) }
       let(:status) { JobOrders::ActivatedStatus::ADDED }
 
       it "creates a candidate record and updates the job order" do
@@ -193,7 +193,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
         candidate = JobOrders::Candidate.take(1).first
         expect(candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
-        expect(candidate.seeker).to eq(seeker)
+        expect(candidate.person).to eq(person)
         expect(candidate.job_order).to eq(job_order)
         expect(candidate.added_at).to eq(message.occurred_at)
 
@@ -202,7 +202,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       end
 
       context "when the candidate already exists" do
-        let!(:candidate) { create(:job_orders__candidate, seeker:, job_order:, status: JobOrders::CandidateStatus::RESCINDED) }
+        let!(:candidate) { create(:job_orders__candidate, person:, job_order:, status: JobOrders::CandidateStatus::RESCINDED) }
 
         it "changes the status to added" do
           expect { subject }
@@ -222,7 +222,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
           candidate = JobOrders::Candidate.take(1).first
           expect(candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
-          expect(candidate.seeker).to eq(seeker)
+          expect(candidate.person).to eq(person)
           expect(candidate.job_order).to eq(job_order)
 
           job_order.reload
@@ -235,18 +235,18 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderCandidateApplied::V1,
+          schema: Events::JobOrderCandidateApplied::V2,
           aggregate_id: job_order.id,
           data: {
-            seeker_id: seeker.id,
+            person_id: person.id,
             applied_at: Time.zone.local(2024, 1, 1)
           }
         )
       end
 
       let!(:job_order) { create(:job_orders__job_order, candidate_count: 1, recommended_count: 0) }
-      let!(:candidate) { create(:job_orders__candidate, seeker:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
-      let!(:seeker) { create(:job_orders__seeker) }
+      let!(:candidate) { create(:job_orders__candidate, person:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
+      let!(:person) { create(:job_orders__person) }
 
       it "updates a candidate record and updates the job order" do
         subject
@@ -260,17 +260,17 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderCandidateRecommended::V1,
+          schema: Events::JobOrderCandidateRecommended::V2,
           aggregate_id: job_order.id,
           data: {
-            seeker_id: seeker.id
+            person_id: person.id
           }
         )
       end
 
       let!(:job_order) { create(:job_orders__job_order, candidate_count: 1, recommended_count: 0) }
-      let!(:candidate) { create(:job_orders__candidate, seeker:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
-      let!(:seeker) { create(:job_orders__seeker) }
+      let!(:candidate) { create(:job_orders__candidate, person:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
+      let!(:person) { create(:job_orders__person) }
 
       it "updates a candidate record and updates the job order" do
         subject
@@ -288,17 +288,17 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderCandidateHired::V1,
+          schema: Events::JobOrderCandidateHired::V2,
           aggregate_id: job_order.id,
           data: {
-            seeker_id: seeker.id
+            person_id: person.id
           }
         )
       end
 
       let!(:job_order) { create(:job_orders__job_order, recommended_count: 1, hire_count: 0) }
-      let!(:candidate) { create(:job_orders__candidate, seeker:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
-      let!(:seeker) { create(:job_orders__seeker) }
+      let!(:candidate) { create(:job_orders__candidate, person:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
+      let!(:person) { create(:job_orders__person) }
 
       it "updates a candidate record and updates the job order" do
         subject
@@ -316,17 +316,17 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderCandidateRescinded::V1,
+          schema: Events::JobOrderCandidateRescinded::V2,
           aggregate_id: job_order.id,
           data: {
-            seeker_id: seeker.id
+            person_id: person.id
           }
         )
       end
 
       let!(:job_order) { create(:job_orders__job_order, hire_count: 1) }
-      let!(:candidate) { create(:job_orders__candidate, seeker:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
-      let!(:seeker) { create(:job_orders__seeker) }
+      let!(:candidate) { create(:job_orders__candidate, person:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
+      let!(:person) { create(:job_orders__person) }
 
       it "updates a candidate record and updates the job order" do
         subject

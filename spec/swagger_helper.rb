@@ -1168,7 +1168,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 type: :string,
                 enum: JobOrders::CandidateStatus::ALL
               },
-              seekerId: {
+              personId: {
                 type: :string,
                 format: :uuid
               }

@@ -5,15 +5,14 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
 
   let(:instance) { described_class.new(message_service:) }
   let(:message_service) { MessageService.new }
+  let(:trace_id) { SecureRandom.uuid }
+  let(:job_order_id) { SecureRandom.uuid }
+  let(:job_id) { SecureRandom.uuid }
 
   describe "#add_job_order" do
     subject do
       instance.add_job_order(job_order_id:, job_id:, trace_id:)
     end
-
-    let(:job_order_id) { SecureRandom.uuid }
-    let(:job_id) { SecureRandom.uuid }
-    let(:trace_id) { SecureRandom.uuid }
 
     it "fires off a job order order count added event" do
       expect(message_service)
@@ -38,7 +37,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
 
     let(:job_order_id) { 10 }
     let(:order_count) { 10 }
-    let(:trace_id) { SecureRandom.uuid }
 
     it "fires off a job order order count added event" do
       expect(message_service)
@@ -62,7 +60,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
 
     let(:job_order_id) { 10 }
-    let(:trace_id) { SecureRandom.uuid }
 
     it "fires off a job order order activated event" do
       expect(message_service)
@@ -84,7 +81,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
 
     let(:job_order_id) { 10 }
-    let(:trace_id) { SecureRandom.uuid }
 
     it "fires off a job order order activated event" do
       expect(message_service)
@@ -115,7 +111,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     let(:originator) { "hannah@skillar.com" }
     let(:note) { "Great job order" }
     let(:note_id) { SecureRandom.uuid }
-    let(:trace_id) { SecureRandom.uuid }
 
     it "fires off a job order note added event" do
       expect(message_service)
@@ -150,7 +145,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     let(:originator) { "hannah@skillar.com" }
     let(:note) { "Great job order" }
     let(:note_id) { SecureRandom.uuid }
-    let(:trace_id) { SecureRandom.uuid }
 
     it "fires off a job order note added event" do
       expect(message_service)
@@ -183,7 +177,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     let(:job_order_id) { 10 }
     let(:originator) { "hannah@skillar.com" }
     let(:note_id) { SecureRandom.uuid }
-    let(:trace_id) { SecureRandom.uuid }
 
     it "fires off a job order note added event" do
       expect(message_service)
@@ -204,12 +197,12 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
 
   describe "#update_status" do
     subject do
-      instance.update_status(status:, job_order_id:, seeker_id:, trace_id:)
+      instance.update_status(status:, job_order_id:, person_id:, trace_id:)
     end
+
     let(:candidate) { create(:job_orders__candidate) }
-    let(:seeker_id) { candidate.seeker_id }
+    let(:person_id) { candidate.person_id }
     let(:job_order_id) { candidate.job_order_id }
-    let(:trace_id) { SecureRandom.uuid }
 
     context "added" do
       let(:status) { "added" }
@@ -218,11 +211,11 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         expect(message_service)
           .to receive(:create!)
           .with(
-            schema: Events::JobOrderCandidateAdded::V1,
+            schema: Events::JobOrderCandidateAdded::V2,
             job_order_id:,
             trace_id:,
             data: {
-              seeker_id:
+              person_id:
             }
           ).and_call_original
 
@@ -237,11 +230,11 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         expect(message_service)
           .to receive(:create!)
           .with(
-            schema: Events::JobOrderCandidateRecommended::V1,
+            schema: Events::JobOrderCandidateRecommended::V2,
             job_order_id:,
             trace_id:,
             data: {
-              seeker_id:
+              person_id:
             }
           ).and_call_original
 
@@ -256,11 +249,11 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         expect(message_service)
           .to receive(:create!)
           .with(
-            schema: Events::JobOrderCandidateHired::V1,
+            schema: Events::JobOrderCandidateHired::V2,
             job_order_id:,
             trace_id:,
             data: {
-              seeker_id:
+              person_id:
             }
           ).and_call_original
 
@@ -275,11 +268,11 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         expect(message_service)
           .to receive(:create!)
           .with(
-            schema: Events::JobOrderCandidateRescinded::V1,
+            schema: Events::JobOrderCandidateRescinded::V2,
             job_order_id:,
             trace_id:,
             data: {
-              seeker_id:
+              person_id:
             }
           ).and_call_original
 
@@ -336,7 +329,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             applicant_last_name: "last_name",
             applicant_email: "email",
             applicant_phone_number: "phone_number",
-            seeker_id:,
+            seeker_id: person_id,
             user_id: "user_id",
             job_id:,
             employer_name: "employer_name",
@@ -348,7 +341,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         )
       end
 
-      let(:seeker_id) { SecureRandom.uuid }
+      let(:person_id) { SecureRandom.uuid }
       let(:job_id) { SecureRandom.uuid }
 
       context "when status is not new" do
@@ -419,11 +412,11 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             expect(message_service)
               .to receive(:create_once_for_trace!)
               .with(
-                schema: Events::JobOrderCandidateAdded::V1,
+                schema: Events::JobOrderCandidateAdded::V2,
                 trace_id: message.trace_id,
                 aggregate: job_order2.aggregate,
                 data: {
-                  seeker_id: message.data.seeker_id
+                  person_id:
                 }
               )
               .and_call_original
@@ -431,11 +424,11 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             expect(message_service)
               .to receive(:create_once_for_trace!)
               .with(
-                schema: Events::JobOrderCandidateApplied::V1,
+                schema: Events::JobOrderCandidateApplied::V2,
                 trace_id: message.trace_id,
                 aggregate: job_order2.aggregate,
                 data: {
-                  seeker_id: message.data.seeker_id,
+                  person_id:,
                   applied_at: message.occurred_at
                 }
               )
@@ -648,9 +641,9 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
           let(:message1) do
             build(
               :message,
-              schema: Events::JobOrderCandidateAdded::V1,
+              schema: Events::JobOrderCandidateAdded::V2,
               data: {
-                seeker_id: SecureRandom.uuid
+                person_id: SecureRandom.uuid
               },
               occurred_at: message.occurred_at - 1.day
             )
@@ -658,9 +651,9 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
           let(:message2) do
             build(
               :message,
-              schema: Events::JobOrderCandidateAdded::V1,
+              schema: Events::JobOrderCandidateAdded::V2,
               data: {
-                seeker_id: SecureRandom.uuid
+                person_id: SecureRandom.uuid
               },
               occurred_at: message.occurred_at + 1.day
             )
@@ -803,9 +796,9 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         let(:message) do
           build(
             :message,
-            schema: Events::JobOrderCandidateAdded::V1,
+            schema: Events::JobOrderCandidateAdded::V2,
             data: {
-              seeker_id: SecureRandom.uuid
+              person_id: SecureRandom.uuid
             }
           )
         end
@@ -817,9 +810,9 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         let(:message) do
           build(
             :message,
-            schema: Events::JobOrderCandidateRecommended::V1,
+            schema: Events::JobOrderCandidateRecommended::V2,
             data: {
-              seeker_id: SecureRandom.uuid
+              person_id: SecureRandom.uuid
             }
           )
         end
@@ -831,9 +824,9 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         let(:message) do
           build(
             :message,
-            schema: Events::JobOrderCandidateHired::V1,
+            schema: Events::JobOrderCandidateHired::V2,
             data: {
-              seeker_id: SecureRandom.uuid
+              person_id: SecureRandom.uuid
             }
           )
         end
@@ -845,9 +838,9 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         let(:message) do
           build(
             :message,
-            schema: Events::JobOrderCandidateRescinded::V1,
+            schema: Events::JobOrderCandidateRescinded::V2,
             data: {
-              seeker_id: SecureRandom.uuid
+              person_id: SecureRandom.uuid
             }
           )
         end

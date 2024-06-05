@@ -30,11 +30,11 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_seeker
     with_message_service do
-      seeker = Builders::PersonBuilder.new(message_service).build
+      person = Builders::PersonBuilder.new(message_service).build
 
       render json: {
-        user: seeker,
-        seeker:
+        user: person,
+        person:
       }
     end
   end
@@ -57,13 +57,13 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
         }
       )
 
-      seeker = Builders::PersonBuilder.new(message_service).build
-      status = create_application_with_message(message_service:, job:, seeker:)
+      person = Builders::PersonBuilder.new(message_service).build
+      status = create_application_with_message(message_service:, job:, person:)
 
       render json: {
         recruiter: recruiter_user,
         job:,
-        applicant: seeker,
+        applicant: person,
         applicant_status: { status: }
       }
     end
@@ -76,14 +76,14 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       training_provider = program.training_provider
 
       trainer_user = Builders::UserBuilder.new(message_service).build
-      student_seeker = Builders::PersonBuilder.new(message_service).build
+      student_person = Builders::PersonBuilder.new(message_service).build
 
       FactoryBot.create(:training_provider_profile, training_provider:, user: trainer_user)
-      FactoryBot.create(:seeker_training_provider, training_provider:, program:, seeker_id: student_seeker.id)
+      FactoryBot.create(:seeker_training_provider, training_provider:, program:, seeker_id: student_person.id)
 
       render json: {
         trainer: trainer_user,
-        student: student_seeker,
+        student: student_person,
         training_provider:,
         program:
       }
@@ -121,12 +121,16 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_active_seeker
     with_message_service do
-      seeker = Builders::PersonBuilder.new(message_service).build(phone_number: nil)
+      person = Builders::PersonBuilder.new(message_service).build(phone_number: nil)
 
       job = create_job_with_messages(message_service:)
-      create_application_with_message(message_service:, job:, seeker:)
+      create_application_with_message(message_service:, job:, person:)
 
-      render json: seeker
+      render json: {
+        person:,
+        job:,
+        employer: job.employer
+      }
     end
   end
 
@@ -160,17 +164,17 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   private
 
-  def create_application_with_message(message_service:, job:, seeker:)
+  def create_application_with_message(message_service:, job:, person:)
     message_service.create!(
       schema: Events::ApplicantStatusUpdated::V6,
       application_id: SecureRandom.uuid,
       data: {
-        applicant_first_name: seeker.first_name,
-        applicant_last_name: seeker.last_name,
-        applicant_email: seeker.email,
-        applicant_phone_number: seeker.phone_number,
-        seeker_id: seeker.id,
-        user_id: seeker.user_id,
+        applicant_first_name: person.first_name,
+        applicant_last_name: person.last_name,
+        applicant_email: person.email,
+        applicant_phone_number: person.phone_number,
+        seeker_id: person.id,
+        user_id: person.user_id,
         job_id: job.id,
         employer_name: job.employer.name,
         employment_title: job.employment_title,
@@ -178,7 +182,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
         reasons: []
       },
       metadata: {
-        user_id: seeker.user_id
+        user_id: person.user_id
       }
     )
 

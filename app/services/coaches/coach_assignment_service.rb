@@ -6,8 +6,8 @@ module Coaches
     def self.round_robin_assignment
       # Grab the last n days of context who had
       # an assigned coach
-      assigned_contexts = CoachSeekerContext
-                          .where("seeker_captured_at > ?", Time.zone.now - LOOKBACK_DAYS.days)
+      assigned_contexts = PersonContext
+                          .where("person_captured_at > ?", Time.zone.now - LOOKBACK_DAYS.days)
                           .where.not(assigned_coach: nil)
 
       coaches = Coach.all

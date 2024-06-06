@@ -25,7 +25,13 @@ class MessageConsumer
     rescue StandardError => e
       wrapped_message = FailedToHandleMessage.new(e.message, message)
       wrapped_message.set_backtrace(e.backtrace)
-      Sentry.capture_exception(wrapped_message)
+      Sentry.configure_scope do |scope|
+        scope.set_context(
+          "message",
+          message.to_h
+        )
+        Sentry.capture_exception(wrapped_message)
+      end
       raise wrapped_message
     end
   end

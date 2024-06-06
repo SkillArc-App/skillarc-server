@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_05_161921) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_05_163733) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -201,36 +201,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_161921) do
     t.index ["user_id"], name: "index_chats_read_receipts_on_user_id"
   end
 
-  create_table "coach_seeker_contexts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "user_id"
-    t.string "first_name"
-    t.string "last_name"
+  create_table "coaches_coaches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.float "assignment_weight", null: false
     t.string "email"
-    t.string "phone_number"
-    t.string "assigned_coach"
-    t.string "skill_level"
-    t.string "stage"
-    t.datetime "last_contacted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "last_active_on"
-    t.uuid "seeker_id"
-    t.string "certified_by"
-    t.string "kind", null: false
-    t.string "lead_captured_by"
-    t.string "context_id", null: false
-    t.datetime "seeker_captured_at", null: false
-    t.uuid "lead_id"
-    t.index ["context_id"], name: "index_coach_seeker_contexts_on_context_id", unique: true
-  end
-
-  create_table "coaches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "user_id", null: false
-    t.string "email", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "coach_id"
-    t.float "assignment_weight", default: 1.0, null: false
+    t.index ["user_id"], name: "index_coaches_coaches_on_user_id"
   end
 
   create_table "coaches_feed_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -252,48 +227,66 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_161921) do
     t.index ["job_id"], name: "index_coaches_jobs_on_job_id"
   end
 
-  create_table "coaches_reminders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coach_id", null: false
-    t.string "note", null: false
-    t.string "state", null: false
-    t.uuid "message_task_id", null: false
-    t.datetime "reminder_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "person_id"
-    t.index ["coach_id"], name: "index_coaches_reminders_on_coach_id"
-  end
-
-  create_table "coaches_seeker_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coach_seeker_context_id", null: false
-    t.uuid "application_id", null: false
+  create_table "coaches_person_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "coaches_person_context_id", null: false
+    t.string "employer_name", null: false
     t.string "employment_title", null: false
     t.string "status", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "employer_name"
-    t.uuid "job_id"
-    t.index ["application_id"], name: "index_coaches_seeker_applications_on_application_id"
-    t.index ["coach_seeker_context_id"], name: "index_coaches_seeker_applications_on_coach_seeker_context_id"
-  end
-
-  create_table "coaches_seeker_attributes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coach_seeker_context_id", null: false
-    t.uuid "attribute_id", null: false
-    t.string "attribute_name", null: false
-    t.string "attribute_values", default: [], array: true
-    t.index ["coach_seeker_context_id"], name: "index_coaches_seeker_attributes_on_coach_seeker_context_id"
-  end
-
-  create_table "coaches_seeker_job_recommendations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coach_seeker_context_id", null: false
-    t.uuid "coach_id", null: false
     t.uuid "job_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["coach_id"], name: "index_coaches_seeker_job_recommendations_on_coach_id"
-    t.index ["coach_seeker_context_id"], name: "index_seeker_job_recommendations_on_coach_seeker_context_id"
-    t.index ["job_id"], name: "index_coaches_seeker_job_recommendations_on_job_id"
+    t.index ["coaches_person_context_id"], name: "index_coaches_person_applications_on_coaches_person_context_id"
+  end
+
+  create_table "coaches_person_attributes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "coaches_person_context_id", null: false
+    t.uuid "attribute_id", null: false
+    t.string "name", null: false
+    t.string "values", default: [], array: true
+    t.index ["coaches_person_context_id"], name: "index_coaches_person_attributes_on_coaches_person_context_id"
+  end
+
+  create_table "coaches_person_contexts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "assigned_coach"
+    t.string "certified_by"
+    t.string "email"
+    t.string "phone_number"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "kind", null: false
+    t.datetime "person_captured_at", null: false
+    t.datetime "last_active_on"
+    t.datetime "last_contacted_at"
+    t.uuid "barriers", default: [], array: true
+    t.string "captured_by"
+    t.string "user_id"
+    t.index ["kind"], name: "index_coaches_person_contexts_on_kind"
+    t.index ["user_id"], name: "index_coaches_person_contexts_on_user_id"
+  end
+
+  create_table "coaches_person_job_recommendations", force: :cascade do |t|
+    t.uuid "coaches_coaches_id", null: false
+    t.uuid "coaches_person_contexts_id", null: false
+    t.uuid "coaches_jobs_id", null: false
+    t.index ["coaches_coaches_id"], name: "index_coaches_person_job_recommendations_on_coaches_coaches_id"
+    t.index ["coaches_jobs_id"], name: "index_coaches_person_job_recommendations_on_coaches_jobs_id"
+    t.index ["coaches_person_contexts_id"], name: "idx_on_coaches_person_contexts_id_5ae9369261"
+  end
+
+  create_table "coaches_person_notes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "coaches_person_context_id", null: false
+    t.text "note", null: false
+    t.datetime "note_taken_at", null: false
+    t.string "note_taken_by", null: false
+    t.index ["coaches_person_context_id"], name: "index_coaches_person_notes_on_coaches_person_context_id"
+  end
+
+  create_table "coaches_reminders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "coaches_coaches_id", null: false
+    t.text "note", null: false
+    t.datetime "reminder_at", null: false
+    t.string "state", null: false
+    t.uuid "message_task_id", null: false
+    t.uuid "person_id"
+    t.index ["coaches_coaches_id"], name: "index_coaches_reminders_on_coaches_coaches_id"
   end
 
   create_table "contact_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -783,15 +776,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_161921) do
     t.index ["user_id"], name: "index_search_saved_jobs_on_user_id"
   end
 
-  create_table "seeker_barriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coach_seeker_context_id", null: false
-    t.uuid "barrier_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["barrier_id"], name: "index_seeker_barriers_on_barrier_id"
-    t.index ["coach_seeker_context_id"], name: "index_seeker_barriers_on_coach_seeker_context_id"
-  end
-
   create_table "seeker_invites", id: :text, force: :cascade do |t|
     t.text "email", null: false
     t.text "first_name", null: false
@@ -801,17 +785,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_161921) do
     t.datetime "used_at", precision: 3
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
-  end
-
-  create_table "seeker_notes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coach_seeker_context_id", null: false
-    t.uuid "note_id", null: false
-    t.string "note", null: false
-    t.datetime "note_taken_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.text "note_taken_by"
-    t.index ["coach_seeker_context_id"], name: "index_seeker_notes_on_coach_seeker_context_id"
   end
 
   create_table "seeker_references", id: :text, force: :cascade do |t|
@@ -962,12 +935,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_161921) do
   add_foreign_key "career_paths", "jobs", name: "CareerPath_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "chats_messages", "chats_applicant_chats", column: "chats_applicant_chats_id"
   add_foreign_key "chats_read_receipts", "chats_applicant_chats", column: "chats_applicant_chats_id"
-  add_foreign_key "coaches_reminders", "coaches"
-  add_foreign_key "coaches_seeker_applications", "coach_seeker_contexts"
-  add_foreign_key "coaches_seeker_attributes", "coach_seeker_contexts"
-  add_foreign_key "coaches_seeker_job_recommendations", "coach_seeker_contexts"
-  add_foreign_key "coaches_seeker_job_recommendations", "coaches"
-  add_foreign_key "coaches_seeker_job_recommendations", "coaches_jobs", column: "job_id"
   add_foreign_key "credentials", "organizations", name: "Credential_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "desired_certifications", "jobs", name: "DesiredCertification_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_certifications", "master_certifications", name: "DesiredCertification_master_certification_id_fkey", on_update: :cascade, on_delete: :restrict
@@ -1004,11 +971,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_161921) do
   add_foreign_key "recruiters", "users", name: "Recruiter_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "search_applications", "search_jobs"
   add_foreign_key "search_saved_jobs", "search_jobs"
-  add_foreign_key "seeker_barriers", "barriers"
-  add_foreign_key "seeker_barriers", "coach_seeker_contexts"
   add_foreign_key "seeker_invites", "programs", name: "SeekerInvite_program_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_invites", "training_providers", name: "SeekerInvite_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "seeker_notes", "coach_seeker_contexts"
   add_foreign_key "seeker_references", "training_provider_profiles", column: "author_profile_id", name: "Reference_author_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_references", "training_providers", name: "Reference_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "sessions", "users", name: "Session_user_id_fkey", on_update: :cascade, on_delete: :cascade

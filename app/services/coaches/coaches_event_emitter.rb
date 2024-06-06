@@ -88,7 +88,7 @@ module Coaches
         person_id:,
         trace_id:,
         data: {
-          coach_id: coach.coach_id,
+          coach_id: coach.id,
           coach_email: coach.email,
           coach_first_name: user.first_name,
           coach_last_name: user.last_name
@@ -102,7 +102,7 @@ module Coaches
         person_id:,
         trace_id:,
         data: {
-          coach_id: coach.coach_id,
+          coach_id: coach.id,
           job_id:
         }
       )
@@ -149,7 +149,7 @@ module Coaches
 
       message_service.create!(
         schema: Events::CoachReminderScheduled::V2,
-        coach_id: coach.coach_id,
+        coach_id: coach.id,
         trace_id:,
         data: {
           reminder_id: SecureRandom.uuid,
@@ -192,7 +192,7 @@ module Coaches
     def complete_reminder(coach:, reminder_id:, trace_id:)
       message_service.create!(
         schema: Events::CoachReminderCompleted::V1,
-        coach_id: coach.coach_id,
+        coach_id: coach.id,
         trace_id:,
         data: {
           reminder_id:

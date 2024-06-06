@@ -383,7 +383,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               },
               kind: {
                 type: :string,
-                enum: Coaches::CoachSeekerContext::Kind::ALL
+                enum: Coaches::PersonContext::Kind::ALL
               },
               status: {
                 type: :string,
@@ -459,15 +459,6 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 type: :object,
                 additionalProperties: true,
                 properties: {
-                  skillLevel: {
-                    type: :string,
-                    nullable: true
-                  },
-                  leadId: {
-                    type: :string,
-                    format: :uuid,
-                    nullable: true
-                  },
                   applications: {
                     type: :array,
                     items: {
@@ -476,7 +467,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                   },
                   kind: {
                     type: :string,
-                    enum: Coaches::CoachSeekerContext::Kind::ALL
+                    enum: Coaches::PersonContext::Kind::ALL
                   },
                   notes: {
                     type: :array,

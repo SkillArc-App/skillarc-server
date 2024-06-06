@@ -21,8 +21,8 @@ RSpec.describe Coaches::CoachAssignmentService do
     context "when there are no assigned coach seeker context with in the lookback period" do
       context "when the assignments is too old" do
         before do
-          create(:coaches__coach_seeker_context, assigned_coach: coach1.email, seeker_captured_at: 1.year.ago)
-          create(:coaches__coach_seeker_context, assigned_coach: coach1.email, seeker_captured_at: 1.year.ago)
+          create(:coaches__person_context, assigned_coach: coach1.email, person_captured_at: 1.year.ago)
+          create(:coaches__person_context, assigned_coach: coach1.email, person_captured_at: 1.year.ago)
         end
 
         it "returns the coach with the highest weight" do
@@ -32,8 +32,8 @@ RSpec.describe Coaches::CoachAssignmentService do
 
       context "when the assignemnt is in the window but not assigned" do
         before do
-          create(:coaches__coach_seeker_context, assigned_coach: nil, seeker_captured_at: Time.zone.now)
-          create(:coaches__coach_seeker_context, assigned_coach: nil, seeker_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: nil, person_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: nil, person_captured_at: Time.zone.now)
         end
 
         it "returns the coach with the highest weight" do
@@ -44,7 +44,7 @@ RSpec.describe Coaches::CoachAssignmentService do
 
     context "when one coach has all of the assignments" do
       before do
-        create(:coaches__coach_seeker_context, assigned_coach: coach1.email, seeker_captured_at: Time.zone.now)
+        create(:coaches__person_context, assigned_coach: coach1.email, person_captured_at: Time.zone.now)
       end
 
       it "returns the other coach" do
@@ -55,10 +55,10 @@ RSpec.describe Coaches::CoachAssignmentService do
     context "when both coaches have assignments" do
       context "scenario 1" do
         before do
-          create(:coaches__coach_seeker_context, assigned_coach: coach1.email, seeker_captured_at: Time.zone.now)
-          create(:coaches__coach_seeker_context, assigned_coach: coach1.email, seeker_captured_at: Time.zone.now)
-          create(:coaches__coach_seeker_context, assigned_coach: coach1.email, seeker_captured_at: Time.zone.now)
-          create(:coaches__coach_seeker_context, assigned_coach: coach2.email, seeker_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: coach1.email, person_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: coach1.email, person_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: coach1.email, person_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: coach2.email, person_captured_at: Time.zone.now)
         end
 
         it "returns coach furthest from target" do
@@ -68,11 +68,11 @@ RSpec.describe Coaches::CoachAssignmentService do
 
       context "scenario 2" do
         before do
-          create(:coaches__coach_seeker_context, assigned_coach: coach1.email, seeker_captured_at: Time.zone.now)
-          create(:coaches__coach_seeker_context, assigned_coach: coach1.email, seeker_captured_at: Time.zone.now)
-          create(:coaches__coach_seeker_context, assigned_coach: coach1.email, seeker_captured_at: Time.zone.now)
-          create(:coaches__coach_seeker_context, assigned_coach: coach2.email, seeker_captured_at: Time.zone.now)
-          create(:coaches__coach_seeker_context, assigned_coach: coach2.email, seeker_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: coach1.email, person_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: coach1.email, person_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: coach1.email, person_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: coach2.email, person_captured_at: Time.zone.now)
+          create(:coaches__person_context, assigned_coach: coach2.email, person_captured_at: Time.zone.now)
         end
 
         it "returns coach furthest from target" do

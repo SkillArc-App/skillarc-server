@@ -152,7 +152,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
       expect(message_service)
         .to receive(:create!).with(
           schema: Events::CoachReminderScheduled::V2,
-          coach_id: coach.coach_id,
+          coach_id: coach.id,
           trace_id:,
           data: {
             reminder_id: be_a(String),
@@ -257,7 +257,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
       expect(message_service)
         .to receive(:create!).with(
           schema: Events::CoachReminderCompleted::V1,
-          coach_id: coach.coach_id,
+          coach_id: coach.id,
           trace_id:,
           data: {
             reminder_id:
@@ -281,7 +281,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
         trace_id:,
         data: {
           job_id:,
-          coach_id: coach.coach_id
+          coach_id: coach.id
         }
       ).and_call_original
 
@@ -301,7 +301,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
         person_id:,
         trace_id:,
         data: {
-          coach_id: coach.coach_id,
+          coach_id: coach.id,
           coach_email: coach.email,
           coach_first_name: user.first_name,
           coach_last_name: user.last_name

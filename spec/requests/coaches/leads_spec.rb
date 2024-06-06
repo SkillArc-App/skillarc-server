@@ -28,8 +28,8 @@ RSpec.describe "Leads", type: :request do
 
           context "when there are many leads" do
             before do
-              create(:coaches__coach_seeker_context, :lead)
-              create(:coaches__coach_seeker_context, :lead)
+              create(:coaches__person_context, :lead)
+              create(:coaches__person_context, :lead)
             end
 
             run_test!
@@ -78,8 +78,8 @@ RSpec.describe "Leads", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.context_id }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:id) { person_context.context_id }
       let(:lead_params) do
         {
           lead: {
@@ -111,7 +111,7 @@ RSpec.describe "Leads", type: :request do
                   first_name: "john",
                   last_name: "Chabot",
                   source_kind: People::SourceKind::COACH,
-                  source_identifier: coach.coach_id
+                  source_identifier: coach.id
                 }
               )
               .and_call_original

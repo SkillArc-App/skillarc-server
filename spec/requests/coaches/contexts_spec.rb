@@ -28,13 +28,12 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
           context "when there are many seekers" do
             before do
-              csc1 = create(:coaches__coach_seeker_context)
-              csc2 = create(:coaches__coach_seeker_context)
+              person_context1 = create(:coaches__person_context, barriers: [create(:barrier).id])
+              person_context2 = create(:coaches__person_context)
 
-              create(:coaches__seeker_note, coach_seeker_context: csc1)
-              create(:coaches__seeker_barrier, coach_seeker_context: csc1)
-              create(:coaches__seeker_application, coach_seeker_context: csc2)
-              create(:coaches__seeker_job_recommendation, coach_seeker_context: csc2)
+              create(:coaches__person_note, person_context: person_context1)
+              create(:coaches__person_application, person_context: person_context2)
+              create(:coaches__person_job_recommendation, person_context: person_context2)
             end
 
             run_test!
@@ -56,8 +55,8 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.seeker_id }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:id) { person_context.id }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -72,16 +71,16 @@ RSpec.describe "Coaches::Contexts", type: :request do
           schema '$ref' => '#/components/schemas/coach_seeker'
 
           before do
-            create(:coaches__seeker_note, coach_seeker_context:)
-            create(:coaches__seeker_barrier, coach_seeker_context:)
-            create(:coaches__seeker_application, coach_seeker_context:)
-            create(:coaches__seeker_job_recommendation, coach_seeker_context:)
+            person_context.update(barriers: [create(:barrier).id])
+            create(:coaches__person_note, person_context:)
+            create(:coaches__person_application, person_context:)
+            create(:coaches__person_job_recommendation, person_context:)
 
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
                 schema: Events::PersonViewedInCoaching::V1,
-                coach_id: coach.coach_id,
+                coach_id: coach.id,
                 data: {
                   person_id: id
                 }
@@ -120,8 +119,8 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.seeker_id }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:id) { person_context.id }
       let(:update) do
         {
           level: "advanced"
@@ -167,10 +166,10 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
+      let(:person_context) { create(:coaches__person_context) }
       let(:coach) { create(:coaches__coach) }
-      let(:coach_id) { coach.coach_id }
-      let(:id) { coach_seeker_context.context_id }
+      let(:coach_id) { coach.id }
+      let(:id) { person_context.id }
       let(:update) do
         {
           coachId: coach_id
@@ -221,8 +220,8 @@ RSpec.describe "Coaches::Contexts", type: :request do
 
       it_behaves_like "coach spec unauthenticated openapi"
 
-      let(:coach_seeker_context) { create(:coaches__coach_seeker_context) }
-      let(:id) { coach_seeker_context.seeker_id }
+      let(:person_context) { create(:coaches__person_context) }
+      let(:id) { person_context.id }
       let(:job_id) { job.job_id }
       let(:job) { create(:coaches__job) }
       let(:update) do

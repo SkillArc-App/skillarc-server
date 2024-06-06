@@ -75,6 +75,28 @@ RSpec.describe DbStreamListener do
 
       let(:bookmark_event) { event }
 
+      context "with a second event at the bookmark" do
+        # Hardcoding to the maximum possible uuid value so that it's guaranteed to be after the bookmark according to
+        # ordering of uuids
+        let!(:same_time_event) { create(:event, :user_created, id: "ffffffff-ffff-ffff-ffff-ffffffffffff", occurred_at: event_occurred_at) }
+
+        it "consumes the events after the bookmark" do
+          expect(consumer).to receive(:handle_message).with(
+            same_time_event.message
+          )
+
+          expect(consumer).to receive(:handle_message).with(
+            event2.message
+          )
+
+          expect(consumer).not_to receive(:handle_message).with(
+            event.message
+          )
+
+          subject
+        end
+      end
+
       it "consumes the events after the bookmark" do
         expect(consumer).to receive(:handle_message).with(
           event2.message

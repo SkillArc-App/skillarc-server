@@ -62,7 +62,7 @@ class DbStreamListener < StreamListener
 
   def next_message
     bookmark = load_bookmark
-    unplayed_messages(bookmark).take(1).first.message
+    unplayed_messages(bookmark).take.first.message
   end
 
   private
@@ -72,7 +72,40 @@ class DbStreamListener < StreamListener
   end
 
   def unplayed_messages(bookmark)
-    Event.where("occurred_at > ?", bookmark_timestamp(bookmark)).order(:occurred_at)
+    absolute_order_condition = if bookmark.event_id
+                                 <<~SQL.squish
+                                   ranked_events.absolute_order > (select absolute_order from ranked_events where id = '#{bookmark.event_id}')
+                                 SQL
+                               elsif consumer.can_replay?
+                                 <<~SQL.squish
+                                   ranked_events.absolute_order > 0
+                                 SQL
+                               else
+                                 <<~SQL.squish
+                                   ranked_events.occurred_at > '#{default_time}'
+                                 SQL
+                               end
+
+    sql = <<~SQL.squish
+      WITH ranked_events AS (
+      	SELECT
+      		*,
+      		DENSE_RANK() OVER (ORDER BY occurred_at,
+      			id) as absolute_order
+      	FROM
+      		events ORDER BY
+      			occurred_at,
+      			id
+      )
+      SELECT
+      	*
+      FROM
+      	ranked_events
+      WHERE
+        #{absolute_order_condition}
+    SQL
+
+    Event.from("(#{sql}) AS events").order(:occurred_at, :id)
   end
 
   def initialize(consumer:, listener_name:, now:, stride:) # rubocop:disable Lint/MissingSuper
@@ -80,14 +113,6 @@ class DbStreamListener < StreamListener
     @listener_name = listener_name
     @default_time = consumer.can_replay? ? Time.zone.at(0) : now
     @stride = stride
-  end
-
-  def bookmark_timestamp(bookmark)
-    return bookmark.current_timestamp if bookmark.current_timestamp.present?
-    return default_time unless bookmark.id
-    return default_time unless bookmark.event_id
-
-    Event.find(bookmark.event_id).message.occurred_at
   end
 
   def update_bookmark(bookmark, event)

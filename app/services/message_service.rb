@@ -158,7 +158,7 @@ class MessageService
     private
 
     def order_and_map(message_relation)
-      message_relation.order(:occurred_at).map(&:message)
+      message_relation.order(:occurred_at, :id).map(&:message)
     end
 
     def registry

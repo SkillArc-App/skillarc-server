@@ -123,7 +123,7 @@ module Coaches
     on_message Events::BarrierUpdated::V3, :sync do |message|
       person_context = PersonContext.find(message.aggregate.id)
 
-      person_context.update!(barriers: [message.data.barriers])
+      person_context.update!(barriers: message.data.barriers)
     end
 
     on_message Events::CoachAssigned::V3, :sync do |message|

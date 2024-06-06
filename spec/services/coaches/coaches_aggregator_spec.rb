@@ -324,6 +324,26 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         end
       end
 
+      context "when the message is barrier updated" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::BarrierUpdated::V3,
+            aggregate_id: person_id,
+            data: {
+              barriers: [SecureRandom.uuid]
+            }
+          )
+        end
+
+        it "Updates barriers" do
+          subject
+
+          person_context.reload
+          expect(person_context.barriers).to eq(message.data.barriers)
+        end
+      end
+
       context "when the message is person sourced" do
         let(:message) do
           build(

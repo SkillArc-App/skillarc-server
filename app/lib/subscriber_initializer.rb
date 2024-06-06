@@ -11,6 +11,7 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: Jobs::JobsAggregator.new, listener_name: "jobs_aggregator"),
       DbStreamListener.build(consumer: Search::SearchService.new, listener_name: "search"),
       DbStreamListener.build(consumer: People::PersonAggregator.new, listener_name: "person_aggregator"),
+      DbStreamListener.build(consumer: Invites::InvitesAggregator.new, listener_name: "invites_aggregator"),
       DbStreamListener.build(consumer: Chats::ChatsAggregator.new, listener_name: "chats_aggregator"),
       DbStreamListener.build(consumer: Contact::ContactAggregator.new, listener_name: "contact_aggregator"),
       DbStreamListener.build(consumer: Users::UsersAggregator.new, listener_name: "users_aggregator"),

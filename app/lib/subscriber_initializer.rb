@@ -26,6 +26,7 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: Applicants::OrchestrationReactor.new, listener_name: "applicants_orchestration_reactor"),
       DbStreamListener.build(consumer: Attributes::AttributesReactor.new, listener_name: "attributes_reactor"),
       DbStreamListener.build(consumer: Jobs::JobsReactor.new, listener_name: "jobs_reactor"),
+      DbStreamListener.build(consumer: Invites::InvitesReactor.new, listener_name: "invites_reactor"),
       DbStreamListener.build(consumer: Slack::SlackReactor.new, listener_name: "slack_reactor"),
       DbStreamListener.build(consumer: Contact::ContactReactor.new, listener_name: "contact_reactor"),
       DbStreamListener.build(consumer: People::OnboardingReactor.new, listener_name: "onboarding_reactor"),

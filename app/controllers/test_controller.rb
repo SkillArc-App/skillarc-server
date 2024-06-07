@@ -43,30 +43,9 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     with_message_service do
       job = create_job_with_messages(message_service:)
 
-      recruiter_user = Builders::UserBuilder.new(message_service).build
-      invite_id = SecureRandom.uuid
-
-      message_service.create!(
-        schema: Events::EmployerInviteCreated::V1,
-        invite_id:,
-        data: {
-          invite_email: recruiter_user.email,
-          first_name: recruiter_user.first_name,
-          last_name: recruiter_user.last_name,
-          employer_id: job.employer.id,
-          employer_name: job.employer.name
-        }
-      )
-
-      message_service.create!(
-        schema: Events::EmployerInviteAccepted::V2,
-        invite_id:,
-        data: {
-          user_id: recruiter_user.id,
-          invite_email: recruiter_user.email,
-          employer_id: job.employer.id,
-          employer_name: job.employer.name
-        }
+      recruiter_user = Builders::UserBuilder.new(message_service).build_as_recruiter(
+        employer_id: job.employer.id,
+        employer_name: job.employer.name
       )
 
       person = Builders::PersonBuilder.new(message_service).build

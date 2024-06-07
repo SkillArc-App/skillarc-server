@@ -46,14 +46,6 @@ sg_employer = EmployerStruct.new(
     'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
 )
 
-recruiter_user = User.create!(
-  id: SecureRandom.uuid,
-  first_name: 'Recruiter',
-  last_name: 'User',
-  email: 'recruiter@blocktrianapp.com',
-  sub: 'recruitersub'
-)
-
 mechanic_job = JobStruct.new(
   id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
   category: Job::Categories::STAFFING,
@@ -130,39 +122,14 @@ message_service.create!(
   }
 )
 
-message_service.create!(
-  user_id: recruiter_user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: recruiter_user.first_name,
-    last_name: recruiter_user.last_name,
-    email: recruiter_user.email,
-    sub: recruiter_user.sub
-  }
-)
-
-invite_id = SecureRandom.uuid
-message_service.create!(
-  invite_id:,
-  schema: Events::EmployerInviteCreated::V1,
-  data: {
-    invite_email: recruiter_user.email,
-    first_name: recruiter_user.first_name,
-    last_name: recruiter_user.last_name,
-    employer_id: turner_employer.id,
-    employer_name: turner_employer.name
-  }
-)
-
-message_service.create!(
-  invite_id:,
-  schema: Events::EmployerInviteAccepted::V2,
-  data: {
-    user_id: recruiter_user.id,
-    invite_email: recruiter_user.email,
-    employer_id: turner_employer.id,
-    employer_name: turner_employer.name
-  }
+Builders::UserBuilder.new(message_service).build_as_recruiter(
+  id: SecureRandom.uuid,
+  first_name: 'Recruiter',
+  last_name: 'User',
+  email: 'recruiter@blocktrianapp.com',
+  sub: 'recruitersub',
+  employer_id: turner_employer.id,
+  employer_name: turner_employer.name
 )
 
 message_service.create!(

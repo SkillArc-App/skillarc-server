@@ -54,12 +54,6 @@ recruiter_user = User.create!(
   sub: 'recruitersub'
 )
 
-Recruiter.create!(
-  id: SecureRandom.uuid,
-  employer: turner_employer,
-  user: recruiter_user
-)
-
 mechanic_job = JobStruct.new(
   id: '08cedbc3-2e7b-4ba0-b7af-03df98c187b3',
   category: Job::Categories::STAFFING,
@@ -147,11 +141,24 @@ message_service.create!(
   }
 )
 
+invite_id = SecureRandom.uuid
 message_service.create!(
-  employer_id: turner_employer.id,
-  schema: Events::EmployerInviteAccepted::V1,
+  invite_id:,
+  schema: Events::EmployerInviteCreated::V1,
   data: {
-    employer_invite_id: SecureRandom.uuid,
+    invite_email: recruiter_user.email,
+    first_name: recruiter_user.first_name,
+    last_name: recruiter_user.last_name,
+    employer_id: turner_employer.id,
+    employer_name: turner_employer.name
+  }
+)
+
+message_service.create!(
+  invite_id:,
+  schema: Events::EmployerInviteAccepted::V2,
+  data: {
+    user_id: recruiter_user.id,
     invite_email: recruiter_user.email,
     employer_id: turner_employer.id,
     employer_name: turner_employer.name

@@ -44,13 +44,25 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
       job = create_job_with_messages(message_service:)
 
       recruiter_user = Builders::UserBuilder.new(message_service).build
-      FactoryBot.create(:recruiter, employer: job.employer, user: recruiter_user)
+      invite_id = SecureRandom.uuid
 
       message_service.create!(
-        schema: Events::EmployerInviteAccepted::V1,
-        employer_id: job.employer.id,
+        schema: Events::EmployerInviteCreated::V1,
+        invite_id:,
         data: {
-          employer_invite_id: SecureRandom.uuid,
+          invite_email: recruiter_user.email,
+          first_name: recruiter_user.first_name,
+          last_name: recruiter_user.last_name,
+          employer_id: job.employer.id,
+          employer_name: job.employer.name
+        }
+      )
+
+      message_service.create!(
+        schema: Events::EmployerInviteAccepted::V2,
+        invite_id:,
+        data: {
+          user_id: recruiter_user.id,
           invite_email: recruiter_user.email,
           employer_id: job.employer.id,
           employer_name: job.employer.name
@@ -193,7 +205,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
     employer_id = SecureRandom.uuid
     job_id = SecureRandom.uuid
 
-    employer = FactoryBot.create(:employer, id: employer_id, location: "Columbus Ohio", name: SecureRandom.uuid, bio: "We are a company.")
+    employer = FactoryBot.build(:employer, id: employer_id, location: "Columbus Ohio", name: SecureRandom.uuid, bio: "We are a company.")
     job = FactoryBot.build(:job, employer:, id: job_id,
                                  employment_title: SecureRandom.uuid,
                                  benefits_description: "We have benefits.",

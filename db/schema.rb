@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_05_163733) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_06_181017) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -474,6 +474,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_163733) do
     t.datetime "updated_at", null: false
     t.index ["execute_at"], name: "index_infrastructure_tasks_on_execute_at"
     t.index ["state"], name: "index_infrastructure_tasks_on_state"
+  end
+
+  create_table "invites_employer_invites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email", null: false
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.datetime "used_at"
+    t.uuid "employer_id", null: false
+    t.string "employer_name", null: false
   end
 
   create_table "job_attributes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -942,7 +951,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_163733) do
   add_foreign_key "desired_skills", "master_skills", name: "DesiredSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "education_experiences", "organizations", name: "EducationExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "education_experiences", "seekers"
-  add_foreign_key "employer_invites", "employers", name: "EmployerInvite_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "employers_applicants", "employers_jobs"
   add_foreign_key "employers_job_owners", "employers_jobs"
   add_foreign_key "employers_job_owners", "employers_recruiters"
@@ -967,7 +975,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_163733) do
   add_foreign_key "profile_skills", "seekers"
   add_foreign_key "profiles", "users", name: "Profile_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "programs", "training_providers", name: "Program_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "recruiters", "employers", name: "Recruiter_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "recruiters", "users", name: "Recruiter_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "search_applications", "search_jobs"
   add_foreign_key "search_saved_jobs", "search_jobs"

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe EmployerChats do
-  let!(:recruiter) { create(:recruiter, employer:, user: recruiter_user) }
+  let!(:recruiter) { create(:recruiter, employer_id: employer.id, user: recruiter_user) }
   let(:employer) { create(:employer) }
 
   let(:recruiter_user) { create(:user, first_name: "Recruiter", last_name: "User") }

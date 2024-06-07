@@ -3,38 +3,6 @@ load 'spec/builders/person_builder.rb'
 
 message_service = MessageService.new
 
-turner_employer = Employer.create!(
-  id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
-  name: 'Turner Construction Company',
-  bio: 'Turner is a North America-based, international construction services company and is a leading builder in diverse and numerous market segments. The company has earned recognition for undertaking large, complex projects, fostering',
-  location: 'Global',
-  logo_url:
-    'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
-)
-
-sg_employer = Employer.create!(
-  id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
-  name: 'The Superior Group',
-  bio: 'The Superior Group is a ​national leader in electrical construction, engineering, and technology services.',
-  location: 'Ohio',
-  logo_url:
-    'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
-)
-
-recruiter_user = User.create!(
-  id: SecureRandom.uuid,
-  first_name: 'Recruiter',
-  last_name: 'User',
-  email: 'recruiter@blocktrianapp.com',
-  sub: 'recruitersub'
-)
-
-Recruiter.create!(
-  id: SecureRandom.uuid,
-  employer: turner_employer,
-  user: recruiter_user
-)
-
 JobStruct = Struct.new(
   :id,
   :category,
@@ -50,6 +18,32 @@ JobStruct = Struct.new(
   :work_days,
   :requirements_description,
   keyword_init: true
+)
+
+EmployerStruct = Struct.new(
+  :id,
+  :name,
+  :bio,
+  :location,
+  :logo_url
+)
+
+turner_employer = EmployerStruct.new(
+  id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
+  name: 'Turner Construction Company',
+  bio: 'Turner is a North America-based, international construction services company and is a leading builder in diverse and numerous market segments. The company has earned recognition for undertaking large, complex projects, fostering',
+  location: 'Global',
+  logo_url:
+    'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
+)
+
+sg_employer = EmployerStruct.new(
+  id: 'c844012e-751b-4d0a-af62-89339a3f8af4',
+  name: 'The Superior Group',
+  bio: 'The Superior Group is a ​national leader in electrical construction, engineering, and technology services.',
+  location: 'Ohio',
+  logo_url:
+    'https://media.licdn.com/dms/image/C4E0BAQGLeh2i2nqj-A/company-logo_200_200/0/1528380278542?e=2147483647&v=beta&t=L9tuLliGKhuA4_WGgrM1frOOSuxR6aupcExGE-r45g0'
 )
 
 mechanic_job = JobStruct.new(
@@ -128,26 +122,14 @@ message_service.create!(
   }
 )
 
-message_service.create!(
-  user_id: recruiter_user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: recruiter_user.first_name,
-    last_name: recruiter_user.last_name,
-    email: recruiter_user.email,
-    sub: recruiter_user.sub
-  }
-)
-
-message_service.create!(
+Builders::UserBuilder.new(message_service).build_as_recruiter(
+  id: SecureRandom.uuid,
+  first_name: 'Recruiter',
+  last_name: 'User',
+  email: 'recruiter@blocktrianapp.com',
+  sub: 'recruitersub',
   employer_id: turner_employer.id,
-  schema: Events::EmployerInviteAccepted::V1,
-  data: {
-    employer_invite_id: SecureRandom.uuid,
-    invite_email: recruiter_user.email,
-    employer_id: turner_employer.id,
-    employer_name: turner_employer.name
-  }
+  employer_name: turner_employer.name
 )
 
 message_service.create!(

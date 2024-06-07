@@ -37,6 +37,40 @@ module Builders
       user
     end
 
+    def build_as_recruiter(
+      employer_id:,
+      employer_name:,
+      **
+    )
+      user = UserBuilder.new(message_service).build(**)
+
+      invite_id = SecureRandom.uuid
+      message_service.create!(
+        invite_id:,
+        schema: Events::EmployerInviteCreated::V1,
+        data: {
+          invite_email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          employer_id:,
+          employer_name:
+        }
+      )
+
+      message_service.create!(
+        invite_id:,
+        schema: Events::EmployerInviteAccepted::V2,
+        data: {
+          user_id: user.id,
+          invite_email: user.email,
+          employer_id:,
+          employer_name:
+        }
+      )
+
+      user
+    end
+
     private
 
     attr_reader :message_service

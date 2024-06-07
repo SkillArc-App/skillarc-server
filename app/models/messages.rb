@@ -139,6 +139,19 @@ module Messages
       ].freeze
     end
 
+    module Invite
+      EVENTS = [
+        EMPLOYER_INVITE_CREATED = 'employer_invite_created',
+        EMPLOYER_INVITE_ACCEPTED = 'employer_invite_accepted',
+        EMPLOYER_INVITE_USED_BY_WRONG_USER = 'employer_invite_used_by_wrong_user'
+      ].freeze
+
+      COMMANDS = [
+        CREATE_EMPLOYER_INVITE = 'create_employer_invite',
+        ACCEPT_EMPLOYER_INVITE = 'accept_employer_invite'
+      ].freeze
+    end
+
     module Chats
       EVENTS = [
         CHAT_CREATED = 'chat_created',
@@ -178,7 +191,6 @@ module Messages
     module Employers
       EVENTS = [
         EMPLOYER_CREATED = 'employer_created',
-        EMPLOYER_INVITE_ACCEPTED = 'employer_invite_accepted',
         EMPLOYER_UPDATED = 'employer_updated',
         JOB_OWNER_ASSIGNED = 'job_owner_assigned'
       ].freeze
@@ -303,6 +315,7 @@ module Messages
       *Coaches::EVENTS,
       *Chats::EVENTS,
       *Jobs::EVENTS,
+      *Invite::EVENTS,
       *JobOrders::EVENTS,
       *Employers::EVENTS,
       *Seekers::EVENTS,
@@ -322,6 +335,7 @@ module Messages
       *Chats::COMMANDS,
       *Coaches::COMMANDS,
       *Seekers::COMMANDS,
+      *Invite::COMMANDS,
       *JobOrders::COMMANDS,
       *Search::COMMANDS,
       *Infrastructure::COMMANDS

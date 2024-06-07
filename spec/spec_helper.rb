@@ -27,6 +27,7 @@ require "shared_examples/default_headers_context"
 require "shared_examples/message_consumer"
 require "shared_examples/event_emitter"
 require "shared_examples/command_emitter"
+require "support/message_consumer_error"
 require "builders/user_builder"
 require "builders/person_builder"
 

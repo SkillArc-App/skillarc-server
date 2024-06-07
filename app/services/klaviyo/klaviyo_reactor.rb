@@ -73,7 +73,7 @@ module Klaviyo
       end
     end
 
-    on_message Events::EmployerInviteAccepted::V1 do |message|
+    on_message Events::EmployerInviteAccepted::V2 do |message|
       dedup_messages(message) do
         client.employer_invite_accepted(
           event_id: message.id,

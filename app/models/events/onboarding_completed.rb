@@ -23,7 +23,7 @@ module Events
       message_type: Messages::Types::Person::ONBOARDING_COMPLETED,
       version: 1
     )
-    V2 = Messages::Schema.deprecated(
+    V2 = Messages::Schema.inactive(
       type: Messages::EVENT,
       data: Messages::Nothing,
       metadata: Messages::Nothing,

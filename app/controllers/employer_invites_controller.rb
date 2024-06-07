@@ -7,25 +7,42 @@ class EmployerInvitesController < ApplicationController
   before_action :admin_authorize, only: %i[index create]
 
   def index
-    render json: EmployerInvite.all.map { |invite| serialize_invite(invite) }
+    render json: Invites::EmployerInvite.all.map { |invite| serialize_invite(invite) }
   end
 
   def create
     with_message_service do
-      invite = EmployerInvite.create!(**params.require(:employer_invite).permit(:email, :first_name, :last_name, :employer_id), id: SecureRandom.uuid)
+      invite_params = params.require(:employer_invite).permit(:email, :employer_id, :first_name, :last_name).to_h.symbolize_keys
 
-      render json: invite
+      message_service.create!(
+        schema: Commands::CreateEmployerInvite::V1,
+        trace_id: request.request_id,
+        invite_id: SecureRandom.uuid,
+        data: {
+          invite_email: invite_params[:email],
+          employer_id: invite_params[:employer_id],
+          first_name: invite_params[:first_name],
+          last_name: invite_params[:last_name]
+        }
+      )
     end
+
+    head :created
   end
 
   def used
     with_message_service do
-      invite = EmployerInvite.find(params[:employer_invite_id])
-
-      EmployerInviteService.new(invite).accept
-
-      render json: invite
+      message_service.create!(
+        schema: Commands::AcceptEmployerInvite::V1,
+        trace_id: request.request_id,
+        invite_id: params[:employer_invite_id],
+        data: {
+          user_id: current_user.id
+        }
+      )
     end
+
+    head :accepted
   end
 
   private
@@ -35,10 +52,10 @@ class EmployerInvitesController < ApplicationController
 
     {
       email: invite.email,
-      firstName: invite.first_name,
-      lastName: invite.last_name,
-      usedAt: invite.used_at,
-      employerName: invite.employer.name,
+      first_name: invite.first_name,
+      last_name: invite.last_name,
+      used_at: invite.used_at,
+      employer_name: invite.employer_name,
       link: "#{prefix}/invites/employers/#{invite.id}"
     }
   end

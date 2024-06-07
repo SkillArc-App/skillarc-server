@@ -195,10 +195,9 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         let(:message) do
           build(
             :message,
-            aggregate_id: user.user_id,
-            schema: Events::EmployerInviteAccepted::V1,
+            schema: Events::EmployerInviteAccepted::V2,
             data: {
-              employer_invite_id: SecureRandom.uuid,
+              user_id: user.user_id,
               invite_email: user.email,
               employer_id: SecureRandom.uuid,
               employer_name: "something"

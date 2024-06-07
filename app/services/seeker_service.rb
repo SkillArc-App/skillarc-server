@@ -10,10 +10,10 @@ class SeekerService
 
     if user_id.present? && user_id != seeker.user_id
       message_service.create!(
-        schema: Events::SeekerViewed::V1,
+        schema: Events::PersonViewed::V1,
         user_id:,
         data: {
-          seeker_id: seeker.id
+          person_id: seeker.id
         }
       )
     end

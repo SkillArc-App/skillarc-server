@@ -125,6 +125,31 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
+          employer_invite: {
+            type: :object,
+            properties: {
+              email: {
+                type: :string
+              },
+              firstName: {
+                type: :string
+              },
+              lastName: {
+                type: :string
+              },
+              usedAt: {
+                type: :string,
+                format: 'date-time',
+                nullable: true
+              },
+              employerName: {
+                type: :string
+              },
+              link: {
+                type: :string
+              }
+            }
+          },
           one_user: {
             id: {
               type: :string,

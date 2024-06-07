@@ -45,7 +45,7 @@ module Employers
       )
     end
 
-    on_message Events::EmployerInviteAccepted::V1 do |message|
+    on_message Events::EmployerInviteAccepted::V2 do |message|
       employer = Employer.find_by!(employer_id: message.data.employer_id)
 
       Recruiter.create!(

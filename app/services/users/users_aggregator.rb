@@ -2,6 +2,7 @@ module Users
   class UsersAggregator < MessageConsumer
     def reset_for_replay
       UserRole.delete_all
+      Recruiter.delete_all
     end
 
     on_message Events::PersonAssociatedToUser::V1 do |message|
@@ -21,6 +22,14 @@ module Users
         id: SecureRandom.uuid,
         role:,
         user:
+      )
+    end
+
+    on_message Events::EmployerInviteAccepted::V2 do |message|
+      Recruiter.create!(
+        id: SecureRandom.uuid,
+        user_id: message.data.user_id,
+        employer_id: message.data.employer_id
       )
     end
   end

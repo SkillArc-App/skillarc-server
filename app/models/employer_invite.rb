@@ -11,10 +11,5 @@
 #  updated_at  :datetime         not null
 #  employer_id :text             not null
 #
-# Foreign Keys
-#
-#  EmployerInvite_employer_id_fkey  (employer_id => employers.id) ON DELETE => restrict ON UPDATE => cascade
-#
 class EmployerInvite < ApplicationRecord
-  belongs_to :employer
 end

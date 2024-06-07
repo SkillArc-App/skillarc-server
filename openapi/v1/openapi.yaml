@@ -1635,6 +1635,102 @@ paths:
           description: unauthenticated
         '202':
           description: Removes a experience
+  "/employer_invites":
+    post:
+      summary: Create an invite
+      tags:
+      - Invite
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Create an invite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                employer_id:
+                  type: string
+                  format: uuid
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+              required:
+              - email
+              - employer_id
+              - first_name
+              - last_name
+    get:
+      summary: Get all invites
+      tags:
+      - Invite
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns invites
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/employer_invite"
+  "/employer_invites/{id}/used":
+    put:
+      summary: Use an invite
+      tags:
+      - Invite
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Uses an invite
   "/employers/applicants/{id}":
     put:
       summary: Update an applicants status
@@ -3385,6 +3481,23 @@ components:
           type: string
           nullable: true
         status:
+          type: string
+    employer_invite:
+      type: object
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        usedAt:
+          type: string
+          format: date-time
+          nullable: true
+        employerName:
+          type: string
+        link:
           type: string
     one_user:
       id:

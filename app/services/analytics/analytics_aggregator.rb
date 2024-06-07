@@ -72,7 +72,7 @@ module Analytics
       user.update!(kind: DimUser::Kind::COACH, coach_id: message.data.coach_id)
     end
 
-    on_message Events::EmployerInviteAccepted::V1 do |message|
+    on_message Events::EmployerInviteAccepted::V2 do |message|
       user = DimUser.find_by!(email: message.data.invite_email)
 
       user.update!(kind: DimUser::Kind::RECRUITER)

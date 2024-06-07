@@ -370,9 +370,9 @@ RSpec.describe Klaviyo::KlaviyoReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::EmployerInviteAccepted::V1,
+          schema: Events::EmployerInviteAccepted::V2,
           data: {
-            employer_invite_id: SecureRandom.uuid,
+            user_id: SecureRandom.uuid,
             invite_email: "example@email.com",
             employer_id: SecureRandom.uuid,
             employer_name: "Employer"

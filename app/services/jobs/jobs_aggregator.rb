@@ -112,7 +112,7 @@ module Jobs
         name: message.data.name,
         location: message.data.location,
         bio: message.data.bio,
-        logo_url: message.data.logo_url,
+        logo_url: message.data.logo_url
       )
     end
 
@@ -122,7 +122,7 @@ module Jobs
         name: message.data.name,
         location: message.data.location,
         bio: message.data.bio,
-        logo_url: message.data.logo_url,
+        logo_url: message.data.logo_url
       )
     end
 

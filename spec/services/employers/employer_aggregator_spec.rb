@@ -7,7 +7,7 @@ RSpec.describe Employers::EmployerAggregator do
     let(:employer_created) do
       build(
         :message,
-        :employer_created,
+        schema: Events::EmployerCreated::V1,
         aggregate_id: employer_id,
         data: {
           name: "name",
@@ -20,7 +20,7 @@ RSpec.describe Employers::EmployerAggregator do
     let(:employer_updated) do
       build(
         :message,
-        :employer_updated,
+        schema: Events::EmployerUpdated::V1,
         aggregate_id: employer_id,
         data: {
           name: "name",
@@ -33,9 +33,9 @@ RSpec.describe Employers::EmployerAggregator do
     let(:employer_invite_accepted) do
       build(
         :message,
-        :employer_invite_accepted,
+        schema: Events::EmployerInviteAccepted::V2,
         data: {
-          employer_invite_id: SecureRandom.uuid,
+          user_id: SecureRandom.uuid,
           invite_email: "invite_email",
           employer_id:,
           employer_name: "employer_name"
@@ -45,9 +45,8 @@ RSpec.describe Employers::EmployerAggregator do
     let(:job_created) do
       build(
         :message,
-        :job_created,
+        schema: Events::JobCreated::V3,
         aggregate_id: job_id,
-        version: 3,
         data: {
           category: Job::Categories::MARKETPLACE,
           employer_id:,

@@ -51,6 +51,7 @@ module Klaviyo
           email:,
           event_id: message.id,
           occurred_at: message.occurred_at,
+          profile_properties: {},
           profile_attributes: {
             first_name: message.data.first_name,
             last_name: message.data.last_name,

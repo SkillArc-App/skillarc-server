@@ -141,6 +141,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
               email:,
               event_id: message.id,
               occurred_at: message.occurred_at,
+              profile_properties: {},
               profile_attributes: {
                 first_name: "Hannah",
                 last_name: "Skillz",

@@ -51,7 +51,7 @@ class SeekerService
         last_name: seeker.last_name,
         email: seeker.email,
         phone_number: seeker.phone_number,
-        zip_code: seeker.zip_code,
+        zip_code: seeker.zip_code
       }
     }
   end

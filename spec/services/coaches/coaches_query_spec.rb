@@ -277,29 +277,6 @@ RSpec.describe Coaches::CoachesQuery do
     end
   end
 
-  describe ".all_barriers" do
-    subject { described_class.all_barriers }
-
-    before do
-      create(
-        :barrier,
-        barrier_id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
-        name: "barrier1"
-      )
-    end
-
-    it "returns all barriers" do
-      expected_barriers = [
-        {
-          id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
-          name: "barrier1"
-        }
-      ]
-
-      expect(subject).to eq(expected_barriers)
-    end
-  end
-
   describe ".tasks" do
     subject { described_class.tasks(coach:, person_id:) }
 

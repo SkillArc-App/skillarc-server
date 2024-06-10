@@ -8,7 +8,6 @@ Rails.application.routes.draw do
 
   scope module: 'coaches', path: 'coaches' do
     resources :attributes
-    resources :barriers
     resources :contexts do
       resources :notes, only: %i[create update destroy]
 
@@ -94,8 +93,6 @@ Rails.application.routes.draw do
       resources :students
     end
   end
-  resources :references
-  resources :students
 
   resources :jobs do
     post 'apply' => 'jobs#apply'
@@ -138,7 +135,6 @@ Rails.application.routes.draw do
       resources :job_attributes
     end
     resources :users
-    resources :application_analytics
   end
 
   resources :employer_invites do

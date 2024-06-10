@@ -14,7 +14,7 @@ module Klaviyo
 
     def lead_captured(email:, occurred_at:, event_id:, profile_attributes:); end
 
-    def user_updated(email:, occurred_at:, event_id:, profile_attributes:); end
+    def user_updated(email:, occurred_at:, event_id:, profile_attributes:, profile_properties:); end
 
     def education_experience_entered(email:, occurred_at:, event_id:); end
 

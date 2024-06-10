@@ -5,7 +5,7 @@ module Invites
       TrainingProviderInvite.delete_all
     end
 
-    on_message Events::EmployerInviteCreated::V1, :sync do |message|
+    on_message Events::EmployerInviteCreated::V1 do |message|
       EmployerInvite.create!(
         id: message.aggregate.id,
         email: message.data.invite_email,
@@ -16,14 +16,14 @@ module Invites
       )
     end
 
-    on_message Events::EmployerInviteAccepted::V2, :sync do |message|
+    on_message Events::EmployerInviteAccepted::V2 do |message|
       EmployerInvite.update!(
         message.aggregate.id,
         used_at: message.occurred_at
       )
     end
 
-    on_message Events::TrainingProviderInviteCreated::V1, :sync do |message|
+    on_message Events::TrainingProviderInviteCreated::V1 do |message|
       TrainingProviderInvite.create!(
         id: message.aggregate.id,
         email: message.data.invite_email,
@@ -35,7 +35,7 @@ module Invites
       )
     end
 
-    on_message Events::TrainingProviderInviteAccepted::V2, :sync do |message|
+    on_message Events::TrainingProviderInviteAccepted::V2 do |message|
       TrainingProviderInvite.update!(
         message.aggregate.id,
         used_at: message.occurred_at

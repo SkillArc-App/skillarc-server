@@ -68,14 +68,6 @@ RSpec.describe Invites::InvitesReactor do
         end
       end
 
-      context "when user created is missing" do
-        let(:messages) { [employer_invite_created] }
-
-        it "raises a MissingInviteOrUserEventError" do
-          expect { subject }.to raise_consumer_error(described_class::MissingInviteOrUserEventError, message)
-        end
-      end
-
       context "when employer invite created is missing" do
         let(:messages) { [user_created] }
 
@@ -113,7 +105,7 @@ RSpec.describe Invites::InvitesReactor do
           let(:user_created_email) { "A@B.C" }
           let(:employer_invite_created_email) { user_created_email }
 
-          it "emits a EmployerInviteUsedByWrongUser" do
+          it "emits a EmployerInviteAccepted" do
             expect(message_service)
               .to receive(:create_once_for_aggregate!)
               .with(

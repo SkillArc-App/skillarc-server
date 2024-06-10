@@ -10,6 +10,7 @@ module Jobs
       DesiredSkill.delete_all
       JobAttribute.delete_all
       Job.delete_all
+      Employer.delete_all
     end
 
     on_message Events::CareerPathCreated::V1, :sync do |message|

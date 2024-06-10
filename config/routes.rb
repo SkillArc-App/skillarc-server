@@ -82,7 +82,7 @@ Rails.application.routes.draw do
   get 'onboarding_sessions' => 'onboarding_sessions#show'
 
   resources :users
-  resources :profiles, only: %i[index show] do
+  resources :profiles, only: %i[show] do
     resources :stories
     resources :skills
     resources :education_experiences

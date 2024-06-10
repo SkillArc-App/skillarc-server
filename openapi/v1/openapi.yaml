@@ -2729,55 +2729,6 @@ paths:
           description: unauthenticated
         '202':
           description: Removes a experience
-  "/profiles":
-    get:
-      summary: Retrieve all seekers
-      tags:
-      - Seekers
-      security:
-      - bearer_auth: []
-      parameters:
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      responses:
-        '401':
-          description: unauthenticated
-        '200':
-          description: profiles retrieved
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      format: uuid
-                    firstName:
-                      type: string
-                    lastName:
-                      type: string
-                    email:
-                      type: string
-                      format: email
-                    trainingProvider:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                            format: uuid
-                          name:
-                            type: string
   "/profiles/{id}":
     get:
       summary: Retrieve a seeker

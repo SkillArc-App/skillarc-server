@@ -3637,10 +3637,6 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/education_experience"
-        industryInterests:
-          type: array
-          items:
-            type: string
         isProfileEditor:
           type: boolean
         otherExperiences:
@@ -3671,7 +3667,7 @@ components:
             - education
             - work
         user:
-          "$ref": "#/components/schemas/user_with_training_provider"
+          "$ref": "#/components/schemas/user"
     lead:
       type: object
       properties:
@@ -4358,16 +4354,6 @@ components:
         phoneNumber:
           type: string
           nullable: true
-    user_with_training_provider:
-      allOf:
-      - "$ref": "#/components/schemas/user"
-      - type: object
-        additionalProperties: true
-        properties:
-          seekerTrainingProviders:
-            type: array
-            items:
-              "$ref": "#/components/schemas/seeker_training_provider"
     seeker_training_provider:
       type: object
       properties:

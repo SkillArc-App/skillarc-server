@@ -147,7 +147,6 @@ Rails.application.routes.draw do
     resources :training_providers, controller: 'seeker_training_providers'
   end
 
-  resources :seeker_invites
   resources :employer_invites do
     put 'used' => 'employer_invites#used'
   end

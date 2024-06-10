@@ -3,6 +3,7 @@ module Users
     def reset_for_replay
       UserRole.delete_all
       Recruiter.delete_all
+      TrainingProviderProfile.delete_all
     end
 
     on_message Events::PersonAssociatedToUser::V1 do |message|
@@ -22,6 +23,14 @@ module Users
         id: SecureRandom.uuid,
         role:,
         user:
+      )
+    end
+
+    on_message Events::TrainingProviderInviteAccepted::V2 do |message|
+      TrainingProviderProfile.create!(
+        id: message.data.training_provider_profile_id,
+        user_id: message.data.user_id,
+        training_provider_id: message.data.training_provider_id
       )
     end
 

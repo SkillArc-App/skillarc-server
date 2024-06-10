@@ -63,6 +63,32 @@ RSpec.describe Users::UsersAggregator do
       end
     end
 
+    context "when the message is training provider invite accepted" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::TrainingProviderInviteAccepted::V2,
+          data: {
+            training_provider_profile_id: SecureRandom.uuid,
+            user_id: user.id,
+            invite_email: user.email,
+            training_provider_id: SecureRandom.uuid,
+            training_provider_name: "Columbus Ultra Lame"
+          }
+        )
+      end
+
+      let(:user) { create(:user) }
+
+      it "creates a training provider profile" do
+        expect { subject }.to change(TrainingProviderProfile, :count).from(0).to(1)
+
+        recruiter = TrainingProviderProfile.first
+        expect(recruiter.user_id).to eq(user.id)
+        expect(recruiter.training_provider_id).to eq(message.data.training_provider_id)
+      end
+    end
+
     context "when the message is employer invite accepted" do
       let(:message) do
         build(

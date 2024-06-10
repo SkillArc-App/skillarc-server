@@ -1,14 +1,12 @@
 module Events
-  module PersonTrainingProviderAdded
+  module TrainingProviderCreated
     module Data
       class V1
         extend Messages::Payload
 
         schema do
-          id Uuid
-          status String
-          program_id Either(String, nil)
-          training_provider_id Uuid
+          name String
+          description String
         end
       end
     end
@@ -17,8 +15,8 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Person,
-      message_type: Messages::Types::TrainingProviders::PERSON_TRAINING_PROVIDER_ADDED,
+      aggregate: Aggregates::TrainingProvider,
+      message_type: Messages::Types::TrainingProviders::TRAINING_PROVIDER_CREATED,
       version: 1
     )
   end

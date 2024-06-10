@@ -39,7 +39,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
+      message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 1
     )
     V2 = Messages::Schema.destroy!(
@@ -47,7 +47,7 @@ module Events
       data: Data::V1,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
+      message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 2
     )
     V3 = Messages::Schema.destroy!(
@@ -55,7 +55,7 @@ module Events
       data: Data::V2,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
+      message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 3
     )
     V4 = Messages::Schema.inactive(
@@ -63,7 +63,7 @@ module Events
       data: Data::V3,
       metadata: Messages::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::SEEKER_TRAINING_PROVIDER_CREATED,
+      message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 4
     )
   end

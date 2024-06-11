@@ -14,11 +14,16 @@
 #
 # Foreign Keys
 #
-#  TrainingProviderProfile_training_provider_id_fkey  (training_provider_id => training_providers.id) ON DELETE => restrict ON UPDATE => cascade
-#  TrainingProviderProfile_user_id_fkey               (user_id => users.id) ON DELETE => restrict ON UPDATE => cascade
+#  TrainingProviderProfile_user_id_fkey  (user_id => users.id) ON DELETE => restrict ON UPDATE => cascade
 #
 class TrainingProviderProfile < ApplicationRecord
-  belongs_to :training_provider
   belongs_to :user
-  has_many :references, inverse_of: :author_profile, class_name: "Reference", foreign_key: "author_profile_id", dependent: :destroy
+
+  def training_provider
+    TrainingProvider.find(training_provider_id)
+  end
+
+  def references
+    Reference.where(author_profile_id: id)
+  end
 end

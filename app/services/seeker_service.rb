@@ -6,8 +6,6 @@ class SeekerService
   end
 
   def get(user_id: nil, seeker_editor: false)
-    industry_interests = seeker.onboarding_session&.responses&.dig("opportunityInterests", "response") || []
-
     if user_id.present? && user_id != seeker.user_id
       message_service.create!(
         schema: Events::PersonViewed::V1,
@@ -25,7 +23,6 @@ class SeekerService
       education_experiences: seeker.education_experiences.map do |ee|
         ee.slice(:id, :organization_name, :title, :graduation_date, :gpa, :activities).symbolize_keys
       end,
-      industry_interests:,
       is_profile_editor: seeker_editor,
       other_experiences: seeker.other_experiences.map do |oe|
         oe.slice(:id, :organization_name, :position, :start_date, :end_date, :is_current, :description).symbolize_keys
@@ -54,13 +51,7 @@ class SeekerService
         last_name: seeker.last_name,
         email: seeker.email,
         phone_number: seeker.phone_number,
-        zip_code: seeker.zip_code,
-        seeker_training_providers: seeker.seeker_training_providers.map do |stp|
-          {
-            program_id: stp&.program&.id,
-            training_provider_id: stp.training_provider.id
-          }
-        end
+        zip_code: seeker.zip_code
       }
     }
   end

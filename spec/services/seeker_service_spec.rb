@@ -110,8 +110,6 @@ RSpec.describe SeekerService do
                                                                    gpa: "3.5",
                                                                    activities: "Activities"
                                                                  })
-      expect(subject[:industry_interests]).to contain_exactly("Manufacturing", "Healthcare")
-
       expect(subject[:other_experiences]).to contain_exactly({
                                                                id: anything,
                                                                organization_name: "Turner Construction",
@@ -158,16 +156,6 @@ RSpec.describe SeekerService do
       expect(user[:last_name]).to eq("Last")
       expect(user[:phone_number]).to eq("1234567890")
       expect(user[:zip_code]).to eq("43210")
-
-      stp = user[:seeker_training_providers][0]
-
-      expect(stp[:training_provider_id]).to be_a(String)
-      expect(stp[:program_id]).to be_a(String)
-
-      second_stp = user[:seeker_training_providers][1]
-
-      expect(second_stp[:training_provider_id]).to be_a(String)
-      expect(second_stp[:program_id]).to eq(nil)
 
       expect(subject[:is_profile_editor]).to eq(true)
     end

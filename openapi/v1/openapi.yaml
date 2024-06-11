@@ -2729,55 +2729,6 @@ paths:
           description: unauthenticated
         '202':
           description: Removes a experience
-  "/profiles":
-    get:
-      summary: Retrieve all seekers
-      tags:
-      - Seekers
-      security:
-      - bearer_auth: []
-      parameters:
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      responses:
-        '401':
-          description: unauthenticated
-        '200':
-          description: profiles retrieved
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      format: uuid
-                    firstName:
-                      type: string
-                    lastName:
-                      type: string
-                    email:
-                      type: string
-                      format: email
-                    trainingProvider:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                            format: uuid
-                          name:
-                            type: string
   "/profiles/{id}":
     get:
       summary: Retrieve a seeker
@@ -3637,10 +3588,6 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/education_experience"
-        industryInterests:
-          type: array
-          items:
-            type: string
         isProfileEditor:
           type: boolean
         otherExperiences:
@@ -3671,7 +3618,7 @@ components:
             - education
             - work
         user:
-          "$ref": "#/components/schemas/user_with_training_provider"
+          "$ref": "#/components/schemas/user"
     lead:
       type: object
       properties:
@@ -4358,16 +4305,6 @@ components:
         phoneNumber:
           type: string
           nullable: true
-    user_with_training_provider:
-      allOf:
-      - "$ref": "#/components/schemas/user"
-      - type: object
-        additionalProperties: true
-        properties:
-          seekerTrainingProviders:
-            type: array
-            items:
-              "$ref": "#/components/schemas/seeker_training_provider"
     seeker_training_provider:
       type: object
       properties:

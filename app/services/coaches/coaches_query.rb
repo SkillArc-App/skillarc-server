@@ -22,15 +22,6 @@ module Coaches
       serialize_coach_tasks(coach, person_id)
     end
 
-    def self.all_barriers
-      Barrier.all.map do |barrier|
-        {
-          id: barrier.barrier_id,
-          name: barrier.name
-        }
-      end
-    end
-
     def self.all_coaches
       Coach.all.map do |coach|
         {

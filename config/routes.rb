@@ -8,7 +8,6 @@ Rails.application.routes.draw do
 
   scope module: 'coaches', path: 'coaches' do
     resources :attributes
-    resources :barriers
     resources :contexts do
       resources :notes, only: %i[create update destroy]
 
@@ -82,7 +81,7 @@ Rails.application.routes.draw do
   get 'onboarding_sessions' => 'onboarding_sessions#show'
 
   resources :users
-  resources :profiles, only: %i[index show] do
+  resources :profiles, only: %i[show] do
     resources :stories
     resources :skills
     resources :education_experiences
@@ -94,10 +93,6 @@ Rails.application.routes.draw do
       resources :students
     end
   end
-  resources :references
-  resources :students
-
-  resources :user_events
 
   resources :jobs do
     post 'apply' => 'jobs#apply'
@@ -140,14 +135,8 @@ Rails.application.routes.draw do
       resources :job_attributes
     end
     resources :users
-    resources :application_analytics
   end
 
-  resources :seekers do
-    resources :training_providers, controller: 'seeker_training_providers'
-  end
-
-  resources :seeker_invites
   resources :employer_invites do
     put 'used' => 'employer_invites#used'
   end

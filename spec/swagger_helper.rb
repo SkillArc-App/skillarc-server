@@ -320,12 +320,6 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                   '$ref' => '#/components/schemas/education_experience'
                 }
               },
-              industryInterests: {
-                type: :array,
-                items: {
-                  type: :string
-                }
-              },
               isProfileEditor: {
                 type: :boolean
               },
@@ -367,7 +361,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 }
               },
               user: {
-                '$ref' => '#/components/schemas/user_with_training_provider'
+                '$ref' => '#/components/schemas/user'
               }
             }
           },
@@ -1309,23 +1303,6 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 nullable: true
               }
             }
-          },
-          user_with_training_provider: {
-            allOf: [
-              { '$ref' => '#/components/schemas/user' },
-              {
-                type: :object,
-                additionalProperties: true,
-                properties: {
-                  seekerTrainingProviders: {
-                    type: :array,
-                    items: {
-                      '$ref' => '#/components/schemas/seeker_training_provider'
-                    }
-                  }
-                }
-              }
-            ]
           },
           seeker_training_provider: {
             type: :object,

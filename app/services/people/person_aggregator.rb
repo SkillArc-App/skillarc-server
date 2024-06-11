@@ -1,10 +1,9 @@
 module People
-  class PersonAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
+  class PersonAggregator < MessageConsumer
     def reset_for_replay
       OtherExperience.delete_all
       EducationExperience.delete_all
       PersonalExperience.delete_all
-      SeekerTrainingProvider.delete_all
       ApplicantStatus.delete_all
       Applicant.delete_all
       ProfileSkill.delete_all
@@ -167,17 +166,6 @@ module People
 
     on_message Events::PersonSkillRemoved::V1, :sync do |message|
       ProfileSkill.find_by!(seeker_id: message.aggregate.id, master_skill_id: message.data.skill_id).destroy!
-    end
-
-    on_message Events::PersonTrainingProviderAdded::V1, :sync do |message|
-      seeker_training_provider_created = SeekerTrainingProvider.find_or_initialize_by(id: message.data.id)
-
-      seeker_training_provider_created.update!(
-        program_id: message.data.program_id,
-        status: message.data.status,
-        seeker_id: message.aggregate.id,
-        training_provider_id: message.data.training_provider_id
-      )
     end
 
     on_message Events::OnboardingStarted::V2, :sync do |message|

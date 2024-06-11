@@ -17,5 +17,4 @@ class Program < ApplicationRecord
   belongs_to :training_provider
 
   has_many :students, class_name: 'SeekerTrainingProvider', dependent: :destroy
-  has_many :seeker_invites, dependent: :destroy
 end

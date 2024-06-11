@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_10_193954) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_11_143807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -795,17 +795,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_10_193954) do
     t.index ["user_id"], name: "index_search_saved_jobs_on_user_id"
   end
 
-  create_table "seeker_invites", id: :text, force: :cascade do |t|
-    t.text "email", null: false
-    t.text "first_name", null: false
-    t.text "last_name", null: false
-    t.text "program_id", null: false
-    t.text "training_provider_id", null: false
-    t.datetime "used_at", precision: 3
-    t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 3, null: false
-  end
-
   create_table "seeker_references", id: :text, force: :cascade do |t|
     t.text "author_profile_id", null: false
     t.text "training_provider_id", null: false
@@ -988,8 +977,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_10_193954) do
   add_foreign_key "recruiters", "users", name: "Recruiter_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "search_applications", "search_jobs"
   add_foreign_key "search_saved_jobs", "search_jobs"
-  add_foreign_key "seeker_invites", "programs", name: "SeekerInvite_program_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "seeker_invites", "training_providers", name: "SeekerInvite_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_references", "training_provider_profiles", column: "author_profile_id", name: "Reference_author_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "seeker_references", "training_providers", name: "Reference_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "sessions", "users", name: "Session_user_id_fkey", on_update: :cascade, on_delete: :cascade

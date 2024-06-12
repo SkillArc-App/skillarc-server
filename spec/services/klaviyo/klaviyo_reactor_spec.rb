@@ -406,9 +406,10 @@ RSpec.describe Klaviyo::KlaviyoReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::TrainingProviderInviteAccepted::V1,
+          schema: Events::TrainingProviderInviteAccepted::V2,
           data: {
-            training_provider_invite_id: SecureRandom.uuid,
+            training_provider_profile_id: SecureRandom.uuid,
+            user_id: SecureRandom.uuid,
             invite_email: "trainer@email.com",
             training_provider_id: SecureRandom.uuid,
             training_provider_name: "Trainer"

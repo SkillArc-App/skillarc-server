@@ -48,7 +48,7 @@ RSpec.describe "Profiles", type: :request do
               create(:other_experience, seeker:)
               create(:personal_experience, seeker:)
               create(:profile_skill, seeker:)
-              create(:reference, seeker_id: seeker.id)
+              create(:reference, author_profile_id: create(:training_provider_profile).id, seeker_id: seeker.id)
               create(:seeker_training_provider, seeker_id: seeker.id)
             end
 
@@ -81,7 +81,7 @@ RSpec.describe "Profiles", type: :request do
                 create(:other_experience, seeker:)
                 create(:personal_experience, seeker:)
                 create(:profile_skill, seeker:)
-                create(:reference, seeker_id: seeker.id)
+                create(:reference, author_profile_id: create(:training_provider_profile).id, seeker_id: seeker.id)
                 create(:seeker_training_provider, seeker_id: seeker.id)
               end
 
@@ -113,7 +113,7 @@ RSpec.describe "Profiles", type: :request do
                 create(:other_experience, seeker:)
                 create(:personal_experience, seeker:)
                 create(:profile_skill, seeker:)
-                create(:reference, seeker_id: seeker.id)
+                create(:reference, author_profile_id: create(:training_provider_profile).id, seeker_id: seeker.id)
                 create(:seeker_training_provider, seeker_id: seeker.id)
               end
 

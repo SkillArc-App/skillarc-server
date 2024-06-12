@@ -150,6 +150,38 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
+          training_provider_invite: {
+            type: :object,
+            properties: {
+              email: {
+                type: :string
+              },
+              firstName: {
+                type: :string
+              },
+              lastName: {
+                type: :string
+              },
+              usedAt: {
+                type: :string,
+                format: 'date-time',
+                nullable: true
+              },
+              trainingProviderId: {
+                type: :string,
+                format: :uuid
+              },
+              trainingProviderName: {
+                type: :string
+              },
+              roleDescription: {
+                type: :string
+              },
+              link: {
+                type: :string
+              }
+            }
+          },
           one_user: {
             id: {
               type: :string,
@@ -1317,6 +1349,24 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
+          program: {
+            type: :object,
+            properties: {
+              name: {
+                type: :string
+              },
+              description: {
+                type: :string
+              },
+              trainingProviderId: {
+                type: :string,
+                format: :uuid
+              },
+              trainingProviderName: {
+                type: :string
+              }
+            }
+          },
           reference: {
             type: :object,
             additionalProperties: true,
@@ -1327,6 +1377,40 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
             }
           },
           training_provider: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              name: {
+                type: :string
+              },
+              description: {
+                type: :string
+              },
+              programs: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: {
+                      type: :string,
+                      format: :uuid
+                    },
+                    name: {
+                      type: :string
+                    },
+                    description: {
+                      type: :string
+                    }
+                  }
+                }
+              }
+            }
+
+          },
+          reference_training_provider: {
             type: :object,
             properties: {
               id: {
@@ -1349,7 +1433,7 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 additionalProperties: true,
                 properties: {
                   trainingProvider: {
-                    '$ref' => "#/components/schemas/training_provider"
+                    '$ref' => "#/components/schemas/reference_training_provider"
                   },
                   authorUser: {
                     '$ref' => '#/components/schemas/user'

@@ -2760,6 +2760,80 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/seeker"
+  "/programs/{id}":
+    get:
+      summary: Get a program
+      tags:
+      - Admin
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Retrieves a program
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/program"
+    put:
+      summary: Update ane existing program
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Updates the program
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                trainingProviderId:
+                  type: string
+                  format: uuid
+              required:
+              - name
+              - description
+              - trainingProviderId
   "/seekers/jobs":
     get:
       summary: Search jobs
@@ -3363,6 +3437,247 @@ paths:
       responses:
         '200':
           description: settled status
+  "/training_provider_invites":
+    post:
+      summary: Create an Training Provider Invite
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Creates an invite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                roleDescription:
+                  type: string
+                trainingProviderId:
+                  type: string
+                  format: uuid
+              required:
+              - email
+              - firstName
+              - lastName
+              - roleDescription
+              - trainingProviderId
+    get:
+      summary: Get all invites
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Retrieves a program
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/training_provider_invite"
+  "/training_provider_invites/{id}/used":
+    put:
+      summary: Use a Training Provider Invite
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Uses the invite
+  "/training_providers/{id}/programs":
+    post:
+      summary: Create a program
+      tags:
+      - Admin
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Creates a program
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                trainingProviderId:
+                  type: string
+                  format: uuid
+              required:
+              - name
+              - description
+              - trainingProviderId
+  "/training_providers":
+    post:
+      summary: Create a Training Provider
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Creates an invite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                trainingProvider:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+                  required:
+                  - name
+                  - description
+              required:
+              - training_provider
+    get:
+      summary: Get all Training Providers
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Retrieves all training provider
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/training_provider"
+  "/training_providers/{id}":
+    get:
+      summary: Get a training provider
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Retrieves the training provider
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/training_provider"
 servers:
 - url: https://{defaultHost}
   variables:
@@ -3447,6 +3762,28 @@ components:
           format: date-time
           nullable: true
         employerName:
+          type: string
+        link:
+          type: string
+    training_provider_invite:
+      type: object
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        usedAt:
+          type: string
+          format: date-time
+          nullable: true
+        trainingProviderId:
+          type: string
+          format: uuid
+        trainingProviderName:
+          type: string
+        roleDescription:
           type: string
         link:
           type: string
@@ -4314,6 +4651,18 @@ components:
         trainingProviderId:
           type: string
           format: uuid
+    program:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        trainingProviderId:
+          type: string
+          format: uuid
+        trainingProviderName:
+          type: string
     reference:
       type: object
       additionalProperties: true
@@ -4321,6 +4670,28 @@ components:
         referenceText:
           type: string
     training_provider:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        programs:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
+              description:
+                type: string
+    reference_training_provider:
       type: object
       properties:
         id:
@@ -4336,7 +4707,7 @@ components:
         additionalProperties: true
         properties:
           trainingProvider:
-            "$ref": "#/components/schemas/training_provider"
+            "$ref": "#/components/schemas/reference_training_provider"
           authorUser:
             "$ref": "#/components/schemas/user"
     not_found:

@@ -40,7 +40,7 @@ class SeekerService
         {
           reference_text: reference.reference_text,
           training_provider: reference.training_provider.slice(:id, :name).symbolize_keys,
-          author_user: reference.user.slice(:id, :email, :first_name, :last_name, :phone_number, :zip_code).symbolize_keys
+          author_user: reference.author_profile.user.slice(:id, :email, :first_name, :last_name, :phone_number, :zip_code).symbolize_keys
         }
       end,
       stories: seeker.stories.map { |s| s.slice(:id, :prompt, :response).symbolize_keys },

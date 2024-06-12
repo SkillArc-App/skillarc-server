@@ -644,92 +644,123 @@ career_paths.each do |career_path|
   )
 end
 
-JobPhoto.create!(
-  [{
+jobs_photos = [
+  {
     id: SecureRandom.uuid,
     job_id: mechanic_job.id,
     photo_url:
       'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWVjaGFuaWN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
   },
-   {
-     id: SecureRandom.uuid,
-     job_id: mechanic_job.id,
-     photo_url:
-       'https://images.unsplash.com/photo-1632733711679-529326f6db12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fG1lY2hhbmljfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
-   },
-   {
-     id: SecureRandom.uuid,
-     job_id: mechanic_job.id,
-     photo_url:
-       'https://images.unsplash.com/photo-1599474151975-1f978922fa02?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1lY2hhbmljfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
-   },
-   {
-     id: SecureRandom.uuid,
-     job_id: earthwork_job.id,
-     photo_url:
-       'https://plus.unsplash.com/premium_photo-1661899566960-942b158bab49?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZWFydGh3b3JrfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
-   },
-   {
-     id: SecureRandom.uuid,
-     job_id: earthwork_job.id,
-     photo_url:
-       'https://images.unsplash.com/photo-1675600653433-c9f0040f62b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGVhcnRod29ya3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60'
-   },
-   {
-     id: SecureRandom.uuid,
-     job_id: earthwork_job.id,
-     photo_url:
-       'https://images.unsplash.com/photo-1612878100556-032bbf1b3bab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGVhcnRod29ya3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60'
-   },
-   {
-     id: SecureRandom.uuid,
-     job_id: contractor.id,
-     photo_url:
-       'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29uc3RydWN0aW9uJTIwd29ya2VyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
-   },
-   {
-     id: SecureRandom.uuid,
-     job_id: contractor.id,
-     photo_url:
-       'https://plus.unsplash.com/premium_photo-1664299941780-e8badc0b1617?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y29uc3RydWN0aW9uJTIwd29ya2VyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
-   }]
-)
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    photo_url:
+      'https://images.unsplash.com/photo-1632733711679-529326f6db12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fG1lY2hhbmljfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    photo_url:
+      'https://images.unsplash.com/photo-1599474151975-1f978922fa02?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1lY2hhbmljfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    photo_url:
+      'https://plus.unsplash.com/premium_photo-1661899566960-942b158bab49?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZWFydGh3b3JrfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    photo_url:
+      'https://images.unsplash.com/photo-1675600653433-c9f0040f62b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGVhcnRod29ya3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    photo_url:
+      'https://images.unsplash.com/photo-1612878100556-032bbf1b3bab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGVhcnRod29ya3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    photo_url:
+      'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29uc3RydWN0aW9uJTIwd29ya2VyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    photo_url:
+      'https://plus.unsplash.com/premium_photo-1664299941780-e8badc0b1617?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y29uc3RydWN0aW9uJTIwd29ya2VyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
+  }
+]
 
-Testimonial.create!([
-                      {
-                        id: SecureRandom.uuid,
-                        job_id: mechanic_job.id,
-                        name: 'Jane Doe',
-                        testimonial:
-                          'Ive worked here for 7 years and love it! This company is like a second family',
-                        title: 'Project Manager',
-                        photo_url:
-                          'https://plus.unsplash.com/premium_photo-1665865607224-9dcd2f488b38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHdvbWFufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
-                      },
-                      {
-                        id: SecureRandom.uuid,
-                        job_id: earthwork_job.id,
-                        name: 'Jack Wilson',
-                        testimonial: 'TSG is a great company. Fair pay, and great benefits!',
-                        title: 'Plumber',
-                        photo_url:
-                          'https://plus.unsplash.com/premium_photo-1682724031797-710f0ac9193f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y29uc3RydWN0aW9uJTIwd29ya2VyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
-                      },
-                      {
-                        id: SecureRandom.uuid,
-                        job_id: earthwork_job.id,
-                        name: 'Lauren Jackson',
-                        testimonial: 'I love my job.',
-                        title: 'Project Accountant'
-                      },
-                      {
-                        id: SecureRandom.uuid,
-                        job_id: contractor.id,
-                        name: 'John Doe',
-                        testimonial: 'This is a great place to work!',
-                        title: 'Project Manager'
-                      },
-                    ])
+jobs_photos.each do |job_photo|
+  message_service.create!(
+    job_id: job_photo[:job_id],
+    schema: Events::JobPhotoCreated::V1,
+    data: {
+      id: job_photo[:id],
+      job_id: job_photo[:job_id],
+      photo_url: job_photo[:photo_url]
+    }
+  )
+end
+
+testimonials = [
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    name: 'Jane Doe',
+    testimonial:
+      'Ive worked here for 7 years and love it! This company is like a second family',
+    title: 'Project Manager',
+    photo_url:
+      'https://plus.unsplash.com/premium_photo-1665865607224-9dcd2f488b38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHdvbWFufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    name: 'Jack Wilson',
+    testimonial: 'TSG is a great company. Fair pay, and great benefits!',
+    title: 'Plumber',
+    photo_url:
+      'https://plus.unsplash.com/premium_photo-1682724031797-710f0ac9193f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y29uc3RydWN0aW9uJTIwd29ya2VyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    name: 'Lauren Jackson',
+    testimonial: 'I love my job.',
+    title: 'Project Accountant',
+    photo_url:
+      'https://plus.unsplash.com/premium_photo-1665865607224-9dcd2f488b38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHdvbWFufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    name: 'John Doe',
+    testimonial: 'This is a great place to work!',
+    title: 'Project Manager',
+    photo_url:
+      'https://plus.unsplash.com/premium_photo-1665865607224-9dcd2f488b38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHdvbWFufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60'
+  },
+]
+
+testimonials.each do |testimonial|
+  message_service.create!(
+    job_id: testimonial[:job_id],
+    schema: Events::TestimonialCreated::V1,
+    data: {
+      id: testimonial[:id],
+      job_id: testimonial[:job_id],
+      name: testimonial[:name],
+      title: testimonial[:title],
+      testimonial: testimonial[:testimonial],
+      photo_url: testimonial[:photo_url]
+    }
+  )
+end
 
 MasterCertification.create!([
                               {
@@ -959,115 +990,139 @@ MasterSkill.create!([
                       },
                     ])
 
-DesiredSkill.create!([
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: mechanic_job.id,
-                         master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: mechanic_job.id,
-                         master_skill_id: 'e0627968-c5f8-4f2c-9b23-948d2374644f'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: mechanic_job.id,
-                         master_skill_id: 'f33952cb-1f5b-4633-8697-095bd7a7d0ce'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: mechanic_job.id,
-                         master_skill_id: '0148f08f-f9ca-41e9-ad06-22665714bdaf'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: mechanic_job.id,
-                         master_skill_id: '731e5aa5-e8d4-4a4e-9acb-3de414a17773'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: earthwork_job.id,
-                         master_skill_id: 'c4ca3bc7-b7e7-4193-ac90-532e0179a474'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: earthwork_job.id,
-                         master_skill_id: 'f7b9b9a5-43a4-488d-a600-01a3018c2e1e'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: earthwork_job.id,
-                         master_skill_id: 'c3dd6dbf-b974-4590-b5f8-3e316ea4e81e'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: earthwork_job.id,
-                         master_skill_id: 'ebb772a4-e7e9-4bac-9110-95e895b5dfe7'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: contractor.id,
-                         master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: contractor.id,
-                         master_skill_id: 'a1f51ba9-3988-4e74-8fea-71bb1357a312'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: contractor.id,
-                         master_skill_id: '7d76ec3e-2727-403b-9f0c-6fb75e31ebb7'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: contractor.id,
-                         master_skill_id: 'c3dd6dbf-b974-4590-b5f8-3e316ea4e81e'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: contractor.id,
-                         master_skill_id: '7d76ec3e-2727-403b-9f0c-6fb75e31ebb7'
-                       },
-                     ])
+desired_skills = [
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    master_skill_id: 'e0627968-c5f8-4f2c-9b23-948d2374644f'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    master_skill_id: 'f33952cb-1f5b-4633-8697-095bd7a7d0ce'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    master_skill_id: '0148f08f-f9ca-41e9-ad06-22665714bdaf'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    master_skill_id: '731e5aa5-e8d4-4a4e-9acb-3de414a17773'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    master_skill_id: 'c4ca3bc7-b7e7-4193-ac90-532e0179a474'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    master_skill_id: 'f7b9b9a5-43a4-488d-a600-01a3018c2e1e'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    master_skill_id: 'c3dd6dbf-b974-4590-b5f8-3e316ea4e81e'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    master_skill_id: 'ebb772a4-e7e9-4bac-9110-95e895b5dfe7'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    master_skill_id: 'a1f51ba9-3988-4e74-8fea-71bb1357a312'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    master_skill_id: '7d76ec3e-2727-403b-9f0c-6fb75e31ebb7'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    master_skill_id: 'c3dd6dbf-b974-4590-b5f8-3e316ea4e81e'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    master_skill_id: '7d76ec3e-2727-403b-9f0c-6fb75e31ebb7'
+  },
+]
 
-LearnedSkill.create!([
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: mechanic_job.id,
-                         master_skill_id: 'ef0b7921-171d-4157-93bf-bf309f73ad57'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: mechanic_job.id,
-                         master_skill_id: 'ec27be9b-53df-4fc1-808b-850fc7b723b0'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: earthwork_job.id,
-                         master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: earthwork_job.id,
-                         master_skill_id: '5a12a33d-058b-4ba0-91c3-0725bade34ae'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: earthwork_job.id,
-                         master_skill_id: 'f33952cb-1f5b-4633-8697-095bd7a7d0ce'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: contractor.id,
-                         master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
-                       },
-                       {
-                         id: SecureRandom.uuid,
-                         job_id: contractor.id,
-                         master_skill_id: '731e5aa5-e8d4-4a4e-9acb-3de414a17773'
-                       },
-                     ])
+desired_skills.each do |desired_skill|
+  message_service.create!(
+    job_id: desired_skill[:job_id],
+    schema: Events::DesiredSkillCreated::V1,
+    data: {
+      id: desired_skill[:id],
+      job_id: desired_skill[:job_id],
+      master_skill_id: desired_skill[:master_skill_id]
+    }
+  )
+end
+
+learned_skills = [
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    master_skill_id: 'ef0b7921-171d-4157-93bf-bf309f73ad57'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: mechanic_job.id,
+    master_skill_id: 'ec27be9b-53df-4fc1-808b-850fc7b723b0'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    master_skill_id: '5a12a33d-058b-4ba0-91c3-0725bade34ae'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: earthwork_job.id,
+    master_skill_id: 'f33952cb-1f5b-4633-8697-095bd7a7d0ce'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    master_skill_id: '3703d7d0-e20a-4635-a9d9-2092c7b03000'
+  },
+  {
+    id: SecureRandom.uuid,
+    job_id: contractor.id,
+    master_skill_id: '731e5aa5-e8d4-4a4e-9acb-3de414a17773'
+  },
+]
+
+learned_skills.each do |learned_skill|
+  message_service.create!(
+    job_id: learned_skill[:job_id],
+    schema: Events::LearnedSkillCreated::V1,
+    data: {
+      id: learned_skill[:id],
+      job_id: learned_skill[:job_id],
+      master_skill_id: learned_skill[:master_skill_id]
+    }
+  )
+end
 
 message_service.flush

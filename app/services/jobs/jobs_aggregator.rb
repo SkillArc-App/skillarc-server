@@ -149,6 +149,7 @@ module Jobs
 
       job.update!(
         employment_title: message.data.employment_title,
+        category: message.data.category,
         benefits_description: message.data.benefits_description,
         responsibilities_description: message.data.responsibilities_description,
         location: message.data.location,

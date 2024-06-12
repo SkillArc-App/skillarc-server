@@ -503,6 +503,7 @@ RSpec.describe Jobs::JobsAggregator do # rubocop:disable Metrics/BlockLength
         subject
 
         expect(job.reload.employment_title).to eq(employment_title)
+        expect(job.reload.category).to eq(category)
         expect(job.benefits_description).to eq(benefits_description)
         expect(job.responsibilities_description).to eq(responsibilities_description)
         expect(job.location).to eq(location)

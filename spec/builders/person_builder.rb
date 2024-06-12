@@ -10,10 +10,11 @@ module Builders
       last_name: Faker::Name.last_name,
       email: Faker::Internet.email,
       phone_number: Faker::PhoneNumber.phone_number,
-      date_of_birth: "10/09/1990"
+      date_of_birth: "10/09/1990",
+      **
     )
       user_id = SecureRandom.uuid
-      user = UserBuilder.new(message_service).build(id: user_id, first_name:, last_name:, email:, phone_number:, person_id: id)
+      user = UserBuilder.new(message_service).build(id: user_id, first_name:, last_name:, email:, phone_number:, person_id: id, **)
 
       message_service.create!(
         person_id: id,

@@ -28,6 +28,22 @@ EmployerStruct = Struct.new(
   :logo_url
 )
 
+TrainingProviderStruct = Struct.new(
+  :id,
+  :name,
+  :description
+)
+
+ProgramStruct = Struct.new(
+  :id,
+  :name,
+  :description
+)
+
+Role::Types::ALL.each do |role|
+  Role.create!(id: SecureRandom.uuid, name: role)
+end
+
 turner_employer = EmployerStruct.new(
   id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
   name: 'Turner Construction Company',
@@ -98,6 +114,42 @@ contractor = JobStruct.new(
   work_days: 'Weekdays, some weekends',
   requirements_description:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
+)
+
+megans_recruits = TrainingProviderStruct.new(
+  id: SecureRandom.uuid,
+  name: "Megan's Recruits",
+  description: "We train people to help them get jobs"
+)
+
+cul = TrainingProviderStruct.new(
+  id: SecureRandom.uuid,
+  name: 'Columbus Urban League',
+  description: 'We are super good at doing the thing we do which is to help the people we work with get jobs'
+)
+
+cool_program = ProgramStruct.new(
+  id: SecureRandom.uuid,
+  name: 'Cool Program',
+  description: 'You learn stuff'
+)
+
+welding = ProgramStruct.new(
+  id: SecureRandom.uuid,
+  name: 'Welding Class 2023 Q1',
+  description: 'You weld stuff'
+)
+
+plumbing = ProgramStruct.new(
+  id: SecureRandom.uuid,
+  name: 'Plumbing Class 2023 Q1',
+  description: 'You plumb stuff'
+)
+
+carpentry = ProgramStruct.new(
+  id: SecureRandom.uuid,
+  name: 'Carpentry Class 2023 Q1',
+  description: 'You carp stuff'
 )
 
 message_service.create!(
@@ -224,14 +276,14 @@ trained_seeker_with_reference = Builders::PersonBuilder.new(message_service).bui
   first_name: 'Tom',
   last_name: 'Hanks',
   phone_number: "+16666666666",
-  email: 'trained-seeker-with-reference@blocktrainapp.com',
+  email: 'trained-seeker-with-reference@skillarc.com',
   date_of_birth: "1963-06-14"
 )
 
 trained_seeker = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Tim',
   last_name: 'Allen',
-  email: 'trained-seeker@blocktrainapp.com',
+  email: 'trained-seeker@skillarc.com',
   phone_number: "+13333333333",
   date_of_birth: "1990-10-09"
 )
@@ -240,7 +292,7 @@ seeker_with_profile = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Rita',
   last_name: 'Wilson',
   phone_number: "+14444444444",
-  email: 'seeker-with-profile@blocktrainapp.com',
+  email: 'seeker-with-profile@skillarc.com',
   date_of_birth: "1993-01-01"
 )
 
@@ -263,160 +315,104 @@ message_service.create!(
   metadata: {}
 )
 
-megans_recruits = TrainingProvider.create!(
-  id: SecureRandom.uuid,
-  name: "Megan's Recruits",
-  description: "We train people to help them get jobs"
-)
-
-cul = TrainingProvider.create!(
-  id: SecureRandom.uuid,
-  name: 'Columbus Urban League',
-  description:
-    'We are super good at doing the thing we do which is to help the people we work with get jobs'
-)
-
-trainer = User.create!(
-  id: SecureRandom.uuid,
-  first_name: 'Meghan',
-  last_name: 'Trainer',
-  email: 'trainer@blocktrainapp.com',
-  sub: 'megsub'
-)
-
 message_service.create!(
-  user_id: trainer.id,
-  schema: Events::UserCreated::V1,
+  training_provider_id: megans_recruits.id,
+  schema: Events::TrainingProviderCreated::V1,
   data: {
-    first_name: trainer.first_name,
-    last_name: trainer.last_name,
-    email: trainer.email,
-    sub: trainer.sub
+    name: megans_recruits.name,
+    description: megans_recruits.description
   }
 )
 
-TrainingProviderProfile.create!(
-  id: SecureRandom.uuid,
+message_service.create!(
   training_provider_id: cul.id,
-  user_id: trainer.id
+  schema: Events::TrainingProviderCreated::V1,
+  data: {
+    name: cul.name,
+    description: cul.description
+  }
 )
 
-trainer_with_reference = User.create!(
+message_service.create!(
+  training_provider_id: megans_recruits.id,
+  schema: Events::TrainingProviderProgramCreated::V1,
+  data: {
+    program_id: cool_program.id,
+    name: cool_program.name,
+    description: cool_program.description
+  }
+)
+
+message_service.create!(
+  training_provider_id: cul.id,
+  schema: Events::TrainingProviderProgramCreated::V1,
+  data: {
+    program_id: welding.id,
+    name: welding.name,
+    description: welding.description
+  }
+)
+
+message_service.create!(
+  training_provider_id: cul.id,
+  schema: Events::TrainingProviderProgramCreated::V1,
+  data: {
+    program_id: plumbing.id,
+    name: plumbing.name,
+    description: plumbing.description
+  }
+)
+
+message_service.create!(
+  training_provider_id: cul.id,
+  schema: Events::TrainingProviderProgramCreated::V1,
+  data: {
+    program_id: carpentry.id,
+    name: carpentry.name,
+    description: carpentry.description
+  }
+)
+
+Builders::UserBuilder.new(message_service).build_as_trainer(
+  id: SecureRandom.uuid,
+  first_name: 'Cul',
+  last_name: 'Trainer',
+  email: 'trainer@skillarc.com',
+  sub: "culTrainer",
+  training_provider_id: cul.id,
+  training_provider_name: cul.name,
+  role_description: "A good trainer"
+)
+
+trainer_profile_id = SecureRandom.uuid
+Builders::UserBuilder.new(message_service).build_as_trainer(
   id: SecureRandom.uuid,
   first_name: 'Bill',
   last_name: 'Traynor',
-  email: 'trainer-with-reference@blocktrainapp.com',
-  sub: 'billsub'
+  sub: "meagansTrainer",
+  email: 'trainer-with-reference@skillarc.com',
+  training_provider_id: megans_recruits.id,
+  training_provider_name: megans_recruits.name,
+  training_provider_profile_id: trainer_profile_id,
+  role_description: "A good who refers"
 )
 
-message_service.create!(
-  user_id: trainer_with_reference.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: trainer_with_reference.first_name,
-    last_name: trainer_with_reference.last_name,
-    email: trainer_with_reference.email,
-    sub: trainer_with_reference.sub
-  }
-)
-
-Role::Types::ALL.each do |role|
-  Role.create!(id: SecureRandom.uuid, name: role)
-end
-
-admin_user = User.create!(
+admin_user = Builders::UserBuilder.new(message_service).build(
   id: SecureRandom.uuid,
   first_name: 'Jake',
   last_name: 'Not-Onboard',
-  email: 'admin@blocktrainapp.com',
-  sub: 'jakesub'
+  sub: "admin",
+  email: 'admin@skillarc.com',
+  roles: [Role::Types::ADMIN, Role::Types::EMPLOYER_ADMIN]
 )
 
-message_service.create!(
-  user_id: admin_user.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: admin_user.first_name,
-    last_name: admin_user.last_name,
-    email: admin_user.email,
-    sub: admin_user.sub
-  }
-)
-
-message_service.create!(
-  user_id: admin_user.id,
-  schema: Events::RoleAdded::V2,
-  data: {
-    role: Role::Types::ADMIN
-  }
-)
-message_service.create!(
-  user_id: admin_user.id,
-  schema: Events::RoleAdded::V2,
-  data: {
-    role: Role::Types::EMPLOYER_ADMIN
-  }
-)
-
-job_order_admin = User.create!(
+Builders::UserBuilder.new(message_service).build(
   id: SecureRandom.uuid,
   first_name: 'Job',
   last_name: 'Master',
+  sub: "job_order",
   email: 'job_order@skillarc.com',
-  sub: 'job_oder'
-)
-
-message_service.create!(
-  user_id: job_order_admin.id,
-  schema: Events::UserCreated::V1,
-  data: {
-    first_name: job_order_admin.first_name,
-    last_name: job_order_admin.last_name,
-    email: job_order_admin.email,
-    sub: job_order_admin.sub
-  }
-)
-
-message_service.create!(
-  user_id: job_order_admin.id,
-  schema: Events::RoleAdded::V2,
-  data: {
-    role: Role::Types::JOB_ORDER_ADMIN
-  }
-)
-
-bill_trainer_profile = TrainingProviderProfile.create!(
-  id: SecureRandom.uuid,
-  training_provider_id: megans_recruits.id,
-  user_id: trainer_with_reference.id
-)
-
-cool_program = Program.create!(
-  id: SecureRandom.uuid,
-  name: 'Cool Program',
-  description: 'You learn stuff',
-  training_provider_id: megans_recruits.id
-)
-
-welding = Program.create!(
-  id: SecureRandom.uuid,
-  name: 'Welding Class 2023 Q1',
-  description: 'You weld stuff',
-  training_provider_id: cul.id
-)
-
-plumbing = Program.create!(
-  id: SecureRandom.uuid,
-  name: 'Plumbing Class 2023 Q1',
-  description: 'You plumb stuff',
-  training_provider_id: cul.id
-)
-
-carpentry = Program.create!(
-  id: SecureRandom.uuid,
-  name: 'Carpentry Class 2023 Q1',
-  description: 'You carp stuff',
-  training_provider_id: cul.id
+  roles: [Role::Types::JOB_ORDER_ADMIN]
 )
 
 message_service.create!(
@@ -465,10 +461,11 @@ message_service.create!(
 
 message_service.create!(
   reference_id: SecureRandom.uuid,
-  schema: Events::ReferenceCreated::V1,
+  schema: Events::ReferenceCreated::V2,
   data: {
+    training_provider_id: megans_recruits.id,
     seeker_id: trained_seeker_with_reference.id,
-    author_training_provider_profile_id: bill_trainer_profile.id,
+    author_training_provider_profile_id: trainer_profile_id,
     reference_text: 'This person is good at carpentry'
   }
 )
@@ -476,7 +473,8 @@ message_service.create!(
 coach_person = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Coach',
   last_name: 'User',
-  email: 'coach@blocktrainapp.com'
+  sub: "Coach",
+  email: 'coach@skillarc.com'
 )
 
 message_service.create!(

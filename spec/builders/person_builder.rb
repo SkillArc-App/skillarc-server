@@ -55,6 +55,29 @@ module Builders
       )
     end
 
+    def build_as_student(
+      training_provider_id:,
+      program_id:,
+      status: "Enrolled",
+      person_profile_id: SecureRandom.uuid,
+      **
+    )
+      person = build(**)
+
+      message_service.create!(
+        person_id: person.id,
+        schema: Events::PersonTrainingProviderAdded::V1,
+        data: {
+          training_provider_id:,
+          program_id:,
+          status:,
+          id: person_profile_id,
+        }
+      )
+
+      person
+    end
+
     private
 
     attr_reader :message_service

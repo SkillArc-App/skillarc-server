@@ -118,7 +118,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
           schema: Commands::UpdateTrainingProviderProgram::V1,
           aggregate:,
           data: {
-            program_id: program_id,
+            program_id:,
             name: "N",
             description: "D"
           }

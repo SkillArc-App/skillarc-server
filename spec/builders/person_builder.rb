@@ -72,7 +72,7 @@ module Builders
           training_provider_id:,
           program_id:,
           status:,
-          id: person_profile_id,
+          id: person_profile_id
         }
       )
 

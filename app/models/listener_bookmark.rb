@@ -9,5 +9,9 @@
 #  updated_at        :datetime         not null
 #  event_id          :uuid
 #
+# Indexes
+#
+#  index_listener_bookmarks_on_consumer_name  (consumer_name) UNIQUE
+#
 class ListenerBookmark < ApplicationRecord
 end

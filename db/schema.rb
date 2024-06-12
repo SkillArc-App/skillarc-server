@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_11_200528) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_12_203948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -634,6 +634,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_11_200528) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "current_timestamp"
+    t.index ["consumer_name"], name: "index_listener_bookmarks_on_consumer_name", unique: true
   end
 
   create_table "master_certifications", id: :text, force: :cascade do |t|

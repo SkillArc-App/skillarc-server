@@ -14,7 +14,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Coach,
+      stream: Streams::Coach,
       message_type: Messages::Types::Coaches::PERSON_VIEWED_IN_COACHING,
       version: 1
     )

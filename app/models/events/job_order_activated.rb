@@ -4,7 +4,7 @@ module Events
       type: Messages::EVENT,
       data: Messages::Nothing,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::JobOrder,
+      stream: Streams::JobOrder,
       message_type: Messages::Types::JobOrders::JOB_ORDER_ACTIVATED,
       version: 1
     )

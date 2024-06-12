@@ -15,7 +15,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::User,
+      stream: Streams::User,
       message_type: Messages::Types::Employers::JOB_OWNER_ASSIGNED,
       version: 1
     )

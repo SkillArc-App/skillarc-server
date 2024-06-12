@@ -14,7 +14,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Reference,
+      stream: Streams::Reference,
       message_type: Messages::Types::TrainingProviders::REFERENCE_UPDATED,
       version: 1
     )

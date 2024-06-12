@@ -39,7 +39,7 @@ RSpec.describe Infrastructure::InfrastructureAggregator do
 
         expect(task.execute_at).to eq(Time.zone.local(2000, 1, 1))
         expect(task.command).to eq(command)
-        expect(task.id).to eq(message.aggregate.task_id)
+        expect(task.id).to eq(message.stream.task_id)
         expect(task.state).to eq(Infrastructure::TaskStates::ENQUEUED)
       end
     end

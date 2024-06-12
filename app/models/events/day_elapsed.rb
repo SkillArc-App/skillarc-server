@@ -27,7 +27,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Day,
+      stream: Streams::Day,
       message_type: Messages::Types::DAY_ELAPSED,
       version: 1
     )

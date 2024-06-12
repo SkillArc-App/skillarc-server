@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Projectors::Aggregates::GetLast do
   describe ".project" do
-    subject { described_class.project(aggregate:, schema:) }
+    subject { described_class.project(stream:, schema:) }
 
     let(:seeker_id) { SecureRandom.uuid }
     let(:aggregate) { Aggregates::Seeker.new(seeker_id:) }

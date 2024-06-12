@@ -1,5 +1,5 @@
 module Messages
-  class Aggregate
+  class Stream
     IdNameNotSymbolError = Class.new(StandardError)
     IdNameNotSetError = Class.new(StandardError)
     IdNameAlreadySetError = Class.new(StandardError)

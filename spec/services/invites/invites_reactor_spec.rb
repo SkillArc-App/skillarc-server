@@ -88,7 +88,7 @@ RSpec.describe Invites::InvitesReactor do
               .to receive(:create_once_for_aggregate!)
               .with(
                 trace_id: message.trace_id,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 schema: Events::EmployerInviteUsedByWrongUser::V1,
                 data: {
                   user_id: message.data.user_id
@@ -110,7 +110,7 @@ RSpec.describe Invites::InvitesReactor do
               .to receive(:create_once_for_aggregate!)
               .with(
                 trace_id: message.trace_id,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 schema: Events::EmployerInviteAccepted::V2,
                 data: {
                   user_id: message.data.user_id,
@@ -172,7 +172,7 @@ RSpec.describe Invites::InvitesReactor do
             .to receive(:create_once_for_aggregate!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Events::EmployerInviteCreated::V1,
               data: {
                 invite_email: message.data.invite_email,
@@ -259,7 +259,7 @@ RSpec.describe Invites::InvitesReactor do
               .to receive(:create_once_for_aggregate!)
               .with(
                 trace_id: message.trace_id,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 schema: Events::TrainingProviderInviteUsedByWrongUser::V1,
                 data: {
                   user_id: message.data.user_id
@@ -281,7 +281,7 @@ RSpec.describe Invites::InvitesReactor do
               .to receive(:create_once_for_aggregate!)
               .with(
                 trace_id: message.trace_id,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 schema: Events::TrainingProviderInviteAccepted::V2,
                 data: {
                   training_provider_profile_id: be_a(String),
@@ -343,7 +343,7 @@ RSpec.describe Invites::InvitesReactor do
             .to receive(:create_once_for_aggregate!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Events::TrainingProviderInviteCreated::V1,
               data: {
                 invite_email: message.data.invite_email,

@@ -16,7 +16,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Contact,
+      stream: Streams::Contact,
       message_type: Messages::Types::Contact::SMTP_SENT,
       version: 1
     )

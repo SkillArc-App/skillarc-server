@@ -16,7 +16,7 @@ module Messages
       version Integer
       status Either(*Status::ALL)
       message_type Either(*Messages::Types::ALL)
-      aggregate SubClass.Of(Aggregate)
+      stream SubClass.Of(Stream)
     end)
 
     def serialize
@@ -30,32 +30,44 @@ module Messages
       MessageService.get_schema(message_type: hash[:message_type], version: hash[:version])
     end
 
-    def self.active(data:, metadata:, message_type:, version:, aggregate:, type:) # rubocop:disable Metrics/ParameterLists
-      schema = new(data:, metadata:, message_type:, version:, aggregate:, type:, status: Status::ACTIVE)
+    def self.active(data:, metadata:, message_type:, version:, stream:, type:) # rubocop:disable Metrics/ParameterLists
+      schema = new(data:, metadata:, message_type:, version:, stream:, type:, status: Status::ACTIVE)
       MessageService.register(schema:)
       schema
     end
 
-    def self.deprecated(data:, metadata:, message_type:, version:, aggregate:, type:) # rubocop:disable Metrics/ParameterLists
-      schema = new(data:, metadata:, message_type:, version:, aggregate:, type:, status: Status::DEPRECATED)
+    def self.deprecated(data:, metadata:, message_type:, version:, stream:, type:) # rubocop:disable Metrics/ParameterLists
+      schema = new(data:, metadata:, message_type:, version:, stream:, type:, status: Status::DEPRECATED)
       MessageService.register(schema:)
       schema
     end
 
-    def self.inactive(data:, metadata:, message_type:, version:, aggregate:, type:) # rubocop:disable Metrics/ParameterLists
-      schema = new(data:, metadata:, message_type:, version:, aggregate:, type:, status: Status::INACTIVE)
+    def self.inactive(data:, metadata:, message_type:, version:, stream:, type:) # rubocop:disable Metrics/ParameterLists
+      schema = new(data:, metadata:, message_type:, version:, stream:, type:, status: Status::INACTIVE)
       MessageService.register(schema:)
       schema
     end
 
-    def self.destroy!(data:, metadata:, message_type:, version:, aggregate:, type:) # rubocop:disable Metrics/ParameterLists
-      schema = new(data:, metadata:, message_type:, version:, aggregate:, type:, status: Status::DESTROYED)
+    def self.destroy!(data:, metadata:, message_type:, version:, stream:, type:) # rubocop:disable Metrics/ParameterLists
+      schema = new(data:, metadata:, message_type:, version:, stream:, type:, status: Status::DESTROYED)
       MessageService.register(schema:)
       schema
+    end
+
+    def versioned_type
+      @versioned_type ||= "#{message_type}_#{version}"
     end
 
     def all_messages
       MessageService.all_messages(self)
+    end
+
+    def event?
+      type == Messages::EVENT
+    end
+
+    def command?
+      type == Messages::COMMAND
     end
 
     def active?
@@ -80,8 +92,8 @@ module Messages
 
     private
 
-    def initialize(data:, metadata:, message_type:, version:, aggregate:, status:, type:) # rubocop:disable Metrics/ParameterLists
-      super(data:, metadata:, message_type:, version:, aggregate:, status:, type:)
+    def initialize(data:, metadata:, message_type:, version:, stream:, status:, type:) # rubocop:disable Metrics/ParameterLists
+      super(data:, metadata:, message_type:, version:, stream:, status:, type:)
     end
   end
 end

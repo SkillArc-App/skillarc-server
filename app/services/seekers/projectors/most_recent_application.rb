@@ -1,7 +1,7 @@
 module Seekers
   module Projectors
     class MostRecentApplication < Projector
-      projection_aggregator Aggregates::Person
+      projection_stream Streams::Person
 
       class Projection
         extend Record

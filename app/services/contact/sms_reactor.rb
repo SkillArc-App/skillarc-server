@@ -13,7 +13,7 @@ module Contact
 
       message_service.create!(
         schema: Events::SmsMessageSent::V2,
-        message_id: message.aggregate.message_id,
+        message_id: message.stream.message_id,
         trace_id: message.trace_id,
         data: {
           phone_number: message.data.phone_number,

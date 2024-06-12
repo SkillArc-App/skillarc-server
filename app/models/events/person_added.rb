@@ -23,7 +23,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Person,
+      stream: Streams::Person,
       message_type: Messages::Types::Person::PERSON_ADDED,
       version: 1
     )

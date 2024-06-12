@@ -16,7 +16,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Job,
+      stream: Streams::Job,
       message_type: Messages::Types::Jobs::DESIRED_SKILL_CREATED,
       version: 1
     )

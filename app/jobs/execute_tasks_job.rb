@@ -16,7 +16,7 @@ class ExecuteTasksJob < ApplicationJob
             trace_id: command.trace_id,
             id: command.id,
             metadata: command.metadata,
-            schema.aggregate.id => command.aggregate.id
+            schema.stream.id => command.stream.id
           }
         )
 

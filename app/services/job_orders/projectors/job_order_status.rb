@@ -1,7 +1,7 @@
 module JobOrders
   module Projectors
     class JobOrderStatus < Projector
-      projection_aggregator Aggregates::JobOrder
+      projection_stream Streams::JobOrder
 
       class Projection
         extend Record

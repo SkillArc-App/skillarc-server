@@ -11,7 +11,7 @@ module Employers
       job.owner_emails.each do |owner_email|
         message_service.create!(
           schema: Commands::NotifyEmployerOfApplicant::V1,
-          application_id: message.aggregate.id,
+          application_id: message.stream.id,
           trace_id: message.trace_id,
           data: {
             employment_title: data.employment_title,

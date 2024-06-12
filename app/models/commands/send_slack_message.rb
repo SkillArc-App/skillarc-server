@@ -15,7 +15,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Message,
+      stream: Streams::Message,
       message_type: Messages::Types::Contact::SEND_SLACK_MESSAGE,
       version: 1
     )

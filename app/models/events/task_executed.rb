@@ -4,7 +4,7 @@ module Events
       type: Messages::EVENT,
       data: Messages::Nothing,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Task,
+      stream: Streams::Task,
       message_type: Messages::Types::Infrastructure::TASK_EXECUTED,
       version: 1
     )

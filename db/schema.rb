@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_11_200528) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_12_193922) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -647,6 +647,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_11_200528) do
     t.enum "type", null: false, enum_type: "skill_type"
     t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 3, null: false
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.uuid "message_id", null: false
+    t.text "stream", null: false
+    t.text "versioned_type", null: false
+    t.uuid "trace_id", null: false
+    t.datetime "occurred_at", null: false
+    t.jsonb "data", null: false
+    t.jsonb "metadata", null: false
+    t.index ["message_id"], name: "index_messages_on_message_id"
+    t.index ["occurred_at"], name: "index_messages_on_occurred_at"
+    t.index ["stream"], name: "index_messages_on_stream"
+    t.index ["trace_id"], name: "index_messages_on_trace_id"
+    t.index ["versioned_type"], name: "index_messages_on_versioned_type"
   end
 
   create_table "onboarding_sessions", id: :text, force: :cascade do |t|

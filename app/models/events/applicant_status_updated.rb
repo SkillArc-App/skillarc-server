@@ -129,7 +129,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Job,
+      stream: Streams::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 1
     )
@@ -138,7 +138,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Job,
+      stream: Streams::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 2
     )
@@ -147,7 +147,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V3,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Job,
+      stream: Streams::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 3
     )
@@ -156,7 +156,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V4,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Job,
+      stream: Streams::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 4
     )
@@ -165,7 +165,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V4,
       metadata: MetaData::V1,
-      aggregate: Aggregates::Job,
+      stream: Streams::Job,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 5
     )
@@ -174,7 +174,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V5,
       metadata: MetaData::V1,
-      aggregate: Aggregates::Application,
+      stream: Streams::Application,
       message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
       version: 6
     )

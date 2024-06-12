@@ -27,7 +27,7 @@ RSpec.describe Event do
 
       expect(subject.id).to eq(event[:id])
       expect(subject.trace_id).to eq(event[:trace_id])
-      expect(subject.aggregate_id).to eq(event[:aggregate_id])
+      expect(subject.stream_id).to eq(event[:aggregate_id])
       expect(subject.schema.message_type).to eq(event[:event_type])
       expect(subject.data).to eq(Events::JobSearch::Data::V1.new(
                                    search_terms: "Cool job",
@@ -68,7 +68,7 @@ RSpec.describe Event do
       expect(subject).to be_a(described_class)
 
       expect(subject[:id]).to eq(message.id)
-      expect(subject[:aggregate_id]).to eq(message.aggregate_id)
+      expect(subject[:aggregate_id]).to eq(message.stream_id)
       expect(subject[:trace_id]).to eq(message.trace_id)
       expect(subject[:event_type]).to eq(message.schema.message_type)
       expect(subject[:data].deep_symbolize_keys).to eq({

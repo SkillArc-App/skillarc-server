@@ -14,7 +14,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::User,
+      stream: Streams::User,
       message_type: Messages::Types::Contact::SET_CONTACT_PREFERENCE,
       version: 1
     )

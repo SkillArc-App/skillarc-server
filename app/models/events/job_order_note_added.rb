@@ -16,7 +16,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::JobOrder,
+      stream: Streams::JobOrder,
       message_type: Messages::Types::JobOrders::JOB_ORDER_NOTE_ADDED,
       version: 1
     )

@@ -1,7 +1,7 @@
 module Contact
   class ContactReactor < MessageReactor
     on_message Commands::SendMessage::V2 do |message|
-      messages = MessageService.aggregate_events(Aggregates::Person.new(person_id: message.data.person_id))
+      messages = MessageService.stream_events(Aggregates::Person.new(person_id: message.data.person_id))
       result = Projectors::ContactPreference.new.project(messages)
 
       case result.preference
@@ -15,7 +15,7 @@ module Contact
         message_service.create!(
           schema: Commands::SendSlackMessage::V1,
           trace_id: message.trace_id,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           data: {
             channel: result.slack_id,
             text:
@@ -26,7 +26,7 @@ module Contact
         message_service.create!(
           schema: Commands::SendEmailMessage::V1,
           trace_id: message.trace_id,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           data: {
             recepent_email: result.email,
             title: message.data.title,
@@ -45,7 +45,7 @@ module Contact
         message_service.create!(
           schema: Commands::SendSmsMessage::V3,
           trace_id: message.trace_id,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           data: {
             phone_number: result.phone_number,
             message: text
@@ -56,7 +56,7 @@ module Contact
         message_service.create!(
           schema: Events::NotificationCreated::V3,
           trace_id: message.trace_id,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           data: {
             title: message.data.title,
             body: message.data.body,
@@ -68,7 +68,7 @@ module Contact
         message_service.create!(
           schema: Events::MessageSent::V1,
           trace_id: message.trace_id,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           data: Messages::Nothing
         )
       end
@@ -80,7 +80,7 @@ module Contact
       message_service.create!(
         schema: Events::MessageEnqueued::V1,
         trace_id: message.trace_id,
-        message_id: message.aggregate.message_id,
+        message_id: message.stream.message_id,
         data: Messages::Nothing
       )
     end

@@ -22,7 +22,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::User,
+      stream: Streams::User,
       message_type: Messages::Types::Seekers::ADD_SEEKER,
       version: 1
     )
@@ -30,7 +30,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V2,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Seeker,
+      stream: Streams::Seeker,
       message_type: Messages::Types::Seekers::ADD_SEEKER,
       version: 2
     )

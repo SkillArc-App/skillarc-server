@@ -7,7 +7,7 @@ module Invites
 
     on_message Events::EmployerInviteCreated::V1 do |message|
       EmployerInvite.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         email: message.data.invite_email,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
@@ -18,14 +18,14 @@ module Invites
 
     on_message Events::EmployerInviteAccepted::V2 do |message|
       EmployerInvite.update!(
-        message.aggregate.id,
+        message.stream.id,
         used_at: message.occurred_at
       )
     end
 
     on_message Events::TrainingProviderInviteCreated::V1 do |message|
       TrainingProviderInvite.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         email: message.data.invite_email,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
@@ -37,7 +37,7 @@ module Invites
 
     on_message Events::TrainingProviderInviteAccepted::V2 do |message|
       TrainingProviderInvite.update!(
-        message.aggregate.id,
+        message.stream.id,
         used_at: message.occurred_at
       )
     end

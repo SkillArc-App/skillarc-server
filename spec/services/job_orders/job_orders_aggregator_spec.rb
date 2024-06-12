@@ -31,7 +31,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect { subject }.to change(JobOrders::Job, :count).from(0).to(1)
 
         job = JobOrders::Job.take(1).first
-        expect(job.id).to eq(message.aggregate.id)
+        expect(job.id).to eq(message.stream.id)
         expect(job.applicable_for_job_orders).to eq(false)
         expect(job.employer_name).to eq(message.data.employer_name)
         expect(job.employment_title).to eq(message.data.employment_title)
@@ -84,7 +84,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect { subject }.to change(JobOrders::Person, :count).from(0).to(1)
 
         person = JobOrders::Person.take(1).first
-        expect(person.id).to eq(message.aggregate.id)
+        expect(person.id).to eq(message.stream.id)
         expect(person.first_name).to eq(message.data.first_name)
         expect(person.last_name).to eq(message.data.last_name)
         expect(person.email).to eq(message.data.email)
@@ -138,7 +138,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect { subject }.to change(JobOrders::JobOrder, :count).from(0).to(1)
 
         job_order = JobOrders::JobOrder.take(1).first
-        expect(job_order.id).to eq(message.aggregate.id)
+        expect(job_order.id).to eq(message.stream.id)
         expect(job_order.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
         expect(job_order.opened_at).to eq(message.occurred_at)
         expect(job_order.job).to eq(job)

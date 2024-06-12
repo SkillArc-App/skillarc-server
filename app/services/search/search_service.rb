@@ -121,13 +121,13 @@ module Search
         hidden: data.hide_job,
         location: data.location,
         industries: data.industry,
-        job_id: message.aggregate.job_id,
+        job_id: message.stream.job_id,
         employer_id: data.employer_id
       )
     end
 
     on_message Events::JobUpdated::V2 do |message|
-      job = Job.find_by!(job_id: message.aggregate.job_id)
+      job = Job.find_by!(job_id: message.stream.job_id)
 
       data = message.data
       job.update!(
@@ -137,19 +137,19 @@ module Search
         hidden: data.hide_job,
         location: data.location,
         industries: data.industry,
-        job_id: message.aggregate.job_id
+        job_id: message.stream.job_id
       )
     end
 
     on_message Events::JobTagCreated::V1 do |message|
-      job = Job.find_by!(job_id: message.aggregate.job_id)
+      job = Job.find_by!(job_id: message.stream.job_id)
       tag = Tag.find(message.data.tag_id)
 
       job.update!(tags: job.tags.to_set.add(tag.name).to_a)
     end
 
     on_message Events::JobTagDestroyed::V2 do |message|
-      job = Job.find_by!(job_id: message.aggregate.job_id)
+      job = Job.find_by!(job_id: message.stream.job_id)
       tag = Tag.find(message.data.tag_id)
 
       job.update!(tags: job.tags.to_set.delete(tag).to_a)
@@ -159,7 +159,7 @@ module Search
       data = message.data
       return unless data.order.zero?
 
-      job = Job.find_by!(job_id: message.aggregate.job_id)
+      job = Job.find_by!(job_id: message.stream.job_id)
 
       job.update!(
         starting_lower_pay: data.lower_limit.to_i,
@@ -170,7 +170,7 @@ module Search
     on_message Events::ApplicantStatusUpdated::V6, :sync do |message|
       data = message.data
       job = Job.find_by!(job_id: data.job_id)
-      application = Application.find_or_initialize_by(application_id: message.aggregate.application_id, search_job: job)
+      application = Application.find_or_initialize_by(application_id: message.stream.application_id, search_job: job)
 
       application.update!(
         status: data.status,
@@ -181,7 +181,7 @@ module Search
 
     on_message Events::ElevatorPitchCreated::V2, :sync do |message|
       data = message.data
-      application = Application.find_by(job_id: data.job_id, seeker_id: message.aggregate.id)
+      application = Application.find_by(job_id: data.job_id, seeker_id: message.stream.id)
       return unless application
 
       application.update!(elevator_pitch: data.pitch)
@@ -190,13 +190,13 @@ module Search
     on_message Events::JobSaved::V1, :sync do |message|
       data = message.data
       job = Job.find_by!(job_id: data.job_id)
-      SavedJob.find_or_create_by(search_job_id: job.id, user_id: message.aggregate.user_id)
+      SavedJob.find_or_create_by(search_job_id: job.id, user_id: message.stream.user_id)
     end
 
     on_message Events::JobUnsaved::V1, :sync do |message|
       data = message.data
       job = Job.find_by!(job_id: data.job_id)
-      SavedJob.find_by(search_job_id: job.id, user_id: message.aggregate.user_id)&.destroy
+      SavedJob.find_by(search_job_id: job.id, user_id: message.stream.user_id)&.destroy
     end
   end
 end

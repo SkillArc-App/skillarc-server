@@ -33,7 +33,7 @@ RSpec.describe People::OnboardingReactor do
           .with(
             schema: Commands::StartOnboarding::V2,
             trace_id: message.trace_id,
-            aggregate: message.aggregate,
+            stream: message.stream,
             data: Messages::Nothing
           )
           .twice
@@ -59,7 +59,7 @@ RSpec.describe People::OnboardingReactor do
           .with(
             schema: Events::OnboardingStarted::V2,
             trace_id: message.trace_id,
-            aggregate: message.aggregate,
+            stream: message.stream,
             data: Messages::Nothing
           )
           .twice
@@ -84,7 +84,7 @@ RSpec.describe People::OnboardingReactor do
           .with(
             schema: Events::OnboardingCompleted::V3,
             trace_id: message.trace_id,
-            aggregate: message.aggregate,
+            stream: message.stream,
             data: Messages::Nothing
           )
           .twice
@@ -110,7 +110,7 @@ RSpec.describe People::OnboardingReactor do
       before do
         allow(MessageService)
           .to receive(:aggregate_events)
-          .with(message.aggregate)
+          .with(message.stream)
           .and_return(messages)
 
         allow_any_instance_of(People::Projectors::OnboardingStatus)
@@ -150,7 +150,7 @@ RSpec.describe People::OnboardingReactor do
             .to receive(:create_once_for_aggregate!)
             .with(
               schema: Commands::CompleteOnboarding::V2,
-              aggregate: message.aggregate,
+              stream: message.stream,
               trace_id: message.trace_id,
               data: Messages::Nothing
             )

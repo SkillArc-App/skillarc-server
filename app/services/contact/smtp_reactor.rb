@@ -15,7 +15,7 @@ module Contact
       message_service.create!(
         schema: Events::EmailMessageSent::V1,
         trace_id: message.trace_id,
-        message_id: message.aggregate.message_id,
+        message_id: message.stream.message_id,
         data: message.data.to_h
       )
 

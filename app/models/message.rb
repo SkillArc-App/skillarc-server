@@ -3,11 +3,11 @@ class Message
 
   MESSAGE_UUID_NAMESPACE = "3e1e29c9-0fff-437c-92a7-531ca1b744b1".freeze
 
-  delegate :id, to: :aggregate, prefix: true
+  delegate :id, to: :stream, prefix: true
 
   include(ValueSemantics.for_attributes do
     id Uuid
-    aggregate Messages::Aggregate
+    stream Messages::Stream
     trace_id Uuid
     schema Messages::Schema
     data
@@ -18,15 +18,23 @@ class Message
   def initialize(**kwarg)
     super(**kwarg)
 
-    raise InvalidSchemaError unless schema.aggregate === aggregate # rubocop:disable Style/CaseEquality
+    raise InvalidSchemaError unless schema.stream === stream # rubocop:disable Style/CaseEquality
     raise InvalidSchemaError unless schema.data === data # rubocop:disable Style/CaseEquality
     raise InvalidSchemaError unless schema.metadata === metadata # rubocop:disable Style/CaseEquality
+  end
+
+  def stream_name
+    if schema.event?
+      "#{stream.class.name}|#{stream.id}"
+    else
+      "#{stream.class.name}:#{schema.versioned_type}|#{stream.id}"
+    end
   end
 
   def serialize
     {
       id:,
-      aggregate: aggregate.serialize,
+      stream: stream.serialize,
       trace_id:,
       schema: schema.serialize,
       data: data.serialize,
@@ -40,7 +48,7 @@ class Message
 
     new(
       id: hash[:id],
-      aggregate: schema.aggregate.deserialize(hash[:aggregate]),
+      stream: schema.stream.deserialize(hash[:stream]),
       schema:,
       trace_id: hash[:trace_id],
       data: schema.data.deserialize(hash[:data]),
@@ -52,7 +60,7 @@ class Message
   def ==(other)
     self.class == other.class &&
       schema == other.schema &&
-      aggregate == other.aggregate &&
+      stream == other.stream &&
       id == other.id &&
       occurred_at == other.occurred_at &&
       data == other.data &&

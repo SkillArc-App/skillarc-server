@@ -54,7 +54,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
 
         person_context = Coaches::PersonContext.first
 
-        expect(person_context.id).to eq(message.aggregate_id)
+        expect(person_context.id).to eq(message.stream_id)
         expect(person_context.email).to eq(message.data.email)
         expect(person_context.phone_number).to eq(message.data.phone_number)
         expect(person_context.person_captured_at).to eq(message.occurred_at)
@@ -94,7 +94,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
         build(
           :message,
           schema: Events::CoachAssignmentWeightAdded::V1,
-          aggregate: Aggregates::Coach.new(coach_id: coach.id),
+          stream: Aggregates::Coach.new(coach_id: coach.id),
           data: {
             weight: 0.35
           }

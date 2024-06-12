@@ -30,7 +30,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Job,
+      stream: Streams::Job,
       message_type: Messages::Types::Chats::CHAT_MESSAGE_SENT,
       version: 1
     )
@@ -38,7 +38,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Application,
+      stream: Streams::Application,
       message_type: Messages::Types::Chats::CHAT_MESSAGE_SENT,
       version: 2
     )

@@ -311,7 +311,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             job_order_id: be_a(String),
             trace_id: message.trace_id,
             data: {
-              job_id: message.aggregate.id
+              job_id: message.stream.id
             }
           )
 
@@ -391,7 +391,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
           let(:job_order1_closed) do
             build(
               :message,
-              aggregate: job_order1.aggregate,
+              stream: job_order1.stream,
               schema: Events::JobOrderNotFilled::V1,
               occurred_at: Time.zone.local(2019, 6, 1),
               data: Messages::Nothing
@@ -414,7 +414,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
               .with(
                 schema: Events::JobOrderCandidateAdded::V2,
                 trace_id: message.trace_id,
-                aggregate: job_order2.aggregate,
+                stream: job_order2.stream,
                 data: {
                   person_id:
                 }
@@ -426,7 +426,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
               .with(
                 schema: Events::JobOrderCandidateApplied::V2,
                 trace_id: message.trace_id,
-                aggregate: job_order2.aggregate,
+                stream: job_order2.stream,
                 data: {
                   person_id:,
                   applied_at: message.occurred_at
@@ -451,7 +451,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         build(
           :message,
           schema: Commands::AddJobOrder::V1,
-          aggregate:,
+          stream:,
           data: {
             job_id:
           }
@@ -466,7 +466,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             build(
               :message,
               schema: Events::JobOrderAdded::V1,
-              aggregate:,
+              stream:,
               occurred_at: Time.zone.local(2019, 1, 1),
               data: {
                 job_id:
@@ -481,7 +481,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             .with(
               schema: Events::JobOrderCreationFailed::V1,
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               data: {
                 job_id: message.data.job_id,
                 reason: "There is an existing active job order present"
@@ -502,7 +502,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             .with(
               schema: Events::JobOrderAdded::V1,
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               data: {
                 job_id: message.data.job_id
               }
@@ -525,7 +525,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
         build(
           :message,
           schema: Commands::ActivateJobOrder::V1,
-          aggregate:,
+          stream:,
           data: Messages::Nothing
         )
       end
@@ -538,7 +538,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             build(
               :message,
               schema: Events::JobOrderAdded::V1,
-              aggregate:,
+              stream:,
               occurred_at: Time.zone.local(2019, 1, 1),
               data: {
                 job_id:
@@ -553,7 +553,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             .with(
               schema: Events::JobOrderActivationFailed::V1,
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               data: {
                 reason: "There is an existing active job order present"
               }
@@ -587,7 +587,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             build(
               :message,
               schema: Events::JobOrderAdded::V1,
-              aggregate:,
+              stream:,
               occurred_at: Time.zone.local(2019, 1, 1),
               data: {
                 job_id:
@@ -596,7 +596,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             build(
               :message,
               schema: Events::JobOrderNotFilled::V1,
-              aggregate:,
+              stream:,
               occurred_at: Time.zone.local(2019, 1, 1),
               data: Messages::Nothing
             )
@@ -609,7 +609,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
             .with(
               schema: Events::JobOrderActivated::V1,
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               data: Messages::Nothing
             )
             .and_call_original
@@ -634,7 +634,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
 
             expect(MessageService)
               .to receive(:aggregate_events)
-              .with(message.aggregate)
+              .with(message.stream)
               .and_return(messages)
           end
 
@@ -700,7 +700,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
-                    aggregate: message.aggregate,
+                    stream: message.stream,
                     schema: Events::JobOrderActivated::V1,
                     data: Messages::Nothing
                   )
@@ -726,7 +726,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
-                    aggregate: message.aggregate,
+                    stream: message.stream,
                     schema: Events::JobOrderStalled::V1,
                     data: {
                       status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
@@ -754,7 +754,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
-                    aggregate: message.aggregate,
+                    stream: message.stream,
                     schema: Events::JobOrderFilled::V1,
                     data: Messages::Nothing
                   )
@@ -780,7 +780,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
-                    aggregate: message.aggregate,
+                    stream: message.stream,
                     schema: Events::JobOrderNotFilled::V1,
                     data: Messages::Nothing
                   )

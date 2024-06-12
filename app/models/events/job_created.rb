@@ -63,7 +63,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Job,
+      stream: Streams::Job,
       message_type: Messages::Types::Jobs::JOB_CREATED,
       version: 1
     )
@@ -72,7 +72,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Job,
+      stream: Streams::Job,
       message_type: Messages::Types::Jobs::JOB_CREATED,
       version: 2
     )
@@ -81,7 +81,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V3,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Job,
+      stream: Streams::Job,
       message_type: Messages::Types::Jobs::JOB_CREATED,
       version: 3
     )

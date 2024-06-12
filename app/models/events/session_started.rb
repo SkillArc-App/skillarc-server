@@ -4,7 +4,7 @@ module Events
       type: Messages::EVENT,
       data: Messages::Nothing,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::User,
+      stream: Streams::User,
       message_type: Messages::Types::SESSION_STARTED,
       version: 1
     )

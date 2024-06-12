@@ -15,7 +15,7 @@ module Commands
       type: Messages::COMMAND,
       data: Messages::Nothing,
       metadata: MetaData::V1,
-      aggregate: Aggregates::Task,
+      stream: Streams::Task,
       message_type: Messages::Types::Infrastructure::CANCEL_TASK,
       version: 1
     )

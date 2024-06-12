@@ -12,7 +12,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     let(:job_order_activated) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::JobOrderActivated::V1,
         data: Messages::Nothing
       )
@@ -20,7 +20,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     let(:job_order_stalled) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::JobOrderStalled::V1,
         data: {
           status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
@@ -30,7 +30,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     let(:job_order_filled) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::JobOrderFilled::V1,
         data: Messages::Nothing
       )
@@ -38,7 +38,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     let(:job_order_not_filled) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::JobOrderNotFilled::V1,
         data: Messages::Nothing
       )

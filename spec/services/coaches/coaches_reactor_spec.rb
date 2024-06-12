@@ -90,7 +90,7 @@ RSpec.describe Coaches::CoachesReactor do
               .to receive(:create_once_for_trace!)
               .with(
                 schema: Events::CoachAssigned::V3,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 data: {
                   coach_id: message.data.coach_id
                 }
@@ -129,7 +129,7 @@ RSpec.describe Coaches::CoachesReactor do
             message_id: be_a(String),
             trace_id: message.trace_id,
             data: {
-              person_id: message.aggregate.id,
+              person_id: message.stream.id,
               title: "From your SkillArc career coach",
               body: "Check out this job",
               url: "#{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"
@@ -251,7 +251,7 @@ RSpec.describe Coaches::CoachesReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Commands::AssignCoach::V2,
               data: {
                 coach_id:
@@ -299,7 +299,7 @@ RSpec.describe Coaches::CoachesReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Commands::AssignCoach::V2,
               data: {
                 coach_id: message.data.source_identifier

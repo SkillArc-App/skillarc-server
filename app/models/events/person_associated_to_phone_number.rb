@@ -14,7 +14,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Phone,
+      stream: Streams::Phone,
       message_type: Messages::Types::Phone::PERSON_ASSOCIATED_TO_PHONE_NUMBER,
       version: 1
     )

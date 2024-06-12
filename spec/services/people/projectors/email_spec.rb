@@ -10,7 +10,7 @@ RSpec.describe People::Projectors::Email do
     let(:person_added_with_email) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::PersonAdded::V1,
         data: {
           email: SecureRandom.uuid,
@@ -24,7 +24,7 @@ RSpec.describe People::Projectors::Email do
     let(:person_added_without_email) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::PersonAdded::V1,
         data: {
           email: nil,
@@ -38,7 +38,7 @@ RSpec.describe People::Projectors::Email do
     let(:basic_info_added_without_email) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::BasicInfoAdded::V1,
         data: {
           email: nil,
@@ -51,7 +51,7 @@ RSpec.describe People::Projectors::Email do
     let(:basic_info_added_with_email) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::BasicInfoAdded::V1,
         data: {
           email: SecureRandom.uuid,

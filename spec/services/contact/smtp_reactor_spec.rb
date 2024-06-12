@@ -176,7 +176,7 @@ RSpec.describe Contact::SmtpReactor do
 
         expect_any_instance_of(MessageService).to receive(:create!).with(
           schema: Events::EmailMessageSent::V1,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           trace_id: message.trace_id,
           data: {
             recepent_email: "foo@bar.baz",

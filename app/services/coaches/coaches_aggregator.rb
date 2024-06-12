@@ -23,19 +23,19 @@ module Coaches
     on_message Events::CoachAdded::V1, :sync do |message|
       Coach.create!(
         id: message.data.coach_id,
-        user_id: message.aggregate.id,
+        user_id: message.stream.id,
         email: message.data.email,
         assignment_weight: 0
       )
     end
 
     on_message Events::CoachAssignmentWeightAdded::V1 do |message|
-      coach = Coach.find(message.aggregate.id)
+      coach = Coach.find(message.stream.id)
       coach.update!(assignment_weight: message.data.weight)
     end
 
     on_message Events::CoachReminderScheduled::V2, :sync do |message|
-      coach = Coach.find(message.aggregate.id)
+      coach = Coach.find(message.stream.id)
 
       Reminder.create!(
         id: message.data.reminder_id,
@@ -57,7 +57,7 @@ module Coaches
     end
 
     on_message Events::PersonAttributeAdded::V1, :sync do |message|
-      person_context = PersonContext.find(message.aggregate.id)
+      person_context = PersonContext.find(message.stream.id)
       seeker_attribute = PersonAttribute.find_or_initialize_by(id: message.data.id)
 
       seeker_attribute.update!(
@@ -74,7 +74,7 @@ module Coaches
 
     on_message Events::JobCreated::V3 do |message|
       Job.create!(
-        job_id: message.aggregate_id,
+        job_id: message.stream_id,
         employment_title: message.data.employment_title,
         employer_name: message.data.employer_name,
         hide_job: message.data.hide_job
@@ -82,7 +82,7 @@ module Coaches
     end
 
     on_message Events::JobUpdated::V2 do |message|
-      job = Job.find_by!(job_id: message.aggregate_id)
+      job = Job.find_by!(job_id: message.stream_id)
 
       job.update!(
         employment_title: message.data.employment_title,
@@ -101,7 +101,7 @@ module Coaches
 
       application = PersonApplication.find_or_initialize_by(
         person_context:,
-        id: message.aggregate.id
+        id: message.stream.id
       )
 
       application.update!(
@@ -121,20 +121,20 @@ module Coaches
     end
 
     on_message Events::BarrierUpdated::V3, :sync do |message|
-      person_context = PersonContext.find(message.aggregate.id)
+      person_context = PersonContext.find(message.stream.id)
 
       person_context.update!(barriers: message.data.barriers)
     end
 
     on_message Events::CoachAssigned::V3, :sync do |message|
-      person_context = PersonContext.find(message.aggregate.id)
+      person_context = PersonContext.find(message.stream.id)
       coach = Coach.find(message.data.coach_id)
 
       person_context.update!(assigned_coach: coach.email)
     end
 
     on_message Events::JobRecommended::V3, :sync do |message|
-      person_context = PersonContext.find(message.aggregate.id)
+      person_context = PersonContext.find(message.stream.id)
       job = Coaches::Job.find_by!(job_id: message.data.job_id)
 
       PersonJobRecommendation.create!(
@@ -145,7 +145,7 @@ module Coaches
     end
 
     on_message Events::PersonCertified::V1, :sync do |message|
-      person_context = PersonContext.find(message.aggregate.id)
+      person_context = PersonContext.find(message.stream.id)
       person_context.update!(certified_by: Coach.find(message.data.coach_id).email)
     end
 
@@ -158,7 +158,7 @@ module Coaches
     end
 
     on_message Events::NoteAdded::V4, :sync do |message|
-      person_context = PersonContext.find(message.aggregate.id)
+      person_context = PersonContext.find(message.stream.id)
       person_context.update!(last_contacted_at: message.occurred_at)
 
       PersonNote.create!(
@@ -171,7 +171,7 @@ module Coaches
     end
 
     on_message Events::BasicInfoAdded::V1 do |message|
-      person_context = PersonContext.find(message.aggregate.id)
+      person_context = PersonContext.find(message.stream.id)
 
       person_context.update!(
         first_name: message.data.first_name,
@@ -183,7 +183,7 @@ module Coaches
 
     on_message Events::PersonAdded::V1 do |message|
       PersonContext.create!(
-        id: message.aggregate_id,
+        id: message.stream_id,
         email: message.data.email,
         phone_number: message.data.phone_number,
         person_captured_at: message.occurred_at,
@@ -197,7 +197,7 @@ module Coaches
     on_message Events::PersonSourced::V1 do |message|
       return if message.data.source_kind != People::SourceKind::COACH
 
-      person_context = PersonContext.find(message.aggregate.id)
+      person_context = PersonContext.find(message.stream.id)
       coach = Coach.find(message.data.source_identifier)
 
       person_context.update!(
@@ -206,7 +206,7 @@ module Coaches
     end
 
     on_message Events::PersonAssociatedToUser::V1 do |message|
-      person_context = PersonContext.find(message.aggregate.id)
+      person_context = PersonContext.find(message.stream.id)
 
       person_context.update!(
         user_id: message.data.user_id,
@@ -215,7 +215,7 @@ module Coaches
     end
 
     on_message Events::SessionStarted::V1 do |message|
-      person_context = PersonContext.find_by(user_id: message.aggregate.id)
+      person_context = PersonContext.find_by(user_id: message.stream.id)
       return if person_context.nil?
 
       person_context.update!(last_active_on: message.occurred_at)

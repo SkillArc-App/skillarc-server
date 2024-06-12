@@ -16,7 +16,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::TrainingProvider,
+      stream: Streams::TrainingProvider,
       message_type: Messages::Types::TrainingProviders::TRAINING_PROVIDER_PROGRAM_CREATED,
       version: 1
     )

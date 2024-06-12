@@ -14,7 +14,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::PassReason,
+      stream: Streams::PassReason,
       message_type: Messages::Types::Jobs::PASS_REASON_ADDED,
       version: 1
     )

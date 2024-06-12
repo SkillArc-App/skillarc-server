@@ -6,7 +6,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     Messages::Schema.active(
       data: Events::SeekerViewed::Data::V1,
       metadata: Events::ApplicantStatusUpdated::MetaData::V1,
-      aggregate: Aggregates::User,
+      stream: Aggregates::User,
       message_type:,
       version:,
       type:
@@ -43,7 +43,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
           .with(
             schema:,
             data:,
-            aggregate: Aggregates::User.new(user_id:),
+            stream: Aggregates::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -62,7 +62,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
               id:,
               occurred_at:,
               metadata:,
-              aggregate: Aggregates::User.new(user_id:)
+              stream: Aggregates::User.new(user_id:)
             )
           )
           .and_call_original
@@ -96,7 +96,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
           .with(
             schema:,
             data:,
-            aggregate: Aggregates::User.new(user_id:),
+            stream: Aggregates::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -140,7 +140,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
           .with(
             schema:,
             data:,
-            aggregate: Aggregates::User.new(user_id:),
+            stream: Aggregates::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -159,7 +159,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
               id:,
               occurred_at:,
               metadata:,
-              aggregate: Aggregates::User.new(user_id:)
+              stream: Aggregates::User.new(user_id:)
             )
           )
           .and_call_original
@@ -193,7 +193,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
           .with(
             schema:,
             data:,
-            aggregate: Aggregates::User.new(user_id:),
+            stream: Aggregates::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -236,7 +236,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
         .with(
           schema:,
           data:,
-          aggregate: nil,
+          stream: nil,
           trace_id:,
           id:,
           occurred_at:,
@@ -255,7 +255,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
             id:,
             occurred_at:,
             metadata:,
-            aggregate: Aggregates::User.new(user_id:)
+            stream: Aggregates::User.new(user_id:)
           )
         )
         .and_call_original
@@ -312,7 +312,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
       context "when data and metadata type check" do
         it "returns the produced message" do
           expect(subject.id).to eq(id)
-          expect(subject.aggregate_id).to eq(user_id)
+          expect(subject.stream_id).to eq(user_id)
           expect(subject.schema).to eq(schema)
           expect(subject.data).to eq(data)
           expect(subject.metadata).to eq(metadata)
@@ -324,7 +324,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
 
           it "returns the produced message" do
             expect(subject.id).to eq(id)
-            expect(subject.aggregate_id).to eq(user_id)
+            expect(subject.stream_id).to eq(user_id)
             expect(subject.schema).to eq(schema)
             expect(subject.data).to eq(Events::SeekerViewed::Data::V1.new(seeker_id: data[:seeker_id]))
             expect(subject.metadata).to eq(metadata)
@@ -337,7 +337,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
 
           it "returns the produced message" do
             expect(subject.id).to eq(id)
-            expect(subject.aggregate_id).to eq(user_id)
+            expect(subject.stream_id).to eq(user_id)
             expect(subject.schema).to eq(schema)
             expect(subject.data).to eq(data)
             expect(subject.metadata).to eq(Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: metadata[:user_id]))
@@ -369,7 +369,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     it "persists the message" do
       expect { subject }.to change(Event, :count).by(1)
       expect(message.id).to eq(Event.last_created.message.id)
-      expect(message.aggregate_id).to eq(Event.last_created.message.aggregate_id)
+      expect(message.stream_id).to eq(Event.last_created.message.stream_id)
       expect(message.schema).to eq(Event.last_created.message.schema)
       expect(message.data).to eq(Event.last_created.message.data)
       expect(message.metadata).to eq(Event.last_created.message.metadata)
@@ -435,7 +435,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
       Messages::Schema.active(
         data: Events::SeekerViewed::Data::V1,
         metadata: Events::ApplicantStatusUpdated::MetaData::V1,
-        aggregate: Aggregates::User,
+        stream: Aggregates::User,
         message_type:,
         version: 10,
         type:
@@ -546,7 +546,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
           Messages::Schema.active(
             data: Messages::Nothing,
             metadata: Messages::Nothing,
-            aggregate: Aggregates::User,
+            stream: Aggregates::User,
             message_type: Messages::Types::User::USER_CREATED,
             type: Messages::EVENT,
             version: 2
@@ -609,7 +609,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe ".aggregate_events" do
+  describe ".stream_events" do
     before do
       Event.from_message!(message1)
       Event.from_message!(message2)
@@ -653,13 +653,13 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
 
     context "when aggregate is a aggregate" do
       it "returns all the events for the aggregate in order" do
-        expect(described_class.aggregate_events(Aggregates::Message.new(message_id:))).to eq([message2, message1])
+        expect(described_class.stream_events(Aggregates::Message.new(message_id:))).to eq([message2, message1])
       end
     end
 
     context "when aggregate is not a aggregate" do
       it "raises a NotSchemaError" do
-        expect { described_class.aggregate_events("cat") }.to raise_error(described_class::NotAggregateError)
+        expect { described_class.stream_events("cat") }.to raise_error(described_class::NotAggregateError)
       end
     end
   end
@@ -743,7 +743,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     let!(:message1) do
       Message.new(
         id: SecureRandom.uuid,
-        aggregate: Aggregates::User.new(user_id: SecureRandom.uuid),
+        stream: Aggregates::User.new(user_id: SecureRandom.uuid),
         trace_id: SecureRandom.uuid,
         schema:,
         occurred_at: Time.zone.parse('2000-1-1'),
@@ -754,7 +754,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     let!(:message2) do
       Message.new(
         id: SecureRandom.uuid,
-        aggregate: Aggregates::User.new(user_id: SecureRandom.uuid),
+        stream: Aggregates::User.new(user_id: SecureRandom.uuid),
         trace_id: SecureRandom.uuid,
         schema:,
         occurred_at: Time.zone.parse('2000-1-1'),

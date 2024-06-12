@@ -38,7 +38,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::User,
+      stream: Streams::User,
       message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 1
     )
@@ -46,7 +46,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Seeker,
+      stream: Streams::Seeker,
       message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 2
     )
@@ -54,7 +54,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Seeker,
+      stream: Streams::Seeker,
       message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 3
     )
@@ -62,7 +62,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V3,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Seeker,
+      stream: Streams::Seeker,
       message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 4
     )

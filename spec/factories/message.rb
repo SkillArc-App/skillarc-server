@@ -5,12 +5,12 @@ FactoryBot.define do
     transient do
       version { 1 }
       message_type { "chat_message_sent" }
-      aggregate_id { SecureRandom.uuid }
+      stream_id { SecureRandom.uuid }
     end
 
     schema { MessageService.get_schema(message_type:, version:) }
     trace_id { SecureRandom.uuid }
-    aggregate { schema.aggregate.new(**{ schema.aggregate.id => aggregate_id }) }
+    stream { schema.stream.new(**{ schema.stream.id => stream_id }) }
 
     Messages::Types::ALL.each do |message_type|
       trait message_type.to_sym do

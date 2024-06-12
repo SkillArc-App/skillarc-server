@@ -13,14 +13,14 @@ module TrainingProviders
       seeker_training_provider_created.update!(
         program_id: message.data.program_id,
         status: message.data.status,
-        seeker_id: message.aggregate.id,
+        seeker_id: message.stream.id,
         training_provider_id: message.data.training_provider_id
       )
     end
 
     on_message Events::TrainingProviderCreated::V1 do |message|
       TrainingProvider.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         name: message.data.name,
         description: message.data.description
       )
@@ -29,7 +29,7 @@ module TrainingProviders
     on_message Events::TrainingProviderProgramCreated::V1 do |message|
       Program.create!(
         id: message.data.program_id,
-        training_provider_id: message.aggregate.id,
+        training_provider_id: message.stream.id,
         name: message.data.name,
         description: message.data.description
       )
@@ -38,7 +38,7 @@ module TrainingProviders
     on_message Events::TrainingProviderProgramUpdated::V1 do |message|
       Program.update!(
         message.data.program_id,
-        training_provider_id: message.aggregate.id,
+        training_provider_id: message.stream.id,
         name: message.data.name,
         description: message.data.description
       )
@@ -46,7 +46,7 @@ module TrainingProviders
 
     on_message Events::ReferenceCreated::V2 do |message|
       Reference.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         reference_text: message.data.reference_text,
         author_profile_id: message.data.author_training_provider_profile_id,
         training_provider_id: message.data.training_provider_id,
@@ -55,7 +55,7 @@ module TrainingProviders
     end
 
     on_message Events::ReferenceUpdated::V1 do |message|
-      reference = Reference.find(message.aggregate.id)
+      reference = Reference.find(message.stream.id)
       reference.update!(reference_text: message.data.reference_text)
     end
   end

@@ -15,7 +15,7 @@ module Slack
       message_service.create!(
         schema: ::Events::SlackMessageSent::V1,
         trace_id: message.trace_id,
-        message_id: message.aggregate.message_id,
+        message_id: message.stream.message_id,
         data: message.data.to_h
       )
     end
@@ -33,7 +33,7 @@ module Slack
 
     on_message ::Events::ChatMessageSent::V2 do |message|
       applicant_status_updated = Projectors::Aggregates::GetFirst.project(
-        aggregate: Aggregates::Application.new(application_id: message.aggregate.id),
+        stream: Aggregates::Application.new(application_id: message.stream.id),
         schema: ::Events::ApplicantStatusUpdated::V6
       )
 

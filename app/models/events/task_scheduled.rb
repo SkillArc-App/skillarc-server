@@ -26,7 +26,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: MetaData::V1,
-      aggregate: Aggregates::Task,
+      stream: Streams::Task,
       message_type: Messages::Types::Infrastructure::TASK_SCHEDULED,
       version: 1
     )

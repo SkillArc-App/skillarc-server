@@ -88,7 +88,7 @@ RSpec.describe Users::UsersReactor do
               .with(
                 trace_id: message.trace_id,
                 schema: Events::CoachAdded::V1,
-                user_id: message.aggregate.id,
+                user_id: message.stream.id,
                 data: {
                   coach_id: be_a(String),
                   email:

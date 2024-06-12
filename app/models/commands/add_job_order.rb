@@ -14,7 +14,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::JobOrder,
+      stream: Streams::JobOrder,
       message_type: Messages::Types::JobOrders::ADD_JOB_ORDER,
       version: 1
     )

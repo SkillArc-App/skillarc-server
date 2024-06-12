@@ -39,7 +39,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: MetaData::V1,
-      aggregate: Aggregates::Message,
+      stream: Streams::Message,
       message_type: Messages::Types::Contact::SEND_MESSAGE,
       version: 1
     )
@@ -47,7 +47,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V2,
       metadata: MetaData::V1,
-      aggregate: Aggregates::Message,
+      stream: Streams::Message,
       message_type: Messages::Types::Contact::SEND_MESSAGE,
       version: 2
     )

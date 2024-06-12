@@ -1,7 +1,7 @@
 module Contact
   module Projectors
     class ContactPreference < Projector
-      projection_aggregator Aggregates::Person
+      projection_stream Streams::Person
 
       class Projection
         NoValidOption = Class.new(StandardError)

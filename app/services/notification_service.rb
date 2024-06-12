@@ -3,7 +3,7 @@ class NotificationService
 
   def call(message:)
     Contact::Notification.create!(
-      user_id: message.aggregate_id,
+      user_id: message.stream_id,
       title: message.data[:title],
       body: message.data[:body],
       url: message.data[:url]

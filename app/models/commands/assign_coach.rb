@@ -22,7 +22,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Coaches::SeekerContext,
+      stream: Streams::Coaches::SeekerContext,
       message_type: Messages::Types::Coaches::ASSIGN_COACH,
       version: 1
     )
@@ -30,7 +30,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V2,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Person,
+      stream: Streams::Person,
       message_type: Messages::Types::Coaches::ASSIGN_COACH,
       version: 2
     )

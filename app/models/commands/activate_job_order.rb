@@ -4,7 +4,7 @@ module Commands
       type: Messages::COMMAND,
       data: Messages::Nothing,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::JobOrder,
+      stream: Streams::JobOrder,
       message_type: Messages::Types::JobOrders::ACTIVATE_JOB_ORDER,
       version: 1
     )

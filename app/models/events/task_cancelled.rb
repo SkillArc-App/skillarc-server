@@ -15,7 +15,7 @@ module Events
       type: Messages::EVENT,
       data: Messages::Nothing,
       metadata: MetaData::V1,
-      aggregate: Aggregates::Task,
+      stream: Streams::Task,
       message_type: Messages::Types::Infrastructure::TASK_CANCELLED,
       version: 1
     )

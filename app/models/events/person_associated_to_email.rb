@@ -14,7 +14,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Email,
+      stream: Streams::Email,
       message_type: Messages::Types::Email::PERSON_ASSOCIATED_TO_EMAIL,
       version: 1
     )

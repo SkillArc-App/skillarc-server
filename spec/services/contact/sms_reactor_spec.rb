@@ -33,7 +33,7 @@ RSpec.describe Contact::SmsReactor do
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
         schema: Events::SmsMessageSent::V2,
-        message_id: message.aggregate.message_id,
+        message_id: message.stream.message_id,
         trace_id: message.trace_id,
         data: {
           phone_number:,

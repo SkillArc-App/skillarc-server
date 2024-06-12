@@ -9,11 +9,11 @@ module Users
     on_message Events::PersonAssociatedToUser::V1 do |message|
       user = User.find(message.data.user_id)
 
-      user.update!(person_id: message.aggregate.id)
+      user.update!(person_id: message.stream.id)
     end
 
     on_message Events::RoleAdded::V2 do |message|
-      user = User.find(message.aggregate.id)
+      user = User.find(message.stream.id)
 
       return if user.role?(message.data.role)
 

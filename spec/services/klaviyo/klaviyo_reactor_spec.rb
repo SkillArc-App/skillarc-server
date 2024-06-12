@@ -468,7 +468,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         expect(client)
           .to receive(:application_status_updated)
           .with(
-            application_id: message.aggregate.id,
+            application_id: message.stream.id,
             email: "applicant@email.com",
             employment_title: "Job",
             employer_name: "Employer",

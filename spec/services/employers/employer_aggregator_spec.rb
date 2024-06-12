@@ -181,7 +181,7 @@ RSpec.describe Employers::EmployerAggregator do
       )
 
       expect(Employers::Seeker.last_created).to have_attributes(
-        seeker_id: person_certified.aggregate_id,
+        seeker_id: person_certified.stream_id,
         certified_by: "hannah@skillarc.com"
       )
 
@@ -222,7 +222,7 @@ RSpec.describe Employers::EmployerAggregator do
         expect { subject }.to change(Employers::PassReason, :count).from(0).to(1)
 
         pass_reason = Employers::PassReason.last_created
-        expect(pass_reason.id).to eq(message.aggregate.id)
+        expect(pass_reason.id).to eq(message.stream.id)
         expect(pass_reason.description).to eq("This canidates blows")
       end
     end
@@ -237,7 +237,7 @@ RSpec.describe Employers::EmployerAggregator do
       end
 
       context "when there is a pass reason for the id" do
-        let!(:pass_reason) { create(:employers__pass_reason, id: message.aggregate.id) }
+        let!(:pass_reason) { create(:employers__pass_reason, id: message.stream.id) }
 
         it "removes the pass reason" do
           expect { subject }.to change(Employers::PassReason, :count).from(1).to(0)

@@ -1,10 +1,10 @@
 module Projectors
-  module Aggregates
-    class GetLast
+  module Streams
+    class GetFirst
       def project(messages)
         messages
           .select { |m| m.schema == schema }
-          .last
+          .first
       end
 
       def initialize(schema:)
@@ -12,7 +12,7 @@ module Projectors
       end
 
       def self.project(aggregate:, schema:)
-        messages = MessageService.aggregate_events(aggregate)
+        messages = MessageService.stream_events(aggregate)
         instance = new(schema:)
         instance.project(messages)
       end

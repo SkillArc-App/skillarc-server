@@ -11,7 +11,7 @@ module Analytics
     end
 
     on_message Events::PersonAssociatedToUser::V1 do |message|
-      person = DimPerson.find_by!(person_id: message.aggregate.person_id)
+      person = DimPerson.find_by!(person_id: message.stream.person_id)
       user = DimUser.find_by!(user_id: message.data.user_id)
 
       person.dim_user = user
@@ -22,7 +22,7 @@ module Analytics
       data = message.data
 
       DimUser.create!(
-        user_id: message.aggregate.user_id,
+        user_id: message.stream.user_id,
         email: data.email,
         kind: DimUser::Kind::USER,
         first_name: data.first_name,
@@ -32,7 +32,7 @@ module Analytics
     end
 
     on_message Events::BasicInfoAdded::V1 do |message|
-      person = DimPerson.find_by!(person_id: message.aggregate.person_id)
+      person = DimPerson.find_by!(person_id: message.stream.person_id)
 
       person.update!(
         first_name: message.data.first_name,
@@ -44,7 +44,7 @@ module Analytics
 
     on_message Events::PersonAdded::V1 do |message|
       DimPerson.create!(
-        person_id: message.aggregate.person_id,
+        person_id: message.stream.person_id,
         email: message.data.email,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
@@ -53,7 +53,7 @@ module Analytics
     end
 
     on_message Events::OnboardingCompleted::V3 do |message|
-      person = DimPerson.find_by!(person_id: message.aggregate.person_id)
+      person = DimPerson.find_by!(person_id: message.stream.person_id)
 
       person.update!(
         onboarding_completed_at: message.occurred_at
@@ -61,13 +61,13 @@ module Analytics
     end
 
     on_message Events::SessionStarted::V1 do |message|
-      user = DimUser.find_by!(user_id: message.aggregate.user_id)
+      user = DimUser.find_by!(user_id: message.stream.user_id)
 
       user.update!(last_active_at: message.occurred_at)
     end
 
     on_message Events::CoachAdded::V1 do |message|
-      user = DimUser.find_by!(user_id: message.aggregate.user_id)
+      user = DimUser.find_by!(user_id: message.stream.user_id)
 
       user.update!(kind: DimUser::Kind::COACH, coach_id: message.data.coach_id)
     end
@@ -88,7 +88,7 @@ module Analytics
 
     on_message Events::JobCreated::V3 do |message|
       dim_job = DimJob.create!(
-        job_id: message.aggregate.job_id,
+        job_id: message.stream.job_id,
         category: message.data.category,
         employment_title: message.data.employment_title,
         employment_type: message.data.employment_type,
@@ -104,7 +104,7 @@ module Analytics
     end
 
     on_message Events::JobUpdated::V2 do |message|
-      dim_job = Analytics::DimJob.find_by!(job_id: message.aggregate.job_id)
+      dim_job = Analytics::DimJob.find_by!(job_id: message.stream.job_id)
 
       dim_job.update!(
         category: message.data.category,
@@ -132,7 +132,7 @@ module Analytics
 
     on_message Events::ApplicantStatusUpdated::V6 do |message|
       data = message.data
-      fact_application = Analytics::FactApplication.find_by(application_id: message.aggregate.id)
+      fact_application = Analytics::FactApplication.find_by(application_id: message.stream.id)
 
       if fact_application.present?
         fact_application.update!(status: data.status, application_updated_at: message.occurred_at)
@@ -149,14 +149,14 @@ module Analytics
           application_number:,
           status: data.status,
           application_opened_at: message.occurred_at,
-          application_id: message.aggregate.id,
+          application_id: message.stream.id,
           application_updated_at: message.occurred_at
         )
       end
     end
 
     on_message Events::PersonViewed::V1 do |message|
-      dim_user_viewer = Analytics::DimUser.find_by!(user_id: message.aggregate.user_id)
+      dim_user_viewer = Analytics::DimUser.find_by!(user_id: message.stream.user_id)
       dim_person_viewed = Analytics::DimPerson.find_by!(person_id: message.data.person_id)
 
       Analytics::FactPersonViewed.create!(
@@ -168,7 +168,7 @@ module Analytics
     end
 
     on_message Events::PersonViewedInCoaching::V1 do |message|
-      dim_user_viewer = Analytics::DimUser.find_by!(coach_id: message.aggregate.coach_id)
+      dim_user_viewer = Analytics::DimUser.find_by!(coach_id: message.stream.coach_id)
       dim_person_viewed = DimPerson.find_by(person_id: message.data.person_id)
 
       Analytics::FactPersonViewed.create!(
@@ -181,7 +181,7 @@ module Analytics
 
     on_message Events::NoteAdded::V4 do |message|
       note_action(
-        person_id: message.aggregate.person_id,
+        person_id: message.stream.person_id,
         originator: message.data.originator,
         action: Analytics::FactCoachAction::Actions::NOTE_ADDED,
         occurred_at: message.occurred_at
@@ -190,7 +190,7 @@ module Analytics
 
     on_message Events::NoteModified::V4 do |message|
       note_action(
-        person_id: message.aggregate.person_id,
+        person_id: message.stream.person_id,
         originator: message.data.originator,
         action: Analytics::FactCoachAction::Actions::NOTE_MODIFIED,
         occurred_at: message.occurred_at
@@ -199,7 +199,7 @@ module Analytics
 
     on_message Events::NoteDeleted::V4 do |message|
       note_action(
-        person_id: message.aggregate.person_id,
+        person_id: message.stream.person_id,
         originator: message.data.originator,
         action: Analytics::FactCoachAction::Actions::NOTE_DELETED,
         occurred_at: message.occurred_at
@@ -208,7 +208,7 @@ module Analytics
 
     on_message Events::JobRecommended::V3 do |message|
       dim_user_executor = Analytics::DimUser.find_by!(coach_id: message.data.coach_id)
-      dim_person_target = Analytics::DimPerson.find_by!(person_id: message.aggregate.person_id)
+      dim_person_target = Analytics::DimPerson.find_by!(person_id: message.stream.person_id)
 
       Analytics::FactCoachAction.create!(
         dim_user_executor:,
@@ -220,7 +220,7 @@ module Analytics
 
     on_message Events::PersonCertified::V1 do |message|
       dim_user_executor = Analytics::DimUser.find_by!(coach_id: message.data.coach_id)
-      dim_person_target = Analytics::DimPerson.find_by!(person_id: message.aggregate.person_id)
+      dim_person_target = Analytics::DimPerson.find_by!(person_id: message.stream.person_id)
 
       Analytics::FactCoachAction.create!(
         dim_user_executor:,

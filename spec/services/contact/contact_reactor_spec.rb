@@ -50,7 +50,7 @@ RSpec.describe Contact::ContactReactor do
               .with(
                 schema: Commands::SendSlackMessage::V1,
                 trace_id: message.trace_id,
-                message_id: message.aggregate.message_id,
+                message_id: message.stream.message_id,
                 data: {
                   channel: projection.slack_id,
                   text: "*A title*: A body <www.google.com|Link>"
@@ -62,7 +62,7 @@ RSpec.describe Contact::ContactReactor do
               .with(
                 schema: Events::MessageEnqueued::V1,
                 trace_id: message.trace_id,
-                message_id: message.aggregate.message_id,
+                message_id: message.stream.message_id,
                 data: Messages::Nothing
               ).and_call_original
 
@@ -79,7 +79,7 @@ RSpec.describe Contact::ContactReactor do
               .with(
                 schema: Commands::SendSlackMessage::V1,
                 trace_id: message.trace_id,
-                message_id: message.aggregate.message_id,
+                message_id: message.stream.message_id,
                 data: {
                   channel: projection.slack_id,
                   text: "*A title*: A body"
@@ -91,7 +91,7 @@ RSpec.describe Contact::ContactReactor do
               .with(
                 schema: Events::MessageEnqueued::V1,
                 trace_id: message.trace_id,
-                message_id: message.aggregate.message_id,
+                message_id: message.stream.message_id,
                 data: Messages::Nothing
               ).and_call_original
 
@@ -118,7 +118,7 @@ RSpec.describe Contact::ContactReactor do
             .with(
               schema: Commands::SendEmailMessage::V1,
               trace_id: message.trace_id,
-              message_id: message.aggregate.message_id,
+              message_id: message.stream.message_id,
               data: {
                 recepent_email: projection.email,
                 title: message.data.title,
@@ -132,7 +132,7 @@ RSpec.describe Contact::ContactReactor do
             .with(
               schema: Events::MessageEnqueued::V1,
               trace_id: message.trace_id,
-              message_id: message.aggregate.message_id,
+              message_id: message.stream.message_id,
               data: Messages::Nothing
             ).and_call_original
 
@@ -160,7 +160,7 @@ RSpec.describe Contact::ContactReactor do
               .with(
                 schema: Commands::SendSmsMessage::V3,
                 trace_id: message.trace_id,
-                message_id: message.aggregate.message_id,
+                message_id: message.stream.message_id,
                 data: {
                   phone_number: projection.phone_number,
                   message: "A title: A body www.google.com"
@@ -172,7 +172,7 @@ RSpec.describe Contact::ContactReactor do
               .with(
                 schema: Events::MessageEnqueued::V1,
                 trace_id: message.trace_id,
-                message_id: message.aggregate.message_id,
+                message_id: message.stream.message_id,
                 data: Messages::Nothing
               ).and_call_original
 
@@ -189,7 +189,7 @@ RSpec.describe Contact::ContactReactor do
               .with(
                 schema: Commands::SendSmsMessage::V3,
                 trace_id: message.trace_id,
-                message_id: message.aggregate.message_id,
+                message_id: message.stream.message_id,
                 data: {
                   phone_number: projection.phone_number,
                   message: "A title: A body"
@@ -201,7 +201,7 @@ RSpec.describe Contact::ContactReactor do
               .with(
                 schema: Events::MessageEnqueued::V1,
                 trace_id: message.trace_id,
-                message_id: message.aggregate.message_id,
+                message_id: message.stream.message_id,
                 data: Messages::Nothing
               ).and_call_original
 
@@ -229,7 +229,7 @@ RSpec.describe Contact::ContactReactor do
             .with(
               schema: Events::NotificationCreated::V3,
               trace_id: message.trace_id,
-              message_id: message.aggregate.message_id,
+              message_id: message.stream.message_id,
               data: {
                 title: message.data.title,
                 body: message.data.body,
@@ -244,7 +244,7 @@ RSpec.describe Contact::ContactReactor do
             .with(
               schema: Events::MessageSent::V1,
               trace_id: message.trace_id,
-              message_id: message.aggregate.message_id,
+              message_id: message.stream.message_id,
               data: Messages::Nothing
             ).and_call_original
 

@@ -15,7 +15,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Phone,
+      stream: Streams::Phone,
       message_type: Messages::Types::Contact::SMS_MESSAGE_SENT,
       version: 1
     )
@@ -23,7 +23,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Message,
+      stream: Streams::Message,
       message_type: Messages::Types::Contact::SMS_MESSAGE_SENT,
       version: 2
     )

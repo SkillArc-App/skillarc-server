@@ -30,7 +30,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Employer,
+      stream: Streams::Employer,
       message_type: Messages::Types::Contact::SEND_WEEKLY_EMPLOYER_UPDATE,
       version: 1
     )

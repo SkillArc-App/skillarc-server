@@ -27,7 +27,7 @@ RSpec.describe Seekers::ApplicationService do
         expect(message_service)
           .to receive(:create!)
           .with(
-            aggregate: Aggregates::Person.new(person_id: seeker.id),
+            stream: Aggregates::Person.new(person_id: seeker.id),
             schema: Events::PersonApplied::V1,
             data: {
               application_id: be_a(String),

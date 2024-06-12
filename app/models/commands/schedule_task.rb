@@ -26,7 +26,7 @@ module Commands
       type: Messages::COMMAND,
       data: Data::V1,
       metadata: MetaData::V1,
-      aggregate: Aggregates::Task,
+      stream: Streams::Task,
       message_type: Messages::Types::Infrastructure::SCHEDULE_TASK,
       version: 1
     )

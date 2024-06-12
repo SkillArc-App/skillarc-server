@@ -224,7 +224,7 @@ RSpec.describe People::PersonDedupingReactor do
               .with(
                 schema: Events::PersonAdded::V1,
                 trace_id: message.trace_id,
-                person_id: message.aggregate.id,
+                person_id: message.stream.id,
                 data: {
                   first_name: message.data.first_name,
                   last_name: message.data.last_name,
@@ -285,7 +285,7 @@ RSpec.describe People::PersonDedupingReactor do
               trace_id: message.trace_id,
               email: message.data.email,
               data: {
-                person_id: message.aggregate.id
+                person_id: message.stream.id
               }
             )
             .twice
@@ -312,7 +312,7 @@ RSpec.describe People::PersonDedupingReactor do
               trace_id: message.trace_id,
               phone_number: message.data.phone_number,
               data: {
-                person_id: message.aggregate.id
+                person_id: message.stream.id
               }
             )
             .twice
@@ -339,7 +339,7 @@ RSpec.describe People::PersonDedupingReactor do
               trace_id: message.trace_id,
               phone_number: message.data.phone_number,
               data: {
-                person_id: message.aggregate.id
+                person_id: message.stream.id
               }
             )
             .twice
@@ -352,7 +352,7 @@ RSpec.describe People::PersonDedupingReactor do
               trace_id: message.trace_id,
               email: message.data.email,
               data: {
-                person_id: message.aggregate.id
+                person_id: message.stream.id
               }
             )
             .twice

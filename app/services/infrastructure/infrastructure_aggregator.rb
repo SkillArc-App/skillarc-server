@@ -6,7 +6,7 @@ module Infrastructure
 
     on_message Events::TaskScheduled::V1, :sync do |message|
       Infrastructure::Task.create!(
-        id: message.aggregate.task_id,
+        id: message.stream.task_id,
         execute_at: message.data.execute_at,
         command: message.data.command,
         state: Infrastructure::TaskStates::ENQUEUED
@@ -14,12 +14,12 @@ module Infrastructure
     end
 
     on_message Events::TaskExecuted::V1, :sync do |message|
-      task = Infrastructure::Task.find(message.aggregate.task_id)
+      task = Infrastructure::Task.find(message.stream.task_id)
       task.execute!
     end
 
     on_message Events::TaskCancelled::V1, :sync do |message|
-      task = Infrastructure::Task.find(message.aggregate.task_id)
+      task = Infrastructure::Task.find(message.stream.task_id)
       task.cancel!
     end
   end

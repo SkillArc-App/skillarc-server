@@ -29,7 +29,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::TrainingProvider,
+      stream: Streams::TrainingProvider,
       message_type: Messages::Types::Invite::TRAINING_PROVIDER_INVITE_ACCEPTED,
       version: 1
     )
@@ -37,7 +37,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V2,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Invite,
+      stream: Streams::Invite,
       message_type: Messages::Types::Invite::TRAINING_PROVIDER_INVITE_ACCEPTED,
       version: 2
     )

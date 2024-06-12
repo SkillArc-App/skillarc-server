@@ -19,7 +19,7 @@ module Events
       type: Messages::EVENT,
       data: Data::V1,
       metadata: Messages::Nothing,
-      aggregate: Aggregates::Invite,
+      stream: Streams::Invite,
       message_type: Messages::Types::Invite::TRAINING_PROVIDER_INVITE_CREATED,
       version: 1
     )

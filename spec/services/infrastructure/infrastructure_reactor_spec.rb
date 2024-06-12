@@ -55,7 +55,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
             .with(
               schema: Events::TaskScheduled::V1,
               trace_id: message.trace_id,
-              task_id: message.aggregate.task_id,
+              task_id: message.stream.task_id,
               data: {
                 execute_at: message.data.execute_at,
                 command: message.data.command
@@ -107,7 +107,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
               .with(
                 schema: Events::TaskCancelled::V1,
                 trace_id: message.trace_id,
-                task_id: message.aggregate.task_id,
+                task_id: message.stream.task_id,
                 data: Messages::Nothing,
                 metadata: {
                   requestor_type: message.metadata.requestor_type,

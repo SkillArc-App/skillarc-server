@@ -40,7 +40,7 @@ RSpec.describe People::BasicInfoService do
       allow(message_service).to receive(:create!)
       expect(message_service).to receive(:create!).with(
         schema: Events::BasicInfoAdded::V1,
-        aggregate:,
+        stream:,
         data: {
           first_name:,
           last_name:,
@@ -51,7 +51,7 @@ RSpec.describe People::BasicInfoService do
 
       expect(message_service).to receive(:create!).with(
         schema: Events::ZipAdded::V2,
-        aggregate:,
+        stream:,
         data: {
           zip_code:
         }
@@ -59,7 +59,7 @@ RSpec.describe People::BasicInfoService do
 
       expect(message_service).to receive(:create!).with(
         schema: Events::PersonAboutAdded::V1,
-        aggregate:,
+        stream:,
         data: {
           about:
         }

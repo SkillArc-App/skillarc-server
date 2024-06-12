@@ -8,9 +8,9 @@ class MessageService
   InactiveSchemaError = Class.new(StandardError)
   NotBooleanProjection = Class.new(StandardError)
 
-  def create_once_for_trace!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
-    aggregate = get_aggregate(aggregate:, schema:, **)
-    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
+  def create_once_for_trace!(schema:, data:, stream: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    aggregate = get_aggregate(stream:, schema:, **)
+    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, stream:, **)
 
     projection = Projectors::Trace::HasOccurred.project(trace_id:, schema:)
     raise MessageService::NotBooleanProjection unless [true, false].include?(projection)
@@ -20,11 +20,11 @@ class MessageService
     message
   end
 
-  def create_once_for_aggregate!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
-    aggregate = get_aggregate(aggregate:, schema:, **)
-    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
+  def create_once_for_aggregate!(schema:, data:, stream: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    aggregate = get_aggregate(stream:, schema:, **)
+    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, stream:, **)
 
-    projection = Projectors::Aggregates::HasOccurred.project(aggregate:, schema:)
+    projection = Projectors::Aggregates::HasOccurred.project(stream:, schema:)
     raise MessageService::NotBooleanProjection unless [true, false].include?(projection)
 
     save!(message) unless projection
@@ -32,26 +32,26 @@ class MessageService
     message
   end
 
-  def create!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
-    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
+  def create!(schema:, data:, stream: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, stream:, **)
     save!(message)
 
     message
   end
 
-  def build(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+  def build(schema:, data:, stream: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
     raise NotSchemaError unless schema.is_a?(Messages::Schema)
 
     raise InactiveSchemaError, "Attempted to create message for #{schema}" if schema.inactive?
 
-    aggregate = get_aggregate(aggregate:, schema:, **)
+    aggregate = get_aggregate(stream:, schema:, **)
 
     data = schema.data.new(**data) if data.is_a?(Hash)
     metadata = schema.metadata.new(**metadata) if metadata.is_a?(Hash)
 
     Message.new(
       id:,
-      aggregate:,
+      stream:,
       occurred_at:,
       data:,
       trace_id:,
@@ -118,8 +118,8 @@ class MessageService
     order_and_map(Event.where(version: schema.version, event_type: schema.message_type))
   end
 
-  def self.aggregate_events(aggregate)
-    raise NotAggregateError unless aggregate.is_a?(Messages::Aggregate)
+  def self.stream_events(aggregate)
+    raise NotAggregateError unless aggregate.is_a?(Messages::Stream)
 
     order_and_map(Event.where(aggregate_id: aggregate.id)).select { |m| m.schema.type == Messages::EVENT }
   end
@@ -146,8 +146,12 @@ class MessageService
 
   private
 
-  def get_aggregate(aggregate:, schema:, **)
-    aggregate || schema.aggregate.new(**)
+  def versioned_type(message_type, version)
+    "#{message_type} #{version}"
+  end
+
+  def get_aggregate(stream:, schema:, **)
+    aggregate || schema.stream.new(**)
   end
 
   def messages_to_publish

@@ -62,21 +62,41 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
 
   def create_test_trainer_with_student
     with_message_service do
-      program = FactoryBot.create(:program)
+      training_provider_id = SecureRandom.uuid
+      program_id = SecureRandom.uuid
 
-      training_provider = program.training_provider
+      training_provider = message_service.create!(
+        training_provider_id:,
+        schema: Events::TrainingProviderCreated::V1,
+        data: {
+          name: Faker::Company.name,
+          description: Faker::Company.bs
+        }
+      )
+      program = message_service.create!(
+        training_provider_id:,
+        schema: Events::TrainingProviderProgramCreated::V1,
+        data: {
+          program_id:,
+          name: Faker::Company.name,
+          description: Faker::Company.bs
+        }
+      )
 
-      trainer_user = Builders::UserBuilder.new(message_service).build
-      student_person = Builders::PersonBuilder.new(message_service).build
-
-      FactoryBot.create(:training_provider_profile, training_provider:, user: trainer_user)
-      FactoryBot.create(:seeker_training_provider, training_provider:, program:, seeker_id: student_person.id)
+      trainer_user = Builders::UserBuilder.new(message_service).build_as_trainer(
+        training_provider_id:,
+        training_provider_name: training_provider.data.name
+      )
+      student_person = Builders::PersonBuilder.new(message_service).build_as_student(
+        training_provider_id:,
+        program_id:
+      )
 
       render json: {
         trainer: trainer_user,
         student: student_person,
-        training_provider:,
-        program:
+        training_provider: training_provider.data,
+        program: program.data
       }
     end
   end

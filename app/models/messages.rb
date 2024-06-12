@@ -50,7 +50,6 @@ module Messages
         PERSON_SKILL_ADDED = 'person_skill_added',
         PERSON_SKILL_REMOVED = 'person_skill_removed',
         PERSON_SKILL_UPDATED = 'person_skill_updated',
-        PERSON_TRAINING_PROVIDER_ADDED = 'person_training_provider_added',
         PERSON_VIEWED = 'person_viewed',
         PERSONAL_EXPERIENCE_ADDED = 'personal_experience_added',
         PERSONAL_EXPERIENCE_REMOVED = 'personal_experience_removed',
@@ -143,12 +142,17 @@ module Messages
       EVENTS = [
         EMPLOYER_INVITE_CREATED = 'employer_invite_created',
         EMPLOYER_INVITE_ACCEPTED = 'employer_invite_accepted',
+        TRAINING_PROVIDER_INVITE_CREATED = 'training_provider_invite_created',
+        TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted',
+        TRAINING_PROVIDER_INVITE_USED_BY_WRONG_USER = 'training_provider_invite_used_by_wrong_user',
         EMPLOYER_INVITE_USED_BY_WRONG_USER = 'employer_invite_used_by_wrong_user'
       ].freeze
 
       COMMANDS = [
         CREATE_EMPLOYER_INVITE = 'create_employer_invite',
-        ACCEPT_EMPLOYER_INVITE = 'accept_employer_invite'
+        ACCEPT_EMPLOYER_INVITE = 'accept_employer_invite',
+        CREATE_TRAINING_PROVIDER_INVITE = 'create_training_provider_invite',
+        ACCEPT_TRAINING_PROVIDER_INVITE = 'accept_training_provider_invite'
       ].freeze
     end
 
@@ -280,8 +284,19 @@ module Messages
 
     module TrainingProviders
       EVENTS = [
+        PERSON_TRAINING_PROVIDER_ADDED = 'person_training_provider_added',
         REFERENCE_CREATED = 'reference_created',
-        REFERENCE_UPDATED = 'reference_updated'
+        REFERENCE_UPDATED = 'reference_updated',
+        SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created',
+        TRAINING_PROVIDER_CREATED = 'training_provider_created',
+        TRAINING_PROVIDER_PROGRAM_CREATED = 'training_provider_program_created',
+        TRAINING_PROVIDER_PROGRAM_UPDATED = 'training_provider_program_updated'
+      ].freeze
+
+      COMMANDS = [
+        CREATE_TRAINING_PROVIDER = 'create_training_provider',
+        CREATE_TRAINING_PROVIDER_PROGRAM = 'create_training_provider_program',
+        UPDATE_TRAINING_PROVIDER_PROGRAM = 'update_training_provider_program'
       ].freeze
     end
 
@@ -304,8 +319,6 @@ module Messages
       NOTIFICATIONS_MARKED_READ = 'notifications_marked_read',
       REASON_CREATED = 'reason_created',
       SESSION_STARTED = 'session_started',
-      SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created',
-      TRAINING_PROVIDER_INVITE_ACCEPTED = 'training_provider_invite_accepted',
       *User::EVENTS,
       *Person::EVENTS,
       *Email::EVENTS,
@@ -331,6 +344,7 @@ module Messages
       *Person::COMMANDS,
       *Email::COMMANDS,
       *Phone::COMMANDS,
+      *TrainingProviders::COMMANDS,
       *Contact::COMMANDS,
       *Chats::COMMANDS,
       *Coaches::COMMANDS,

@@ -10,6 +10,7 @@ module Builders
       last_name: Faker::Name.last_name,
       email: Faker::Internet.email,
       phone_number: Faker::PhoneNumber.phone_number,
+      roles: [],
       sub: Faker::Internet.uuid,
       person_id: nil
     )
@@ -34,6 +35,16 @@ module Builders
         }
       )
 
+      roles.each do |role|
+        message_service.create!(
+          user_id: id,
+          schema: Events::RoleAdded::V2,
+          data: {
+            role:
+          }
+        )
+      end
+
       user
     end
 
@@ -42,7 +53,7 @@ module Builders
       employer_name:,
       **
     )
-      user = UserBuilder.new(message_service).build(**)
+      user = build(**)
 
       invite_id = SecureRandom.uuid
       message_service.create!(
@@ -65,6 +76,44 @@ module Builders
           invite_email: user.email,
           employer_id:,
           employer_name:
+        }
+      )
+
+      user
+    end
+
+    def build_as_trainer(
+      training_provider_id:,
+      training_provider_name:,
+      role_description: Faker::Company.profession,
+      training_provider_profile_id: SecureRandom.uuid,
+      **
+    )
+      user = build(**)
+
+      invite_id = SecureRandom.uuid
+      message_service.create!(
+        invite_id:,
+        schema: Events::TrainingProviderInviteCreated::V1,
+        data: {
+          invite_email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          role_description:,
+          training_provider_id:,
+          training_provider_name:
+        }
+      )
+
+      message_service.create!(
+        invite_id:,
+        schema: Events::TrainingProviderInviteAccepted::V2,
+        data: {
+          user_id: user.id,
+          invite_email: user.email,
+          training_provider_profile_id:,
+          training_provider_id:,
+          training_provider_name:
         }
       )
 

@@ -37,7 +37,8 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: Users::UsersReactor.new, listener_name: "users_reactor"),
       DbStreamListener.build(consumer: Contact::SmtpReactor.new, listener_name: "contact_smtp"),
       DbStreamListener.build(consumer: Contact::CalDotCom::SchedulingReactor.new, listener_name: "cal_com_scheduling"),
-      DbStreamListener.build(consumer: Employers::EmployerReactor.new, listener_name: "employers_application_notification_service")
+      DbStreamListener.build(consumer: Employers::EmployerReactor.new, listener_name: "employers_application_notification_service"),
+      DbStreamListener.build(consumer: TrainingProviders::TrainingProviderReactor.new, listener_name: "training_provider_reactor")
     ]
 
     (aggregators + reactors).each do |listener|

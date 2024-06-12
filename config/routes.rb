@@ -141,7 +141,7 @@ Rails.application.routes.draw do
     put 'used' => 'employer_invites#used'
   end
   resources :training_provider_invites do
-    post 'accept', on: :member
+    put 'used' => 'training_provider_invites#used'
   end
 
   if Rails.env.local?

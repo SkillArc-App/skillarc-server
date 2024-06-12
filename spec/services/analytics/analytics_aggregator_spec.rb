@@ -217,10 +217,12 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         let(:message) do
           build(
             :message,
-            aggregate_id: dim_user.user_id,
-            schema: Events::TrainingProviderInviteAccepted::V1,
+            aggregate_id: SecureRandom.uuid,
+            schema: Events::TrainingProviderInviteAccepted::V2,
             data: {
+              training_provider_profile_id: SecureRandom.uuid,
               invite_email: dim_user.email,
+              user_id: dim_user.user_id,
               training_provider_id: SecureRandom.uuid,
               training_provider_name: "dawg"
             }

@@ -61,5 +61,61 @@ RSpec.describe Invites::InvitesAggregator do
         expect(employer_invite.used_at).to eq(message.occurred_at)
       end
     end
+
+    context "when the message is training provider invite created" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::TrainingProviderInviteCreated::V1,
+          data: {
+            invite_email: "An email",
+            first_name: "First",
+            last_name: "Last",
+            training_provider_id: SecureRandom.uuid,
+            training_provider_name: "Get trained",
+            role_description: "A name"
+          }
+        )
+      end
+
+      it "creates an training provider invite" do
+        expect { subject }.to change(Invites::TrainingProviderInvite, :count).from(0).to(1)
+
+        training_provider_invite = Invites::TrainingProviderInvite.first
+        expect(training_provider_invite.id).to eq(message.aggregate.id)
+        expect(training_provider_invite.email).to eq(message.data.invite_email)
+        expect(training_provider_invite.first_name).to eq(message.data.first_name)
+        expect(training_provider_invite.last_name).to eq(message.data.last_name)
+        expect(training_provider_invite.training_provider_id).to eq(message.data.training_provider_id)
+        expect(training_provider_invite.training_provider_name).to eq(message.data.training_provider_name)
+        expect(training_provider_invite.role_description).to eq(message.data.role_description)
+      end
+    end
+
+    context "when the message is training provider invite accepted" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::TrainingProviderInviteAccepted::V2,
+          aggregate_id: training_provider_invite.id,
+          data: {
+            training_provider_profile_id: SecureRandom.uuid,
+            user_id: SecureRandom.uuid,
+            invite_email: "a email",
+            training_provider_id: SecureRandom.uuid,
+            training_provider_name: "Employer"
+          }
+        )
+      end
+
+      let(:training_provider_invite) { create(:invites__training_provider_invite) }
+
+      it "marks the training provider invite as used" do
+        subject
+
+        training_provider_invite.reload
+        expect(training_provider_invite.used_at).to eq(message.occurred_at)
+      end
+    end
   end
 end

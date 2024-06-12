@@ -89,7 +89,7 @@ module Klaviyo
       end
     end
 
-    on_message Events::TrainingProviderInviteAccepted::V1 do |message|
+    on_message Events::TrainingProviderInviteAccepted::V2 do |message|
       dedup_messages(message) do
         client.training_provider_invite_accepted(
           event_id: message.id,

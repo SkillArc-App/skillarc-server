@@ -462,37 +462,6 @@ RSpec.describe People::PersonAggregator do # rubocop:disable Metrics/BlockLength
         end
       end
 
-      context "when the message is person training provider created" do
-        let(:message) do
-          build(
-            :message,
-            schema: Events::PersonTrainingProviderAdded::V1,
-            aggregate_id: seeker.id,
-            data: {
-              id:,
-              status: "doing good!",
-              program_id: program.id,
-              training_provider_id: training_provider.id
-            }
-          )
-        end
-
-        let(:program) { create(:program, training_provider:) }
-        let(:training_provider) { create(:training_provider) }
-        let(:id) { SecureRandom.uuid }
-
-        it "creates a seeker training provider" do
-          expect { subject }.to change(SeekerTrainingProvider, :count).from(0).to(1)
-
-          onboarding_session = SeekerTrainingProvider.take(1).first
-          expect(onboarding_session.id).to eq(message.data.id)
-          expect(onboarding_session.seeker_id).to eq(message.aggregate.id)
-          expect(onboarding_session.program_id).to eq(message.data.program_id)
-          expect(onboarding_session.training_provider_id).to eq(message.data.training_provider_id)
-          expect(onboarding_session.status).to eq(message.data.status)
-        end
-      end
-
       context "when the message is onboarding started" do
         let(:message) do
           build(

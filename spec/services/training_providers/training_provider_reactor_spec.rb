@@ -5,82 +5,173 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
 
   let(:instance) { described_class.new(message_service:) }
   let(:message_service) { MessageService.new }
+  let(:messages) { [] }
 
-  describe '#create_reference' do
+  describe "#handle_message" do
     subject do
-      instance.create_reference(
-        reference_text:,
-        seeker_id:,
-        author_training_provider_profile_id:,
-        trace_id:
-      )
+      instance.handle_message(message)
+      instance.handle_message(message)
     end
-    let(:reference_text) { 'This is a reference' }
-    let(:seeker_id) { create(:seeker).id }
-    let(:author_training_provider_profile_id) { create(:training_provider_profile).id }
-    let(:trace_id) { SecureRandom.uuid }
-
-    it 'creates a reference created event' do
-      expect(message_service).to receive(:create!)
-        .with(
-          schema: Events::ReferenceCreated::V1,
-          reference_id: be_a(String),
-          data: {
-            reference_text:,
-            author_training_provider_profile_id:,
-            seeker_id:
-          },
-          trace_id:
-        ).and_call_original
-
-      subject
-    end
-  end
-
-  describe '#update_reference' do
-    subject do
-      instance.update_reference(
-        reference_id:,
-        reference_text:,
-        trace_id:
-      )
-    end
-    let(:reference_id) { SecureRandom.uuid }
-    let(:reference_text) { 'This is a reference' }
-    let(:trace_id) { SecureRandom.uuid }
-
-    let(:reference_created) do
-      build(
-        :message,
-        aggregate:,
-        schema: Events::ReferenceCreated::V1,
-        data: {
-          reference_text:,
-          author_training_provider_profile_id:,
-          seeker_id:
-        }
-      )
-    end
-    let(:aggregate) { Aggregates::Reference.new(reference_id:) }
-    let(:author_training_provider_profile_id) { SecureRandom.uuid }
-    let(:seeker_id) { SecureRandom.uuid }
 
     before do
-      allow(MessageService).to receive(:aggregate_events).and_return([reference_created])
+      messages.each do |message|
+        Event.from_message!(message)
+      end
     end
 
-    it 'creates a reference updated event' do
-      expect(message_service).to receive(:create!)
-        .with(
-          schema: Events::ReferenceUpdated::V1,
-          reference_id:,
-          trace_id:,
+    context "when the message is create training provider" do
+      let(:message) do
+        build(
+          :message,
+          schema: Commands::CreateTrainingProvider::V1,
           data: {
-            reference_text:
+            name: "A",
+            description: "D"
           }
-        ).and_call_original
+        )
+      end
 
-      subject
+      it "emits a TrainingProviderCreated event" do
+        expect(message_service)
+          .to receive(:create_once_for_aggregate!)
+          .with(
+            schema: Events::TrainingProviderCreated::V1,
+            aggregate: message.aggregate,
+            trace_id: message.trace_id,
+            data: {
+              name: message.data.name,
+              description: message.data.description
+            }
+          )
+          .twice
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "when the message is create training provider program" do
+      let(:message) do
+        build(
+          :message,
+          schema: Commands::CreateTrainingProviderProgram::V1,
+          aggregate:,
+          data: {
+            program_id: SecureRandom.uuid,
+            name: "N",
+            description: "D"
+          }
+        )
+      end
+
+      let(:aggregate) { Aggregates::TrainingProvider.new(training_provider_id: SecureRandom.uuid) }
+
+      context "when there has been a traing provider created" do
+        let(:messages) do
+          [
+            build(
+              :message,
+              schema: Events::TrainingProviderCreated::V1,
+              aggregate:,
+              data: {
+                name: "A",
+                description: "D"
+              },
+              occurred_at: message.occurred_at - 1.day
+            )
+          ]
+        end
+
+        it "emits a training provider program created event" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              trace_id: message.trace_id,
+              aggregate: message.aggregate,
+              schema: Events::TrainingProviderProgramCreated::V1,
+              data: {
+                program_id: message.data.program_id,
+                name: message.data.name,
+                description: message.data.description
+              }
+            )
+            .twice
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when there has not been a traing provider created" do
+        let(:message_service) { double }
+
+        it "does nothing" do
+          subject
+        end
+      end
+    end
+
+    context "when the message is update training provider program" do
+      let(:message) do
+        build(
+          :message,
+          schema: Commands::UpdateTrainingProviderProgram::V1,
+          aggregate:,
+          data: {
+            program_id:,
+            name: "N",
+            description: "D"
+          }
+        )
+      end
+
+      let(:program_id) { SecureRandom.uuid }
+      let(:aggregate) { Aggregates::TrainingProvider.new(training_provider_id: SecureRandom.uuid) }
+
+      context "when there has been a traing provider program created" do
+        let(:messages) do
+          [
+            build(
+              :message,
+              schema: Events::TrainingProviderProgramCreated::V1,
+              aggregate:,
+              data: {
+                program_id:,
+                name: "A",
+                description: "D"
+              },
+              occurred_at: message.occurred_at - 1.day
+            )
+          ]
+        end
+
+        it "emits a training provider program created event" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              trace_id: message.trace_id,
+              aggregate: message.aggregate,
+              schema: Events::TrainingProviderProgramUpdated::V1,
+              data: {
+                program_id: message.data.program_id,
+                name: message.data.name,
+                description: message.data.description
+              }
+            )
+            .twice
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when there has not been a traing provider program created" do
+        let(:message_service) { double }
+
+        it "does nothing" do
+          subject
+        end
+      end
     end
   end
 end

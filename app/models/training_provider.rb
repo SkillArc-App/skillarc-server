@@ -10,5 +10,4 @@
 #
 class TrainingProvider < ApplicationRecord
   has_many :programs, dependent: :destroy
-  has_many :seeker_invites, dependent: :destroy
 end

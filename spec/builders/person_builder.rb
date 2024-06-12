@@ -10,10 +10,11 @@ module Builders
       last_name: Faker::Name.last_name,
       email: Faker::Internet.email,
       phone_number: Faker::PhoneNumber.phone_number,
-      date_of_birth: "10/09/1990"
+      date_of_birth: "10/09/1990",
+      **
     )
       user_id = SecureRandom.uuid
-      user = UserBuilder.new(message_service).build(id: user_id, first_name:, last_name:, email:, phone_number:, person_id: id)
+      user = UserBuilder.new(message_service).build(id: user_id, first_name:, last_name:, email:, phone_number:, person_id: id, **)
 
       message_service.create!(
         person_id: id,
@@ -53,6 +54,29 @@ module Builders
         email:,
         phone_number:
       )
+    end
+
+    def build_as_student(
+      training_provider_id:,
+      program_id:,
+      status: "Enrolled",
+      person_profile_id: SecureRandom.uuid,
+      **
+    )
+      person = build(**)
+
+      message_service.create!(
+        person_id: person.id,
+        schema: Events::PersonTrainingProviderAdded::V1,
+        data: {
+          training_provider_id:,
+          program_id:,
+          status:,
+          id: person_profile_id
+        }
+      )
+
+      person
     end
 
     private

@@ -86,6 +86,7 @@ RSpec.describe Jobs::JobsReactor do
     let(:aggregate) { Aggregates::Job.new(job_id:) }
     let(:id) { SecureRandom.uuid }
     let(:job_id) { SecureRandom.uuid }
+    let(:employer_id) { SecureRandom.uuid }
     let(:master_certification_id) { SecureRandom.uuid }
 
     let(:job_created) do
@@ -103,6 +104,20 @@ RSpec.describe Jobs::JobsReactor do
           location: "Columbus Ohio",
           employment_type: Job::EmploymentTypes::FULLTIME,
           hide_job: false
+        }
+      )
+    end
+
+    let(:employer_created) do
+      build(
+        :message,
+        schema: Events::EmployerCreated::V1,
+        aggregate_id: employer_id,
+        data: {
+          name: "name",
+          location: "location",
+          bio: "bio",
+          logo_url: "logo_url"
         }
       )
     end
@@ -218,6 +233,91 @@ RSpec.describe Jobs::JobsReactor do
               schema: Events::DesiredCertificationDestroyed::V1,
               data: {
                 id: message.data.id
+              }
+            )
+            .twice
+            .and_call_original
+
+          subject
+        end
+      end
+    end
+
+    context "when message is create employer" do
+      let(:message) do
+        build(
+          :message,
+          schema: Commands::CreateEmployer::V1,
+          aggregate_id: employer_id,
+          data: {
+            name: "name",
+            location: "location",
+            bio: "bio",
+            logo_url: "logo_url"
+          }
+        )
+      end
+
+      it "emits a employer created event" do
+        expect(message_service)
+          .to receive(:create_once_for_aggregate!)
+          .with(
+            trace_id: message.trace_id,
+            aggregate: message.aggregate,
+            schema: Events::EmployerCreated::V1,
+            data: {
+              name: message.data.name,
+              location: message.data.location,
+              bio: message.data.bio,
+              logo_url: message.data.logo_url
+            }
+          )
+          .twice
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "when message is update employer" do
+      let(:message) do
+        build(
+          :message,
+          schema: Commands::UpdateEmployer::V1,
+          aggregate_id: employer_id,
+          data: {
+            name: "name",
+            location: "location",
+            bio: "bio",
+            logo_url: "logo_url"
+          }
+        )
+      end
+
+      context "when the employer has not been created" do
+        let(:messages) { [employer_created] }
+        let(:message_service) { double }
+
+        it "does nothing" do
+          subject
+        end
+      end
+
+      context "when the employer has been created" do
+        let(:messages) { [employer_created] }
+
+        it "emits a employer created event" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              trace_id: message.trace_id,
+              aggregate: message.aggregate,
+              schema: Events::EmployerUpdated::V1,
+              data: {
+                name: message.data.name,
+                location: message.data.location,
+                bio: message.data.bio,
+                logo_url: message.data.logo_url
               }
             )
             .twice

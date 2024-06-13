@@ -83,5 +83,37 @@ module Jobs
         }
       )
     end
+
+    on_message Commands::CreateEmployer::V1, :sync do |message|
+      message_service.create_once_for_aggregate!(
+        trace_id: message.trace_id,
+        aggregate: message.aggregate,
+        schema: Events::EmployerCreated::V1,
+        data: {
+          name: message.data.name,
+          location: message.data.location,
+          bio: message.data.bio,
+          logo_url: message.data.logo_url
+        }
+      )
+    end
+
+    on_message Commands::UpdateEmployer::V1, :sync do |message|
+      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+
+      return unless ::Projectors::Aggregates::HasOccurred.new(schema: Events::EmployerCreated::V1).project(messages)
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        aggregate: message.aggregate,
+        schema: Events::EmployerUpdated::V1,
+        data: {
+          name: message.data.name,
+          location: message.data.location,
+          bio: message.data.bio,
+          logo_url: message.data.logo_url
+        }
+      )
+    end
   end
 end

@@ -1438,6 +1438,75 @@ paths:
                   format: datetime
                 payload:
                   type: object
+  "/jobs/{job_id}/desired_certifications":
+    post:
+      summary: Add a desired certification
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Request certification added
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                masterCertificationId:
+                  type: string
+              required:
+              - masterCertificationId
+  "/jobs/{job_id}/desired_certifications/{id}":
+    delete:
+      summary: Removes a desired certification
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: desired skill destroyed
   "/jobs/{job_id}/desired_skills":
     post:
       summary: Create a desired skill

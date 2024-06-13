@@ -1,46 +1,88 @@
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "DesiredCertifications", type: :request do
-  describe "CREATE /create" do
-    subject { post job_desired_certifications_path(job), params:, headers: }
-
-    include_context "admin authenticated"
-
-    let(:job) { create(:job) }
-    let(:params) do
-      {
-        master_certification_id: master_certification.id
+  path '/jobs/{job_id}/desired_certifications' do
+    post "Add a desired certification" do
+      tags 'Admin'
+      consumes 'application/json'
+      security [bearer_auth: []]
+      parameter name: :job_id, in: :path, type: :string
+      parameter name: :desired_certification_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          masterCertificationId: { type: :string }
+        },
+        required: ['masterCertificationId']
       }
-    end
-    let(:master_certification) { create(:master_certification) }
 
-    it "returns 200" do
-      subject
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-      expect(response).to have_http_status(:ok)
-    end
+      let(:desired_certification_params) { { masterCertificationId: SecureRandom.uuid } }
+      let(:job_id) { SecureRandom.uuid }
 
-    it "creates a desired certification" do
-      expect { subject }.to change(DesiredCertification, :count).by(1)
+      it_behaves_like "admin spec unauthenticated openapi"
+
+      context "admin authenticated" do
+        include_context "admin authenticated openapi"
+
+        response '201', 'Request certification added' do
+          before do
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                trace_id: be_a(String),
+                job_id:,
+                schema: Commands::AddDesiredCertification::V1,
+                data: {
+                  id: be_a(String),
+                  master_certification_id: desired_certification_params[:masterCertificationId]
+                }
+              )
+          end
+
+          run_test!
+        end
+      end
     end
   end
 
-  describe "DELETE /destroy" do
-    subject { delete job_desired_certification_path(job, desired_certification), headers: }
+  path '/jobs/{job_id}/desired_certifications/{id}' do
+    delete "Removes a desired certification" do
+      tags 'Admin'
+      security [bearer_auth: []]
+      parameter name: :job_id, in: :path, type: :string
+      parameter name: :id, in: :path, type: :string
 
-    include_context "admin authenticated"
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
 
-    let(:job) { create(:job) }
-    let!(:desired_certification) { create(:desired_certification, job:) }
+      it_behaves_like "admin spec unauthenticated openapi"
 
-    it "returns 200" do
-      subject
+      let(:id) { SecureRandom.uuid }
+      let(:job_id) { SecureRandom.uuid }
 
-      expect(response).to have_http_status(:ok)
-    end
+      context "admin authenticated" do
+        include_context "admin authenticated openapi"
 
-    it "deletes the desired certification" do
-      expect { subject }.to change(DesiredCertification, :count).by(-1)
+        response '202', 'desired skill destroyed' do
+          before do
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                trace_id: be_a(String),
+                job_id:,
+                schema: Commands::RemoveDesiredCertification::V1,
+                data: {
+                  id:
+                }
+              )
+          end
+
+          run_test!
+        end
+      end
     end
   end
 end

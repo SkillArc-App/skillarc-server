@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_12_203948) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_12_213340) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -630,10 +630,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_203948) do
 
   create_table "listener_bookmarks", force: :cascade do |t|
     t.string "consumer_name", null: false
-    t.uuid "event_id"
+    t.uuid "event_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "current_timestamp"
+    t.datetime "current_timestamp", null: false
     t.index ["consumer_name"], name: "index_listener_bookmarks_on_consumer_name", unique: true
   end
 

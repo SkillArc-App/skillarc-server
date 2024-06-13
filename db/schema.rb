@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_12_213340) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_13_150356) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -867,17 +867,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_213340) do
     t.datetime "updated_at", precision: 3, null: false
   end
 
-  create_table "training_provider_invites", id: :text, force: :cascade do |t|
-    t.text "email", null: false
-    t.text "first_name", null: false
-    t.text "last_name", null: false
-    t.text "role_description", null: false
-    t.text "training_provider_id", null: false
-    t.datetime "used_at", precision: 3
-    t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 3, null: false
-  end
-
   create_table "training_provider_profiles", id: :text, force: :cascade do |t|
     t.text "training_provider_id", null: false
     t.text "user_id", null: false
@@ -982,7 +971,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_213340) do
   add_foreign_key "sessions", "users", name: "Session_user_id_fkey", on_update: :cascade, on_delete: :cascade
   add_foreign_key "stories", "seekers"
   add_foreign_key "testimonials", "jobs", name: "Testimonial_job_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "training_provider_invites", "training_providers", name: "TrainingProviderInvite_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "training_provider_profiles", "users", name: "TrainingProviderProfile_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "user_roles", "roles", name: "UserRoles_role_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "user_roles", "users", name: "UserRoles_user_id_fkey", on_update: :cascade, on_delete: :restrict

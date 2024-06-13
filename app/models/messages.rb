@@ -198,6 +198,11 @@ module Messages
     end
 
     module Employers
+      COMMANDS = [
+        CREATE_EMPLOYER = 'create_employer',
+        UPDATE_EMPLOYER = 'update_employer'
+      ].freeze
+
       EVENTS = [
         EMPLOYER_CREATED = 'employer_created',
         EMPLOYER_UPDATED = 'employer_updated',
@@ -349,6 +354,7 @@ module Messages
       *Person::COMMANDS,
       *Email::COMMANDS,
       *Jobs::COMMANDS,
+      *Employers::COMMANDS,
       *Phone::COMMANDS,
       *TrainingProviders::COMMANDS,
       *Contact::COMMANDS,

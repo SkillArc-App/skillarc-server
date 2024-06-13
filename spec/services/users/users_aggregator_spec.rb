@@ -13,12 +13,13 @@ RSpec.describe Users::UsersAggregator do
           schema: Events::RoleAdded::V2,
           aggregate_id: user.id,
           data: {
-            role: role.name
+            role:
           }
         )
       end
 
       let(:user) { create(:user) }
+      let(:role) { Role::Types::ADMIN }
 
       context "when the user role doesn't exist" do
         it "creates a user role" do

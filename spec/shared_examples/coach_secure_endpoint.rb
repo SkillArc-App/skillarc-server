@@ -1,10 +1,5 @@
 RSpec.shared_context "coach authenticated" do
   let!(:user) do
-    role = Role.create!(
-      id: SecureRandom.uuid,
-      name: "coach"
-    )
-
     u = User.create!(
       id: '1a7d78bd-ae41-4d09-95d5-0b417efbcb7f',
       first_name: 'Jake',
@@ -16,7 +11,7 @@ RSpec.shared_context "coach authenticated" do
     UserRole.create!(
       id: SecureRandom.uuid,
       user_id: u.id,
-      role_id: role.id
+      role: Role::Types::COACH
     )
 
     u
@@ -57,11 +52,6 @@ end
 
 RSpec.shared_context "coach authenticated openapi" do
   let!(:user) do
-    role = Role.create!(
-      id: SecureRandom.uuid,
-      name: "coach"
-    )
-
     u = User.create!(
       id: '1a7d78bd-ae41-4d09-95d5-0b417efbcb7f',
       first_name: 'Jake',
@@ -74,7 +64,7 @@ RSpec.shared_context "coach authenticated openapi" do
     UserRole.create!(
       id: SecureRandom.uuid,
       user_id: u.id,
-      role_id: role.id
+      role: Role::Types::COACH
     )
 
     u

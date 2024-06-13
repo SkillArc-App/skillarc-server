@@ -40,10 +40,6 @@ ProgramStruct = Struct.new(
   :description
 )
 
-Role::Types::ALL.each do |role|
-  Role.create!(id: SecureRandom.uuid, name: role)
-end
-
 turner_employer = EmployerStruct.new(
   id: 'eeaba08a-1ade-4250-b23c-0ae331576d2a',
   name: 'Turner Construction Company',

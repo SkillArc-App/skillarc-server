@@ -24,7 +24,6 @@ class User < ApplicationRecord
   has_one :recruiter, dependent: :destroy
   has_one :seeker, dependent: :destroy
   has_many :user_roles, dependent: :destroy
-  has_many :roles, through: :user_roles
   has_many :training_provider_profiles, dependent: :destroy
 
   def employer_admin_role?
@@ -44,7 +43,11 @@ class User < ApplicationRecord
   end
 
   def role?(role)
-    roles.any? { |r| r.name == role }
+    roles.any? { |r| r == role }
+  end
+
+  def roles
+    user_roles.pluck(:role)
   end
 
   def training_provider_profile

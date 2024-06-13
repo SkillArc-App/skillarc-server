@@ -33,7 +33,7 @@ RSpec.describe "Employers::Chats", type: :request do
       let(:employers_recruiter) { nil }
 
       before do
-        create(:user_role, user:, role: Role.create!(id: SecureRandom.uuid, name: "employer_admin"))
+        create(:user_role, user:, role: Role::Types::EMPLOYER_ADMIN)
       end
 
       it "calls the EmployerChats service" do

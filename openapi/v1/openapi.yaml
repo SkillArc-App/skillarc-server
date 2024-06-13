@@ -1909,6 +1909,150 @@ paths:
                 required:
                 - jobs
                 - applicants
+  "/employers":
+    post:
+      summary: Create an employer
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Request employer create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                location:
+                  type: string
+                bio:
+                  type: string
+                logoUrl:
+                  type: string
+              required:
+              - name
+              - location
+              - bio
+              - logoUrl
+    get:
+      summary: Get all employers
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Retrieve all employers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/employer"
+  "/employers/{id}":
+    put:
+      summary: Update an employer
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Request employer updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                location:
+                  type: string
+                bio:
+                  type: string
+                logoUrl:
+                  type: string
+              required:
+              - name
+              - location
+              - bio
+              - logoUrl
+    get:
+      summary: Get one employers
+      tags:
+      - Admin
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Retrieve one employers
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/employer"
   "/job_orders/orders/{id}/candidates/{person_id}":
     put:
       summary: updates a candidate status

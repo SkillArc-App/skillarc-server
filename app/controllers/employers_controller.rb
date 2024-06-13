@@ -7,30 +7,63 @@ class EmployersController < ApplicationController
   before_action :admin_authorize
 
   def index
-    with_message_service do
-      render json: Employer.all
-    end
+    render json: Employer.all
   end
 
   def show
-    with_message_service do
-      render json: Employer.find(params[:id])
-    end
+    render json: Employer.find(params[:id])
   end
 
   def create
-    with_message_service do
-      employer = EmployerService.new.create(**params.require(:employer).permit(:name, :bio, :logo_url, :location), id: SecureRandom.uuid)
+    employer_params = params.require(:employer).permit(:name, :bio, :logo_url, :location)
 
-      render json: employer
+    with_message_service do
+      message_service.create!(
+        trace_id: request.request_id,
+        employer_id: SecureRandom.uuid,
+        schema: Commands::CreateEmployer::V1,
+        data: {
+          name: employer_params[:name],
+          location: employer_params[:location],
+          bio: employer_params[:bio],
+          logo_url: employer_params[:logo_url]
+        }
+      )
     end
+
+    head :created
   end
 
   def update
-    with_message_service do
-      employer = EmployerService.new.update(employer_id: params[:id], params: params.require(:employer).permit(:name, :bio, :logo_url, :location))
+    employer_params = params.require(:employer).permit(:name, :bio, :logo_url, :location)
 
-      render json: employer
+    with_message_service do
+      message_service.create!(
+        trace_id: request.request_id,
+        employer_id: params[:id],
+        schema: Commands::UpdateEmployer::V1,
+        data: {
+          name: employer_params[:name],
+          location: employer_params[:location],
+          bio: employer_params[:bio],
+          logo_url: employer_params[:logo_url]
+        }
+      )
     end
+
+    head :accepted
+  end
+
+  private
+
+  def serialize_employer(employer)
+    {
+      id: employer.id,
+      name: employer.name,
+      location: employer.location,
+      bio: employer.bio,
+      logo_url: employer.logo_url,
+      create_at: employer.create_at
+    }
   end
 end

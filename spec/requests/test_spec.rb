@@ -42,10 +42,6 @@ RSpec.describe "Test", type: :request do
       include_context "olive branch casing parameter"
       include_context "olive branch camelcasing"
 
-      before do
-        create(:role, name: Role::Types::COACH)
-      end
-
       response '200', 'Create test coach' do
         schema type: :object
 

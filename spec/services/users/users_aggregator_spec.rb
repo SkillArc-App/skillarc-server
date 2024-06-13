@@ -19,7 +19,6 @@ RSpec.describe Users::UsersAggregator do
       end
 
       let(:user) { create(:user) }
-      let!(:role) { create(:role, name: Role::Types::ADMIN) }
 
       context "when the user role doesn't exist" do
         it "creates a user role" do

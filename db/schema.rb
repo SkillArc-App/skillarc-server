@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_13_150356) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_13_195630) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -882,13 +882,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_13_150356) do
     t.datetime "updated_at", precision: 3, null: false
   end
 
-  create_table "user_roles", id: :text, force: :cascade do |t|
-    t.text "user_id", null: false
-    t.text "role_id", null: false
-    t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 3, null: false
-  end
-
   create_table "users", id: :text, force: :cascade do |t|
     t.text "email"
     t.datetime "email_verified", precision: 3
@@ -972,6 +965,4 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_13_150356) do
   add_foreign_key "stories", "seekers"
   add_foreign_key "testimonials", "jobs", name: "Testimonial_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "training_provider_profiles", "users", name: "TrainingProviderProfile_user_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "user_roles", "roles", name: "UserRoles_role_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "user_roles", "users", name: "UserRoles_user_id_fkey", on_update: :cascade, on_delete: :restrict
 end

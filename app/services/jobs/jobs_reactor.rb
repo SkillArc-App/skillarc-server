@@ -1,5 +1,9 @@
 module Jobs
   class JobsReactor < MessageReactor
+    def can_replay?
+      true
+    end
+
     def create_job_attribute(job_id:, attribute_id:, acceptible_set:)
       attribute_name = Attributes::Attribute.find(attribute_id).name
 
@@ -36,6 +40,46 @@ module Jobs
         job_id:,
         data: {
           id: job_attribute.id
+        }
+      )
+    end
+
+    on_message Commands::AddDesiredCertification::V1, :sync do |message|
+      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+
+      return unless ::Projectors::Aggregates::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
+
+      status = Projectors::CertificationStatus.new.project(messages)
+
+      return if status.current_certifications.any? { |_, value| value == message.data.master_certification_id }
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        aggregate: message.aggregate,
+        schema: Events::DesiredCertificationCreated::V1,
+        data: {
+          id: message.data.id,
+          job_id: message.data.job_id,
+          master_certification_id: message.data.master_certification_id
+        }
+      )
+    end
+
+    on_message Commands::RemoveDesiredCertification::V1, :sync do |message|
+      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+
+      return unless ::Projectors::Aggregates::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
+
+      status = Projectors::CertificationStatus.new.project(messages)
+
+      return unless status.current_certifications.any? { |key, _| key == message.data.id }
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        aggregate: message.aggregate,
+        schema: Events::DesiredCertificationDestroyed::V1,
+        data: {
+          id: message.data.id
         }
       )
     end

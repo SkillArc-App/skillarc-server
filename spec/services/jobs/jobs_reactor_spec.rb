@@ -295,7 +295,7 @@ RSpec.describe Jobs::JobsReactor do
       end
 
       context "when the employer has not been created" do
-        let(:messages) { [employer_created] }
+        let(:messages) { [] }
         let(:message_service) { double }
 
         it "does nothing" do

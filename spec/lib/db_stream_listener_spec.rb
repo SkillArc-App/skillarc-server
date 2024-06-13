@@ -24,7 +24,7 @@ RSpec.describe DbStreamListener do
 
         expect { subject }.to raise_error(StandardError)
 
-        expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(nil)
+        expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(described_class::DEFAULT_EVENT_ID)
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.describe DbStreamListener do
 
         expect { subject }.to raise_error(StandardError)
 
-        expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(nil)
+        expect(ListenerBookmark.find_by(consumer_name: "listener_name").event_id).to eq(described_class::DEFAULT_EVENT_ID)
       end
     end
 
@@ -69,6 +69,7 @@ RSpec.describe DbStreamListener do
         create(
           :listener_bookmark,
           consumer_name: "listener_name",
+          current_timestamp: bookmark_event.message.occurred_at,
           event_id: bookmark_event.id
         )
       end
@@ -182,9 +183,10 @@ RSpec.describe DbStreamListener do
           it "does not updates the bookmark or call the consumer" do
             expect(consumer).not_to receive(:handle_message)
 
-            expect { subject }.not_to(change do
-                                        ListenerBookmark.find_by(consumer_name: "listener_name")&.event_id
-                                      end)
+            expect { subject }
+              .to change { ListenerBookmark.find_by(consumer_name: "listener_name")&.event_id }
+              .from(nil)
+              .to(described_class::DEFAULT_EVENT_ID)
           end
         end
       end

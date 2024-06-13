@@ -4,6 +4,7 @@ class DbStreamListener < StreamListener
   delegate :handled_messages_sync, to: :consumer
 
   STRIDE = 500
+  DEFAULT_EVENT_ID = "00000000-0000-0000-0000-000000000000".freeze
 
   attr_reader :listener_name
 
@@ -68,51 +69,24 @@ class DbStreamListener < StreamListener
   private
 
   def load_bookmark
-    ListenerBookmark.find_or_create_by!(consumer_name: listener_name)
+    # Note we are intentionally using insert which does nothing on conflict. This allow the
+    # stream listen to assume there is a completely filled listener bookmark which
+    # simplifies the rest of the code here.
+    ListenerBookmark.insert({ consumer_name: listener_name, event_id: DEFAULT_EVENT_ID, current_timestamp: default_time }) # rubocop:disable Rails/SkipsModelValidations
+    ListenerBookmark.find_by!(consumer_name: listener_name)
   end
 
   def unplayed_messages(bookmark)
-    absolute_order_condition = if bookmark.event_id
-                                 <<~SQL.squish
-                                   ranked_events.absolute_order > (select absolute_order from ranked_events where id = '#{bookmark.event_id}')
-                                 SQL
-                               elsif consumer.can_replay?
-                                 <<~SQL.squish
-                                   ranked_events.absolute_order > 0
-                                 SQL
-                               else
-                                 <<~SQL.squish
-                                   ranked_events.occurred_at > '#{default_time}'
-                                 SQL
-                               end
-
-    sql = <<~SQL.squish
-      WITH ranked_events AS (
-      	SELECT
-      		*,
-      		DENSE_RANK() OVER (ORDER BY occurred_at,
-      			id) as absolute_order
-      	FROM
-      		events ORDER BY
-      			occurred_at,
-      			id
-      )
-      SELECT
-      	*
-      FROM
-      	ranked_events
-      WHERE
-        #{absolute_order_condition}
-    SQL
-
-    Event.from("(#{sql}) AS events").order(:occurred_at, :id)
+    Event.where("occurred_at > ?", bookmark.current_timestamp)
+         .or(Event.where("occurred_at = ? AND id > ?", bookmark.current_timestamp, bookmark.event_id))
+         .order(:occurred_at, :id)
   end
 
   def initialize(consumer:, listener_name:, now:, stride:) # rubocop:disable Lint/MissingSuper
     @consumer = consumer
     @listener_name = listener_name
-    @default_time = consumer.can_replay? ? Time.zone.at(0) : now
     @stride = stride
+    @default_time = consumer.can_replay? ? Time.zone.at(0) : now
   end
 
   def update_bookmark(bookmark, event)

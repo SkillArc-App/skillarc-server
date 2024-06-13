@@ -6,8 +6,6 @@ ruby "3.2.2"
 gem "barnes"
 gem "bootsnap", require: false
 gem 'e164'
-gem "importmap-rails"
-gem "jbuilder"
 gem 'oj'
 gem "olive_branch"
 gem "omniauth-auth0"
@@ -25,13 +23,8 @@ gem 'scout_apm'
 gem "sentry-rails"
 gem "sentry-ruby"
 gem 'slack-ruby-client'
-gem "sprockets-rails"
-gem "stimulus-rails"
 gem "strong_migrations"
-gem "timecop"
-gem "turbo-rails"
 gem "twilio-ruby"
-gem 'tzinfo-data'
 gem 'value_semantics'
 
 group :development, :test do

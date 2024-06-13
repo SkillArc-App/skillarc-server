@@ -112,6 +112,11 @@ module Messages
     end
 
     module Jobs
+      COMMANDS = [
+        ADD_DESIRED_CERTIFICATION = "add_desired_certification",
+        REMOVE_DESIRED_CERTIFICATION = "remove_desired_certification"
+      ].freeze
+
       EVENTS = [
         CAREER_PATH_CREATED = 'career_path_created',
         CAREER_PATH_UPDATED = 'career_path_updated',
@@ -343,6 +348,7 @@ module Messages
       *Applications::COMMANDS,
       *Person::COMMANDS,
       *Email::COMMANDS,
+      *Jobs::COMMANDS,
       *Phone::COMMANDS,
       *TrainingProviders::COMMANDS,
       *Contact::COMMANDS,

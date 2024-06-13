@@ -10,10 +10,12 @@
 #
 # Foreign Keys
 #
-#  DesiredCertification_job_id_fkey                   (job_id => jobs.id) ON DELETE => restrict ON UPDATE => cascade
-#  DesiredCertification_master_certification_id_fkey  (master_certification_id => master_certifications.id) ON DELETE => restrict ON UPDATE => cascade
+#  DesiredCertification_job_id_fkey  (job_id => jobs.id) ON DELETE => restrict ON UPDATE => cascade
 #
 class DesiredCertification < ApplicationRecord
-  belongs_to :master_certification
   belongs_to :job
+
+  def master_certification
+    MasterCertification.find_by(id: master_certification_id)
+  end
 end

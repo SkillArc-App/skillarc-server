@@ -17,6 +17,6 @@ class ProfilesController < ApplicationController
   attr_reader :seeker
 
   def set_seeker
-    @seeker = Seeker.includes(profile_skills: :master_skill).find(params[:id])
+    @seeker = Seeker.includes(:profile_skills).find(params[:id])
   end
 end

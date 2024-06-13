@@ -10,10 +10,12 @@
 #
 # Foreign Keys
 #
-#  LearnedSkill_job_id_fkey           (job_id => jobs.id) ON DELETE => restrict ON UPDATE => cascade
-#  LearnedSkill_master_skill_id_fkey  (master_skill_id => master_skills.id) ON DELETE => restrict ON UPDATE => cascade
+#  LearnedSkill_job_id_fkey  (job_id => jobs.id) ON DELETE => restrict ON UPDATE => cascade
 #
 class LearnedSkill < ApplicationRecord
   belongs_to :job
-  belongs_to :master_skill
+
+  def master_skill
+    MasterSkill.find_by(id: master_skill_id)
+  end
 end

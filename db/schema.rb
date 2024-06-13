@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_13_210020) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_13_223822) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -927,9 +927,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_13_210020) do
   add_foreign_key "chats_read_receipts", "chats_applicant_chats", column: "chats_applicant_chats_id"
   add_foreign_key "credentials", "organizations", name: "Credential_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "desired_certifications", "jobs", name: "DesiredCertification_job_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "desired_certifications", "master_certifications", name: "DesiredCertification_master_certification_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_skills", "jobs", name: "DesiredSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "desired_skills", "master_skills", name: "DesiredSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "education_experiences", "organizations", name: "EducationExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "education_experiences", "seekers"
   add_foreign_key "employers_applicants", "employers_jobs"
@@ -946,13 +944,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_13_210020) do
   add_foreign_key "job_tags", "tags", name: "JobTag_tag_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "jobs", "employers", name: "Job_employer_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "learned_skills", "jobs", name: "LearnedSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "learned_skills", "master_skills", name: "LearnedSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "other_experiences", "organizations", name: "OtherExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "other_experiences", "seekers"
   add_foreign_key "personal_experiences", "seekers"
   add_foreign_key "profile_certifications", "master_certifications", name: "ProfileCertification_master_certification_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "profile_certifications", "profiles", name: "ProfileCertification_profile_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "profile_skills", "master_skills", name: "ProfileSkill_master_skill_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "profile_skills", "seekers"
   add_foreign_key "profiles", "users", name: "Profile_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "programs", "training_providers", name: "Program_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict

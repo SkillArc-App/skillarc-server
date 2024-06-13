@@ -33,10 +33,10 @@ class JobsController < ApplicationController
       :employer,
       :job_photos,
       :testimonials,
-      job_tags: :tag,
-      desired_skills: :master_skill,
-      learned_skills: :master_skill,
-      desired_certifications: :master_certification
+      :desired_skills,
+      :learned_skills,
+      :desired_certifications,
+      job_tags: :tag
     ).find(params[:id])) do |job|
       render json: serialize_job(job, current_user&.seeker)
     end

@@ -15,10 +15,12 @@
 #
 # Foreign Keys
 #
-#  ProfileSkill_master_skill_id_fkey  (master_skill_id => master_skills.id) ON DELETE => restrict ON UPDATE => cascade
-#  fk_rails_...                       (seeker_id => seekers.id)
+#  fk_rails_...  (seeker_id => seekers.id)
 #
 class ProfileSkill < ApplicationRecord
-  belongs_to :master_skill
   belongs_to :seeker
+
+  def master_skill
+    MasterSkill.find_by(id: master_skill_id)
+  end
 end

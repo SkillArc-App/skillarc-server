@@ -43,6 +43,6 @@ class SkillsController < ApplicationController
   end
 
   def set_seeker
-    @seeker = Seeker.includes(profile_skills: :master_skill).find(params[:profile_id])
+    @seeker = Seeker.includes(:profile_skills).find(params[:profile_id])
   end
 end

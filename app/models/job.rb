@@ -89,10 +89,10 @@ class Job < ApplicationRecord
       :employer,
       :job_photos,
       :testimonials,
-      job_tags: :tag,
-      desired_skills: :master_skill,
-      learned_skills: :master_skill,
-      desired_certifications: :master_certification
+      :desired_skills,
+      :learned_skills,
+      :desired_certifications,
+      job_tags: :tag
     )
   end
 

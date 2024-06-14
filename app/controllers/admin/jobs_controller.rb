@@ -3,16 +3,7 @@ module Admin # rubocop:disable Metrics/ModuleLength
     include MessageEmitter
 
     def index
-      jobs = Job.includes(
-        :career_paths,
-        :employer,
-        :job_photos,
-        :testimonials,
-        job_tags: :tag,
-        desired_skills: :master_skill,
-        learned_skills: :master_skill,
-        desired_certifications: :master_certification
-      ).all
+      jobs = Job.with_everything.all
 
       render json: jobs.map { |job| serialize_job(job) }
     end

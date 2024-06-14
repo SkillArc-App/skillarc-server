@@ -154,7 +154,7 @@ RSpec.describe "Test", type: :request do
       include_context "olive branch camelcasing"
 
       before do
-        Resque::Failure.clear
+        Sidekiq.redis(&:flushdb)
       end
 
       response '204', 'No failed jobs' do
@@ -178,22 +178,11 @@ RSpec.describe "Test", type: :request do
                  }
                }
 
-        context "when there is one failure" do
-          before do
-            Resque::Failure.create(exception: StandardError.new)
-          end
-
-          run_test!
+        before do
+          allow_any_instance_of(Sidekiq::Stats).to receive(:failed).and_return(1)
         end
 
-        context "when there is multiple failures" do
-          before do
-            Resque::Failure.create(exception: StandardError.new)
-            Resque::Failure.create(exception: StandardError.new)
-          end
-
-          run_test!
-        end
+        run_test!
       end
     end
   end
@@ -216,7 +205,7 @@ RSpec.describe "Test", type: :request do
         context "when there are no running jobs" do
           before do
             # Remove queue to "empty" it
-            Resque.remove_queue(:default)
+            Sidekiq.redis(&:flushdb)
           end
 
           run_test! do |response|

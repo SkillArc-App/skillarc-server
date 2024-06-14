@@ -1,6 +1,7 @@
 FROM ruby:3.2.2
 
 ENV INSTALL_PATH /app
+ENV BUNDLE_WITHOUT="development:test"
 RUN mkdir -p $INSTALL_PATH
 
 RUN gem install rails bundler
@@ -12,8 +13,3 @@ COPY . .
 RUN bundle install
 
 EXPOSE 3001
-ENV COUNT 2
-ENV QUEUE *
-ENV INTERVAL 1
-
-CMD ["rake", "resque:workers"]

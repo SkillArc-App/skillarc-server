@@ -16,12 +16,12 @@ gem "puma", "~> 6.0"
 gem "rack-cors"
 gem "rails", "~> 7.1", ">= 7.1"
 gem "redis"
-gem "resque"
 gem 'rswag-api'
 gem 'rswag-ui'
 gem 'scout_apm'
 gem "sentry-rails"
 gem "sentry-ruby"
+gem 'sidekiq'
 gem 'slack-ruby-client'
 gem "sprockets-rails"
 gem "strong_migrations"

@@ -38,12 +38,21 @@ services:
       - postgres
       - redis
       - puppeteer
-  resque:
+  sidekq:
     build:
-      dockerfile: resque.Dockerfile
-    container_name: "skillarc_resque"
+      dockerfile: sidekiq.Dockerfile
+    container_name: "skillarc_sidekiq"
+    command: bundle exec sidekiq -C config/sidekiq.yml
     environment:
       RUN_ENVIRONMENT: "worker"
+      SLACK_GATEWAY_STRATEGY: "fake"
+      KLAVIYO_GATEWAY_STRATEGY: "fake"
+      SMS_GATEWAY_STRATEGY: "fake"
+      REDIS_URL: redis://redis:6379/0
+      POSTGRES_HOST: 'postgres'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_PORT: 5432
     volumes:
       - .:/app
     depends_on:

@@ -27,6 +27,15 @@ module Messages
       ].freeze
     end
 
+    module Qualifications
+      EVENTS = [
+        MASTER_SKILL_CREATED = 'master_skill_created',
+        MASTER_CERTIFICATION_CREATED = 'master_certification_created'
+      ].freeze
+
+      COMMANDS = [].freeze
+    end
+
     module Person
       EVENTS = [
         BASIC_INFO_ADDED = 'basic_info_added',
@@ -329,6 +338,7 @@ module Messages
       NOTIFICATIONS_MARKED_READ = 'notifications_marked_read',
       REASON_CREATED = 'reason_created',
       SESSION_STARTED = 'session_started',
+      *Qualifications::EVENTS,
       *User::EVENTS,
       *Person::EVENTS,
       *Email::EVENTS,
@@ -350,6 +360,7 @@ module Messages
     ].freeze
 
     COMMANDS = [
+      *Qualifications::COMMANDS,
       *Applications::COMMANDS,
       *Person::COMMANDS,
       *Email::COMMANDS,

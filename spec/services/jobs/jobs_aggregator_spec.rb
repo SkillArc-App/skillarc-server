@@ -206,6 +206,28 @@ RSpec.describe Jobs::JobsAggregator do # rubocop:disable Metrics/BlockLength
       end
     end
 
+    context "TagCreated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::TagCreated::V1,
+          aggregate_id: SecureRandom.uuid,
+          data: {
+            name: "BOGO Job"
+          }
+        )
+      end
+
+      it "creates a tag" do
+        expect { subject }.to change { Tag.count }.by(1)
+
+        tag = Tag.last
+
+        expect(tag.id).to eq(message.aggregate.id)
+        expect(tag.name).to eq(message.data.name)
+      end
+    end
+
     context "JobTagCreated" do
       let(:message) do
         build(

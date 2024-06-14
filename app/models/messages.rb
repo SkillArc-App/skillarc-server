@@ -120,6 +120,14 @@ module Messages
       ].freeze
     end
 
+    module Tags
+      EVENTS = [
+        TAG_CREATED = 'tag_created'
+      ].freeze
+
+      COMMANDS = [].freeze
+    end
+
     module Jobs
       COMMANDS = [
         ADD_DESIRED_CERTIFICATION = "add_desired_certification",
@@ -339,6 +347,7 @@ module Messages
       REASON_CREATED = 'reason_created',
       SESSION_STARTED = 'session_started',
       *Qualifications::EVENTS,
+      *Tags::EVENTS,
       *User::EVENTS,
       *Person::EVENTS,
       *Email::EVENTS,
@@ -362,6 +371,7 @@ module Messages
     COMMANDS = [
       *Qualifications::COMMANDS,
       *Applications::COMMANDS,
+      *Tags::COMMANDS,
       *Person::COMMANDS,
       *Email::COMMANDS,
       *Jobs::COMMANDS,

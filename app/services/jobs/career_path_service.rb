@@ -26,15 +26,12 @@ module Jobs
 
       upper_career_path = career_path.job.career_paths.find_by!(order: career_path.order - 1)
 
-      career_path.update!(order: career_path.order - 1)
-      upper_career_path.update!(order: upper_career_path.order + 1)
-
       message_service.create!(
         schema: Events::CareerPathUpdated::V1,
         job_id: upper_career_path.job_id,
         data: {
           id: upper_career_path.id,
-          order: upper_career_path.order
+          order: upper_career_path.order + 1
         }
       )
 
@@ -43,7 +40,7 @@ module Jobs
         job_id: career_path.job_id,
         data: {
           id: career_path.id,
-          order: career_path.order
+          order: career_path.order - 1
         }
       )
     end
@@ -53,15 +50,12 @@ module Jobs
 
       lower_career_path = career_path.job.career_paths.find_by!(order: career_path.order + 1)
 
-      career_path.update!(order: career_path.order + 1)
-      lower_career_path.update!(order: lower_career_path.order - 1)
-
       message_service.create!(
         schema: Events::CareerPathUpdated::V1,
         job_id: lower_career_path.job_id,
         data: {
           id: lower_career_path.id,
-          order: lower_career_path.order
+          order: lower_career_path.order - 1
         }
       )
 
@@ -70,7 +64,7 @@ module Jobs
         job_id: career_path.job_id,
         data: {
           id: career_path.id,
-          order: career_path.order
+          order: career_path.order + 1
         }
       )
     end

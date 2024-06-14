@@ -240,33 +240,42 @@ message_service.create!(
   }
 )
 
-tag = Tag.create!(
-  id: SecureRandom.uuid,
-  name: 'No experience needed'
-)
+tags = [
+  {
+    id: SecureRandom.uuid,
+    name: 'No experience needed'
+  },
+  {
+    id: SecureRandom.uuid,
+    name: 'No experience needed'
+  },
+  {
+    id: SecureRandom.uuid,
+    name: 'Part time only'
+  },
+  {
+    id: SecureRandom.uuid,
+    name: 'Transportation assistance'
+  },
+  {
+    id: SecureRandom.uuid,
+    name: 'ESL-Friendly'
+  },
+  {
+    id: SecureRandom.uuid,
+    name: 'Fair chance employer'
+  }
+]
 
-Tag.create!([
-              {
-                id: SecureRandom.uuid,
-                name: 'No experience needed'
-              },
-              {
-                id: SecureRandom.uuid,
-                name: 'Part time only'
-              },
-              {
-                id: SecureRandom.uuid,
-                name: 'Transportation assistance'
-              },
-              {
-                id: SecureRandom.uuid,
-                name: 'ESL-Friendly'
-              },
-              {
-                id: SecureRandom.uuid,
-                name: 'Fair chance employer'
-              }
-            ])
+tags.each do |tag|
+  message_service.create!(
+    schema: Events::TagCreated::V1,
+    tag_id: tag[:id],
+    data: {
+      name: tag[:name]
+    }
+  )
+end
 
 trained_seeker_with_reference = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Tom',
@@ -554,7 +563,7 @@ message_service.create!(
   data: {
     id: SecureRandom.uuid,
     job_id: mechanic_job.id,
-    tag_id: tag.id
+    tag_id: tags[0][:id]
   }
 )
 

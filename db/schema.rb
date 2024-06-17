@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_13_223822) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_17_152046) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,16 +19,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_13_223822) do
   create_enum "employment_type", ["FULLTIME", "PARTTIME"]
   create_enum "skill_type", ["PERSONAL", "TECHNICAL"]
   create_enum "user_type", ["SEEKER", "TRAINING_PROVIDER"]
-
-  create_table "_prisma_migrations", id: { type: :string, limit: 36 }, force: :cascade do |t|
-    t.string "checksum", limit: 64, null: false
-    t.timestamptz "finished_at"
-    t.string "migration_name", limit: 255, null: false
-    t.text "logs"
-    t.timestamptz "rolled_back_at"
-    t.timestamptz "started_at", default: -> { "now()" }, null: false
-    t.integer "applied_steps_count", default: 0, null: false
-  end
 
   create_table "accounts", id: :text, force: :cascade do |t|
     t.text "user_id", null: false
@@ -692,14 +682,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_13_223822) do
     t.index ["seeker_id"], name: "index_personal_experiences_on_seeker_id"
   end
 
-  create_table "profile_certifications", id: :text, force: :cascade do |t|
-    t.text "master_certification_id", null: false
-    t.text "profile_id", null: false
-    t.text "description"
-    t.datetime "created_at", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 3, null: false
-  end
-
   create_table "profile_skills", id: :text, force: :cascade do |t|
     t.text "master_skill_id", null: false
     t.text "description"
@@ -947,8 +929,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_13_223822) do
   add_foreign_key "other_experiences", "organizations", name: "OtherExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "other_experiences", "seekers"
   add_foreign_key "personal_experiences", "seekers"
-  add_foreign_key "profile_certifications", "master_certifications", name: "ProfileCertification_master_certification_id_fkey", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "profile_certifications", "profiles", name: "ProfileCertification_profile_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "profile_skills", "seekers"
   add_foreign_key "profiles", "users", name: "Profile_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "programs", "training_providers", name: "Program_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict

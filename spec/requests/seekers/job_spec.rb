@@ -36,7 +36,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
       include_context "olive branch casing parameter"
       include_context "olive branch camelcasing"
 
-      let(:search_service) { JobSearch::JobSearchAggregator.new }
+      let(:search_service) { JobSearch::JobSearchQuery.new }
 
       response '200', 'search executed' do
         schema type: :array,
@@ -49,11 +49,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
           context "When called without parameters" do
             before do
-              expect(JobSearch::JobSearchAggregator)
-                .to receive(:new)
-                .and_return(search_service)
-
-              expect(search_service)
+              expect_any_instance_of(JobSearch::JobSearchQuery)
                 .to receive(:search)
                 .with(
                   search_terms: nil,
@@ -69,11 +65,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
           context "When called with query parameters" do
             before do
-              expect(JobSearch::JobSearchAggregator)
-                .to receive(:new)
-                .and_return(search_service)
-
-              expect(search_service)
+              expect_any_instance_of(JobSearch::JobSearchQuery)
                 .to receive(:search)
                 .with(
                   search_terms: "Best Job",
@@ -103,11 +95,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
           context "When called without parameters" do
             before do
-              expect(JobSearch::JobSearchAggregator)
-                .to receive(:new)
-                .and_return(search_service)
-
-              expect(search_service)
+              expect_any_instance_of(JobSearch::JobSearchQuery)
                 .to receive(:search)
                 .with(
                   search_terms: nil,
@@ -123,11 +111,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
           context "When called with query parameters" do
             before do
-              expect(JobSearch::JobSearchAggregator)
-                .to receive(:new)
-                .and_return(search_service)
-
-              expect(search_service)
+              expect_any_instance_of(JobSearch::JobSearchQuery)
                 .to receive(:search)
                 .with(
                   search_terms: "Best Job",

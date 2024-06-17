@@ -1,124 +1,36 @@
 module JobSearch
-  class JobSearchAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
-    include MessageEmitter
-
+  class JobSearchAggregator < MessageConsumer
     def reset_for_replay
       SavedJob.delete_all
       Application.delete_all
       Job.delete_all
+      Employer.delete_all
     end
 
-    def search(search_terms:, industries:, tags:, user:, utm_source:)
-      query = Job.shown.includes(
-        :applications,
-        :saved_jobs
+    on_message Events::EmployerCreated::V1 do |message|
+      Employer.create!(
+        id: message.aggregate.id,
+        logo_url: message.data.logo_url
+      )
+    end
+
+    on_message Events::EmployerUpdated::V1 do |message|
+      Employer.update!(
+        message.aggregate.id,
+        logo_url: message.data.logo_url
       )
 
-      query = query.where("lower(employment_title) LIKE ? OR lower(employer_name) LIKE ?", "%#{search_terms.downcase}%", "%#{search_terms.downcase}%") if search_terms_usable?(search_terms)
-      query = query.where("industries && ARRAY[?]::character varying[]", industries) if industries_usable?(industries)
-      query = query.where("tags && ARRAY[?]::character varying[]", tags) if tags_usable?(tags)
-
-      emit_event(search_terms, industries, tags, user, utm_source)
-
-      serialize(query, user)
-    end
-
-    private
-
-    def emit_event(search_terms, industries, tags, user, utm_source)
-      if user.present?
-        source = if user.seeker.present?
-                   "seeker"
-                 else
-                   "user"
-                 end
-
-        search_id = user.id
-        metadata = {
-          source:,
-          id: user.id,
-          utm_source:
-        }
-      else
-        search_id = "unauthenticated"
-        metadata = {
-          source: "unauthenticated",
-          utm_source:
-        }
-      end
-
-      with_message_service do
-        message_service.create!(
-          schema: Events::JobSearch::V2,
-          data: {
-            search_terms:,
-            industries:,
-            tags:
-          },
-          search_id:,
-          metadata:
-        )
-      end
-    end
-
-    def search_terms_usable?(search_terms)
-      search_terms.present? && search_terms.length >= 3
-    end
-
-    def industries_usable?(industries)
-      industries.present?
-    end
-
-    def tags_usable?(tags)
-      tags.present?
-    end
-
-    def serialize(query, user)
-      user_id = user&.id
-      seeker_id = user&.seeker&.id
-
-      query.order(category: :desc).map do |job|
-        aplication = nil
-        saved = nil
-
-        saved = job.saved_jobs.any? { |sj| sj.user_id == user_id } if user_id.present?
-        aplication = job.applications.detect { |a| a.seeker_id == seeker_id } if seeker_id.present?
-
-        {
-          id: job.job_id,
-          category: job.category,
-          employment_title: job.employment_title,
-          industries: job.industries,
-          location: job.location,
-          starting_pay: job.starting_upper_pay && {
-            employment_type: job.starting_lower_pay.to_i > 1000 ? "salary" : "hourly",
-            upper_limit: job.starting_upper_pay,
-            lower_limit: job.starting_lower_pay
-          },
-          tags: job.tags,
-          application_status: aplication&.status,
-          elevator_pitch: aplication&.elevator_pitch,
-          saved:,
-          employer: {
-            id: job.employer_id,
-            name: job.employer_name,
-            logo_url: job.employer_logo_url
-          }
-        }
-      end
+      Job.where(employer_id: message.aggregate.id).update_all(employer_logo_url: message.data.logo_url) # rubocop:disable Rails/SkipsModelValidations
     end
 
     on_message Events::JobCreated::V3 do |message|
       data = message.data
 
-      employer_logo_url = Projectors::Aggregates::GetFirst.project(
-        schema: Events::EmployerCreated::V1,
-        aggregate: Aggregates::Employer.new(employer_id: data.employer_id)
-      )&.data&.logo_url
+      employer = Employer.find(data.employer_id)
 
       Job.create!(
         category: data.category,
-        employer_logo_url:,
+        employer_logo_url: employer.logo_url,
         employment_title: data.employment_title,
         employment_type: data.employment_type,
         employer_name: data.employer_name,
@@ -140,14 +52,14 @@ module JobSearch
         employment_type: data.employment_type,
         hidden: data.hide_job,
         location: data.location,
-        industries: data.industry,
-        job_id: message.aggregate.job_id
+        industries: data.industry
       )
     end
 
     on_message Events::JobTagCreated::V1 do |message|
       job = Job.find_by!(job_id: message.aggregate.job_id)
 
+      # TODO: we should probably aggregate these tags as well
       tag_name = Projectors::Aggregates::GetFirst.project(
         schema: Events::TagCreated::V1,
         aggregate: Aggregates::Tag.new(tag_id: message.data.tag_id)
@@ -167,14 +79,24 @@ module JobSearch
     end
 
     on_message Events::CareerPathCreated::V1 do |message|
-      data = message.data
-      return unless data.order.zero?
-
+      messages = MessageService.aggregate_events(message.aggregate)
+      starting_path = Jobs::Projectors::CareerPaths.new.project(messages).paths.detect { |m| m.order.zero? }
       job = Job.find_by!(job_id: message.aggregate.job_id)
 
       job.update!(
-        starting_lower_pay: data.lower_limit.to_i,
-        starting_upper_pay: data.upper_limit.to_i
+        starting_lower_pay: starting_path&.lower_limit.to_i,
+        starting_upper_pay: starting_path&.upper_limit.to_i
+      )
+    end
+
+    on_message Events::CareerPathUpdated::V1 do |message|
+      messages = MessageService.aggregate_events(message.aggregate)
+      starting_path = Jobs::Projectors::CareerPaths.new.project(messages).paths.detect { |m| m.order.zero? }
+      job = Job.find_by!(job_id: message.aggregate.job_id)
+
+      job.update!(
+        starting_lower_pay: starting_path&.lower_limit.to_i,
+        starting_upper_pay: starting_path&.upper_limit.to_i
       )
     end
 

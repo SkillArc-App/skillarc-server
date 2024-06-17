@@ -27,6 +27,15 @@ module Messages
       ].freeze
     end
 
+    module Qualifications
+      EVENTS = [
+        MASTER_SKILL_CREATED = 'master_skill_created',
+        MASTER_CERTIFICATION_CREATED = 'master_certification_created'
+      ].freeze
+
+      COMMANDS = [].freeze
+    end
+
     module Person
       EVENTS = [
         BASIC_INFO_ADDED = 'basic_info_added',
@@ -111,7 +120,20 @@ module Messages
       ].freeze
     end
 
+    module Tags
+      EVENTS = [
+        TAG_CREATED = 'tag_created'
+      ].freeze
+
+      COMMANDS = [].freeze
+    end
+
     module Jobs
+      COMMANDS = [
+        ADD_DESIRED_CERTIFICATION = "add_desired_certification",
+        REMOVE_DESIRED_CERTIFICATION = "remove_desired_certification"
+      ].freeze
+
       EVENTS = [
         CAREER_PATH_CREATED = 'career_path_created',
         CAREER_PATH_UPDATED = 'career_path_updated',
@@ -193,6 +215,11 @@ module Messages
     end
 
     module Employers
+      COMMANDS = [
+        CREATE_EMPLOYER = 'create_employer',
+        UPDATE_EMPLOYER = 'update_employer'
+      ].freeze
+
       EVENTS = [
         EMPLOYER_CREATED = 'employer_created',
         EMPLOYER_UPDATED = 'employer_updated',
@@ -319,6 +346,8 @@ module Messages
       NOTIFICATIONS_MARKED_READ = 'notifications_marked_read',
       REASON_CREATED = 'reason_created',
       SESSION_STARTED = 'session_started',
+      *Qualifications::EVENTS,
+      *Tags::EVENTS,
       *User::EVENTS,
       *Person::EVENTS,
       *Email::EVENTS,
@@ -340,9 +369,13 @@ module Messages
     ].freeze
 
     COMMANDS = [
+      *Qualifications::COMMANDS,
       *Applications::COMMANDS,
+      *Tags::COMMANDS,
       *Person::COMMANDS,
       *Email::COMMANDS,
+      *Jobs::COMMANDS,
+      *Employers::COMMANDS,
       *Phone::COMMANDS,
       *TrainingProviders::COMMANDS,
       *Contact::COMMANDS,

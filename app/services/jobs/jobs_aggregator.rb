@@ -5,6 +5,7 @@ module Jobs
       DesiredCertification.delete_all
       JobPhoto.delete_all
       JobTag.delete_all
+      Tag.delete_all
       Testimonial.delete_all
       LearnedSkill.delete_all
       DesiredSkill.delete_all
@@ -66,6 +67,13 @@ module Jobs
 
     on_message Events::JobPhotoDestroyed::V1, :sync do |message|
       JobPhoto.find(message.data.id).destroy!
+    end
+
+    on_message Events::TagCreated::V1 do |message|
+      Tag.create!(
+        id: message.aggregate.id,
+        name: message.data.name
+      )
     end
 
     on_message Events::JobTagCreated::V1, :sync do |message|

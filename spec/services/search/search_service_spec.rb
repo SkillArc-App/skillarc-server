@@ -21,6 +21,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
     let(:utm_source) { nil }
 
     before do
+      messages.each do |message|
+        Event.from_message!(message)
+      end
+
       instance.handle_message(job_created1)
       instance.handle_message(job_created2)
       instance.handle_message(job_created3)
@@ -40,6 +44,63 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
       instance.handle_message(job_unsaved_job2_user1)
     end
 
+    let(:messages) do
+      [
+        tag_created1,
+        tag_created2,
+        employer_created1,
+        employer_created2
+      ]
+    end
+
+    let(:tag_created1) do
+      build(
+        :message,
+        aggregate_id: tag_id1,
+        schema: Events::TagCreated::V1,
+        data: {
+          name: "Tag1"
+        }
+      )
+    end
+    let(:tag_created2) do
+      build(
+        :message,
+        aggregate_id: tag_id2,
+        schema: Events::TagCreated::V1,
+        data: {
+          name: "Tag2"
+        }
+      )
+    end
+
+    let(:employer_created1) do
+      build(
+        :message,
+        aggregate_id: employer_id1,
+        schema: Events::EmployerCreated::V1,
+        data: {
+          name: "Employer",
+          location: "Columbus",
+          bio: "Bro",
+          logo_url: "www.google.com"
+        }
+      )
+    end
+    let(:employer_created2) do
+      build(
+        :message,
+        aggregate_id: employer_id2,
+        schema: Events::EmployerCreated::V1,
+        data: {
+          name: "Employer",
+          location: "Columbus",
+          bio: "Bro",
+          logo_url: "www.yahoo.com"
+        }
+      )
+    end
+
     let(:applicant_id1) { "bbd92d61-8367-46e0-aafe-89369df95eba" }
     let(:applicant_id2) { "b3f5fe09-e227-4d2a-b47a-bba51b33c23b" }
     let(:job_id1) { "516efc70-a246-4692-9b61-5321dcd2291b" }
@@ -50,13 +111,11 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
     let(:seeker_id1) { "6c535506-3289-4ffe-9767-a258f760de35" }
     let(:seeker_id2) { "6ec7a915-12cf-46a6-bca9-ca25599e73cd" }
 
-    let(:employer_id1) { employer1.id }
-    let(:employer_id2) { employer2.id }
+    let(:employer_id1) { SecureRandom.uuid }
+    let(:employer_id2) { SecureRandom.uuid }
 
-    let(:employer1) { create(:employer) }
-    let(:employer2) { create(:employer) }
-    let(:tag1) { create(:tag, name: "Tag1") }
-    let(:tag2) { create(:tag, name: "Tag2") }
+    let(:tag_id1) { SecureRandom.uuid }
+    let(:tag_id2) { SecureRandom.uuid }
 
     let(:job_created1) do
       build(
@@ -128,6 +187,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         }
       )
     end
+
     let(:job_tag_created1_for_job2) do
       build(
         :message,
@@ -136,7 +196,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         data: {
           id: SecureRandom.uuid,
           job_id: job_id2,
-          tag_id: tag1.id
+          tag_id: tag_id1
         }
       )
     end
@@ -148,7 +208,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         data: {
           id: SecureRandom.uuid,
           job_id: job_id2,
-          tag_id: tag2.id
+          tag_id: tag_id2
         }
       )
     end
@@ -160,7 +220,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         data: {
           id: SecureRandom.uuid,
           job_id: job_id1,
-          tag_id: tag1.id
+          tag_id: tag_id1
         }
       )
     end
@@ -172,7 +232,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         data: {
           job_id: job_id1,
           job_tag_id: SecureRandom.uuid,
-          tag_id: tag1.id
+          tag_id: tag_id1
         }
       )
     end
@@ -326,7 +386,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         employer: {
           id: employer_id1,
           name: "Good Employer",
-          logo_url: employer1.logo_url
+          logo_url: "www.google.com"
         }
       }
     end
@@ -342,14 +402,14 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
           lower_limit: 10,
           upper_limit: 15
         },
-        tags: %w[Tag1 Tag2],
+        tags: %w[Tag2],
         application_status: nil,
         elevator_pitch: nil,
         saved: nil,
         employer: {
           id: employer_id2,
           name: "Joe's Mechanic's shop",
-          logo_url: employer2.logo_url
+          logo_url: "www.yahoo.com"
         }
       }
     end
@@ -368,7 +428,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         employer: {
           id: employer_id1,
           name: "Good Employer",
-          logo_url: employer1.logo_url
+          logo_url: "www.google.com"
         }
       }
     end
@@ -472,14 +532,14 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
                 lower_limit: 10,
                 upper_limit: 15
               },
-              tags: %w[Tag1 Tag2],
+              tags: %w[Tag2],
               application_status: nil,
               elevator_pitch: nil,
               saved: false,
               employer: {
                 id: employer_id2,
                 name: "Joe's Mechanic's shop",
-                logo_url: employer2.logo_url
+                logo_url: "www.yahoo.com"
               }
             },
             {
@@ -496,7 +556,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               employer: {
                 id: employer_id1,
                 name: "Good Employer",
-                logo_url: employer1.logo_url
+                logo_url: "www.google.com"
               }
             },
             {
@@ -517,7 +577,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               employer: {
                 id: employer_id1,
                 name: "Good Employer",
-                logo_url: employer1.logo_url
+                logo_url: "www.google.com"
               }
             }
           ]
@@ -544,14 +604,14 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
                 lower_limit: 10,
                 upper_limit: 15
               },
-              tags: %w[Tag1 Tag2],
+              tags: %w[Tag2],
               application_status: "interviewing",
               elevator_pitch: "I'm going to be the very best",
               saved: false,
               employer: {
                 id: employer_id2,
                 name: "Joe's Mechanic's shop",
-                logo_url: employer2.logo_url
+                logo_url: "www.yahoo.com"
               }
             },
             {
@@ -568,7 +628,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               employer: {
                 id: employer_id1,
                 name: "Good Employer",
-                logo_url: employer1.logo_url
+                logo_url: "www.google.com"
               }
             },
             {
@@ -589,7 +649,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
               employer: {
                 id: employer_id1,
                 name: "Good Employer",
-                logo_url: employer1.logo_url
+                logo_url: "www.google.com"
               }
             }
           ]

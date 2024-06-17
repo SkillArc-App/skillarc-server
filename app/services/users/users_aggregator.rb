@@ -17,11 +17,8 @@ module Users
 
       return if user.role?(message.data.role)
 
-      role = Role.find_by!(name: message.data.role)
-
       UserRole.create!(
-        id: SecureRandom.uuid,
-        role:,
+        role: message.data.role,
         user:
       )
     end

@@ -73,7 +73,7 @@ RSpec.describe SeekerService do
         :profile_skill,
         seeker:,
         description: "I'm good at welding.",
-        master_skill: create(:master_skill, skill: "Welding", type: MasterSkill::SkillTypes::TECHNICAL)
+        master_skill_id: create(:master_skill, skill: "Welding", type: MasterSkill::SkillTypes::TECHNICAL).id
       )
 
       create(

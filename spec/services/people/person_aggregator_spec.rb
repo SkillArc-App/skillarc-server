@@ -577,7 +577,7 @@ RSpec.describe People::PersonAggregator do # rubocop:disable Metrics/BlockLength
         end
 
         let(:master_skill) { create(:master_skill) }
-        let!(:profile_skill) { create(:profile_skill, seeker:, master_skill:) }
+        let!(:profile_skill) { create(:profile_skill, seeker:, master_skill_id: master_skill.id) }
 
         it "updates a profile skill" do
           subject
@@ -603,7 +603,7 @@ RSpec.describe People::PersonAggregator do # rubocop:disable Metrics/BlockLength
         end
 
         let(:master_skill) { create(:master_skill) }
-        let!(:profile_skill) { create(:profile_skill, seeker:, master_skill:) }
+        let!(:profile_skill) { create(:profile_skill, seeker:, master_skill_id: master_skill.id) }
 
         it "updates a profile skill" do
           expect { subject }.to change(ProfileSkill, :count).from(1).to(0)

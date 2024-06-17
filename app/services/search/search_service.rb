@@ -1,5 +1,5 @@
 module Search
-  class SearchService < MessageConsumer
+  class SearchService < MessageConsumer # rubocop:disable Metrics/ClassLength
     include MessageEmitter
 
     def reset_for_replay
@@ -110,7 +110,11 @@ module Search
 
     on_message Events::JobCreated::V3 do |message|
       data = message.data
-      employer_logo_url = Employer.find_by(id: data.employer_id)&.logo_url
+
+      employer_logo_url = Projectors::Aggregates::GetFirst.project(
+        schema: Events::EmployerCreated::V1,
+        aggregate: Aggregates::Employer.new(employer_id: data.employer_id)
+      )&.data&.logo_url
 
       Job.create!(
         category: data.category,
@@ -143,16 +147,23 @@ module Search
 
     on_message Events::JobTagCreated::V1 do |message|
       job = Job.find_by!(job_id: message.aggregate.job_id)
-      tag = Tag.find(message.data.tag_id)
 
-      job.update!(tags: job.tags.to_set.add(tag.name).to_a)
+      tag_name = Projectors::Aggregates::GetFirst.project(
+        schema: Events::TagCreated::V1,
+        aggregate: Aggregates::Tag.new(tag_id: message.data.tag_id)
+      ).data.name
+
+      job.update!(tags: job.tags.to_set.add(tag_name).to_a)
     end
 
     on_message Events::JobTagDestroyed::V2 do |message|
       job = Job.find_by!(job_id: message.aggregate.job_id)
-      tag = Tag.find(message.data.tag_id)
+      tag_name = Projectors::Aggregates::GetFirst.project(
+        schema: Events::TagCreated::V1,
+        aggregate: Aggregates::Tag.new(tag_id: message.data.tag_id)
+      ).data.name
 
-      job.update!(tags: job.tags.to_set.delete(tag).to_a)
+      job.update!(tags: job.tags.to_set.delete(tag_name).to_a)
     end
 
     on_message Events::CareerPathCreated::V1 do |message|

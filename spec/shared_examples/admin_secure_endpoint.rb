@@ -8,10 +8,9 @@ RSpec.shared_context "admin authenticated" do
       email: 'jake@statefarm.com',
       sub: 'jakesub'
     )
-    UserRole.create!(id: SecureRandom.uuid, user: u, role:)
+    UserRole.create!(id: SecureRandom.uuid, user: u, role: Role::Types::ADMIN)
     u
   end
-  let(:role) { Role.create!(id: SecureRandom.uuid, name: "admin") }
 
   around do |example|
     original = ENV.fetch("MOCK_AUTH", nil)
@@ -52,10 +51,9 @@ RSpec.shared_context "admin authenticated openapi" do
       email: 'jake@statefarm.com',
       sub: 'jakesub'
     )
-    UserRole.create!(id: SecureRandom.uuid, user: u, role:)
+    UserRole.create!(id: SecureRandom.uuid, user: u, role: Role::Types::ADMIN)
     u
   end
-  let(:role) { Role.create!(id: SecureRandom.uuid, name: "admin") }
   let(:Authorization) { "Bearer #{user.sub}" }
 
   around do |example|

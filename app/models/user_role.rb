@@ -1,19 +1,21 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: user_roles
 #
-#  id         :text             not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  role_id    :text             not null
-#  user_id    :text             not null
+#  id      :bigint           not null, primary key
+#  role    :string           not null
+#  user_id :text             not null
+#
+# Indexes
+#
+#  index_user_roles_on_user_id  (user_id)
 #
 # Foreign Keys
 #
-#  UserRoles_role_id_fkey  (role_id => roles.id) ON DELETE => restrict ON UPDATE => cascade
-#  UserRoles_user_id_fkey  (user_id => users.id) ON DELETE => restrict ON UPDATE => cascade
+#  fk_rails_...  (user_id => users.id)
 #
 class UserRole < ApplicationRecord
   belongs_to :user
-  belongs_to :role
 end

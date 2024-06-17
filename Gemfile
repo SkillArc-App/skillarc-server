@@ -26,6 +26,8 @@ gem 'slack-ruby-client'
 gem "strong_migrations"
 gem "twilio-ruby"
 gem 'value_semantics'
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
 
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]

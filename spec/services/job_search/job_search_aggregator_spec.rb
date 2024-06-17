@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
+RSpec.describe JobSearch::JobSearchAggregator do # rubocop:disable Metrics/BlockLength
   describe "#search" do # rubocop:disable Metrics/BlockLength
     subject do
       instance.search(

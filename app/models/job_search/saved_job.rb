@@ -17,10 +17,10 @@
 #
 #  fk_rails_...  (search_job_id => search_jobs.id)
 #
-module Search
+module JobSearch
   class SavedJob < ApplicationRecord
     self.table_name = "search_saved_jobs"
 
-    belongs_to :search_job, class_name: "Search::Job"
+    belongs_to :search_job, class_name: "JobSearch::Job"
   end
 end

@@ -8,7 +8,7 @@ module Seekers
 
     def index
       with_message_service do
-        render json: Search::SearchService.new.search(
+        render json: JobSearch::JobSearchAggregator.new.search(
           search_terms: params[:search_terms] || params[:utm_term],
           industries: params[:industries],
           tags: params[:tags],

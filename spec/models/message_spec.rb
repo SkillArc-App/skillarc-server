@@ -199,7 +199,7 @@ RSpec.describe Message do
           id: message.id,
           trace_id: message.trace_id,
           schema: {
-            message_type: Messages::Types::Search::JOB_SEARCH,
+            message_type: Messages::Types::JobSearch::JOB_SEARCH,
             version: 2
           },
           aggregate: message.aggregate.id,
@@ -225,7 +225,7 @@ RSpec.describe Message do
         id: SecureRandom.uuid,
         trace_id: SecureRandom.uuid,
         schema: {
-          message_type: Messages::Types::Search::JOB_SEARCH,
+          message_type: Messages::Types::JobSearch::JOB_SEARCH,
           version: 2
         },
         aggregate: SecureRandom.uuid,

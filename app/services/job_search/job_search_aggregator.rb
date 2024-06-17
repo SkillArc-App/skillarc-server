@@ -1,5 +1,5 @@
-module Search
-  class SearchService < MessageConsumer # rubocop:disable Metrics/ClassLength
+module JobSearch
+  class JobSearchAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
     include MessageEmitter
 
     def reset_for_replay

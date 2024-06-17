@@ -9,7 +9,7 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: Attributes::AttributesAggregator.new, listener_name: "attributes_aggregator"),
       DbStreamListener.build(consumer: Coaches::CoachesAggregator.new, listener_name: "coach_seekers"),
       DbStreamListener.build(consumer: Jobs::JobsAggregator.new, listener_name: "jobs_aggregator"),
-      DbStreamListener.build(consumer: Search::SearchService.new, listener_name: "search"),
+      DbStreamListener.build(consumer: JobSearch::JobSearchAggregator.new, listener_name: "search"),
       DbStreamListener.build(consumer: People::PersonAggregator.new, listener_name: "person_aggregator"),
       DbStreamListener.build(consumer: Invites::InvitesAggregator.new, listener_name: "invites_aggregator"),
       DbStreamListener.build(consumer: Chats::ChatsAggregator.new, listener_name: "chats_aggregator"),

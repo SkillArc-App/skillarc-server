@@ -102,7 +102,7 @@ RSpec.describe "Jobs", type: :request do
         response '200', 'Applies to a job' do
           before do
             seeker = create(:seeker, user_id: user.id)
-            create(:search__job, job_id: id)
+            create(:job_search__job, job_id: id)
             create(:employers_job, job_id: id)
 
             expect(Seekers::ApplicationService)

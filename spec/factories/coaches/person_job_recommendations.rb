@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :coaches__person_job_recommendation, class: "Coaches::PersonJobRecommendation" do
-    association :person_context, factory: :coaches__person_context
-    association :job, factory: :coaches__job
-    association :coach, factory: :coaches__coach
+    person_context factory: %i[coaches__person_context]
+    job factory: %i[coaches__job]
+    coach factory: %i[coaches__coach]
   end
 end

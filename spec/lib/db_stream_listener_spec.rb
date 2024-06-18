@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe DbStreamListener do
   let(:consumer) { MessageConsumer.new }
 
-  let!(:event) { create(:event, :user_created, occurred_at: event_occurred_at) }
-  let!(:event2) { create(:event, :user_created, occurred_at: event_occurred_at + 2.days) }
+  let!(:event) { create(:event, schema: Events::UserCreated::V1, occurred_at: event_occurred_at) }
+  let!(:event2) { create(:event, schema: Events::UserCreated::V1, occurred_at: event_occurred_at + 2.days) }
 
   let(:event_occurred_at) { Date.new(2020, 1, 1) }
   let(:instance) { described_class.build(consumer:, listener_name: "listener_name", now:, stride:) }
@@ -79,7 +79,7 @@ RSpec.describe DbStreamListener do
       context "with a second event at the bookmark" do
         # Hardcoding to the maximum possible uuid value so that it's guaranteed to be after the bookmark according to
         # ordering of uuids
-        let!(:same_time_event) { create(:event, :user_created, id: "ffffffff-ffff-ffff-ffff-ffffffffffff", occurred_at: event_occurred_at) }
+        let!(:same_time_event) { create(:event, schema: Events::UserCreated::V1, id: "ffffffff-ffff-ffff-ffff-ffffffffffff", occurred_at: event_occurred_at) }
 
         it "consumes the events after the bookmark" do
           expect(consumer).to receive(:handle_message).with(

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :employers_applicant, class: 'Employers::Applicant' do
-    association :job, factory: :employers_job
+    job factory: %i[employers_job]
 
     status { Employers::Applicant::StatusTypes::NEW }
     applicant_id { SecureRandom.uuid }

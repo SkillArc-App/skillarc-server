@@ -4,13 +4,16 @@ FactoryBot.define do
     execute_at { Time.zone.local(2020, 1, 1) }
     state { Infrastructure::TaskStates::ENQUEUED }
     command do
-      build(
-        :message,
-        schema: Commands::AssignCoach::V1,
-        aggregate_id: SecureRandom.uuid,
-        data: {
-          coach_email: "coach@skillarc.com"
-        }
+      Message.new(
+        id: SecureRandom.uuid,
+        trace_id: SecureRandom.uuid,
+        schema: Commands::AssignCoach::V2,
+        aggregate: Aggregates::Person.new(person_id: SecureRandom.uuid),
+        data: Commands::AssignCoach::V2.data.new(
+          coach_id: SecureRandom.uuid
+        ),
+        metadata: Messages::Nothing,
+        occurred_at: Time.zone.local(2020, 1, 1)
       )
     end
   end

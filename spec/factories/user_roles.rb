@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :user_role do
-    association :user
+    user
     role { Role::Types::COACH }
   end
 end

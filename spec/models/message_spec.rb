@@ -85,8 +85,7 @@ RSpec.describe Message do
 
         message1 = build(
           :message,
-          version: Commands::SendSmsMessage::V1.version,
-          message_type: Commands::SendSmsMessage::V1.message_type,
+          schema: Commands::SendSmsMessage::V1,
           trace_id:,
           data: {
             phone_number: "1234567890",
@@ -96,8 +95,7 @@ RSpec.describe Message do
 
         message2 = build(
           :message,
-          version: Commands::SendSmsMessage::V1.version,
-          message_type: Commands::SendSmsMessage::V1.message_type,
+          schema: Commands::SendSmsMessage::V1,
           trace_id:,
           data: {
             phone_number: "1234567890",
@@ -117,8 +115,7 @@ RSpec.describe Message do
 
         message1 = build(
           :message,
-          version: Commands::SendSmsMessage::V1.version,
-          message_type: Commands::SendSmsMessage::V1.message_type,
+          schema: Commands::SendSmsMessage::V1,
           trace_id: trace_id1,
           data: {
             phone_number: "1234567890",
@@ -128,8 +125,7 @@ RSpec.describe Message do
 
         message2 = build(
           :message,
-          version: Commands::SendSmsMessage::V1.version,
-          message_type: Commands::SendSmsMessage::V1.message_type,
+          schema: Commands::SendSmsMessage::V1,
           trace_id: trace_id2,
           data: {
             phone_number: "1234567890",
@@ -148,8 +144,7 @@ RSpec.describe Message do
 
         message1 = build(
           :message,
-          version: Commands::SendSmsMessage::V1.version,
-          message_type: Commands::SendSmsMessage::V1.message_type,
+          schema: Commands::SendSmsMessage::V1,
           trace_id:,
           data: {
             phone_number: "1234567890",
@@ -159,8 +154,7 @@ RSpec.describe Message do
 
         message2 = build(
           :message,
-          version: Commands::SendSmsMessage::V1.version,
-          message_type: Commands::SendSmsMessage::V1.message_type,
+          schema: Commands::SendSmsMessage::V1,
           trace_id:,
           data: {
             phone_number: "1234567890",

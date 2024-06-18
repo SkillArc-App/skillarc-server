@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :job_search__application, class: "JobSearch::Application" do
-    association :search_job, factory: :job_search__job
+    search_job factory: %i[job_search__job]
 
     status { ApplicantStatus::StatusTypes::NEW }
     elevator_pitch { "Hire me" }

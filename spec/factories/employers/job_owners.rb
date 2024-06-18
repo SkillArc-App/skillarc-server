@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :employers_job_owner, class: 'Employers::JobOwner' do
-    association :job, factory: :employers_job
-    association :recruiter, factory: :employers_recruiter
+    job factory: %i[employers_job]
+    recruiter factory: %i[employers_recruiter]
   end
 end

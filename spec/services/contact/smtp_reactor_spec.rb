@@ -66,8 +66,7 @@ RSpec.describe Contact::SmtpReactor do
       let(:message) do
         build(
           :message,
-          :send_weekly_employer_update,
-          version: 1,
+          schema: Commands::SendWeeklyEmployerUpdate::V1,
           data: {
             employer_name: "Employer Name",
             recepent_email: "foo@bar.baz",

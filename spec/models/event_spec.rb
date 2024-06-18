@@ -50,8 +50,7 @@ RSpec.describe Event do
     let(:message) do
       build(
         :message,
-        version: Events::JobSearch::V1.version,
-        message_type: Events::JobSearch::V1.message_type,
+        schema: Events::JobSearch::V1,
         data: {
           search_terms: "Cool job",
           tags: nil,

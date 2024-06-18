@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :analytics__fact_application, class: "Analytics::FactApplication" do
-    association :dim_job, factory: :analytics__dim_job
-    association :dim_person, factory: :analytics__dim_person
+    dim_job factory: %i[analytics__dim_job]
+    dim_person factory: %i[analytics__dim_person]
 
     status { "going_places" }
     application_id { SecureRandom.uuid }

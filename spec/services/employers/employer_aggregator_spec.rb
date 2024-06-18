@@ -191,7 +191,7 @@ RSpec.describe Employers::EmployerAggregator do
         consumer.handle_message(
           build(
             :message,
-            :job_owner_assigned,
+            schema: Events::JobOwnerAssigned::V1,
             data: {
               job_id:,
               owner_email: recruiter.email

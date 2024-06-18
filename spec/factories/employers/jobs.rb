@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :employers_job, class: 'Employers::Job' do
-    association :employer, factory: :employers_employer
+    employer factory: %i[employers_employer]
 
     job_id { SecureRandom.uuid }
     benefits_description { Faker::Lorem.sentence }

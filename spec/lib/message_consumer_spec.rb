@@ -4,7 +4,7 @@ RSpec.describe MessageConsumer do
   describe ".on_message" do
     let(:sub_klass) do
       Class.new(described_class) do
-        on_message Events::SessionStarted::V1, &:checksum
+        on_message Events::SessionStarted::V1, &:serialize
       end
     end
 
@@ -12,7 +12,7 @@ RSpec.describe MessageConsumer do
 
     it "executes the events for the approprate message" do
       expect(message)
-        .to receive(:checksum)
+        .to receive(:serialize)
 
       sub_klass.new.handle_message(message)
     end

@@ -6,25 +6,22 @@ RSpec.describe Projectors::Trace::HasOccurred do
 
     let(:user_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
-    let(:schema) { Events::SessionStarted::V1 }
+    let(:schema) { Events::TaskExecuted::V1 }
 
-    context "when the event does not exist for the aggregate" do
+    context "when the event does not exist for the trace id" do
       before do
         Event.from_message!(
           build(
             :message,
-            schema: Events::SeekerCreated::V1,
-            trace_id:,
-            data: {
-              user_id:
-            }
+            schema: Events::TaskExecuted::V1,
+            trace_id: SecureRandom.uuid
           )
         )
         Event.from_message!(
           build(
             :message,
             schema: Events::SessionStarted::V1,
-            aggregate_id: SecureRandom.uuid,
+            trace_id:,
             data: Messages::Nothing
           )
         )
@@ -35,16 +32,13 @@ RSpec.describe Projectors::Trace::HasOccurred do
       end
     end
 
-    context "when the event does exist for the aggregate" do
+    context "when the event does exist for the trace id" do
       before do
         Event.from_message!(
           build(
             :message,
-            schema: Events::SeekerCreated::V1,
-            trace_id:,
-            data: {
-              user_id:
-            }
+            schema: Events::TaskExecuted::V1,
+            trace_id:
           )
         )
         Event.from_message!(

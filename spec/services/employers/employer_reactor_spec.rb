@@ -91,7 +91,7 @@ RSpec.describe Employers::EmployerReactor do
       let(:message) do
         build(
           :message,
-          :day_elapsed,
+          schema: Events::DayElapsed::V1,
           data: {
             date:,
             day_of_week:

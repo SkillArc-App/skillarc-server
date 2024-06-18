@@ -4,27 +4,24 @@ RSpec.describe Projectors::Aggregates::HasOccurred do
   describe ".project" do
     subject { described_class.project(aggregate:, schema:) }
 
-    let(:seeker_id) { SecureRandom.uuid }
-    let(:aggregate) { Aggregates::Seeker.new(seeker_id:) }
-    let(:schema) { Events::SeekerCreated::V1 }
+    let(:task_id) { SecureRandom.uuid }
+    let(:aggregate) { Aggregates::Task.new(task_id:) }
+    let(:schema) { Events::TaskExecuted::V1 }
 
     context "when the event does not exist for the aggregate" do
       before do
         Event.from_message!(
           build(
             :message,
-            schema: Events::SeekerCreated::V1,
-            aggregate_id: SecureRandom.uuid,
-            data: {
-              user_id: SecureRandom.uuid
-            }
+            schema: Events::TaskExecuted::V1,
+            aggregate_id: SecureRandom.uuid
           )
         )
         Event.from_message!(
           build(
             :message,
-            schema: Events::ZipAdded::V1,
-            aggregate_id: seeker_id,
+            schema: Events::ZipAdded::V2,
+            aggregate_id: task_id,
             data: {
               zip_code: "43202"
             }
@@ -42,18 +39,15 @@ RSpec.describe Projectors::Aggregates::HasOccurred do
         Event.from_message!(
           build(
             :message,
-            schema: Events::SeekerCreated::V1,
-            aggregate_id: seeker_id,
-            data: {
-              user_id: SecureRandom.uuid
-            }
+            schema: Events::TaskExecuted::V1,
+            aggregate_id: task_id
           )
         )
         Event.from_message!(
           build(
             :message,
-            schema: Events::ZipAdded::V1,
-            aggregate_id: seeker_id,
+            schema: Events::ZipAdded::V2,
+            aggregate_id: task_id,
             data: {
               zip_code: "43202"
             }

@@ -14,10 +14,10 @@ RSpec.describe Infrastructure::Task do
   let(:command) do
     build(
       :message,
-      schema: Commands::AssignCoach::V1,
+      schema: Commands::AssignCoach::V2,
       aggregate_id: SecureRandom.uuid,
       data: {
-        coach_email: "coach@skillarc.com"
+        coach_id: SecureRandom.uuid
       }
     )
   end

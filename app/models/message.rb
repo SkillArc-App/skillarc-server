@@ -58,8 +58,4 @@ class Message
       data == other.data &&
       metadata == other.metadata
   end
-
-  def checksum
-    Digest::UUID.uuid_v3(MESSAGE_UUID_NAMESPACE, data.to_json + trace_id + schema.message_type + schema.version.to_s)
-  end
 end

@@ -359,11 +359,11 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
         schema:,
         aggregate_id: SecureRandom.uuid,
         data: {
-          coach_email: "coach@skillarc.com"
+          coach_id: SecureRandom.uuid
         }
       )
     end
-    let(:schema) { Commands::AssignCoach::V1 }
+    let(:schema) { Commands::AssignCoach::V2 }
     let(:schema_string) { schema.to_s }
 
     it "persists the message" do
@@ -574,19 +574,13 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     let(:message1) do
       build(
         :message,
-        schema: Events::MetCareerCoachUpdated::V1,
-        data: {
-          met_career_coach: false
-        }
+        schema: Events::TaskExecuted::V1
       )
     end
     let(:message2) do
       build(
         :message,
-        schema: Events::MetCareerCoachUpdated::V1,
-        data: {
-          met_career_coach: false
-        }
+        schema: Events::TaskExecuted::V1
       )
     end
     let(:message3) do
@@ -598,7 +592,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
 
     context "when schema is a schema" do
       it "returns all the messages persisted for a schema" do
-        expect(described_class.all_messages(Events::MetCareerCoachUpdated::V1)).to contain_exactly(message1, message2)
+        expect(described_class.all_messages(Events::TaskExecuted::V1)).to contain_exactly(message1, message2)
       end
     end
 

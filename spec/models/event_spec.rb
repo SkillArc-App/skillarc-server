@@ -50,7 +50,7 @@ RSpec.describe Event do
     let(:message) do
       build(
         :message,
-        schema: Events::JobSearch::V1,
+        schema: Events::JobSearch::V2,
         data: {
           search_terms: "Cool job",
           tags: nil,
@@ -58,7 +58,8 @@ RSpec.describe Event do
         },
         metadata: {
           id:,
-          source: "seeker"
+          source: "seeker",
+          utm_source: "www.google.com"
         }
       )
     end
@@ -77,7 +78,8 @@ RSpec.describe Event do
                                                        })
       expect(subject[:metadata].deep_symbolize_keys).to eq({
                                                              source: "seeker",
-                                                             id:
+                                                             id:,
+                                                             utm_source: "www.google.com"
                                                            })
       expect(subject[:version]).to eq(message.schema.version)
       expect(subject[:occurred_at]).to eq(message.occurred_at)

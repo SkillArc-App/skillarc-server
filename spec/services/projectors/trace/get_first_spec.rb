@@ -5,7 +5,7 @@ RSpec.describe Projectors::Trace::GetFirst do
     subject { described_class.project(trace_id:, schema:) }
 
     let(:trace_id) { SecureRandom.uuid }
-    let(:schema) { Events::SeekerCreated::V1 }
+    let(:schema) { Events::TaskExecuted::V1 }
 
     context "when the event does not exist for the trace" do
       before do
@@ -16,17 +16,14 @@ RSpec.describe Projectors::Trace::GetFirst do
       let(:message1) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
-          trace_id: SecureRandom.uuid,
-          data: {
-            user_id: SecureRandom.uuid
-          }
+          schema: Events::TaskExecuted::V1,
+          trace_id: SecureRandom.uuid
         )
       end
       let(:message2) do
         build(
           :message,
-          schema: Events::ZipAdded::V1,
+          schema: Events::ZipAdded::V2,
           trace_id:,
           data: {
             zip_code: "43202"
@@ -48,22 +45,16 @@ RSpec.describe Projectors::Trace::GetFirst do
       let(:message1) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
+          schema: Events::TaskExecuted::V1,
           trace_id:,
-          data: {
-            user_id: SecureRandom.uuid
-          },
           occurred_at: Time.zone.local(2000, 10, 10)
         )
       end
       let(:message2) do
         build(
           :message,
-          schema: Events::SeekerCreated::V1,
+          schema: Events::TaskExecuted::V1,
           trace_id:,
-          data: {
-            user_id: SecureRandom.uuid
-          },
           occurred_at: Time.zone.local(2000, 10, 11)
         )
       end

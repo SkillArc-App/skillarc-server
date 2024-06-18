@@ -17,7 +17,7 @@ class MessageConsumer
 
   def handle_message(message, now: Time.zone.now) # rubocop:disable Lint/UnusedMethodArgument
     schema = message.schema
-    method_name = "#{schema.message_type}_#{schema.version}".to_sym
+    method_name = :"#{schema.message_type}_#{schema.version}"
     return unless respond_to? method_name
 
     begin
@@ -53,7 +53,7 @@ class MessageConsumer
       handled_messages << schema
     end
 
-    method_name = "#{schema.message_type}_#{schema.version}".to_sym
+    method_name = :"#{schema.message_type}_#{schema.version}"
     define_method(method_name, &)
   end
 

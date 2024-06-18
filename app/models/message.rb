@@ -16,7 +16,7 @@ class Message
   end)
 
   def initialize(**kwarg)
-    super(**kwarg)
+    super
 
     raise InvalidSchemaError unless schema.aggregate === aggregate # rubocop:disable Style/CaseEquality
     raise InvalidSchemaError unless schema.data === data # rubocop:disable Style/CaseEquality

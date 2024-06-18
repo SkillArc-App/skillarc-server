@@ -77,11 +77,5 @@ module Messages
     def to_s
       "#<Messages::Schema message_type: #{message_type}, version: #{version}>"
     end
-
-    private
-
-    def initialize(data:, metadata:, message_type:, version:, aggregate:, status:, type:) # rubocop:disable Metrics/ParameterLists
-      super(data:, metadata:, message_type:, version:, aggregate:, status:, type:)
-    end
   end
 end

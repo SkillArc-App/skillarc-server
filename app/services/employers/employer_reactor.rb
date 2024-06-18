@@ -36,7 +36,7 @@ module Employers
       Employer.find_each do |employer|
         next unless employer.active?
 
-        new_applicants = employer.applicants.active.where("status_as_of >= ?", date - 1.week).map do |applicant|
+        new_applicants = employer.applicants.active.where(status_as_of: date - 1.week..).map do |applicant|
           Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
             first_name: applicant.first_name,
             last_name: applicant.last_name,
@@ -44,7 +44,7 @@ module Employers
           )
         end
 
-        pending_applicants = employer.applicants.active.where("status_as_of < ?", date - 1.week).map do |applicant|
+        pending_applicants = employer.applicants.active.where(status_as_of: ...date - 1.week).map do |applicant|
           Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
             first_name: applicant.first_name,
             last_name: applicant.last_name,

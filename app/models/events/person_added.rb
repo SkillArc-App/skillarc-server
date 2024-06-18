@@ -13,7 +13,7 @@ module Events
         end
 
         def initialize(**kwarg)
-          super(**kwarg)
+          super
           raise ArgumentError unless kwarg[:email].present? || kwarg[:phone_number].present?
         end
       end

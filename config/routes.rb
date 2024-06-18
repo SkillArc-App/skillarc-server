@@ -68,7 +68,6 @@ Rails.application.routes.draw do
 
   mount Resque::Server.new, at: "/resque"
 
-  get 'job_matches' => 'job_matches#index'
   resources :master_certifications
   resources :master_skills
 

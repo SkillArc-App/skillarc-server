@@ -30,13 +30,13 @@ RSpec.describe "Seekers::JobsController", type: :request do
                 required: false
 
       before do
-        create_list(:search__job, 4)
+        create_list(:job_search__job, 4)
       end
 
       include_context "olive branch casing parameter"
       include_context "olive branch camelcasing"
 
-      let(:search_service) { Search::SearchService.new }
+      let(:search_service) { JobSearch::JobSearchQuery.new }
 
       response '200', 'search executed' do
         schema type: :array,
@@ -49,11 +49,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
           context "When called without parameters" do
             before do
-              expect(Search::SearchService)
-                .to receive(:new)
-                .and_return(search_service)
-
-              expect(search_service)
+              expect_any_instance_of(JobSearch::JobSearchQuery)
                 .to receive(:search)
                 .with(
                   search_terms: nil,
@@ -69,11 +65,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
           context "When called with query parameters" do
             before do
-              expect(Search::SearchService)
-                .to receive(:new)
-                .and_return(search_service)
-
-              expect(search_service)
+              expect_any_instance_of(JobSearch::JobSearchQuery)
                 .to receive(:search)
                 .with(
                   search_terms: "Best Job",
@@ -95,19 +87,15 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
         context "when authenticated" do
           before do
-            create(:search__saved_job, user_id: user.id)
-            create(:search__application, seeker_id: seeker.id)
+            create(:job_search__saved_job, user_id: user.id)
+            create(:job_search__application, seeker_id: seeker.id)
           end
 
           include_context "seeker authenticated openapi"
 
           context "When called without parameters" do
             before do
-              expect(Search::SearchService)
-                .to receive(:new)
-                .and_return(search_service)
-
-              expect(search_service)
+              expect_any_instance_of(JobSearch::JobSearchQuery)
                 .to receive(:search)
                 .with(
                   search_terms: nil,
@@ -123,11 +111,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
 
           context "When called with query parameters" do
             before do
-              expect(Search::SearchService)
-                .to receive(:new)
-                .and_return(search_service)
-
-              expect(search_service)
+              expect_any_instance_of(JobSearch::JobSearchQuery)
                 .to receive(:search)
                 .with(
                   search_terms: "Best Job",
@@ -160,7 +144,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
       include_context "olive branch camelcasing"
 
       let(:job) { create(:job) }
-      let!(:search_job) { create(:search__job, job_id: job.id) }
+      let!(:search_job) { create(:job_search__job, job_id: job.id) }
       let(:id) { job.id }
 
       it_behaves_like "seeker spec unauthenticated openapi"
@@ -200,7 +184,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
       include_context "olive branch camelcasing"
 
       let(:job) { create(:job) }
-      let!(:search_job) { create(:search__job, job_id: job.id) }
+      let!(:search_job) { create(:job_search__job, job_id: job.id) }
       let(:id) { job.id }
 
       it_behaves_like "seeker spec unauthenticated openapi"

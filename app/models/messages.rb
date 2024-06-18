@@ -301,7 +301,7 @@ module Messages
       ].freeze
     end
 
-    module Search
+    module JobSearch
       EVENTS = [
         JOB_SEARCH = 'job_search'
       ].freeze
@@ -362,7 +362,7 @@ module Messages
       *Employers::EVENTS,
       *Seekers::EVENTS,
       *Contact::EVENTS,
-      *Search::EVENTS,
+      *JobSearch::EVENTS,
       *Infrastructure::EVENTS,
       *TestingOnly::EVENTS,
       *TrainingProviders::EVENTS
@@ -384,7 +384,7 @@ module Messages
       *Seekers::COMMANDS,
       *Invite::COMMANDS,
       *JobOrders::COMMANDS,
-      *Search::COMMANDS,
+      *JobSearch::COMMANDS,
       *Infrastructure::COMMANDS
     ].freeze
 

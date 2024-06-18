@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :search__job, class: "Search::Job" do
+  factory :job_search__job, class: "JobSearch::Job" do
     job_id { SecureRandom.uuid }
     hidden { false }
     employment_type { Job::EmploymentTypes::PARTTIME }

@@ -29,12 +29,12 @@
 #  index_search_jobs_on_location          (location)
 #  index_search_jobs_on_tags              (tags)
 #
-module Search
+module JobSearch
   class Job < ApplicationRecord
     self.table_name = "search_jobs"
 
-    has_many :applications, inverse_of: :search_job, dependent: :destroy, class_name: "Search::Application", foreign_key: "search_job_id"
-    has_many :saved_jobs, inverse_of: :search_job, dependent: :destroy, class_name: "Search::SavedJob", foreign_key: "search_job_id"
+    has_many :applications, inverse_of: :search_job, dependent: :destroy, class_name: "JobSearch::Application", foreign_key: "search_job_id"
+    has_many :saved_jobs, inverse_of: :search_job, dependent: :destroy, class_name: "JobSearch::SavedJob", foreign_key: "search_job_id"
 
     scope :shown, -> { where(hidden: false) }
   end

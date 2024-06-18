@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
-  describe "#search" do # rubocop:disable Metrics/BlockLength
+RSpec.describe JobSearch::JobSearchQuery do
+  describe "#search" do
     subject do
       instance.search(
         search_terms:,
@@ -12,94 +12,14 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
       )
     end
 
-    let(:instance) { described_class.new }
+    let(:instance) { described_class.new(message_service:) }
+    let(:message_service) { MessageService.new }
 
     let(:search_terms) { nil }
     let(:industries) { nil }
     let(:tags) { nil }
     let(:user) { nil }
     let(:utm_source) { nil }
-
-    before do
-      messages.each do |message|
-        Event.from_message!(message)
-      end
-
-      instance.handle_message(job_created1)
-      instance.handle_message(job_created2)
-      instance.handle_message(job_created3)
-      instance.handle_message(job_updated1)
-      instance.handle_message(job_tag_created1_for_job2)
-      instance.handle_message(job_tag_created2_for_job2)
-      instance.handle_message(job_tag_created1_for_job1)
-      instance.handle_message(job_tag_destroyed1_for_job2)
-      instance.handle_message(career_paths_created_for_job1)
-      instance.handle_message(career_paths_created_for_job2)
-      instance.handle_message(career_paths_updated_for_job2)
-      instance.handle_message(application1_for_job1_for_seeker1)
-      instance.handle_message(application2_for_job2_for_seeker2)
-      instance.handle_message(elevator_pitch_created_for_application2)
-      instance.handle_message(job_saved_job1_user1)
-      instance.handle_message(job_saved_job2_user1)
-      instance.handle_message(job_unsaved_job2_user1)
-    end
-
-    let(:messages) do
-      [
-        tag_created1,
-        tag_created2,
-        employer_created1,
-        employer_created2
-      ]
-    end
-
-    let(:tag_created1) do
-      build(
-        :message,
-        aggregate_id: tag_id1,
-        schema: Events::TagCreated::V1,
-        data: {
-          name: "Tag1"
-        }
-      )
-    end
-    let(:tag_created2) do
-      build(
-        :message,
-        aggregate_id: tag_id2,
-        schema: Events::TagCreated::V1,
-        data: {
-          name: "Tag2"
-        }
-      )
-    end
-
-    let(:employer_created1) do
-      build(
-        :message,
-        aggregate_id: employer_id1,
-        schema: Events::EmployerCreated::V1,
-        data: {
-          name: "Employer",
-          location: "Columbus",
-          bio: "Bro",
-          logo_url: "www.google.com"
-        }
-      )
-    end
-    let(:employer_created2) do
-      build(
-        :message,
-        aggregate_id: employer_id2,
-        schema: Events::EmployerCreated::V1,
-        data: {
-          name: "Employer",
-          location: "Columbus",
-          bio: "Bro",
-          logo_url: "www.yahoo.com"
-        }
-      )
-    end
 
     let(:applicant_id1) { "bbd92d61-8367-46e0-aafe-89369df95eba" }
     let(:applicant_id2) { "b3f5fe09-e227-4d2a-b47a-bba51b33c23b" }
@@ -117,253 +37,52 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
     let(:tag_id1) { SecureRandom.uuid }
     let(:tag_id2) { SecureRandom.uuid }
 
-    let(:job_created1) do
-      build(
-        :message,
-        schema: Events::JobCreated::V3,
-        aggregate_id: job_id1,
-        data: {
-          category: Job::Categories::STAFFING,
-          employment_title: "Plumber",
-          employer_name: "Good Employer",
-          employer_id: employer_id1,
-          benefits_description: "Great Benifits",
-          location: "Columbus, OH",
-          employment_type: Job::EmploymentTypes::FULLTIME,
-          hide_job: false,
-          industry: nil
-        }
+    let!(:job1) do
+      create(
+        :job_search__job,
+        category: Job::Categories::MARKETPLACE,
+        job_id: job_id1,
+        employment_title: "Senior Plumber",
+        industries: nil,
+        location: "Columbus, OH",
+        starting_lower_pay: 17_000,
+        starting_upper_pay: 23_000,
+        tags: ["Tag1"],
+        employer_id: employer_id1,
+        employer_name: "Good Employer",
+        employer_logo_url: "www.google.com"
       )
     end
-    let(:job_created2) do
-      build(
-        :message,
-        aggregate_id: job_id2,
-        schema: Events::JobCreated::V3,
-        data: {
-          category: Job::Categories::STAFFING,
-          employment_title: "Mechanic",
-          employer_name: "Joe's Mechanic's shop",
-          employer_id: employer_id2,
-          benefits_description: "Great Benifits",
-          location: "Columbus, OH",
-          employment_type: Job::EmploymentTypes::PARTTIME,
-          hide_job: false,
-          industry: [Job::Industries::CONSTRUCTION, Job::Industries::MANUFACTURING]
-        }
+    let!(:job2) do
+      create(
+        :job_search__job,
+        category: Job::Categories::STAFFING,
+        job_id: job_id2,
+        employment_title: "Mechanic",
+        industries: [Job::Industries::CONSTRUCTION, Job::Industries::MANUFACTURING],
+        location: "Columbus, OH",
+        starting_lower_pay: 10,
+        starting_upper_pay: 15,
+        tags: ["Tag2"],
+        employer_id: employer_id2,
+        employer_name: "Joe's Mechanic's shop",
+        employer_logo_url: "www.yahoo.com"
       )
     end
-    let(:job_created3) do
-      build(
-        :message,
-        aggregate_id: job_id3,
-        schema: Events::JobCreated::V3,
-        data: {
-          category: Job::Categories::MARKETPLACE,
-          employment_title: "Silly Job",
-          employer_name: "Good Employer",
-          employer_id: employer_id1,
-          benefits_description: "Great Benifits",
-          location: "Columbus, OH",
-          employment_type: Job::EmploymentTypes::PARTTIME,
-          hide_job: false,
-          industry: [Job::Industries::LOGISTICS]
-        }
-      )
-    end
-    let(:job_updated1) do
-      build(
-        :message,
-        aggregate_id: job_id1,
-        schema: Events::JobUpdated::V2,
-        data: {
-          category: Job::Categories::MARKETPLACE,
-          employment_title: "Senior Plumber",
-          benefits_description: "Great Benifits",
-          location: "Columbus, OH",
-          employment_type: Job::EmploymentTypes::FULLTIME,
-          hide_job: false,
-          industry: nil
-        }
-      )
-    end
-
-    let(:job_tag_created1_for_job2) do
-      build(
-        :message,
-        aggregate_id: job_id2,
-        schema: Events::JobTagCreated::V1,
-        data: {
-          id: SecureRandom.uuid,
-          job_id: job_id2,
-          tag_id: tag_id1
-        }
-      )
-    end
-    let(:job_tag_created2_for_job2) do
-      build(
-        :message,
-        aggregate_id: job_id2,
-        schema: Events::JobTagCreated::V1,
-        data: {
-          id: SecureRandom.uuid,
-          job_id: job_id2,
-          tag_id: tag_id2
-        }
-      )
-    end
-    let(:job_tag_created1_for_job1) do
-      build(
-        :message,
-        aggregate_id: job_id1,
-        schema: Events::JobTagCreated::V1,
-        data: {
-          id: SecureRandom.uuid,
-          job_id: job_id1,
-          tag_id: tag_id1
-        }
-      )
-    end
-    let(:job_tag_destroyed1_for_job2) do
-      build(
-        :message,
-        aggregate_id: job_id2,
-        schema: Events::JobTagDestroyed::V2,
-        data: {
-          job_id: job_id1,
-          job_tag_id: SecureRandom.uuid,
-          tag_id: tag_id1
-        }
-      )
-    end
-    let(:career_paths_created_for_job1) do
-      build(
-        :message,
-        aggregate_id: job_id1,
-        schema: Events::CareerPathCreated::V1,
-        data: {
-          id: SecureRandom.uuid,
-          job_id: job_id1,
-          title: "Entry Level",
-          lower_limit: "17000",
-          upper_limit: "23000",
-          order: 0
-        }
-      )
-    end
-    let(:career_paths_created_for_job2) do
-      build(
-        :message,
-        aggregate_id: job_id2,
-        schema: Events::CareerPathCreated::V1,
-        data: {
-          id: SecureRandom.uuid,
-          job_id: job_id2,
-          title: "Grunt",
-          lower_limit: "10",
-          upper_limit: "15",
-          order: 0
-        }
-      )
-    end
-    let(:career_paths_updated_for_job2) do
-      build(
-        :message,
-        aggregate_id: job_id2,
-        schema: Events::CareerPathUpdated::V1,
-        data: {
-          id: SecureRandom.uuid,
-          order: 0
-        }
-      )
-    end
-    let(:application1_for_job1_for_seeker1) do
-      build(
-        :message,
-        aggregate_id: applicant_id1,
-        schema: Events::ApplicantStatusUpdated::V6,
-        data: {
-          applicant_first_name: "John",
-          applicant_last_name: "Chabot",
-          applicant_email: "john@skillarc.com",
-          seeker_id: seeker_id1,
-          user_id: user_id1,
-          job_id: job_id1,
-          employer_name: "Good Employer",
-          employment_title: "Plumber",
-          status: ApplicantStatus::StatusTypes::INTERVIEWING
-        },
-        metadata: {
-          user_id: user_id1
-        }
-      )
-    end
-    let(:application2_for_job2_for_seeker2) do
-      build(
-        :message,
-        aggregate_id: applicant_id2,
-        schema: Events::ApplicantStatusUpdated::V6,
-        data: {
-          applicant_first_name: "Chris",
-          applicant_last_name: "Brauns",
-          applicant_email: "chris@skillarc.com",
-          seeker_id: seeker_id2,
-          user_id: user_id2,
-          job_id: job_id2,
-          employer_name: "Good Employer",
-          employment_title: "Plumber",
-          status: ApplicantStatus::StatusTypes::INTERVIEWING
-        },
-        metadata: {
-          user_id: user_id1
-        }
-      )
-    end
-    let(:elevator_pitch_created_for_application2) do
-      build(
-        :message,
-        aggregate_id: seeker_id2,
-        schema: Events::ElevatorPitchCreated::V2,
-        data: {
-          job_id: job_id2,
-          pitch: "I'm going to be the very best"
-        }
-      )
-    end
-    let(:job_saved_job1_user1) do
-      build(
-        :message,
-        aggregate_id: user_id1,
-        schema: Events::JobSaved::V1,
-        data: {
-          job_id: job_id1,
-          employment_title: "A Job",
-          employer_name: "Employer"
-        }
-      )
-    end
-    let(:job_saved_job2_user1) do
-      build(
-        :message,
-        aggregate_id: user_id1,
-        schema: Events::JobSaved::V1,
-        data: {
-          job_id: job_id2,
-          employment_title: "A Job",
-          employer_name: "Employer"
-        }
-      )
-    end
-    let(:job_unsaved_job2_user1) do
-      build(
-        :message,
-        aggregate_id: user_id1,
-        schema: Events::JobUnsaved::V1,
-        data: {
-          job_id: job_id2,
-          employment_title: "A Job",
-          employer_name: "Employer"
-        }
+    let!(:job3) do
+      create(
+        :job_search__job,
+        category: Job::Categories::MARKETPLACE,
+        job_id: job_id3,
+        employment_title: "Silly Job",
+        industries: [Job::Industries::LOGISTICS],
+        location: "Columbus, OH",
+        starting_lower_pay: nil,
+        starting_upper_pay: nil,
+        tags: [],
+        employer_id: employer_id1,
+        employer_name: "Good Employer",
+        employer_logo_url: "www.google.com"
       )
     end
 
@@ -436,7 +155,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
     context "search source" do
       context "when user is nil" do
         it "emits a search event for unauthenticated" do
-          expect_any_instance_of(MessageService)
+          expect(message_service)
             .to receive(:create!)
             .with(
               schema: Events::JobSearch::V2,
@@ -460,7 +179,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         let(:user) { create(:user) }
 
         it "emits a search event for a non-seeker" do
-          expect_any_instance_of(MessageService)
+          expect(message_service)
             .to receive(:create!)
             .with(
               schema: Events::JobSearch::V2,
@@ -486,7 +205,7 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
         let!(:seeker) { create(:seeker, user_id: user.id) }
 
         it "emits a search event for a non-seeker" do
-          expect_any_instance_of(MessageService)
+          expect(message_service)
             .to receive(:create!)
             .with(
               schema: Events::JobSearch::V2,
@@ -517,6 +236,10 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
       end
 
       context "when user is provided" do
+        before do
+          create(:job_search__saved_job, search_job: job1, user_id: user.id)
+        end
+
         let(:user) { create(:user, id: user_id1) }
 
         it "returns all jobs with saved jobs" do
@@ -588,6 +311,11 @@ RSpec.describe Search::SearchService do # rubocop:disable Metrics/BlockLength
       end
 
       context "when user with a seeker is provided" do
+        before do
+          create(:job_search__saved_job, search_job: job1, user_id: user.id)
+          create(:job_search__application, search_job: job2, seeker_id: seeker.id, status: "interviewing", elevator_pitch: "I'm going to be the very best")
+        end
+
         let(:user) { create(:user, id: user_id1) }
         let!(:seeker) { create(:seeker, id: seeker_id2, user_id: user.id) }
 

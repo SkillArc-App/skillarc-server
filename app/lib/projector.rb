@@ -47,7 +47,7 @@ class Projector
 
     Rails.logger.error { "#{name} is subscribed to deprecated message #{schema}" } if schema.deprecated?
 
-    method_name = "#{schema.message_type}_#{schema.version}".to_sym
+    method_name = :"#{schema.message_type}_#{schema.version}"
     define_method(method_name, &)
   end
 
@@ -55,7 +55,7 @@ class Projector
 
   def project_message(message, accumulator)
     schema = message.schema
-    method_name = "#{schema.message_type}_#{schema.version}".to_sym
+    method_name = :"#{schema.message_type}_#{schema.version}"
     return accumulator unless respond_to? method_name
 
     send(method_name, message, accumulator)

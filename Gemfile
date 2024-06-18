@@ -12,7 +12,7 @@ gem "omniauth-auth0"
 gem 'omniauth-rails_csrf_protection'
 gem "pg", "~> 1.1"
 gem "premailer-rails"
-gem "puma", "~> 5.0"
+gem "puma", "~> 6.0"
 gem "rack-cors"
 gem "rails", "~> 7.1", ">= 7.1"
 gem "redis"

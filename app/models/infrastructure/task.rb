@@ -18,7 +18,7 @@ module Infrastructure
   class Task < ApplicationRecord
     self.table_name = "infrastructure_tasks"
 
-    scope :ready_to_execute, -> { where(state: TaskStates::ENQUEUED).where("execute_at < ?", Time.zone.now) }
+    scope :ready_to_execute, -> { where(state: TaskStates::ENQUEUED).where(execute_at: ...Time.zone.now) }
 
     def execute!
       return unless state == TaskStates::ENQUEUED

@@ -8,7 +8,7 @@ RSpec.describe MessageConsumer do
       end
     end
 
-    let(:message) { build(:message, schema: Events::SessionStarted::V1, data: Messages::Nothing) }
+    let(:message) { build(:message, schema: Events::SessionStarted::V1, data: Core::Nothing) }
 
     it "executes the events for the approprate message" do
       expect(message)
@@ -43,11 +43,11 @@ RSpec.describe MessageConsumer do
     context "when on_message is subscribed to a deprecated message" do
       let(:sub_klass) do
         Class.new(described_class) do
-          on_message Messages::Schema.deprecated(data: Messages::Nothing,
-                                                 metadata: Messages::Nothing,
-                                                 aggregate: Aggregates::User,
-                                                 message_type: Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
-                                                 version: 1), &:checksum
+          on_message Core::Schema.deprecated(data: Core::Nothing,
+                                             metadata: Core::Nothing,
+                                             aggregate: Aggregates::User,
+                                             message_type: MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
+                                             version: 1), &:checksum
         end
 
         it "prints an error to the console" do

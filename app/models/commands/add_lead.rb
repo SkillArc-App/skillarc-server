@@ -2,7 +2,7 @@ module Commands
   module AddLead
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           email Either(String, nil), default: nil
@@ -15,12 +15,12 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.inactive(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,
-      message_type: Messages::Types::Coaches::ADD_LEAD,
+      message_type: MessageTypes::Coaches::ADD_LEAD,
       version: 1
     )
   end

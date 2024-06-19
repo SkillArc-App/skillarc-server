@@ -2,7 +2,7 @@ module Events
   module SeekerTrainingProviderCreated
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           id Uuid
@@ -12,7 +12,7 @@ module Events
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           id Uuid
@@ -23,7 +23,7 @@ module Events
       end
 
       class V3
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           id Uuid
@@ -34,36 +34,36 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V1 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
+      message_type: MessageTypes::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 1
     )
-    V2 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V2 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
+      message_type: MessageTypes::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 2
     )
-    V3 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V3 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
+      message_type: MessageTypes::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 3
     )
-    V4 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V4 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V3,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
+      message_type: MessageTypes::TrainingProviders::SEEKER_TRAINING_PROVIDER_CREATED,
       version: 4
     )
   end

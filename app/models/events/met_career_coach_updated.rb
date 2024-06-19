@@ -2,7 +2,7 @@ module Events
   module MetCareerCoachUpdated
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           met_career_coach Bool()
@@ -10,12 +10,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V1 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::MET_CAREER_COACH_UPDATED,
+      message_type: MessageTypes::MET_CAREER_COACH_UPDATED,
       version: 1
     )
   end

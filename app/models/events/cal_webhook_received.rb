@@ -24,7 +24,7 @@ module Events
 
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           cal_trigger_event_type Either(*CalTriggerEventTypes::ALL)
@@ -33,12 +33,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Integration,
-      message_type: Messages::Types::Contact::CAL_WEBHOOK_RECEIVED,
+      message_type: MessageTypes::Contact::CAL_WEBHOOK_RECEIVED,
       version: 1
     )
   end

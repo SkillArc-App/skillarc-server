@@ -1,8 +1,8 @@
-module Messages
+module Core
   module Payload
     def schema(&)
       include(ValueSemantics.for_attributes(&))
-      include Messages::Payload
+      include Core::Payload
     end
 
     delegate :to_h, to: :serialize
@@ -12,7 +12,7 @@ module Messages
 
       self.class.value_semantics.attributes.each do |attr|
         value = to_serialized_value(send(attr.name))
-        hash[attr.name] = value unless value == Messages::UNDEFINED
+        hash[attr.name] = value
       end
 
       hash

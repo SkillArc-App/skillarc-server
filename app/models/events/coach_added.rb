@@ -2,7 +2,7 @@ module Events
   module CoachAdded
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           coach_id Uuid
@@ -11,12 +11,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::Coaches::COACH_ADDED,
+      message_type: MessageTypes::Coaches::COACH_ADDED,
       version: 1
     )
   end

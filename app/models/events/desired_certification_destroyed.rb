@@ -2,7 +2,7 @@ module Events
   module DesiredCertificationDestroyed
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           id Uuid
@@ -10,12 +10,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Job,
-      message_type: Messages::Types::Jobs::DESIRED_CERTIFICATION_DESTROYED,
+      message_type: MessageTypes::Jobs::DESIRED_CERTIFICATION_DESTROYED,
       version: 1
     )
   end

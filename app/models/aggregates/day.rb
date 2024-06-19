@@ -1,5 +1,5 @@
 module Aggregates
-  class Day < Messages::Aggregate
+  class Day < Core::Aggregate
     id_name :day
   end
 end

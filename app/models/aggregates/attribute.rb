@@ -1,5 +1,5 @@
 module Aggregates
-  class Attribute < Messages::Aggregate
+  class Attribute < Core::Aggregate
     id_name :attribute_id
   end
 end

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
   let(:instance) { described_class.new }
   let!(:schema) do
-    Messages::Schema.active(
+    Core::Schema.active(
       data: Events::SeekerViewed::Data::V1,
       metadata: Events::ApplicantStatusUpdated::MetaData::V1,
       aggregate: Aggregates::User,
@@ -12,8 +12,8 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
       type:
     )
   end
-  let(:type) { Messages::EVENT }
-  let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+  let(:type) { Core::EVENT }
+  let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
   let(:version) { 3 }
 
   describe "#create_once_for_aggregate!" do
@@ -284,7 +284,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
     let(:id) { SecureRandom.uuid }
 
-    context "when the event_schema is not a Messages::Schema" do
+    context "when the event_schema is not a Core::Schema" do
       let(:schema) { 10 }
 
       it "raises a NotSchemaError" do
@@ -292,7 +292,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
       end
     end
 
-    context "when event_schema is a Messages::Schema" do
+    context "when event_schema is a Core::Schema" do
       context "when data doesn't type check" do
         let(:data) { "cat" }
 
@@ -432,7 +432,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     let(:subscriber2) { DbStreamListener.build(consumer: MessageConsumer.new, listener_name: SecureRandom.uuid) }
 
     let!(:other_schema) do
-      Messages::Schema.active(
+      Core::Schema.active(
         data: Events::SeekerViewed::Data::V1,
         metadata: Events::ApplicantStatusUpdated::MetaData::V1,
         aggregate: Aggregates::User,
@@ -543,12 +543,12 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
     context "when passed a 2nd active schema for the same message type" do
       it "raise a MessageTypeHasMultipleActiveSchemas" do
         expect do
-          Messages::Schema.active(
-            data: Messages::Nothing,
-            metadata: Messages::Nothing,
+          Core::Schema.active(
+            data: Core::Nothing,
+            metadata: Core::Nothing,
             aggregate: Aggregates::User,
-            message_type: Messages::Types::User::USER_CREATED,
-            type: Messages::EVENT,
+            message_type: MessageTypes::User::USER_CREATED,
+            type: Core::EVENT,
             version: 2
           )
         end.to raise_error(described_class::MessageTypeHasMultipleActiveSchemas)
@@ -616,7 +616,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
         :message,
         aggregate_id: message_id,
         schema: Events::MessageSent::V1,
-        data: Messages::Nothing,
+        data: Core::Nothing,
         occurred_at: Time.zone.local(2021, 1, 1)
       )
     end
@@ -671,7 +671,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
         :message,
         trace_id:,
         schema: Events::MessageSent::V1,
-        data: Messages::Nothing,
+        data: Core::Nothing,
         occurred_at: Time.zone.local(2021, 1, 1)
       )
     end
@@ -742,7 +742,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
         schema:,
         occurred_at: Time.zone.parse('2000-1-1'),
         data: Events::UserCreated::Data::V1.new(first_name: "John"),
-        metadata: Messages::Nothing
+        metadata: Core::Nothing
       )
     end
     let!(:message2) do
@@ -753,7 +753,7 @@ RSpec.describe MessageService do # rubocop:disable Metrics/BlockLength
         schema:,
         occurred_at: Time.zone.parse('2000-1-1'),
         data: Events::UserCreated::Data::V1.new(first_name: "Chris"),
-        metadata: Messages::Nothing
+        metadata: Core::Nothing
       )
     end
     let!(:event1) { Event.from_message!(message1) }

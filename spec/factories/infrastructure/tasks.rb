@@ -12,7 +12,7 @@ FactoryBot.define do
         data: Commands::AssignCoach::V2.data.new(
           coach_id: SecureRandom.uuid
         ),
-        metadata: Messages::Nothing,
+        metadata: Core::Nothing,
         occurred_at: Time.zone.local(2020, 1, 1)
       )
     end

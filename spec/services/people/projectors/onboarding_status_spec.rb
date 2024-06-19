@@ -12,7 +12,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
         :message,
         aggregate:,
         schema: Events::OnboardingCompleted::V3,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
     let(:onboarding_started) do
@@ -20,7 +20,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
         :message,
         aggregate:,
         schema: Events::OnboardingStarted::V2,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
     let(:reliability_added) do

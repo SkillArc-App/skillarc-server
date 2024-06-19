@@ -1,5 +1,5 @@
 module Aggregates
-  class MasterCertification < Messages::Aggregate
+  class MasterCertification < Core::Aggregate
     id_name :master_certification_id
   end
 end

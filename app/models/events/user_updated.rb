@@ -2,25 +2,25 @@ module Events
   module UserUpdated
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           first_name Either(String, nil)
           last_name Either(String, nil)
           phone_number Either(String, nil)
-          date_of_birth Either(Date, Messages::UNDEFINED, nil), default: Messages::UNDEFINED, coerce: Messages::DateCoercer
-          email Either(String, Messages::UNDEFINED, nil), default: Messages::UNDEFINED
-          zip_code Either(/^\d{5}(?:[-\s]\d{4})?$/, Messages::UNDEFINED, nil), default: Messages::UNDEFINED, coerce: Messages::ZipCodeCoercer
+          date_of_birth Either(Date, nil), default: nil, coerce: Core::DateCoercer
+          email Either(String, nil), default: nil
+          zip_code Either(/^\d{5}(?:[-\s]\d{4})?$/, nil), default: nil, coerce: Core::ZipCodeCoercer
         end
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V1 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::User::USER_UPDATED,
+      message_type: MessageTypes::User::USER_UPDATED,
       version: 1
     )
   end

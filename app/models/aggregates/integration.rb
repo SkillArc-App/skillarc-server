@@ -1,5 +1,5 @@
 module Aggregates
-  class Integration < Messages::Aggregate
+  class Integration < Core::Aggregate
     id_name :integration
   end
 end

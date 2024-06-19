@@ -2,7 +2,7 @@ module Events
   module TrainingProviderProgramUpdated
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           program_id Uuid
@@ -12,12 +12,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::TrainingProvider,
-      message_type: Messages::Types::TrainingProviders::TRAINING_PROVIDER_PROGRAM_UPDATED,
+      message_type: MessageTypes::TrainingProviders::TRAINING_PROVIDER_PROGRAM_UPDATED,
       version: 1
     )
   end

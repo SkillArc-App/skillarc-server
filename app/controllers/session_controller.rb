@@ -9,7 +9,7 @@ class SessionController < ApplicationController
       message_service.create!(
         schema: Events::SessionStarted::V1,
         user_id: current_user.id,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
 
       head :accepted

@@ -2,7 +2,7 @@ module Commands
   module CreateTrainingProvider
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           name String
@@ -11,12 +11,12 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::TrainingProvider,
-      message_type: Messages::Types::TrainingProviders::CREATE_TRAINING_PROVIDER,
+      message_type: MessageTypes::TrainingProviders::CREATE_TRAINING_PROVIDER,
       version: 1
     )
   end

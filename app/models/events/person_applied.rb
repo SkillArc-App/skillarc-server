@@ -2,7 +2,7 @@ module Events
   module PersonApplied
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           application_id Uuid
@@ -18,12 +18,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Person::PERSON_APPLIED,
+      message_type: MessageTypes::Person::PERSON_APPLIED,
       version: 1
     )
   end

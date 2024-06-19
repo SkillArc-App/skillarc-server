@@ -2,7 +2,7 @@ module Events
   module TrainingProviderInviteAccepted
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           training_provider_invite_id Either(Uuid, nil), default: nil
@@ -13,7 +13,7 @@ module Events
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           training_provider_profile_id Uuid
@@ -25,20 +25,20 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V1 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::TrainingProvider,
-      message_type: Messages::Types::Invite::TRAINING_PROVIDER_INVITE_ACCEPTED,
+      message_type: MessageTypes::Invite::TRAINING_PROVIDER_INVITE_ACCEPTED,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V2 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Invite,
-      message_type: Messages::Types::Invite::TRAINING_PROVIDER_INVITE_ACCEPTED,
+      message_type: MessageTypes::Invite::TRAINING_PROVIDER_INVITE_ACCEPTED,
       version: 2
     )
   end

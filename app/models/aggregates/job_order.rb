@@ -1,5 +1,5 @@
 module Aggregates
-  class JobOrder < Messages::Aggregate
+  class JobOrder < Core::Aggregate
     id_name :job_order_id
   end
 end

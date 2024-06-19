@@ -2,7 +2,7 @@ module Events
   module ApplicantStatusUpdated
     module Reason
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           id Uuid
@@ -11,7 +11,7 @@ module Events
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           id Uuid
@@ -23,7 +23,7 @@ module Events
 
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           applicant_id Uuid
@@ -38,7 +38,7 @@ module Events
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           applicant_id Uuid
@@ -57,7 +57,7 @@ module Events
       end
 
       class V3
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           applicant_id Uuid
@@ -77,7 +77,7 @@ module Events
       end
 
       class V4
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           applicant_id Uuid
@@ -97,7 +97,7 @@ module Events
       end
 
       class V5
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           applicant_first_name String
@@ -117,7 +117,7 @@ module Events
 
     module MetaData
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           user_id Either(String, nil), default: nil
@@ -125,57 +125,57 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V1 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Job,
-      message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+      message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 1
     )
 
-    V2 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V2 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Job,
-      message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+      message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 2
     )
 
-    V3 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V3 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V3,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Job,
-      message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+      message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 3
     )
 
-    V4 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V4 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V4,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Job,
-      message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+      message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 4
     )
 
-    V5 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V5 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V4,
       metadata: MetaData::V1,
       aggregate: Aggregates::Job,
-      message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+      message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 5
     )
 
-    V6 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V6 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V5,
       metadata: MetaData::V1,
       aggregate: Aggregates::Application,
-      message_type: Messages::Types::APPLICANT_STATUS_UPDATED,
+      message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 6
     )
   end

@@ -2,28 +2,28 @@ module Events
   module ZipAdded
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
-          zip_code Either(/^\d{5}(?:[-\s]\d{4})?$/, nil), coerce: Messages::ZipCodeCoercer
+          zip_code Either(/^\d{5}(?:[-\s]\d{4})?$/, nil), coerce: Core::ZipCodeCoercer
         end
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V1 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Person::ZIP_ADDED,
+      message_type: MessageTypes::Person::ZIP_ADDED,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V2 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Person::ZIP_ADDED,
+      message_type: MessageTypes::Person::ZIP_ADDED,
       version: 2
     )
   end

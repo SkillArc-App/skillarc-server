@@ -2,7 +2,7 @@ module Events
   module NoteModified
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           coach_id Uuid
@@ -13,7 +13,7 @@ module Events
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           originator String
@@ -23,36 +23,36 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V1 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Coaches::NOTE_MODIFIED,
+      message_type: MessageTypes::Coaches::NOTE_MODIFIED,
       version: 1
     )
-    V2 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V2 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,
-      message_type: Messages::Types::Coaches::NOTE_MODIFIED,
+      message_type: MessageTypes::Coaches::NOTE_MODIFIED,
       version: 2
     )
-    V3 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V3 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,
-      message_type: Messages::Types::Coaches::NOTE_MODIFIED,
+      message_type: MessageTypes::Coaches::NOTE_MODIFIED,
       version: 3
     )
-    V4 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V4 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Coaches::NOTE_MODIFIED,
+      message_type: MessageTypes::Coaches::NOTE_MODIFIED,
       version: 4
     )
   end

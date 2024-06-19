@@ -41,7 +41,7 @@ class MessageConsumer
   end
 
   def self.on_message(schema, subscribe_type = :async, &)
-    raise NotSchemaError unless schema.is_a?(Messages::Schema)
+    raise NotSchemaError unless schema.is_a?(Core::Schema)
     raise NotActiveSchemaError, "#{self} #{schema}" if schema.inactive?
     raise NotValidSubscriberType unless subscribe_type.in?(%i[async sync])
 

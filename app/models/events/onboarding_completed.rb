@@ -2,7 +2,7 @@ module Events
   module OnboardingCompleted
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           name Either(Hash, nil), default: nil
@@ -15,28 +15,28 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V1 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::Person::ONBOARDING_COMPLETED,
+      message_type: MessageTypes::Person::ONBOARDING_COMPLETED,
       version: 1
     )
-    V2 = Messages::Schema.inactive(
-      type: Messages::EVENT,
-      data: Messages::Nothing,
-      metadata: Messages::Nothing,
+    V2 = Core::Schema.inactive(
+      type: Core::EVENT,
+      data: Core::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Person::ONBOARDING_COMPLETED,
+      message_type: MessageTypes::Person::ONBOARDING_COMPLETED,
       version: 2
     )
-    V3 = Messages::Schema.active(
-      type: Messages::EVENT,
-      data: Messages::Nothing,
-      metadata: Messages::Nothing,
+    V3 = Core::Schema.active(
+      type: Core::EVENT,
+      data: Core::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Person::ONBOARDING_COMPLETED,
+      message_type: MessageTypes::Person::ONBOARDING_COMPLETED,
       version: 3
     )
   end

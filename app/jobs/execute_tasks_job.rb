@@ -22,7 +22,7 @@ class ExecuteTasksJob < ApplicationJob
 
         message_service.create!(
           schema: Events::TaskExecuted::V1,
-          data: Messages::Nothing,
+          data: Core::Nothing,
           trace_id: command.trace_id,
           task_id: task.id
         )

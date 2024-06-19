@@ -31,7 +31,7 @@ module JobOrders
         schema: Commands::ActivateJobOrder::V1,
         job_order_id:,
         trace_id:,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
 
@@ -40,7 +40,7 @@ module JobOrders
         schema: Events::JobOrderNotFilled::V1,
         job_order_id:,
         trace_id:,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
 
@@ -184,7 +184,7 @@ module JobOrders
           schema: Events::JobOrderActivated::V1,
           trace_id: message.trace_id,
           aggregate: message.aggregate,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
     end
@@ -246,7 +246,7 @@ module JobOrders
           trace_id: message.trace_id,
           aggregate: message.aggregate,
           schema: Events::JobOrderActivated::V1,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       when *JobOrders::StalledStatus::ALL
         message_service.create_once_for_trace!(
@@ -262,14 +262,14 @@ module JobOrders
           trace_id: message.trace_id,
           aggregate: message.aggregate,
           schema: Events::JobOrderFilled::V1,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       when JobOrders::ClosedStatus::NOT_FILLED
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
           schema: Events::JobOrderNotFilled::V1,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
     end

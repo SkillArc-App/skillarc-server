@@ -1,5 +1,5 @@
 module Aggregates
-  class Application < Messages::Aggregate
+  class Application < Core::Aggregate
     id_name :application_id
   end
 end

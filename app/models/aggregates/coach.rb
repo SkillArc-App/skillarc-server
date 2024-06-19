@@ -1,5 +1,5 @@
 module Aggregates
-  class Coach < Messages::Aggregate
+  class Coach < Core::Aggregate
     id_name :coach_id
   end
 end

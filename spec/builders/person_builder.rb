@@ -38,12 +38,12 @@ module Builders
       message_service.create!(
         person_id: id,
         schema: Events::OnboardingStarted::V2,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
       message_service.create!(
         person_id: id,
         schema: Events::OnboardingCompleted::V3,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
 
       Seeker.new(

@@ -2,7 +2,7 @@ module Commands
   module AddPerson
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           user_id Either(String, nil)
@@ -10,7 +10,7 @@ module Commands
           last_name String
           email Either(String, nil)
           phone_number Either(String, nil)
-          date_of_birth Either(Date, nil), coerce: Messages::DateCoercer
+          date_of_birth Either(Date, nil), coerce: Core::DateCoercer
         end
 
         def initialize(**kwarg)
@@ -20,7 +20,7 @@ module Commands
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           user_id Either(String, nil)
@@ -28,7 +28,7 @@ module Commands
           last_name String
           email Either(String, nil)
           phone_number Either(String, nil)
-          date_of_birth Either(Date, nil), coerce: Messages::DateCoercer
+          date_of_birth Either(Date, nil), coerce: Core::DateCoercer
           source_kind Either(*People::SourceKind::ALL, nil)
           source_identifier Either(String, nil)
         end
@@ -41,20 +41,20 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.inactive(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Person::ADD_PERSON,
+      message_type: MessageTypes::Person::ADD_PERSON,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V2 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Person::ADD_PERSON,
+      message_type: MessageTypes::Person::ADD_PERSON,
       version: 2
     )
   end

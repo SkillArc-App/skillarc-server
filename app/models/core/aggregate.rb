@@ -1,4 +1,4 @@
-module Messages
+module Core
   class Aggregate
     IdNameNotSymbolError = Class.new(StandardError)
     IdNameNotSetError = Class.new(StandardError)

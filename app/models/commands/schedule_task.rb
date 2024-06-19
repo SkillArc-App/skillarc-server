@@ -2,10 +2,10 @@ module Commands
   module ScheduleTask
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
-          execute_at ActiveSupport::TimeWithZone, coerce: Messages::TimeZoneCoercer
+          execute_at ActiveSupport::TimeWithZone, coerce: Core::TimeZoneCoercer
           command Message
         end
       end
@@ -13,7 +13,7 @@ module Commands
 
     module MetaData
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           requestor_type Either(*Requestor::Kinds::ALL)
@@ -22,12 +22,12 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V1,
       metadata: MetaData::V1,
       aggregate: Aggregates::Task,
-      message_type: Messages::Types::Infrastructure::SCHEDULE_TASK,
+      message_type: MessageTypes::Infrastructure::SCHEDULE_TASK,
       version: 1
     )
   end

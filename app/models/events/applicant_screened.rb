@@ -1,11 +1,11 @@
 module Events
   module ApplicantScreened
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
-      data: Messages::Nothing,
-      metadata: Messages::Nothing,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
+      data: Core::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Application,
-      message_type: Messages::Types::Applications::APPLICANT_SCREENED,
+      message_type: MessageTypes::Applications::APPLICANT_SCREENED,
       version: 1
     )
   end

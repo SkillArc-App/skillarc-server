@@ -187,7 +187,7 @@ RSpec.describe Coaches::CoachesReactor do
               schema: Commands::CancelTask::V1,
               trace_id: message.trace_id,
               task_id: message_task_id,
-              data: Messages::Nothing,
+              data: Core::Nothing,
               metadata: {
                 requestor_type: Requestor::Kinds::COACH,
                 requestor_id: coach_id

@@ -9,7 +9,7 @@ module People
         schema: Commands::StartOnboarding::V2,
         trace_id: message.trace_id,
         aggregate: message.aggregate,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
 
@@ -18,7 +18,7 @@ module People
         schema: Events::OnboardingStarted::V2,
         trace_id: message.trace_id,
         aggregate: message.aggregate,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
 
@@ -27,7 +27,7 @@ module People
         schema: Events::OnboardingCompleted::V3,
         trace_id: message.trace_id,
         aggregate: message.aggregate,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
 
@@ -73,7 +73,7 @@ module People
         schema: Commands::CompleteOnboarding::V2,
         aggregate: message.aggregate,
         trace_id: message.trace_id,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
   end

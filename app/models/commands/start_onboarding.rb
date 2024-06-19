@@ -2,7 +2,7 @@ module Commands
   module StartOnboarding
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           user_id String
@@ -10,20 +10,20 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.inactive(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Person::START_ONBOARDING,
+      message_type: MessageTypes::Person::START_ONBOARDING,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::COMMAND,
-      data: Messages::Nothing,
-      metadata: Messages::Nothing,
+    V2 = Core::Schema.active(
+      type: Core::COMMAND,
+      data: Core::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Person::START_ONBOARDING,
+      message_type: MessageTypes::Person::START_ONBOARDING,
       version: 2
     )
   end

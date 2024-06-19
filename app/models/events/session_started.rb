@@ -1,11 +1,11 @@
 module Events
   module SessionStarted
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
-      data: Messages::Nothing,
-      metadata: Messages::Nothing,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
+      data: Core::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::SESSION_STARTED,
+      message_type: MessageTypes::SESSION_STARTED,
       version: 1
     )
   end

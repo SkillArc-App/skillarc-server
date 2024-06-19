@@ -2,7 +2,7 @@ module Commands
   module SendMessage
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           user_id String
@@ -13,7 +13,7 @@ module Commands
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           person_id Uuid
@@ -26,7 +26,7 @@ module Commands
 
     module MetaData
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           requestor_type Either(*Requestor::Kinds::ALL, nil), default: nil
@@ -35,20 +35,20 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.inactive(
+      type: Core::COMMAND,
       data: Data::V1,
       metadata: MetaData::V1,
       aggregate: Aggregates::Message,
-      message_type: Messages::Types::Contact::SEND_MESSAGE,
+      message_type: MessageTypes::Contact::SEND_MESSAGE,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V2 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V2,
       metadata: MetaData::V1,
       aggregate: Aggregates::Message,
-      message_type: Messages::Types::Contact::SEND_MESSAGE,
+      message_type: MessageTypes::Contact::SEND_MESSAGE,
       version: 2
     )
   end

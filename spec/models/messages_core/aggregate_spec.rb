@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Messages::Aggregate do
+RSpec.describe Core::Aggregate do
   let(:sub_klass) do
     Class.new(described_class) do
       id_name :test_id

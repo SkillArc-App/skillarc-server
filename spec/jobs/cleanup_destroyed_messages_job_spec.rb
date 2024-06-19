@@ -2,22 +2,22 @@ require 'rails_helper'
 
 RSpec.describe CleanupDestroyedMessagesJob do
   let(:schema1) do
-    Messages::Schema.destroy!(
-      type: Messages::EVENT,
-      data: Messages::Nothing,
-      metadata: Messages::Nothing,
+    Core::Schema.destroy!(
+      type: Core::EVENT,
+      data: Core::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
+      message_type: MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
       version: 1
     )
   end
   let(:schema2) do
-    Messages::Schema.active(
-      type: Messages::EVENT,
-      data: Messages::Nothing,
-      metadata: Messages::Nothing,
+    Core::Schema.active(
+      type: Core::EVENT,
+      data: Core::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
+      message_type: MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
       version: 2
     )
   end

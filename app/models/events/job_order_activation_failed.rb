@@ -2,7 +2,7 @@ module Events
   module JobOrderActivationFailed
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           reason String
@@ -10,12 +10,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::JobOrder,
-      message_type: Messages::Types::JobOrders::JOB_ORDER_ACTIVATION_FAILED,
+      message_type: MessageTypes::JobOrders::JOB_ORDER_ACTIVATION_FAILED,
       version: 1
     )
   end

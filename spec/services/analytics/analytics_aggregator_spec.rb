@@ -137,7 +137,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
             :message,
             aggregate_id: person_id,
             schema: Events::OnboardingCompleted::V3,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
         end
 
@@ -156,7 +156,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
             :message,
             aggregate_id: user.user_id,
             schema: Events::SessionStarted::V1,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
         end
         let!(:user) { create(:analytics__dim_user) }

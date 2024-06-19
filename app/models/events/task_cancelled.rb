@@ -2,7 +2,7 @@ module Events
   module TaskCancelled
     module MetaData
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           requestor_type Either(*Requestor::Kinds::ALL)
@@ -11,12 +11,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
-      data: Messages::Nothing,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
+      data: Core::Nothing,
       metadata: MetaData::V1,
       aggregate: Aggregates::Task,
-      message_type: Messages::Types::Infrastructure::TASK_CANCELLED,
+      message_type: MessageTypes::Infrastructure::TASK_CANCELLED,
       version: 1
     )
   end

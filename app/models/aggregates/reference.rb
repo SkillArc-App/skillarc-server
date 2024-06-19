@@ -1,5 +1,5 @@
 module Aggregates
-  class Reference < Messages::Aggregate
+  class Reference < Core::Aggregate
     id_name :reference_id
   end
 end

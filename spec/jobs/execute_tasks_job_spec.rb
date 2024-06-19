@@ -42,7 +42,7 @@ RSpec.describe ExecuteTasksJob do
       .to receive(:create!)
       .with(
         schema: Events::TaskExecuted::V1,
-        data: Messages::Nothing,
+        data: Core::Nothing,
         trace_id: message1.trace_id,
         task_id: task1.id
       )
@@ -64,7 +64,7 @@ RSpec.describe ExecuteTasksJob do
       .to receive(:create!)
       .with(
         schema: Events::TaskExecuted::V1,
-        data: Messages::Nothing,
+        data: Core::Nothing,
         trace_id: message2.trace_id,
         task_id: task2.id
       )

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Messages::Schema do
+RSpec.describe Core::Schema do
   describe ".active" do
     subject do
       described_class.active(
@@ -15,10 +15,10 @@ RSpec.describe Messages::Schema do
 
     let(:data) { String }
     let(:metadata) { Hash }
-    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
-    let(:type) { Messages::EVENT }
+    let(:type) { Core::EVENT }
 
     it "returns the schema and registers it" do
       expect(MessageService)
@@ -50,10 +50,10 @@ RSpec.describe Messages::Schema do
 
     let(:data) { String }
     let(:metadata) { Hash }
-    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
-    let(:type) { Messages::EVENT }
+    let(:type) { Core::EVENT }
 
     it "returns the schema and registers it" do
       expect(MessageService)
@@ -85,10 +85,10 @@ RSpec.describe Messages::Schema do
 
     let(:data) { String }
     let(:metadata) { Hash }
-    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
-    let(:type) { Messages::EVENT }
+    let(:type) { Core::EVENT }
 
     it "returns the schema and registers it" do
       expect(MessageService)
@@ -120,10 +120,10 @@ RSpec.describe Messages::Schema do
 
     let(:data) { String }
     let(:metadata) { Hash }
-    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
-    let(:type) { Messages::EVENT }
+    let(:type) { Core::EVENT }
 
     it "returns the schema and registers it" do
       expect(MessageService)
@@ -155,10 +155,10 @@ RSpec.describe Messages::Schema do
 
     let(:data) { String }
     let(:metadata) { Hash }
-    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
-    let(:type) { Messages::EVENT }
+    let(:type) { Core::EVENT }
 
     it "passes itself to MessageService.all_messages" do
       expect(MessageService)
@@ -183,10 +183,10 @@ RSpec.describe Messages::Schema do
 
     let(:data) { String }
     let(:metadata) { Hash }
-    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
-    let(:type) { Messages::EVENT }
+    let(:type) { Core::EVENT }
 
     it "just returns the message_type and version" do
       expect(instance.serialize).to eq({ version:, message_type: })
@@ -207,8 +207,8 @@ RSpec.describe Messages::Schema do
 
     let(:data) { String }
     let(:metadata) { Hash }
-    let(:type) { Messages::EVENT }
-    let(:message_type) { Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
+    let(:type) { Core::EVENT }
+    let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
     let(:aggregate) { Aggregates::User }
 

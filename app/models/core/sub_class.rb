@@ -1,4 +1,4 @@
-module Messages
+module Core
   class SubClass
     def self.Of(klass) # rubocop:disable Naming/MethodName
       new(klass)

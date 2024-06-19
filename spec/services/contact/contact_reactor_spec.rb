@@ -63,7 +63,7 @@ RSpec.describe Contact::ContactReactor do
                 schema: Events::MessageEnqueued::V1,
                 trace_id: message.trace_id,
                 message_id: message.aggregate.message_id,
-                data: Messages::Nothing
+                data: Core::Nothing
               ).and_call_original
 
             subject
@@ -92,7 +92,7 @@ RSpec.describe Contact::ContactReactor do
                 schema: Events::MessageEnqueued::V1,
                 trace_id: message.trace_id,
                 message_id: message.aggregate.message_id,
-                data: Messages::Nothing
+                data: Core::Nothing
               ).and_call_original
 
             subject
@@ -133,7 +133,7 @@ RSpec.describe Contact::ContactReactor do
               schema: Events::MessageEnqueued::V1,
               trace_id: message.trace_id,
               message_id: message.aggregate.message_id,
-              data: Messages::Nothing
+              data: Core::Nothing
             ).and_call_original
 
           subject
@@ -173,7 +173,7 @@ RSpec.describe Contact::ContactReactor do
                 schema: Events::MessageEnqueued::V1,
                 trace_id: message.trace_id,
                 message_id: message.aggregate.message_id,
-                data: Messages::Nothing
+                data: Core::Nothing
               ).and_call_original
 
             subject
@@ -202,7 +202,7 @@ RSpec.describe Contact::ContactReactor do
                 schema: Events::MessageEnqueued::V1,
                 trace_id: message.trace_id,
                 message_id: message.aggregate.message_id,
-                data: Messages::Nothing
+                data: Core::Nothing
               ).and_call_original
 
             subject
@@ -245,7 +245,7 @@ RSpec.describe Contact::ContactReactor do
               schema: Events::MessageSent::V1,
               trace_id: message.trace_id,
               message_id: message.aggregate.message_id,
-              data: Messages::Nothing
+              data: Core::Nothing
             ).and_call_original
 
           subject

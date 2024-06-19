@@ -2,7 +2,7 @@ module Events
   module PersonCertified
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           coach_first_name Either(String, nil)
@@ -13,12 +13,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Person::PERSON_CERTIFIED,
+      message_type: MessageTypes::Person::PERSON_CERTIFIED,
       version: 1
     )
   end

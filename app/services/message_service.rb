@@ -8,7 +8,7 @@ class MessageService
   InactiveSchemaError = Class.new(StandardError)
   NotBooleanProjection = Class.new(StandardError)
 
-  def create_once_for_trace!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+  def create_once_for_trace!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Core::Nothing, **) # rubocop:disable Metrics/ParameterLists
     aggregate = get_aggregate(aggregate:, schema:, **)
     message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
 
@@ -20,7 +20,7 @@ class MessageService
     message
   end
 
-  def create_once_for_aggregate!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+  def create_once_for_aggregate!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Core::Nothing, **) # rubocop:disable Metrics/ParameterLists
     aggregate = get_aggregate(aggregate:, schema:, **)
     message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
 
@@ -32,15 +32,15 @@ class MessageService
     message
   end
 
-  def create!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
+  def create!(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Core::Nothing, **) # rubocop:disable Metrics/ParameterLists
     message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
     save!(message)
 
     message
   end
 
-  def build(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Messages::Nothing, **) # rubocop:disable Metrics/ParameterLists
-    raise NotSchemaError unless schema.is_a?(Messages::Schema)
+  def build(schema:, data:, aggregate: nil, trace_id: SecureRandom.uuid, id: SecureRandom.uuid, occurred_at: Time.zone.now, metadata: Core::Nothing, **) # rubocop:disable Metrics/ParameterLists
+    raise NotSchemaError unless schema.is_a?(Core::Schema)
 
     raise InactiveSchemaError, "Attempted to create message for #{schema}" if schema.inactive?
 
@@ -93,11 +93,11 @@ class MessageService
   end
 
   def self.register(schema:)
-    raise NotSchemaError unless schema.is_a?(Messages::Schema)
+    raise NotSchemaError unless schema.is_a?(Core::Schema)
 
     registry[schema.message_type] ||= {}
 
-    if schema.message_type != Messages::Types::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST
+    if schema.message_type != MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST
       raise SchemaAlreadyDefinedError, "The message #{schema} was overritten" if registry[schema.message_type][schema.version].present?
       raise MessageTypeHasMultipleActiveSchemas, "The message_type #{schema.message_type} has multiple active schemas" if schema.active? && registry[schema.message_type].values.any?(&:active?)
     end
@@ -113,21 +113,21 @@ class MessageService
   end
 
   def self.all_messages(schema)
-    raise NotSchemaError unless schema.is_a?(Messages::Schema)
+    raise NotSchemaError unless schema.is_a?(Core::Schema)
 
     order_and_map(Event.where(version: schema.version, event_type: schema.message_type))
   end
 
   def self.aggregate_events(aggregate)
-    raise NotAggregateError unless aggregate.is_a?(Messages::Aggregate)
+    raise NotAggregateError unless aggregate.is_a?(Core::Aggregate)
 
-    order_and_map(Event.where(aggregate_id: aggregate.id)).select { |m| m.schema.type == Messages::EVENT }
+    order_and_map(Event.where(aggregate_id: aggregate.id)).select { |m| m.schema.type == Core::EVENT }
   end
 
   def self.trace_id_events(trace_id)
     raise NotTraceIdError unless trace_id.is_a?(String)
 
-    order_and_map(Event.where(trace_id:)).select { |m| m.schema.type == Messages::EVENT }
+    order_and_map(Event.where(trace_id:)).select { |m| m.schema.type == Core::EVENT }
   end
 
   def self.migrate_event(schema:, &block)

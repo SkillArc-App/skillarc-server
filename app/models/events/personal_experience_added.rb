@@ -2,7 +2,7 @@ module Events
   module PersonalExperienceAdded
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           id Uuid
@@ -14,20 +14,20 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V1 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Person::PERSONAL_EXPERIENCE_ADDED,
+      message_type: MessageTypes::Person::PERSONAL_EXPERIENCE_ADDED,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V2 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Person::PERSONAL_EXPERIENCE_ADDED,
+      message_type: MessageTypes::Person::PERSONAL_EXPERIENCE_ADDED,
       version: 2
     )
   end

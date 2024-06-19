@@ -40,7 +40,7 @@ class Projector
   end
 
   def self.on_message(schema, &)
-    raise NotSchemaError unless schema.is_a?(Messages::Schema)
+    raise NotSchemaError unless schema.is_a?(Core::Schema)
     raise NotActiveSchemaError if schema.inactive?
     raise NoAggregateError, "Make sure to call projection_aggregator <aggregate class> at the top of this class" if aggregator.blank?
     raise NotCorrectAggregateError, "The on_message for #{schema} has the wrong aggregate. We need a #{aggregator}" if schema.aggregate != aggregator

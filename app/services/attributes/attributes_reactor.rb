@@ -30,7 +30,7 @@ module Attributes
       message_service.create!(
         schema: Events::AttributeDeleted::V1,
         attribute_id:,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
   end

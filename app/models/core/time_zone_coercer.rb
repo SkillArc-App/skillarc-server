@@ -1,4 +1,4 @@
-module Messages
+module Core
   module TimeZoneCoercer
     def self.call(value)
       if value.is_a?(DateTime) || value.is_a?(Time)

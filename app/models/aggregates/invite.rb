@@ -1,5 +1,5 @@
 module Aggregates
-  class Invite < Messages::Aggregate
+  class Invite < Core::Aggregate
     id_name :invite_id
   end
 end

@@ -68,7 +68,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
           schema: Commands::ActivateJobOrder::V1,
           job_order_id:,
           trace_id:,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
 
       subject
@@ -89,7 +89,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
           schema: Events::JobOrderNotFilled::V1,
           job_order_id:,
           trace_id:,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
 
       subject
@@ -394,7 +394,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
               aggregate: job_order1.aggregate,
               schema: Events::JobOrderNotFilled::V1,
               occurred_at: Time.zone.local(2019, 6, 1),
-              data: Messages::Nothing
+              data: Core::Nothing
             )
           end
           let(:job_order2) do
@@ -526,7 +526,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
           :message,
           schema: Commands::ActivateJobOrder::V1,
           aggregate:,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
       let(:job_id) { SecureRandom.uuid }
@@ -598,7 +598,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
               schema: Events::JobOrderNotFilled::V1,
               aggregate:,
               occurred_at: Time.zone.local(2019, 1, 1),
-              data: Messages::Nothing
+              data: Core::Nothing
             )
           ]
         end
@@ -610,7 +610,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
               schema: Events::JobOrderActivated::V1,
               trace_id: message.trace_id,
               aggregate: message.aggregate,
-              data: Messages::Nothing
+              data: Core::Nothing
             )
             .and_call_original
 
@@ -702,7 +702,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
                     trace_id: message.trace_id,
                     aggregate: message.aggregate,
                     schema: Events::JobOrderActivated::V1,
-                    data: Messages::Nothing
+                    data: Core::Nothing
                   )
 
                 subject
@@ -756,7 +756,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
                     trace_id: message.trace_id,
                     aggregate: message.aggregate,
                     schema: Events::JobOrderFilled::V1,
-                    data: Messages::Nothing
+                    data: Core::Nothing
                   )
 
                 subject
@@ -782,7 +782,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
                     trace_id: message.trace_id,
                     aggregate: message.aggregate,
                     schema: Events::JobOrderNotFilled::V1,
-                    data: Messages::Nothing
+                    data: Core::Nothing
                   )
 
                 subject

@@ -2,7 +2,7 @@ module Events
   module ExperienceCreated
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           id Uuid
@@ -18,12 +18,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V1 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::Seekers::EXPERIENCE_CREATED,
+      message_type: MessageTypes::Seekers::EXPERIENCE_CREATED,
       version: 1
     )
   end

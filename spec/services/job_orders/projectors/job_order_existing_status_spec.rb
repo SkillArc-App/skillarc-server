@@ -14,7 +14,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
         :message,
         aggregate:,
         schema: Events::JobOrderActivated::V1,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
     let(:job_order_stalled) do
@@ -32,7 +32,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
         :message,
         aggregate:,
         schema: Events::JobOrderFilled::V1,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
     let(:job_order_not_filled) do
@@ -40,7 +40,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
         :message,
         aggregate:,
         schema: Events::JobOrderNotFilled::V1,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
 

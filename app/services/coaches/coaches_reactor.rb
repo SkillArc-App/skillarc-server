@@ -60,7 +60,7 @@ module Coaches
         schema: Commands::CancelTask::V1,
         trace_id: message.trace_id,
         task_id: reminder.data.message_task_id,
-        data: Messages::Nothing,
+        data: Core::Nothing,
         metadata: {
           requestor_type: Requestor::Kinds::COACH,
           requestor_id: message.aggregate.id

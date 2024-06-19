@@ -2,14 +2,14 @@ module Events
   module PersonAdded
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           first_name String
           last_name String
           email Either(String, nil)
           phone_number Either(String, nil)
-          date_of_birth Either(Date, nil), coerce: Messages::DateCoercer
+          date_of_birth Either(Date, nil), coerce: Core::DateCoercer
         end
 
         def initialize(**kwarg)
@@ -19,12 +19,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Person::PERSON_ADDED,
+      message_type: MessageTypes::Person::PERSON_ADDED,
       version: 1
     )
   end

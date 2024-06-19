@@ -1,4 +1,4 @@
-module Messages
+module Core
   class Schema
     module Status
       ALL = [
@@ -12,10 +12,10 @@ module Messages
     include(ValueSemantics.for_attributes do
       data
       metadata
-      type Either(Messages::COMMAND, Messages::EVENT)
+      type Either(Core::COMMAND, Core::EVENT)
       version Integer
       status Either(*Status::ALL)
-      message_type Either(*Messages::Types::ALL)
+      message_type Either(*MessageTypes::ALL)
       aggregate SubClass.Of(Aggregate)
     end)
 
@@ -75,7 +75,7 @@ module Messages
     end
 
     def to_s
-      "#<Messages::Schema message_type: #{message_type}, version: #{version}>"
+      "#<Core::Schema message_type: #{message_type}, version: #{version}>"
     end
   end
 end

@@ -2,7 +2,7 @@ module Commands
   module AcceptTrainingProviderInvite
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           user_id Uuid
@@ -10,12 +10,12 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Invite,
-      message_type: Messages::Types::Invite::ACCEPT_TRAINING_PROVIDER_INVITE,
+      message_type: MessageTypes::Invite::ACCEPT_TRAINING_PROVIDER_INVITE,
       version: 1
     )
   end

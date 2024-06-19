@@ -34,7 +34,7 @@ RSpec.describe People::OnboardingReactor do
             schema: Commands::StartOnboarding::V2,
             trace_id: message.trace_id,
             aggregate: message.aggregate,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
           .twice
           .and_call_original
@@ -49,7 +49,7 @@ RSpec.describe People::OnboardingReactor do
           :message,
           schema: Commands::StartOnboarding::V2,
           aggregate_id: person_id,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
 
@@ -60,7 +60,7 @@ RSpec.describe People::OnboardingReactor do
             schema: Events::OnboardingStarted::V2,
             trace_id: message.trace_id,
             aggregate: message.aggregate,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
           .twice
           .and_call_original
@@ -85,7 +85,7 @@ RSpec.describe People::OnboardingReactor do
             schema: Events::OnboardingCompleted::V3,
             trace_id: message.trace_id,
             aggregate: message.aggregate,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
           .twice
           .and_call_original
@@ -152,7 +152,7 @@ RSpec.describe People::OnboardingReactor do
               schema: Commands::CompleteOnboarding::V2,
               aggregate: message.aggregate,
               trace_id: message.trace_id,
-              data: Messages::Nothing
+              data: Core::Nothing
             )
             .twice
             .and_call_original

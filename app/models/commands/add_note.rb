@@ -2,7 +2,7 @@ module Commands
   module AddNote
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           originator String
@@ -12,20 +12,20 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.inactive(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,
-      message_type: Messages::Types::Coaches::ADD_NOTE,
+      message_type: MessageTypes::Coaches::ADD_NOTE,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V2 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Coaches::ADD_NOTE,
+      message_type: MessageTypes::Coaches::ADD_NOTE,
       version: 2
     )
   end

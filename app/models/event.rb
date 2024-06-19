@@ -49,7 +49,7 @@ class Event < ApplicationRecord
     )
   end
 
-  validates :event_type, presence: true, inclusion: { in: Messages::Types::ALL }
+  validates :event_type, presence: true, inclusion: { in: MessageTypes::ALL }
 
   private
 

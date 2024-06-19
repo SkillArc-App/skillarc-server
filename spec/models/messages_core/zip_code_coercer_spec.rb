@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Messages::ZipCodeCoercer do
+RSpec.describe Core::ZipCodeCoercer do
   describe ".call" do
     subject { described_class.call(value) }
 
@@ -9,14 +9,6 @@ RSpec.describe Messages::ZipCodeCoercer do
 
       it "returns nil" do
         expect(subject).to be_nil
-      end
-    end
-
-    context "when value is UNDEFINED" do
-      let(:value) { Messages::UNDEFINED }
-
-      it "returns UNDEFINED" do
-        expect(subject).to eq(Messages::UNDEFINED)
       end
     end
 

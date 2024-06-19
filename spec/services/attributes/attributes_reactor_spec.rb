@@ -65,7 +65,7 @@ RSpec.describe Attributes::AttributesReactor do
       expect(message_service).to receive(:create!).with(
         schema: Events::AttributeDeleted::V1,
         attribute_id:,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
 
       subject

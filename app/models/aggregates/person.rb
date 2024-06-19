@@ -1,5 +1,5 @@
 module Aggregates
-  class Person < Messages::Aggregate
+  class Person < Core::Aggregate
     id_name :person_id
   end
 end

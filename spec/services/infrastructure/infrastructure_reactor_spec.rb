@@ -14,7 +14,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
           :message,
           schema: Commands::ScreenApplicant::V1,
           aggregate_id: SecureRandom.uuid,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
 
@@ -77,7 +77,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
           :message,
           schema: Commands::CancelTask::V1,
           aggregate_id: task_id,
-          data: Messages::Nothing,
+          data: Core::Nothing,
           metadata: {
             requestor_type: Requestor::Kinds::USER,
             requestor_id: SecureRandom.uuid
@@ -108,7 +108,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
                 schema: Events::TaskCancelled::V1,
                 trace_id: message.trace_id,
                 task_id: message.aggregate.task_id,
-                data: Messages::Nothing,
+                data: Core::Nothing,
                 metadata: {
                   requestor_type: message.metadata.requestor_type,
                   requestor_id: message.metadata.requestor_id

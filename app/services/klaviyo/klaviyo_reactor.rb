@@ -193,7 +193,7 @@ module Klaviyo
         schema: Events::KlaviyoEventPushed::V1,
         trace_id: message.trace_id,
         event_id: message.id,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
 

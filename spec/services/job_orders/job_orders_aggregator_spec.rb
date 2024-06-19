@@ -345,7 +345,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           :message,
           schema: Events::JobOrderActivated::V1,
           aggregate_id: job_order.id,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
 
@@ -389,7 +389,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           :message,
           schema: Events::JobOrderFilled::V1,
           aggregate_id: job_order.id,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
 
@@ -410,7 +410,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           :message,
           schema: Events::JobOrderNotFilled::V1,
           aggregate_id: job_order.id,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
 

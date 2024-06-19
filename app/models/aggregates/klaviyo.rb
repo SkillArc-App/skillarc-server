@@ -1,5 +1,5 @@
 module Aggregates
-  class Klaviyo < Messages::Aggregate
+  class Klaviyo < Core::Aggregate
     id_name :event_id
   end
 end

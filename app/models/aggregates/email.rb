@@ -1,5 +1,5 @@
 module Aggregates
-  class Email < Messages::Aggregate
+  class Email < Core::Aggregate
     id_name :email
   end
 end

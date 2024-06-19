@@ -2,7 +2,7 @@ module Events
   module SeekerUpdated
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           about Either(String, nil), default: nil
@@ -10,12 +10,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V1 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Seekers::SEEKER_UPDATED,
+      message_type: MessageTypes::Seekers::SEEKER_UPDATED,
       version: 1
     )
   end

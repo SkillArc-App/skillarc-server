@@ -2,7 +2,7 @@ module Events
   module JobSaved
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           job_id Uuid
@@ -12,12 +12,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::User::JOB_SAVED,
+      message_type: MessageTypes::User::JOB_SAVED,
       version: 1
     )
   end

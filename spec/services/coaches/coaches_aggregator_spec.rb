@@ -444,7 +444,7 @@ RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLeng
             :message,
             schema: Events::SessionStarted::V1,
             aggregate_id: user_id,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
         end
 

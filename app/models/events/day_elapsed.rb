@@ -14,21 +14,21 @@ module Events
       end
 
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
-          date Date, coerce: Messages::DateCoercer
+          date Date, coerce: Core::DateCoercer
           day_of_week Either(*DaysOfWeek::ALL)
         end
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Day,
-      message_type: Messages::Types::DAY_ELAPSED,
+      message_type: MessageTypes::DAY_ELAPSED,
       version: 1
     )
   end

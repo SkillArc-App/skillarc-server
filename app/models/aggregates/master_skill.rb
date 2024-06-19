@@ -1,5 +1,5 @@
 module Aggregates
-  class MasterSkill < Messages::Aggregate
+  class MasterSkill < Core::Aggregate
     id_name :master_skill_id
   end
 end

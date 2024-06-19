@@ -1,5 +1,5 @@
 module Aggregates
-  class Contact < Messages::Aggregate
+  class Contact < Core::Aggregate
     id_name :contact
   end
 end

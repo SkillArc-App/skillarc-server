@@ -2,7 +2,7 @@ module Commands
   module SendSmsMessage
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           phone_number String
@@ -11,28 +11,28 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.destroy!(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.destroy!(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Contact::SEND_SMS_MESSAGE,
+      message_type: MessageTypes::Contact::SEND_SMS_MESSAGE,
       version: 1
     )
-    V2 = Messages::Schema.destroy!(
-      type: Messages::COMMAND,
+    V2 = Core::Schema.destroy!(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Phone,
-      message_type: Messages::Types::Contact::SEND_SMS_MESSAGE,
+      message_type: MessageTypes::Contact::SEND_SMS_MESSAGE,
       version: 2
     )
-    V3 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V3 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Message,
-      message_type: Messages::Types::Contact::SEND_SMS_MESSAGE,
+      message_type: MessageTypes::Contact::SEND_SMS_MESSAGE,
       version: 3
     )
   end

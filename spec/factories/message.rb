@@ -10,8 +10,8 @@ FactoryBot.define do
     trace_id { SecureRandom.uuid }
     aggregate { schema.aggregate.new(**{ schema.aggregate.id => aggregate_id }) }
     occurred_at { Time.zone.local(2020, 1, 1) }
-    data { Messages::Nothing }
-    metadata { Messages::Nothing }
+    data { Core::Nothing }
+    metadata { Core::Nothing }
 
     initialize_with do
       data =

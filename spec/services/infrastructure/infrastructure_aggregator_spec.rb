@@ -12,7 +12,7 @@ RSpec.describe Infrastructure::InfrastructureAggregator do
           :message,
           schema: Commands::ScreenApplicant::V1,
           aggregate_id: SecureRandom.uuid,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
 
@@ -52,7 +52,7 @@ RSpec.describe Infrastructure::InfrastructureAggregator do
           :message,
           schema: Events::TaskExecuted::V1,
           aggregate_id: task_id,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
       let(:task_id) { SecureRandom.uuid }
@@ -73,7 +73,7 @@ RSpec.describe Infrastructure::InfrastructureAggregator do
           :message,
           schema: Events::TaskCancelled::V1,
           aggregate_id: task_id,
-          data: Messages::Nothing,
+          data: Core::Nothing,
           metadata: {
             requestor_type: Requestor::Kinds::USER,
             requestor_id: SecureRandom.uuid

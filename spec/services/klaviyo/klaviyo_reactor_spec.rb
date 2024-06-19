@@ -23,7 +23,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
             schema: Events::KlaviyoEventPushed::V1,
             trace_id: message.trace_id,
             event_id: message.id,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
           .once
           .and_call_original
@@ -226,7 +226,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
             :message,
             aggregate_id: person_id,
             schema: Events::OnboardingCompleted::V3,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
         end
 

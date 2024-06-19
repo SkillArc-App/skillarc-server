@@ -1,11 +1,11 @@
 module Events
   module JobOrderActivated
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
-      data: Messages::Nothing,
-      metadata: Messages::Nothing,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
+      data: Core::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::JobOrder,
-      message_type: Messages::Types::JobOrders::JOB_ORDER_ACTIVATED,
+      message_type: MessageTypes::JobOrders::JOB_ORDER_ACTIVATED,
       version: 1
     )
   end

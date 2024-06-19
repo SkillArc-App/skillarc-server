@@ -1,11 +1,11 @@
 module Commands
   module ActivateJobOrder
-    V1 = Messages::Schema.active(
-      type: Messages::COMMAND,
-      data: Messages::Nothing,
-      metadata: Messages::Nothing,
+    V1 = Core::Schema.active(
+      type: Core::COMMAND,
+      data: Core::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::JobOrder,
-      message_type: Messages::Types::JobOrders::ACTIVATE_JOB_ORDER,
+      message_type: MessageTypes::JobOrders::ACTIVATE_JOB_ORDER,
       version: 1
     )
   end

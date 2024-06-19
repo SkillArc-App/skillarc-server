@@ -1,11 +1,11 @@
 module Events
   module TaskExecuted
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
-      data: Messages::Nothing,
-      metadata: Messages::Nothing,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
+      data: Core::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Task,
-      message_type: Messages::Types::Infrastructure::TASK_EXECUTED,
+      message_type: MessageTypes::Infrastructure::TASK_EXECUTED,
       version: 1
     )
   end

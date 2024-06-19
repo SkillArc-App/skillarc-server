@@ -2,7 +2,7 @@ module Events
   module SeekerApplied
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           seeker_first_name String
@@ -17,7 +17,7 @@ module Events
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           application_id Uuid
@@ -33,20 +33,20 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V1 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Seekers::SEEKER_APPLIED,
+      message_type: MessageTypes::Seekers::SEEKER_APPLIED,
       version: 1
     )
-    V2 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V2 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Seekers::SEEKER_APPLIED,
+      message_type: MessageTypes::Seekers::SEEKER_APPLIED,
       version: 2
     )
   end

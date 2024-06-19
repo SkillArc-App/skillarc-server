@@ -2,7 +2,7 @@ module Commands
   module AssignCoach
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           coach_email String
@@ -10,7 +10,7 @@ module Commands
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           coach_id String
@@ -18,20 +18,20 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.inactive(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Coaches::SeekerContext,
-      message_type: Messages::Types::Coaches::ASSIGN_COACH,
+      message_type: MessageTypes::Coaches::ASSIGN_COACH,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V2 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Coaches::ASSIGN_COACH,
+      message_type: MessageTypes::Coaches::ASSIGN_COACH,
       version: 2
     )
   end

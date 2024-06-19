@@ -28,7 +28,7 @@ module Infrastructure
         schema: Events::TaskCancelled::V1,
         trace_id: message.trace_id,
         task_id: message.aggregate.task_id,
-        data: Messages::Nothing,
+        data: Core::Nothing,
         metadata: {
           requestor_type: message.metadata.requestor_type,
           requestor_id: message.metadata.requestor_id

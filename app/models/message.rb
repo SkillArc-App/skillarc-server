@@ -7,12 +7,12 @@ class Message
 
   include(ValueSemantics.for_attributes do
     id Uuid
-    aggregate Messages::Aggregate
+    aggregate Core::Aggregate
     trace_id Uuid
-    schema Messages::Schema
+    schema Core::Schema
     data
     metadata
-    occurred_at ActiveSupport::TimeWithZone, coerce: Messages::TimeZoneCoercer
+    occurred_at ActiveSupport::TimeWithZone, coerce: Core::TimeZoneCoercer
   end)
 
   def initialize(**kwarg)
@@ -36,7 +36,7 @@ class Message
   end
 
   def self.deserialize(hash)
-    schema = Messages::Schema.deserialize(hash[:schema])
+    schema = Core::Schema.deserialize(hash[:schema])
 
     new(
       id: hash[:id],

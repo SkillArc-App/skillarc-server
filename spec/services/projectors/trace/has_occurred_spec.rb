@@ -22,7 +22,7 @@ RSpec.describe Projectors::Trace::HasOccurred do
             :message,
             schema: Events::SessionStarted::V1,
             trace_id:,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
         )
       end
@@ -46,7 +46,7 @@ RSpec.describe Projectors::Trace::HasOccurred do
             :message,
             schema: Events::SessionStarted::V1,
             trace_id:,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
         )
       end

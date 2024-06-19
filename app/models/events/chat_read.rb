@@ -2,7 +2,7 @@ module Events
   module ChatRead
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           read_by_user_id String
@@ -10,12 +10,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Application,
-      message_type: Messages::Types::Chats::CHAT_READ,
+      message_type: MessageTypes::Chats::CHAT_READ,
       version: 1
     )
   end

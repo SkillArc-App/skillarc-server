@@ -2,7 +2,7 @@ module Events
   module EmployerInviteAccepted
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           employer_invite_id Uuid
@@ -13,7 +13,7 @@ module Events
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           user_id String
@@ -24,20 +24,20 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V1 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Employer,
-      message_type: Messages::Types::Invite::EMPLOYER_INVITE_ACCEPTED,
+      message_type: MessageTypes::Invite::EMPLOYER_INVITE_ACCEPTED,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V2 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Invite,
-      message_type: Messages::Types::Invite::EMPLOYER_INVITE_ACCEPTED,
+      message_type: MessageTypes::Invite::EMPLOYER_INVITE_ACCEPTED,
       version: 2
     )
   end

@@ -2,7 +2,7 @@ module Commands
   module AddSeeker
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           id Uuid
@@ -10,7 +10,7 @@ module Commands
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           user_id Uuid
@@ -18,20 +18,20 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.destroy!(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.destroy!(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::Seekers::ADD_SEEKER,
+      message_type: MessageTypes::Seekers::ADD_SEEKER,
       version: 1
     )
-    V2 = Messages::Schema.destroy!(
-      type: Messages::COMMAND,
+    V2 = Core::Schema.destroy!(
+      type: Core::COMMAND,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Seeker,
-      message_type: Messages::Types::Seekers::ADD_SEEKER,
+      message_type: MessageTypes::Seekers::ADD_SEEKER,
       version: 2
     )
   end

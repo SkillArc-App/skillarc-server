@@ -294,7 +294,7 @@ RSpec.describe "JobOrders", type: :request do
             :message,
             schema: Events::JobOrderNotFilled::V1,
             aggregate_id: id,
-            data: Messages::Nothing,
+            data: Core::Nothing,
             occurred_at: 4.minutes.ago
           )
         end

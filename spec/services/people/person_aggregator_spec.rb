@@ -468,7 +468,7 @@ RSpec.describe People::PersonAggregator do # rubocop:disable Metrics/BlockLength
             :message,
             schema: Events::OnboardingStarted::V2,
             aggregate_id: seeker.id,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
         end
 
@@ -510,7 +510,7 @@ RSpec.describe People::PersonAggregator do # rubocop:disable Metrics/BlockLength
             :message,
             schema: Events::OnboardingCompleted::V3,
             aggregate_id: seeker.id,
-            data: Messages::Nothing
+            data: Core::Nothing
           )
         end
 

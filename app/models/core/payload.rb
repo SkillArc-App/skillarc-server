@@ -1,8 +1,8 @@
-module Messages
+module Core
   module Payload
     def schema(&)
       include(ValueSemantics.for_attributes(&))
-      include Messages::Payload
+      include Core::Payload
     end
 
     delegate :to_h, to: :serialize

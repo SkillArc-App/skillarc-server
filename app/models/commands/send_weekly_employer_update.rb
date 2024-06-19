@@ -2,7 +2,7 @@ module Commands
   module SendWeeklyEmployerUpdate
     module SummaryApplicant
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           first_name String
@@ -14,7 +14,7 @@ module Commands
 
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           employer_name String
@@ -26,12 +26,12 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Employer,
-      message_type: Messages::Types::Contact::SEND_WEEKLY_EMPLOYER_UPDATE,
+      message_type: MessageTypes::Contact::SEND_WEEKLY_EMPLOYER_UPDATE,
       version: 1
     )
   end

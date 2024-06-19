@@ -2,7 +2,7 @@ module Events
   module ContactPreferenceSet
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           preference Either(*Contact::ContactPreference::ALL)
@@ -10,20 +10,20 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V1 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::Contact::CONTACT_PREFERENCE_SET,
+      message_type: MessageTypes::Contact::CONTACT_PREFERENCE_SET,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V2 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Person,
-      message_type: Messages::Types::Contact::CONTACT_PREFERENCE_SET,
+      message_type: MessageTypes::Contact::CONTACT_PREFERENCE_SET,
       version: 2
     )
   end

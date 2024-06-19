@@ -2,7 +2,7 @@ module Events
   module NotificationCreated
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           title String
@@ -12,7 +12,7 @@ module Events
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           title String
@@ -23,7 +23,7 @@ module Events
       end
 
       class V3
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           title String
@@ -35,28 +35,28 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V1 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::NOTIFICATION_CREATED,
+      message_type: MessageTypes::NOTIFICATION_CREATED,
       version: 1
     )
-    V2 = Messages::Schema.destroy!(
-      type: Messages::EVENT,
+    V2 = Core::Schema.destroy!(
+      type: Core::EVENT,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::User,
-      message_type: Messages::Types::NOTIFICATION_CREATED,
+      message_type: MessageTypes::NOTIFICATION_CREATED,
       version: 2
     )
-    V3 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V3 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V3,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Message,
-      message_type: Messages::Types::NOTIFICATION_CREATED,
+      message_type: MessageTypes::NOTIFICATION_CREATED,
       version: 3
     )
   end

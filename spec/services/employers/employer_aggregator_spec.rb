@@ -232,7 +232,7 @@ RSpec.describe Employers::EmployerAggregator do
         build(
           :message,
           schema: Events::PassReasonRemoved::V1,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
 

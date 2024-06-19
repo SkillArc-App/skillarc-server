@@ -2,7 +2,7 @@ module Events
   module PersonAssociatedToEmail
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           person_id Uuid
@@ -10,12 +10,12 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V1 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Email,
-      message_type: Messages::Types::Email::PERSON_ASSOCIATED_TO_EMAIL,
+      message_type: MessageTypes::Email::PERSON_ASSOCIATED_TO_EMAIL,
       version: 1
     )
   end

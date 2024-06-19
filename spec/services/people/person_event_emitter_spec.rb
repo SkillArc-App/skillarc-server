@@ -154,7 +154,7 @@ RSpec.describe People::PersonEventEmitter do
           person_id:,
           trace_id:,
           schema: Commands::CompleteOnboarding::V2,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
 
       subject

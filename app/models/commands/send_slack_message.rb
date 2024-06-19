@@ -2,7 +2,7 @@ module Commands
   module SendSlackMessage
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           channel String
@@ -11,12 +11,12 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Message,
-      message_type: Messages::Types::Contact::SEND_SLACK_MESSAGE,
+      message_type: MessageTypes::Contact::SEND_SLACK_MESSAGE,
       version: 1
     )
   end

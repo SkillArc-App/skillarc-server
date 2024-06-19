@@ -2,7 +2,7 @@ module Events
   module ChatMessageSent
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           applicant_id Uuid
@@ -16,7 +16,7 @@ module Events
       end
 
       class V2
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           from_name String
@@ -26,20 +26,20 @@ module Events
       end
     end
 
-    V1 = Messages::Schema.inactive(
-      type: Messages::EVENT,
+    V1 = Core::Schema.inactive(
+      type: Core::EVENT,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Job,
-      message_type: Messages::Types::Chats::CHAT_MESSAGE_SENT,
+      message_type: MessageTypes::Chats::CHAT_MESSAGE_SENT,
       version: 1
     )
-    V2 = Messages::Schema.active(
-      type: Messages::EVENT,
+    V2 = Core::Schema.active(
+      type: Core::EVENT,
       data: Data::V2,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Application,
-      message_type: Messages::Types::Chats::CHAT_MESSAGE_SENT,
+      message_type: MessageTypes::Chats::CHAT_MESSAGE_SENT,
       version: 2
     )
   end

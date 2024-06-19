@@ -2,7 +2,7 @@ module Commands
   module CancelTask
     module MetaData
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           requestor_type Either(*Requestor::Kinds::ALL)
@@ -11,12 +11,12 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::COMMAND,
-      data: Messages::Nothing,
+    V1 = Core::Schema.active(
+      type: Core::COMMAND,
+      data: Core::Nothing,
       metadata: MetaData::V1,
       aggregate: Aggregates::Task,
-      message_type: Messages::Types::Infrastructure::CANCEL_TASK,
+      message_type: MessageTypes::Infrastructure::CANCEL_TASK,
       version: 1
     )
   end

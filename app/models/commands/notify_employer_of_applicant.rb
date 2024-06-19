@@ -2,7 +2,7 @@ module Commands
   module NotifyEmployerOfApplicant
     module Data
       class V1
-        extend Messages::Payload
+        extend Core::Payload
 
         schema do
           employment_title String
@@ -18,12 +18,12 @@ module Commands
       end
     end
 
-    V1 = Messages::Schema.active(
-      type: Messages::COMMAND,
+    V1 = Core::Schema.active(
+      type: Core::COMMAND,
       data: Data::V1,
-      metadata: Messages::Nothing,
+      metadata: Core::Nothing,
       aggregate: Aggregates::Application,
-      message_type: Messages::Types::Contact::NOTIFY_EMPLOYER_OF_APPLICANT,
+      message_type: MessageTypes::Contact::NOTIFY_EMPLOYER_OF_APPLICANT,
       version: 1
     )
   end

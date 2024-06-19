@@ -69,7 +69,7 @@ module Contact
           schema: Events::MessageSent::V1,
           trace_id: message.trace_id,
           message_id: message.aggregate.message_id,
-          data: Messages::Nothing
+          data: Core::Nothing
         )
       end
     end
@@ -81,7 +81,7 @@ module Contact
         schema: Events::MessageEnqueued::V1,
         trace_id: message.trace_id,
         message_id: message.aggregate.message_id,
-        data: Messages::Nothing
+        data: Core::Nothing
       )
     end
   end

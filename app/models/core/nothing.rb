@@ -1,4 +1,4 @@
-module Messages
+module Core
   class Nothing
     def self.===(other)
       other == Nothing

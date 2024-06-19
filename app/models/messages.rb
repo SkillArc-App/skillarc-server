@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module Messages
-  UNDEFINED = Messages::Undefined.new
-
   ALL = [
     COMMAND = "command",
     EVENT = "event"

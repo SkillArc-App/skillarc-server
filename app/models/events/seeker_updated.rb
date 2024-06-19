@@ -5,7 +5,7 @@ module Events
         extend Messages::Payload
 
         schema do
-          about Either(String, Messages::UNDEFINED), default: Messages::UNDEFINED
+          about Either(String, nil), default: nil
         end
       end
     end

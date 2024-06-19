@@ -8,9 +8,9 @@ module Events
           first_name Either(String, nil)
           last_name Either(String, nil)
           phone_number Either(String, nil)
-          date_of_birth Either(Date, Messages::UNDEFINED, nil), default: Messages::UNDEFINED, coerce: Messages::DateCoercer
-          email Either(String, Messages::UNDEFINED, nil), default: Messages::UNDEFINED
-          zip_code Either(/^\d{5}(?:[-\s]\d{4})?$/, Messages::UNDEFINED, nil), default: Messages::UNDEFINED, coerce: Messages::ZipCodeCoercer
+          date_of_birth Either(Date, nil), default: nil, coerce: Messages::DateCoercer
+          email Either(String, nil), default: nil
+          zip_code Either(/^\d{5}(?:[-\s]\d{4})?$/, nil), default: nil, coerce: Messages::ZipCodeCoercer
         end
       end
     end

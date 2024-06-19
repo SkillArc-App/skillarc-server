@@ -12,7 +12,7 @@ module Messages
 
       self.class.value_semantics.attributes.each do |attr|
         value = to_serialized_value(send(attr.name))
-        hash[attr.name] = value unless value == Messages::UNDEFINED
+        hash[attr.name] = value
       end
 
       hash

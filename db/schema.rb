@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_19_173606) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_20_181001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -319,6 +319,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_19_173606) do
     t.binary "file_data", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "documents_resumes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "document_kind", null: false
+    t.string "requestor_type", null: false
+    t.string "requestor_id", null: false
+    t.uuid "person_id", null: false
+    t.boolean "anonymized", null: false
+    t.string "status", null: false
+    t.string "storage_kind"
+    t.string "storage_identifier"
+    t.datetime "document_generated_at"
+    t.index ["person_id"], name: "index_documents_resumes_on_person_id"
+    t.index ["requestor_id"], name: "index_documents_resumes_on_requestor_id"
   end
 
   create_table "education_experiences", id: :text, force: :cascade do |t|

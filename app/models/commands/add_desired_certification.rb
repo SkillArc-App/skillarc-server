@@ -6,7 +6,6 @@ module Commands
 
         schema do
           id Uuid
-          job_id Uuid
           master_certification_id Uuid
         end
       end

@@ -59,7 +59,7 @@ module Jobs
         schema: Events::DesiredCertificationCreated::V1,
         data: {
           id: message.data.id,
-          job_id: message.data.job_id,
+          job_id: message.aggregate.id,
           master_certification_id: message.data.master_certification_id
         }
       )

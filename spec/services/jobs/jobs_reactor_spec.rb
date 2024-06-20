@@ -143,7 +143,6 @@ RSpec.describe Jobs::JobsReactor do
           schema: Commands::AddDesiredCertification::V1,
           data: {
             id:,
-            job_id:,
             master_certification_id:
           }
         )
@@ -179,7 +178,7 @@ RSpec.describe Jobs::JobsReactor do
               schema: Events::DesiredCertificationCreated::V1,
               data: {
                 id: message.data.id,
-                job_id: message.data.job_id,
+                job_id: message.aggregate.id,
                 master_certification_id: message.data.master_certification_id
               }
             )

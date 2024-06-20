@@ -40,6 +40,7 @@ RSpec.describe "DesiredCertifications", type: :request do
                   master_certification_id: desired_certification_params[:masterCertificationId]
                 }
               )
+              .and_call_original
           end
 
           run_test!
@@ -78,6 +79,7 @@ RSpec.describe "DesiredCertifications", type: :request do
                   id:
                 }
               )
+              .and_call_original
           end
 
           run_test!

@@ -25,7 +25,10 @@ RSpec.describe Contact::ContactReactor do
             url:,
             person_id:
           },
-          metadata: {}
+          metadata: {
+            requestor_type: Requestor::Kinds::USER,
+            requestor_id: SecureRandom.uuid
+          }
         )
       end
       let(:person_id) { SecureRandom.uuid }

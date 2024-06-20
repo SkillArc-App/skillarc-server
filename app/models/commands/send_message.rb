@@ -24,21 +24,10 @@ module Commands
       end
     end
 
-    module MetaData
-      class V1
-        extend Core::Payload
-
-        schema do
-          requestor_type Either(*Requestor::Kinds::ALL, nil), default: nil
-          requestor_id Either(String, nil), default: nil
-        end
-      end
-    end
-
     V1 = Core::Schema.inactive(
       type: Core::COMMAND,
       data: Data::V1,
-      metadata: MetaData::V1,
+      metadata: Core::RequestorMetadata::V1,
       aggregate: Aggregates::Message,
       message_type: MessageTypes::Contact::SEND_MESSAGE,
       version: 1
@@ -46,7 +35,7 @@ module Commands
     V2 = Core::Schema.active(
       type: Core::COMMAND,
       data: Data::V2,
-      metadata: MetaData::V1,
+      metadata: Core::RequestorMetadata::V1,
       aggregate: Aggregates::Message,
       message_type: MessageTypes::Contact::SEND_MESSAGE,
       version: 2

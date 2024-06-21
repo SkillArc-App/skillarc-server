@@ -33,6 +33,8 @@ jobs:
       DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
       SLACK_GATEWAY_STRATEGY: fake
       KLAVIYO_GATEWAY_STRATEGY: fake
+      DOCUMENT_STORAGE_STRATEGY: db_only
+      DOCUMENT_STORAGE_KIND: postgres
       SMS_GATEWAY_STRATEGY: fake
       CAL_COM_WEBHOOK_SECRET_KEY: fake
       CI: true

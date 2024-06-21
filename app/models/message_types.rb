@@ -338,6 +338,7 @@ module MessageTypes
     NOTIFICATIONS_MARKED_READ = 'notifications_marked_read',
     REASON_CREATED = 'reason_created',
     SESSION_STARTED = 'session_started',
+    *Documents::MessageTypes::EVENTS,
     *Qualifications::EVENTS,
     *Tags::EVENTS,
     *User::EVENTS,
@@ -361,6 +362,7 @@ module MessageTypes
   ].freeze
 
   COMMANDS = [
+    *Documents::MessageTypes::COMMANDS,
     *Qualifications::COMMANDS,
     *Applications::COMMANDS,
     *Tags::COMMANDS,

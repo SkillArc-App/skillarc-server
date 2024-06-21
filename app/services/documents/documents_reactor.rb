@@ -1,0 +1,130 @@
+module Documents
+  class DocumentsReactor < MessageReactor
+    def initialize(document_storage: Storage::Gateway.build, storage_kind: ENV.fetch("DOCUMENT_STORAGE_KIND", nil), **params)
+      super(**params)
+      @document_storage = document_storage
+      @storage_kind = storage_kind
+    end
+
+    def can_replay?
+      true
+    end
+
+    on_message Commands::GenerateResumeForPerson::V1 do |message|
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        aggregate: message.aggregate,
+        schema: Events::ResumeGenerationRequested::V1,
+        data: {
+          person_id: message.data.person_id,
+          anonymized: message.data.anonymized,
+          document_kind: message.data.document_kind
+        },
+        metadata: message.metadata
+      )
+
+      messages = MessageService.aggregate_events(::Aggregates::Person.new(person_id: message.data.person_id))
+
+      if messages.empty?
+        message_service.create_once_for_trace!(
+          trace_id: message.trace_id,
+          aggregate: message.aggregate,
+          schema: Events::ResumeGenerationFailed::V1,
+          data: {
+            person_id: message.data.person_id,
+            anonymized: message.data.anonymized,
+            document_kind: message.data.document_kind,
+            reason: "Person does not exist"
+          },
+          metadata: message.metadata
+        )
+
+        return
+      end
+
+      name_projection = People::Projectors::Name.new.project(messages)
+      bio = Projectors::Aggregates::GetLast.new(schema: ::Events::PersonAboutAdded::V1).project(messages)&.data&.about
+      work_projection = People::Projectors::WorkExperiences.new.project(messages)
+      education_projection = People::Projectors::EducationExperiences.new.project(messages)
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        aggregate: message.aggregate,
+        schema: Commands::GenerateResume::V1,
+        data: {
+          person_id: message.data.person_id,
+          anonymized: message.data.anonymized,
+          document_kind: message.data.document_kind,
+          page_limit: message.data.page_limit,
+          first_name: name_projection.first_name,
+          last_name: name_projection.last_name,
+          bio:,
+          work_experiences: work_projection.work_experiences.values.map do |work_experience|
+            Commands::GenerateResume::WorkExperience::V1.new(
+              organization_name: work_experience.organization_name,
+              position: work_experience.position,
+              start_date: work_experience.start_date,
+              end_date: work_experience.end_date,
+              is_current: work_experience.is_current,
+              description: work_experience.description
+            )
+          end,
+          education_experiences: education_projection.education_experiences.values.map do |education_experience|
+            Commands::GenerateResume::EducationExperience::V1.new(
+              organization_name: education_experience.organization_name,
+              title: education_experience.title,
+              activities: education_experience.activities,
+              graduation_date: education_experience.graduation_date,
+              gpa: education_experience.gpa
+            )
+          end
+        },
+        metadata: message.metadata
+      )
+    end
+
+    on_message Commands::GenerateResume::V1 do |message|
+      pdf = ResumeGenerationService.generate_from_command(message:)
+
+      result = document_storage.store_document(
+        id: message.aggregate.id,
+        storage_kind:,
+        file_data: pdf,
+        file_name: "#{message.data.first_name}-#{message.data.last_name}-resume-test-#{message.occurred_at.strftime('%Y-%m-%d-%H:%M')}.pdf"
+      )
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        aggregate: message.aggregate,
+        schema: Events::ResumeGenerated::V1,
+        data: {
+          person_id: message.data.person_id,
+          anonymized: message.data.anonymized,
+          document_kind: message.data.document_kind,
+          storage_kind: result.storage_kind,
+          storage_identifier: result.storage_identifier
+        },
+        metadata: message.metadata
+      )
+    rescue StandardError => e
+      Sentry.capture_exception(e)
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        aggregate: message.aggregate,
+        schema: Events::ResumeGenerationFailed::V1,
+        data: {
+          person_id: message.data.person_id,
+          anonymized: message.data.anonymized,
+          document_kind: message.data.document_kind,
+          reason: e.message
+        },
+        metadata: message.metadata
+      )
+    end
+
+    private
+
+    attr_reader :document_storage, :storage_kind
+  end
+end

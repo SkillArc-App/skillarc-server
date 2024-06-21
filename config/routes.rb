@@ -59,6 +59,10 @@ Rails.application.routes.draw do
     end
   end
 
+  scope module: 'documents', path: 'documents' do
+    resources :resumes, only: %i[create index show]
+  end
+
   resources :employers
   resources :session, only: [:create]
 

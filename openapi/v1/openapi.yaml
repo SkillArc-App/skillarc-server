@@ -1572,6 +1572,108 @@ paths:
       responses:
         '200':
           description: desired skill destroyed
+  "/documents/resumes":
+    get:
+      summary: Get all resumes
+      tags:
+      - Documents
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: person_id
+        in: query
+        format: uuid
+        required: false
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns all resumes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/resume"
+    post:
+      summary: Create a new resume
+      tags:
+      - Documents
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Creates a resume
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                personId:
+                  type: string
+                  format: uuid
+                anonymized:
+                  type: boolean
+                documentKind:
+                  type: string
+                  enum:
+                  - pdf
+                pageLimit:
+                  type: integer
+                  minimum: 1
+              required:
+              - person_id
+  "/documents/resumes/{id}":
+    get:
+      summary: Download a resume
+      tags:
+      - Documents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Download a file
   "/profiles/{seeker_id}/education_experiences":
     post:
       summary: Create experience
@@ -3978,6 +4080,30 @@ components:
           type: string
         link:
           type: string
+    resume:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        anonymized:
+          type: boolean
+        status:
+          type: string
+          enum:
+          - processing
+          - succeeded
+          - failed
+        generateAt:
+          type: string
+          format: date-time
+        documentKind:
+          type: string
+          enum:
+          - pdf
+        personId:
+          type: string
+          format: uuid
     training_provider_invite:
       type: object
       properties:

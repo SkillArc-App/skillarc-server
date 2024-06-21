@@ -150,6 +150,34 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
               }
             }
           },
+          resume: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              anonymized: {
+                type: :boolean
+              },
+              status: {
+                type: :string,
+                enum: Documents::DocumentStatus::ALL
+              },
+              generateAt: {
+                type: :string,
+                format: 'date-time'
+              },
+              documentKind: {
+                type: :string,
+                enum: Documents::DocumentKind::ALL
+              },
+              personId: {
+                type: :string,
+                format: :uuid
+              }
+            }
+          },
           training_provider_invite: {
             type: :object,
             properties: {

@@ -18,6 +18,10 @@ RSpec.describe Documents::ResumeGenerationService do
           first_name: "Skillz",
           last_name: "Bot",
           page_limit: 1
+        },
+        metadata: {
+          requestor_type: Requestor::Kinds::USER,
+          requestor_id: SecureRandom.uuid
         }
       )
     end

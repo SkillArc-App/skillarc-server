@@ -7,11 +7,13 @@ RSpec.describe Documents::ResumeGenerationService do
     let(:message) do
       build(
         :message,
-        schema: Documents::Commands::GenerateResume::V1,
+        schema: Documents::Commands::GenerateResume::V2,
         data: {
           person_id: SecureRandom.uuid,
           anonymized: true,
           bio: nil,
+          email: "a@b.com",
+          phone_number: "333-333-3333",
           work_experiences: [],
           education_experiences: [],
           document_kind: Documents::DocumentKind::PDF,

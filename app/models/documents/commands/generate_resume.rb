@@ -48,13 +48,41 @@ module Documents
         end
       end
 
-      V1 = Core::Schema.active(
+      module Data
+        class V2
+          extend Core::Payload
+
+          schema do
+            person_id Uuid
+            anonymized Bool()
+            bio Either(String, nil)
+            email Either(String, nil)
+            phone_number Either(String, nil)
+            work_experiences ArrayOf(WorkExperience::V1)
+            education_experiences ArrayOf(EducationExperience::V1)
+            document_kind Either(*DocumentKind::ALL)
+            first_name Either(String, nil)
+            last_name Either(String, nil)
+            page_limit 1..
+          end
+        end
+      end
+
+      V1 = Core::Schema.inactive(
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::RequestorMetadata::V1,
         aggregate: Aggregates::Document,
         message_type: MessageTypes::GENERATE_RESUME,
         version: 1
+      )
+      V2 = Core::Schema.active(
+        type: Core::COMMAND,
+        data: Data::V2,
+        metadata: Core::RequestorMetadata::V1,
+        aggregate: Aggregates::Document,
+        message_type: MessageTypes::GENERATE_RESUME,
+        version: 2
       )
     end
   end

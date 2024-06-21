@@ -19,5 +19,13 @@ RSpec.describe Documents::Storage::Gateway do
         expect(subject).to be_a(Documents::Storage::DbOnlyCommunicator)
       end
     end
+
+    context "when the strategy not valid" do
+      let(:strategy) { SecureRandom.uuid }
+
+      it "returns a FakeComunicator" do
+        expect { subject }.to raise_error(described_class::DocumentsStorageGatewayEnvvarNotSetError)
+      end
+    end
   end
 end

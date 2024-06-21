@@ -8,7 +8,7 @@ module Documents
         ].freeze
       end
 
-      SmsGatewayEnvvarNotSetError = Class.new(StandardError)
+      DocumentsStorageGatewayEnvvarNotSetError = Class.new(StandardError)
 
       def self.build(strategy: ENV.fetch("DOCUMENT_STORAGE_STRATEGY", nil))
         case strategy
@@ -17,7 +17,7 @@ module Documents
         when Strategies::DB_ONLY
           DbOnlyCommunicator.new
         else
-          raise SmsGatewayEnvvarNotSetError
+          raise DocumentsStorageGatewayEnvvarNotSetError
         end
       end
     end

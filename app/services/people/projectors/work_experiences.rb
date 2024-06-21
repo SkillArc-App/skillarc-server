@@ -12,7 +12,7 @@ module People
           start_date Either(String, nil)
           end_date Either(String, nil)
           description Either(String, nil)
-          is_current Bool()
+          is_current Either(Bool(), nil)
         end
       end
 
@@ -36,7 +36,7 @@ module People
           position: message.data.position,
           start_date: message.data.start_date,
           end_date: message.data.end_date,
-          is_current: message.data.is_current,
+          is_current: message.data.is_current || false,
           description: message.data.description
         )
 

@@ -229,5 +229,30 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         expect(person.search_vector).to eq("John Doe john.doe@skillarc.com 555-555-5555 1990-01-01")
       end
     end
+
+    context "person certified" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::PersonCertified::V1,
+          aggregate_id: person.id,
+          data: {
+            coach_first_name: "Coach",
+            coach_last_name: "Doe",
+            coach_email: "coach_email",
+            coach_id:
+          }
+        )
+      end
+      let(:coach) { create(:people_search_coach) }
+      let(:coach_id) { coach.id }
+      let(:person) { create(:people_search_person) }
+
+      it "updates the person" do
+        subject
+
+        expect(person.reload.certified_by).to eq("coach_email")
+      end
+    end
   end
 end

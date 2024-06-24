@@ -97,6 +97,14 @@ module PeopleSearch
       person.save!
     end
 
+    on_message Events::PersonCertified::V1 do |message|
+      person = find_person(message.aggregate.id)
+
+      person.certified_by = message.data.coach_email
+
+      person.save!
+    end
+
     private
 
     def find_person(id)

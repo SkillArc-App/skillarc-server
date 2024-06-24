@@ -9,7 +9,12 @@ module Coaches
     before_action :set_coach, only: %i[recommend_job show]
 
     def index
-      render json: CoachesQuery.all_seekers
+      render json: PeopleSearch::PeopleQuery.new.search(
+        search_terms: params[:utm_term],
+        attributes: params[:attributes],
+        user: current_user,
+        utm_source: params[:utm_source]
+      )
     end
 
     def show

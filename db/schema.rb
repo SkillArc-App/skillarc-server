@@ -10,8 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_20_181001) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_24_150906) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "fuzzystrmatch"
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   # Custom types defined in this database.
@@ -692,6 +694,40 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_20_181001) do
     t.index ["seeker_id"], name: "index_other_experiences_on_seeker_id"
   end
 
+  create_table "people_search_coaches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email", null: false
+  end
+
+  create_table "people_search_people", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email", null: false
+    t.string "assigned_coach"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "phone_number"
+    t.date "date_of_birth"
+    t.text "search_vector", null: false
+  end
+
+  create_table "people_search_person_education_experiences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "person_id", null: false
+    t.string "organization_name", null: false
+    t.string "title", null: false
+    t.text "activities", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["person_id"], name: "index_people_search_person_education_experiences_on_person_id"
+  end
+
+  create_table "people_search_person_experiences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "person_id", null: false
+    t.string "organization_name", null: false
+    t.string "position", null: false
+    t.text "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["person_id"], name: "index_people_search_person_experiences_on_person_id"
+  end
+
   create_table "personal_experiences", id: :text, force: :cascade do |t|
     t.text "activity"
     t.text "start_date"
@@ -953,6 +989,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_20_181001) do
   add_foreign_key "learned_skills", "jobs", name: "LearnedSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "other_experiences", "organizations", name: "OtherExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "other_experiences", "seekers"
+  add_foreign_key "people_search_person_education_experiences", "people_search_people", column: "person_id", on_delete: :cascade
+  add_foreign_key "people_search_person_experiences", "people_search_people", column: "person_id", on_delete: :cascade
   add_foreign_key "personal_experiences", "seekers"
   add_foreign_key "profile_skills", "seekers"
   add_foreign_key "profiles", "users", name: "Profile_user_id_fkey", on_update: :cascade, on_delete: :restrict

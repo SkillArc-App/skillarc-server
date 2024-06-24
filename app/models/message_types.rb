@@ -69,6 +69,12 @@ module MessageTypes
     ].freeze
   end
 
+  module PersonSearch
+    EVENTS = [
+      PERSON_SEARCH_EXECUTED = 'person_search_executed'
+    ].freeze
+  end
+
   module Phone
     EVENTS = [
       PERSON_ASSOCIATED_TO_PHONE_NUMBER = 'person_associated_to_phone_number'
@@ -343,6 +349,7 @@ module MessageTypes
     *Tags::EVENTS,
     *User::EVENTS,
     *Person::EVENTS,
+    *PersonSearch::EVENTS,
     *Email::EVENTS,
     *Phone::EVENTS,
     *Attributes::EVENTS,

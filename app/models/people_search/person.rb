@@ -4,8 +4,9 @@
 #
 #  id             :uuid             not null, primary key
 #  assigned_coach :string
+#  certified_by   :string
 #  date_of_birth  :date
-#  email          :string           not null
+#  email          :string
 #  first_name     :string
 #  last_name      :string
 #  phone_number   :string

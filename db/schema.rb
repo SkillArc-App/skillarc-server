@@ -10,10 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_24_150906) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_24_194622) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "fuzzystrmatch"
-  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   # Custom types defined in this database.
@@ -699,13 +697,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_150906) do
   end
 
   create_table "people_search_people", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "email", null: false
+    t.string "email"
     t.string "assigned_coach"
     t.string "first_name"
     t.string "last_name"
     t.string "phone_number"
     t.date "date_of_birth"
     t.text "search_vector", null: false
+    t.string "certified_by"
   end
 
   create_table "people_search_person_education_experiences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

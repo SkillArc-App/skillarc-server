@@ -1,6 +1,9 @@
 module PeopleSearch
   class PeopleAggregator < MessageConsumer
     def reset_for_replay
+      Coach.delete_all
+      PersonExperience.delete_all
+      PersonEducationExperience.delete_all
       Person.delete_all
     end
 
@@ -51,11 +54,11 @@ module PeopleSearch
     on_message Events::ExperienceAdded::V2 do |message|
       person = find_person(message.aggregate.id)
 
-      person.experiences.new(
-        description: message.data.description,
-        organization_name: message.data.organization_name,
-        position: message.data.position
-      )
+      experience = person.experiences.find_or_initialize_by(id: message.data.id)
+
+      experience.description = message.data.description
+      experience.organization_name = message.data.organization_name
+      experience.position = message.data.position
 
       person.search_vector = search_vector(person)
 
@@ -75,12 +78,11 @@ module PeopleSearch
     on_message Events::EducationExperienceAdded::V2 do |message|
       person = find_person(message.aggregate.id)
 
-      person.education_experiences.new(
-        id: message.data.id,
-        title: message.data.title,
-        organization_name: message.data.organization_name,
-        activities: message.data.activities
-      )
+      ee = person.education_experiences.find_or_initialize_by(id: message.data.id)
+
+      ee.title = message.data.title
+      ee.organization_name = message.data.organization_name
+      ee.activities = message.data.activities
 
       person.search_vector = search_vector(person)
 

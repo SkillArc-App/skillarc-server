@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_24_194622) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_25_143432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -709,9 +709,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_194622) do
 
   create_table "people_search_person_education_experiences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "person_id", null: false
-    t.string "organization_name", null: false
-    t.string "title", null: false
-    t.text "activities", null: false
+    t.string "organization_name"
+    t.string "title"
+    t.text "activities"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["person_id"], name: "index_people_search_person_education_experiences_on_person_id"
@@ -719,9 +719,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_194622) do
 
   create_table "people_search_person_experiences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "person_id", null: false
-    t.string "organization_name", null: false
-    t.string "position", null: false
-    t.text "description", null: false
+    t.string "organization_name"
+    t.string "position"
+    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["person_id"], name: "index_people_search_person_experiences_on_person_id"

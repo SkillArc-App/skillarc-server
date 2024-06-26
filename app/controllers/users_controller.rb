@@ -9,7 +9,10 @@ class UsersController < ApplicationController
 
   def update
     with_message_service do
-      render json: People::BasicInfoService.new(user.id, message_service).update(**user_params.to_h.symbolize_keys)
+      render json: People::BasicInfoService.new(user.id, message_service).update(
+        **user_params.to_h.symbolize_keys,
+        email: current_user.email
+      )
     end
   end
 

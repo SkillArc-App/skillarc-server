@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe People::Projectors::Name do
+RSpec.describe People::Projectors::BasicInfo do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
@@ -13,7 +13,7 @@ RSpec.describe People::Projectors::Name do
         aggregate:,
         schema: Events::PersonAdded::V1,
         data: {
-          email: SecureRandom.uuid,
+          email: "A@B.com",
           phone_number: nil,
           first_name: "Some",
           last_name: "Body",
@@ -40,6 +40,8 @@ RSpec.describe People::Projectors::Name do
     it "determines the first and last name" do
       expect(subject.first_name).to eq(basic_info_added.data.first_name)
       expect(subject.last_name).to eq(basic_info_added.data.last_name)
+      expect(subject.email).to eq(basic_info_added.data.email)
+      expect(subject.phone_number).to eq(basic_info_added.data.phone_number)
     end
   end
 end

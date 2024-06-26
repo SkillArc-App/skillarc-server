@@ -13,6 +13,17 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
+  puppeteer:
+    tty: true
+    stdin_open: true
+    init: true
+    platform: linux/arm64
+    build:
+      dockerfile: puppeteer.Dockerfile
+    container_name: "skillarc_puppeteer"
+    command: ["node", "app.js"]
+    ports:
+      - "3002:3002"
   rails:
     tty: true
     stdin_open: true
@@ -28,6 +39,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - puppeteer
   resque:
     build:
       dockerfile: resque.Dockerfile

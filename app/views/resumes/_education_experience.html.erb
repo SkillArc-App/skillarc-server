@@ -1,0 +1,14 @@
+
+<div class="flex-column flex-start full-width">
+  <div class="flex-row flex-center flex-gap">
+    <%= render "resumes/graduate" %>
+    <h2>Education</h2>
+  </div>
+    <% @education_experiences.each do |experience| %>
+    <div class="flex-column flex-start full-width nobreak">
+      <p><strong><%= experience.organization_name %></strong> <span class="faded"><%= experience.graduation_date %></span></p>
+      <p class="faded"><strong>GPA <%= experience.gpa %></strong><p>
+      <p>Activities: <%= experience.activities %><p>
+    </div>
+  <% end %>
+</div>

@@ -50,7 +50,8 @@ RSpec.describe "Users", type: :request do
               first_name: "New First Name",
               last_name: "Name Last Name",
               phone_number: "1234567890",
-              zip_code: "12345"
+              zip_code: "12345",
+              email: user.email
             ).and_call_original
 
             subject
@@ -73,7 +74,8 @@ RSpec.describe "Users", type: :request do
             first_name: "New First Name",
             last_name: "Name Last Name",
             phone_number: "1234567890",
-            zip_code: "12345"
+            zip_code: "12345",
+            email: user.email
           ).and_call_original
 
           subject

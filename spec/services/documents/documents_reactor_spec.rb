@@ -162,7 +162,7 @@ RSpec.describe Documents::DocumentsReactor do
             .with(
               trace_id: message.trace_id,
               aggregate: message.aggregate,
-              schema: Documents::Commands::GenerateResume::V1,
+              schema: Documents::Commands::GenerateResume::V2,
               data: {
                 person_id: message.data.person_id,
                 anonymized: message.data.anonymized,
@@ -170,6 +170,8 @@ RSpec.describe Documents::DocumentsReactor do
                 page_limit: message.data.page_limit,
                 first_name: person_added.data.first_name,
                 last_name: person_added.data.last_name,
+                email: person_added.data.email,
+                phone_number: person_added.data.phone_number,
                 bio: person_about_added.data.about,
                 work_experiences: [
                   Documents::Commands::GenerateResume::WorkExperience::V1.new(
@@ -204,7 +206,7 @@ RSpec.describe Documents::DocumentsReactor do
       let(:message) do
         build(
           :message,
-          schema: Documents::Commands::GenerateResume::V1,
+          schema: Documents::Commands::GenerateResume::V2,
           data: {
             person_id:,
             anonymized: true,
@@ -212,6 +214,8 @@ RSpec.describe Documents::DocumentsReactor do
             page_limit: 1,
             first_name: "First",
             last_name: "Name",
+            email: "Email",
+            phone_number: "Phone Number",
             bio: "Bio",
             work_experiences: [
               Documents::Commands::GenerateResume::WorkExperience::V1.new(

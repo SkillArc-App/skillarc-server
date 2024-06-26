@@ -2,16 +2,18 @@ require 'rails_helper'
 
 RSpec.describe Documents::ResumeGenerationService do
   describe ".generate_from_command" do
-    subject { described_class.generate_from_command(message:) }
+    subject { described_class.generate_from_command(message:, gateway:) }
 
     let(:message) do
       build(
         :message,
-        schema: Documents::Commands::GenerateResume::V1,
+        schema: Documents::Commands::GenerateResume::V2,
         data: {
           person_id: SecureRandom.uuid,
           anonymized: true,
           bio: nil,
+          email: "a@b.com",
+          phone_number: "333-333-3333",
           work_experiences: [],
           education_experiences: [],
           document_kind: Documents::DocumentKind::PDF,
@@ -26,7 +28,18 @@ RSpec.describe Documents::ResumeGenerationService do
       )
     end
 
+    let(:gateway) { Documents::Generation::FakeCommunicator.new }
+
     it "creates a pdf document" do
+      expect(gateway)
+        .to receive(:generate_pdf_from_html)
+        .with(
+          document: be_a(String),
+          header: be_a(String),
+          footer: be_a(String)
+        )
+        .and_call_original
+
       expect(subject).to be_a(String)
     end
   end

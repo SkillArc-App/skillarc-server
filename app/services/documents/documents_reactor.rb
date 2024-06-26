@@ -42,7 +42,7 @@ module Documents
         return
       end
 
-      name_projection = People::Projectors::Name.new.project(messages)
+      basic_info_projection = People::Projectors::BasicInfo.new.project(messages)
       bio = Projectors::Aggregates::GetLast.new(schema: ::Events::PersonAboutAdded::V1).project(messages)&.data&.about
       work_projection = People::Projectors::WorkExperiences.new.project(messages)
       education_projection = People::Projectors::EducationExperiences.new.project(messages)
@@ -50,14 +50,16 @@ module Documents
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
         aggregate: message.aggregate,
-        schema: Commands::GenerateResume::V1,
+        schema: Commands::GenerateResume::V2,
         data: {
           person_id: message.data.person_id,
           anonymized: message.data.anonymized,
           document_kind: message.data.document_kind,
           page_limit: message.data.page_limit,
-          first_name: name_projection.first_name,
-          last_name: name_projection.last_name,
+          first_name: basic_info_projection.first_name,
+          last_name: basic_info_projection.last_name,
+          email: basic_info_projection.email,
+          phone_number: basic_info_projection.phone_number,
           bio:,
           work_experiences: work_projection.work_experiences.values.map do |work_experience|
             Commands::GenerateResume::WorkExperience::V1.new(
@@ -83,7 +85,7 @@ module Documents
       )
     end
 
-    on_message Commands::GenerateResume::V1 do |message|
+    on_message Commands::GenerateResume::V2 do |message|
       pdf = ResumeGenerationService.generate_from_command(message:)
 
       result = document_storage.store_document(

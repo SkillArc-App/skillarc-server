@@ -9,12 +9,28 @@ module Coaches
     before_action :set_coach, only: %i[recommend_job show]
 
     def index
-      render json: PeopleSearch::PeopleQuery.new.search(
+      people = PeopleSearch::PeopleQuery.new.search(
         search_terms: params[:utm_term],
         attributes: params[:attributes],
         user: current_user,
         utm_source: params[:utm_source]
       )
+      decorated_people = people.map do |person|
+        {
+          **person.as_json.symbolize_keys.slice(
+            :id,
+            :assigned_coach,
+            :certified_by,
+            :first_name,
+            :last_name,
+            :email,
+            :phone
+          ),
+          seeker_id: person.id
+        }
+      end
+
+      render json: decorated_people
     end
 
     def show

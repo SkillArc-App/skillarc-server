@@ -34,3 +34,10 @@ jobs:
           file: ./resque.Dockerfile
           push: true
           tags: ghcr.io/skillarc-app/resque:latest
+      - name: Build and Push Puppeteer Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./puppeteer.Dockerfile
+          push: true
+          tags: ghcr.io/skillarc-app/puppeteer:latest

@@ -375,6 +375,13 @@ GEM
     spring (4.2.1)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
+    sprockets (4.2.1)
+      concurrent-ruby (~> 1.0)
+      rack (>= 2.2.4, < 4)
+    sprockets-rails (3.5.1)
+      actionpack (>= 6.1)
+      activesupport (>= 6.1)
+      sprockets (>= 3.0.0)
     statsd-ruby (1.5.0)
     stringio (3.1.1)
     strong_migrations (1.8.0)
@@ -450,6 +457,7 @@ DEPENDENCIES
   slack-ruby-client
   spring
   spring-commands-rspec
+  sprockets-rails
   strong_migrations
   twilio-ruby
   value_semantics

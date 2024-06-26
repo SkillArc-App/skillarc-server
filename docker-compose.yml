@@ -21,7 +21,6 @@ services:
     build:
       dockerfile: puppeteer.Dockerfile
     container_name: "skillarc_puppeteer"
-    command: ["node", "app.js"]
     ports:
       - "3002:3002"
   rails:

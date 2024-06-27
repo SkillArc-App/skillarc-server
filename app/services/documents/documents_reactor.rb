@@ -10,7 +10,7 @@ module Documents
       true
     end
 
-    on_message Commands::GenerateResumeForPerson::V1 do |message|
+    on_message Commands::GenerateResumeForPerson::V2 do |message|
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
         aggregate: message.aggregate,
@@ -50,10 +50,11 @@ module Documents
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
         aggregate: message.aggregate,
-        schema: Commands::GenerateResume::V2,
+        schema: Commands::GenerateResume::V3,
         data: {
           person_id: message.data.person_id,
           anonymized: message.data.anonymized,
+          checks: message.data.checks,
           document_kind: message.data.document_kind,
           page_limit: message.data.page_limit,
           first_name: basic_info_projection.first_name,
@@ -85,7 +86,7 @@ module Documents
       )
     end
 
-    on_message Commands::GenerateResume::V2 do |message|
+    on_message Commands::GenerateResume::V3 do |message|
       pdf = ResumeGenerationService.generate_from_command(message:)
 
       result = document_storage.store_document(

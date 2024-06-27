@@ -64,6 +64,25 @@ module Documents
             page_limit 1..
           end
         end
+
+        class V3
+          extend Core::Payload
+
+          schema do
+            person_id Uuid
+            anonymized Bool()
+            checks ArrayOf(Either(*Checks::ALL))
+            bio Either(String, nil)
+            email Either(String, nil)
+            phone_number Either(String, nil)
+            work_experiences ArrayOf(WorkExperience::V1)
+            education_experiences ArrayOf(EducationExperience::V1)
+            document_kind Either(*DocumentKind::ALL)
+            first_name Either(String, nil)
+            last_name Either(String, nil)
+            page_limit 1..
+          end
+        end
       end
 
       V1 = Core::Schema.inactive(
@@ -74,13 +93,21 @@ module Documents
         message_type: MessageTypes::GENERATE_RESUME,
         version: 1
       )
-      V2 = Core::Schema.active(
+      V2 = Core::Schema.inactive(
         type: Core::COMMAND,
         data: Data::V2,
         metadata: Core::RequestorMetadata::V1,
         aggregate: Aggregates::Document,
         message_type: MessageTypes::GENERATE_RESUME,
         version: 2
+      )
+      V3 = Core::Schema.active(
+        type: Core::COMMAND,
+        data: Data::V3,
+        metadata: Core::RequestorMetadata::V1,
+        aggregate: Aggregates::Document,
+        message_type: MessageTypes::GENERATE_RESUME,
+        version: 3
       )
     end
   end

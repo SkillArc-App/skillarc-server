@@ -5,6 +5,13 @@ module Documents
     "documents_"
   end
 
+  module Checks
+    ALL = [
+      BACKGROUND = "background",
+      DRUG = "drug"
+    ].freeze
+  end
+
   module DocumentStatus
     ALL = [
       PROCESSING = "processing",

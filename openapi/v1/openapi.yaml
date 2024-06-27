@@ -1642,6 +1642,13 @@ paths:
                   type: string
                   enum:
                   - pdf
+                checks:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - background
+                    - drug
                 pageLimit:
                   type: integer
                   minimum: 1

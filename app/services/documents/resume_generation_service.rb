@@ -8,6 +8,7 @@ module Documents
           assigns: {
             first_name: message.data.first_name,
             last_name: message.data.last_name,
+            checks: message.data.checks,
             bio: message.data.bio,
             email: message.data.email,
             phone_number: message.data.phone_number,

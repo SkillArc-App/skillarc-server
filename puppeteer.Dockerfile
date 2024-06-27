@@ -12,10 +12,12 @@ RUN apt update -qq \
     && rm -rf /src/*.deb
 
 
-COPY ./puppeteer ./app
+COPY ./package.json ./app/package.json
+COPY ./app.js ./app/app.js
+COPY ./package-lock.json ./app/package-lock.json
 
 WORKDIR /app
 
-RUN npm install
+RUN npm ci
 
 CMD ["node", "app.js"]

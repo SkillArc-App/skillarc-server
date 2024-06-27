@@ -42,13 +42,18 @@ services:
     build:
       dockerfile: sidekiq.Dockerfile
     container_name: "skillarc_sidekiq"
-    command: bundle exec sidekiq -C config/sidekiq.yml
+    command: bundle exec sidekiq -C config/local.sidekiq.yml
     environment:
       RUN_ENVIRONMENT: "worker"
+      DOCUMENT_STORAGE_STRATEGY: "db_only"
+      DOCUMENT_GENERATION_STRATEGY: "real"
+      DOCUMENT_STORAGE_KIND: "postgres"
+      PUPPETEER_BASE_URL: "http://puppeteer:3002"
+      PUPPETEER_AUTH: "efa0adda-3d57-4924-bba0-d00903b18404"
       SLACK_GATEWAY_STRATEGY: "fake"
       KLAVIYO_GATEWAY_STRATEGY: "fake"
       SMS_GATEWAY_STRATEGY: "fake"
-      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis:6379
       POSTGRES_HOST: 'postgres'
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'

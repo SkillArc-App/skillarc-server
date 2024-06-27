@@ -146,23 +146,36 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   end
 
   def assert_no_failed_jobs
-    if Resque::Failure.count.zero?
+    if Sidekiq::Stats.new.failed.zero?
       head :no_content
     else
-      failures = Resque::Failure.all
+      # Check to see if we have a "dead" job
+      # A dead job which is one which was retried and
+      # ran out of retries
+      dead_set = Sidekiq::DeadSet.new
 
-      failure = if failures.is_a?(Hash)
-                  failures
-                else
-                  failures[0]
-                end
+      dead_set.each do |job| # rubocop:disable Lint/UnreachableLoop
+        render json: { exception: job["error_class"], message: job["error_message"], backtrace: job.error_backtrace }, status: :ok
+        return # rubocop:disable Lint/NonLocalExitFromIterator
+      end
 
-      render json: { exception: failure["exception"], message: failure["error"], backtrace: failure["backtrace"] }, status: :ok
+      # Check to see if we have a "retry" job
+      # A retry job which is one which failed initially
+      # but has not exhausted retries
+      retry_set = Sidekiq::RetrySet.new
+
+      retry_set.each do |job| # rubocop:disable Lint/UnreachableLoop
+        render json: { exception: job["error_class"], message: job["error_message"], backtrace: job.error_backtrace }, status: :ok
+        return # rubocop:disable Lint/NonLocalExitFromIterator
+      end
+
+      # We shouldn't get here but it's hard to know for certain
+      render json: { exception: "Unknown", message: "unknown", backtrace: [] }, status: :ok
     end
   end
 
   def jobs_settled
-    if Resque.peek(:default).nil?
+    if Sidekiq::Queue.new.size == 0 # rubocop:disable Style/ZeroLengthPredicate,Style/NumericPredicate
       render json: { settled: true }, status: :ok
     else
       render json: { settled: false }, status: :ok
@@ -170,7 +183,7 @@ class TestController < ApplicationController # rubocop:disable Metrics/ClassLeng
   end
 
   def clear_failed_jobs
-    Resque::Failure.clear
+    Sidekiq.redis(&:flushdb)
   end
 
   private

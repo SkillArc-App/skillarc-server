@@ -1,4 +1,4 @@
-require 'resque/server'
+require 'sidekiq/web'
 
 Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
@@ -70,7 +70,7 @@ Rails.application.routes.draw do
 
   post 'notifications/mark_read' => 'notifications#mark_read'
 
-  mount Resque::Server.new, at: "/resque"
+  mount Sidekiq::Web => '/sidekiq'
 
   resources :master_certifications
   resources :master_skills

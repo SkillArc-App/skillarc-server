@@ -1,3 +1,3 @@
 release: bin/rails db:migrate
 web: bin/rails server
-worker: QUEUE=* rake resque:work
+worker: bundle exec sidekiq -C config/production.sidekiq.yml

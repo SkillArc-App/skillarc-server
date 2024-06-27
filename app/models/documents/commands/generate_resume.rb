@@ -46,9 +46,7 @@ module Documents
             page_limit 1..
           end
         end
-      end
 
-      module Data
         class V2
           extend Core::Payload
 

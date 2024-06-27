@@ -40,6 +40,10 @@ module People
 
         accumulator.with(education_experiences: accumulator.education_experiences.merge({ message.data.id => new_education_experience }))
       end
+
+      on_message Events::EducationExperienceDeleted::V2 do |message, accumulator|
+        accumulator.with(education_experiences: accumulator.education_experiences.except(message.data.id))
+      end
     end
   end
 end

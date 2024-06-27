@@ -49,6 +49,43 @@ RSpec.describe JobOrders::JobOrdersQuery do
   end
 
   describe ".find_order" do
-    # TODO
+    subject { described_class.find_order(id) }
+
+    let(:job) { create(:job_orders__job, applicable_for_job_orders: true) }
+    let(:job_order) { create(:job_orders__job_order, job:) }
+    let(:id) { job_order.id }
+
+    let!(:candidate1) { create(:job_orders__candidate, job_order:) }
+
+    it "returns the order with the given id" do
+      expected_response = {
+        id: job_order.id,
+        employment_title: job.employment_title,
+        employer_name: job.employer_name,
+        opened_at: job_order.opened_at,
+        closed_at: job_order.closed_at,
+        order_count: job_order.order_count,
+        hire_count: job_order.hire_count,
+        recommended_count: job_order.recommended_count,
+        status: job_order.status,
+        candidates: [
+          {
+            id: candidate1.id,
+            first_name: candidate1.person.first_name,
+            last_name: candidate1.person.last_name,
+            phone_number: candidate1.person.phone_number,
+            email: candidate1.person.email,
+            applied_at: candidate1.applied_at,
+            recommended_at: candidate1.recommended_at,
+            recommended_by: candidate1.recommended_by,
+            status: candidate1.status,
+            person_id: candidate1.person_id
+          }
+        ],
+        notes: []
+      }
+
+      expect(subject).to eq(expected_response)
+    end
   end
 end

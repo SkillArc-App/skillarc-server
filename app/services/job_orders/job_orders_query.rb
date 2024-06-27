@@ -47,7 +47,8 @@ module JobOrders
               phone_number: candidate.person.phone_number,
               email: candidate.person.email,
               applied_at: candidate.applied_at,
-              recommended_at: nil, # TODO
+              recommended_at: candidate.recommended_at,
+              recommended_by: candidate.recommended_by,
               status: candidate.status,
               person_id: candidate.person_id
             }

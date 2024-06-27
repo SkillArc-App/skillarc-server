@@ -69,13 +69,15 @@ module JobOrders
       )
     end
 
-    on_message Events::CandidateAdded::V2, :sync do |message|
+    on_message Events::CandidateAdded::V3, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       person = Person.find_by(id: message.data.person_id)
       return if person.nil?
 
       candidate = JobOrders::Candidate.find_or_initialize_by(job_order:, person:)
       candidate.added_at = message.occurred_at if candidate.added_at.blank?
+      candidate.recommended_by = message.metadata[:requestor_email] if message.metadata[:requestor_email].present?
+      candidate.recommended_at = message.occurred_at if message.metadata[:requestor_id].present?
       candidate.status = CandidateStatus::ADDED
       candidate.save!
 

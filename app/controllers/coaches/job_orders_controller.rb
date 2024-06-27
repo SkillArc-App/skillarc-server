@@ -22,6 +22,11 @@ module Coaches
           schema: JobOrders::Commands::AddCandidate::V1,
           data: {
             person_id:
+          },
+          metadata: {
+            requestor_id: current_user.id,
+            requestor_email: current_user.email,
+            trace_id: request.request_id
           }
         )
       end

@@ -68,9 +68,14 @@ RSpec.describe "Coaches::JobOrders", type: :request do
               .with(
                 trace_id: be_a(String),
                 job_order_id: id,
-                schema: JobOrders::Commands::AddCandidate::V1,
+                schema: JobOrders::Commands::AddCandidate::V2,
                 data: {
                   person_id:
+                },
+                metadata: {
+                  requestor_type: Requestor::Kinds::COACH,
+                  requestor_id: current_user.id,
+                  requestor_email: current_user.email
                 }
               )
               .and_call_original

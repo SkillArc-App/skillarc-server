@@ -62,7 +62,7 @@ module JobOrders
         accumulator.with(not_filled?: false)
       end
 
-      on_message Events::CandidateAdded::V2 do |message, accumulator|
+      on_message Events::CandidateAdded::V3 do |message, accumulator|
         accumulator.candidates[message.data.person_id] = :added
         accumulator
       end

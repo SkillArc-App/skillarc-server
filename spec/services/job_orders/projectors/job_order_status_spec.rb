@@ -49,9 +49,14 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: JobOrders::Events::CandidateAdded::V2,
+        schema: JobOrders::Events::CandidateAdded::V3,
         data: {
           person_id: person_id1
+        },
+        metadata: {
+          requestor_type: Requestor::Kinds::COACH,
+          requestor_id: SecureRandom.uuid,
+          requestor_email: "foo@skillarc.com"
         }
       )
     end
@@ -59,9 +64,14 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: JobOrders::Events::CandidateAdded::V2,
+        schema: JobOrders::Events::CandidateAdded::V3,
         data: {
           person_id: person_id2
+        },
+        metadata: {
+          requestor_type: Requestor::Kinds::COACH,
+          requestor_id: SecureRandom.uuid,
+          requestor_email: "foo@skillarc.com"
         }
       )
     end

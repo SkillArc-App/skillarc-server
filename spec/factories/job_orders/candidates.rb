@@ -7,6 +7,9 @@ FactoryBot.define do
     added_at { Time.zone.local(2022, 1, 1) }
     status { JobOrders::CandidateStatus::ADDED }
 
+    recommended_at { Time.zone.local(2023, 1, 1) }
+    recommended_by { "khushi@skillarc.com" }
+
     trait :applied do
       applied_at { Time.zone.local(2024, 1, 1) }
     end

@@ -66,11 +66,16 @@ module JobOrders
       case status
       when CandidateStatus::ADDED
         message_service.create!(
-          schema: Events::CandidateAdded::V2,
+          schema: Events::CandidateAdded::V3,
           job_order_id:,
           trace_id:,
           data: {
             person_id:
+          },
+          metadata: {
+            requestor_type: nil,
+            requestor_id: nil,
+            requestor_email: nil
           }
         )
       when CandidateStatus::RECOMMENDED
@@ -132,11 +137,16 @@ module JobOrders
       return if active_job_order.nil?
 
       message_service.create_once_for_trace!(
-        schema: JobOrders::Events::CandidateAdded::V2,
+        schema: JobOrders::Events::CandidateAdded::V3,
         trace_id: message.trace_id,
         aggregate: active_job_order.aggregate,
         data: {
           person_id: message.data.seeker_id
+        },
+        metadata: {
+          requestor_type: nil,
+          requestor_id: nil,
+          requestor_email: nil
         }
       )
 
@@ -220,7 +230,7 @@ module JobOrders
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::CandidateAdded::V2, :sync do |message|
+    on_message Events::CandidateAdded::V3, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 

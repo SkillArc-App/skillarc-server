@@ -18,8 +18,7 @@ services:
     stdin_open: true
     init: true
     platform: linux/arm64
-    build:
-      dockerfile: puppeteer.Dockerfile
+    image: ghcr.io/skillarc-app/puppeteer:latest
     container_name: "skillarc_puppeteer"
     ports:
       - "3002:3002"

@@ -13,7 +13,8 @@ RSpec.describe People::Projectors::WorkExperiences do
       [
         experience_added1,
         experience_added2,
-        experience_added3
+        experience_added3,
+        experience_removed
       ]
     end
 
@@ -65,9 +66,19 @@ RSpec.describe People::Projectors::WorkExperiences do
         }
       )
     end
+    let(:experience_removed) do
+      build(
+        :message,
+        aggregate:,
+        schema: Events::ExperienceRemoved::V2,
+        data: {
+          id: work_experience_id2
+        }
+      )
+    end
 
     it "projects the work experience" do
-      expect(subject.work_experiences.length).to eq(2)
+      expect(subject.work_experiences.length).to eq(1)
       expect(subject.work_experiences[work_experience_id1]).to eq(
         described_class::WorkExperience.new(
           organization_name: "2",
@@ -75,16 +86,6 @@ RSpec.describe People::Projectors::WorkExperiences do
           start_date: "2",
           end_date: "2",
           description: "2",
-          is_current: true
-        )
-      )
-      expect(subject.work_experiences[work_experience_id2]).to eq(
-        described_class::WorkExperience.new(
-          organization_name: "3",
-          position: "3",
-          start_date: "3",
-          end_date: "3",
-          description: "3",
           is_current: true
         )
       )

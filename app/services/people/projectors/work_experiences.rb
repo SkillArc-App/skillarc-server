@@ -42,6 +42,10 @@ module People
 
         accumulator.with(work_experiences: accumulator.work_experiences.merge({ message.data.id => new_work_experience }))
       end
+
+      on_message Events::ExperienceRemoved::V2 do |message, accumulator|
+        accumulator.with(work_experiences: accumulator.work_experiences.except(message.data.id))
+      end
     end
   end
 end

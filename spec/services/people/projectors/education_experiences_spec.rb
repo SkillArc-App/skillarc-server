@@ -13,7 +13,8 @@ RSpec.describe People::Projectors::EducationExperiences do
       [
         education_experience_added1,
         education_experience_added2,
-        education_experience_added3
+        education_experience_added3,
+        education_experience_removed1
       ]
     end
 
@@ -62,9 +63,19 @@ RSpec.describe People::Projectors::EducationExperiences do
         }
       )
     end
+    let(:education_experience_removed1) do
+      build(
+        :message,
+        aggregate:,
+        schema: Events::EducationExperienceDeleted::V2,
+        data: {
+          id: education_experience_id2
+        }
+      )
+    end
 
     it "projects the education experience" do
-      expect(subject.education_experiences.length).to eq(2)
+      expect(subject.education_experiences.length).to eq(1)
       expect(subject.education_experiences[education_experience_id1]).to eq(
         described_class::EducationExperience.new(
           organization_name: "2",
@@ -72,15 +83,6 @@ RSpec.describe People::Projectors::EducationExperiences do
           graduation_date: "2",
           activities: "2",
           gpa: "2"
-        )
-      )
-      expect(subject.education_experiences[education_experience_id2]).to eq(
-        described_class::EducationExperience.new(
-          organization_name: "3",
-          title: "3",
-          graduation_date: "3",
-          activities: "3",
-          gpa: "3"
         )
       )
     end

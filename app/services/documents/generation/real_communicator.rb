@@ -9,7 +9,7 @@ module Documents
       def generate_pdf_from_html(document:, header:, footer:)
         uri = URI.parse("#{@base_url}/export/pdf")
         http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
+        http.use_ssl = true if uri.scheme == "https"
         request = Net::HTTP::Post.new(uri.request_uri)
         request["Content-Type"] = "application/json"
         request['Authorization'] = "Bearer #{@auth}"

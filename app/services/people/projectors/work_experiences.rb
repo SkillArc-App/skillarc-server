@@ -12,7 +12,7 @@ module People
           start_date Either(String, nil)
           end_date Either(String, nil)
           description Either(String, nil)
-          is_current Either(Bool(), nil)
+          is_current Bool()
         end
       end
 

@@ -13,3 +13,5 @@ COPY . .
 RUN bundle install
 
 EXPOSE 3001
+
+CMD ["bundle", "exec", "sidekiq", "-C", "config/local.sidekiq.yml"]

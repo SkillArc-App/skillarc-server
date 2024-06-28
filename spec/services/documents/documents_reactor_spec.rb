@@ -25,10 +25,11 @@ RSpec.describe Documents::DocumentsReactor do
       let(:message) do
         build(
           :message,
-          schema: Documents::Commands::GenerateResumeForPerson::V1,
+          schema: Documents::Commands::GenerateResumeForPerson::V2,
           data: {
             person_id:,
             anonymized: true,
+            checks: [Documents::Checks::BACKGROUND],
             document_kind: Documents::DocumentKind::PDF,
             page_limit: 1
           },
@@ -162,10 +163,11 @@ RSpec.describe Documents::DocumentsReactor do
             .with(
               trace_id: message.trace_id,
               aggregate: message.aggregate,
-              schema: Documents::Commands::GenerateResume::V2,
+              schema: Documents::Commands::GenerateResume::V3,
               data: {
                 person_id: message.data.person_id,
                 anonymized: message.data.anonymized,
+                checks: message.data.checks,
                 document_kind: message.data.document_kind,
                 page_limit: message.data.page_limit,
                 first_name: person_added.data.first_name,
@@ -206,10 +208,11 @@ RSpec.describe Documents::DocumentsReactor do
       let(:message) do
         build(
           :message,
-          schema: Documents::Commands::GenerateResume::V2,
+          schema: Documents::Commands::GenerateResume::V3,
           data: {
             person_id:,
             anonymized: true,
+            checks: [Documents::Checks::DRUG],
             document_kind: Documents::DocumentKind::PDF,
             page_limit: 1,
             first_name: "First",

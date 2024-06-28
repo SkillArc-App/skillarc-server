@@ -104,6 +104,13 @@ RSpec.describe "Resumes", type: :request do
                       type: :string,
                       enum: Documents::DocumentKind::ALL
                     },
+                    checks: {
+                      type: :array,
+                      items: {
+                        type: :string,
+                        enum: Documents::Checks::ALL
+                      }
+                    },
                     pageLimit: {
                       type: :integer,
                       minimum: 1
@@ -117,7 +124,8 @@ RSpec.describe "Resumes", type: :request do
           personId: person_id,
           anonymized:,
           documentKind: document_kind,
-          pageLimit: page_limit
+          pageLimit: page_limit,
+          checks:
         }
       end
 
@@ -125,6 +133,7 @@ RSpec.describe "Resumes", type: :request do
       let(:anonymized) { false }
       let(:document_kind) { Documents::DocumentKind::PDF }
       let(:page_limit) { 2 }
+      let(:checks) { [Documents::Checks::DRUG] }
 
       include_context "olive branch casing parameter"
       include_context "olive branch camelcasing"
@@ -155,8 +164,9 @@ RSpec.describe "Resumes", type: :request do
               .with(
                 trace_id: be_a(String),
                 document_id: be_a(String),
-                schema: Documents::Commands::GenerateResumeForPerson::V1,
+                schema: Documents::Commands::GenerateResumeForPerson::V2,
                 data: {
+                  checks:,
                   person_id:,
                   anonymized:,
                   document_kind:,
@@ -167,6 +177,7 @@ RSpec.describe "Resumes", type: :request do
                   requestor_id: user.id
                 }
               )
+              .and_call_original
           end
 
           context "when a regular requests for themselves" do

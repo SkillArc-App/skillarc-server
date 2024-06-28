@@ -42,9 +42,10 @@ module Documents
           message_service.create!(
             trace_id: request.request_id,
             document_id: SecureRandom.uuid,
-            schema: Commands::GenerateResumeForPerson::V1,
+            schema: Commands::GenerateResumeForPerson::V2,
             data: {
               person_id:,
+              checks: params[:checks] || [],
               anonymized: params[:anonymized] || false,
               document_kind: params[:document_kind] || DocumentKind::PDF,
               page_limit: params[:page_limit] || 1

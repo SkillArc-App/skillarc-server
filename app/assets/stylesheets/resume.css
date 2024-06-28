@@ -17,6 +17,12 @@ body {
   font-family: Arial, sans-serif;
 }
 
+.serif {
+  font-family: serif;
+}
+
+.normal-weight { font-weight: normal; }
+
 .highlight {
   background-color: red;
 }
@@ -62,7 +68,11 @@ body {
 p {
   font-size: 14px;
   line-height: 1.5;
-  margin: 1px 0px;
+  margin: 0px 0px;
+}
+
+.top-margin {
+  margin-top: 5px;
 }
 
 .preserve-whitespace {

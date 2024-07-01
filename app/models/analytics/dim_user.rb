@@ -14,8 +14,6 @@
 #
 module Analytics
   class DimUser < ApplicationRecord
-    self.table_name = "analytics_dim_users"
-
     module Kind
       ALL = [
         USER = 'user'.freeze,

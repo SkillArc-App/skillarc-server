@@ -1234,6 +1234,10 @@ RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
                 format: "date-time",
                 nullable: true
               },
+              recommendedBy: {
+                type: :string,
+                nullable: true
+              },
               status: {
                 type: :string,
                 enum: JobOrders::CandidateStatus::ALL

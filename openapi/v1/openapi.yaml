@@ -4896,6 +4896,9 @@ components:
           type: string
           format: date-time
           nullable: true
+        recommendedBy:
+          type: string
+          nullable: true
         status:
           type: string
           enum:

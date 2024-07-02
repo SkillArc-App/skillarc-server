@@ -11,13 +11,22 @@ module JobOrders
         end
       end
 
-      V1 = Core::Schema.active(
+      V1 = Core::Schema.inactive(
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::Nothing,
         aggregate: Aggregates::JobOrder,
         message_type: MessageTypes::ADD_CANDIDATE,
         version: 1
+      )
+
+      V2 = Core::Schema.active(
+        type: Core::COMMAND,
+        data: Data::V1,
+        metadata: Core::RequestorMetadata::V2,
+        aggregate: Aggregates::JobOrder,
+        message_type: MessageTypes::ADD_CANDIDATE,
+        version: 2
       )
     end
   end

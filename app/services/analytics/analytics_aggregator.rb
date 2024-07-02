@@ -145,7 +145,7 @@ module Analytics
       DimJobOrder.where(job_order_id: message.aggregate.id).update_all(order_count: message.data.order_count)
     end
 
-    on_message JobOrders::Events::CandidateAdded::V2 do |message|
+    on_message JobOrders::Events::CandidateAdded::V3 do |message|
       dim_person = DimPerson.find_by!(person_id: message.data.person_id)
       dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
 

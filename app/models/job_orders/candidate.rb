@@ -5,7 +5,10 @@
 #  id                       :uuid             not null, primary key
 #  added_at                 :datetime         not null
 #  applied_at               :datetime
+#  recommended_at           :datetime
+#  recommended_by           :string
 #  status                   :string           not null
+#  status_updated_at        :datetime
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  job_orders_job_orders_id :uuid             not null

@@ -177,10 +177,15 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: JobOrders::Events::CandidateAdded::V2,
+          schema: JobOrders::Events::CandidateAdded::V3,
           aggregate_id: job_order.id,
           data: {
             person_id: person.id
+          },
+          metadata: {
+            requestor_type: Requestor::Kinds::COACH,
+            requestor_id: SecureRandom.uuid,
+            requestor_email: "foo@skillarc.com"
           }
         )
       end
@@ -196,6 +201,9 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect(candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
         expect(candidate.person).to eq(person)
         expect(candidate.job_order).to eq(job_order)
+        expect(candidate.recommended_at).to eq(message.occurred_at)
+        expect(candidate.recommended_by).to eq(message.metadata.requestor_email)
+        expect(candidate.added_at).to eq(message.occurred_at)
         expect(candidate.added_at).to eq(message.occurred_at)
 
         job_order.reload

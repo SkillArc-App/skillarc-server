@@ -581,6 +581,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_02_172130) do
     t.datetime "applied_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "recommended_at"
+    t.string "recommended_by"
+    t.datetime "status_updated_at"
     t.index ["job_orders_job_orders_id"], name: "index_job_orders_candidates_on_job_orders_job_orders_id"
     t.index ["job_orders_people_id"], name: "index_job_orders_candidates_on_job_orders_people_id"
   end

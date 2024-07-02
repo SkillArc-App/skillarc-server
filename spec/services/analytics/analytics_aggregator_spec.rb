@@ -414,9 +414,14 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         build(
           :message,
           aggregate_id: dim_job_order.job_order_id,
-          schema: JobOrders::Events::CandidateAdded::V2,
+          schema: JobOrders::Events::CandidateAdded::V3,
           data: {
             person_id: dim_person.person_id
+          },
+          metadata: {
+            requestor_type: Requestor::Kinds::COACH,
+            requestor_id: SecureRandom.uuid,
+            requestor_email: "foo@skillarc.com"
           }
         )
       end

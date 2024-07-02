@@ -66,11 +66,16 @@ module JobOrders
       case status
       when CandidateStatus::ADDED
         message_service.create!(
-          schema: Events::CandidateAdded::V2,
+          schema: Events::CandidateAdded::V3,
           job_order_id:,
           trace_id:,
           data: {
             person_id:
+          },
+          metadata: {
+            requestor_type: nil,
+            requestor_id: nil,
+            requestor_email: nil
           }
         )
       when CandidateStatus::RECOMMENDED
@@ -132,11 +137,16 @@ module JobOrders
       return if active_job_order.nil?
 
       message_service.create_once_for_trace!(
-        schema: JobOrders::Events::CandidateAdded::V2,
+        schema: JobOrders::Events::CandidateAdded::V3,
         trace_id: message.trace_id,
         aggregate: active_job_order.aggregate,
         data: {
           person_id: message.data.seeker_id
+        },
+        metadata: {
+          requestor_type: nil,
+          requestor_id: nil,
+          requestor_email: nil
         }
       )
 
@@ -151,16 +161,21 @@ module JobOrders
       )
     end
 
-    on_message Commands::AddCandidate::V1, :sync do |message|
+    on_message Commands::AddCandidate::V2, :sync do |message|
       messages = MessageService.aggregate_events(message.aggregate)
 
-      unless messages.any? { |m| m.schema == Events::CandidateAdded::V2 && m.data.person_id == message.data.person_id }
+      unless messages.any? { |m| m.schema == Events::CandidateAdded::V3 && m.data.person_id == message.data.person_id }
         message_service.create_once_for_trace!(
-          schema: Events::CandidateAdded::V2,
+          schema: Events::CandidateAdded::V3,
           aggregate: message.aggregate,
           trace_id: message.trace_id,
           data: {
             person_id: message.data.person_id
+          },
+          metadata: {
+            requestor_type: message.metadata[:requestor_type],
+            requestor_id: message.metadata[:requestor_id],
+            requestor_email: message.metadata[:requestor_email]
           }
         )
       end
@@ -220,7 +235,7 @@ module JobOrders
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::CandidateAdded::V2, :sync do |message|
+    on_message Events::CandidateAdded::V3, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 

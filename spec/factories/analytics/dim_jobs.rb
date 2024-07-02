@@ -1,5 +1,7 @@
 FactoryBot.define do
   factory :analytics__dim_job, class: "Analytics::DimJob" do
+    dim_employer factory: %i[analytics__dim_employer]
+
     category { "some cateogry" }
     employment_title { "Best Job" }
     employment_type { "A type" }

@@ -6,11 +6,10 @@ FactoryBot.define do
     phone_number { "740-333-4444" }
     email { "some@email.com" }
     person_id { SecureRandom.uuid }
+    person_added_at { Time.zone.local(2022, 1, 1) }
 
     trait :lead do
       kind { Analytics::DimPerson::Kind::LEAD }
-      lead_id { SecureRandom.uuid }
-      lead_created_at { Time.zone.local(2022, 1, 1) }
     end
 
     trait :seeker do

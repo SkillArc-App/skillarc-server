@@ -7,11 +7,10 @@
 #  first_name              :string
 #  kind                    :string           not null
 #  last_name               :string
-#  lead_created_at         :datetime
 #  onboarding_completed_at :datetime
+#  person_added_at         :datetime         not null
 #  phone_number            :string
 #  analytics_dim_user_id   :bigint
-#  lead_id                 :uuid
 #  person_id               :uuid             not null
 #
 # Indexes
@@ -19,8 +18,7 @@
 #  index_analytics_dim_people_on_analytics_dim_user_id  (analytics_dim_user_id)
 #  index_analytics_dim_people_on_email                  (email)
 #  index_analytics_dim_people_on_kind                   (kind)
-#  index_analytics_dim_people_on_lead_id                (lead_id)
-#  index_analytics_dim_people_on_person_id              (person_id)
+#  index_analytics_dim_people_on_person_id              (person_id) UNIQUE
 #  index_analytics_dim_people_on_phone_number           (phone_number)
 #
 # Foreign Keys
@@ -42,6 +40,7 @@ module Analytics
 
     validates :kind, presence: true, inclusion: { in: Kind::ALL }
     has_many :fact_applications, class_name: "Analytics::FactApplication", foreign_key: "analytics_dim_person_id", inverse_of: :dim_person, dependent: :delete_all
+    has_many :fact_candidates, class_name: "Analytics::FactCandidate", foreign_key: "analytics_dim_person_id", inverse_of: :dim_person, dependent: :delete_all
 
     has_many :fact_people_viewers, class_name: "Analytics::FactPersonViewed", foreign_key: "analytics_dim_person_viewer_id", inverse_of: :dim_person_viewer, dependent: :delete_all
     has_many :fact_people_viewed, class_name: "Analytics::FactPersonViewed", foreign_key: "analytics_dim_person_viewed_id", inverse_of: :dim_person_viewed, dependent: :delete_all

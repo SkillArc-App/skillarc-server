@@ -1,21 +1,22 @@
 module Analytics
   class AnalyticsAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
     def reset_for_replay
-      Analytics::FactApplication.delete_all
-      Analytics::FactJobVisibility.delete_all
-      Analytics::FactPersonViewed.delete_all
-      Analytics::FactCoachAction.delete_all
-      Analytics::DimPerson.delete_all
-      Analytics::DimJob.delete_all
-      Analytics::DimUser.delete_all
+      FactCandidate.delete_all
+      FactApplication.delete_all
+      FactJobVisibility.delete_all
+      FactPersonViewed.delete_all
+      FactCoachAction.delete_all
+      DimPerson.delete_all
+      DimJobOrder.delete_all
+      DimJob.delete_all
+      DimUser.delete_all
+      DimEmployer.delete_all
     end
 
     on_message Events::PersonAssociatedToUser::V1 do |message|
-      person = DimPerson.find_by!(person_id: message.aggregate.person_id)
       user = DimUser.find_by!(user_id: message.data.user_id)
 
-      person.dim_user = user
-      person.save!
+      DimPerson.where(person_id: message.aggregate.person_id).update_all(analytics_dim_user_id: user.id, kind: DimPerson::Kind::SEEKER)
     end
 
     on_message Events::UserCreated::V1 do |message|
@@ -32,9 +33,7 @@ module Analytics
     end
 
     on_message Events::BasicInfoAdded::V1 do |message|
-      person = DimPerson.find_by!(person_id: message.aggregate.person_id)
-
-      person.update!(
+      DimPerson.where(person_id: message.aggregate.person_id).update_all(
         first_name: message.data.first_name,
         last_name: message.data.last_name,
         phone_number: message.data.phone_number,
@@ -48,51 +47,41 @@ module Analytics
         email: message.data.email,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
-        kind: DimPerson::Kind::SEEKER
+        person_added_at: message.occurred_at,
+        kind: DimPerson::Kind::LEAD
       )
     end
 
     on_message Events::OnboardingCompleted::V3 do |message|
-      person = DimPerson.find_by!(person_id: message.aggregate.person_id)
-
-      person.update!(
-        onboarding_completed_at: message.occurred_at
-      )
+      DimPerson.where(person_id: message.aggregate.person_id).update_all(onboarding_completed_at: message.occurred_at)
     end
 
     on_message Events::SessionStarted::V1 do |message|
-      user = DimUser.find_by!(user_id: message.aggregate.user_id)
-
-      user.update!(last_active_at: message.occurred_at)
+      DimUser.where(user_id: message.aggregate.user_id).update_all(last_active_at: message.occurred_at)
     end
 
     on_message Events::CoachAdded::V1 do |message|
-      user = DimUser.find_by!(user_id: message.aggregate.user_id)
-
-      user.update!(kind: DimUser::Kind::COACH, coach_id: message.data.coach_id)
+      DimUser.where(user_id: message.aggregate.user_id).update_all(kind: DimUser::Kind::COACH, coach_id: message.data.coach_id)
     end
 
     on_message Events::EmployerInviteAccepted::V2 do |message|
-      user = DimUser.find_by!(user_id: message.data.user_id)
-
-      user.update!(kind: DimUser::Kind::RECRUITER)
+      DimUser.where(user_id: message.data.user_id).update_all(kind: DimUser::Kind::RECRUITER)
     end
 
     on_message Events::TrainingProviderInviteAccepted::V2 do |message|
-      user = DimUser.find_by!(user_id: message.data.user_id)
-
-      return unless user
-
-      user.update!(kind: DimUser::Kind::TRAINING_PROVIDER)
+      DimUser.where(user_id: message.data.user_id).update_all(kind: DimUser::Kind::TRAINING_PROVIDER)
     end
 
     on_message Events::JobCreated::V3 do |message|
+      employer = DimEmployer.find_by(employer_id: message.data.employer_id)
+
       dim_job = DimJob.create!(
         job_id: message.aggregate.job_id,
         category: message.data.category,
         employment_title: message.data.employment_title,
         employment_type: message.data.employment_type,
-        job_created_at: message.occurred_at
+        job_created_at: message.occurred_at,
+        dim_employer: employer
       )
 
       unless message.data.hide_job
@@ -130,6 +119,80 @@ module Analytics
       end
     end
 
+    on_message Events::JobOrderAdded::V1 do |message|
+      dim_job = DimJob.find_by!(job_id: message.data.job_id)
+
+      DimJobOrder.create!(
+        job_order_id: message.aggregate.id,
+        order_opened_at: message.occurred_at,
+        dim_job:
+      )
+    end
+
+    on_message Events::JobOrderStalled::V1 do |message|
+      DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: nil, closed_status: nil)
+    end
+
+    on_message Events::JobOrderFilled::V1 do |message|
+      DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::FILLED)
+    end
+
+    on_message Events::JobOrderNotFilled::V1 do |message|
+      DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::NOT_FILLED)
+    end
+
+    on_message Events::JobOrderOrderCountAdded::V1 do |message|
+      DimJobOrder.where(job_order_id: message.aggregate.id).update_all(order_count: message.data.order_count)
+    end
+
+    on_message Events::JobOrderCandidateAdded::V2 do |message|
+      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
+      dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
+
+      fact_candidate = FactCandidate.find_or_initialize_by(dim_job_order:, dim_person:)
+      fact_candidate.status = JobOrders::CandidateStatus::ADDED
+      fact_candidate.terminal_status_at = nil
+
+      if fact_candidate.new_record?
+        fact_candidate.order_candidate_number = dim_job_order.fact_candidates.count + 1
+        fact_candidate.added_at = message.occurred_at
+      end
+
+      fact_candidate.save!
+    end
+
+    on_message Events::JobOrderCandidateHired::V2 do |message|
+      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
+      dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
+
+      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::HIRED, terminal_status_at: message.occurred_at)
+    end
+
+    on_message Events::JobOrderCandidateRecommended::V2 do |message|
+      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
+      dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
+
+      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::RECOMMENDED, terminal_status_at: nil)
+    end
+
+    on_message Events::JobOrderCandidateRescinded::V2 do |message|
+      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
+      dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
+
+      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::RESCINDED, terminal_status_at: message.occurred_at)
+    end
+
+    on_message Events::EmployerCreated::V1 do |message|
+      DimEmployer.create!(
+        employer_id: message.aggregate.employer_id,
+        name: message.data.name
+      )
+    end
+
+    on_message Events::EmployerUpdated::V1 do |message|
+      DimEmployer.where(employer_id: message.aggregate.id).update_all(name: message.data.name)
+    end
+
     on_message Events::ApplicantStatusUpdated::V6 do |message|
       data = message.data
       fact_application = Analytics::FactApplication.find_by(application_id: message.aggregate.id)
@@ -144,8 +207,6 @@ module Analytics
         Analytics::FactApplication.create!(
           dim_job:,
           dim_person:,
-          employment_title: data.employment_title,
-          employer_name: data.employer_name,
           application_number:,
           status: data.status,
           application_opened_at: message.occurred_at,

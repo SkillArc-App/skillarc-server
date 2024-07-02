@@ -17,8 +17,6 @@
 #
 module Analytics
   class FactJobVisibility < ApplicationRecord
-    self.table_name = "analytics_fact_job_visibilities"
-
     belongs_to :dim_job, class_name: "Analytics::DimJob", foreign_key: "analytics_dim_job_id", inverse_of: :fact_job_visibilities
   end
 end

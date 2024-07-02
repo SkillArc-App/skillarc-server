@@ -12,10 +12,13 @@
 #  coach_id        :uuid
 #  user_id         :string           not null
 #
+# Indexes
+#
+#  index_analytics_dim_users_on_coach_id  (coach_id) UNIQUE
+#  index_analytics_dim_users_on_user_id   (user_id) UNIQUE
+#
 module Analytics
   class DimUser < ApplicationRecord
-    self.table_name = "analytics_dim_users"
-
     module Kind
       ALL = [
         USER = 'user'.freeze,

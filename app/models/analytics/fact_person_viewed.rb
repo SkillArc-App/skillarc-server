@@ -19,8 +19,6 @@
 #
 module Analytics
   class FactPersonViewed < ApplicationRecord
-    self.table_name = "analytics_fact_person_vieweds"
-
     module Contexts
       ALL = [
         PUBLIC_PROFILE = 'public_profile'.freeze,

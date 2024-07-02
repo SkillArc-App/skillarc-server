@@ -20,8 +20,6 @@
 #
 module Analytics
   class FactCoachAction < ApplicationRecord
-    self.table_name = "analytics_fact_coach_actions"
-
     module Actions
       ALL = [
         JOB_RECOMMENDED = "job_recommended".freeze,

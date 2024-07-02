@@ -60,6 +60,36 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       end
     end
 
+    describe "when the message is person added" do
+      let(:message) do
+        build(
+          :message,
+          aggregate_id: person_id,
+          schema: Events::PersonAdded::V1,
+          data: {
+            first_name: "John",
+            last_name: "Chabot",
+            email: "john@skillarc.com",
+            phone_number: "333-333-444",
+            date_of_birth: "1990-01-01"
+          }
+        )
+      end
+      let(:person_id) { SecureRandom.uuid }
+
+      it "updates a dim person from the message" do
+        expect { subject }.to change(Analytics::DimPerson, :count).by(1)
+
+        person = Analytics::DimPerson.first
+
+        expect(person.first_name).to eq(message.data.first_name)
+        expect(person.last_name).to eq(message.data.last_name)
+        expect(person.email).to eq(message.data.email)
+        expect(person.person_id).to eq(person_id)
+        expect(person.kind).to eq(Analytics::DimPerson::Kind::LEAD)
+      end
+    end
+
     context "for an existing dim_person" do
       before do
         create(
@@ -98,36 +128,6 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           expect(person.phone_number).to eq(message.data.phone_number)
           expect(person.first_name).to eq(message.data.first_name)
           expect(person.last_name).to eq(message.data.last_name)
-        end
-      end
-
-      describe "when the message is person added" do
-        let(:message) do
-          build(
-            :message,
-            aggregate_id: person_id,
-            schema: Events::PersonAdded::V1,
-            data: {
-              first_name: "John",
-              last_name: "Chabot",
-              email: "john@skillarc.com",
-              phone_number: "333-333-444",
-              date_of_birth: "1990-01-01"
-            }
-          )
-        end
-        let(:person_id) { SecureRandom.uuid }
-
-        it "updates a dim person from the message" do
-          expect { subject }.to change(Analytics::DimPerson, :count).by(1)
-
-          person = Analytics::DimPerson.find_by(email: message.data.email)
-
-          expect(person.first_name).to eq(message.data.first_name)
-          expect(person.last_name).to eq(message.data.last_name)
-          expect(person.email).to eq(message.data.email)
-          expect(person.person_id).to eq(person_id)
-          expect(person.kind).to eq(Analytics::DimPerson::Kind::SEEKER)
         end
       end
 
@@ -238,6 +238,289 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       end
     end
 
+    context "when the message is employer_created" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::EmployerCreated::V1,
+          data: {
+            name: "name",
+            location: "location",
+            bio: "bio",
+            logo_url: "dope.com"
+          }
+        )
+      end
+
+      it "creates a dim employer for the message" do
+        expect { subject }.to change(Analytics::DimEmployer, :count).from(0).to(1)
+
+        employer = Analytics::DimEmployer.first
+
+        expect(employer.employer_id).to eq(message.aggregate.id)
+        expect(employer.name).to eq(message.data.name)
+      end
+    end
+
+    context "when the message is employer_uopdate" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::EmployerUpdated::V1,
+          aggregate_id: employer.employer_id,
+          data: {
+            name: "New Name",
+            location: "location",
+            bio: "bio",
+            logo_url: "dope.com"
+          }
+        )
+      end
+
+      let(:employer) { create(:analytics__dim_employer) }
+
+      it "updates a dim employer from the message" do
+        subject
+
+        employer.reload
+        expect(employer.name).to eq(message.data.name)
+      end
+    end
+
+    context "when the message is job_order_added" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::JobOrderAdded::V1,
+          data: {
+            job_id: dim_job.job_id
+          }
+        )
+      end
+
+      let(:dim_job) { create(:analytics__dim_job) }
+
+      it "creates a dim employer for the message" do
+        expect { subject }.to change(Analytics::DimJobOrder, :count).from(0).to(1)
+
+        dim_job_order = Analytics::DimJobOrder.first
+
+        expect(dim_job_order.dim_job).to eq(dim_job)
+        expect(dim_job_order.job_order_id).to eq(message.aggregate.id)
+        expect(dim_job_order.order_opened_at).to eq(message.occurred_at)
+      end
+    end
+
+    context "for an existing job order" do
+      let!(:dim_job_order) do
+        create(
+          :analytics__dim_job_order,
+          job_order_id:,
+          order_count:,
+          closed_at:,
+          closed_status:
+        )
+      end
+      let(:job_order_id) { SecureRandom.uuid }
+      let(:order_count) { nil }
+      let(:closed_at) { nil }
+      let(:closed_status) { nil }
+
+      context "when the message is job_order_stalled" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: job_order_id,
+            schema: Events::JobOrderStalled::V1,
+            data: {
+              status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
+            }
+          )
+        end
+
+        let(:closed_at) { Time.zone.now }
+        let(:closed_status) { "Closed!!" }
+
+        it "updates the dim job order to clear closed fields" do
+          subject
+
+          dim_job_order.reload
+          expect(dim_job_order.closed_at).to eq(nil)
+          expect(dim_job_order.closed_status).to eq(nil)
+        end
+      end
+
+      context "when the message is job_order_filled" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: job_order_id,
+            schema: Events::JobOrderFilled::V1,
+            data: Core::Nothing
+          )
+        end
+
+        it "updates the dim job order with closed fields" do
+          subject
+
+          dim_job_order.reload
+          expect(dim_job_order.closed_at).to eq(message.occurred_at)
+          expect(dim_job_order.closed_status).to eq(JobOrders::ClosedStatus::FILLED)
+        end
+      end
+
+      context "when the message is job_order_not_filled" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: job_order_id,
+            schema: Events::JobOrderNotFilled::V1,
+            data: Core::Nothing
+          )
+        end
+
+        it "updates the dim job order with closed fields" do
+          subject
+
+          dim_job_order.reload
+          expect(dim_job_order.closed_at).to eq(message.occurred_at)
+          expect(dim_job_order.closed_status).to eq(JobOrders::ClosedStatus::NOT_FILLED)
+        end
+      end
+
+      context "when the message is job_order_order_count_added" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: job_order_id,
+            schema: Events::JobOrderOrderCountAdded::V1,
+            data: {
+              order_count: 5
+            }
+          )
+        end
+
+        it "updates the dim job order with an order count" do
+          subject
+
+          dim_job_order.reload
+          expect(dim_job_order.order_count).to eq(message.data.order_count)
+        end
+      end
+    end
+
+    context "when the message is job_order_candidate_added" do
+      let(:message) do
+        build(
+          :message,
+          aggregate_id: dim_job_order.job_order_id,
+          schema: Events::JobOrderCandidateAdded::V2,
+          data: {
+            person_id: dim_person.person_id
+          }
+        )
+      end
+
+      let(:dim_person) { create(:analytics__dim_person) }
+      let(:dim_job_order) { create(:analytics__dim_job_order) }
+      let!(:other_canidate) { create(:analytics__fact_candidate, dim_job_order:) }
+
+      context "when ther candidate is new" do
+        it "creates a new fact candidate with the appropriate values" do
+          expect { subject }.to change(Analytics::FactCandidate, :count).from(1).to(2)
+
+          fact_candidate = Analytics::FactCandidate.find_by(dim_person:)
+
+          expect(fact_candidate.dim_person).to eq(dim_person)
+          expect(fact_candidate.dim_job_order).to eq(dim_job_order)
+          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
+          expect(fact_candidate.order_candidate_number).to eq(2)
+          expect(fact_candidate.added_at).to eq(message.occurred_at)
+          expect(fact_candidate.terminal_status_at).to eq(nil)
+        end
+      end
+
+      context "when ther candidate is existing" do
+        let!(:fact_candidate) { create(:analytics__fact_candidate, dim_job_order:, dim_person:) }
+
+        it "updates the fact candidate with the appropriate values" do
+          expect { subject }.not_to change(Analytics::FactCandidate, :count)
+
+          fact_candidate.reload
+
+          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
+          expect(fact_candidate.terminal_status_at).to eq(nil)
+        end
+      end
+    end
+
+    context "for an existing candidate" do
+      let!(:fact_candidate) { create(:analytics__fact_candidate) }
+
+      context "when the message is job_order_candidate_hired" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: fact_candidate.dim_job_order.job_order_id,
+            schema: Events::JobOrderCandidateHired::V2,
+            data: {
+              person_id: fact_candidate.dim_person.person_id
+            }
+          )
+        end
+
+        it "updates the fact candidate status" do
+          subject
+
+          fact_candidate.reload
+          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::HIRED)
+          expect(fact_candidate.terminal_status_at).to eq(message.occurred_at)
+        end
+      end
+
+      context "when the message is job_order_candidate_recommended" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: fact_candidate.dim_job_order.job_order_id,
+            schema: Events::JobOrderCandidateRecommended::V2,
+            data: {
+              person_id: fact_candidate.dim_person.person_id
+            }
+          )
+        end
+
+        it "updates the fact candidate status" do
+          subject
+
+          fact_candidate.reload
+          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::RECOMMENDED)
+          expect(fact_candidate.terminal_status_at).to eq(nil)
+        end
+      end
+
+      context "when the message is job_order_candidate_rescinded" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: fact_candidate.dim_job_order.job_order_id,
+            schema: Events::JobOrderCandidateRescinded::V2,
+            data: {
+              person_id: fact_candidate.dim_person.person_id
+            }
+          )
+        end
+
+        it "updates the fact candidate status" do
+          subject
+
+          fact_candidate.reload
+          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::RESCINDED)
+          expect(fact_candidate.terminal_status_at).to eq(message.occurred_at)
+        end
+      end
+    end
+
     context "when the message is job_created" do
       let(:message) do
         build(
@@ -248,7 +531,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
             category: Job::Categories::MARKETPLACE,
             employment_title: "A title",
             employer_name: "An employer",
-            employer_id: SecureRandom.uuid,
+            employer_id: employer.employer_id,
             benefits_description: "Bad benifits",
             responsibilities_description: nil,
             location: "Columbus Ohio",
@@ -258,6 +541,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         )
       end
 
+      let(:employer) { create(:analytics__dim_employer) }
       let(:job_id) { SecureRandom.uuid }
       let(:hide_job) { false }
 
@@ -451,8 +735,6 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
           expect(fact_application.dim_job).to eq(dim_job)
           expect(fact_application.dim_person).to eq(dim_person)
-          expect(fact_application.employer_name).to eq("An employers")
-          expect(fact_application.employment_title).to eq("Best job")
           expect(fact_application.status).to eq(status)
           expect(fact_application.application_id).to eq(application_id)
           expect(fact_application.application_number).to eq(3)
@@ -555,10 +837,10 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       end
 
       let(:email) { Faker::Internet.email }
-      let(:lead_id) { SecureRandom.uuid }
+      let(:person_id) { SecureRandom.uuid }
 
       let!(:dim_user_executor) { create(:analytics__dim_user, email:) }
-      let!(:dim_person_target) { create(:analytics__dim_person, lead_id:) }
+      let!(:dim_person_target) { create(:analytics__dim_person, person_id:) }
 
       it "creates a fact coach action record" do
         expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)

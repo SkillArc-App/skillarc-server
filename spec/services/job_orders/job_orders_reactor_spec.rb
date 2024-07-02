@@ -164,7 +164,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     let(:job_order_id) { candidate.job_order_id }
 
     context "added" do
-      let(:status) { "added" }
+      let(:status) { JobOrders::CandidateStatus::ADDED }
 
       it "emits a added event" do
         expect(message_service)
@@ -183,7 +183,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
 
     context "recommended" do
-      let(:status) { "recommended" }
+      let(:status) { JobOrders::CandidateStatus::RECOMMENDED  }
 
       it "emits a recommended event" do
         expect(message_service)
@@ -201,8 +201,27 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
       end
     end
 
+    context "screened" do
+      let(:status) { JobOrders::CandidateStatus::SCREENED }
+
+      it "emits a screened event" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: JobOrders::Events::CandidateScreened::V1,
+            job_order_id:,
+            trace_id:,
+            data: {
+              person_id:
+            }
+          ).and_call_original
+
+        subject
+      end
+    end
+
     context "hired" do
-      let(:status) { "hired" }
+      let(:status) { JobOrders::CandidateStatus::HIRED }
 
       it "emits a hired event" do
         expect(message_service)
@@ -221,7 +240,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
 
     context "rescinded" do
-      let(:status) { "rescinded" }
+      let(:status) { JobOrders::CandidateStatus::RESCINDED }
 
       it "emits a rescinded event" do
         expect(message_service)

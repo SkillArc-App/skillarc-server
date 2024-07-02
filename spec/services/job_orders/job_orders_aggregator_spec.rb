@@ -146,6 +146,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect(job_order.recommended_count).to eq(0)
         expect(job_order.applicant_count).to eq(0)
         expect(job_order.candidate_count).to eq(0)
+        expect(job_order.screened_count).to eq(0)
         expect(job_order.hire_count).to eq(0)
       end
     end
@@ -281,6 +282,34 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         job_order.reload
         expect(job_order.candidate_count).to eq(0)
         expect(job_order.recommended_count).to eq(1)
+      end
+    end
+
+    context "when the message is job order candidate screened" do
+      let(:message) do
+        build(
+          :message,
+          schema: JobOrders::Events::CandidateScreened::V1,
+          aggregate_id: job_order.id,
+          data: {
+            person_id: person.id
+          }
+        )
+      end
+
+      let!(:job_order) { create(:job_orders__job_order, candidate_count: 1, screened_count: 0) }
+      let!(:candidate) { create(:job_orders__candidate, person:, job_order:, status: JobOrders::CandidateStatus::ADDED) }
+      let!(:person) { create(:job_orders__person) }
+
+      it "updates a candidate record and updates the job order" do
+        subject
+
+        candidate.reload
+        expect(candidate.status).to eq(JobOrders::CandidateStatus::SCREENED)
+
+        job_order.reload
+        expect(job_order.candidate_count).to eq(0)
+        expect(job_order.screened_count).to eq(1)
       end
     end
 

@@ -175,6 +175,13 @@ module Analytics
       FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::RECOMMENDED, terminal_status_at: nil)
     end
 
+    on_message JobOrders::Events::CandidateScreened::V1 do |message|
+      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
+      dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
+
+      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::SCREENED, terminal_status_at: nil)
+    end
+
     on_message JobOrders::Events::CandidateRescinded::V2 do |message|
       dim_person = DimPerson.find_by!(person_id: message.data.person_id)
       dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)

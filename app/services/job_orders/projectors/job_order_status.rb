@@ -17,6 +17,7 @@ module JobOrders
           return ActivatedStatus::NEEDS_ORDER_COUNT if order_count.nil?
           return ClosedStatus::FILLED if hired_candidates.length >= order_count
           return StalledStatus::WAITING_ON_EMPLOYER if recommended_candidates.length + hired_candidates.length >= order_count
+          # TODO update this once we have a new order status
 
           ActivatedStatus::OPEN
         end
@@ -25,6 +26,10 @@ module JobOrders
 
         def hired_candidates
           candidates.select { |_, status| status == :hired }
+        end
+
+        def screened_candidates
+          candidates.select { |_, status| status == :screened }
         end
 
         def recommended_candidates
@@ -63,6 +68,11 @@ module JobOrders
 
       on_message Events::CandidateRecommended::V2 do |message, accumulator|
         accumulator.candidates[message.data.person_id] = :recommended
+        accumulator
+      end
+
+      on_message Events::CandidateScreened::V1 do |message, accumulator|
+        accumulator.candidates[message.data.person_id] = :screened
         accumulator
       end
 

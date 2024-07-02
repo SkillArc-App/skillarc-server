@@ -499,6 +499,27 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         end
       end
 
+      context "when the message is job_order_candidate_screened" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: fact_candidate.dim_job_order.job_order_id,
+            schema: JobOrders::Events::CandidateScreened::V1,
+            data: {
+              person_id: fact_candidate.dim_person.person_id
+            }
+          )
+        end
+
+        it "updates the fact candidate status" do
+          subject
+
+          fact_candidate.reload
+          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::SCREENED)
+          expect(fact_candidate.terminal_status_at).to eq(nil)
+        end
+      end
+
       context "when the message is job_order_candidate_rescinded" do
         let(:message) do
           build(

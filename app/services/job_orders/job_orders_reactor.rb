@@ -82,6 +82,15 @@ module JobOrders
             person_id:
           }
         )
+      when CandidateStatus::SCREENED
+        message_service.create!(
+          schema: Events::CandidateScreened::V1,
+          job_order_id:,
+          trace_id:,
+          data: {
+            person_id:
+          }
+        )
       when CandidateStatus::HIRED
         message_service.create!(
           schema: Events::CandidateHired::V2,
@@ -216,6 +225,10 @@ module JobOrders
     end
 
     on_message Events::CandidateRecommended::V2, :sync do |message|
+      emit_new_status_if_necessary(message)
+    end
+
+    on_message Events::CandidateScreened::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 

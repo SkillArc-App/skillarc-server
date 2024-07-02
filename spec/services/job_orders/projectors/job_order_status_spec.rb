@@ -87,6 +87,27 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       )
     end
 
+    let(:job_order_candidate_screened1) do
+      build(
+        :message,
+        aggregate:,
+        schema: JobOrders::Events::CandidateScreened::V1,
+        data: {
+          person_id: person_id1
+        }
+      )
+    end
+    let(:job_order_candidate_screened2) do
+      build(
+        :message,
+        aggregate:,
+        schema: JobOrders::Events::CandidateScreened::V1,
+        data: {
+          person_id: person_id2
+        }
+      )
+    end
+
     let(:job_order_candidate_hired1) do
       build(
         :message,
@@ -144,7 +165,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
     end
 
     context "when a job order has been set" do
-      context "when no enough candidates have been recommended" do
+      context "when not enough candidates have been recommended" do
         let(:messages) do
           [
             job_order_order_count_added1,
@@ -227,6 +248,23 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         end
 
         it "reports the status open" do
+          expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
+        end
+      end
+
+      context "when candidates have been screened" do
+        let(:messages) do
+          [
+            job_order_order_count_added1,
+            job_order_candidate_added1,
+            job_order_candidate_added2,
+            job_order_candidate_screened1,
+            job_order_candidate_screened2
+          ]
+        end
+
+        # TODO: temporary until new status
+        it "reports the status as open" do
           expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
         end
       end

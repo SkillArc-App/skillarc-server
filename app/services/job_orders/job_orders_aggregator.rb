@@ -57,6 +57,7 @@ module JobOrders
         recommended_count: 0,
         applicant_count: 0,
         candidate_count: 0,
+        screened_count: 0,
         hire_count: 0
       )
     end
@@ -91,6 +92,16 @@ module JobOrders
       candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
 
       candidate.update!(status: CandidateStatus::RECOMMENDED)
+      job_order.candidates.group(:status).count
+
+      update_job_order_counts(job_order)
+    end
+
+    on_message Events::CandidateScreened::V1, :sync do |message|
+      job_order = JobOrder.find(message.aggregate.id)
+      candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
+
+      candidate.update!(status: CandidateStatus::SCREENED)
       job_order.candidates.group(:status).count
 
       update_job_order_counts(job_order)
@@ -159,9 +170,10 @@ module JobOrders
       counts = job_order.candidates.group(:status).count
 
       job_order.update!(
-        candidate_count: counts[JobOrders::CandidateStatus::ADDED] || 0,
-        recommended_count: counts[JobOrders::CandidateStatus::RECOMMENDED] || 0,
-        hire_count: counts[JobOrders::CandidateStatus::HIRED] || 0
+        screened_count: counts[CandidateStatus::SCREENED] || 0,
+        candidate_count: counts[CandidateStatus::ADDED] || 0,
+        recommended_count: counts[CandidateStatus::RECOMMENDED] || 0,
+        hire_count: counts[CandidateStatus::HIRED] || 0
       )
     end
   end

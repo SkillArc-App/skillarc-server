@@ -2207,6 +2207,7 @@ paths:
                   enum:
                   - added
                   - recommended
+                  - screened
                   - hired
                   - rescinded
               required:
@@ -4857,6 +4858,7 @@ components:
           enum:
           - needs_order_count
           - open
+          - candidates_screened
           - filled
           - not_filled
           - waiting_on_employer
@@ -4904,6 +4906,7 @@ components:
           enum:
           - added
           - recommended
+          - screened
           - hired
           - rescinded
         personId:

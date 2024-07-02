@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe People::PersonAggregator do # rubocop:disable Metrics/BlockLength
+RSpec.describe People::PersonAggregator do
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new }
 
   let(:user) { create(:user) }
 
-  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
+  describe "#handle_message" do
     subject { consumer.handle_message(message) }
 
     context "when the message is person added" do
@@ -38,7 +38,7 @@ RSpec.describe People::PersonAggregator do # rubocop:disable Metrics/BlockLength
       end
     end
 
-    context "when the person exists" do # rubocop:disable Metrics/BlockLength
+    context "when the person exists" do
       let(:seeker) { create(:seeker) }
 
       context "when the message is person associated with user" do

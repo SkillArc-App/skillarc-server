@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLength
+RSpec.describe JobOrders::JobOrdersReactor do
   it_behaves_like "a replayable message consumer"
 
   let(:instance) { described_class.new(message_service:) }
@@ -264,7 +264,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
   end
 
-  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
+  describe "#handle_message" do
     subject { instance.handle_message(message) }
 
     before do
@@ -759,6 +759,32 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
                     trace_id: message.trace_id,
                     aggregate: message.aggregate,
                     schema: JobOrders::Events::Activated::V1,
+                    data: Core::Nothing
+                  )
+
+                subject
+              end
+            end
+
+            context "when the new status should be candidates screened" do
+              let(:existing_status) do
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ClosedStatus::FILLED)
+              end
+              let(:new_status) do
+                JobOrders::Projectors::JobOrderStatus::Projection.new(
+                  order_count: 2,
+                  candidates: { one: :screened },
+                  not_filled?: false
+                )
+              end
+
+              it "emits an candidates screened event" do
+                expect(message_service)
+                  .to receive(:create_once_for_trace!)
+                  .with(
+                    trace_id: message.trace_id,
+                    aggregate: message.aggregate,
+                    schema: JobOrders::Events::CandidatesScreened::V1,
                     data: Core::Nothing
                   )
 

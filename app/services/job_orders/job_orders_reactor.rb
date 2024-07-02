@@ -1,5 +1,5 @@
 module JobOrders
-  class JobOrdersReactor < MessageReactor # rubocop:disable Metrics/ClassLength
+  class JobOrdersReactor < MessageReactor
     def can_replay?
       true
     end
@@ -264,18 +264,25 @@ module JobOrders
       return if current_status == existing_status
 
       case current_status
-      when *JobOrders::ActivatedStatus::ALL
+      when JobOrders::ActivatedStatus::OPEN
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
-          schema: JobOrders::Events::Activated::V1,
+          schema: Events::Activated::V1,
+          data: Core::Nothing
+        )
+      when JobOrders::ActivatedStatus::CANDIDATES_SCREENED
+        message_service.create_once_for_trace!(
+          trace_id: message.trace_id,
+          aggregate: message.aggregate,
+          schema: Events::CandidatesScreened::V1,
           data: Core::Nothing
         )
       when *JobOrders::StalledStatus::ALL
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
-          schema: JobOrders::Events::Stalled::V1,
+          schema: Events::Stalled::V1,
           data: {
             status: current_status
           }
@@ -284,14 +291,14 @@ module JobOrders
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
-          schema: JobOrders::Events::Filled::V1,
+          schema: Events::Filled::V1,
           data: Core::Nothing
         )
       when JobOrders::ClosedStatus::NOT_FILLED
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
-          schema: JobOrders::Events::NotFilled::V1,
+          schema: Events::NotFilled::V1,
           data: Core::Nothing
         )
       end

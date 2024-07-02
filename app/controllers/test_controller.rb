@@ -1,7 +1,7 @@
 load 'spec/builders/user_builder.rb'
 load 'spec/builders/person_builder.rb'
 
-class TestController < ApplicationController # rubocop:disable Metrics/ClassLength
+class TestController < ApplicationController
   include MessageEmitter
 
   def create_test_user

@@ -1,5 +1,5 @@
 module Coaches
-  class CoachesEventEmitter # rubocop:disable Metrics/ClassLength
+  class CoachesEventEmitter
     NoPersonForCoachError = Class.new(StandardError)
 
     def initialize(message_service:)

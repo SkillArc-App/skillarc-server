@@ -1,5 +1,5 @@
 module Klaviyo
-  class KlaviyoReactor < MessageReactor # rubocop:disable Metrics/ClassLength
+  class KlaviyoReactor < MessageReactor
     def can_replay?
       true
     end

@@ -1,5 +1,5 @@
 module Klaviyo
-  class RealGateway # rubocop:disable Metrics/ClassLength
+  class RealGateway
     ClientSideEventError = Class.new(StandardError)
     ServerSideEventError = Class.new(StandardError)
 

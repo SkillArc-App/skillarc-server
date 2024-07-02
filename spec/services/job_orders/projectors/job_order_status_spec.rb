@@ -273,9 +273,8 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
           ]
         end
 
-        # TODO: temporary until new status
         it "reports the status as open" do
-          expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
+          expect(subject.status).to eq(JobOrders::ActivatedStatus::CANDIDATES_SCREENED)
         end
       end
     end

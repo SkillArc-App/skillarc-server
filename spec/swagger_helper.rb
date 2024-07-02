@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
+RSpec.configure do |config|
   config.openapi_strict_schema_validation = true
 
   # Specify a root folder where Swagger JSON files are generated

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/BlockLength
+RSpec.describe Analytics::AnalyticsAggregator do
   it_behaves_like "a replayable message consumer"
 
-  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
+  describe "#handle_message" do
     subject { described_class.new.handle_message(message) }
 
     context "when the message is person_associated_to_user" do
@@ -335,6 +335,28 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
             data: {
               status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
             }
+          )
+        end
+
+        let(:closed_at) { Time.zone.now }
+        let(:closed_status) { "Closed!!" }
+
+        it "updates the dim job order to clear closed fields" do
+          subject
+
+          dim_job_order.reload
+          expect(dim_job_order.closed_at).to eq(nil)
+          expect(dim_job_order.closed_status).to eq(nil)
+        end
+      end
+
+      context "when the message is job_order_candidates_screened" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: job_order_id,
+            schema: JobOrders::Events::CandidatesScreened::V1,
+            data: Core::Nothing
           )
         end
 

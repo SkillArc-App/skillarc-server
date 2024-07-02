@@ -1,5 +1,5 @@
 module Analytics
-  class AnalyticsAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
+  class AnalyticsAggregator < MessageConsumer
     def reset_for_replay
       FactCandidate.delete_all
       FactApplication.delete_all
@@ -130,6 +130,10 @@ module Analytics
     end
 
     on_message JobOrders::Events::Stalled::V1 do |message|
+      DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: nil, closed_status: nil)
+    end
+
+    on_message JobOrders::Events::CandidatesScreened::V1 do |message|
       DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: nil, closed_status: nil)
     end
 

@@ -133,6 +133,10 @@ module Analytics
       DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: nil, closed_status: nil)
     end
 
+    on_message JobOrders::Events::CandidatesScreened::V1 do |message|
+      DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: nil, closed_status: nil)
+    end
+
     on_message JobOrders::Events::Filled::V1 do |message|
       DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::FILLED)
     end

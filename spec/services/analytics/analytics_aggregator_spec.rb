@@ -350,6 +350,28 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         end
       end
 
+      context "when the message is job_order_candidates_screened" do
+        let(:message) do
+          build(
+            :message,
+            aggregate_id: job_order_id,
+            schema: JobOrders::Events::CandidatesScreened::V1,
+            data: Core::Nothing
+          )
+        end
+
+        let(:closed_at) { Time.zone.now }
+        let(:closed_status) { "Closed!!" }
+
+        it "updates the dim job order to clear closed fields" do
+          subject
+
+          dim_job_order.reload
+          expect(dim_job_order.closed_at).to eq(nil)
+          expect(dim_job_order.closed_status).to eq(nil)
+        end
+      end
+
       context "when the message is job_order_filled" do
         let(:message) do
           build(

@@ -766,6 +766,32 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
               end
             end
 
+            context "when the new status should be candidates screened" do
+              let(:existing_status) do
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ClosedStatus::FILLED)
+              end
+              let(:new_status) do
+                JobOrders::Projectors::JobOrderStatus::Projection.new(
+                  order_count: 2,
+                  candidates: { one: :screened },
+                  not_filled?: false
+                )
+              end
+
+              it "emits an candidates screened event" do
+                expect(message_service)
+                  .to receive(:create_once_for_trace!)
+                  .with(
+                    trace_id: message.trace_id,
+                    aggregate: message.aggregate,
+                    schema: JobOrders::Events::CandidatesScreened::V1,
+                    data: Core::Nothing
+                  )
+
+                subject
+              end
+            end
+
             context "when the new status should be stalled" do
               let(:existing_status) do
                 JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ActivatedStatus::OPEN)

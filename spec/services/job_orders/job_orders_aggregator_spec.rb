@@ -420,6 +420,27 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       end
     end
 
+    context "when the message is job order candidates screened" do
+      let(:message) do
+        build(
+          :message,
+          schema: JobOrders::Events::CandidatesScreened::V1,
+          aggregate_id: job_order.id,
+          data: Core::Nothing
+        )
+      end
+
+      let!(:job_order) { create(:job_orders__job_order, closed_at: Time.utc(2024, 1, 1)) }
+
+      it "updates the job order" do
+        subject
+
+        job_order.reload
+        expect(job_order.status).to eq(JobOrders::ActivatedStatus::CANDIDATES_SCREENED)
+        expect(job_order.closed_at).to eq(nil)
+      end
+    end
+
     context "when the message is job order filled" do
       let(:message) do
         build(

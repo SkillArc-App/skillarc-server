@@ -10,6 +10,7 @@
 #  opened_at          :datetime         not null
 #  order_count        :integer
 #  recommended_count  :integer          not null
+#  screened_count     :integer
 #  status             :string           not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null

@@ -16,10 +16,13 @@ module Coaches
       person_id = params[:seeker_id]
 
       with_message_service do
-        CoachesEventEmitter.new(message_service:).recommend_for_job_order(
+        message_service.create!(
+          trace_id: request.request_id,
           job_order_id:,
-          person_id:,
-          trace_id: request.request_id
+          schema: JobOrders::Commands::AddCandidate::V1,
+          data: {
+            person_id:
+          }
         )
       end
 

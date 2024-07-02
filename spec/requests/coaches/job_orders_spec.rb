@@ -63,12 +63,15 @@ RSpec.describe "Coaches::JobOrders", type: :request do
 
         response '202', 'recommends a job order' do
           before do
-            expect_any_instance_of(Coaches::CoachesEventEmitter)
-              .to receive(:recommend_for_job_order)
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
               .with(
-                job_order_id: job_order.id,
-                person_id:,
-                trace_id: be_a(String)
+                trace_id: be_a(String),
+                job_order_id: id,
+                schema: JobOrders::Commands::AddCandidate::V1,
+                data: {
+                  person_id:
+                }
               )
               .and_call_original
           end

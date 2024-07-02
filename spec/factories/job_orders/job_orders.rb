@@ -7,6 +7,7 @@ FactoryBot.define do
     status { JobOrders::ActivatedStatus::OPEN }
     applicant_count { 0 }
     candidate_count { 0 }
+    screened_count { 0 }
     closed_at { nil }
     hire_count { 2 }
     order_count { 5 }

@@ -20,17 +20,6 @@ module Coaches
       )
     end
 
-    def recommend_for_job_order(person_id:, job_order_id:, trace_id:)
-      message_service.create!(
-        schema: Events::JobOrderCandidateAdded::V2,
-        job_order_id:,
-        trace_id:,
-        data: {
-          person_id:
-        }
-      )
-    end
-
     def remove_attribute(person_id:, person_attribute_id:, trace_id:)
       message_service.create!(
         schema: Events::PersonAttributeRemoved::V1,

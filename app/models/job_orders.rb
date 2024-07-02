@@ -9,6 +9,7 @@ module JobOrders
     ALL = [
       ADDED = "added",
       RECOMMENDED = "recommended",
+      SCREENED = "screened",
       HIRED = "hired",
       RESCINDED = 'rescinded'
     ].freeze

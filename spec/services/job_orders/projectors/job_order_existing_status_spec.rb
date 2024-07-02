@@ -4,7 +4,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Aggregates::JobOrder.new(job_order_id:) }
+    let(:aggregate) { JobOrders::Aggregates::JobOrder.new(job_order_id:) }
     let(:job_order_id) { SecureRandom.uuid }
 
     let(:now) { Time.zone.now }
@@ -13,7 +13,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderActivated::V1,
+        schema: JobOrders::Events::Activated::V1,
         data: Core::Nothing
       )
     end
@@ -21,7 +21,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderStalled::V1,
+        schema: JobOrders::Events::Stalled::V1,
         data: {
           status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
         }
@@ -31,7 +31,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderFilled::V1,
+        schema: JobOrders::Events::Filled::V1,
         data: Core::Nothing
       )
     end
@@ -39,7 +39,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderNotFilled::V1,
+        schema: JobOrders::Events::NotFilled::V1,
         data: Core::Nothing
       )
     end

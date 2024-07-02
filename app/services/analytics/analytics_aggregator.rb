@@ -119,7 +119,7 @@ module Analytics
       end
     end
 
-    on_message Events::JobOrderAdded::V1 do |message|
+    on_message JobOrders::Events::Added::V1 do |message|
       dim_job = DimJob.find_by!(job_id: message.data.job_id)
 
       DimJobOrder.create!(
@@ -129,23 +129,23 @@ module Analytics
       )
     end
 
-    on_message Events::JobOrderStalled::V1 do |message|
+    on_message JobOrders::Events::Stalled::V1 do |message|
       DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: nil, closed_status: nil)
     end
 
-    on_message Events::JobOrderFilled::V1 do |message|
+    on_message JobOrders::Events::Filled::V1 do |message|
       DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::FILLED)
     end
 
-    on_message Events::JobOrderNotFilled::V1 do |message|
+    on_message JobOrders::Events::NotFilled::V1 do |message|
       DimJobOrder.where(job_order_id: message.aggregate.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::NOT_FILLED)
     end
 
-    on_message Events::JobOrderOrderCountAdded::V1 do |message|
+    on_message JobOrders::Events::OrderCountAdded::V1 do |message|
       DimJobOrder.where(job_order_id: message.aggregate.id).update_all(order_count: message.data.order_count)
     end
 
-    on_message Events::JobOrderCandidateAdded::V2 do |message|
+    on_message JobOrders::Events::CandidateAdded::V2 do |message|
       dim_person = DimPerson.find_by!(person_id: message.data.person_id)
       dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
 
@@ -161,21 +161,28 @@ module Analytics
       fact_candidate.save!
     end
 
-    on_message Events::JobOrderCandidateHired::V2 do |message|
+    on_message JobOrders::Events::CandidateHired::V2 do |message|
       dim_person = DimPerson.find_by!(person_id: message.data.person_id)
       dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
 
       FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::HIRED, terminal_status_at: message.occurred_at)
     end
 
-    on_message Events::JobOrderCandidateRecommended::V2 do |message|
+    on_message JobOrders::Events::CandidateRecommended::V2 do |message|
       dim_person = DimPerson.find_by!(person_id: message.data.person_id)
       dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
 
       FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::RECOMMENDED, terminal_status_at: nil)
     end
 
-    on_message Events::JobOrderCandidateRescinded::V2 do |message|
+    on_message JobOrders::Events::CandidateScreened::V1 do |message|
+      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
+      dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
+
+      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::SCREENED, terminal_status_at: nil)
+    end
+
+    on_message JobOrders::Events::CandidateRescinded::V2 do |message|
       dim_person = DimPerson.find_by!(person_id: message.data.person_id)
       dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
 

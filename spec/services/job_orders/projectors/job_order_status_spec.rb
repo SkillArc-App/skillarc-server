@@ -4,7 +4,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Aggregates::JobOrder.new(job_order_id:) }
+    let(:aggregate) { JobOrders::Aggregates::JobOrder.new(job_order_id:) }
     let(:job_order_id) { SecureRandom.uuid }
     let(:person_id1) { SecureRandom.uuid }
     let(:person_id2) { SecureRandom.uuid }
@@ -13,7 +13,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderNotFilled::V1,
+        schema: JobOrders::Events::NotFilled::V1,
         data: Core::Nothing
       )
     end
@@ -21,7 +21,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderActivated::V1,
+        schema: JobOrders::Events::Activated::V1,
         data: Core::Nothing
       )
     end
@@ -29,7 +29,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderOrderCountAdded::V1,
+        schema: JobOrders::Events::OrderCountAdded::V1,
         data: {
           order_count: 2
         }
@@ -39,7 +39,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderOrderCountAdded::V1,
+        schema: JobOrders::Events::OrderCountAdded::V1,
         data: {
           order_count: 3
         }
@@ -49,7 +49,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateAdded::V2,
+        schema: JobOrders::Events::CandidateAdded::V2,
         data: {
           person_id: person_id1
         }
@@ -59,7 +59,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateAdded::V2,
+        schema: JobOrders::Events::CandidateAdded::V2,
         data: {
           person_id: person_id2
         }
@@ -70,7 +70,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateRecommended::V2,
+        schema: JobOrders::Events::CandidateRecommended::V2,
         data: {
           person_id: person_id1
         }
@@ -80,7 +80,28 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateRecommended::V2,
+        schema: JobOrders::Events::CandidateRecommended::V2,
+        data: {
+          person_id: person_id2
+        }
+      )
+    end
+
+    let(:job_order_candidate_screened1) do
+      build(
+        :message,
+        aggregate:,
+        schema: JobOrders::Events::CandidateScreened::V1,
+        data: {
+          person_id: person_id1
+        }
+      )
+    end
+    let(:job_order_candidate_screened2) do
+      build(
+        :message,
+        aggregate:,
+        schema: JobOrders::Events::CandidateScreened::V1,
         data: {
           person_id: person_id2
         }
@@ -91,7 +112,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateHired::V2,
+        schema: JobOrders::Events::CandidateHired::V2,
         data: {
           person_id: person_id1
         }
@@ -101,7 +122,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateHired::V2,
+        schema: JobOrders::Events::CandidateHired::V2,
         data: {
           person_id: person_id2
         }
@@ -112,7 +133,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         aggregate:,
-        schema: Events::JobOrderCandidateRescinded::V2,
+        schema: JobOrders::Events::CandidateRescinded::V2,
         data: {
           person_id: person_id1
         }
@@ -144,7 +165,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
     end
 
     context "when a job order has been set" do
-      context "when no enough candidates have been recommended" do
+      context "when not enough candidates have been recommended" do
         let(:messages) do
           [
             job_order_order_count_added1,
@@ -227,6 +248,23 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         end
 
         it "reports the status open" do
+          expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
+        end
+      end
+
+      context "when candidates have been screened" do
+        let(:messages) do
+          [
+            job_order_order_count_added1,
+            job_order_candidate_added1,
+            job_order_candidate_added2,
+            job_order_candidate_screened1,
+            job_order_candidate_screened2
+          ]
+        end
+
+        # TODO: temporary until new status
+        it "reports the status as open" do
           expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
         end
       end

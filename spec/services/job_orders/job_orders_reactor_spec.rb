@@ -9,27 +9,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
   let(:job_order_id) { SecureRandom.uuid }
   let(:job_id) { SecureRandom.uuid }
 
-  describe "#add_job_order" do
-    subject do
-      instance.add_job_order(job_order_id:, job_id:, trace_id:)
-    end
-
-    it "fires off a job order order count added event" do
-      expect(message_service)
-        .to receive(:create!)
-        .with(
-          schema: JobOrders::Commands::Add::V1,
-          job_order_id:,
-          trace_id:,
-          data: {
-            job_id:
-          }
-        )
-
-      subject
-    end
-  end
-
   describe "#add_order_count" do
     subject do
       instance.add_order_count(job_order_id:, order_count:, trace_id:)
@@ -48,27 +27,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
           data: {
             order_count:
           }
-        )
-
-      subject
-    end
-  end
-
-  describe "#activate_job_order" do
-    subject do
-      instance.activate_job_order(job_order_id:, trace_id:)
-    end
-
-    let(:job_order_id) { 10 }
-
-    it "fires off a job order order activated event" do
-      expect(message_service)
-        .to receive(:create!)
-        .with(
-          schema: JobOrders::Commands::Activate::V1,
-          job_order_id:,
-          trace_id:,
-          data: Core::Nothing
         )
 
       subject

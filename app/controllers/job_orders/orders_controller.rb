@@ -12,10 +12,13 @@ module JobOrders
 
     def create
       with_message_service do
-        JobOrders::JobOrdersReactor.new(message_service:).add_job_order(
+        message_service.create!(
+          schema: Commands::Add::V1,
           job_order_id: SecureRandom.uuid,
-          job_id: params[:job_id],
-          trace_id: request.request_id
+          trace_id: request.request_id,
+          data: {
+            job_id: params[:job_id]
+          }
         )
       end
 
@@ -41,9 +44,11 @@ module JobOrders
 
     def activate
       with_message_service do
-        JobOrders::JobOrdersReactor.new(message_service:).activate_job_order(
+        message_service.create!(
+          schema: Commands::Activate::V1,
           job_order_id: params[:order_id],
-          trace_id: request.request_id
+          trace_id: request.request_id,
+          data: Core::Nothing
         )
       end
 

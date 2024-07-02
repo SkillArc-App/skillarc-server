@@ -83,12 +83,15 @@ RSpec.describe "JobOrders", type: :request do
         before do
           create(:job_orders__job, id: job_id)
 
-          expect_any_instance_of(JobOrders::JobOrdersReactor)
-            .to receive(:add_job_order)
+          expect_any_instance_of(MessageService)
+            .to receive(:create!)
             .with(
+              schema: JobOrders::Commands::Add::V1,
               job_order_id: be_a(String),
-              job_id:,
-              trace_id: be_a(String)
+              trace_id: be_a(String),
+              data: {
+                job_id:
+              }
             )
             .and_call_original
         end
@@ -262,11 +265,13 @@ RSpec.describe "JobOrders", type: :request do
         include_context "job order authenticated"
 
         before do
-          expect_any_instance_of(JobOrders::JobOrdersReactor)
-            .to receive(:activate_job_order)
+          expect_any_instance_of(MessageService)
+            .to receive(:create!)
             .with(
+              schema: JobOrders::Commands::Activate::V1,
               job_order_id: id,
-              trace_id: be_a(String)
+              trace_id: be_a(String),
+              data: Core::Nothing
             )
             .and_call_original
 

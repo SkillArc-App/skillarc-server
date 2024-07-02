@@ -4,17 +4,6 @@ module JobOrders
       true
     end
 
-    def add_job_order(job_order_id:, job_id:, trace_id:)
-      message_service.create!(
-        schema: Commands::Add::V1,
-        job_order_id:,
-        trace_id:,
-        data: {
-          job_id:
-        }
-      )
-    end
-
     def add_order_count(job_order_id:, order_count:, trace_id:)
       message_service.create!(
         schema: JobOrders::Events::OrderCountAdded::V1,
@@ -23,15 +12,6 @@ module JobOrders
         data: {
           order_count:
         }
-      )
-    end
-
-    def activate_job_order(job_order_id:, trace_id:)
-      message_service.create!(
-        schema: Commands::Activate::V1,
-        job_order_id:,
-        trace_id:,
-        data: Core::Nothing
       )
     end
 

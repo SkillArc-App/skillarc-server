@@ -150,12 +150,12 @@ module Analytics
       dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
 
       fact_candidate = FactCandidate.find_or_initialize_by(dim_job_order:, dim_person:)
+      fact_candidate.status = JobOrders::CandidateStatus::ADDED
+      fact_candidate.terminal_status_at = nil
+
       if fact_candidate.new_record?
         fact_candidate.order_candidate_number = dim_job_order.fact_candidates.count + 1
-        fact_candidate.status = JobOrders::CandidateStatus::ADDED
         fact_candidate.added_at = message.occurred_at
-      else
-        fact_candidate.status = JobOrders::CandidateStatus::ADDED
       end
 
       fact_candidate.save!
@@ -165,21 +165,21 @@ module Analytics
       dim_person = DimPerson.find_by!(person_id: message.data.person_id)
       dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
 
-      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::HIRED)
+      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::HIRED, terminal_status_at: message.occurred_at)
     end
 
     on_message Events::JobOrderCandidateRecommended::V2 do |message|
       dim_person = DimPerson.find_by!(person_id: message.data.person_id)
       dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
 
-      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::RECOMMENDED)
+      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::RECOMMENDED, terminal_status_at: nil)
     end
 
     on_message Events::JobOrderCandidateRescinded::V2 do |message|
       dim_person = DimPerson.find_by!(person_id: message.data.person_id)
       dim_job_order = DimJobOrder.find_by!(job_order_id: message.aggregate.id)
 
-      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::RESCINDED)
+      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::RESCINDED, terminal_status_at: message.occurred_at)
     end
 
     on_message Events::EmployerCreated::V1 do |message|
@@ -207,8 +207,6 @@ module Analytics
         Analytics::FactApplication.create!(
           dim_job:,
           dim_person:,
-          employment_title: data.employment_title,
-          employer_name: data.employer_name,
           application_number:,
           status: data.status,
           application_opened_at: message.occurred_at,

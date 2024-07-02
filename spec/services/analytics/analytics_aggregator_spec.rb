@@ -247,7 +247,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
             name: "name",
             location: "location",
             bio: "bio",
-            logo_url: "dope.com",
+            logo_url: "dope.com"
           }
         )
       end
@@ -272,7 +272,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
             name: "New Name",
             location: "location",
             bio: "bio",
-            logo_url: "dope.com",
+            logo_url: "dope.com"
           }
         )
       end
@@ -436,11 +436,12 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
           expect(fact_candidate.order_candidate_number).to eq(2)
           expect(fact_candidate.added_at).to eq(message.occurred_at)
+          expect(fact_candidate.terminal_status_at).to eq(nil)
         end
       end
 
       context "when ther candidate is existing" do
-        let!(:fact_candidate) { create(:analytics__fact_candidate, dim_job_order:, dim_person:)}
+        let!(:fact_candidate) { create(:analytics__fact_candidate, dim_job_order:, dim_person:) }
 
         it "updates the fact candidate with the appropriate values" do
           expect { subject }.not_to change(Analytics::FactCandidate, :count)
@@ -448,6 +449,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           fact_candidate.reload
 
           expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
+          expect(fact_candidate.terminal_status_at).to eq(nil)
         end
       end
     end
@@ -472,6 +474,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
           fact_candidate.reload
           expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::HIRED)
+          expect(fact_candidate.terminal_status_at).to eq(message.occurred_at)
         end
       end
 
@@ -492,6 +495,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
           fact_candidate.reload
           expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::RECOMMENDED)
+          expect(fact_candidate.terminal_status_at).to eq(nil)
         end
       end
 
@@ -512,6 +516,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
           fact_candidate.reload
           expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::RESCINDED)
+          expect(fact_candidate.terminal_status_at).to eq(message.occurred_at)
         end
       end
     end
@@ -730,8 +735,6 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
 
           expect(fact_application.dim_job).to eq(dim_job)
           expect(fact_application.dim_person).to eq(dim_person)
-          expect(fact_application.employer_name).to eq("An employers")
-          expect(fact_application.employment_title).to eq("Best job")
           expect(fact_application.status).to eq(status)
           expect(fact_application.application_id).to eq(application_id)
           expect(fact_application.application_number).to eq(3)

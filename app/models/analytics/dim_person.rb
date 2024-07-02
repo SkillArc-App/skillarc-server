@@ -7,11 +7,10 @@
 #  first_name              :string
 #  kind                    :string           not null
 #  last_name               :string
-#  lead_created_at         :datetime
 #  onboarding_completed_at :datetime
+#  person_added_at         :datetime         not null
 #  phone_number            :string
 #  analytics_dim_user_id   :bigint
-#  lead_id                 :uuid
 #  person_id               :uuid             not null
 #
 # Indexes
@@ -19,7 +18,6 @@
 #  index_analytics_dim_people_on_analytics_dim_user_id  (analytics_dim_user_id)
 #  index_analytics_dim_people_on_email                  (email)
 #  index_analytics_dim_people_on_kind                   (kind)
-#  index_analytics_dim_people_on_lead_id                (lead_id)
 #  index_analytics_dim_people_on_person_id              (person_id) UNIQUE
 #  index_analytics_dim_people_on_phone_number           (phone_number)
 #

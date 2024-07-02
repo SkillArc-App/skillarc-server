@@ -86,7 +86,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         expect(person.last_name).to eq(message.data.last_name)
         expect(person.email).to eq(message.data.email)
         expect(person.person_id).to eq(person_id)
-        expect(person.kind).to eq(Analytics::DimPerson::Kind::SEEKER)
+        expect(person.kind).to eq(Analytics::DimPerson::Kind::LEAD)
       end
     end
 
@@ -834,10 +834,10 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       end
 
       let(:email) { Faker::Internet.email }
-      let(:lead_id) { SecureRandom.uuid }
+      let(:person_id) { SecureRandom.uuid }
 
       let!(:dim_user_executor) { create(:analytics__dim_user, email:) }
-      let!(:dim_person_target) { create(:analytics__dim_person, lead_id:) }
+      let!(:dim_person_target) { create(:analytics__dim_person, person_id:) }
 
       it "creates a fact coach action record" do
         expect { subject }.to change(Analytics::FactCoachAction, :count).from(0).to(1)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_01_202243) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_02_143635) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -72,15 +72,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_01_202243) do
     t.string "phone_number"
     t.string "email"
     t.string "kind", null: false
-    t.datetime "lead_created_at"
     t.datetime "onboarding_completed_at"
-    t.uuid "lead_id"
     t.uuid "person_id", null: false
     t.bigint "analytics_dim_user_id"
+    t.datetime "person_added_at", null: false
     t.index ["analytics_dim_user_id"], name: "index_analytics_dim_people_on_analytics_dim_user_id"
     t.index ["email"], name: "index_analytics_dim_people_on_email"
     t.index ["kind"], name: "index_analytics_dim_people_on_kind"
-    t.index ["lead_id"], name: "index_analytics_dim_people_on_lead_id"
     t.index ["person_id"], name: "index_analytics_dim_people_on_person_id", unique: true
     t.index ["phone_number"], name: "index_analytics_dim_people_on_phone_number"
   end

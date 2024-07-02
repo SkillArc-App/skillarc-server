@@ -16,7 +16,7 @@ module Analytics
     on_message Events::PersonAssociatedToUser::V1 do |message|
       user = DimUser.find_by!(user_id: message.data.user_id)
 
-      DimPerson.where(person_id: message.aggregate.person_id).update_all(analytics_dim_user_id: user.id)
+      DimPerson.where(person_id: message.aggregate.person_id).update_all(analytics_dim_user_id: user.id, kind: DimPerson::Kind::SEEKER)
     end
 
     on_message Events::UserCreated::V1 do |message|
@@ -47,7 +47,8 @@ module Analytics
         email: message.data.email,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
-        kind: DimPerson::Kind::SEEKER
+        person_added_at: message.occurred_at,
+        kind: DimPerson::Kind::LEAD
       )
     end
 

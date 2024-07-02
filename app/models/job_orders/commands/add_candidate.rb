@@ -23,7 +23,7 @@ module JobOrders
       V2 = Core::Schema.active(
         type: Core::COMMAND,
         data: Data::V1,
-        metadata: Core::RequestorMetadata::V1,
+        metadata: Core::RequestorMetadata::V2,
         aggregate: Aggregates::JobOrder,
         message_type: MessageTypes::ADD_CANDIDATE,
         version: 2

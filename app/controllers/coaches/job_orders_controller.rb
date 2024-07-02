@@ -19,14 +19,14 @@ module Coaches
         message_service.create!(
           trace_id: request.request_id,
           job_order_id:,
-          schema: JobOrders::Commands::AddCandidate::V1,
+          schema: JobOrders::Commands::AddCandidate::V2,
           data: {
             person_id:
           },
           metadata: {
             requestor_id: current_user.id,
             requestor_email: current_user.email,
-            trace_id: request.request_id
+            requestor_type: Requestor::Kinds::COACH
           }
         )
       end

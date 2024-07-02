@@ -27,7 +27,7 @@ module JobOrders
         message_type: MessageTypes::JOB_ORDER_CANDIDATE_ADDED,
         version: 1
       )
-      V2 = Core::Schema.active(
+      V2 = Core::Schema.inactive(
         type: Core::EVENT,
         data: Data::V2,
         metadata: Core::Nothing,
@@ -38,9 +38,9 @@ module JobOrders
       V3 = Core::Schema.active(
         type: Core::EVENT,
         data: Data::V2,
-        metadata: MetaData::V1,
+        metadata: Core::RequestorMetadata::V2,
         aggregate: Aggregates::JobOrder,
-        message_type: MessageTypes::JobOrders::JOB_ORDER_CANDIDATE_ADDED,
+        message_type: MessageTypes::JOB_ORDER_CANDIDATE_ADDED,
         version: 3
       )
     end

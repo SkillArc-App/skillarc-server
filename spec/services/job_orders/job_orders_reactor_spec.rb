@@ -279,10 +279,15 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
       let(:message) do
         build(
           :message,
-          schema: JobOrders::Commands::AddCandidate::V1,
+          schema: JobOrders::Commands::AddCandidate::V2,
           aggregate:,
           data: {
             person_id:
+          },
+          metadata: {
+            requestor_type: nil,
+            requestor_id: nil,
+            requestor_email: nil
           }
         )
       end
@@ -293,10 +298,15 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
           [
             build(
               :message,
-              schema: JobOrders::Events::CandidateAdded::V2,
+              schema: JobOrders::Events::CandidateAdded::V3,
               aggregate:,
               data: {
                 person_id:
+              },
+              metadata: {
+                requestor_type: nil,
+                requestor_id: nil,
+                requestor_email: nil
               }
             )
           ]
@@ -315,11 +325,16 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
           expect(message_service)
             .to receive(:create_once_for_trace!)
             .with(
-              schema: JobOrders::Events::CandidateAdded::V2,
+              schema: JobOrders::Events::CandidateAdded::V3,
               aggregate: message.aggregate,
               trace_id: message.trace_id,
               data: {
                 person_id: message.data.person_id
+              },
+              metadata: {
+                requestor_type: nil,
+                requestor_id: nil,
+                requestor_email: nil
               }
             )
             .and_call_original

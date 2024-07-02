@@ -74,8 +74,8 @@ RSpec.describe "Coaches::JobOrders", type: :request do
                 },
                 metadata: {
                   requestor_type: Requestor::Kinds::COACH,
-                  requestor_id: current_user.id,
-                  requestor_email: current_user.email
+                  requestor_id: user.id,
+                  requestor_email: user.email
                 }
               )
               .and_call_original

@@ -161,16 +161,21 @@ module JobOrders
       )
     end
 
-    on_message Commands::AddCandidate::V1, :sync do |message|
+    on_message Commands::AddCandidate::V2, :sync do |message|
       messages = MessageService.aggregate_events(message.aggregate)
 
-      unless messages.any? { |m| m.schema == Events::CandidateAdded::V2 && m.data.person_id == message.data.person_id }
+      unless messages.any? { |m| m.schema == Events::CandidateAdded::V3 && m.data.person_id == message.data.person_id }
         message_service.create_once_for_trace!(
-          schema: Events::CandidateAdded::V2,
+          schema: Events::CandidateAdded::V3,
           aggregate: message.aggregate,
           trace_id: message.trace_id,
           data: {
             person_id: message.data.person_id
+          },
+          metadata: {
+            requestor_type: message.metadata[:requestor_type],
+            requestor_id: message.metadata[:requestor_id],
+            requestor_email: message.metadata[:requestor_email]
           }
         )
       end

@@ -18,6 +18,7 @@ module JobOrders
       JOB_ORDER_CANDIDATE_APPLIED = 'job_order_candidate_applied',
       JOB_ORDER_CANDIDATE_HIRED = 'job_order_candidate_hired',
       JOB_ORDER_CANDIDATE_RECOMMENDED = 'job_order_candidate_recommended',
+      JOB_ORDER_CANDIDATE_SCREENDED = 'job_order_candidate_screened',
       JOB_ORDER_CANDIDATE_RESCINDED = 'job_order_candidate_rescinded'
     ].freeze
 

@@ -173,7 +173,7 @@ RSpec.describe Slack::SlackReactor do
 
       it "sends a slack message to the provided channel and emits and event" do
         expect(message_service)
-          .to receive(:create!)
+          .to receive(:create_once_for_aggregate!)
           .with(
             schema: Events::SlackMessageSent::V1,
             trace_id: message.trace_id,

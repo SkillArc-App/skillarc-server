@@ -183,7 +183,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
 
     context "recommended" do
-      let(:status) { JobOrders::CandidateStatus::RECOMMENDED  }
+      let(:status) { JobOrders::CandidateStatus::RECOMMENDED }
 
       it "emits a recommended event" do
         expect(message_service)
@@ -475,8 +475,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
 
     context "when the message is add job order" do
-
-
       let(:message) do
         build(
           :message,

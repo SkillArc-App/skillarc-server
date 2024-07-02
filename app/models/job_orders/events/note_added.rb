@@ -24,5 +24,3 @@ module JobOrders
     end
   end
 end
-
-

@@ -17,7 +17,8 @@ module JobOrders
           return ActivatedStatus::NEEDS_ORDER_COUNT if order_count.nil?
           return ClosedStatus::FILLED if hired_candidates.length >= order_count
           return StalledStatus::WAITING_ON_EMPLOYER if recommended_candidates.length + hired_candidates.length >= order_count
-          # TODO update this once we have a new order status
+
+          # TODO: update this once we have a new order status
 
           ActivatedStatus::OPEN
         end

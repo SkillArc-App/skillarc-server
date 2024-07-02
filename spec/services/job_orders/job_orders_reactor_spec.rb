@@ -8,6 +8,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
   let(:trace_id) { SecureRandom.uuid }
   let(:job_order_id) { SecureRandom.uuid }
   let(:job_id) { SecureRandom.uuid }
+  let(:person_id) { SecureRandom.uuid }
 
   describe "#add_order_count" do
     subject do
@@ -242,6 +243,68 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
   describe "#handle_message" do # rubocop:disable Metrics/BlockLength
     subject { instance.handle_message(message) }
 
+    before do
+      messages.each do |message|
+        Event.from_message!(message)
+      end
+    end
+
+    let(:messages) { [] }
+
+    context "when the message is add candidate" do
+      let(:message) do
+        build(
+          :message,
+          schema: JobOrders::Commands::AddCandidate::V1,
+          aggregate:,
+          data: {
+            person_id:
+          }
+        )
+      end
+      let(:aggregate) { JobOrders::Aggregates::JobOrder.new(job_order_id: SecureRandom.uuid) }
+
+      context "when the candidate has previously been added" do
+        let(:messages) do
+          [
+            build(
+              :message,
+              schema: JobOrders::Events::CandidateAdded::V2,
+              aggregate:,
+              data: {
+                person_id:
+              }
+            )
+          ]
+        end
+        let(:message_service) { double }
+
+        it "does nothing" do
+          subject
+        end
+      end
+
+      context "when the candidate has not previously been added" do
+        let(:messages) { [] }
+
+        it "emits a candidate added event" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              schema: JobOrders::Events::CandidateAdded::V2,
+              aggregate: message.aggregate,
+              trace_id: message.trace_id,
+              data: {
+                person_id: message.data.person_id
+              }
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+    end
+
     context "when the message is job created" do
       let(:message) do
         build(
@@ -314,12 +377,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
       end
 
       context "when status is new" do
-        before do
-          messages.each do |message|
-            Event.from_message!(message)
-          end
-        end
-
         let(:status) { ApplicantStatus::StatusTypes::NEW }
 
         context "when there is not a job order for the job_id" do
@@ -399,11 +456,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
 
     context "when the message is add job order" do
-      before do
-        messages.each do |message|
-          Event.from_message!(message)
-        end
-      end
+
 
       let(:message) do
         build(
@@ -473,12 +526,6 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
 
     context "when the message is activate job order" do
-      before do
-        messages.each do |message|
-          Event.from_message!(message)
-        end
-      end
-
       let(:message) do
         build(
           :message,

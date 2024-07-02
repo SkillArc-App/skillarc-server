@@ -36,26 +36,6 @@ RSpec.describe Coaches::CoachesEventEmitter do
     end
   end
 
-  describe "#recommend_for_job_order" do
-    subject { instance.recommend_for_job_order(person_id:, job_order_id:, trace_id:) }
-
-    let(:job_order_id) { SecureRandom.uuid }
-    let(:trace_id) { SecureRandom.uuid }
-
-    it "creates an event" do
-      expect(message_service).to receive(:create!).with(
-        schema: JobOrders::Events::CandidateAdded::V2,
-        job_order_id:,
-        trace_id:,
-        data: {
-          person_id:
-        }
-      ).and_call_original
-
-      subject
-    end
-  end
-
   describe "#remove_attribute" do
     subject { instance.remove_attribute(person_id:, person_attribute_id:, trace_id:) }
 

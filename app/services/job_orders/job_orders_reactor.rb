@@ -142,6 +142,21 @@ module JobOrders
       )
     end
 
+    on_message Commands::AddCandidate::V1, :sync do |message|
+      messages = MessageService.aggregate_events(message.aggregate)
+
+      unless messages.any? { |m| m.schema == Events::CandidateAdded::V2 && m.data.person_id == message.data.person_id }
+        message_service.create_once_for_trace!(
+          schema: Events::CandidateAdded::V2,
+          aggregate: message.aggregate,
+          trace_id: message.trace_id,
+          data: {
+            person_id: message.data.person_id
+          }
+        )
+      end
+    end
+
     on_message Commands::Activate::V1, :sync do |message|
       job_order_added = ::Projectors::Aggregates::GetFirst.project(
         schema: JobOrders::Events::Added::V1,

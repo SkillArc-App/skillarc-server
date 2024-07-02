@@ -319,6 +319,7 @@ module MessageTypes
     REASON_CREATED = 'reason_created',
     SESSION_STARTED = 'session_started',
     *Documents::MessageTypes::EVENTS,
+    *Teams::MessageTypes::EVENTS,
     *Qualifications::EVENTS,
     *Tags::EVENTS,
     *User::EVENTS,
@@ -344,6 +345,7 @@ module MessageTypes
 
   COMMANDS = [
     *Documents::MessageTypes::COMMANDS,
+    *Teams::MessageTypes::COMMANDS,
     *Qualifications::COMMANDS,
     *Applications::COMMANDS,
     *Tags::COMMANDS,

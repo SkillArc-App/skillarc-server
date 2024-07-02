@@ -1,5 +1,5 @@
 module Coaches
-  class CoachesAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
+  class CoachesAggregator < MessageConsumer
     def reset_for_replay
       PersonNote.delete_all
       PersonApplication.delete_all

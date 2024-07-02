@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe Coaches::CoachesAggregator do # rubocop:disable Metrics/BlockLength
+RSpec.describe Coaches::CoachesAggregator do
   let(:consumer) { described_class.new }
   let(:id) { SecureRandom.uuid }
 
   it_behaves_like "a replayable message consumer"
 
-  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
+  describe "#handle_message" do
     subject { consumer.handle_message(message) }
 
     context "when the message is barrier_added" do

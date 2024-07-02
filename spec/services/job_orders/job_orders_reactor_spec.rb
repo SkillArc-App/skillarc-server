@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLength
+RSpec.describe JobOrders::JobOrdersReactor do
   it_behaves_like "a replayable message consumer"
 
   let(:instance) { described_class.new(message_service:) }
@@ -264,7 +264,7 @@ RSpec.describe JobOrders::JobOrdersReactor do # rubocop:disable Metrics/BlockLen
     end
   end
 
-  describe "#handle_message" do # rubocop:disable Metrics/BlockLength
+  describe "#handle_message" do
     subject { instance.handle_message(message) }
 
     before do

@@ -1,5 +1,5 @@
 module JobOrders
-  class JobOrdersReactor < MessageReactor # rubocop:disable Metrics/ClassLength
+  class JobOrdersReactor < MessageReactor
     def can_replay?
       true
     end

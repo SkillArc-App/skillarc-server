@@ -12,3 +12,9 @@ AllCops:
 Rails/SkipsModelValidations:
   Exclude:
     - app/services/analytics/analytics_aggregator.rb
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false

@@ -1,5 +1,5 @@
 module Analytics
-  class AnalyticsAggregator < MessageConsumer # rubocop:disable Metrics/ClassLength
+  class AnalyticsAggregator < MessageConsumer
     def reset_for_replay
       FactCandidate.delete_all
       FactApplication.delete_all

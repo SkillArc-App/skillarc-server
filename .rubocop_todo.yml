@@ -11,19 +11,6 @@
 Metrics/AbcSize:
   Max: 101
 
-# Offense count: 3
-# Configuration parameters: CountComments, CountAsOne, AllowedMethods, AllowedPatterns.
-# AllowedMethods: refine
-Metrics/BlockLength:
-  Max: 459
-  Exclude:
-    - "db/schema.rb"
-
-# Offense count: 2
-# Configuration parameters: CountComments, CountAsOne.
-Metrics/ClassLength:
-  Max: 166
-
 # Offense count: 6
 # Configuration parameters: AllowedMethods, AllowedPatterns.
 Metrics/CyclomaticComplexity:

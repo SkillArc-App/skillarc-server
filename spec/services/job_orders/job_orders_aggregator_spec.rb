@@ -124,7 +124,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderAdded::V1,
+          schema: JobOrders::Events::Added::V1,
           data: {
             job_id: job.id
           },
@@ -154,7 +154,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderOrderCountAdded::V1,
+          schema: JobOrders::Events::OrderCountAdded::V1,
           aggregate_id: job_order.id,
           data: {
             order_count: 5
@@ -176,7 +176,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderCandidateAdded::V2,
+          schema: JobOrders::Events::CandidateAdded::V2,
           aggregate_id: job_order.id,
           data: {
             person_id: person.id
@@ -235,7 +235,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderCandidateApplied::V2,
+          schema: JobOrders::Events::CandidateApplied::V2,
           aggregate_id: job_order.id,
           data: {
             person_id: person.id,
@@ -260,7 +260,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderCandidateRecommended::V2,
+          schema: JobOrders::Events::CandidateRecommended::V2,
           aggregate_id: job_order.id,
           data: {
             person_id: person.id
@@ -288,7 +288,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderCandidateHired::V2,
+          schema: JobOrders::Events::CandidateHired::V2,
           aggregate_id: job_order.id,
           data: {
             person_id: person.id
@@ -316,7 +316,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderCandidateRescinded::V2,
+          schema: JobOrders::Events::CandidateRescinded::V2,
           aggregate_id: job_order.id,
           data: {
             person_id: person.id
@@ -343,7 +343,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderActivated::V1,
+          schema: JobOrders::Events::Activated::V1,
           aggregate_id: job_order.id,
           data: Core::Nothing
         )
@@ -364,7 +364,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderStalled::V1,
+          schema: JobOrders::Events::Stalled::V1,
           aggregate_id: job_order.id,
           data: {
             status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
@@ -387,7 +387,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderFilled::V1,
+          schema: JobOrders::Events::Filled::V1,
           aggregate_id: job_order.id,
           data: Core::Nothing
         )
@@ -408,7 +408,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderNotFilled::V1,
+          schema: JobOrders::Events::NotFilled::V1,
           aggregate_id: job_order.id,
           data: Core::Nothing
         )
@@ -429,7 +429,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderNoteAdded::V1,
+          schema: JobOrders::Events::NoteAdded::V1,
           aggregate_id: job_order.id,
           data: {
             originator: "john@skillarc.com",
@@ -456,7 +456,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderNoteModified::V1,
+          schema: JobOrders::Events::NoteModified::V1,
           aggregate_id: job_order.id,
           data: {
             originator: "john@skillarc.com",
@@ -481,7 +481,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderNoteRemoved::V1,
+          schema: JobOrders::Events::NoteRemoved::V1,
           aggregate_id: job_order.id,
           data: {
             originator: "john@skillarc.com",

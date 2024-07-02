@@ -44,7 +44,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::JobOrderCandidateAdded::V2,
+        schema: JobOrders::Events::CandidateAdded::V2,
         job_order_id:,
         trace_id:,
         data: {

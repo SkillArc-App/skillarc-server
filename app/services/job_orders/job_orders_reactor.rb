@@ -6,7 +6,7 @@ module JobOrders
 
     def add_job_order(job_order_id:, job_id:, trace_id:)
       message_service.create!(
-        schema: Commands::AddJobOrder::V1,
+        schema: Commands::Add::V1,
         job_order_id:,
         trace_id:,
         data: {
@@ -17,7 +17,7 @@ module JobOrders
 
     def add_order_count(job_order_id:, order_count:, trace_id:)
       message_service.create!(
-        schema: Events::JobOrderOrderCountAdded::V1,
+        schema: JobOrders::Events::OrderCountAdded::V1,
         job_order_id:,
         trace_id:,
         data: {
@@ -28,7 +28,7 @@ module JobOrders
 
     def activate_job_order(job_order_id:, trace_id:)
       message_service.create!(
-        schema: Commands::ActivateJobOrder::V1,
+        schema: Commands::Activate::V1,
         job_order_id:,
         trace_id:,
         data: Core::Nothing
@@ -37,7 +37,7 @@ module JobOrders
 
     def close_job_order_not_filled(job_order_id:, trace_id:)
       message_service.create!(
-        schema: Events::JobOrderNotFilled::V1,
+        schema: Events::NotFilled::V1,
         job_order_id:,
         trace_id:,
         data: Core::Nothing
@@ -46,7 +46,7 @@ module JobOrders
 
     def add_note(job_order_id:, originator:, note:, note_id:, trace_id:)
       message_service.create!(
-        schema: Events::JobOrderNoteAdded::V1,
+        schema: Events::NoteAdded::V1,
         job_order_id:,
         trace_id:,
         data: {
@@ -59,7 +59,7 @@ module JobOrders
 
     def modify_note(job_order_id:, originator:, note_id:, note:, trace_id:)
       message_service.create!(
-        schema: Events::JobOrderNoteModified::V1,
+        schema: Events::NoteModified::V1,
         job_order_id:,
         trace_id:,
         data: {
@@ -72,7 +72,7 @@ module JobOrders
 
     def remove_note(job_order_id:, originator:, note_id:, trace_id:)
       message_service.create!(
-        schema: Events::JobOrderNoteRemoved::V1,
+        schema: Events::NoteRemoved::V1,
         job_order_id:,
         trace_id:,
         data: {
@@ -82,22 +82,11 @@ module JobOrders
       )
     end
 
-    on_message Events::JobCreated::V3 do |message|
-      message_service.create_once_for_trace!(
-        schema: Events::JobOrderAdded::V1,
-        job_order_id: SecureRandom.uuid,
-        trace_id: message.trace_id,
-        data: {
-          job_id: message.aggregate.id
-        }
-      )
-    end
-
     def update_status(job_order_id:, person_id:, status:, trace_id:)
       case status
       when CandidateStatus::ADDED
         message_service.create!(
-          schema: Events::JobOrderCandidateAdded::V2,
+          schema: Events::CandidateAdded::V2,
           job_order_id:,
           trace_id:,
           data: {
@@ -106,7 +95,7 @@ module JobOrders
         )
       when CandidateStatus::RECOMMENDED
         message_service.create!(
-          schema: Events::JobOrderCandidateRecommended::V2,
+          schema: Events::CandidateRecommended::V2,
           job_order_id:,
           trace_id:,
           data: {
@@ -115,7 +104,7 @@ module JobOrders
         )
       when CandidateStatus::HIRED
         message_service.create!(
-          schema: Events::JobOrderCandidateHired::V2,
+          schema: Events::CandidateHired::V2,
           job_order_id:,
           trace_id:,
           data: {
@@ -124,7 +113,7 @@ module JobOrders
         )
       when CandidateStatus::RESCINDED
         message_service.create!(
-          schema: Events::JobOrderCandidateRescinded::V2,
+          schema: Events::CandidateRescinded::V2,
           job_order_id:,
           trace_id:,
           data: {
@@ -134,7 +123,18 @@ module JobOrders
       end
     end
 
-    on_message Events::ApplicantStatusUpdated::V6 do |message|
+    on_message ::Events::JobCreated::V3 do |message|
+      message_service.create_once_for_trace!(
+        schema: Events::Added::V1,
+        job_order_id: SecureRandom.uuid,
+        trace_id: message.trace_id,
+        data: {
+          job_id: message.aggregate.id
+        }
+      )
+    end
+
+    on_message ::Events::ApplicantStatusUpdated::V6 do |message|
       return if message.data.status != ApplicantStatus::StatusTypes::NEW
 
       # Grab any active job orders
@@ -143,7 +143,7 @@ module JobOrders
       return if active_job_order.nil?
 
       message_service.create_once_for_trace!(
-        schema: Events::JobOrderCandidateAdded::V2,
+        schema: JobOrders::Events::CandidateAdded::V2,
         trace_id: message.trace_id,
         aggregate: active_job_order.aggregate,
         data: {
@@ -152,7 +152,7 @@ module JobOrders
       )
 
       message_service.create_once_for_trace!(
-        schema: Events::JobOrderCandidateApplied::V2,
+        schema: JobOrders::Events::CandidateApplied::V2,
         trace_id: message.trace_id,
         aggregate: active_job_order.aggregate,
         data: {
@@ -162,9 +162,9 @@ module JobOrders
       )
     end
 
-    on_message Commands::ActivateJobOrder::V1, :sync do |message|
+    on_message Commands::Activate::V1, :sync do |message|
       job_order_added = ::Projectors::Aggregates::GetFirst.project(
-        schema: Events::JobOrderAdded::V1,
+        schema: JobOrders::Events::Added::V1,
         aggregate: message.aggregate
       )
 
@@ -172,7 +172,7 @@ module JobOrders
         Sentry.capture_exception(MessageConsumer::FailedToHandleMessage.new("Job Order not found", message))
       elsif active_job_order(message.occurred_at, job_order_added.data.job_id).present?
         message_service.create_once_for_trace!(
-          schema: Events::JobOrderActivationFailed::V1,
+          schema: JobOrders::Events::ActivationFailed::V1,
           trace_id: message.trace_id,
           aggregate: message.aggregate,
           data: {
@@ -181,7 +181,7 @@ module JobOrders
         )
       else
         message_service.create_once_for_trace!(
-          schema: Events::JobOrderActivated::V1,
+          schema: JobOrders::Events::Activated::V1,
           trace_id: message.trace_id,
           aggregate: message.aggregate,
           data: Core::Nothing
@@ -189,10 +189,10 @@ module JobOrders
       end
     end
 
-    on_message Commands::AddJobOrder::V1, :sync do |message|
+    on_message Commands::Add::V1, :sync do |message|
       if active_job_order(message.occurred_at, message.data.job_id).present?
         message_service.create_once_for_trace!(
-          schema: Events::JobOrderCreationFailed::V1,
+          schema: JobOrders::Events::CreationFailed::V1,
           trace_id: message.trace_id,
           aggregate: message.aggregate,
           data: {
@@ -202,7 +202,7 @@ module JobOrders
         )
       else
         message_service.create_once_for_trace!(
-          schema: Events::JobOrderAdded::V1,
+          schema: JobOrders::Events::Added::V1,
           trace_id: message.trace_id,
           aggregate: message.aggregate,
           data: {
@@ -212,23 +212,23 @@ module JobOrders
       end
     end
 
-    on_message Events::JobOrderOrderCountAdded::V1, :sync do |message|
+    on_message Events::OrderCountAdded::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateAdded::V2, :sync do |message|
+    on_message Events::CandidateAdded::V2, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateRecommended::V2, :sync do |message|
+    on_message Events::CandidateRecommended::V2, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateHired::V2, :sync do |message|
+    on_message Events::CandidateHired::V2, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
-    on_message Events::JobOrderCandidateRescinded::V2, :sync do |message|
+    on_message Events::CandidateRescinded::V2, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
@@ -245,14 +245,14 @@ module JobOrders
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
-          schema: Events::JobOrderActivated::V1,
+          schema: JobOrders::Events::Activated::V1,
           data: Core::Nothing
         )
       when *JobOrders::StalledStatus::ALL
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
-          schema: Events::JobOrderStalled::V1,
+          schema: JobOrders::Events::Stalled::V1,
           data: {
             status: current_status
           }
@@ -261,14 +261,14 @@ module JobOrders
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
-          schema: Events::JobOrderFilled::V1,
+          schema: JobOrders::Events::Filled::V1,
           data: Core::Nothing
         )
       when JobOrders::ClosedStatus::NOT_FILLED
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
           aggregate: message.aggregate,
-          schema: Events::JobOrderNotFilled::V1,
+          schema: JobOrders::Events::NotFilled::V1,
           data: Core::Nothing
         )
       end
@@ -276,7 +276,7 @@ module JobOrders
 
     def job_order_added_events(job_id)
       # Get all job order for this job
-      Events::JobOrderAdded::V1
+      JobOrders::Events::Added::V1
         .all_messages
         .select { |job_order| job_order.data.job_id == job_id }
     end

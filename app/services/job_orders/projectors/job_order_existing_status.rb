@@ -17,19 +17,19 @@ module JobOrders
         )
       end
 
-      on_message Events::JobOrderActivated::V1 do |_, accumulator|
+      on_message Events::Activated::V1 do |_, accumulator|
         accumulator.with(status: JobOrders::ActivatedStatus::OPEN)
       end
 
-      on_message Events::JobOrderFilled::V1 do |_, accumulator|
+      on_message Events::Filled::V1 do |_, accumulator|
         accumulator.with(status: JobOrders::ClosedStatus::FILLED)
       end
 
-      on_message Events::JobOrderNotFilled::V1 do |_, accumulator|
+      on_message Events::NotFilled::V1 do |_, accumulator|
         accumulator.with(status: JobOrders::ClosedStatus::NOT_FILLED)
       end
 
-      on_message Events::JobOrderStalled::V1 do |message, accumulator|
+      on_message Events::Stalled::V1 do |message, accumulator|
         accumulator.with(status: message.data.status)
       end
     end

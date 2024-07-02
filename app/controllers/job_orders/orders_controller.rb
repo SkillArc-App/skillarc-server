@@ -19,7 +19,7 @@ module JobOrders
         )
       end
 
-      failure = ::Projectors::Trace::GetFirst.project(trace_id: request.request_id, schema: Events::JobOrderCreationFailed::V1)
+      failure = ::Projectors::Trace::GetFirst.project(trace_id: request.request_id, schema: JobOrders::Events::CreationFailed::V1)
       if failure.present?
         render json: { reason: failure.data.reason }, status: :bad_request
       else
@@ -47,7 +47,7 @@ module JobOrders
         )
       end
 
-      failure = ::Projectors::Trace::GetFirst.project(trace_id: request.request_id, schema: Events::JobOrderActivationFailed::V1)
+      failure = ::Projectors::Trace::GetFirst.project(trace_id: request.request_id, schema: JobOrders::Events::ActivationFailed::V1)
       if failure.present?
         render json: { reason: failure.data.reason }, status: :bad_request
       else

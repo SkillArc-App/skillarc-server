@@ -8,7 +8,7 @@ module JobOrders
       Person.delete_all
     end
 
-    on_message Events::JobCreated::V3 do |message|
+    on_message ::Events::JobCreated::V3 do |message|
       Job.create!(
         id: message.aggregate.id,
         applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING,
@@ -18,7 +18,7 @@ module JobOrders
       )
     end
 
-    on_message Events::JobUpdated::V2 do |message|
+    on_message ::Events::JobUpdated::V2 do |message|
       job = Job.find(message.aggregate.id)
 
       job.update!(
@@ -27,7 +27,7 @@ module JobOrders
       )
     end
 
-    on_message Events::PersonAdded::V1 do |message|
+    on_message ::Events::PersonAdded::V1 do |message|
       Person.create!(
         id: message.aggregate.id,
         first_name: message.data.first_name,
@@ -37,7 +37,7 @@ module JobOrders
       )
     end
 
-    on_message Events::BasicInfoAdded::V1 do |message|
+    on_message ::Events::BasicInfoAdded::V1 do |message|
       Person.update(
         message.aggregate.id,
         first_name: message.data.first_name,
@@ -47,7 +47,7 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderAdded::V1, :sync do |message|
+    on_message Events::Added::V1, :sync do |message|
       JobOrder.create!(
         id: message.aggregate.id,
         job_orders_jobs_id: message.data.job_id,
@@ -61,14 +61,14 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderOrderCountAdded::V1, :sync do |message|
+    on_message Events::OrderCountAdded::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(
         order_count: message.data.order_count
       )
     end
 
-    on_message Events::JobOrderCandidateAdded::V2, :sync do |message|
+    on_message Events::CandidateAdded::V2, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       person = Person.find_by(id: message.data.person_id)
       return if person.nil?
@@ -81,12 +81,12 @@ module JobOrders
       update_job_order_counts(job_order)
     end
 
-    on_message Events::JobOrderCandidateApplied::V2, :sync do |message|
+    on_message Events::CandidateApplied::V2, :sync do |message|
       candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
       candidate.update!(applied_at: message.data.applied_at)
     end
 
-    on_message Events::JobOrderCandidateRecommended::V2, :sync do |message|
+    on_message Events::CandidateRecommended::V2, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
 
@@ -96,7 +96,7 @@ module JobOrders
       update_job_order_counts(job_order)
     end
 
-    on_message Events::JobOrderCandidateHired::V2, :sync do |message|
+    on_message Events::CandidateHired::V2, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
 
@@ -104,7 +104,7 @@ module JobOrders
       update_job_order_counts(job_order)
     end
 
-    on_message Events::JobOrderCandidateRescinded::V2, :sync do |message|
+    on_message Events::CandidateRescinded::V2, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
 
@@ -112,27 +112,27 @@ module JobOrders
       update_job_order_counts(job_order)
     end
 
-    on_message Events::JobOrderActivated::V1, :sync do |message|
+    on_message Events::Activated::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: ActivatedStatus::OPEN, closed_at: nil)
     end
 
-    on_message Events::JobOrderStalled::V1, :sync do |message|
+    on_message Events::Stalled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: message.data.status, closed_at: nil)
     end
 
-    on_message Events::JobOrderFilled::V1, :sync do |message|
+    on_message Events::Filled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(closed_at: message.occurred_at, status: ClosedStatus::FILLED)
     end
 
-    on_message Events::JobOrderNotFilled::V1, :sync do |message|
+    on_message Events::NotFilled::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(closed_at: message.occurred_at, status: ClosedStatus::NOT_FILLED)
     end
 
-    on_message Events::JobOrderNoteAdded::V1, :sync do |message|
+    on_message Events::NoteAdded::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
 
       Note.create!(
@@ -144,12 +144,12 @@ module JobOrders
       )
     end
 
-    on_message Events::JobOrderNoteModified::V1, :sync do |message|
+    on_message Events::NoteModified::V1, :sync do |message|
       note = Note.find(message.data.note_id)
       note.update!(note: message.data.note)
     end
 
-    on_message Events::JobOrderNoteRemoved::V1, :sync do |message|
+    on_message Events::NoteRemoved::V1, :sync do |message|
       Note.find(message.data.note_id).destroy!
     end
 

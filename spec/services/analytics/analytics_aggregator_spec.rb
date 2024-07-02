@@ -291,7 +291,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
       let(:message) do
         build(
           :message,
-          schema: Events::JobOrderAdded::V1,
+          schema: JobOrders::Events::Added::V1,
           data: {
             job_id: dim_job.job_id
           }
@@ -331,7 +331,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           build(
             :message,
             aggregate_id: job_order_id,
-            schema: Events::JobOrderStalled::V1,
+            schema: JobOrders::Events::Stalled::V1,
             data: {
               status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
             }
@@ -355,7 +355,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           build(
             :message,
             aggregate_id: job_order_id,
-            schema: Events::JobOrderFilled::V1,
+            schema: JobOrders::Events::Filled::V1,
             data: Core::Nothing
           )
         end
@@ -374,7 +374,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           build(
             :message,
             aggregate_id: job_order_id,
-            schema: Events::JobOrderNotFilled::V1,
+            schema: JobOrders::Events::NotFilled::V1,
             data: Core::Nothing
           )
         end
@@ -393,7 +393,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           build(
             :message,
             aggregate_id: job_order_id,
-            schema: Events::JobOrderOrderCountAdded::V1,
+            schema: JobOrders::Events::OrderCountAdded::V1,
             data: {
               order_count: 5
             }
@@ -414,7 +414,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
         build(
           :message,
           aggregate_id: dim_job_order.job_order_id,
-          schema: Events::JobOrderCandidateAdded::V2,
+          schema: JobOrders::Events::CandidateAdded::V2,
           data: {
             person_id: dim_person.person_id
           }
@@ -462,7 +462,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           build(
             :message,
             aggregate_id: fact_candidate.dim_job_order.job_order_id,
-            schema: Events::JobOrderCandidateHired::V2,
+            schema: JobOrders::Events::CandidateHired::V2,
             data: {
               person_id: fact_candidate.dim_person.person_id
             }
@@ -483,7 +483,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           build(
             :message,
             aggregate_id: fact_candidate.dim_job_order.job_order_id,
-            schema: Events::JobOrderCandidateRecommended::V2,
+            schema: JobOrders::Events::CandidateRecommended::V2,
             data: {
               person_id: fact_candidate.dim_person.person_id
             }
@@ -504,7 +504,7 @@ RSpec.describe Analytics::AnalyticsAggregator do # rubocop:disable Metrics/Block
           build(
             :message,
             aggregate_id: fact_candidate.dim_job_order.job_order_id,
-            schema: Events::JobOrderCandidateRescinded::V2,
+            schema: JobOrders::Events::CandidateRescinded::V2,
             data: {
               person_id: fact_candidate.dim_person.person_id
             }

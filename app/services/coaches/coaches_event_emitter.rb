@@ -22,7 +22,7 @@ module Coaches
 
     def recommend_for_job_order(person_id:, job_order_id:, trace_id:)
       message_service.create!(
-        schema: Events::JobOrderCandidateAdded::V2,
+        schema: JobOrders::Events::CandidateAdded::V2,
         job_order_id:,
         trace_id:,
         data: {

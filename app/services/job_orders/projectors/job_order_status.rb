@@ -44,34 +44,34 @@ module JobOrders
         )
       end
 
-      on_message Events::JobOrderOrderCountAdded::V1 do |message, accumulator|
+      on_message Events::OrderCountAdded::V1 do |message, accumulator|
         accumulator.with(order_count: message.data.order_count)
       end
 
-      on_message Events::JobOrderNotFilled::V1 do |_, accumulator|
+      on_message Events::NotFilled::V1 do |_, accumulator|
         accumulator.with(not_filled?: true)
       end
 
-      on_message Events::JobOrderActivated::V1 do |_, accumulator|
+      on_message Events::Activated::V1 do |_, accumulator|
         accumulator.with(not_filled?: false)
       end
 
-      on_message Events::JobOrderCandidateAdded::V2 do |message, accumulator|
+      on_message Events::CandidateAdded::V2 do |message, accumulator|
         accumulator.candidates[message.data.person_id] = :added
         accumulator
       end
 
-      on_message Events::JobOrderCandidateRecommended::V2 do |message, accumulator|
+      on_message Events::CandidateRecommended::V2 do |message, accumulator|
         accumulator.candidates[message.data.person_id] = :recommended
         accumulator
       end
 
-      on_message Events::JobOrderCandidateHired::V2 do |message, accumulator|
+      on_message Events::CandidateHired::V2 do |message, accumulator|
         accumulator.candidates[message.data.person_id] = :hired
         accumulator
       end
 
-      on_message Events::JobOrderCandidateRescinded::V2 do |message, accumulator|
+      on_message Events::CandidateRescinded::V2 do |message, accumulator|
         accumulator.candidates[message.data.person_id] = :rescinded
         accumulator
       end

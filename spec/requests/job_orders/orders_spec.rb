@@ -107,7 +107,7 @@ RSpec.describe "JobOrders", type: :request do
             Event.from_message!(
               build(
                 :message,
-                schema: Events::JobOrderAdded::V1,
+                schema: JobOrders::Events::Added::V1,
                 aggregate_id: SecureRandom.uuid,
                 data: {
                   job_id:
@@ -281,7 +281,7 @@ RSpec.describe "JobOrders", type: :request do
         let(:order_1_added) do
           build(
             :message,
-            schema: Events::JobOrderAdded::V1,
+            schema: JobOrders::Events::Added::V1,
             aggregate_id: id,
             data: {
               job_id: job.id
@@ -292,7 +292,7 @@ RSpec.describe "JobOrders", type: :request do
         let(:order_1_not_filled) do
           build(
             :message,
-            schema: Events::JobOrderNotFilled::V1,
+            schema: JobOrders::Events::NotFilled::V1,
             aggregate_id: id,
             data: Core::Nothing,
             occurred_at: 4.minutes.ago
@@ -301,7 +301,7 @@ RSpec.describe "JobOrders", type: :request do
         let(:order_2_added) do
           build(
             :message,
-            schema: Events::JobOrderAdded::V1,
+            schema: JobOrders::Events::Added::V1,
             aggregate_id: SecureRandom.uuid,
             data: {
               job_id: job.id

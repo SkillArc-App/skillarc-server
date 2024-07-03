@@ -37,7 +37,7 @@ RSpec.describe Message do
       let(:message) do
         build(
           :message,
-          schema: Events::DayElapsed::V1,
+          schema: Events::DayElapsed::V2,
           data: {
             date: Date.new(2000, 1, 1),
             day_of_week: Events::DayElapsed::Data::DaysOfWeek::WEDNESDAY

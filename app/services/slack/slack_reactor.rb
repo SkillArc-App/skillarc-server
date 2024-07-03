@@ -12,7 +12,7 @@ module Slack
         as_user: true
       )
 
-      message_service.create!(
+      message_service.create_once_for_aggregate!(
         schema: ::Events::SlackMessageSent::V1,
         trace_id: message.trace_id,
         message_id: message.aggregate.message_id,

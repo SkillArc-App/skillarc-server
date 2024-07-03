@@ -22,10 +22,13 @@ module Coaches
             :assigned_coach,
             :certified_by,
             :first_name,
+            :last_active_on,
             :last_name,
             :email,
             :phone
           ),
+          last_contacted: person.last_contacted_at,
+          last_active_on: person.last_active_at,
           seeker_id: person.id
         }
       end

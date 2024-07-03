@@ -23,13 +23,21 @@ module Events
       end
     end
 
-    V1 = Core::Schema.active(
+    V1 = Core::Schema.inactive(
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
       aggregate: Aggregates::Day,
       message_type: MessageTypes::DAY_ELAPSED,
       version: 1
+    )
+    V2 = Core::Schema.active(
+      type: Core::EVENT,
+      data: Data::V1,
+      metadata: Core::Nothing,
+      aggregate: Aggregates::Date,
+      message_type: MessageTypes::DAY_ELAPSED,
+      version: 2
     )
   end
 end

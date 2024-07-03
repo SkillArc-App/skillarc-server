@@ -5,8 +5,8 @@ RSpec.describe ElapseDayJob do
     expect_any_instance_of(MessageService)
       .to receive(:create!)
       .with(
-        day: "day",
-        schema: Events::DayElapsed::V1,
+        date: "2020-01-01",
+        schema: Events::DayElapsed::V2,
         data: {
           date: Date.new(2020, 1, 1),
           day_of_week: Events::DayElapsed::Data::DaysOfWeek::WEDNESDAY

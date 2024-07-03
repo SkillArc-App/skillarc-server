@@ -27,7 +27,7 @@ module Employers
       end
     end
 
-    on_message Events::DayElapsed::V1 do |message|
+    on_message Events::DayElapsed::V2 do |message|
       date = message.data.date
       day_of_week = date.strftime("%A").downcase
 

@@ -6,7 +6,8 @@ module Teams
       ADDED = "team_added",
       ADD_USER_TO_TEAM = "add_user_to_team",
       REMOVE_USER_FROM_TEAM = "remove_user_from_team",
-      PRIMARY_SLACK_CHANNEL_ADDED = "team_primary_slack_channel_added"
+      PRIMARY_SLACK_CHANNEL_ADDED = "team_primary_slack_channel_added",
+      SEND_SLACK_MESSAGE = "send_team_slack_message"
     ].freeze
 
     COMMANDS = [

@@ -145,6 +145,59 @@ RSpec.describe Teams::TeamsReactor do
       end
     end
 
+    context "when the message is send slack message" do
+      let(:message) do
+        build(
+          :message,
+          aggregate:,
+          schema: Teams::Commands::SendSlackMessage::V1,
+          data: {
+            message: "yo"
+          }
+        )
+      end
+
+      context "when no slack channel has been set" do
+        let(:message_service) { double }
+
+        it "does nothing" do
+          subject
+        end
+      end
+
+      context "when a slack channel has been set" do
+        let(:messages) do
+          [
+            build(
+              :message,
+              aggregate:,
+              schema: Teams::Events::PrimarySlackChannelAdded::V1,
+              data: {
+                channel: "#cool_channel"
+              }
+            )
+          ]
+        end
+
+        it "emits a send slack message command" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              message_id: be_a(String),
+              trace_id: message.trace_id,
+              schema: Commands::SendSlackMessage::V1,
+              data: {
+                text: message.data.message,
+                channel: "#cool_channel"
+              }
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+    end
+
     context "when the message is remvove user to team" do
       let(:message) do
         build(

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_02_220052) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_03_135213) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -737,6 +737,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_02_220052) do
     t.date "date_of_birth"
     t.text "search_vector", null: false
     t.string "certified_by"
+    t.datetime "last_active_at"
+    t.datetime "last_contacted_at"
+    t.string "user_id"
   end
 
   create_table "people_search_person_education_experiences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

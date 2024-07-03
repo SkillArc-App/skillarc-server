@@ -127,6 +127,8 @@ module PeopleSearch
     on_message Events::SessionStarted::V1 do |message|
       person = Person.find_by(user_id: message.aggregate.id)
 
+      return unless person
+
       person.last_active_at = message.occurred_at
 
       person.save!

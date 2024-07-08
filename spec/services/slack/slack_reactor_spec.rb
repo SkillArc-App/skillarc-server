@@ -163,10 +163,11 @@ RSpec.describe Slack::SlackReactor do
       let(:message) do
         build(
           :message,
-          schema: Commands::SendSlackMessage::V1,
+          schema: Commands::SendSlackMessage::V2,
           data: {
             channel: "#somechannel",
-            text: "*some text*"
+            text: "*some text*",
+            blocks: nil
           }
         )
       end
@@ -175,12 +176,13 @@ RSpec.describe Slack::SlackReactor do
         expect(message_service)
           .to receive(:create_once_for_aggregate!)
           .with(
-            schema: Events::SlackMessageSent::V1,
+            schema: Events::SlackMessageSent::V2,
             trace_id: message.trace_id,
             message_id: message.aggregate.message_id,
             data: {
               channel: "#somechannel",
-              text: "*some text*"
+              text: "*some text*",
+              blocks: nil
             }
           )
 
@@ -189,6 +191,7 @@ RSpec.describe Slack::SlackReactor do
           .with(
             channel: '#somechannel',
             text: "*some text*",
+            blocks: nil,
             as_user: true
           )
 

@@ -13,7 +13,7 @@ module Contact
                end
 
         message_service.create!(
-          schema: Commands::SendSlackMessage::V1,
+          schema: Commands::SendSlackMessage::V2,
           trace_id: message.trace_id,
           message_id: message.aggregate.message_id,
           data: {

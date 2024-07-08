@@ -150,9 +150,9 @@ RSpec.describe Teams::TeamsReactor do
         build(
           :message,
           aggregate:,
-          schema: Teams::Commands::SendSlackMessage::V1,
+          schema: Teams::Commands::SendSlackMessage::V2,
           data: {
-            message: "yo"
+            text: "yo"
           }
         )
       end
@@ -185,10 +185,11 @@ RSpec.describe Teams::TeamsReactor do
             .with(
               message_id: be_a(String),
               trace_id: message.trace_id,
-              schema: Commands::SendSlackMessage::V1,
+              schema: Commands::SendSlackMessage::V2,
               data: {
-                text: message.data.message,
-                channel: "#cool_channel"
+                text: message.data.text,
+                channel: "#cool_channel",
+                blocks: nil
               }
             )
             .and_call_original

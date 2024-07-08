@@ -624,10 +624,16 @@ RSpec.describe MessageService do
       build(
         :message,
         aggregate_id: message_id,
-        schema: Events::SlackMessageSent::V1,
+        schema: Events::SlackMessageSent::V2,
         data: {
           channel: "#cool",
-          text: "Sup"
+          blocks: [
+            {
+              type: "header",
+              text: "Sup!",
+              emoji: true
+            }
+          ]
         },
         occurred_at: Time.zone.local(2020, 1, 1)
       )
@@ -636,7 +642,7 @@ RSpec.describe MessageService do
       build(
         :message,
         aggregate_id: message_id,
-        schema: Commands::SendSlackMessage::V1,
+        schema: Commands::SendSlackMessage::V2,
         data: {
           channel: "#cool",
           text: "Sup"
@@ -679,10 +685,16 @@ RSpec.describe MessageService do
       build(
         :message,
         trace_id:,
-        schema: Events::SlackMessageSent::V1,
+        schema: Events::SlackMessageSent::V2,
         data: {
           channel: "#cool",
-          text: "Sup"
+          blocks: [
+            {
+              type: "header",
+              text: "Sup!",
+              emoji: true
+            }
+          ]
         },
         occurred_at: Time.zone.local(2020, 1, 1)
       )
@@ -691,7 +703,7 @@ RSpec.describe MessageService do
       build(
         :message,
         trace_id:,
-        schema: Commands::SendSlackMessage::V1,
+        schema: Commands::SendSlackMessage::V2,
         data: {
           channel: "#cool",
           text: "Sup"

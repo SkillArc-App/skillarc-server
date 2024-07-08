@@ -51,7 +51,7 @@ RSpec.describe Contact::ContactReactor do
             expect(message_service)
               .to receive(:create!)
               .with(
-                schema: Commands::SendSlackMessage::V1,
+                schema: Commands::SendSlackMessage::V2,
                 trace_id: message.trace_id,
                 message_id: message.aggregate.message_id,
                 data: {
@@ -80,7 +80,7 @@ RSpec.describe Contact::ContactReactor do
             expect(message_service)
               .to receive(:create!)
               .with(
-                schema: Commands::SendSlackMessage::V1,
+                schema: Commands::SendSlackMessage::V2,
                 trace_id: message.trace_id,
                 message_id: message.aggregate.message_id,
                 data: {

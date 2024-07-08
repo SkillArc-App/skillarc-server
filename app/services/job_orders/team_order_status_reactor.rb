@@ -53,9 +53,9 @@ module JobOrders
             command: message_service.build(
               trace_id: message.trace_id,
               team_id:,
-              schema: Teams::Commands::SendSlackMessage::V1,
+              schema: Teams::Commands::SendSlackMessage::V2,
               data: {
-                message: craft_slack_message(job_orders)
+                blocks: slack_message_blocks(job_orders)
               }
             )
           },
@@ -69,13 +69,60 @@ module JobOrders
 
     private
 
-    def craft_slack_message(job_orders)
-      message = "Good morning team! The following job orders are active an assigned here.\n"
-      job_orders.sort_by { |order| order[:opened_at] }.each do |job_order|
-        message += "* <#{ENV.fetch('FRONTEND_URL', nil)}/orders/#{job_order[:id]}|#{job_order[:employer_name]}: #{job_order[:employment_title]}>: #{job_order[:status]}"
-      end
+    def slack_message_blocks(job_orders)
+      [
+        {
+          type: "header",
+          text: "Good morning team!",
+          emoji: true
+        },
+        {
+          type: "rich_text",
+          elements: {
+            type: "rich_text_section",
+            elements: [
+              {
+                type: "text",
+                text: "The following job orders are active an assigned here. Please provide any relevant updates on each order.\n"
+              },
+              {
+                type: "rich_text_list",
+                style: "bullet",
+                indent: 0,
+                border: 0,
+                elements: job_orders.sort_by { |order| order[:opened_at] }.map { |job_order| list_item(job_order) }
+              }
+            ]
+          }
+        }
+      ]
+    end
 
-      message
+    def list_item(job_order)
+      {
+        type: "rich_text_section",
+        elements: [
+          {
+            type: "text",
+            text: "#{job_order[:employer_name]} - "
+          },
+          {
+            type: "link",
+            url: "#{ENV.fetch('FRONTEND_URL', nil)}/orders/#{job_order[:id]}",
+            text: job_order[:employment_title],
+            style: {
+              bold: true
+            }
+          },
+          {
+            type: "text",
+            text: ": #{job_order[:status]}",
+            style: {
+              bold: true
+            }
+          }
+        ]
+      }
     end
   end
 end

@@ -97,9 +97,83 @@ RSpec.describe JobOrders::TeamOrderStatusReactor do
                 .with(
                   trace_id: message.trace_id,
                   team_id:,
-                  schema: Teams::Commands::SendSlackMessage::V1,
+                  schema: Teams::Commands::SendSlackMessage::V2,
                   data: {
-                    message: "Good morning team! The following job orders are active an assigned here.\n* <#{base_url}/orders/#{id1}|A: 1>: open* <#{base_url}/orders/#{id2}|B: 2>: open"
+                    blocks: [
+                      {
+                        type: "header",
+                        text: "Good morning team!",
+                        emoji: true
+                      },
+                      {
+                        type: "rich_text",
+                        elements: {
+                          type: "rich_text_section",
+                          elements: [
+                            {
+                              type: "text",
+                              text: "The following job orders are active an assigned here. Please provide any relevant updates on each order.\n"
+                            },
+                            {
+                              type: "rich_text_list",
+                              style: "bullet",
+                              indent: 0,
+                              border: 0,
+                              elements: [
+                                {
+                                  type: "rich_text_section",
+                                  elements: [
+                                    {
+                                      type: "text",
+                                      text: "A - "
+                                    },
+                                    {
+                                      type: "link",
+                                      url: "#{base_url}/orders/#{id1}",
+                                      text: "1",
+                                      style: {
+                                        bold: true
+                                      }
+                                    },
+                                    {
+                                      type: "text",
+                                      text: ": open",
+                                      style: {
+                                        bold: true
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  type: "rich_text_section",
+                                  elements: [
+                                    {
+                                      type: "text",
+                                      text: "B - "
+                                    },
+                                    {
+                                      type: "link",
+                                      url: "#{base_url}/orders/#{id2}",
+                                      text: "2",
+                                      style: {
+                                        bold: true
+                                      }
+                                    },
+                                    {
+                                      type: "text",
+                                      text: ": open",
+                                      style: {
+                                        bold: true
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
                   }
                 ).and_call_original
 

@@ -4857,6 +4857,7 @@ components:
           type: string
           enum:
           - needs_order_count
+          - needs_criteria
           - open
           - candidates_screened
           - filled

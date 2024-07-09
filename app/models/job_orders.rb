@@ -18,6 +18,7 @@ module JobOrders
   module ActivatedStatus
     ALL = [
       NEEDS_ORDER_COUNT = "needs_order_count",
+      NEEDS_CRITERIA = "needs_criteria",
       OPEN = "open",
       CANDIDATES_SCREENED = "candidates_screened"
     ].freeze

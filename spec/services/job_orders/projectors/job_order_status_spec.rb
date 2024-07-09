@@ -25,6 +25,14 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         data: Core::Nothing
       )
     end
+    let(:job_order_criteria_met) do
+      build(
+        :message,
+        aggregate:,
+        schema: JobOrders::Events::CriteriaAdded::V1,
+        data: Core::Nothing
+      )
+    end
     let(:job_order_order_count_added1) do
       build(
         :message,
@@ -174,11 +182,20 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       end
     end
 
-    context "when a job order has been set" do
+    context "when a job order has had an order count but no criteria met" do
+      let(:messages) { [job_order_candidate_added1, job_order_order_count_added1, job_order_candidate_hired1] }
+
+      it "reports the status as need order count" do
+        expect(subject.status).to eq(JobOrders::ActivatedStatus::NEEDS_CRITERIA)
+      end
+    end
+
+    context "when a job order has been set and criteria met" do
       context "when not enough candidates have been recommended" do
         let(:messages) do
           [
             job_order_order_count_added1,
+            job_order_criteria_met,
             job_order_candidate_added1,
             job_order_candidate_recommended1
           ]
@@ -193,6 +210,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         let(:messages) do
           [
             job_order_order_count_added1,
+            job_order_criteria_met,
             job_order_candidate_added1,
             job_order_candidate_recommended1,
             job_order_candidate_hired1,
@@ -210,6 +228,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         let(:messages) do
           [
             job_order_order_count_added1,
+            job_order_criteria_met,
             job_order_candidate_added1,
             job_order_candidate_recommended1,
             job_order_candidate_hired1,
@@ -228,6 +247,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         let(:messages) do
           [
             job_order_order_count_added1,
+            job_order_criteria_met,
             job_order_candidate_added1,
             job_order_candidate_recommended1,
             job_order_candidate_hired1,
@@ -247,6 +267,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         let(:messages) do
           [
             job_order_order_count_added1,
+            job_order_criteria_met,
             job_order_candidate_added1,
             job_order_candidate_recommended1,
             job_order_candidate_hired1,
@@ -266,6 +287,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         let(:messages) do
           [
             job_order_order_count_added1,
+            job_order_criteria_met,
             job_order_candidate_added1,
             job_order_candidate_added2,
             job_order_candidate_screened1,

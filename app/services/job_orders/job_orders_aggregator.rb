@@ -125,6 +125,11 @@ module JobOrders
       update_job_order_counts(job_order)
     end
 
+    on_message Events::NeedsCriteria::V1, :sync do |message|
+      job_order = JobOrder.find(message.aggregate.id)
+      job_order.update!(status: ActivatedStatus::NEEDS_CRITERIA, closed_at: nil)
+    end
+
     on_message Events::Activated::V1, :sync do |message|
       job_order = JobOrder.find(message.aggregate.id)
       job_order.update!(status: ActivatedStatus::OPEN, closed_at: nil)

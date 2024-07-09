@@ -18,7 +18,11 @@ module JobOrders
       end
 
       on_message Events::Activated::V1 do |_, accumulator|
-        accumulator.with(status: JobOrders::ActivatedStatus::OPEN)
+        accumulator.with(status: ActivatedStatus::OPEN)
+      end
+
+      on_message Events::NeedsCriteria::V1 do |_, accumulator|
+        accumulator.with(status: ActivatedStatus::NEEDS_CRITERIA)
       end
 
       on_message Events::CandidatesScreened::V1 do |_, accumulator|

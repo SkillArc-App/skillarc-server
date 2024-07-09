@@ -549,20 +549,70 @@ RSpec.describe JobOrders::JobOrdersReactor do
       context "when there is not an active job order" do
         let(:messages) { [] }
 
-        it "emits a job order added event" do
-          expect(message_service)
-            .to receive(:create_once_for_trace!)
-            .with(
-              schema: JobOrders::Events::Added::V1,
-              trace_id: message.trace_id,
-              aggregate: message.aggregate,
-              data: {
-                job_id: message.data.job_id
-              }
-            )
+        before do
+          allow(MessageService)
+            .to receive(:aggregate_events)
             .and_call_original
 
-          subject
+          expect(MessageService)
+            .to receive(:aggregate_events)
+            .with(Aggregates::Job.new(job_id: message.data.job_id))
+            .and_return([])
+
+          expect_any_instance_of(JobOrders::Projectors::JobOrderCriteriaMet)
+            .to receive(:project)
+            .with([])
+            .and_return(met)
+        end
+
+        context "when criteria are already met" do
+          let(:met) { true }
+
+          it "emits a job order added event" do
+            expect(message_service)
+              .to receive(:create_once_for_trace!)
+              .with(
+                schema: JobOrders::Events::Added::V1,
+                trace_id: message.trace_id,
+                aggregate: message.aggregate,
+                data: {
+                  job_id: message.data.job_id
+                }
+              )
+              .and_call_original
+
+            expect(message_service)
+              .to receive(:create_once_for_aggregate!)
+              .with(
+                schema: JobOrders::Events::CriteriaAdded::V1,
+                trace_id: message.trace_id,
+                aggregate:,
+                data: Core::Nothing
+              )
+              .and_call_original
+
+            subject
+          end
+        end
+
+        context "when criteria are not met" do
+          let(:met) { false }
+
+          it "emits a job order added event" do
+            expect(message_service)
+              .to receive(:create_once_for_trace!)
+              .with(
+                schema: JobOrders::Events::Added::V1,
+                trace_id: message.trace_id,
+                aggregate: message.aggregate,
+                data: {
+                  job_id: message.data.job_id
+                }
+              )
+              .and_call_original
+
+            subject
+          end
         end
       end
     end
@@ -726,6 +776,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             let(:new_status) do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
                 order_count: 1,
+                criteria_met?: true,
                 candidates: {},
                 not_filled?: false
               )
@@ -740,6 +791,33 @@ RSpec.describe JobOrders::JobOrdersReactor do
           end
 
           context "when the current status and new status are the different" do
+            context "when the new status should be need critiera" do
+              let(:existing_status) do
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER)
+              end
+              let(:new_status) do
+                JobOrders::Projectors::JobOrderStatus::Projection.new(
+                  order_count: 2,
+                  criteria_met?: false,
+                  candidates: {},
+                  not_filled?: false
+                )
+              end
+
+              it "emits an activated event" do
+                expect(message_service)
+                  .to receive(:create_once_for_trace!)
+                  .with(
+                    trace_id: message.trace_id,
+                    aggregate: message.aggregate,
+                    schema: JobOrders::Events::NeedsCriteria::V1,
+                    data: Core::Nothing
+                  )
+
+                subject
+              end
+            end
+
             context "when the new status should be activated" do
               let(:existing_status) do
                 JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER)
@@ -747,6 +825,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
                   order_count: 2,
+                  criteria_met?: true,
                   candidates: {},
                   not_filled?: false
                 )
@@ -773,6 +852,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
                   order_count: 2,
+                  criteria_met?: true,
                   candidates: { one: :screened },
                   not_filled?: false
                 )
@@ -799,6 +879,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
                   order_count: 2,
+                  criteria_met?: true,
                   candidates: { one: :recommended, two: :recommended },
                   not_filled?: false
                 )
@@ -827,6 +908,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
                   order_count: 1,
+                  criteria_met?: true,
                   candidates: { one: :hired },
                   not_filled?: false
                 )
@@ -853,6 +935,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
                   order_count: 1,
+                  criteria_met?: true,
                   candidates: { one: :hired },
                   not_filled?: true
                 )
@@ -936,6 +1019,20 @@ RSpec.describe JobOrders::JobOrdersReactor do
         it_behaves_like "emits new status events if necessary"
       end
 
+      context "when the message is job order candidate screened" do
+        let(:message) do
+          build(
+            :message,
+            schema: JobOrders::Events::CandidateScreened::V1,
+            data: {
+              person_id: SecureRandom.uuid
+            }
+          )
+        end
+
+        it_behaves_like "emits new status events if necessary"
+      end
+
       context "when the message is job order added" do
         let(:message) do
           build(
@@ -948,6 +1045,191 @@ RSpec.describe JobOrders::JobOrdersReactor do
         end
 
         it_behaves_like "emits new status events if necessary"
+      end
+
+      context "when the message is job order criteria added" do
+        let(:message) do
+          build(
+            :message,
+            schema: JobOrders::Events::CriteriaAdded::V1,
+            data: Core::Nothing
+          )
+        end
+
+        it_behaves_like "emits new status events if necessary"
+      end
+    end
+
+    context "for events that might trigger criteria met" do
+      shared_examples "emits criteria met event if necessary" do
+        context "when possible to criteria met" do
+          before do
+            allow(MessageService)
+              .to receive(:aggregate_events)
+              .and_call_original
+
+            expect(MessageService)
+              .to receive(:aggregate_events)
+              .with(message.aggregate)
+              .and_return(job_messages)
+
+            expect_any_instance_of(JobOrders::Projectors::JobOrderCriteriaMet)
+              .to receive(:project)
+              .with(job_messages)
+              .and_return(met)
+          end
+
+          let(:job_aggregate) { Aggregates::Job.new(job_id: SecureRandom.uuid) }
+          let(:job_order_aggregate) { JobOrders::Aggregates::JobOrder.new(job_order_id: SecureRandom.uuid) }
+          let(:message1) do
+            build(
+              :message,
+              schema: Events::JobCreated::V3,
+              aggregate: job_aggregate,
+              data: {
+                category: Job::Categories::STAFFING,
+                employment_title: "Plumber",
+                employer_name: "Good Employer",
+                employer_id: SecureRandom.uuid,
+                benefits_description: "Great Benifits",
+                location: "Columbus, OH",
+                employment_type: Job::EmploymentTypes::FULLTIME,
+                hide_job: false,
+                industry: nil
+              }
+            )
+          end
+          let(:message2) do
+            build(
+              :message,
+              schema: Events::JobAttributeCreated::V1,
+              aggregate: job_aggregate,
+              data: {
+                id: SecureRandom.uuid,
+                attribute_name: "name",
+                attribute_id: SecureRandom.uuid,
+                acceptible_set: %w[A B]
+              }
+            )
+          end
+          let(:message3) do
+            build(
+              :message,
+              schema: JobOrders::Events::Added::V1,
+              aggregate: job_order_aggregate,
+              data: {
+                job_id: job_aggregate.id
+              }
+            )
+          end
+          let(:message4) do
+            build(
+              :message,
+              schema: JobOrders::Events::Added::V1,
+              aggregate: job_order_aggregate,
+              data: {
+                job_id: SecureRandom.uuid
+              }
+            )
+          end
+
+          let(:job_messages) { [message1, message2] }
+          let(:messages) { [message1, message2, message3, message4] }
+
+          context "when the criteria is met" do
+            let(:met) { true }
+
+            it "does not emit a new message" do
+              expect(message_service)
+                .to receive(:create_once_for_aggregate!)
+                .with(
+                  schema: JobOrders::Events::CriteriaAdded::V1,
+                  trace_id: message.trace_id,
+                  aggregate: message3.aggregate,
+                  data: Core::Nothing
+                )
+                .and_call_original
+
+              subject
+            end
+          end
+
+          context "when the criteria is not met" do
+            let(:met) { false }
+            let(:message_service) { double }
+
+            it "does nothing" do
+              subject
+            end
+          end
+        end
+      end
+
+      context "when the message is job updated" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::JobUpdated::V2,
+            aggregate: job_aggregate,
+            data: {
+              category: Job::Categories::STAFFING,
+              employment_title: "Another title",
+              employment_type: Job::EmploymentTypes::PARTTIME,
+              hide_job: false
+            }
+          )
+        end
+
+        it_behaves_like "emits criteria met event if necessary"
+      end
+
+      context "when the message is job attribute created" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::JobAttributeCreated::V1,
+            aggregate: job_aggregate,
+            data: {
+              id: SecureRandom.uuid,
+              attribute_name: "name",
+              attribute_id: SecureRandom.uuid,
+              acceptible_set: %w[A B]
+            }
+          )
+        end
+
+        it_behaves_like "emits criteria met event if necessary"
+      end
+
+      context "when the message is job attribute updated" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::JobAttributeUpdated::V1,
+            aggregate: job_aggregate,
+            data: {
+              id: SecureRandom.uuid,
+              acceptible_set: %w[D F]
+            }
+          )
+        end
+
+        it_behaves_like "emits criteria met event if necessary"
+      end
+
+      context "when the message is job attribute destroyed" do
+        let(:message) do
+          build(
+            :message,
+            schema: Events::JobAttributeDestroyed::V1,
+            aggregate: job_aggregate,
+            data: {
+              id: SecureRandom.uuid
+            }
+          )
+        end
+
+        it_behaves_like "emits criteria met event if necessary"
       end
     end
   end

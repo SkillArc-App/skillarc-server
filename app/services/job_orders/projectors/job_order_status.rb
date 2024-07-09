@@ -8,6 +8,7 @@ module JobOrders
 
         schema do
           order_count Either(Integer, nil)
+          criteria_met? Bool()
           candidates Hash
           not_filled? Bool()
         end
@@ -15,6 +16,7 @@ module JobOrders
         def status
           return ClosedStatus::NOT_FILLED if not_filled?
           return ActivatedStatus::NEEDS_ORDER_COUNT if order_count.nil?
+          return ActivatedStatus::NEEDS_CRITERIA unless criteria_met?
           return ClosedStatus::FILLED if hired_candidates.length >= order_count
           return StalledStatus::WAITING_ON_EMPLOYER if recommended_candidates.length + hired_candidates.length >= order_count
           return ActivatedStatus::CANDIDATES_SCREENED if screened_candidates.length.positive?
@@ -44,6 +46,7 @@ module JobOrders
       def init
         Projection.new(
           order_count: nil,
+          criteria_met?: false,
           candidates: {},
           not_filled?: false
         )
@@ -59,6 +62,10 @@ module JobOrders
 
       on_message Events::Activated::V1 do |_, accumulator|
         accumulator.with(not_filled?: false)
+      end
+
+      on_message Events::CriteriaAdded::V1 do |_, accumulator|
+        accumulator.with(criteria_met?: true)
       end
 
       on_message Events::CandidateAdded::V3 do |message, accumulator|

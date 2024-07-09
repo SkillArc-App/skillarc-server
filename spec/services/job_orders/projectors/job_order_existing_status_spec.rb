@@ -17,6 +17,14 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
         data: Core::Nothing
       )
     end
+    let(:job_order_need_critiera) do
+      build(
+        :message,
+        aggregate:,
+        schema: JobOrders::Events::NeedsCriteria::V1,
+        data: Core::Nothing
+      )
+    end
     let(:job_order_candidates_screened) do
       build(
         :message,
@@ -65,6 +73,14 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
 
       it "return the open status" do
         expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
+      end
+    end
+
+    context "when the last event was need criteria" do
+      let(:messages) { [job_order_stalled, job_order_filled, job_order_not_filled, job_order_need_critiera] }
+
+      it "return the open status" do
+        expect(subject.status).to eq(JobOrders::ActivatedStatus::NEEDS_CRITERIA)
       end
     end
 

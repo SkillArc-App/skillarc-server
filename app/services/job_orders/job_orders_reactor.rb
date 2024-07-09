@@ -228,6 +228,8 @@ module JobOrders
             job_id: message.data.job_id
           }
         )
+
+        emit_criteria_met_if_necessary(::Aggregates::Job.new(job_id: message.data.job_id), message.trace_id)
       end
     end
 
@@ -255,7 +257,45 @@ module JobOrders
       emit_new_status_if_necessary(message)
     end
 
+    on_message ::Events::JobUpdated::V2 do |message|
+      emit_criteria_met_if_necessary(message.aggregate, message.trace_id)
+    end
+
+    on_message ::Events::JobAttributeCreated::V1 do |message|
+      emit_criteria_met_if_necessary(message.aggregate, message.trace_id)
+    end
+
+    on_message ::Events::JobAttributeUpdated::V1 do |message|
+      emit_criteria_met_if_necessary(message.aggregate, message.trace_id)
+    end
+
+    on_message ::Events::JobAttributeDestroyed::V1 do |message|
+      emit_criteria_met_if_necessary(message.aggregate, message.trace_id)
+    end
+
     private
+
+    def emit_criteria_met_if_necessary(job_aggregate, trace_id)
+      messages = MessageService.aggregate_events(job_aggregate)
+      return unless Projectors::JobOrderCriteriaMet.new.project(messages)
+
+      # Overall this is going to be pretty inefficient
+      # Lots of queries. What I think might be the solution
+      # Would be to emit an event on the job stream which
+      # Links all of the associated job orders.
+      # Also the create once for aggregate is also going to query
+      # The events table for each job order.
+      JobOrders::Events::Added::V1.all_messages.each do |m|
+        next unless m.data.job_id == job_aggregate.id
+
+        message_service.create_once_for_aggregate!(
+          schema: JobOrders::Events::CriteriaAdded::V1,
+          trace_id:,
+          aggregate: m.aggregate,
+          data: Core::Nothing
+        )
+      end
+    end
 
     def emit_new_status_if_necessary(message)
       messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }

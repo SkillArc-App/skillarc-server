@@ -237,6 +237,10 @@ module JobOrders
       emit_new_status_if_necessary(message)
     end
 
+    on_message Events::CriteriaAdded::V1 do |message|
+      emit_new_status_if_necessary(message)
+    end
+
     on_message Events::CandidateAdded::V3, :sync do |message|
       emit_new_status_if_necessary(message)
     end
@@ -309,6 +313,13 @@ module JobOrders
           trace_id: message.trace_id,
           aggregate: message.aggregate,
           schema: Events::Activated::V1,
+          data: Core::Nothing
+        )
+      when ActivatedStatus::NEEDS_CRITERIA
+        message_service.create_once_for_trace!(
+          trace_id: message.trace_id,
+          aggregate: message.aggregate,
+          schema: Events::NeedsCriteria::V1,
           data: Core::Nothing
         )
       when JobOrders::ActivatedStatus::CANDIDATES_SCREENED

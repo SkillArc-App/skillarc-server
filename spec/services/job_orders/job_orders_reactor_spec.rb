@@ -776,6 +776,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             let(:new_status) do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
                 order_count: 1,
+                criteria_met?: true,
                 candidates: {},
                 not_filled?: false
               )
@@ -790,6 +791,33 @@ RSpec.describe JobOrders::JobOrdersReactor do
           end
 
           context "when the current status and new status are the different" do
+            context "when the new status should be need critiera" do
+              let(:existing_status) do
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER)
+              end
+              let(:new_status) do
+                JobOrders::Projectors::JobOrderStatus::Projection.new(
+                  order_count: 2,
+                  criteria_met?: false,
+                  candidates: {},
+                  not_filled?: false
+                )
+              end
+
+              it "emits an activated event" do
+                expect(message_service)
+                  .to receive(:create_once_for_trace!)
+                  .with(
+                    trace_id: message.trace_id,
+                    aggregate: message.aggregate,
+                    schema: JobOrders::Events::NeedsCriteria::V1,
+                    data: Core::Nothing
+                  )
+
+                subject
+              end
+            end
+
             context "when the new status should be activated" do
               let(:existing_status) do
                 JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER)
@@ -797,6 +825,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
                   order_count: 2,
+                  criteria_met?: true,
                   candidates: {},
                   not_filled?: false
                 )
@@ -823,6 +852,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
                   order_count: 2,
+                  criteria_met?: true,
                   candidates: { one: :screened },
                   not_filled?: false
                 )
@@ -849,6 +879,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
                   order_count: 2,
+                  criteria_met?: true,
                   candidates: { one: :recommended, two: :recommended },
                   not_filled?: false
                 )
@@ -877,6 +908,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
                   order_count: 1,
+                  criteria_met?: true,
                   candidates: { one: :hired },
                   not_filled?: false
                 )
@@ -903,6 +935,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
                   order_count: 1,
+                  criteria_met?: true,
                   candidates: { one: :hired },
                   not_filled?: true
                 )
@@ -986,6 +1019,20 @@ RSpec.describe JobOrders::JobOrdersReactor do
         it_behaves_like "emits new status events if necessary"
       end
 
+      context "when the message is job order candidate screened" do
+        let(:message) do
+          build(
+            :message,
+            schema: JobOrders::Events::CandidateScreened::V1,
+            data: {
+              person_id: SecureRandom.uuid
+            }
+          )
+        end
+
+        it_behaves_like "emits new status events if necessary"
+      end
+
       context "when the message is job order added" do
         let(:message) do
           build(
@@ -994,6 +1041,18 @@ RSpec.describe JobOrders::JobOrdersReactor do
             data: {
               order_count: 2
             }
+          )
+        end
+
+        it_behaves_like "emits new status events if necessary"
+      end
+
+      context "when the message is job order criteria added" do
+        let(:message) do
+          build(
+            :message,
+            schema: JobOrders::Events::CriteriaAdded::V1,
+            data: Core::Nothing
           )
         end
 

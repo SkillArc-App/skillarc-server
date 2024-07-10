@@ -20,6 +20,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
             employer_id: SecureRandom.uuid,
             benefits_description: "Bad benifits",
             responsibilities_description: nil,
+            requirements_description: "Sup",
             location: "Columbus Ohio",
             employment_type: Job::EmploymentTypes::FULLTIME,
             hide_job: false
@@ -36,6 +37,9 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect(job.employer_name).to eq(message.data.employer_name)
         expect(job.employment_title).to eq(message.data.employment_title)
         expect(job.employer_id).to eq(message.data.employer_id)
+        expect(job.benefits_description).to eq(message.data.benefits_description)
+        expect(job.responsibilities_description).to eq(message.data.responsibilities_description)
+        expect(job.requirements_description).to eq(message.data.requirements_description)
       end
     end
 
@@ -49,6 +53,9 @@ RSpec.describe JobOrders::JobOrdersAggregator do
             category: Job::Categories::STAFFING,
             employment_title: "Another title",
             employment_type: Job::EmploymentTypes::PARTTIME,
+            benefits_description: "Yo",
+            responsibilities_description: nil,
+            requirements_description: "Sup",
             hide_job: false
           }
         )
@@ -62,6 +69,9 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         job.reload
         expect(job.applicable_for_job_orders).to eq(true)
         expect(job.employment_title).to eq(message.data.employment_title)
+        expect(job.benefits_description).to eq(message.data.benefits_description)
+        expect(job.responsibilities_description).to eq(message.data.responsibilities_description)
+        expect(job.requirements_description).to eq(message.data.requirements_description)
       end
     end
 

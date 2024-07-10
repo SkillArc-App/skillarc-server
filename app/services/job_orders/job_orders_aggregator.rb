@@ -14,7 +14,10 @@ module JobOrders
         applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING,
         employer_name: message.data.employer_name,
         employment_title: message.data.employment_title,
-        employer_id: message.data.employer_id
+        employer_id: message.data.employer_id,
+        responsibilities_description: message.data.responsibilities_description,
+        benefits_description: message.data.benefits_description,
+        requirements_description: message.data.requirements_description
       )
     end
 
@@ -23,7 +26,10 @@ module JobOrders
 
       job.update!(
         employment_title: message.data.employment_title,
-        applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING
+        applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING,
+        responsibilities_description: message.data.responsibilities_description,
+        benefits_description: message.data.benefits_description,
+        requirements_description: message.data.requirements_description
       )
     end
 

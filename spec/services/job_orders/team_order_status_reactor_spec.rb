@@ -102,76 +102,81 @@ RSpec.describe JobOrders::TeamOrderStatusReactor do
                     blocks: [
                       {
                         type: "header",
-                        text: "Good morning team!",
-                        emoji: true
+                        text: {
+                          type: "plain_text",
+                          text: "Good morning team! :smile:",
+                          emoji: true
+                        }
                       },
                       {
                         type: "rich_text",
-                        elements: {
-                          type: "rich_text_section",
-                          elements: [
-                            {
-                              type: "text",
-                              text: "The following job orders are active an assigned here. Please provide any relevant updates on each order.\n"
-                            },
-                            {
-                              type: "rich_text_list",
-                              style: "bullet",
-                              indent: 0,
-                              border: 0,
-                              elements: [
-                                {
-                                  type: "rich_text_section",
-                                  elements: [
-                                    {
-                                      type: "text",
-                                      text: "A - "
-                                    },
-                                    {
-                                      type: "link",
-                                      url: "#{base_url}/orders/#{id1}",
-                                      text: "1",
-                                      style: {
-                                        bold: true
-                                      }
-                                    },
-                                    {
-                                      type: "text",
-                                      text: ": open",
-                                      style: {
-                                        bold: true
-                                      }
+                        elements: [
+                          {
+                            type: "rich_text_section",
+                            elements: [
+                              {
+                                type: "text",
+                                text: "The following job orders are active an assigned here. Please provide any relevant updates on each order.\n"
+                              }
+                            ]
+                          },
+                          {
+                            type: "rich_text_list",
+                            style: "bullet",
+                            indent: 0,
+                            border: 0,
+                            elements: [
+                              {
+                                type: "rich_text_section",
+                                elements: [
+                                  {
+                                    type: "text",
+                                    text: "A - "
+                                  },
+                                  {
+                                    type: "link",
+                                    url: "#{base_url}/orders/#{id1}",
+                                    text: "1",
+                                    style: {
+                                      bold: true
                                     }
-                                  ]
-                                },
-                                {
-                                  type: "rich_text_section",
-                                  elements: [
-                                    {
-                                      type: "text",
-                                      text: "B - "
-                                    },
-                                    {
-                                      type: "link",
-                                      url: "#{base_url}/orders/#{id2}",
-                                      text: "2",
-                                      style: {
-                                        bold: true
-                                      }
-                                    },
-                                    {
-                                      type: "text",
-                                      text: ": open",
-                                      style: {
-                                        bold: true
-                                      }
+                                  },
+                                  {
+                                    type: "text",
+                                    text: ": open",
+                                    style: {
+                                      bold: true
                                     }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
+                                  }
+                                ]
+                              },
+                              {
+                                type: "rich_text_section",
+                                elements: [
+                                  {
+                                    type: "text",
+                                    text: "B - "
+                                  },
+                                  {
+                                    type: "link",
+                                    url: "#{base_url}/orders/#{id2}",
+                                    text: "2",
+                                    style: {
+                                      bold: true
+                                    }
+                                  },
+                                  {
+                                    type: "text",
+                                    text: ": open",
+                                    style: {
+                                      bold: true
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }

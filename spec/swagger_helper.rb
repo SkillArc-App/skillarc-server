@@ -1189,6 +1189,18 @@ RSpec.configure do |config|
                 type: :object,
                 additionalProperties: true,
                 properties: {
+                  benefitsDescription: {
+                    type: :string,
+                    nullable: true
+                  },
+                  requirementsDescription: {
+                    type: :string,
+                    nullable: true
+                  },
+                  responsibilitiesDescription: {
+                    type: :string,
+                    nullable: true
+                  },
                   candidates: {
                     type: :array,
                     items: {

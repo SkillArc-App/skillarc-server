@@ -39,6 +39,9 @@ module JobOrders
 
         {
           **serialize_job_order_summary(job_order),
+          benefits_description: job_order.job.benefits_description,
+          requirements_description: job_order.job.requirements_description,
+          responsibilities_description: job_order.job.responsibilities_description,
           candidates: candidates.map do |candidate|
             {
               id: candidate.id,

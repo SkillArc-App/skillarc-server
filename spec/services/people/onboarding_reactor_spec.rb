@@ -109,7 +109,7 @@ RSpec.describe People::OnboardingReactor do
 
       before do
         allow(MessageService)
-          .to receive(:aggregate_events)
+          .to receive(:stream_events)
           .with(message.aggregate)
           .and_return(messages)
 

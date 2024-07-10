@@ -12,7 +12,7 @@ module Projectors
       end
 
       def self.project(aggregate:, schema:)
-        messages = MessageService.aggregate_events(aggregate)
+        messages = MessageService.stream_events(aggregate)
         instance = new(schema:)
         instance.project(messages)
       end

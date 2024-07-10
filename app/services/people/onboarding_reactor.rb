@@ -62,7 +62,7 @@ module People
     private
 
     def emit_complete_onboarding_if_applicable(message)
-      messages = MessageService.aggregate_events(message.aggregate)
+      messages = MessageService.stream_events(message.aggregate)
 
       return if ::Projectors::Streams::HasOccurred.new(schema: Events::OnboardingCompleted::V3).project(messages)
 

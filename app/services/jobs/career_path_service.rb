@@ -98,7 +98,7 @@ module Jobs
       private
 
       def job_messages(job)
-        MessageService.aggregate_events(Streams::Job.new(job_id: job.id))
+        MessageService.stream_events(Streams::Job.new(job_id: job.id))
       end
     end
   end

@@ -198,7 +198,7 @@ module Klaviyo
     end
 
     def email_for_person_aggregate(aggregate)
-      messages = MessageService.aggregate_events(aggregate)
+      messages = MessageService.stream_events(aggregate)
       result = People::Projectors::Email.new.project(messages)
 
       result.initial_email

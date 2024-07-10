@@ -162,7 +162,7 @@ module JobOrders
     end
 
     on_message Commands::AddCandidate::V2, :sync do |message|
-      messages = MessageService.aggregate_events(message.aggregate)
+      messages = MessageService.stream_events(message.aggregate)
 
       unless messages.any? { |m| m.schema == Events::CandidateAdded::V3 && m.data.person_id == message.data.person_id }
         message_service.create_once_for_trace!(
@@ -280,7 +280,7 @@ module JobOrders
     private
 
     def emit_criteria_met_if_necessary(job_aggregate, trace_id)
-      messages = MessageService.aggregate_events(job_aggregate)
+      messages = MessageService.stream_events(job_aggregate)
       return unless Projectors::JobOrderCriteriaMet.new.project(messages)
 
       # Overall this is going to be pretty inefficient
@@ -302,7 +302,7 @@ module JobOrders
     end
 
     def emit_new_status_if_necessary(message)
-      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+      messages = MessageService.stream_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
       existing_status = Projectors::JobOrderExistingStatus.new.project(messages).status
       current_status = JobOrders::Projectors::JobOrderStatus.new.project(messages).status
       return if current_status == existing_status
@@ -368,7 +368,7 @@ module JobOrders
 
       # Grab the job order that is active
       job_orders.detect do |job_order|
-        messages = MessageService.aggregate_events(job_order.aggregate).select { |m| m.occurred_at <= occurred_at }
+        messages = MessageService.stream_events(job_order.aggregate).select { |m| m.occurred_at <= occurred_at }
 
         status = Projectors::JobOrderExistingStatus.new.project(messages).status
         JobOrders::ClosedStatus::ALL.exclude?(status)

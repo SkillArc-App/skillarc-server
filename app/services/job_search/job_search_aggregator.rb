@@ -79,7 +79,7 @@ module JobSearch
     end
 
     on_message Events::CareerPathCreated::V1 do |message|
-      messages = MessageService.aggregate_events(message.aggregate)
+      messages = MessageService.stream_events(message.aggregate)
       starting_path = Jobs::Projectors::CareerPaths.new.project(messages).paths.detect { |m| m.order.zero? }
       job = Job.find_by!(job_id: message.aggregate.job_id)
 
@@ -90,7 +90,7 @@ module JobSearch
     end
 
     on_message Events::CareerPathUpdated::V1 do |message|
-      messages = MessageService.aggregate_events(message.aggregate)
+      messages = MessageService.stream_events(message.aggregate)
       starting_path = Jobs::Projectors::CareerPaths.new.project(messages).paths.detect { |m| m.order.zero? }
       job = Job.find_by!(job_id: message.aggregate.job_id)
 

@@ -35,7 +35,7 @@ RSpec.describe Users::UsersReactor do
       context "when role is coach" do
         before do
           allow(MessageService)
-            .to receive(:aggregate_events)
+            .to receive(:stream_events)
             .with(aggregate)
             .and_return(messages)
         end

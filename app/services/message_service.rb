@@ -1,6 +1,6 @@
 class MessageService
   NotSchemaError = Class.new(StandardError)
-  NotAggregateError = Class.new(StandardError)
+  NotStreamError = Class.new(StandardError)
   NotTraceIdError = Class.new(StandardError)
   SchemaAlreadyDefinedError = Class.new(StandardError)
   MessageTypeHasMultipleActiveSchemas = Class.new(StandardError)
@@ -118,10 +118,10 @@ class MessageService
     order_and_map(Event.where(version: schema.version, event_type: schema.message_type))
   end
 
-  def self.aggregate_events(aggregate)
-    raise NotAggregateError unless aggregate.is_a?(Core::Stream)
+  def self.stream_events(stream)
+    raise NotStreamError unless stream.is_a?(Core::Stream)
 
-    order_and_map(Event.where(aggregate_id: aggregate.id)).select { |m| m.schema.type == Core::EVENT }
+    order_and_map(Event.where(aggregate_id: stream.id)).select { |m| m.schema.type == Core::EVENT }
   end
 
   def self.trace_id_events(trace_id)

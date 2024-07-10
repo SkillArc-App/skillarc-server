@@ -1,7 +1,7 @@
 module Contact
   class ContactReactor < MessageReactor
     on_message Commands::SendMessage::V2 do |message|
-      messages = MessageService.aggregate_events(Streams::Person.new(person_id: message.data.person_id))
+      messages = MessageService.stream_events(Streams::Person.new(person_id: message.data.person_id))
       result = Projectors::ContactPreference.new.project(messages)
 
       case result.preference

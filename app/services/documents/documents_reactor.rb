@@ -23,7 +23,7 @@ module Documents
         metadata: message.metadata
       )
 
-      messages = MessageService.aggregate_events(::Streams::Person.new(person_id: message.data.person_id))
+      messages = MessageService.stream_events(::Streams::Person.new(person_id: message.data.person_id))
 
       if messages.empty?
         message_service.create_once_for_trace!(

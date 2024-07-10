@@ -551,11 +551,11 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
         before do
           allow(MessageService)
-            .to receive(:aggregate_events)
+            .to receive(:stream_events)
             .and_call_original
 
           expect(MessageService)
-            .to receive(:aggregate_events)
+            .to receive(:stream_events)
             .with(Streams::Job.new(job_id: message.data.job_id))
             .and_return([])
 
@@ -730,7 +730,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               .and_return(new_status)
 
             expect(MessageService)
-              .to receive(:aggregate_events)
+              .to receive(:stream_events)
               .with(message.aggregate)
               .and_return(messages)
           end
@@ -1065,11 +1065,11 @@ RSpec.describe JobOrders::JobOrdersReactor do
         context "when possible to criteria met" do
           before do
             allow(MessageService)
-              .to receive(:aggregate_events)
+              .to receive(:stream_events)
               .and_call_original
 
             expect(MessageService)
-              .to receive(:aggregate_events)
+              .to receive(:stream_events)
               .with(message.aggregate)
               .and_return(job_messages)
 

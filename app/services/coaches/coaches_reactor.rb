@@ -51,7 +51,7 @@ module Coaches
 
     on_message Events::CoachReminderCompleted::V1 do |message|
       reminder = MessageService
-                 .aggregate_events(message.aggregate)
+                 .stream_events(message.aggregate)
                  .detect { |m| m.schema == Events::CoachReminderScheduled::V2 && message.data.reminder_id == m.data.reminder_id }
 
       return if reminder.nil?

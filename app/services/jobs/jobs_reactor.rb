@@ -45,7 +45,7 @@ module Jobs
     end
 
     on_message Commands::AddDesiredCertification::V1, :sync do |message|
-      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+      messages = MessageService.stream_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
 
       return unless ::Projectors::Streams::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
 
@@ -66,7 +66,7 @@ module Jobs
     end
 
     on_message Commands::RemoveDesiredCertification::V1, :sync do |message|
-      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+      messages = MessageService.stream_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
 
       return unless ::Projectors::Streams::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
 
@@ -99,7 +99,7 @@ module Jobs
     end
 
     on_message Commands::UpdateEmployer::V1, :sync do |message|
-      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+      messages = MessageService.stream_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
 
       return unless ::Projectors::Streams::HasOccurred.new(schema: Events::EmployerCreated::V1).project(messages)
 

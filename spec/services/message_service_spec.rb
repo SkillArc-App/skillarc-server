@@ -74,7 +74,7 @@ RSpec.describe MessageService do
     context "when the event has already occured" do
       before do
         expect(described_class)
-          .to receive(:aggregate_events)
+          .to receive(:stream_events)
           .with(Streams::User.new(user_id:))
           .and_return([
                         build(
@@ -603,7 +603,7 @@ RSpec.describe MessageService do
     end
   end
 
-  describe ".aggregate_events" do
+  describe ".stream_events" do
     before do
       Event.from_message!(message1)
       Event.from_message!(message2)
@@ -653,13 +653,13 @@ RSpec.describe MessageService do
 
     context "when aggregate is a aggregate" do
       it "returns all the events for the aggregate in order" do
-        expect(described_class.aggregate_events(Streams::Message.new(message_id:))).to eq([message2, message1])
+        expect(described_class.stream_events(Streams::Message.new(message_id:))).to eq([message2, message1])
       end
     end
 
     context "when aggregate is not a aggregate" do
       it "raises a NotSchemaError" do
-        expect { described_class.aggregate_events("cat") }.to raise_error(described_class::NotAggregateError)
+        expect { described_class.stream_events("cat") }.to raise_error(described_class::NotStreamError)
       end
     end
   end

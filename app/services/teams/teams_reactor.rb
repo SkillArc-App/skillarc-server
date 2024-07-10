@@ -53,7 +53,7 @@ module Teams
     end
 
     on_message Commands::AddUserToTeam::V1 do |message|
-      messages = MessageService.aggregate_events(message.aggregate)
+      messages = MessageService.stream_events(message.aggregate)
       team = Projectors::TeamMembers.new.project(messages).team
 
       return if team.include?(message.data.user_id)
@@ -69,7 +69,7 @@ module Teams
     end
 
     on_message Commands::RemoveUserFromTeam::V1 do |message|
-      messages = MessageService.aggregate_events(message.aggregate)
+      messages = MessageService.stream_events(message.aggregate)
       team = Projectors::TeamMembers.new.project(messages).team
 
       return unless team.include?(message.data.user_id)

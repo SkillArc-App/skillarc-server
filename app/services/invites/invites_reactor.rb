@@ -46,7 +46,7 @@ module Invites
     end
 
     on_message Commands::CreateEmployerInvite::V1 do |message|
-      messages = MessageService.aggregate_events(Streams::Employer.new(employer_id: message.data.employer_id))
+      messages = MessageService.stream_events(Streams::Employer.new(employer_id: message.data.employer_id))
       name = Employers::Projectors::Name.new.project(messages)&.name
 
       raise MissingEmployerEventError if name.blank?

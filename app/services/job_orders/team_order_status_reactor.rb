@@ -73,27 +73,32 @@ module JobOrders
       [
         {
           type: "header",
-          text: "Good morning team!",
-          emoji: true
+          text: {
+            type: "plain_text",
+            text: "Good morning team! :smile:",
+            emoji: true
+          }
         },
         {
           type: "rich_text",
-          elements: {
-            type: "rich_text_section",
-            elements: [
-              {
-                type: "text",
-                text: "The following job orders are active an assigned here. Please provide any relevant updates on each order.\n"
-              },
-              {
-                type: "rich_text_list",
-                style: "bullet",
-                indent: 0,
-                border: 0,
-                elements: job_orders.sort_by { |order| order[:opened_at] }.map { |job_order| list_item(job_order) }
-              }
-            ]
-          }
+          elements: [
+            {
+              type: "rich_text_section",
+              elements: [
+                {
+                  type: "text",
+                  text: "The following job orders are active an assigned here. Please provide any relevant updates on each order.\n"
+                }
+              ]
+            },
+            {
+              type: "rich_text_list",
+              style: "bullet",
+              indent: 0,
+              border: 0,
+              elements: job_orders.sort_by { |order| order[:opened_at] }.map { |job_order| list_item(job_order) }
+            }
+          ]
         }
       ]
     end

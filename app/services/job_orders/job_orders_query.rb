@@ -29,7 +29,9 @@ module JobOrders
           order_count: job_order.order_count,
           hire_count: job_order.hire_count,
           recommended_count: job_order.recommended_count,
-          status: job_order.status
+          status: job_order.status,
+          job_id: job_order.job.id,
+          team_id: job_order.team_id
         }
       end
 
@@ -39,6 +41,9 @@ module JobOrders
 
         {
           **serialize_job_order_summary(job_order),
+          benefits_description: job_order.job.benefits_description,
+          requirements_description: job_order.job.requirements_description,
+          responsibilities_description: job_order.job.responsibilities_description,
           candidates: candidates.map do |candidate|
             {
               id: candidate.id,

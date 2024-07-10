@@ -475,18 +475,45 @@ message_service.create!(
   }
 )
 
-coach_person = Builders::PersonBuilder.new(message_service).build(
+Builders::PersonBuilder.new(message_service).build(
   first_name: 'Coach',
   last_name: 'User',
   sub: "Coach",
-  email: 'coach@skillarc.com'
+  email: 'coach@skillarc.com',
+  roles: [Role::Types::COACH]
+)
+
+team1_id = SecureRandom.uuid
+team2_id = SecureRandom.uuid
+
+message_service.create!(
+  schema: Teams::Events::Added::V1,
+  team_id: team1_id,
+  data: {
+    name: "Team 1"
+  }
 )
 
 message_service.create!(
-  user_id: coach_person.user_id,
-  schema: Events::RoleAdded::V2,
+  schema: Teams::Events::Added::V1,
+  team_id: team2_id,
   data: {
-    role: Role::Types::COACH
+    name: "Team 2"
+  }
+)
+
+message_service.create!(
+  schema: JobOrders::Events::TeamResponsibleForStatus::V1,
+  order_status: JobOrders::ActivatedStatus::OPEN,
+  data: {
+    team_id: team1_id
+  }
+)
+message_service.create!(
+  schema: JobOrders::Events::TeamResponsibleForStatus::V1,
+  order_status: JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT,
+  data: {
+    team_id: team2_id
   }
 )
 

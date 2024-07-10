@@ -14,7 +14,10 @@ module JobOrders
         applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING,
         employer_name: message.data.employer_name,
         employment_title: message.data.employment_title,
-        employer_id: message.data.employer_id
+        employer_id: message.data.employer_id,
+        responsibilities_description: message.data.responsibilities_description,
+        benefits_description: message.data.benefits_description,
+        requirements_description: message.data.requirements_description
       )
     end
 
@@ -23,8 +26,18 @@ module JobOrders
 
       job.update!(
         employment_title: message.data.employment_title,
-        applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING
+        applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING,
+        responsibilities_description: message.data.responsibilities_description,
+        benefits_description: message.data.benefits_description,
+        requirements_description: message.data.requirements_description
       )
+    end
+
+    on_message Events::TeamResponsibleForStatus::V1 do |message|
+      status_owner = StatusOwner.find_or_initialize_by(order_status: message.aggregate.order_status)
+      status_owner.update!(team_id: message.data.team_id)
+
+      JobOrder.where(status: message.aggregate.order_status).update_all(team_id: message.data.team_id) # rubocop:disable Rails/SkipsModelValidations
     end
 
     on_message ::Events::PersonAdded::V1 do |message|
@@ -90,69 +103,79 @@ module JobOrders
     end
 
     on_message Events::CandidateRecommended::V2, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
-
-      candidate.update!(status: CandidateStatus::RECOMMENDED)
-      job_order.candidates.group(:status).count
-
-      update_job_order_counts(job_order)
+      update_candidate_status(
+        job_order_id: message.aggregate.id,
+        person_id: message.data.person_id,
+        status: CandidateStatus::RECOMMENDED
+      )
     end
 
     on_message Events::CandidateScreened::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
-
-      candidate.update!(status: CandidateStatus::SCREENED)
-      job_order.candidates.group(:status).count
-
-      update_job_order_counts(job_order)
+      update_candidate_status(
+        job_order_id: message.aggregate.id,
+        person_id: message.data.person_id,
+        status: CandidateStatus::SCREENED
+      )
     end
 
     on_message Events::CandidateHired::V2, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
-
-      candidate.update!(status: CandidateStatus::HIRED)
-      update_job_order_counts(job_order)
+      update_candidate_status(
+        job_order_id: message.aggregate.id,
+        person_id: message.data.person_id,
+        status: CandidateStatus::HIRED
+      )
     end
 
     on_message Events::CandidateRescinded::V2, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
-
-      candidate.update!(status: CandidateStatus::RESCINDED)
-      update_job_order_counts(job_order)
+      update_candidate_status(
+        job_order_id: message.aggregate.id,
+        person_id: message.data.person_id,
+        status: CandidateStatus::RESCINDED
+      )
     end
 
     on_message Events::NeedsCriteria::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(status: ActivatedStatus::NEEDS_CRITERIA, closed_at: nil)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: ActivatedStatus::NEEDS_CRITERIA
+      )
     end
 
     on_message Events::Activated::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(status: ActivatedStatus::OPEN, closed_at: nil)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: ActivatedStatus::OPEN
+      )
     end
 
     on_message Events::CandidatesScreened::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(status: ActivatedStatus::CANDIDATES_SCREENED, closed_at: nil)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: ActivatedStatus::CANDIDATES_SCREENED
+      )
     end
 
     on_message Events::Stalled::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(status: message.data.status, closed_at: nil)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: message.data.status
+      )
     end
 
     on_message Events::Filled::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(closed_at: message.occurred_at, status: ClosedStatus::FILLED)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: ClosedStatus::FILLED,
+        closed_at: message.occurred_at
+      )
     end
 
     on_message Events::NotFilled::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(closed_at: message.occurred_at, status: ClosedStatus::NOT_FILLED)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: ClosedStatus::NOT_FILLED,
+        closed_at: message.occurred_at
+      )
     end
 
     on_message Events::NoteAdded::V1, :sync do |message|
@@ -178,6 +201,12 @@ module JobOrders
 
     private
 
+    def update_order_status(job_order_id:, status:, closed_at: nil)
+      job_order = JobOrder.find(job_order_id)
+      owner = StatusOwner.find_by(order_status: status)
+      job_order.update!(closed_at:, status:, team_id: owner&.team_id)
+    end
+
     def update_job_order_counts(job_order)
       counts = job_order.candidates.group(:status).count
 
@@ -187,6 +216,14 @@ module JobOrders
         recommended_count: counts[CandidateStatus::RECOMMENDED] || 0,
         hire_count: counts[CandidateStatus::HIRED] || 0
       )
+    end
+
+    def update_candidate_status(job_order_id:, person_id:, status:)
+      job_order = JobOrder.find(job_order_id)
+      candidate = Candidate.find_by!(job_orders_people_id: person_id, job_orders_job_orders_id: job_order_id)
+
+      candidate.update!(status:)
+      update_job_order_counts(job_order)
     end
   end
 end

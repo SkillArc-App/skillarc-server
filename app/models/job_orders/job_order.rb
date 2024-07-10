@@ -15,10 +15,12 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  job_orders_jobs_id :uuid             not null
+#  team_id            :uuid
 #
 # Indexes
 #
 #  index_job_orders_job_orders_on_job_orders_jobs_id  (job_orders_jobs_id)
+#  index_job_orders_job_orders_on_status              (status)
 #
 # Foreign Keys
 #

@@ -4,6 +4,9 @@ FactoryBot.define do
     employer_name { "An employer" }
     employment_title { "A job" }
     applicable_for_job_orders { true }
+    benefits_description { "benefits" }
+    requirements_description { "requirements" }
+    responsibilities_description { "responsibilities" }
     employer_id { SecureRandom.uuid }
   end
 end

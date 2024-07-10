@@ -1152,6 +1152,10 @@ RSpec.configure do |config|
                 type: :string,
                 format: :uuid
               },
+              jobId: {
+                type: :string,
+                format: :uuid
+              },
               employmentTitle: {
                 type: :string
               },
@@ -1179,6 +1183,11 @@ RSpec.configure do |config|
               status: {
                 type: :string,
                 enum: JobOrders::OrderStatus::ALL
+              },
+              teamId: {
+                type: :string,
+                format: :uuid,
+                nullable: true
               }
             }
           },
@@ -1189,6 +1198,18 @@ RSpec.configure do |config|
                 type: :object,
                 additionalProperties: true,
                 properties: {
+                  benefitsDescription: {
+                    type: :string,
+                    nullable: true
+                  },
+                  requirementsDescription: {
+                    type: :string,
+                    nullable: true
+                  },
+                  responsibilitiesDescription: {
+                    type: :string,
+                    nullable: true
+                  },
                   candidates: {
                     type: :array,
                     items: {
@@ -1473,6 +1494,18 @@ RSpec.configure do |config|
                 }
               }
             ]
+          },
+          team: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              name: {
+                type: :string
+              }
+            }
           },
           not_found: {
             type: :object,

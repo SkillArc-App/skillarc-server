@@ -3,6 +3,7 @@ FactoryBot.define do
     id { SecureRandom.uuid }
     job factory: %i[job_orders__job]
     opened_at { Time.zone.now }
+    team_id { nil }
 
     status { JobOrders::ActivatedStatus::OPEN }
     applicant_count { 0 }

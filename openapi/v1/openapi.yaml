@@ -3546,6 +3546,34 @@ paths:
                       type: string
               required:
               - story
+  "/teams/teams":
+    get:
+      summary: get all teams
+      tags:
+      - Teams
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns all teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/team"
   "/test/create_user":
     post:
       summary: Create test user
@@ -4836,6 +4864,9 @@ components:
         id:
           type: string
           format: uuid
+        jobId:
+          type: string
+          format: uuid
         employmentTitle:
           type: string
         employerName:
@@ -4863,12 +4894,25 @@ components:
           - filled
           - not_filled
           - waiting_on_employer
+        teamId:
+          type: string
+          format: uuid
+          nullable: true
     job_order:
       allOf:
       - "$ref": "#/components/schemas/job_order_summary"
       - type: object
         additionalProperties: true
         properties:
+          benefitsDescription:
+            type: string
+            nullable: true
+          requirementsDescription:
+            type: string
+            nullable: true
+          responsibilitiesDescription:
+            type: string
+            nullable: true
           candidates:
             type: array
             items:
@@ -5063,6 +5107,14 @@ components:
             "$ref": "#/components/schemas/reference_training_provider"
           authorUser:
             "$ref": "#/components/schemas/user"
+    team:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
     not_found:
       type: object
       properties:

@@ -20,7 +20,8 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: TrainingProviders::TrainingProviderAggregator.new, listener_name: "training_provider_aggregator"),
       DbStreamListener.build(consumer: Qualifications::QualificationsAggregator.new, listener_name: "qualifications_aggregator"),
       DbStreamListener.build(consumer: Documents::DocumentsAggregator.new, listener_name: "documents_aggregator"),
-      DbStreamListener.build(consumer: PeopleSearch::PeopleAggregator.new, listener_name: "people_search_people_aggregator")
+      DbStreamListener.build(consumer: PeopleSearch::PeopleAggregator.new, listener_name: "people_search_people_aggregator"),
+      DbStreamListener.build(consumer: Teams::TeamsAggregator.new, listener_name: "teams_aggregator")
     ]
 
     reactors = [

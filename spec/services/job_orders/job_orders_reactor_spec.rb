@@ -291,7 +291,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
           }
         )
       end
-      let(:aggregate) { JobOrders::Aggregates::JobOrder.new(job_order_id: SecureRandom.uuid) }
+      let(:aggregate) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
 
       context "when the candidate has previously been added" do
         let(:messages) do
@@ -511,7 +511,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
         )
       end
       let(:job_id) { SecureRandom.uuid }
-      let(:aggregate) { JobOrders::Aggregates::JobOrder.new(job_order_id: SecureRandom.uuid) }
+      let(:aggregate) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
 
       context "when there is an active job order" do
         let(:messages) do
@@ -556,7 +556,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
           expect(MessageService)
             .to receive(:aggregate_events)
-            .with(Aggregates::Job.new(job_id: message.data.job_id))
+            .with(Streams::Job.new(job_id: message.data.job_id))
             .and_return([])
 
           expect_any_instance_of(JobOrders::Projectors::JobOrderCriteriaMet)
@@ -627,7 +627,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
         )
       end
       let(:job_id) { SecureRandom.uuid }
-      let(:aggregate) { JobOrders::Aggregates::JobOrder.new(job_order_id: SecureRandom.uuid) }
+      let(:aggregate) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
 
       context "when there is an active job order" do
         let(:messages) do
@@ -1079,8 +1079,8 @@ RSpec.describe JobOrders::JobOrdersReactor do
               .and_return(met)
           end
 
-          let(:job_aggregate) { Aggregates::Job.new(job_id: SecureRandom.uuid) }
-          let(:job_order_aggregate) { JobOrders::Aggregates::JobOrder.new(job_order_id: SecureRandom.uuid) }
+          let(:job_aggregate) { Streams::Job.new(job_id: SecureRandom.uuid) }
+          let(:job_order_aggregate) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
           let(:message1) do
             build(
               :message,

@@ -1,7 +1,7 @@
 module People
   module Projectors
     class BasicInfo < Projector
-      projection_aggregator Aggregates::Person
+      projection_aggregator Streams::Person
 
       class Projection
         extend Record

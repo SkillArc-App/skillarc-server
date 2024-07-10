@@ -5,7 +5,7 @@ RSpec.describe JobOrders::Projectors::JobOrderCriteriaMet do
     subject { described_class.new.project(messages) }
 
     let(:messages) { [] }
-    let(:aggregate) { Aggregates::Job.new(job_id:) }
+    let(:aggregate) { Streams::Job.new(job_id:) }
     let(:job_id) { SecureRandom.uuid }
 
     let(:now) { Time.zone.now }

@@ -4,7 +4,7 @@ RSpec.describe Teams::Projectors::TeamMembers do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Teams::Aggregates::Team.new(team_id:) }
+    let(:aggregate) { Teams::Streams::Team.new(team_id:) }
     let(:team_id) { SecureRandom.uuid }
 
     let(:user_added_to_team1) do

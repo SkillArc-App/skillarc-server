@@ -5,7 +5,7 @@ module Coaches
     end
 
     on_message Commands::AssignCoach::V2 do |message|
-      return unless Projectors::Aggregates::HasOccurred.project(
+      return unless Projectors::Streams::HasOccurred.project(
         schema: Events::PersonAdded::V1,
         aggregate: message.aggregate
       )

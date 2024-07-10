@@ -17,7 +17,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Employer,
+      aggregate: Streams::Employer,
       message_type: MessageTypes::Employers::EMPLOYER_CREATED,
       version: 1
     )

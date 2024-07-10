@@ -4,7 +4,7 @@ module Commands
       type: Core::COMMAND,
       data: Core::Nothing,
       metadata: Core::RequestorMetadata::V1,
-      aggregate: Aggregates::Task,
+      aggregate: Streams::Task,
       message_type: MessageTypes::Infrastructure::CANCEL_TASK,
       version: 1
     )

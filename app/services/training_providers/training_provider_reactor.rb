@@ -18,7 +18,7 @@ module TrainingProviders
 
     on_message Commands::CreateTrainingProviderProgram::V1 do |message|
       messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
-      return unless Projectors::Aggregates::HasOccurred.new(schema: Events::TrainingProviderCreated::V1).project(messages)
+      return unless Projectors::Streams::HasOccurred.new(schema: Events::TrainingProviderCreated::V1).project(messages)
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,

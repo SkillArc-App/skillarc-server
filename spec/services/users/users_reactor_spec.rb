@@ -53,7 +53,7 @@ RSpec.describe Users::UsersReactor do
 
         let(:email) { nil }
         let(:role) { Role::Types::COACH }
-        let(:aggregate) { Aggregates::User.new(user_id:) }
+        let(:aggregate) { Streams::User.new(user_id:) }
 
         context "when a user created does not exist" do
           let(:messages) { [] }

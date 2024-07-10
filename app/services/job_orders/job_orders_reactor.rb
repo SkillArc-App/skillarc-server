@@ -182,7 +182,7 @@ module JobOrders
     end
 
     on_message Commands::Activate::V1, :sync do |message|
-      job_order_added = ::Projectors::Aggregates::GetFirst.project(
+      job_order_added = ::Projectors::Streams::GetFirst.project(
         schema: JobOrders::Events::Added::V1,
         aggregate: message.aggregate
       )
@@ -229,7 +229,7 @@ module JobOrders
           }
         )
 
-        emit_criteria_met_if_necessary(::Aggregates::Job.new(job_id: message.data.job_id), message.trace_id)
+        emit_criteria_met_if_necessary(::Streams::Job.new(job_id: message.data.job_id), message.trace_id)
       end
     end
 

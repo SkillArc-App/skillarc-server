@@ -4,7 +4,7 @@ RSpec.describe Employers::Projectors::Name do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Aggregates::Employer.new(employer_id:) }
+    let(:aggregate) { Streams::Employer.new(employer_id:) }
     let(:employer_id) { SecureRandom.uuid }
 
     let(:employer_created) do

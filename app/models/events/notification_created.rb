@@ -39,7 +39,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::User,
+      aggregate: Streams::User,
       message_type: MessageTypes::NOTIFICATION_CREATED,
       version: 1
     )
@@ -47,7 +47,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Aggregates::User,
+      aggregate: Streams::User,
       message_type: MessageTypes::NOTIFICATION_CREATED,
       version: 2
     )
@@ -55,7 +55,7 @@ module Events
       type: Core::EVENT,
       data: Data::V3,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Message,
+      aggregate: Streams::Message,
       message_type: MessageTypes::NOTIFICATION_CREATED,
       version: 3
     )

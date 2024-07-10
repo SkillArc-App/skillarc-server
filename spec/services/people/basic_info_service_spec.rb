@@ -14,7 +14,7 @@ RSpec.describe People::BasicInfoService do
     let(:phone_number) { "1234567890" }
     let(:email) { "A@B.C" }
     let(:zip_code) { "12345" }
-    let(:aggregate) { Aggregates::Person.new(person_id: seeker.id) }
+    let(:aggregate) { Streams::Person.new(person_id: seeker.id) }
 
     it "publishes a basic info added event" do
       allow(message_service).to receive(:create!)

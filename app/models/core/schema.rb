@@ -16,7 +16,7 @@ module Core
       version Integer
       status Either(*Status::ALL)
       message_type Either(*MessageTypes::ALL)
-      aggregate SubClass.Of(Aggregate)
+      aggregate SubClass.Of(Stream)
     end)
 
     def serialize

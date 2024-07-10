@@ -37,7 +37,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Seeker,
+      aggregate: Streams::Seeker,
       message_type: MessageTypes::Seekers::SEEKER_APPLIED,
       version: 1
     )
@@ -45,7 +45,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Seeker,
+      aggregate: Streams::Seeker,
       message_type: MessageTypes::Seekers::SEEKER_APPLIED,
       version: 2
     )

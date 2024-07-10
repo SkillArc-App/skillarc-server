@@ -64,7 +64,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
         )
       end
 
-      let(:aggregate) { Aggregates::TrainingProvider.new(training_provider_id: SecureRandom.uuid) }
+      let(:aggregate) { Streams::TrainingProvider.new(training_provider_id: SecureRandom.uuid) }
 
       context "when there has been a traing provider created" do
         let(:messages) do
@@ -126,7 +126,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
       end
 
       let(:program_id) { SecureRandom.uuid }
-      let(:aggregate) { Aggregates::TrainingProvider.new(training_provider_id: SecureRandom.uuid) }
+      let(:aggregate) { Streams::TrainingProvider.new(training_provider_id: SecureRandom.uuid) }
 
       context "when there has been a traing provider program created" do
         let(:messages) do

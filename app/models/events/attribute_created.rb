@@ -17,7 +17,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Attribute,
+      aggregate: Streams::Attribute,
       message_type: MessageTypes::Attributes::ATTRIBUTE_CREATED,
       version: 1
     )

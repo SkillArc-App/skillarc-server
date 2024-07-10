@@ -133,7 +133,7 @@ class OnboardingSessionsController < ApplicationController
     messages = if person_id.nil?
                  []
                else
-                 MessageService.aggregate_events(Aggregates::Person.new(person_id:))
+                 MessageService.aggregate_events(Streams::Person.new(person_id:))
                end
     status = People::Projectors::OnboardingStatus.new.project(messages)
 

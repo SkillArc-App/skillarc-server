@@ -1,8 +1,8 @@
 module Employers
   class ApplicationService
     def self.update_status(message_service:, status:, user_id:, application_id:, reasons: [])
-      applicant_status_updated = ::Projectors::Aggregates::GetLast.project(
-        aggregate: Aggregates::Application.new(application_id:),
+      applicant_status_updated = ::Projectors::Streams::GetLast.project(
+        aggregate: Streams::Application.new(application_id:),
         schema: Events::ApplicantStatusUpdated::V6
       )
 

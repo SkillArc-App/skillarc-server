@@ -4,7 +4,7 @@ RSpec.describe People::Projectors::EducationExperiences do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Aggregates::Person.new(person_id:) }
+    let(:aggregate) { Streams::Person.new(person_id:) }
     let(:person_id) { SecureRandom.uuid }
     let(:education_experience_id1) { SecureRandom.uuid }
     let(:education_experience_id2) { SecureRandom.uuid }

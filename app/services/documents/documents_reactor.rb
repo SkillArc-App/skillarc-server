@@ -23,7 +23,7 @@ module Documents
         metadata: message.metadata
       )
 
-      messages = MessageService.aggregate_events(::Aggregates::Person.new(person_id: message.data.person_id))
+      messages = MessageService.aggregate_events(::Streams::Person.new(person_id: message.data.person_id))
 
       if messages.empty?
         message_service.create_once_for_trace!(
@@ -43,7 +43,7 @@ module Documents
       end
 
       basic_info_projection = People::Projectors::BasicInfo.new.project(messages)
-      bio = Projectors::Aggregates::GetLast.new(schema: ::Events::PersonAboutAdded::V1).project(messages)&.data&.about
+      bio = Projectors::Streams::GetLast.new(schema: ::Events::PersonAboutAdded::V1).project(messages)&.data&.about
       work_projection = People::Projectors::WorkExperiences.new.project(messages)
       education_projection = People::Projectors::EducationExperiences.new.project(messages)
 

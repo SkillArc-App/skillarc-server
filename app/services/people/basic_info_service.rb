@@ -9,7 +9,7 @@ module People
       seeker = user.seeker
       return unless seeker
 
-      aggregate = Aggregates::Person.new(person_id: seeker.id)
+      aggregate = Streams::Person.new(person_id: seeker.id)
 
       message_service.create!(
         schema: Events::BasicInfoAdded::V1,

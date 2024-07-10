@@ -7,7 +7,7 @@ module Users
     on_message Events::RoleAdded::V2 do |message|
       return unless message.data.role == Role::Types::COACH
 
-      user_created = Projectors::Aggregates::GetFirst.project(
+      user_created = Projectors::Streams::GetFirst.project(
         aggregate: message.aggregate,
         schema: Events::UserCreated::V1
       )

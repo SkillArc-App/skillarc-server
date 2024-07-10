@@ -1,7 +1,7 @@
 module Jobs
   module Projectors
     class Attributes < Projector
-      projection_aggregator Aggregates::Job
+      projection_aggregator Streams::Job
 
       class Attribute
         extend Record

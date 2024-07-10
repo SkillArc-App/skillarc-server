@@ -27,7 +27,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Day,
+      aggregate: Streams::Day,
       message_type: MessageTypes::DAY_ELAPSED,
       version: 1
     )
@@ -35,7 +35,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Date,
+      aggregate: Streams::Date,
       message_type: MessageTypes::DAY_ELAPSED,
       version: 2
     )

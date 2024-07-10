@@ -60,9 +60,9 @@ module JobSearch
       job = Job.find_by!(job_id: message.aggregate.job_id)
 
       # TODO: we should probably aggregate these tags as well
-      tag_name = Projectors::Aggregates::GetFirst.project(
+      tag_name = Projectors::Streams::GetFirst.project(
         schema: Events::TagCreated::V1,
-        aggregate: Aggregates::Tag.new(tag_id: message.data.tag_id)
+        aggregate: Streams::Tag.new(tag_id: message.data.tag_id)
       ).data.name
 
       job.update!(tags: job.tags.to_set.add(tag_name).to_a)
@@ -70,9 +70,9 @@ module JobSearch
 
     on_message Events::JobTagDestroyed::V2 do |message|
       job = Job.find_by!(job_id: message.aggregate.job_id)
-      tag_name = Projectors::Aggregates::GetFirst.project(
+      tag_name = Projectors::Streams::GetFirst.project(
         schema: Events::TagCreated::V1,
-        aggregate: Aggregates::Tag.new(tag_id: message.data.tag_id)
+        aggregate: Streams::Tag.new(tag_id: message.data.tag_id)
       ).data.name
 
       job.update!(tags: job.tags.to_set.delete(tag_name).to_a)

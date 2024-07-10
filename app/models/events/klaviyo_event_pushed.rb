@@ -4,7 +4,7 @@ module Events
       type: Core::EVENT,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Klaviyo,
+      aggregate: Streams::Klaviyo,
       message_type: MessageTypes::Contact::KLAVIYO_EVENT_PUSHED,
       version: 1
     )

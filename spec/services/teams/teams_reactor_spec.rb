@@ -13,7 +13,7 @@ RSpec.describe Teams::TeamsReactor do
   let(:message_service) { MessageService.new }
   let(:trace_id) { SecureRandom.uuid }
   let(:messages) { [] }
-  let(:aggregate) { Teams::Aggregates::Team.new(team_id:) }
+  let(:aggregate) { Teams::Streams::Team.new(team_id:) }
   let(:team_id) { SecureRandom.uuid }
 
   describe "#handle_message" do

@@ -9,12 +9,12 @@ module Invites
     MissingTrainingProviderEventError = Class.new(StandardError)
 
     on_message Commands::AcceptEmployerInvite::V1 do |message|
-      user_created = Projectors::Aggregates::GetFirst.project(
+      user_created = Projectors::Streams::GetFirst.project(
         schema: Events::UserCreated::V1,
-        aggregate: Aggregates::User.new(user_id: message.data.user_id)
+        aggregate: Streams::User.new(user_id: message.data.user_id)
       )
 
-      invite_created = Projectors::Aggregates::GetFirst.project(
+      invite_created = Projectors::Streams::GetFirst.project(
         schema: Events::EmployerInviteCreated::V1,
         aggregate: message.aggregate
       )
@@ -46,7 +46,7 @@ module Invites
     end
 
     on_message Commands::CreateEmployerInvite::V1 do |message|
-      messages = MessageService.aggregate_events(Aggregates::Employer.new(employer_id: message.data.employer_id))
+      messages = MessageService.aggregate_events(Streams::Employer.new(employer_id: message.data.employer_id))
       name = Employers::Projectors::Name.new.project(messages)&.name
 
       raise MissingEmployerEventError if name.blank?
@@ -66,12 +66,12 @@ module Invites
     end
 
     on_message Commands::AcceptTrainingProviderInvite::V1 do |message|
-      user_created = Projectors::Aggregates::GetFirst.project(
+      user_created = Projectors::Streams::GetFirst.project(
         schema: Events::UserCreated::V1,
-        aggregate: Aggregates::User.new(user_id: message.data.user_id)
+        aggregate: Streams::User.new(user_id: message.data.user_id)
       )
 
-      invite_created = Projectors::Aggregates::GetFirst.project(
+      invite_created = Projectors::Streams::GetFirst.project(
         schema: Events::TrainingProviderInviteCreated::V1,
         aggregate: message.aggregate
       )
@@ -104,9 +104,9 @@ module Invites
     end
 
     on_message Commands::CreateTrainingProviderInvite::V1 do |message|
-      name = Projectors::Aggregates::GetFirst.project(
+      name = Projectors::Streams::GetFirst.project(
         schema: Events::TrainingProviderCreated::V1,
-        aggregate: Aggregates::TrainingProvider.new(training_provider_id: message.data.training_provider_id)
+        aggregate: Streams::TrainingProvider.new(training_provider_id: message.data.training_provider_id)
       )&.data&.name
 
       raise MissingTrainingProviderEventError if name.blank?

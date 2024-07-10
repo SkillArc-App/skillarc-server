@@ -30,7 +30,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Message,
+      aggregate: Streams::Message,
       message_type: MessageTypes::Contact::SEND_SLACK_MESSAGE,
       version: 1
     )
@@ -38,7 +38,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Message,
+      aggregate: Streams::Message,
       message_type: MessageTypes::Contact::SEND_SLACK_MESSAGE,
       version: 2
     )

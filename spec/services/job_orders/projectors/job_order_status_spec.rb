@@ -4,7 +4,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { JobOrders::Aggregates::JobOrder.new(job_order_id:) }
+    let(:aggregate) { JobOrders::Streams::JobOrder.new(job_order_id:) }
     let(:job_order_id) { SecureRandom.uuid }
     let(:person_id1) { SecureRandom.uuid }
     let(:person_id2) { SecureRandom.uuid }

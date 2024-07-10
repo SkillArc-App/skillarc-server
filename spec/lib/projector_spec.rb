@@ -19,7 +19,7 @@ RSpec.describe Projector do
     context "when the aggregate and on_message aggregate don't align" do
       let(:sub_klass) do
         Class.new(described_class) do
-          projection_aggregator Aggregates::Coach
+          projection_aggregator Streams::Coach
 
           on_message Events::SessionStarted::V1 do |_|
             true
@@ -37,7 +37,7 @@ RSpec.describe Projector do
     context "when called without an init method" do
       let(:sub_klass) do
         Class.new(described_class) do
-          projection_aggregator Aggregates::User
+          projection_aggregator Streams::User
         end
       end
 
@@ -49,7 +49,7 @@ RSpec.describe Projector do
     context "when the reduces changes the accumulation type" do
       let(:sub_klass) do
         Class.new(described_class) do
-          projection_aggregator Aggregates::User
+          projection_aggregator Streams::User
 
           def init
             10
@@ -81,7 +81,7 @@ RSpec.describe Projector do
     context "when everything works" do
       let(:sub_klass) do
         Class.new(described_class) do
-          projection_aggregator Aggregates::User
+          projection_aggregator Streams::User
 
           def init
             0

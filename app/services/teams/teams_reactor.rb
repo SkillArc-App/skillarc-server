@@ -33,7 +33,7 @@ module Teams
     # This should maybe be owned by the contact system.
     # I'm currently unsure on this placement
     on_message Commands::SendSlackMessage::V2 do |message|
-      slack_channel = ::Projectors::Aggregates::GetLast.project(
+      slack_channel = ::Projectors::Streams::GetLast.project(
         schema: Events::PrimarySlackChannelAdded::V1,
         aggregate: message.aggregate
       )

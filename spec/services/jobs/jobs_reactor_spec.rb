@@ -83,7 +83,7 @@ RSpec.describe Jobs::JobsReactor do
     end
 
     let(:messages) { [] }
-    let(:aggregate) { Aggregates::Job.new(job_id:) }
+    let(:aggregate) { Streams::Job.new(job_id:) }
     let(:id) { SecureRandom.uuid }
     let(:job_id) { SecureRandom.uuid }
     let(:employer_id) { SecureRandom.uuid }

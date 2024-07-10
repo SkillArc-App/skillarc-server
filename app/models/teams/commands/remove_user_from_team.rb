@@ -15,7 +15,7 @@ module Teams
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::Nothing,
-        aggregate: Aggregates::Team,
+        aggregate: Streams::Team,
         message_type: MessageTypes::REMOVE_USER_FROM_TEAM,
         version: 1
       )

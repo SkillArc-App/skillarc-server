@@ -30,7 +30,7 @@ module Documents
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::RequestorMetadata::V1,
-        aggregate: Aggregates::Document,
+        aggregate: Streams::Document,
         message_type: MessageTypes::GENERATE_RESUME_FOR_PERSON,
         version: 1
       )
@@ -38,7 +38,7 @@ module Documents
         type: Core::COMMAND,
         data: Data::V2,
         metadata: Core::RequestorMetadata::V1,
-        aggregate: Aggregates::Document,
+        aggregate: Streams::Document,
         message_type: MessageTypes::GENERATE_RESUME_FOR_PERSON,
         version: 2
       )

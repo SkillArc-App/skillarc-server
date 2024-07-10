@@ -24,7 +24,7 @@ class MessageService
     aggregate = get_aggregate(aggregate:, schema:, **)
     message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, aggregate:, **)
 
-    projection = Projectors::Aggregates::HasOccurred.project(aggregate:, schema:)
+    projection = Projectors::Streams::HasOccurred.project(aggregate:, schema:)
     raise MessageService::NotBooleanProjection unless [true, false].include?(projection)
 
     save!(message) unless projection

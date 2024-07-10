@@ -4,7 +4,7 @@ module Events
       type: Core::EVENT,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Aggregates::PassReason,
+      aggregate: Streams::PassReason,
       message_type: MessageTypes::Jobs::PASS_REASON_REMOVED,
       version: 1
     )

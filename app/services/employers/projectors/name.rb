@@ -1,7 +1,7 @@
 module Employers
   module Projectors
     class Name < Projector
-      projection_aggregator Aggregates::Employer
+      projection_aggregator Streams::Employer
 
       class Projection
         extend Record

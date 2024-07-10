@@ -27,7 +27,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Reference,
+      aggregate: Streams::Reference,
       message_type: MessageTypes::TrainingProviders::REFERENCE_CREATED,
       version: 1
     )
@@ -35,7 +35,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Reference,
+      aggregate: Streams::Reference,
       message_type: MessageTypes::TrainingProviders::REFERENCE_CREATED,
       version: 2
     )

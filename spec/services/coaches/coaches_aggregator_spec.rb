@@ -94,7 +94,7 @@ RSpec.describe Coaches::CoachesAggregator do
         build(
           :message,
           schema: Events::CoachAssignmentWeightAdded::V1,
-          aggregate: Aggregates::Coach.new(coach_id: coach.id),
+          aggregate: Streams::Coach.new(coach_id: coach.id),
           data: {
             weight: 0.35
           }

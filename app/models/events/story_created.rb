@@ -16,7 +16,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Seeker,
+      aggregate: Streams::Seeker,
       message_type: MessageTypes::Person::STORY_CREATED,
       version: 1
     )
@@ -24,7 +24,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Person,
+      aggregate: Streams::Person,
       message_type: MessageTypes::Person::STORY_CREATED,
       version: 2
     )

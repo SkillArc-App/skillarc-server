@@ -4,7 +4,7 @@ RSpec.describe Seekers::Projectors::MostRecentApplication do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Aggregates::Person.new(person_id:) }
+    let(:aggregate) { Streams::Person.new(person_id:) }
     let(:person_id) { SecureRandom.uuid }
     let(:job1_id) { SecureRandom.uuid }
     let(:job2_id) { SecureRandom.uuid }

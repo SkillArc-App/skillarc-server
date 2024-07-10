@@ -15,7 +15,7 @@ RSpec.describe Documents::DocumentsReactor do
   let(:message_service) { MessageService.new }
   let(:trace_id) { SecureRandom.uuid }
   let(:messages) { [] }
-  let(:person_aggregate) { Aggregates::Person.new(person_id:) }
+  let(:person_aggregate) { Streams::Person.new(person_id:) }
   let(:person_id) { SecureRandom.uuid }
 
   describe "#handle_message" do

@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Projectors::Aggregates::GetLast do
+RSpec.describe Projectors::Streams::GetLast do
   describe ".project" do
     subject { described_class.project(aggregate:, schema:) }
 
     let(:task_id) { SecureRandom.uuid }
-    let(:aggregate) { Aggregates::Task.new(task_id:) }
+    let(:aggregate) { Streams::Task.new(task_id:) }
     let(:schema) { Events::TaskExecuted::V1 }
 
     context "when the event does not exist for the aggregate" do

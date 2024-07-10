@@ -17,7 +17,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Person,
+      aggregate: Streams::Person,
       message_type: MessageTypes::Person::PERSON_SKILL_REMOVED,
       version: 1
     )

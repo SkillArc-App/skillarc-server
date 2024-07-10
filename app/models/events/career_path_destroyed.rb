@@ -14,7 +14,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Job,
+      aggregate: Streams::Job,
       message_type: MessageTypes::Jobs::CAREER_PATH_DESTROYED,
       version: 1
     )

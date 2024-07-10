@@ -1,7 +1,7 @@
 module Seekers
   class ApplicationService
     def self.apply(seeker:, job:, message_service:)
-      aggregate = Aggregates::Person.new(person_id: seeker.id)
+      aggregate = Streams::Person.new(person_id: seeker.id)
       messages = MessageService.aggregate_events(aggregate)
 
       most_recent_applicaiton = Projectors::MostRecentApplication.new.project(messages).applied_at(job.id)

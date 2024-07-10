@@ -7,7 +7,7 @@ RSpec.describe Message do
         expect do
           described_class.new(
             id: SecureRandom.uuid,
-            aggregate: Aggregates::Job.new(job_id: SecureRandom.uuid),
+            aggregate: Streams::Job.new(job_id: SecureRandom.uuid),
             trace_id: SecureRandom.uuid,
             schema: Events::ApplicantStatusUpdated::V1,
             metadata: {},
@@ -153,7 +153,7 @@ RSpec.describe Message do
           id: serilized_message[:id],
           trace_id: serilized_message[:trace_id],
           schema: Events::JobSearch::V2,
-          aggregate: Aggregates::Search.new(search_id: serilized_message[:aggregate]),
+          aggregate: Streams::Search.new(search_id: serilized_message[:aggregate]),
           data: Events::JobSearch::Data::V1.new(
             search_terms: "Some Search",
             industries: nil,

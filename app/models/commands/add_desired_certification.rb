@@ -15,7 +15,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Job,
+      aggregate: Streams::Job,
       message_type: MessageTypes::Jobs::ADD_DESIRED_CERTIFICATION,
       version: 1
     )

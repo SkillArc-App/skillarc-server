@@ -4,7 +4,7 @@ RSpec.describe Documents::DocumentsAggregator do
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new }
-  let(:aggregate) { Documents::Aggregates::Document.new(document_id:) }
+  let(:aggregate) { Documents::Streams::Document.new(document_id:) }
   let(:document_id) { SecureRandom.uuid }
   let(:person_id) { SecureRandom.uuid }
   let(:user_id) { SecureRandom.uuid }

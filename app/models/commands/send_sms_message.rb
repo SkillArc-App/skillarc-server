@@ -15,7 +15,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Seeker,
+      aggregate: Streams::Seeker,
       message_type: MessageTypes::Contact::SEND_SMS_MESSAGE,
       version: 1
     )
@@ -23,7 +23,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Phone,
+      aggregate: Streams::Phone,
       message_type: MessageTypes::Contact::SEND_SMS_MESSAGE,
       version: 2
     )
@@ -31,7 +31,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Message,
+      aggregate: Streams::Message,
       message_type: MessageTypes::Contact::SEND_SMS_MESSAGE,
       version: 3
     )

@@ -14,7 +14,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::User,
+      aggregate: Streams::User,
       message_type: MessageTypes::Contact::SLACK_ID_ADDED,
       version: 1
     )
@@ -22,7 +22,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Person,
+      aggregate: Streams::Person,
       message_type: MessageTypes::Contact::SLACK_ID_ADDED,
       version: 2
     )

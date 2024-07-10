@@ -15,7 +15,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Seeker,
+      aggregate: Streams::Seeker,
       message_type: MessageTypes::Coaches::JOB_RECOMMENDED,
       version: 1
     )
@@ -23,7 +23,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Coaches::SeekerContext,
+      aggregate: Streams::Coaches::SeekerContext,
       message_type: MessageTypes::Coaches::JOB_RECOMMENDED,
       version: 2
     )
@@ -31,7 +31,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Person,
+      aggregate: Streams::Person,
       message_type: MessageTypes::Coaches::JOB_RECOMMENDED,
       version: 3
     )

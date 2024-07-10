@@ -6,7 +6,7 @@ RSpec.describe MessageService do
     Core::Schema.active(
       data: Events::SeekerViewed::Data::V1,
       metadata: Events::ApplicantStatusUpdated::MetaData::V1,
-      aggregate: Aggregates::User,
+      aggregate: Streams::User,
       message_type:,
       version:,
       type:
@@ -43,7 +43,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            aggregate: Aggregates::User.new(user_id:),
+            aggregate: Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -62,7 +62,7 @@ RSpec.describe MessageService do
               id:,
               occurred_at:,
               metadata:,
-              aggregate: Aggregates::User.new(user_id:)
+              aggregate: Streams::User.new(user_id:)
             )
           )
           .and_call_original
@@ -75,7 +75,7 @@ RSpec.describe MessageService do
       before do
         expect(described_class)
           .to receive(:aggregate_events)
-          .with(Aggregates::User.new(user_id:))
+          .with(Streams::User.new(user_id:))
           .and_return([
                         build(
                           :message,
@@ -96,7 +96,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            aggregate: Aggregates::User.new(user_id:),
+            aggregate: Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -140,7 +140,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            aggregate: Aggregates::User.new(user_id:),
+            aggregate: Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -159,7 +159,7 @@ RSpec.describe MessageService do
               id:,
               occurred_at:,
               metadata:,
-              aggregate: Aggregates::User.new(user_id:)
+              aggregate: Streams::User.new(user_id:)
             )
           )
           .and_call_original
@@ -193,7 +193,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            aggregate: Aggregates::User.new(user_id:),
+            aggregate: Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -255,7 +255,7 @@ RSpec.describe MessageService do
             id:,
             occurred_at:,
             metadata:,
-            aggregate: Aggregates::User.new(user_id:)
+            aggregate: Streams::User.new(user_id:)
           )
         )
         .and_call_original
@@ -435,7 +435,7 @@ RSpec.describe MessageService do
       Core::Schema.active(
         data: Events::SeekerViewed::Data::V1,
         metadata: Events::ApplicantStatusUpdated::MetaData::V1,
-        aggregate: Aggregates::User,
+        aggregate: Streams::User,
         message_type:,
         version: 10,
         type:
@@ -546,7 +546,7 @@ RSpec.describe MessageService do
           Core::Schema.active(
             data: Core::Nothing,
             metadata: Core::Nothing,
-            aggregate: Aggregates::User,
+            aggregate: Streams::User,
             message_type: MessageTypes::User::USER_CREATED,
             type: Core::EVENT,
             version: 2
@@ -653,7 +653,7 @@ RSpec.describe MessageService do
 
     context "when aggregate is a aggregate" do
       it "returns all the events for the aggregate in order" do
-        expect(described_class.aggregate_events(Aggregates::Message.new(message_id:))).to eq([message2, message1])
+        expect(described_class.aggregate_events(Streams::Message.new(message_id:))).to eq([message2, message1])
       end
     end
 
@@ -749,7 +749,7 @@ RSpec.describe MessageService do
     let!(:message1) do
       Message.new(
         id: SecureRandom.uuid,
-        aggregate: Aggregates::User.new(user_id: SecureRandom.uuid),
+        aggregate: Streams::User.new(user_id: SecureRandom.uuid),
         trace_id: SecureRandom.uuid,
         schema:,
         occurred_at: Time.zone.parse('2000-1-1'),
@@ -760,7 +760,7 @@ RSpec.describe MessageService do
     let!(:message2) do
       Message.new(
         id: SecureRandom.uuid,
-        aggregate: Aggregates::User.new(user_id: SecureRandom.uuid),
+        aggregate: Streams::User.new(user_id: SecureRandom.uuid),
         trace_id: SecureRandom.uuid,
         schema:,
         occurred_at: Time.zone.parse('2000-1-1'),

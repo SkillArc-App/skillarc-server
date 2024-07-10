@@ -1,7 +1,7 @@
 module People
   module Projectors
     class WorkExperiences < Projector
-      projection_aggregator ::Aggregates::Person
+      projection_aggregator ::Streams::Person
 
       class WorkExperience
         extend Record

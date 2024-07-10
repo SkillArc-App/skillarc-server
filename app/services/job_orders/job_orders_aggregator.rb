@@ -33,6 +33,13 @@ module JobOrders
       )
     end
 
+    on_message Events::TeamResponsibleForStatus::V1 do |message|
+      status_owner = StatusOwner.find_or_initialize_by(order_status: message.aggregate.order_status)
+      status_owner.update!(team_id: message.data.team_id)
+
+      JobOrder.where(status: message.aggregate.order_status).update_all(team_id: message.data.team_id)
+    end
+
     on_message ::Events::PersonAdded::V1 do |message|
       Person.create!(
         id: message.aggregate.id,
@@ -128,33 +135,47 @@ module JobOrders
     end
 
     on_message Events::NeedsCriteria::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(status: ActivatedStatus::NEEDS_CRITERIA, closed_at: nil)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: ActivatedStatus::NEEDS_CRITERIA
+      )
     end
 
     on_message Events::Activated::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(status: ActivatedStatus::OPEN, closed_at: nil)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: ActivatedStatus::OPEN
+      )
     end
 
     on_message Events::CandidatesScreened::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(status: ActivatedStatus::CANDIDATES_SCREENED, closed_at: nil)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: ActivatedStatus::CANDIDATES_SCREENED
+      )
     end
 
     on_message Events::Stalled::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(status: message.data.status, closed_at: nil)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: message.data.status
+      )
     end
 
     on_message Events::Filled::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(closed_at: message.occurred_at, status: ClosedStatus::FILLED)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: ClosedStatus::FILLED,
+        closed_at: message.occurred_at
+      )
     end
 
     on_message Events::NotFilled::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
-      job_order.update!(closed_at: message.occurred_at, status: ClosedStatus::NOT_FILLED)
+      update_order_status(
+        job_order_id: message.aggregate.id,
+        status: ClosedStatus::NOT_FILLED,
+        closed_at: message.occurred_at
+      )
     end
 
     on_message Events::NoteAdded::V1, :sync do |message|
@@ -179,6 +200,12 @@ module JobOrders
     end
 
     private
+
+    def update_order_status(job_order_id:, status:, closed_at: nil)
+      job_order = JobOrder.find(job_order_id)
+      owner = StatusOwner.find_by(order_status: status)
+      job_order.update!(closed_at:, status:, team_id: owner&.team_id)
+    end
 
     def update_job_order_counts(job_order)
       counts = job_order.candidates.group(:status).count

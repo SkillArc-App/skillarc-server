@@ -1,7 +1,7 @@
 module JobOrders
   class JobOrdersQuery
     def self.all_orders
-      JobOrder.includes(:job).where(job_orders_jobs: { applicable_for_job_orders: true }).map do |job_order|
+      JobOrder.for_applicable_jobs.map do |job_order|
         serialize_job_order_summary(job_order)
       end
     end

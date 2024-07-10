@@ -27,7 +27,7 @@ module JobOrders
       # grab some meta data for a message
       team_job_owners = {}
 
-      JobOrder.includes(:job).find_each do |job_order|
+      JobOrder.for_applicable_jobs.find_each do |job_order|
         team_owner_id = team_status_owners[job_order.status]
         next if team_owner_id.nil?
 

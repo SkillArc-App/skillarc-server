@@ -1179,6 +1179,11 @@ RSpec.configure do |config|
               status: {
                 type: :string,
                 enum: JobOrders::OrderStatus::ALL
+              },
+              teamId: {
+                type: :string,
+                format: :uuid,
+                nullable: true
               }
             }
           },

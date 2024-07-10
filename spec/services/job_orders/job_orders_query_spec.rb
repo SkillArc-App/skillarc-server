@@ -6,7 +6,7 @@ RSpec.describe JobOrders::JobOrdersQuery do
 
     let!(:job1) { create(:job_orders__job, applicable_for_job_orders: true) }
     let!(:job2) { create(:job_orders__job, applicable_for_job_orders: false) }
-    let!(:job_order1) { create(:job_orders__job_order, job: job1) }
+    let!(:job_order1) { create(:job_orders__job_order, job: job1, team_id: SecureRandom.uuid) }
     let!(:job_order2) { create(:job_orders__job_order, job: job2) }
 
     it "returns all orders which have applicable jobs" do
@@ -20,7 +20,8 @@ RSpec.describe JobOrders::JobOrdersQuery do
           order_count: job_order1.order_count,
           hire_count: job_order1.hire_count,
           recommended_count: job_order1.recommended_count,
-          status: job_order1.status
+          status: job_order1.status,
+          team_id: job_order1.team_id
         }
       ]
 
@@ -69,6 +70,7 @@ RSpec.describe JobOrders::JobOrdersQuery do
         closed_at: job_order.closed_at,
         order_count: job_order.order_count,
         hire_count: job_order.hire_count,
+        team_id: job_order.team_id,
         recommended_count: job_order.recommended_count,
         status: job_order.status,
         candidates: [

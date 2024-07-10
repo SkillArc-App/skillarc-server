@@ -4891,6 +4891,10 @@ components:
           - filled
           - not_filled
           - waiting_on_employer
+        teamId:
+          type: string
+          format: uuid
+          nullable: true
     job_order:
       allOf:
       - "$ref": "#/components/schemas/job_order_summary"

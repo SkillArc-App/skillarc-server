@@ -29,7 +29,8 @@ module JobOrders
           order_count: job_order.order_count,
           hire_count: job_order.hire_count,
           recommended_count: job_order.recommended_count,
-          status: job_order.status
+          status: job_order.status,
+          team_id: job_order.team_id
         }
       end
 

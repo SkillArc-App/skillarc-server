@@ -1152,6 +1152,10 @@ RSpec.configure do |config|
                 type: :string,
                 format: :uuid
               },
+              jobId: {
+                type: :string,
+                format: :uuid
+              },
               employmentTitle: {
                 type: :string
               },

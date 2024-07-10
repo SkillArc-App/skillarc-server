@@ -4864,6 +4864,9 @@ components:
         id:
           type: string
           format: uuid
+        jobId:
+          type: string
+          format: uuid
         employmentTitle:
           type: string
         employerName:

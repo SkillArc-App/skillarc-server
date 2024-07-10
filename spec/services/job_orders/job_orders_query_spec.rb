@@ -13,6 +13,7 @@ RSpec.describe JobOrders::JobOrdersQuery do
       expected_response = [
         {
           id: job_order1.id,
+          job_id: job1.id,
           employment_title: job1.employment_title,
           employer_name: job1.employer_name,
           opened_at: job_order1.opened_at,
@@ -61,6 +62,7 @@ RSpec.describe JobOrders::JobOrdersQuery do
     it "returns the order with the given id" do
       expected_response = {
         id: job_order.id,
+        job_id: job.id,
         employment_title: job.employment_title,
         employer_name: job.employer_name,
         benefits_description: job.benefits_description,

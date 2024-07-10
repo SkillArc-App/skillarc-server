@@ -1,5 +1,5 @@
 module Aggregates
-  class Reference < Core::Aggregate
+  class Reference < Core::Stream
     id_name :reference_id
   end
 end

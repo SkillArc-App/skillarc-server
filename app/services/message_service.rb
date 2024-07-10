@@ -119,7 +119,7 @@ class MessageService
   end
 
   def self.aggregate_events(aggregate)
-    raise NotAggregateError unless aggregate.is_a?(Core::Aggregate)
+    raise NotAggregateError unless aggregate.is_a?(Core::Stream)
 
     order_and_map(Event.where(aggregate_id: aggregate.id)).select { |m| m.schema.type == Core::EVENT }
   end

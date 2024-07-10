@@ -1,5 +1,5 @@
 module Aggregates
-  class Day < Core::Aggregate
+  class Day < Core::Stream
     id_name :day
   end
 end

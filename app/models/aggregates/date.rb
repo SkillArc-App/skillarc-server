@@ -1,5 +1,5 @@
 module Aggregates
-  class Date < Core::Aggregate
+  class Date < Core::Stream
     id_name :date
   end
 end

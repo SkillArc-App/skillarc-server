@@ -1,5 +1,5 @@
 module Aggregates
-  class Attribute < Core::Aggregate
+  class Attribute < Core::Stream
     id_name :attribute_id
   end
 end

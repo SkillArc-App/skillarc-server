@@ -7,7 +7,7 @@ class Message
 
   include(ValueSemantics.for_attributes do
     id Uuid
-    aggregate Core::Aggregate
+    aggregate Core::Stream
     trace_id Uuid
     schema Core::Schema
     data

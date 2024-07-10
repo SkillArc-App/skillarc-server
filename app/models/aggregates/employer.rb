@@ -1,5 +1,5 @@
 module Aggregates
-  class Employer < Core::Aggregate
+  class Employer < Core::Stream
     id_name :employer_id
   end
 end

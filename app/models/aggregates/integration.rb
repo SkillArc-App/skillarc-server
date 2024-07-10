@@ -1,5 +1,5 @@
 module Aggregates
-  class Integration < Core::Aggregate
+  class Integration < Core::Stream
     id_name :integration
   end
 end

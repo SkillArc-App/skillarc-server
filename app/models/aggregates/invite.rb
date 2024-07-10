@@ -1,5 +1,5 @@
 module Aggregates
-  class Invite < Core::Aggregate
+  class Invite < Core::Stream
     id_name :invite_id
   end
 end

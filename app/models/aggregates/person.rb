@@ -1,5 +1,5 @@
 module Aggregates
-  class Person < Core::Aggregate
+  class Person < Core::Stream
     id_name :person_id
   end
 end

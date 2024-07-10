@@ -1,5 +1,5 @@
 module Aggregates
-  class Search < Core::Aggregate
+  class Search < Core::Stream
     id_name :search_id
   end
 end

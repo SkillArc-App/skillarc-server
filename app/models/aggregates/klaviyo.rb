@@ -1,5 +1,5 @@
 module Aggregates
-  class Klaviyo < Core::Aggregate
+  class Klaviyo < Core::Stream
     id_name :event_id
   end
 end

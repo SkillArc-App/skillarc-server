@@ -1,5 +1,5 @@
 module Aggregates
-  class MasterSkill < Core::Aggregate
+  class MasterSkill < Core::Stream
     id_name :master_skill_id
   end
 end

@@ -1,5 +1,5 @@
 module Aggregates
-  class Contact < Core::Aggregate
+  class Contact < Core::Stream
     id_name :contact
   end
 end

@@ -1486,6 +1486,18 @@ RSpec.configure do |config|
               }
             ]
           },
+          team: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              name: {
+                type: :string
+              }
+            }
+          },
           not_found: {
             type: :object,
             properties: {

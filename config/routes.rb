@@ -41,6 +41,10 @@ Rails.application.routes.draw do
     end
   end
 
+  scope module: 'teams', path: 'teams' do
+    resources :teams, only: [:index]
+  end
+
   scope module: 'contact', path: 'contact' do
     scope module: 'cal_dot_com', path: 'cal_dot_com' do
       resources :webhooks, only: [:create]

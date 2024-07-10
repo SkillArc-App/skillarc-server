@@ -3546,6 +3546,34 @@ paths:
                       type: string
               required:
               - story
+  "/teams/teams":
+    get:
+      summary: get all teams
+      tags:
+      - Teams
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns all teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/team"
   "/test/create_user":
     post:
       summary: Create test user
@@ -5072,6 +5100,14 @@ components:
             "$ref": "#/components/schemas/reference_training_provider"
           authorUser:
             "$ref": "#/components/schemas/user"
+    team:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
     not_found:
       type: object
       properties:

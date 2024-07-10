@@ -37,7 +37,7 @@ module JobOrders
       status_owner = StatusOwner.find_or_initialize_by(order_status: message.aggregate.order_status)
       status_owner.update!(team_id: message.data.team_id)
 
-      JobOrder.where(status: message.aggregate.order_status).update_all(team_id: message.data.team_id)
+      JobOrder.where(status: message.aggregate.order_status).update_all(team_id: message.data.team_id) # rubocop:disable Rails/SkipsModelValidations
     end
 
     on_message ::Events::PersonAdded::V1 do |message|

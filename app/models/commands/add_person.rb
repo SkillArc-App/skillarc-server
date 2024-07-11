@@ -13,9 +13,9 @@ module Commands
           date_of_birth Either(Date, nil), coerce: Core::DateCoercer
         end
 
-        def initialize(**kwarg)
+        def initialize(attributes)
           super
-          raise ArgumentError unless kwarg[:email].present? || kwarg[:phone_number].present?
+          raise ArgumentError unless kwarg.email.present? || kwarg.phone_number.present?
         end
       end
 
@@ -33,10 +33,10 @@ module Commands
           source_identifier Either(String, nil)
         end
 
-        def initialize(**kwarg)
+        def initialize(attributes)
           super
-          raise ArgumentError unless kwarg[:email].present? || kwarg[:phone_number].present?
-          raise ArgumentError if kwarg[:source_identifier].present? && kwarg[:source_kind].blank?
+          raise ArgumentError unless email.present? || phone_number.present?
+          raise ArgumentError if source_identifier.present? && source_kind.blank?
         end
       end
     end

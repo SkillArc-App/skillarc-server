@@ -11,5 +11,9 @@ module Core
     def self.deserialize(_hash)
       self
     end
+
+    def self.generate_default
+      self
+    end
   end
 end

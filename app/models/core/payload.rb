@@ -1,11 +1,28 @@
 module Core
   module Payload
+    CannotCreateDefaultError = Class.new(StandardError)
+
     def schema(&)
       include(ValueSemantics.for_attributes(&))
       include Core::Payload
     end
 
     delegate :to_h, to: :serialize
+
+    def generate_default
+      new(**generate_default_attributes)
+    end
+
+    def generate_default_attributes
+      raise CannotCreateDefaultError if Rails.env.production?
+
+      attribute_hash = {}
+      value_semantics.attributes.each do |attr|
+        attribute_hash[attr.name] = default_value(attr.validator)
+      end
+
+      attribute_hash
+    end
 
     def serialize
       hash = {}
@@ -61,6 +78,39 @@ module Core
         validator.deserialize(value)
       else
         value
+      end
+    end
+
+    def default_value(validator)
+      case validator
+      when ValueSemantics::ArrayOf
+        [default_value(validator.element_validator)]
+      when ValueSemantics::HashOf
+        { default_value(validator.key_validator) => default_value(validator.value_validator) }
+      when ValueSemantics::Either
+        default_value(validator.subvalidators[0])
+      else
+        if validator.respond_to?(:generate_default)
+          validator.generate_default
+        elsif validator == String
+          "Example"
+        elsif validator == Uuid
+          SecureRandom.uuid
+        elsif validator == ValueSemantics::Bool
+          false
+        elsif validator == Hash
+          {}
+        elsif validator == Array
+          []
+        elsif validator.is_a?(Range)
+          validator.begin || validator.end
+        elsif validator == Date
+          Date.new(2021, 1, 1)
+        elsif validator == ActiveSupport::TimeWithZone
+          Time.zone.local(2021, 1, 1)
+        else
+          validator
+        end
       end
     end
   end

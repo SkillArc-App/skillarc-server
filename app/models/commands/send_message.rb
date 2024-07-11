@@ -28,7 +28,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::RequestorMetadata::V1,
-      aggregate: Streams::Message,
+      stream: Streams::Message,
       message_type: MessageTypes::Contact::SEND_MESSAGE,
       version: 1
     )
@@ -36,7 +36,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V2,
       metadata: Core::RequestorMetadata::V1,
-      aggregate: Streams::Message,
+      stream: Streams::Message,
       message_type: MessageTypes::Contact::SEND_MESSAGE,
       version: 2
     )

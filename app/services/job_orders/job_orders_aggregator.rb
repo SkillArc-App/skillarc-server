@@ -10,7 +10,7 @@ module JobOrders
 
     on_message ::Events::JobCreated::V3 do |message|
       Job.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING,
         employer_name: message.data.employer_name,
         employment_title: message.data.employment_title,
@@ -22,7 +22,7 @@ module JobOrders
     end
 
     on_message ::Events::JobUpdated::V2 do |message|
-      job = Job.find(message.aggregate.id)
+      job = Job.find(message.stream.id)
 
       job.update!(
         employment_title: message.data.employment_title,
@@ -34,15 +34,15 @@ module JobOrders
     end
 
     on_message Events::TeamResponsibleForStatus::V1 do |message|
-      status_owner = StatusOwner.find_or_initialize_by(order_status: message.aggregate.order_status)
+      status_owner = StatusOwner.find_or_initialize_by(order_status: message.stream.order_status)
       status_owner.update!(team_id: message.data.team_id)
 
-      JobOrder.where(status: message.aggregate.order_status).update_all(team_id: message.data.team_id) # rubocop:disable Rails/SkipsModelValidations
+      JobOrder.where(status: message.stream.order_status).update_all(team_id: message.data.team_id) # rubocop:disable Rails/SkipsModelValidations
     end
 
     on_message ::Events::PersonAdded::V1 do |message|
       Person.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
         phone_number: message.data.phone_number,
@@ -52,7 +52,7 @@ module JobOrders
 
     on_message ::Events::BasicInfoAdded::V1 do |message|
       Person.update(
-        message.aggregate.id,
+        message.stream.id,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
         phone_number: message.data.phone_number,
@@ -62,7 +62,7 @@ module JobOrders
 
     on_message Events::Added::V1, :sync do |message|
       JobOrder.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         job_orders_jobs_id: message.data.job_id,
         opened_at: message.occurred_at,
         status: JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT,
@@ -76,14 +76,14 @@ module JobOrders
     end
 
     on_message Events::OrderCountAdded::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
+      job_order = JobOrder.find(message.stream.id)
       job_order.update!(
         order_count: message.data.order_count
       )
     end
 
     on_message Events::CandidateAdded::V3, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
+      job_order = JobOrder.find(message.stream.id)
       person = Person.find_by(id: message.data.person_id)
       return if person.nil?
 
@@ -98,13 +98,13 @@ module JobOrders
     end
 
     on_message Events::CandidateApplied::V2, :sync do |message|
-      candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.aggregate.id)
+      candidate = Candidate.find_by!(job_orders_people_id: message.data.person_id, job_orders_job_orders_id: message.stream.id)
       candidate.update!(applied_at: message.data.applied_at)
     end
 
     on_message Events::CandidateRecommended::V2, :sync do |message|
       update_candidate_status(
-        job_order_id: message.aggregate.id,
+        job_order_id: message.stream.id,
         person_id: message.data.person_id,
         status: CandidateStatus::RECOMMENDED
       )
@@ -112,7 +112,7 @@ module JobOrders
 
     on_message Events::CandidateScreened::V1, :sync do |message|
       update_candidate_status(
-        job_order_id: message.aggregate.id,
+        job_order_id: message.stream.id,
         person_id: message.data.person_id,
         status: CandidateStatus::SCREENED
       )
@@ -120,7 +120,7 @@ module JobOrders
 
     on_message Events::CandidateHired::V2, :sync do |message|
       update_candidate_status(
-        job_order_id: message.aggregate.id,
+        job_order_id: message.stream.id,
         person_id: message.data.person_id,
         status: CandidateStatus::HIRED
       )
@@ -128,7 +128,7 @@ module JobOrders
 
     on_message Events::CandidateRescinded::V2, :sync do |message|
       update_candidate_status(
-        job_order_id: message.aggregate.id,
+        job_order_id: message.stream.id,
         person_id: message.data.person_id,
         status: CandidateStatus::RESCINDED
       )
@@ -136,35 +136,35 @@ module JobOrders
 
     on_message Events::NeedsCriteria::V1, :sync do |message|
       update_order_status(
-        job_order_id: message.aggregate.id,
+        job_order_id: message.stream.id,
         status: ActivatedStatus::NEEDS_CRITERIA
       )
     end
 
     on_message Events::Activated::V1, :sync do |message|
       update_order_status(
-        job_order_id: message.aggregate.id,
+        job_order_id: message.stream.id,
         status: ActivatedStatus::OPEN
       )
     end
 
     on_message Events::CandidatesScreened::V1, :sync do |message|
       update_order_status(
-        job_order_id: message.aggregate.id,
+        job_order_id: message.stream.id,
         status: ActivatedStatus::CANDIDATES_SCREENED
       )
     end
 
     on_message Events::Stalled::V1, :sync do |message|
       update_order_status(
-        job_order_id: message.aggregate.id,
+        job_order_id: message.stream.id,
         status: message.data.status
       )
     end
 
     on_message Events::Filled::V1, :sync do |message|
       update_order_status(
-        job_order_id: message.aggregate.id,
+        job_order_id: message.stream.id,
         status: ClosedStatus::FILLED,
         closed_at: message.occurred_at
       )
@@ -172,14 +172,14 @@ module JobOrders
 
     on_message Events::NotFilled::V1, :sync do |message|
       update_order_status(
-        job_order_id: message.aggregate.id,
+        job_order_id: message.stream.id,
         status: ClosedStatus::NOT_FILLED,
         closed_at: message.occurred_at
       )
     end
 
     on_message Events::NoteAdded::V1, :sync do |message|
-      job_order = JobOrder.find(message.aggregate.id)
+      job_order = JobOrder.find(message.stream.id)
 
       Note.create!(
         id: message.data.note_id,

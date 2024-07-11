@@ -12,7 +12,7 @@ RSpec.describe Users::UsersReactor do
         build(
           :message,
           schema: Events::RoleAdded::V2,
-          aggregate_id: user_id,
+          stream_id: user_id,
           data: {
             role:
           }
@@ -36,7 +36,7 @@ RSpec.describe Users::UsersReactor do
         before do
           allow(MessageService)
             .to receive(:stream_events)
-            .with(aggregate)
+            .with(stream)
             .and_return(messages)
         end
 
@@ -44,7 +44,7 @@ RSpec.describe Users::UsersReactor do
           build(
             :message,
             schema: Events::UserCreated::V1,
-            aggregate_id: user_id,
+            stream_id: user_id,
             data: {
               email:
             }
@@ -53,7 +53,7 @@ RSpec.describe Users::UsersReactor do
 
         let(:email) { nil }
         let(:role) { Role::Types::COACH }
-        let(:aggregate) { Streams::User.new(user_id:) }
+        let(:stream) { Streams::User.new(user_id:) }
 
         context "when a user created does not exist" do
           let(:messages) { [] }
@@ -84,11 +84,11 @@ RSpec.describe Users::UsersReactor do
 
           it "emits a coach added event once" do
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 trace_id: message.trace_id,
                 schema: Events::CoachAdded::V1,
-                user_id: message.aggregate.id,
+                user_id: message.stream.id,
                 data: {
                   coach_id: be_a(String),
                   email:

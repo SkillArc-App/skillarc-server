@@ -29,7 +29,7 @@ module Teams
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::Nothing,
-        aggregate: Streams::Team,
+        stream: Streams::Team,
         message_type: MessageTypes::SEND_SLACK_MESSAGE,
         version: 1
       )
@@ -37,7 +37,7 @@ module Teams
         type: Core::COMMAND,
         data: Data::V2,
         metadata: Core::Nothing,
-        aggregate: Streams::Team,
+        stream: Streams::Team,
         message_type: MessageTypes::SEND_SLACK_MESSAGE,
         version: 2
       )

@@ -13,7 +13,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
         build(
           :message,
           schema: Commands::ScreenApplicant::V1,
-          aggregate_id: SecureRandom.uuid,
+          stream_id: SecureRandom.uuid,
           data: Core::Nothing
         )
       end
@@ -22,7 +22,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
         build(
           :message,
           schema: Commands::ScheduleTask::V1,
-          aggregate_id: task_id,
+          stream_id: task_id,
           data: {
             execute_at: Time.zone.local(2000, 1, 1),
             command: inner_message
@@ -55,7 +55,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
             .with(
               schema: Events::TaskScheduled::V1,
               trace_id: message.trace_id,
-              task_id: message.aggregate.task_id,
+              task_id: message.stream.task_id,
               data: {
                 execute_at: message.data.execute_at,
                 command: message.data.command
@@ -76,7 +76,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
         build(
           :message,
           schema: Commands::CancelTask::V1,
-          aggregate_id: task_id,
+          stream_id: task_id,
           data: Core::Nothing,
           metadata: {
             requestor_type: Requestor::Kinds::USER,
@@ -107,7 +107,7 @@ RSpec.describe Infrastructure::InfrastructureReactor do
               .with(
                 schema: Events::TaskCancelled::V1,
                 trace_id: message.trace_id,
-                task_id: message.aggregate.task_id,
+                task_id: message.stream.task_id,
                 data: Core::Nothing,
                 metadata: {
                   requestor_type: message.metadata.requestor_type,

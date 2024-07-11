@@ -14,7 +14,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Coach,
+      stream: Streams::Coach,
       message_type: MessageTypes::Coaches::COACH_ASSIGNMENT_WEIGHT_ADDED,
       version: 1
     )

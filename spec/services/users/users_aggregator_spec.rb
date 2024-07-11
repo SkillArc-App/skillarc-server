@@ -11,7 +11,7 @@ RSpec.describe Users::UsersAggregator do
         build(
           :message,
           schema: Events::RoleAdded::V2,
-          aggregate_id: user.id,
+          stream_id: user.id,
           data: {
             role:
           }
@@ -45,7 +45,7 @@ RSpec.describe Users::UsersAggregator do
         build(
           :message,
           schema: Events::PersonAssociatedToUser::V1,
-          aggregate_id: id,
+          stream_id: id,
           data: {
             user_id: user.id
           }

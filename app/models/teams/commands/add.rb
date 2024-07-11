@@ -15,7 +15,7 @@ module Teams
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::Nothing,
-        aggregate: Streams::Team,
+        stream: Streams::Team,
         message_type: MessageTypes::ADD,
         version: 1
       )

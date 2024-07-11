@@ -15,7 +15,7 @@ module JobOrders
         type: Core::EVENT,
         data: Data::V1,
         metadata: Core::Nothing,
-        aggregate: Streams::JobOrder,
+        stream: Streams::JobOrder,
         message_type: MessageTypes::JOB_ORDER_ORDER_COUNT_ADDED,
         version: 1
       )

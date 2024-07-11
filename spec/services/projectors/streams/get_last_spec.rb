@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Projectors::Streams::GetLast do
   describe ".project" do
-    subject { described_class.project(aggregate:, schema:) }
+    subject { described_class.project(stream:, schema:) }
 
     let(:task_id) { SecureRandom.uuid }
-    let(:aggregate) { Streams::Task.new(task_id:) }
+    let(:stream) { Streams::Task.new(task_id:) }
     let(:schema) { Events::TaskExecuted::V1 }
 
-    context "when the event does not exist for the aggregate" do
+    context "when the event does not exist for the stream" do
       before do
         Event.from_message!(message1)
         Event.from_message!(message2)
@@ -18,14 +18,14 @@ RSpec.describe Projectors::Streams::GetLast do
         build(
           :message,
           schema: Events::TaskExecuted::V1,
-          aggregate_id: SecureRandom.uuid
+          stream_id: SecureRandom.uuid
         )
       end
       let(:message2) do
         build(
           :message,
           schema: Events::ZipAdded::V2,
-          aggregate_id: task_id,
+          stream_id: task_id,
           data: {
             zip_code: "43202"
           }
@@ -37,7 +37,7 @@ RSpec.describe Projectors::Streams::GetLast do
       end
     end
 
-    context "when the event does exist for the aggregate" do
+    context "when the event does exist for the stream" do
       before do
         Event.from_message!(message1)
         Event.from_message!(message2)
@@ -47,7 +47,7 @@ RSpec.describe Projectors::Streams::GetLast do
         build(
           :message,
           schema: Events::TaskExecuted::V1,
-          aggregate_id: task_id,
+          stream_id: task_id,
           occurred_at: Time.zone.local(2000, 10, 10)
         )
       end
@@ -55,7 +55,7 @@ RSpec.describe Projectors::Streams::GetLast do
         build(
           :message,
           schema: Events::TaskExecuted::V1,
-          aggregate_id: task_id,
+          stream_id: task_id,
           occurred_at: Time.zone.local(2000, 10, 11)
         )
       end

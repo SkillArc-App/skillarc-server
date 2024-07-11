@@ -14,7 +14,7 @@ module People
 
     on_message Events::PersonAdded::V1 do |message|
       Seeker.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
         email: message.data.email,
@@ -23,20 +23,20 @@ module People
     end
 
     on_message Events::PersonAssociatedToUser::V1 do |message|
-      Seeker.update!(message.aggregate.id, user_id: message.data.user_id)
+      Seeker.update!(message.stream.id, user_id: message.data.user_id)
     end
 
     on_message Events::PersonAboutAdded::V1, :sync do |message|
-      Seeker.update!(message.aggregate.id, about: message.data.about)
+      Seeker.update!(message.stream.id, about: message.data.about)
     end
 
     on_message Events::ZipAdded::V2, :sync do |message|
-      Seeker.update!(message.aggregate.id, zip_code: message.data.zip_code)
+      Seeker.update!(message.stream.id, zip_code: message.data.zip_code)
     end
 
     on_message Events::BasicInfoAdded::V1, :sync do |message|
       Seeker.update!(
-        message.aggregate.id,
+        message.stream.id,
         first_name: message.data.first_name,
         last_name: message.data.last_name,
         phone_number: message.data.phone_number,
@@ -49,7 +49,7 @@ module People
       other_expereince = OtherExperience.find_or_initialize_by(id: message.data.id)
 
       other_expereince.update!(
-        seeker_id: message.aggregate.id,
+        seeker_id: message.stream.id,
         organization_name: message.data.organization_name,
         position: message.data.position,
         start_date: message.data.start_date,
@@ -68,7 +68,7 @@ module People
       Story.create!(
         id: message.data.id,
         prompt: message.data.prompt,
-        seeker_id: message.aggregate.id,
+        seeker_id: message.stream.id,
         response: message.data.response
       )
     end
@@ -88,7 +88,7 @@ module People
 
     on_message Events::ApplicantStatusUpdated::V6, :sync do |message|
       application = Applicant.find_or_initialize_by(
-        id: message.aggregate.id
+        id: message.stream.id
       )
 
       application.update!(
@@ -105,7 +105,7 @@ module People
     on_message Events::ElevatorPitchCreated::V2, :sync do |message|
       applicant = Applicant.find_by!(
         job_id: message.data.job_id,
-        seeker_id: message.aggregate_id
+        seeker_id: message.stream_id
       )
 
       applicant.update!(
@@ -118,7 +118,7 @@ module People
       education_experience = EducationExperience.find_or_initialize_by(id: message.data.id)
 
       education_experience.update!(
-        seeker_id: message.aggregate.id,
+        seeker_id: message.stream.id,
         id: message.data.id,
         organization_name: message.data.organization_name,
         title: message.data.title,
@@ -137,7 +137,7 @@ module People
       personal_experience = PersonalExperience.find_or_initialize_by(id: message.data.id)
 
       personal_experience.update!(
-        seeker_id: message.aggregate.id,
+        seeker_id: message.stream.id,
         activity: message.data.activity,
         description: message.data.description,
         start_date: message.data.start_date,
@@ -152,32 +152,32 @@ module People
     on_message Events::PersonSkillAdded::V1, :sync do |message|
       ProfileSkill.create!(
         id: SecureRandom.uuid,
-        seeker_id: message.aggregate.id,
+        seeker_id: message.stream.id,
         description: message.data.description,
         master_skill_id: message.data.skill_id
       )
     end
 
     on_message Events::PersonSkillUpdated::V1, :sync do |message|
-      skill = ProfileSkill.find_by!(seeker_id: message.aggregate.id, master_skill_id: message.data.skill_id)
+      skill = ProfileSkill.find_by!(seeker_id: message.stream.id, master_skill_id: message.data.skill_id)
 
       skill.update!(description: message.data.description)
     end
 
     on_message Events::PersonSkillRemoved::V1, :sync do |message|
-      ProfileSkill.find_by!(seeker_id: message.aggregate.id, master_skill_id: message.data.skill_id).destroy!
+      ProfileSkill.find_by!(seeker_id: message.stream.id, master_skill_id: message.data.skill_id).destroy!
     end
 
     on_message Events::OnboardingStarted::V2, :sync do |message|
       OnboardingSession.create!(
         id: SecureRandom.uuid,
-        seeker_id: message.aggregate.id,
+        seeker_id: message.stream.id,
         started_at: message.occurred_at
       )
     end
 
     on_message Events::OnboardingCompleted::V3, :sync do |message|
-      onboarding_session = OnboardingSession.find_by(seeker_id: message.aggregate.id)
+      onboarding_session = OnboardingSession.find_by(seeker_id: message.stream.id)
 
       if onboarding_session.present?
         onboarding_session.update!(
@@ -186,7 +186,7 @@ module People
       else
         OnboardingSession.create!(
           id: SecureRandom.uuid,
-          seeker_id: message.aggregate.id,
+          seeker_id: message.stream.id,
           started_at: message.occurred_at,
           completed_at: message.occurred_at
         )

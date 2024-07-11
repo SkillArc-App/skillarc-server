@@ -15,7 +15,7 @@ module Contact
         message_service.create!(
           schema: Commands::SendSlackMessage::V2,
           trace_id: message.trace_id,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           data: {
             channel: result.slack_id,
             text:
@@ -26,7 +26,7 @@ module Contact
         message_service.create!(
           schema: Commands::SendEmailMessage::V1,
           trace_id: message.trace_id,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           data: {
             recepent_email: result.email,
             title: message.data.title,
@@ -45,7 +45,7 @@ module Contact
         message_service.create!(
           schema: Commands::SendSmsMessage::V3,
           trace_id: message.trace_id,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           data: {
             phone_number: result.phone_number,
             message: text
@@ -56,7 +56,7 @@ module Contact
         message_service.create!(
           schema: Events::NotificationCreated::V3,
           trace_id: message.trace_id,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           data: {
             title: message.data.title,
             body: message.data.body,
@@ -68,7 +68,7 @@ module Contact
         message_service.create!(
           schema: Events::MessageSent::V1,
           trace_id: message.trace_id,
-          message_id: message.aggregate.message_id,
+          message_id: message.stream.message_id,
           data: Core::Nothing
         )
       end
@@ -80,7 +80,7 @@ module Contact
       message_service.create!(
         schema: Events::MessageEnqueued::V1,
         trace_id: message.trace_id,
-        message_id: message.aggregate.message_id,
+        message_id: message.stream.message_id,
         data: Core::Nothing
       )
     end

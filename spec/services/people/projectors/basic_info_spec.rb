@@ -4,13 +4,13 @@ RSpec.describe People::Projectors::BasicInfo do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Streams::Person.new(person_id:) }
+    let(:stream) { Streams::Person.new(person_id:) }
     let(:person_id) { SecureRandom.uuid }
 
     let(:person_added) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::PersonAdded::V1,
         data: {
           email: "A@B.com",
@@ -24,7 +24,7 @@ RSpec.describe People::Projectors::BasicInfo do
     let(:basic_info_added) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::BasicInfoAdded::V1,
         data: {
           email: nil,

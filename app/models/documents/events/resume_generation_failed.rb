@@ -18,7 +18,7 @@ module Documents
         type: Core::EVENT,
         data: Data::V1,
         metadata: Core::RequestorMetadata::V1,
-        aggregate: Streams::Document,
+        stream: Streams::Document,
         message_type: MessageTypes::RESUME_GENERATION_FAILED,
         version: 1
       )

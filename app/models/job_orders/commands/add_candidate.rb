@@ -15,7 +15,7 @@ module JobOrders
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::Nothing,
-        aggregate: Streams::JobOrder,
+        stream: Streams::JobOrder,
         message_type: MessageTypes::ADD_CANDIDATE,
         version: 1
       )
@@ -24,7 +24,7 @@ module JobOrders
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::RequestorMetadata::V2,
-        aggregate: Streams::JobOrder,
+        stream: Streams::JobOrder,
         message_type: MessageTypes::ADD_CANDIDATE,
         version: 2
       )

@@ -15,7 +15,7 @@ RSpec.describe People::PersonAggregator do
         build(
           :message,
           schema: Events::PersonAdded::V1,
-          aggregate_id: SecureRandom.uuid,
+          stream_id: SecureRandom.uuid,
           data: {
             first_name: "John",
             last_name: "Skillz",
@@ -30,7 +30,7 @@ RSpec.describe People::PersonAggregator do
         expect { subject }.to change(Seeker, :count).from(0).to(1)
 
         seeker = Seeker.take(1).first
-        expect(seeker.id).to eq(message.aggregate.id)
+        expect(seeker.id).to eq(message.stream.id)
         expect(seeker.first_name).to eq(message.data.first_name)
         expect(seeker.last_name).to eq(message.data.last_name)
         expect(seeker.email).to eq(message.data.email)
@@ -46,7 +46,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::PersonAssociatedToUser::V1,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               user_id: user.id
             }
@@ -66,7 +66,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::BasicInfoAdded::V1,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               first_name: "John",
               last_name: "Chabot",
@@ -92,7 +92,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::ZipAdded::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               zip_code: "43202"
             }
@@ -112,7 +112,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::PersonAboutAdded::V1,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               about: "I'm pretty cool"
             }
@@ -132,7 +132,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::ExperienceAdded::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
               organization_name: "Org",
@@ -146,14 +146,14 @@ RSpec.describe People::PersonAggregator do
         end
 
         context "when the event updates a record" do
-          let!(:other_experience) { create(:other_experience, seeker_id: message.aggregate.id, id: message.data.id) }
+          let!(:other_experience) { create(:other_experience, seeker_id: message.stream.id, id: message.data.id) }
 
           it "updates an other session" do
             expect { subject }.not_to change(OtherExperience, :count)
 
             other_experience.reload
             expect(other_experience.id).to eq(message.data.id)
-            expect(other_experience.seeker_id).to eq(message.aggregate.id)
+            expect(other_experience.seeker_id).to eq(message.stream.id)
             expect(other_experience.organization_name).to eq(message.data.organization_name)
             expect(other_experience.position).to eq(message.data.position)
             expect(other_experience.start_date).to eq(message.data.start_date)
@@ -169,7 +169,7 @@ RSpec.describe People::PersonAggregator do
 
             other_experience = OtherExperience.take(1).first
             expect(other_experience.id).to eq(message.data.id)
-            expect(other_experience.seeker_id).to eq(message.aggregate.id)
+            expect(other_experience.seeker_id).to eq(message.stream.id)
             expect(other_experience.organization_name).to eq(message.data.organization_name)
             expect(other_experience.position).to eq(message.data.position)
             expect(other_experience.start_date).to eq(message.data.start_date)
@@ -185,7 +185,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::ExperienceRemoved::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               id:
             }
@@ -204,7 +204,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::StoryCreated::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
               prompt: "Disk Golf?",
@@ -218,7 +218,7 @@ RSpec.describe People::PersonAggregator do
 
           story = Story.take(1).first
           expect(story.id).to eq(message.data.id)
-          expect(story.seeker_id).to eq(message.aggregate.id)
+          expect(story.seeker_id).to eq(message.stream.id)
           expect(story.prompt).to eq(message.data.prompt)
           expect(story.response).to eq(message.data.response)
         end
@@ -229,7 +229,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::StoryUpdated::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               id: story.id,
               prompt: "Disk Golf?",
@@ -254,7 +254,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::ApplicantStatusUpdated::V6,
-            aggregate_id: application_id,
+            stream_id: application_id,
             data: {
               applicant_first_name: "First",
               applicant_last_name: "Last",
@@ -313,7 +313,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::StoryDestroyed::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               id: story.id
             }
@@ -332,7 +332,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::EducationExperienceAdded::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
               organization_name: "Org",
@@ -345,7 +345,7 @@ RSpec.describe People::PersonAggregator do
         end
 
         context "when the event updates a record" do
-          let!(:education_experience) { create(:education_experience, seeker_id: message.aggregate.id, id: message.data.id) }
+          let!(:education_experience) { create(:education_experience, seeker_id: message.stream.id, id: message.data.id) }
 
           it "updates and education experience" do
             expect { subject }.not_to change(EducationExperience, :count)
@@ -382,7 +382,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::EducationExperienceDeleted::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               id:
             }
@@ -401,7 +401,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::PersonalExperienceAdded::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
               activity: "Org",
@@ -413,7 +413,7 @@ RSpec.describe People::PersonAggregator do
         end
 
         context "when the event updates a record" do
-          let!(:personal_experience) { create(:personal_experience, seeker_id: message.aggregate.id, id: message.data.id) }
+          let!(:personal_experience) { create(:personal_experience, seeker_id: message.stream.id, id: message.data.id) }
 
           it "updates and personal experience" do
             expect { subject }.not_to change(PersonalExperience, :count)
@@ -448,7 +448,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::PersonalExperienceRemoved::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               id:
             }
@@ -467,7 +467,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::OnboardingStarted::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: Core::Nothing
           )
         end
@@ -476,7 +476,7 @@ RSpec.describe People::PersonAggregator do
           expect { subject }.to change(OnboardingSession, :count).from(0).to(1)
 
           onboarding_session = OnboardingSession.last_created
-          expect(onboarding_session.seeker_id).to eq(message.aggregate.id)
+          expect(onboarding_session.seeker_id).to eq(message.stream.id)
           expect(onboarding_session.started_at).to eq(message.occurred_at)
         end
       end
@@ -486,7 +486,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::ElevatorPitchCreated::V2,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               job_id: applicant.job_id,
               pitch: "pitch"
@@ -509,7 +509,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::OnboardingCompleted::V3,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: Core::Nothing
           )
         end
@@ -539,7 +539,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::PersonSkillAdded::V1,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               skill_id: master_skill.id,
               description: "some descriptions",
@@ -555,7 +555,7 @@ RSpec.describe People::PersonAggregator do
           expect { subject }.to change(ProfileSkill, :count).from(0).to(1)
 
           profile_skill = ProfileSkill.take(1).first
-          expect(profile_skill.seeker_id).to eq(message.aggregate.id)
+          expect(profile_skill.seeker_id).to eq(message.stream.id)
           expect(profile_skill.description).to eq(message.data.description)
           expect(profile_skill.master_skill_id).to eq(message.data.skill_id)
         end
@@ -566,7 +566,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::PersonSkillUpdated::V1,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               skill_id: master_skill.id,
               description: "some descriptions",
@@ -592,7 +592,7 @@ RSpec.describe People::PersonAggregator do
           build(
             :message,
             schema: Events::PersonSkillRemoved::V1,
-            aggregate_id: seeker.id,
+            stream_id: seeker.id,
             data: {
               skill_id: master_skill.id,
               description: "some descriptions",

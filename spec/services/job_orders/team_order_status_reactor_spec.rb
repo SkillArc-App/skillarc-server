@@ -20,7 +20,7 @@ RSpec.describe JobOrders::TeamOrderStatusReactor do
       let(:message) do
         build(
           :message,
-          aggregate_id: date,
+          stream_id: date,
           schema: Events::DayElapsed::V2,
           data: {
             day_of_week:,
@@ -57,7 +57,7 @@ RSpec.describe JobOrders::TeamOrderStatusReactor do
             [
               build(
                 :message,
-                aggregate_id: JobOrders::ActivatedStatus::OPEN,
+                stream_id: JobOrders::ActivatedStatus::OPEN,
                 schema: JobOrders::Events::TeamResponsibleForStatus::V1,
                 data: {
                   team_id:

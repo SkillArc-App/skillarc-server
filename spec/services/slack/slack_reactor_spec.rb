@@ -12,7 +12,7 @@ RSpec.describe Slack::SlackReactor do
         build(
           :message,
           schema: Events::UserCreated::V1,
-          aggregate_id: SecureRandom.uuid,
+          stream_id: SecureRandom.uuid,
           data: {
             email:
           }
@@ -91,7 +91,7 @@ RSpec.describe Slack::SlackReactor do
       let(:applicant_status_updated) do
         build(
           :message,
-          aggregate_id: application_id,
+          stream_id: application_id,
           schema: Events::ApplicantStatusUpdated::V6,
           data: {
             applicant_first_name: "John",
@@ -113,7 +113,7 @@ RSpec.describe Slack::SlackReactor do
       let(:message) do
         build(
           :message,
-          aggregate_id: application_id,
+          stream_id: application_id,
           schema: Events::ChatMessageSent::V2,
           data: {
             from_name: "Yo Boi",
@@ -174,11 +174,11 @@ RSpec.describe Slack::SlackReactor do
 
       it "sends a slack message to the provided channel and emits and event" do
         expect(message_service)
-          .to receive(:create_once_for_aggregate!)
+          .to receive(:create_once_for_stream!)
           .with(
             schema: Events::SlackMessageSent::V2,
             trace_id: message.trace_id,
-            message_id: message.aggregate.message_id,
+            message_id: message.stream.message_id,
             data: {
               channel: "#somechannel",
               text: "*some text*",

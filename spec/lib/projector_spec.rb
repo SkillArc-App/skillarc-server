@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Projector do
   describe ".on_message" do
-    context "when no aggregate is given" do
+    context "when no stream is given" do
       let(:sub_klass) do
         Class.new(described_class) do
           on_message Events::SessionStarted::V1 do |_|
@@ -11,12 +11,12 @@ RSpec.describe Projector do
         end
       end
 
-      it "raises a NoAggregateError" do
-        expect { sub_klass }.to raise_error(described_class::NoAggregateError)
+      it "raises a NoStreamError" do
+        expect { sub_klass }.to raise_error(described_class::NoStreamError)
       end
     end
 
-    context "when the aggregate and on_message aggregate don't align" do
+    context "when the stream and on_message stream don't align" do
       let(:sub_klass) do
         Class.new(described_class) do
           projection_aggregator Streams::Coach
@@ -27,8 +27,8 @@ RSpec.describe Projector do
         end
       end
 
-      it "raises a NotCorrectAggregateError" do
-        expect { sub_klass }.to raise_error(described_class::NotCorrectAggregateError)
+      it "raises a NotCorrectStreamError" do
+        expect { sub_klass }.to raise_error(described_class::NotCorrectStreamError)
       end
     end
   end
@@ -66,7 +66,7 @@ RSpec.describe Projector do
           build(
             :message,
             schema: Events::SessionStarted::V1,
-            aggregate_id: user_id,
+            stream_id: user_id,
             data: Core::Nothing
           )
         ]
@@ -99,7 +99,7 @@ RSpec.describe Projector do
           :message,
           count,
           schema: Events::SessionStarted::V1,
-          aggregate_id: user_id,
+          stream_id: user_id,
           data: Core::Nothing
         )
       end

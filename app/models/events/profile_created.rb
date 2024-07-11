@@ -23,7 +23,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::User,
+      stream: Streams::User,
       message_type: MessageTypes::Seekers::PROFILE_CREATED,
       version: 1
     )

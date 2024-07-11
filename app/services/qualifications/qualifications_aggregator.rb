@@ -7,7 +7,7 @@ module Qualifications
 
     on_message Events::MasterSkillCreated::V1 do |message|
       MasterSkill.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         skill: message.data.skill,
         type: message.data.type
       )
@@ -15,7 +15,7 @@ module Qualifications
 
     on_message Events::MasterCertificationCreated::V1 do |message|
       MasterCertification.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         certification: message.data.certification
       )
     end

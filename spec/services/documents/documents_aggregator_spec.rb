@@ -4,7 +4,7 @@ RSpec.describe Documents::DocumentsAggregator do
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new }
-  let(:aggregate) { Documents::Streams::Document.new(document_id:) }
+  let(:stream) { Documents::Streams::Document.new(document_id:) }
   let(:document_id) { SecureRandom.uuid }
   let(:person_id) { SecureRandom.uuid }
   let(:user_id) { SecureRandom.uuid }
@@ -16,7 +16,7 @@ RSpec.describe Documents::DocumentsAggregator do
       let(:message) do
         build(
           :message,
-          aggregate:,
+          stream:,
           schema: Documents::Events::ResumeGenerationRequested::V1,
           data: {
             person_id:,
@@ -34,8 +34,8 @@ RSpec.describe Documents::DocumentsAggregator do
         expect { subject }.to change(Documents::Resume, :count).from(0).to(1)
 
         resume = Documents::Resume.first
-        expect(resume.id).to eq(message.aggregate.id)
-        expect(resume.id).to eq(message.aggregate.id)
+        expect(resume.id).to eq(message.stream.id)
+        expect(resume.id).to eq(message.stream.id)
         expect(resume.person_id).to eq(message.data.person_id)
         expect(resume.anonymized).to eq(message.data.anonymized)
         expect(resume.document_kind).to eq(message.data.document_kind)
@@ -49,7 +49,7 @@ RSpec.describe Documents::DocumentsAggregator do
       let(:message) do
         build(
           :message,
-          aggregate:,
+          stream:,
           schema: Documents::Events::ResumeGenerated::V1,
           data: {
             person_id:,
@@ -82,7 +82,7 @@ RSpec.describe Documents::DocumentsAggregator do
       let(:message) do
         build(
           :message,
-          aggregate:,
+          stream:,
           schema: Documents::Events::ResumeGenerationFailed::V1,
           data: {
             person_id:,

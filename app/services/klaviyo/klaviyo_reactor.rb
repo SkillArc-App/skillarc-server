@@ -22,7 +22,7 @@ module Klaviyo
     end
 
     on_message Events::PersonAdded::V1 do |message|
-      email = email_for_person_aggregate(message.aggregate)
+      email = email_for_person_stream(message.stream)
       return if email.blank?
 
       dedup_messages(message) do
@@ -43,7 +43,7 @@ module Klaviyo
     end
 
     on_message Events::BasicInfoAdded::V1 do |message|
-      email = email_for_person_aggregate(message.aggregate)
+      email = email_for_person_stream(message.stream)
       return if email.blank?
 
       dedup_messages(message) do
@@ -62,7 +62,7 @@ module Klaviyo
     end
 
     on_message Events::EducationExperienceAdded::V2 do |message|
-      email = email_for_person_aggregate(message.aggregate)
+      email = email_for_person_stream(message.stream)
       return if email.blank?
 
       dedup_messages(message) do
@@ -105,7 +105,7 @@ module Klaviyo
     end
 
     on_message Events::ExperienceAdded::V2 do |message|
-      email = email_for_person_aggregate(message.aggregate)
+      email = email_for_person_stream(message.stream)
       return if email.blank?
 
       dedup_messages(message) do
@@ -118,7 +118,7 @@ module Klaviyo
     end
 
     on_message Events::OnboardingCompleted::V3 do |message|
-      email = email_for_person_aggregate(message.aggregate)
+      email = email_for_person_stream(message.stream)
       return if email.blank?
 
       dedup_messages(message) do
@@ -133,7 +133,7 @@ module Klaviyo
     on_message Events::ApplicantStatusUpdated::V6 do |message|
       dedup_messages(message) do
         client.application_status_updated(
-          application_id: message.aggregate.id,
+          application_id: message.stream.id,
           email: message.data.applicant_email,
           employment_title: message.data.employment_title,
           employer_name: message.data.employer_name,
@@ -147,7 +147,7 @@ module Klaviyo
     on_message Events::ChatMessageSent::V2 do |message|
       dedup_messages(message) do
         applicant_status_updated = Projectors::Streams::GetFirst.project(
-          aggregate: Streams::Application.new(application_id: message.aggregate.id),
+          stream: Streams::Application.new(application_id: message.stream.id),
           schema: Events::ApplicantStatusUpdated::V6
         )
 
@@ -155,7 +155,7 @@ module Klaviyo
         return if applicant_status_updated.data.user_id == message.data.from_user_id
 
         client.chat_message_received(
-          applicant_id: message.aggregate.id,
+          applicant_id: message.stream.id,
           email: applicant_status_updated.data.applicant_email,
           employment_title: applicant_status_updated.data.employment_title,
           employer_name: applicant_status_updated.data.employer_name,
@@ -168,7 +168,7 @@ module Klaviyo
     on_message Events::JobSaved::V1 do |message|
       dedup_messages(message) do
         client.job_saved(
-          email: email_for_user_aggregate(message.aggregate),
+          email: email_for_user_stream(message.stream),
           event_id: message.id,
           event_properties: {
             job_id: message.data.job_id,
@@ -183,9 +183,9 @@ module Klaviyo
     private
 
     def dedup_messages(message)
-      aggregate = Streams::Message.new(message_id: message.id)
+      stream = Streams::Message.new(message_id: message.id)
 
-      return if Projectors::Streams::HasOccurred.project(aggregate:, schema: Events::KlaviyoEventPushed::V1)
+      return if Projectors::Streams::HasOccurred.project(stream:, schema: Events::KlaviyoEventPushed::V1)
 
       yield
 
@@ -197,16 +197,16 @@ module Klaviyo
       )
     end
 
-    def email_for_person_aggregate(aggregate)
-      messages = MessageService.stream_events(aggregate)
+    def email_for_person_stream(stream)
+      messages = MessageService.stream_events(stream)
       result = People::Projectors::Email.new.project(messages)
 
       result.initial_email
     end
 
-    def email_for_user_aggregate(aggregate)
+    def email_for_user_stream(stream)
       user_created = Projectors::Streams::GetFirst.project(
-        aggregate:,
+        stream:,
         schema: Events::UserCreated::V1
       )
 

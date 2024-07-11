@@ -15,7 +15,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::RequestorMetadata::V1,
-      aggregate: Streams::Task,
+      stream: Streams::Task,
       message_type: MessageTypes::Infrastructure::SCHEDULE_TASK,
       version: 1
     )

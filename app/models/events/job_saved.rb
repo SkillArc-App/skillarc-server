@@ -16,7 +16,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::User,
+      stream: Streams::User,
       message_type: MessageTypes::User::JOB_SAVED,
       version: 1
     )

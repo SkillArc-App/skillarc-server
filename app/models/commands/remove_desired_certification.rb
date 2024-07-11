@@ -14,7 +14,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Job,
+      stream: Streams::Job,
       message_type: MessageTypes::Jobs::REMOVE_DESIRED_CERTIFICATION,
       version: 1
     )

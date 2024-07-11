@@ -280,7 +280,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
         build(
           :message,
           schema: JobOrders::Commands::AddCandidate::V2,
-          aggregate:,
+          stream:,
           data: {
             person_id:
           },
@@ -291,7 +291,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
           }
         )
       end
-      let(:aggregate) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
+      let(:stream) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
 
       context "when the candidate has previously been added" do
         let(:messages) do
@@ -299,7 +299,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             build(
               :message,
               schema: JobOrders::Events::CandidateAdded::V3,
-              aggregate:,
+              stream:,
               data: {
                 person_id:
               },
@@ -326,7 +326,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             .to receive(:create_once_for_trace!)
             .with(
               schema: JobOrders::Events::CandidateAdded::V3,
-              aggregate: message.aggregate,
+              stream: message.stream,
               trace_id: message.trace_id,
               data: {
                 person_id: message.data.person_id
@@ -371,7 +371,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             job_order_id: be_a(String),
             trace_id: message.trace_id,
             data: {
-              job_id: message.aggregate.id
+              job_id: message.stream.id
             }
           )
 
@@ -445,7 +445,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
           let(:job_order1_closed) do
             build(
               :message,
-              aggregate: job_order1.aggregate,
+              stream: job_order1.stream,
               schema: JobOrders::Events::NotFilled::V1,
               occurred_at: Time.zone.local(2019, 6, 1),
               data: Core::Nothing
@@ -468,7 +468,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               .with(
                 schema: JobOrders::Events::CandidateAdded::V3,
                 trace_id: message.trace_id,
-                aggregate: job_order2.aggregate,
+                stream: job_order2.stream,
                 data: {
                   person_id:
                 },
@@ -485,7 +485,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               .with(
                 schema: JobOrders::Events::CandidateApplied::V2,
                 trace_id: message.trace_id,
-                aggregate: job_order2.aggregate,
+                stream: job_order2.stream,
                 data: {
                   person_id:,
                   applied_at: message.occurred_at
@@ -504,14 +504,14 @@ RSpec.describe JobOrders::JobOrdersReactor do
         build(
           :message,
           schema: JobOrders::Commands::Add::V1,
-          aggregate:,
+          stream:,
           data: {
             job_id:
           }
         )
       end
       let(:job_id) { SecureRandom.uuid }
-      let(:aggregate) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
+      let(:stream) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
 
       context "when there is an active job order" do
         let(:messages) do
@@ -519,7 +519,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             build(
               :message,
               schema: JobOrders::Events::Added::V1,
-              aggregate:,
+              stream:,
               occurred_at: Time.zone.local(2019, 1, 1),
               data: {
                 job_id:
@@ -534,7 +534,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             .with(
               schema: JobOrders::Events::CreationFailed::V1,
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               data: {
                 job_id: message.data.job_id,
                 reason: "There is an existing active job order present"
@@ -574,7 +574,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               .with(
                 schema: JobOrders::Events::Added::V1,
                 trace_id: message.trace_id,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 data: {
                   job_id: message.data.job_id
                 }
@@ -582,11 +582,11 @@ RSpec.describe JobOrders::JobOrdersReactor do
               .and_call_original
 
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 schema: JobOrders::Events::CriteriaAdded::V1,
                 trace_id: message.trace_id,
-                aggregate:,
+                stream:,
                 data: Core::Nothing
               )
               .and_call_original
@@ -604,7 +604,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               .with(
                 schema: JobOrders::Events::Added::V1,
                 trace_id: message.trace_id,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 data: {
                   job_id: message.data.job_id
                 }
@@ -622,12 +622,12 @@ RSpec.describe JobOrders::JobOrdersReactor do
         build(
           :message,
           schema: JobOrders::Commands::Activate::V1,
-          aggregate:,
+          stream:,
           data: Core::Nothing
         )
       end
       let(:job_id) { SecureRandom.uuid }
-      let(:aggregate) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
+      let(:stream) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
 
       context "when there is an active job order" do
         let(:messages) do
@@ -635,7 +635,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             build(
               :message,
               schema: JobOrders::Events::Added::V1,
-              aggregate:,
+              stream:,
               occurred_at: Time.zone.local(2019, 1, 1),
               data: {
                 job_id:
@@ -650,7 +650,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             .with(
               schema: JobOrders::Events::ActivationFailed::V1,
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               data: {
                 reason: "There is an existing active job order present"
               }
@@ -684,7 +684,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             build(
               :message,
               schema: JobOrders::Events::Added::V1,
-              aggregate:,
+              stream:,
               occurred_at: Time.zone.local(2019, 1, 1),
               data: {
                 job_id:
@@ -693,7 +693,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             build(
               :message,
               schema: JobOrders::Events::NotFilled::V1,
-              aggregate:,
+              stream:,
               occurred_at: Time.zone.local(2019, 1, 1),
               data: Core::Nothing
             )
@@ -706,7 +706,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             .with(
               schema: JobOrders::Events::Activated::V1,
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               data: Core::Nothing
             )
             .and_call_original
@@ -731,7 +731,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             expect(MessageService)
               .to receive(:stream_events)
-              .with(message.aggregate)
+              .with(message.stream)
               .and_return(messages)
           end
 
@@ -809,7 +809,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
-                    aggregate: message.aggregate,
+                    stream: message.stream,
                     schema: JobOrders::Events::NeedsCriteria::V1,
                     data: Core::Nothing
                   )
@@ -836,7 +836,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
-                    aggregate: message.aggregate,
+                    stream: message.stream,
                     schema: JobOrders::Events::Activated::V1,
                     data: Core::Nothing
                   )
@@ -863,7 +863,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
-                    aggregate: message.aggregate,
+                    stream: message.stream,
                     schema: JobOrders::Events::CandidatesScreened::V1,
                     data: Core::Nothing
                   )
@@ -890,7 +890,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
-                    aggregate: message.aggregate,
+                    stream: message.stream,
                     schema: JobOrders::Events::Stalled::V1,
                     data: {
                       status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
@@ -919,7 +919,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
-                    aggregate: message.aggregate,
+                    stream: message.stream,
                     schema: JobOrders::Events::Filled::V1,
                     data: Core::Nothing
                   )
@@ -946,7 +946,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .to receive(:create_once_for_trace!)
                   .with(
                     trace_id: message.trace_id,
-                    aggregate: message.aggregate,
+                    stream: message.stream,
                     schema: JobOrders::Events::NotFilled::V1,
                     data: Core::Nothing
                   )
@@ -1070,7 +1070,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             expect(MessageService)
               .to receive(:stream_events)
-              .with(message.aggregate)
+              .with(message.stream)
               .and_return(job_messages)
 
             expect_any_instance_of(JobOrders::Projectors::JobOrderCriteriaMet)
@@ -1079,13 +1079,13 @@ RSpec.describe JobOrders::JobOrdersReactor do
               .and_return(met)
           end
 
-          let(:job_aggregate) { Streams::Job.new(job_id: SecureRandom.uuid) }
-          let(:job_order_aggregate) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
+          let(:job_stream) { Streams::Job.new(job_id: SecureRandom.uuid) }
+          let(:job_order_stream) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
           let(:message1) do
             build(
               :message,
               schema: Events::JobCreated::V3,
-              aggregate: job_aggregate,
+              stream: job_stream,
               data: {
                 category: Job::Categories::STAFFING,
                 employment_title: "Plumber",
@@ -1103,7 +1103,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             build(
               :message,
               schema: Events::JobAttributeCreated::V1,
-              aggregate: job_aggregate,
+              stream: job_stream,
               data: {
                 id: SecureRandom.uuid,
                 attribute_name: "name",
@@ -1116,9 +1116,9 @@ RSpec.describe JobOrders::JobOrdersReactor do
             build(
               :message,
               schema: JobOrders::Events::Added::V1,
-              aggregate: job_order_aggregate,
+              stream: job_order_stream,
               data: {
-                job_id: job_aggregate.id
+                job_id: job_stream.id
               }
             )
           end
@@ -1126,7 +1126,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
             build(
               :message,
               schema: JobOrders::Events::Added::V1,
-              aggregate: job_order_aggregate,
+              stream: job_order_stream,
               data: {
                 job_id: SecureRandom.uuid
               }
@@ -1141,11 +1141,11 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             it "does not emit a new message" do
               expect(message_service)
-                .to receive(:create_once_for_aggregate!)
+                .to receive(:create_once_for_stream!)
                 .with(
                   schema: JobOrders::Events::CriteriaAdded::V1,
                   trace_id: message.trace_id,
-                  aggregate: message3.aggregate,
+                  stream: message3.stream,
                   data: Core::Nothing
                 )
                 .and_call_original
@@ -1170,7 +1170,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
           build(
             :message,
             schema: Events::JobUpdated::V2,
-            aggregate: job_aggregate,
+            stream: job_stream,
             data: {
               category: Job::Categories::STAFFING,
               employment_title: "Another title",
@@ -1188,7 +1188,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
           build(
             :message,
             schema: Events::JobAttributeCreated::V1,
-            aggregate: job_aggregate,
+            stream: job_stream,
             data: {
               id: SecureRandom.uuid,
               attribute_name: "name",
@@ -1206,7 +1206,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
           build(
             :message,
             schema: Events::JobAttributeUpdated::V1,
-            aggregate: job_aggregate,
+            stream: job_stream,
             data: {
               id: SecureRandom.uuid,
               acceptible_set: %w[D F]
@@ -1222,7 +1222,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
           build(
             :message,
             schema: Events::JobAttributeDestroyed::V1,
-            aggregate: job_aggregate,
+            stream: job_stream,
             data: {
               id: SecureRandom.uuid
             }

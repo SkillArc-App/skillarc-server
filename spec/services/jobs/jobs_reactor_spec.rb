@@ -83,7 +83,7 @@ RSpec.describe Jobs::JobsReactor do
     end
 
     let(:messages) { [] }
-    let(:aggregate) { Streams::Job.new(job_id:) }
+    let(:stream) { Streams::Job.new(job_id:) }
     let(:id) { SecureRandom.uuid }
     let(:job_id) { SecureRandom.uuid }
     let(:employer_id) { SecureRandom.uuid }
@@ -92,7 +92,7 @@ RSpec.describe Jobs::JobsReactor do
     let(:job_created) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::JobCreated::V3,
         data: {
           category: Job::Categories::MARKETPLACE,
@@ -112,7 +112,7 @@ RSpec.describe Jobs::JobsReactor do
       build(
         :message,
         schema: Events::EmployerCreated::V1,
-        aggregate_id: employer_id,
+        stream_id: employer_id,
         data: {
           name: "name",
           location: "location",
@@ -125,7 +125,7 @@ RSpec.describe Jobs::JobsReactor do
     let(:desired_certification_created) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::DesiredCertificationCreated::V1,
         data: {
           id:,
@@ -139,7 +139,7 @@ RSpec.describe Jobs::JobsReactor do
       let(:message) do
         build(
           :message,
-          aggregate:,
+          stream:,
           schema: Commands::AddDesiredCertification::V1,
           data: {
             id:,
@@ -174,11 +174,11 @@ RSpec.describe Jobs::JobsReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Events::DesiredCertificationCreated::V1,
               data: {
                 id: message.data.id,
-                job_id: message.aggregate.id,
+                job_id: message.stream.id,
                 master_certification_id: message.data.master_certification_id
               }
             )
@@ -194,7 +194,7 @@ RSpec.describe Jobs::JobsReactor do
       let(:message) do
         build(
           :message,
-          aggregate:,
+          stream:,
           schema: Commands::RemoveDesiredCertification::V1,
           data: {
             id:
@@ -228,7 +228,7 @@ RSpec.describe Jobs::JobsReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Events::DesiredCertificationDestroyed::V1,
               data: {
                 id: message.data.id
@@ -247,7 +247,7 @@ RSpec.describe Jobs::JobsReactor do
         build(
           :message,
           schema: Commands::CreateEmployer::V1,
-          aggregate_id: employer_id,
+          stream_id: employer_id,
           data: {
             name: "name",
             location: "location",
@@ -259,10 +259,10 @@ RSpec.describe Jobs::JobsReactor do
 
       it "emits a employer created event" do
         expect(message_service)
-          .to receive(:create_once_for_aggregate!)
+          .to receive(:create_once_for_stream!)
           .with(
             trace_id: message.trace_id,
-            aggregate: message.aggregate,
+            stream: message.stream,
             schema: Events::EmployerCreated::V1,
             data: {
               name: message.data.name,
@@ -283,7 +283,7 @@ RSpec.describe Jobs::JobsReactor do
         build(
           :message,
           schema: Commands::UpdateEmployer::V1,
-          aggregate_id: employer_id,
+          stream_id: employer_id,
           data: {
             name: "name",
             location: "location",
@@ -310,7 +310,7 @@ RSpec.describe Jobs::JobsReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Events::EmployerUpdated::V1,
               data: {
                 name: message.data.name,

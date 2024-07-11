@@ -28,7 +28,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Employer,
+      stream: Streams::Employer,
       message_type: MessageTypes::Invite::EMPLOYER_INVITE_ACCEPTED,
       version: 1
     )
@@ -36,7 +36,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Streams::Invite,
+      stream: Streams::Invite,
       message_type: MessageTypes::Invite::EMPLOYER_INVITE_ACCEPTED,
       version: 2
     )

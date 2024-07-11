@@ -24,7 +24,7 @@ RSpec.describe Qualifications::QualificationsAggregator do
         expect { subject }.to change(MasterSkill, :count).from(0).to(1)
 
         master_skill = MasterSkill.first
-        expect(master_skill.id).to eq(message.aggregate.id)
+        expect(master_skill.id).to eq(message.stream.id)
         expect(master_skill.skill).to eq(message.data.skill)
         expect(master_skill.type).to eq(message.data.type)
       end
@@ -45,7 +45,7 @@ RSpec.describe Qualifications::QualificationsAggregator do
         expect { subject }.to change(MasterCertification, :count).from(0).to(1)
 
         master_skill = MasterCertification.first
-        expect(master_skill.id).to eq(message.aggregate.id)
+        expect(master_skill.id).to eq(message.stream.id)
         expect(master_skill.certification).to eq(message.data.certification)
       end
     end

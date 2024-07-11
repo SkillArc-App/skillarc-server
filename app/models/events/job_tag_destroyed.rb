@@ -24,7 +24,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Job,
+      stream: Streams::Job,
       message_type: MessageTypes::Jobs::JOB_TAG_DELETED,
       version: 1
     )
@@ -32,7 +32,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Streams::Job,
+      stream: Streams::Job,
       message_type: MessageTypes::Jobs::JOB_TAG_DELETED,
       version: 2
     )

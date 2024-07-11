@@ -120,7 +120,7 @@ RSpec.describe Jobs::CareerPathService do
       message = build(
         :message,
         schema: Events::CareerPathCreated::V1,
-        aggregate_id: career_path.job_id,
+        stream_id: career_path.job_id,
         data: {
           id: SecureRandom.uuid,
           job_id: career_path.job_id,

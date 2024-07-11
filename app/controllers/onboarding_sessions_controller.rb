@@ -126,7 +126,7 @@ class OnboardingSessionsController < ApplicationController
 
     Events::PersonAssociatedToUser::V1.all_messages.detect do |m|
       m.data.user_id == current_user.id
-    end&.aggregate&.id
+    end&.stream&.id
   end
 
   def serialize_onboarding_session(person_id)

@@ -4,7 +4,7 @@ module Events
       type: Core::EVENT,
       data: Core::Nothing,
       metadata: Core::RequestorMetadata::V1,
-      aggregate: Streams::Task,
+      stream: Streams::Task,
       message_type: MessageTypes::Infrastructure::TASK_CANCELLED,
       version: 1
     )

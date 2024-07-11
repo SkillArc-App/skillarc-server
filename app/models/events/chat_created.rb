@@ -31,7 +31,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Job,
+      stream: Streams::Job,
       message_type: MessageTypes::Chats::CHAT_CREATED,
       version: 1
     )
@@ -39,7 +39,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Streams::Application,
+      stream: Streams::Application,
       message_type: MessageTypes::Chats::CHAT_CREATED,
       version: 2
     )

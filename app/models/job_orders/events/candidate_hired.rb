@@ -23,7 +23,7 @@ module JobOrders
         type: Core::EVENT,
         data: Data::V1,
         metadata: Core::Nothing,
-        aggregate: Streams::JobOrder,
+        stream: Streams::JobOrder,
         message_type: MessageTypes::JOB_ORDER_CANDIDATE_HIRED,
         version: 1
       )
@@ -31,7 +31,7 @@ module JobOrders
         type: Core::EVENT,
         data: Data::V2,
         metadata: Core::Nothing,
-        aggregate: Streams::JobOrder,
+        stream: Streams::JobOrder,
         message_type: MessageTypes::JOB_ORDER_CANDIDATE_HIRED,
         version: 2
       )

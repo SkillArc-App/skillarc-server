@@ -8,7 +8,7 @@ RSpec.describe Core::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:,
+        stream:,
         type:
       )
     end
@@ -17,7 +17,7 @@ RSpec.describe Core::Schema do
     let(:metadata) { Hash }
     let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
-    let(:aggregate) { Streams::User }
+    let(:stream) { Streams::User }
     let(:type) { Core::EVENT }
 
     it "returns the schema and registers it" do
@@ -32,7 +32,7 @@ RSpec.describe Core::Schema do
       expect(subject.status).to eq(described_class::Status::ACTIVE)
       expect(subject.message_type).to eq(message_type)
       expect(subject.version).to eq(version)
-      expect(subject.aggregate).to eq(aggregate)
+      expect(subject.stream).to eq(stream)
     end
   end
 
@@ -43,7 +43,7 @@ RSpec.describe Core::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:,
+        stream:,
         type:
       )
     end
@@ -52,7 +52,7 @@ RSpec.describe Core::Schema do
     let(:metadata) { Hash }
     let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
-    let(:aggregate) { Streams::User }
+    let(:stream) { Streams::User }
     let(:type) { Core::EVENT }
 
     it "returns the schema and registers it" do
@@ -67,7 +67,7 @@ RSpec.describe Core::Schema do
       expect(subject.status).to eq(described_class::Status::DEPRECATED)
       expect(subject.message_type).to eq(message_type)
       expect(subject.version).to eq(version)
-      expect(subject.aggregate).to eq(aggregate)
+      expect(subject.stream).to eq(stream)
     end
   end
 
@@ -78,7 +78,7 @@ RSpec.describe Core::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:,
+        stream:,
         type:
       )
     end
@@ -87,7 +87,7 @@ RSpec.describe Core::Schema do
     let(:metadata) { Hash }
     let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
-    let(:aggregate) { Streams::User }
+    let(:stream) { Streams::User }
     let(:type) { Core::EVENT }
 
     it "returns the schema and registers it" do
@@ -102,7 +102,7 @@ RSpec.describe Core::Schema do
       expect(subject.status).to eq(described_class::Status::INACTIVE)
       expect(subject.message_type).to eq(message_type)
       expect(subject.version).to eq(version)
-      expect(subject.aggregate).to eq(aggregate)
+      expect(subject.stream).to eq(stream)
     end
   end
 
@@ -113,7 +113,7 @@ RSpec.describe Core::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:,
+        stream:,
         type:
       )
     end
@@ -122,7 +122,7 @@ RSpec.describe Core::Schema do
     let(:metadata) { Hash }
     let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
-    let(:aggregate) { Streams::User }
+    let(:stream) { Streams::User }
     let(:type) { Core::EVENT }
 
     it "returns the schema and registers it" do
@@ -137,7 +137,7 @@ RSpec.describe Core::Schema do
       expect(subject.status).to eq(described_class::Status::DESTROYED)
       expect(subject.message_type).to eq(message_type)
       expect(subject.version).to eq(version)
-      expect(subject.aggregate).to eq(aggregate)
+      expect(subject.stream).to eq(stream)
     end
   end
 
@@ -148,7 +148,7 @@ RSpec.describe Core::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:,
+        stream:,
         type:
       )
     end
@@ -157,7 +157,7 @@ RSpec.describe Core::Schema do
     let(:metadata) { Hash }
     let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
-    let(:aggregate) { Streams::User }
+    let(:stream) { Streams::User }
     let(:type) { Core::EVENT }
 
     it "passes itself to MessageService.all_messages" do
@@ -176,7 +176,7 @@ RSpec.describe Core::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:,
+        stream:,
         type:
       )
     end
@@ -185,7 +185,7 @@ RSpec.describe Core::Schema do
     let(:metadata) { Hash }
     let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
-    let(:aggregate) { Streams::User }
+    let(:stream) { Streams::User }
     let(:type) { Core::EVENT }
 
     it "just returns the message_type and version" do
@@ -200,7 +200,7 @@ RSpec.describe Core::Schema do
         metadata:,
         message_type:,
         version:,
-        aggregate:,
+        stream:,
         type:
       )
     end
@@ -210,7 +210,7 @@ RSpec.describe Core::Schema do
     let(:type) { Core::EVENT }
     let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
     let(:version) { 1 }
-    let(:aggregate) { Streams::User }
+    let(:stream) { Streams::User }
 
     it "just returns the message_type and version" do
       expect(described_class.deserialize({ version:, message_type: })).to eq(instance)

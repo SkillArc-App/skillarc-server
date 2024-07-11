@@ -17,7 +17,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Person,
+      stream: Streams::Person,
       message_type: MessageTypes::Person::PERSON_SKILL_UPDATED,
       version: 1
     )

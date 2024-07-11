@@ -17,7 +17,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Job,
+      stream: Streams::Job,
       message_type: MessageTypes::Jobs::JOB_ATTRIBUTE_CREATED,
       version: 1
     )

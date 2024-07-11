@@ -4,7 +4,7 @@ RSpec.describe Seekers::Projectors::MostRecentApplication do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Streams::Person.new(person_id:) }
+    let(:stream) { Streams::Person.new(person_id:) }
     let(:person_id) { SecureRandom.uuid }
     let(:job1_id) { SecureRandom.uuid }
     let(:job2_id) { SecureRandom.uuid }
@@ -12,7 +12,7 @@ RSpec.describe Seekers::Projectors::MostRecentApplication do
     let(:seeker_applied_job11) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::PersonApplied::V1,
         data: {
           application_id: SecureRandom.uuid,
@@ -31,7 +31,7 @@ RSpec.describe Seekers::Projectors::MostRecentApplication do
     let(:seeker_applied_job12) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::PersonApplied::V1,
         data: {
           application_id: SecureRandom.uuid,
@@ -50,7 +50,7 @@ RSpec.describe Seekers::Projectors::MostRecentApplication do
     let(:seeker_applied_job22) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::PersonApplied::V1,
         data: {
           application_id: SecureRandom.uuid,

@@ -16,7 +16,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::TrainingProvider,
+      stream: Streams::TrainingProvider,
       message_type: MessageTypes::TrainingProviders::CREATE_TRAINING_PROVIDER_PROGRAM,
       version: 1
     )

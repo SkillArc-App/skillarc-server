@@ -14,7 +14,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Seeker,
+      stream: Streams::Seeker,
       message_type: MessageTypes::Coaches::BARRIERS_UPDATED,
       version: 1
     )
@@ -22,7 +22,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Coaches::SeekerContext,
+      stream: Streams::Coaches::SeekerContext,
       message_type: MessageTypes::Coaches::BARRIERS_UPDATED,
       version: 2
     )
@@ -30,7 +30,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Person,
+      stream: Streams::Person,
       message_type: MessageTypes::Coaches::BARRIERS_UPDATED,
       version: 3
     )

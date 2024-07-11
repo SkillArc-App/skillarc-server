@@ -4,7 +4,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { JobOrders::Streams::JobOrder.new(job_order_id:) }
+    let(:stream) { JobOrders::Streams::JobOrder.new(job_order_id:) }
     let(:job_order_id) { SecureRandom.uuid }
 
     let(:now) { Time.zone.now }
@@ -12,7 +12,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     let(:job_order_activated) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: JobOrders::Events::Activated::V1,
         data: Core::Nothing
       )
@@ -20,7 +20,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     let(:job_order_need_critiera) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: JobOrders::Events::NeedsCriteria::V1,
         data: Core::Nothing
       )
@@ -28,7 +28,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     let(:job_order_candidates_screened) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: JobOrders::Events::CandidatesScreened::V1,
         data: Core::Nothing
       )
@@ -36,7 +36,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     let(:job_order_stalled) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: JobOrders::Events::Stalled::V1,
         data: {
           status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
@@ -46,7 +46,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     let(:job_order_filled) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: JobOrders::Events::Filled::V1,
         data: Core::Nothing
       )
@@ -54,7 +54,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
     let(:job_order_not_filled) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: JobOrders::Events::NotFilled::V1,
         data: Core::Nothing
       )

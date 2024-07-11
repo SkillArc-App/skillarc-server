@@ -21,7 +21,7 @@ RSpec.describe Teams::TeamsAggregator do
         expect { subject }.to change(Teams::Team, :count).from(0).to(1)
 
         team = Teams::Team.first
-        expect(team.id).to eq(message.aggregate.id)
+        expect(team.id).to eq(message.stream.id)
         expect(team.name).to eq(message.data.name)
       end
     end

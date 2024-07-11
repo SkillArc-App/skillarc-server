@@ -45,7 +45,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Person,
+      stream: Streams::Person,
       message_type: MessageTypes::Person::ADD_PERSON,
       version: 1
     )
@@ -53,7 +53,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Streams::Person,
+      stream: Streams::Person,
       message_type: MessageTypes::Person::ADD_PERSON,
       version: 2
     )

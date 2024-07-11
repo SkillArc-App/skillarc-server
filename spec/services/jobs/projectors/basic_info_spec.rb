@@ -17,7 +17,7 @@ RSpec.describe Jobs::Projectors::BasicInfo do
       build(
         :message,
         schema: Events::JobCreated::V3,
-        aggregate_id: job_id,
+        stream_id: job_id,
         data: {
           category: Job::Categories::MARKETPLACE,
           employment_title: "A title",
@@ -35,7 +35,7 @@ RSpec.describe Jobs::Projectors::BasicInfo do
       build(
         :message,
         schema: Events::JobUpdated::V2,
-        aggregate_id: job_id,
+        stream_id: job_id,
         data: {
           category: Job::Categories::MARKETPLACE,
           employment_title: "Senior Plumber",

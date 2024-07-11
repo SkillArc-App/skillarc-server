@@ -37,7 +37,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: MetaData::V1,
-      aggregate: Streams::User,
+      stream: Streams::User,
       message_type: MessageTypes::JobSearch::JOB_SEARCH,
       version: 1
     )
@@ -45,7 +45,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: MetaData::V2,
-      aggregate: Streams::Search,
+      stream: Streams::Search,
       message_type: MessageTypes::JobSearch::JOB_SEARCH,
       version: 2
     )

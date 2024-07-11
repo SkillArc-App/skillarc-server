@@ -14,7 +14,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::MasterCertification,
+      stream: Streams::MasterCertification,
       message_type: MessageTypes::Qualifications::MASTER_CERTIFICATION_CREATED,
       version: 1
     )

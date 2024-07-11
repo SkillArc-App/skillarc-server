@@ -14,7 +14,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::CareerPathCreated::V1,
-          aggregate_id: job.id,
+          stream_id: job.id,
           data: {
             id:,
             job_id: job.id,
@@ -38,7 +38,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::CareerPathUpdated::V1,
-          aggregate_id: career_path.job_id,
+          stream_id: career_path.job_id,
           data: {
             id: career_path.id,
             order: 1
@@ -57,7 +57,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::CareerPathDestroyed::V1,
-          aggregate_id: career_path.job_id,
+          stream_id: career_path.job_id,
           data: {
             id: career_path.id
           }
@@ -75,7 +75,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::DesiredCertificationCreated::V1,
-          aggregate_id: job.id,
+          stream_id: job.id,
           data: {
             id:,
             job_id: job.id,
@@ -103,7 +103,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::DesiredCertificationDestroyed::V1,
-          aggregate_id: desired_certification.job_id,
+          stream_id: desired_certification.job_id,
           data: {
             id: desired_certification.id
           }
@@ -121,7 +121,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::DesiredSkillCreated::V1,
-          aggregate_id: job.id,
+          stream_id: job.id,
           data: {
             id:,
             job_id: job.id,
@@ -149,7 +149,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::DesiredSkillDestroyed::V1,
-          aggregate_id: desired_skill.job_id,
+          stream_id: desired_skill.job_id,
           data: {
             id: desired_skill.id
           }
@@ -167,7 +167,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::JobPhotoCreated::V1,
-          aggregate_id: job.id,
+          stream_id: job.id,
           data: {
             id: SecureRandom.uuid,
             job_id: job.id,
@@ -193,7 +193,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::JobPhotoDestroyed::V1,
-          aggregate_id: job_photo.job_id,
+          stream_id: job_photo.job_id,
           data: {
             id: job_photo.id
           }
@@ -211,7 +211,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::TagCreated::V1,
-          aggregate_id: SecureRandom.uuid,
+          stream_id: SecureRandom.uuid,
           data: {
             name: "BOGO Job"
           }
@@ -223,7 +223,7 @@ RSpec.describe Jobs::JobsAggregator do
 
         tag = Tag.last
 
-        expect(tag.id).to eq(message.aggregate.id)
+        expect(tag.id).to eq(message.stream.id)
         expect(tag.name).to eq(message.data.name)
       end
     end
@@ -233,7 +233,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::JobTagCreated::V1,
-          aggregate_id: job.id,
+          stream_id: job.id,
           data: {
             id: SecureRandom.uuid,
             job_id: job.id,
@@ -260,7 +260,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::JobTagDestroyed::V2,
-          aggregate_id: job_tag.job_id,
+          stream_id: job_tag.job_id,
           data: {
             job_id: job_tag.job_id,
             job_tag_id: job_tag.id,
@@ -280,7 +280,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::LearnedSkillCreated::V1,
-          aggregate_id: job.id,
+          stream_id: job.id,
           data: {
             id:,
             job_id: job.id,
@@ -308,7 +308,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::LearnedSkillDestroyed::V1,
-          aggregate_id: learned_skill.job_id,
+          stream_id: learned_skill.job_id,
           data: {
             id: learned_skill.id
           }
@@ -326,7 +326,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::TestimonialCreated::V1,
-          aggregate_id: job.id,
+          stream_id: job.id,
           data: {
             id:,
             job_id: job.id,
@@ -359,7 +359,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::TestimonialDestroyed::V1,
-          aggregate_id: testimonial.job_id,
+          stream_id: testimonial.job_id,
           data: {
             id: testimonial.id
           }
@@ -377,7 +377,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::EmployerCreated::V1,
-          aggregate_id: id,
+          stream_id: id,
           data: {
             name: "Cool employer",
             location: "The best place",
@@ -405,7 +405,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::EmployerUpdated::V1,
-          aggregate_id: id,
+          stream_id: id,
           data: {
             name: "Cool employer",
             location: "The best place",
@@ -434,7 +434,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::JobCreated::V3,
-          aggregate_id: id,
+          stream_id: id,
           data: {
             category:,
             employer_name:,
@@ -492,7 +492,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::JobUpdated::V2,
-          aggregate_id: job.id,
+          stream_id: job.id,
           data: {
             category:,
             employment_title:,
@@ -543,7 +543,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::JobAttributeCreated::V1,
-          aggregate_id: job.id,
+          stream_id: job.id,
           data: {
             id:,
             attribute_name: "name",
@@ -573,7 +573,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::JobAttributeUpdated::V1,
-          aggregate_id: job_attribute.job_id,
+          stream_id: job_attribute.job_id,
           data: {
             id: job_attribute.id,
             acceptible_set: %w[A B]
@@ -594,7 +594,7 @@ RSpec.describe Jobs::JobsAggregator do
         build(
           :message,
           schema: Events::JobAttributeDestroyed::V1,
-          aggregate_id: job_attribute.job_id,
+          stream_id: job_attribute.job_id,
           data: {
             id: job_attribute.id
           }

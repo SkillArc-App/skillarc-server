@@ -22,13 +22,13 @@ RSpec.describe Core::Stream do
   end
 
   describe "#==" do
-    context "when two aggregates have the same id and class" do
+    context "when two streams have the same id and class" do
       it "they are equal" do
         expect(sub_klass.new(test_id: "1")).to eq(sub_klass.new(test_id: "1"))
       end
     end
 
-    context "when two aggregates have the same id but different classes" do
+    context "when two streams have the same id but different classes" do
       let(:sub_klass2) do
         Class.new(described_class) do
           id_name :test_id
@@ -40,7 +40,7 @@ RSpec.describe Core::Stream do
       end
     end
 
-    context "when two aggregates have different ids but the classes" do
+    context "when two streams have different ids but the classes" do
       it "they are not equal" do
         expect(sub_klass.new(test_id: "1")).not_to eq(sub_klass.new(test_id: "2"))
       end
@@ -73,7 +73,7 @@ RSpec.describe Core::Stream do
   end
 
   describe ".deserialize" do
-    it "returns the aggregate from a string" do
+    it "returns the stream from a string" do
       result = sub_klass.deserialize("1")
       expect(result).to be_a(sub_klass)
       expect(result.id).to eq("1")

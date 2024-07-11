@@ -33,10 +33,10 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
 
       it "emits a TrainingProviderCreated event" do
         expect(message_service)
-          .to receive(:create_once_for_aggregate!)
+          .to receive(:create_once_for_stream!)
           .with(
             schema: Events::TrainingProviderCreated::V1,
-            aggregate: message.aggregate,
+            stream: message.stream,
             trace_id: message.trace_id,
             data: {
               name: message.data.name,
@@ -55,7 +55,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
         build(
           :message,
           schema: Commands::CreateTrainingProviderProgram::V1,
-          aggregate:,
+          stream:,
           data: {
             program_id: SecureRandom.uuid,
             name: "N",
@@ -64,7 +64,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
         )
       end
 
-      let(:aggregate) { Streams::TrainingProvider.new(training_provider_id: SecureRandom.uuid) }
+      let(:stream) { Streams::TrainingProvider.new(training_provider_id: SecureRandom.uuid) }
 
       context "when there has been a traing provider created" do
         let(:messages) do
@@ -72,7 +72,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
             build(
               :message,
               schema: Events::TrainingProviderCreated::V1,
-              aggregate:,
+              stream:,
               data: {
                 name: "A",
                 description: "D"
@@ -87,7 +87,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Events::TrainingProviderProgramCreated::V1,
               data: {
                 program_id: message.data.program_id,
@@ -116,7 +116,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
         build(
           :message,
           schema: Commands::UpdateTrainingProviderProgram::V1,
-          aggregate:,
+          stream:,
           data: {
             program_id:,
             name: "N",
@@ -126,7 +126,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
       end
 
       let(:program_id) { SecureRandom.uuid }
-      let(:aggregate) { Streams::TrainingProvider.new(training_provider_id: SecureRandom.uuid) }
+      let(:stream) { Streams::TrainingProvider.new(training_provider_id: SecureRandom.uuid) }
 
       context "when there has been a traing provider program created" do
         let(:messages) do
@@ -134,7 +134,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
             build(
               :message,
               schema: Events::TrainingProviderProgramCreated::V1,
-              aggregate:,
+              stream:,
               data: {
                 program_id:,
                 name: "A",
@@ -150,7 +150,7 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Events::TrainingProviderProgramUpdated::V1,
               data: {
                 program_id: message.data.program_id,

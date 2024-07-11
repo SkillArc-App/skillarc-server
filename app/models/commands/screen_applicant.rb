@@ -4,7 +4,7 @@ module Commands
       type: Core::COMMAND,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Streams::Application,
+      stream: Streams::Application,
       message_type: MessageTypes::Applications::SCREEN_APPLICANT,
       version: 1
     )

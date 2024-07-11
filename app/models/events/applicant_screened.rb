@@ -4,7 +4,7 @@ module Events
       type: Core::EVENT,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Streams::Application,
+      stream: Streams::Application,
       message_type: MessageTypes::Applications::APPLICANT_SCREENED,
       version: 1
     )

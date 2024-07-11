@@ -81,7 +81,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         let(:message) do
           build(
             :message,
-            aggregate_id: person_id,
+            stream_id: person_id,
             schema: Events::PersonAdded::V1,
             data: {
               first_name: "Hannah",
@@ -121,7 +121,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         let(:message) do
           build(
             :message,
-            aggregate_id: person_id,
+            stream_id: person_id,
             schema: Events::BasicInfoAdded::V1,
             data: {
               first_name: "Hannah",
@@ -158,7 +158,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         let(:message) do
           build(
             :message,
-            aggregate_id: person_id,
+            stream_id: person_id,
             schema: Events::EducationExperienceAdded::V2,
             data: {
               id: SecureRandom.uuid,
@@ -191,7 +191,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         let(:message) do
           build(
             :message,
-            aggregate_id: person_id,
+            stream_id: person_id,
             schema: Events::ExperienceAdded::V2,
             data: {
               id: SecureRandom.uuid,
@@ -224,7 +224,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         let(:message) do
           build(
             :message,
-            aggregate_id: person_id,
+            stream_id: person_id,
             schema: Events::OnboardingCompleted::V3,
             data: Core::Nothing
           )
@@ -275,7 +275,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         build(
           :message,
           schema: Events::ChatMessageSent::V2,
-          aggregate_id: application_id,
+          stream_id: application_id,
           data: {
             from_name: "David",
             from_user_id:,
@@ -336,7 +336,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
       let(:message) do
         build(
           :message,
-          aggregate_id: user_id,
+          stream_id: user_id,
           schema: Events::JobSaved::V1,
           data: {
             job_id: SecureRandom.uuid,
@@ -468,7 +468,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         expect(client)
           .to receive(:application_status_updated)
           .with(
-            application_id: message.aggregate.id,
+            application_id: message.stream.id,
             email: "applicant@email.com",
             employment_title: "Job",
             employer_name: "Employer",

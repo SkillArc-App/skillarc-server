@@ -7,7 +7,7 @@ module People
     on_message Commands::AddPerson::V2 do |message|
       # If we already created the person return
       return if ::Projectors::Streams::HasOccurred.project(
-        aggregate: message.aggregate,
+        stream: message.stream,
         schema: Events::PersonAdded::V1
       )
 
@@ -19,7 +19,7 @@ module People
       message_service.create_once_for_trace!(
         schema: Events::PersonAdded::V1,
         trace_id: message.trace_id,
-        person_id: message.aggregate.id,
+        person_id: message.stream.id,
         data: {
           first_name: message.data.first_name,
           last_name: message.data.last_name,
@@ -30,8 +30,8 @@ module People
       )
 
       # If the command contained a user associate them
-      emit_associated_to_user(message.aggregate.id, message.data.user_id, message.trace_id) if message.data.user_id.present?
-      emit_person_source(message.aggregate.id, message.data.source_kind, message.data.source_identifier, message.trace_id) if message.data.source_kind.present?
+      emit_associated_to_user(message.stream.id, message.data.user_id, message.trace_id) if message.data.user_id.present?
+      emit_person_source(message.stream.id, message.data.source_kind, message.data.source_identifier, message.trace_id) if message.data.source_kind.present?
     end
 
     on_message Events::PersonAdded::V1 do |message|
@@ -42,7 +42,7 @@ module People
           trace_id: message.trace_id,
           phone_number: message.data.phone_number,
           data: {
-            person_id: message.aggregate.id
+            person_id: message.stream.id
           }
         )
       end
@@ -54,7 +54,7 @@ module People
           trace_id: message.trace_id,
           email: message.data.email,
           data: {
-            person_id: message.aggregate.id
+            person_id: message.stream.id
           }
         )
       end
@@ -63,9 +63,9 @@ module People
     private
 
     def matching_email?(email, user_id, trace_id)
-      aggregate = Streams::Email.new(email:)
+      stream = Streams::Email.new(email:)
       person_associated_email = ::Projectors::Streams::GetLast.project(
-        aggregate:,
+        stream:,
         schema: Events::PersonAssociatedToEmail::V1
       )
 
@@ -77,9 +77,9 @@ module People
     end
 
     def matching_phone_number?(phone_number, user_id, trace_id)
-      aggregate = Streams::Phone.new(phone_number:)
+      stream = Streams::Phone.new(phone_number:)
       person_associated_email = ::Projectors::Streams::GetLast.project(
-        aggregate:,
+        stream:,
         schema: Events::PersonAssociatedToPhoneNumber::V1
       )
 
@@ -94,7 +94,7 @@ module People
       return if user_id.nil?
 
       person_associated_user = ::Projectors::Streams::GetLast.project(
-        aggregate: Streams::Person.new(person_id:),
+        stream: Streams::Person.new(person_id:),
         schema: Events::PersonAssociatedToPhoneNumber::V1
       )
 
@@ -106,7 +106,7 @@ module People
     end
 
     def emit_associated_to_user(person_id, user_id, trace_id)
-      message_service.create_once_for_aggregate!(
+      message_service.create_once_for_stream!(
         schema: Events::PersonAssociatedToUser::V1,
         trace_id:,
         person_id:,
@@ -117,7 +117,7 @@ module People
     end
 
     def emit_person_source(person_id, source_kind, source_identifier, trace_id)
-      message_service.create_once_for_aggregate!(
+      message_service.create_once_for_stream!(
         schema: Events::PersonSourced::V1,
         trace_id:,
         person_id:,

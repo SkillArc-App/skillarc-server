@@ -6,7 +6,7 @@ RSpec.describe CleanupDestroyedMessagesJob do
       type: Core::EVENT,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Streams::User,
+      stream: Streams::User,
       message_type: MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
       version: 1
     )
@@ -16,7 +16,7 @@ RSpec.describe CleanupDestroyedMessagesJob do
       type: Core::EVENT,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Streams::User,
+      stream: Streams::User,
       message_type: MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
       version: 2
     )

@@ -19,7 +19,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Coaches::SeekerContext,
+      stream: Streams::Coaches::SeekerContext,
       message_type: MessageTypes::Coaches::ADD_LEAD,
       version: 1
     )

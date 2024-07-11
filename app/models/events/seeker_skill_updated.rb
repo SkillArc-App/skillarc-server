@@ -17,7 +17,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Seeker,
+      stream: Streams::Seeker,
       message_type: MessageTypes::Seekers::SEEKER_SKILL_UPDATED,
       version: 1
     )

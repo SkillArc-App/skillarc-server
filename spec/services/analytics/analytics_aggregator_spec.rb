@@ -11,7 +11,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::PersonAssociatedToUser::V1,
-          aggregate_id: person_id,
+          stream_id: person_id,
           data: {
             user_id:
           }
@@ -33,7 +33,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::UserCreated::V1,
-          aggregate_id: user_id,
+          stream_id: user_id,
           data: {
             email: "an@email.com",
             first_name: "John",
@@ -64,7 +64,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:message) do
         build(
           :message,
-          aggregate_id: person_id,
+          stream_id: person_id,
           schema: Events::PersonAdded::V1,
           data: {
             first_name: "John",
@@ -108,7 +108,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: person_id,
+            stream_id: person_id,
             schema: Events::BasicInfoAdded::V1,
             data: {
               first_name: "John",
@@ -135,7 +135,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: person_id,
+            stream_id: person_id,
             schema: Events::OnboardingCompleted::V3,
             data: Core::Nothing
           )
@@ -154,7 +154,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: user.user_id,
+            stream_id: user.user_id,
             schema: Events::SessionStarted::V1,
             data: Core::Nothing
           )
@@ -172,7 +172,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: user_id,
+            stream_id: user_id,
             schema: Events::CoachAdded::V1,
             data: {
               email: "an@email.com",
@@ -217,7 +217,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: SecureRandom.uuid,
+            stream_id: SecureRandom.uuid,
             schema: Events::TrainingProviderInviteAccepted::V2,
             data: {
               training_provider_profile_id: SecureRandom.uuid,
@@ -257,7 +257,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
 
         employer = Analytics::DimEmployer.first
 
-        expect(employer.employer_id).to eq(message.aggregate.id)
+        expect(employer.employer_id).to eq(message.stream.id)
         expect(employer.name).to eq(message.data.name)
       end
     end
@@ -267,7 +267,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::EmployerUpdated::V1,
-          aggregate_id: employer.employer_id,
+          stream_id: employer.employer_id,
           data: {
             name: "New Name",
             location: "location",
@@ -306,7 +306,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         dim_job_order = Analytics::DimJobOrder.first
 
         expect(dim_job_order.dim_job).to eq(dim_job)
-        expect(dim_job_order.job_order_id).to eq(message.aggregate.id)
+        expect(dim_job_order.job_order_id).to eq(message.stream.id)
         expect(dim_job_order.order_opened_at).to eq(message.occurred_at)
       end
     end
@@ -330,7 +330,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: job_order_id,
+            stream_id: job_order_id,
             schema: JobOrders::Events::Stalled::V1,
             data: {
               status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
@@ -354,7 +354,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: job_order_id,
+            stream_id: job_order_id,
             schema: JobOrders::Events::CandidatesScreened::V1,
             data: Core::Nothing
           )
@@ -376,7 +376,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: job_order_id,
+            stream_id: job_order_id,
             schema: JobOrders::Events::Filled::V1,
             data: Core::Nothing
           )
@@ -395,7 +395,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: job_order_id,
+            stream_id: job_order_id,
             schema: JobOrders::Events::NotFilled::V1,
             data: Core::Nothing
           )
@@ -414,7 +414,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: job_order_id,
+            stream_id: job_order_id,
             schema: JobOrders::Events::OrderCountAdded::V1,
             data: {
               order_count: 5
@@ -435,7 +435,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:message) do
         build(
           :message,
-          aggregate_id: dim_job_order.job_order_id,
+          stream_id: dim_job_order.job_order_id,
           schema: JobOrders::Events::CandidateAdded::V3,
           data: {
             person_id: dim_person.person_id
@@ -488,7 +488,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: fact_candidate.dim_job_order.job_order_id,
+            stream_id: fact_candidate.dim_job_order.job_order_id,
             schema: JobOrders::Events::CandidateHired::V2,
             data: {
               person_id: fact_candidate.dim_person.person_id
@@ -509,7 +509,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: fact_candidate.dim_job_order.job_order_id,
+            stream_id: fact_candidate.dim_job_order.job_order_id,
             schema: JobOrders::Events::CandidateRecommended::V2,
             data: {
               person_id: fact_candidate.dim_person.person_id
@@ -530,7 +530,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: fact_candidate.dim_job_order.job_order_id,
+            stream_id: fact_candidate.dim_job_order.job_order_id,
             schema: JobOrders::Events::CandidateScreened::V1,
             data: {
               person_id: fact_candidate.dim_person.person_id
@@ -551,7 +551,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: fact_candidate.dim_job_order.job_order_id,
+            stream_id: fact_candidate.dim_job_order.job_order_id,
             schema: JobOrders::Events::CandidateRescinded::V2,
             data: {
               person_id: fact_candidate.dim_person.person_id
@@ -574,7 +574,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::JobCreated::V3,
-          aggregate_id: job_id,
+          stream_id: job_id,
           data: {
             category: Job::Categories::MARKETPLACE,
             employment_title: "A title",
@@ -630,7 +630,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::JobUpdated::V2,
-          aggregate_id: job_id,
+          stream_id: job_id,
           data: {
             category: Job::Categories::STAFFING,
             employment_title: "Another title",
@@ -725,7 +725,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::ApplicantStatusUpdated::V6,
-          aggregate_id: application_id,
+          stream_id: application_id,
           data: {
             applicant_first_name: "John",
             applicant_last_name: "Wexner",
@@ -817,7 +817,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::PersonViewed::V1,
-          aggregate_id: user_id,
+          stream_id: user_id,
           data: {
             person_id:
           }
@@ -847,7 +847,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::PersonViewedInCoaching::V1,
-          aggregate_id: coach_id,
+          stream_id: coach_id,
           data: {
             person_id:
           }
@@ -875,7 +875,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::NoteAdded::V4,
-          aggregate_id: dim_person_target.person_id,
+          stream_id: dim_person_target.person_id,
           data: {
             originator: email,
             note: "Some note",
@@ -907,7 +907,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::NoteModified::V4,
-          aggregate_id: person_id,
+          stream_id: person_id,
           data: {
             originator: email,
             note: "Some note",
@@ -939,7 +939,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::NoteDeleted::V4,
-          aggregate_id: person_id,
+          stream_id: person_id,
           data: {
             originator: email,
             note_id: SecureRandom.uuid
@@ -970,7 +970,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::JobRecommended::V3,
-          aggregate_id: person_id,
+          stream_id: person_id,
           data: {
             job_id: SecureRandom.uuid,
             coach_id:
@@ -1001,7 +1001,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           schema: Events::PersonCertified::V1,
-          aggregate_id: person_id,
+          stream_id: person_id,
           data: {
             coach_email: Faker::Internet.email,
             coach_first_name: "John",

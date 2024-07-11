@@ -13,7 +13,7 @@ RSpec.describe Teams::TeamsReactor do
   let(:message_service) { MessageService.new }
   let(:trace_id) { SecureRandom.uuid }
   let(:messages) { [] }
-  let(:aggregate) { Teams::Streams::Team.new(team_id:) }
+  let(:stream) { Teams::Streams::Team.new(team_id:) }
   let(:team_id) { SecureRandom.uuid }
 
   describe "#handle_message" do
@@ -23,7 +23,7 @@ RSpec.describe Teams::TeamsReactor do
       let(:message) do
         build(
           :message,
-          aggregate:,
+          stream:,
           schema: Teams::Commands::Add::V1,
           data: {
             name: "Best Team!"
@@ -34,9 +34,9 @@ RSpec.describe Teams::TeamsReactor do
       context "when there is no colliding team name" do
         it "emit a added event" do
           expect(message_service)
-            .to receive(:create_once_for_aggregate!)
+            .to receive(:create_once_for_stream!)
             .with(
-              aggregate: message.aggregate,
+              stream: message.stream,
               trace_id: message.trace_id,
               schema: Teams::Events::Added::V1,
               data: {
@@ -83,7 +83,7 @@ RSpec.describe Teams::TeamsReactor do
         expect(message_service)
           .to receive(:create_once_for_trace!)
           .with(
-            aggregate: message.aggregate,
+            stream: message.stream,
             trace_id: message.trace_id,
             schema: Teams::Events::PrimarySlackChannelAdded::V1,
             data: {
@@ -99,7 +99,7 @@ RSpec.describe Teams::TeamsReactor do
       let(:message) do
         build(
           :message,
-          aggregate:,
+          stream:,
           schema: Teams::Commands::AddUserToTeam::V1,
           data: {
             user_id: "1"
@@ -112,7 +112,7 @@ RSpec.describe Teams::TeamsReactor do
           expect(message_service)
             .to receive(:create_once_for_trace!)
             .with(
-              aggregate: message.aggregate,
+              stream: message.stream,
               trace_id: message.trace_id,
               schema: Teams::Events::UserAddedToTeam::V1,
               data: {
@@ -129,7 +129,7 @@ RSpec.describe Teams::TeamsReactor do
           [
             build(
               :message,
-              aggregate:,
+              stream:,
               schema: Teams::Events::UserAddedToTeam::V1,
               data: {
                 user_id: "1"
@@ -149,7 +149,7 @@ RSpec.describe Teams::TeamsReactor do
       let(:message) do
         build(
           :message,
-          aggregate:,
+          stream:,
           schema: Teams::Commands::SendSlackMessage::V2,
           data: {
             text: "yo"
@@ -170,7 +170,7 @@ RSpec.describe Teams::TeamsReactor do
           [
             build(
               :message,
-              aggregate:,
+              stream:,
               schema: Teams::Events::PrimarySlackChannelAdded::V1,
               data: {
                 channel: "#cool_channel"
@@ -203,7 +203,7 @@ RSpec.describe Teams::TeamsReactor do
       let(:message) do
         build(
           :message,
-          aggregate:,
+          stream:,
           schema: Teams::Commands::RemoveUserFromTeam::V1,
           data: {
             user_id: "1"
@@ -224,7 +224,7 @@ RSpec.describe Teams::TeamsReactor do
           [
             build(
               :message,
-              aggregate:,
+              stream:,
               schema: Teams::Events::UserAddedToTeam::V1,
               data: {
                 user_id: "1"
@@ -237,7 +237,7 @@ RSpec.describe Teams::TeamsReactor do
           expect(message_service)
             .to receive(:create_once_for_trace!)
             .with(
-              aggregate: message.aggregate,
+              stream: message.stream,
               trace_id: message.trace_id,
               schema: Teams::Events::UserRemovedFromTeam::V1,
               data: {

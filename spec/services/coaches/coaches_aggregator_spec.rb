@@ -54,7 +54,7 @@ RSpec.describe Coaches::CoachesAggregator do
 
         person_context = Coaches::PersonContext.first
 
-        expect(person_context.id).to eq(message.aggregate_id)
+        expect(person_context.id).to eq(message.stream_id)
         expect(person_context.email).to eq(message.data.email)
         expect(person_context.phone_number).to eq(message.data.phone_number)
         expect(person_context.person_captured_at).to eq(message.occurred_at)
@@ -94,7 +94,7 @@ RSpec.describe Coaches::CoachesAggregator do
         build(
           :message,
           schema: Events::CoachAssignmentWeightAdded::V1,
-          aggregate: Streams::Coach.new(coach_id: coach.id),
+          stream: Streams::Coach.new(coach_id: coach.id),
           data: {
             weight: 0.35
           }
@@ -115,7 +115,7 @@ RSpec.describe Coaches::CoachesAggregator do
       let(:message) do
         build(
           :message,
-          aggregate_id: id,
+          stream_id: id,
           schema: Events::JobCreated::V3,
           data: {
             category: Job::Categories::MARKETPLACE,
@@ -152,7 +152,7 @@ RSpec.describe Coaches::CoachesAggregator do
       let(:message) do
         build(
           :message,
-          aggregate_id: id,
+          stream_id: id,
           schema: Events::JobUpdated::V2,
           data: {
             category: Job::Categories::MARKETPLACE,
@@ -192,7 +192,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::CoachReminderScheduled::V2,
-            aggregate_id: coach.id,
+            stream_id: coach.id,
             data: {
               reminder_id: SecureRandom.uuid,
               person_id: nil,
@@ -230,7 +230,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::ApplicantStatusUpdated::V6,
-            aggregate_id: applicant_id,
+            stream_id: applicant_id,
             data: {
               job_id:,
               applicant_first_name: "Hannah",
@@ -303,7 +303,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::NoteAdded::V4,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               note_id: SecureRandom.uuid,
               note: "A note",
@@ -329,7 +329,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::BarrierUpdated::V3,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               barriers: [SecureRandom.uuid]
             }
@@ -349,7 +349,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::PersonSourced::V1,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               source_kind: People::SourceKind::COACH,
               source_identifier: coach.id
@@ -372,7 +372,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::NoteModified::V4,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               note_id: seeker_note.id,
               note: "A new note",
@@ -396,7 +396,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::NoteDeleted::V4,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               note_id: seeker_note.id,
               originator: "your enemy"
@@ -416,7 +416,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::PersonAttributeAdded::V1,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               id: SecureRandom.uuid,
               attribute_id: SecureRandom.uuid,
@@ -443,7 +443,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::SessionStarted::V1,
-            aggregate_id: user_id,
+            stream_id: user_id,
             data: Core::Nothing
           )
         end
@@ -461,7 +461,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::PersonCertified::V1,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               coach_first_name: "Coach",
               coach_last_name: "K",
@@ -486,7 +486,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::CoachAssigned::V3,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               coach_id: coach.id
             }
@@ -508,7 +508,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::JobRecommended::V3,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               coach_id: coach.id,
               job_id: job.job_id
@@ -533,7 +533,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::PersonAssociatedToUser::V1,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               user_id: SecureRandom.uuid
             }
@@ -556,7 +556,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::BasicInfoAdded::V1,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               first_name: "Jim",
               last_name: "Bob",
@@ -582,7 +582,7 @@ RSpec.describe Coaches::CoachesAggregator do
           build(
             :message,
             schema: Events::PersonAttributeRemoved::V1,
-            aggregate_id: person_id,
+            stream_id: person_id,
             data: {
               id: seeker_attribute.id
             }

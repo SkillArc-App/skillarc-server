@@ -28,7 +28,7 @@ RSpec.describe Invites::InvitesAggregator do
         expect { subject }.to change(Invites::EmployerInvite, :count).from(0).to(1)
 
         employer_invite = Invites::EmployerInvite.first
-        expect(employer_invite.id).to eq(message.aggregate.id)
+        expect(employer_invite.id).to eq(message.stream.id)
         expect(employer_invite.email).to eq(message.data.invite_email)
         expect(employer_invite.first_name).to eq(message.data.first_name)
         expect(employer_invite.last_name).to eq(message.data.last_name)
@@ -42,7 +42,7 @@ RSpec.describe Invites::InvitesAggregator do
         build(
           :message,
           schema: Events::EmployerInviteAccepted::V2,
-          aggregate_id: employer_invite.id,
+          stream_id: employer_invite.id,
           data: {
             user_id: SecureRandom.uuid,
             invite_email: "a email",
@@ -82,7 +82,7 @@ RSpec.describe Invites::InvitesAggregator do
         expect { subject }.to change(Invites::TrainingProviderInvite, :count).from(0).to(1)
 
         training_provider_invite = Invites::TrainingProviderInvite.first
-        expect(training_provider_invite.id).to eq(message.aggregate.id)
+        expect(training_provider_invite.id).to eq(message.stream.id)
         expect(training_provider_invite.email).to eq(message.data.invite_email)
         expect(training_provider_invite.first_name).to eq(message.data.first_name)
         expect(training_provider_invite.last_name).to eq(message.data.last_name)
@@ -97,7 +97,7 @@ RSpec.describe Invites::InvitesAggregator do
         build(
           :message,
           schema: Events::TrainingProviderInviteAccepted::V2,
-          aggregate_id: training_provider_invite.id,
+          stream_id: training_provider_invite.id,
           data: {
             training_provider_profile_id: SecureRandom.uuid,
             user_id: SecureRandom.uuid,

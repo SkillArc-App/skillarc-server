@@ -32,7 +32,7 @@ RSpec.describe Attributes::AttributesAggregator do
         build(
           :message,
           schema: Events::AttributeUpdated::V1,
-          aggregate_id: attribute.id,
+          stream_id: attribute.id,
           data: {
             name: "name",
             description: "description",
@@ -58,7 +58,7 @@ RSpec.describe Attributes::AttributesAggregator do
         build(
           :message,
           schema: Events::AttributeDeleted::V1,
-          aggregate_id: attribute.id
+          stream_id: attribute.id
         )
       end
 

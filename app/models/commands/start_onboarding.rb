@@ -14,7 +14,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Seeker,
+      stream: Streams::Seeker,
       message_type: MessageTypes::Person::START_ONBOARDING,
       version: 1
     )
@@ -22,7 +22,7 @@ module Commands
       type: Core::COMMAND,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Streams::Person,
+      stream: Streams::Person,
       message_type: MessageTypes::Person::START_ONBOARDING,
       version: 2
     )

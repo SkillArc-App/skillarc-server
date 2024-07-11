@@ -24,7 +24,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::User,
+      stream: Streams::User,
       message_type: MessageTypes::User::ROLE_ADDED,
       version: 1
     )
@@ -32,7 +32,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Streams::User,
+      stream: Streams::User,
       message_type: MessageTypes::User::ROLE_ADDED,
       version: 2
     )

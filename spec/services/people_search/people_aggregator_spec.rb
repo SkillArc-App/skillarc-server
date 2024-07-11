@@ -43,7 +43,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         build(
           :message,
           schema: Events::BasicInfoAdded::V1,
-          aggregate_id: person.id,
+          stream_id: person.id,
           data: {
             first_name: "Khushi",
             last_name: "Mo",
@@ -93,7 +93,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         build(
           :message,
           schema: Events::CoachAssigned::V3,
-          aggregate_id: person.id,
+          stream_id: person.id,
           data: {
             coach_id: coach.id
           }
@@ -119,7 +119,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         build(
           :message,
           schema: Events::ExperienceAdded::V2,
-          aggregate_id: person.id,
+          stream_id: person.id,
           data: {
             id:,
             organization_name: "Skillarc",
@@ -158,7 +158,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         build(
           :message,
           schema: Events::ExperienceRemoved::V2,
-          aggregate_id: person.id,
+          stream_id: person.id,
           data: {
             id: experience.id
           }
@@ -185,7 +185,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         build(
           :message,
           schema: Events::EducationExperienceAdded::V2,
-          aggregate_id: person.id,
+          stream_id: person.id,
           data: {
             id:,
             organization_name: "Skillarc University",
@@ -220,7 +220,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         build(
           :message,
           schema: Events::EducationExperienceDeleted::V2,
-          aggregate_id: person.id,
+          stream_id: person.id,
           data: {
             id: education_experience.id
           }
@@ -247,7 +247,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         build(
           :message,
           schema: Events::NoteAdded::V4,
-          aggregate_id: person.id,
+          stream_id: person.id,
           data: {
             originator: "foo",
             note: "This is a note",
@@ -267,7 +267,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         build(
           :message,
           schema: Events::PersonAssociatedToUser::V1,
-          aggregate_id: person.id,
+          stream_id: person.id,
           data: {
             user_id:
           }
@@ -288,7 +288,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         build(
           :message,
           schema: Events::PersonCertified::V1,
-          aggregate_id: person.id,
+          stream_id: person.id,
           data: {
             coach_first_name: "Coach",
             coach_last_name: "Doe",
@@ -313,7 +313,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         build(
           :message,
           schema: Events::SessionStarted::V1,
-          aggregate_id: person.user_id
+          stream_id: person.user_id
         )
       end
       let(:person) { create(:people_search_person) }

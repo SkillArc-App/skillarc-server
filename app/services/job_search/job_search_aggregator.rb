@@ -9,18 +9,18 @@ module JobSearch
 
     on_message Events::EmployerCreated::V1 do |message|
       Employer.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         logo_url: message.data.logo_url
       )
     end
 
     on_message Events::EmployerUpdated::V1 do |message|
       Employer.update!(
-        message.aggregate.id,
+        message.stream.id,
         logo_url: message.data.logo_url
       )
 
-      Job.where(employer_id: message.aggregate.id).update_all(employer_logo_url: message.data.logo_url) # rubocop:disable Rails/SkipsModelValidations
+      Job.where(employer_id: message.stream.id).update_all(employer_logo_url: message.data.logo_url) # rubocop:disable Rails/SkipsModelValidations
     end
 
     on_message Events::JobCreated::V3 do |message|
@@ -37,13 +37,13 @@ module JobSearch
         hidden: data.hide_job,
         location: data.location,
         industries: data.industry,
-        job_id: message.aggregate.job_id,
+        job_id: message.stream.job_id,
         employer_id: data.employer_id
       )
     end
 
     on_message Events::JobUpdated::V2 do |message|
-      job = Job.find_by!(job_id: message.aggregate.job_id)
+      job = Job.find_by!(job_id: message.stream.job_id)
 
       data = message.data
       job.update!(
@@ -57,31 +57,31 @@ module JobSearch
     end
 
     on_message Events::JobTagCreated::V1 do |message|
-      job = Job.find_by!(job_id: message.aggregate.job_id)
+      job = Job.find_by!(job_id: message.stream.job_id)
 
       # TODO: we should probably aggregate these tags as well
       tag_name = Projectors::Streams::GetFirst.project(
         schema: Events::TagCreated::V1,
-        aggregate: Streams::Tag.new(tag_id: message.data.tag_id)
+        stream: Streams::Tag.new(tag_id: message.data.tag_id)
       ).data.name
 
       job.update!(tags: job.tags.to_set.add(tag_name).to_a)
     end
 
     on_message Events::JobTagDestroyed::V2 do |message|
-      job = Job.find_by!(job_id: message.aggregate.job_id)
+      job = Job.find_by!(job_id: message.stream.job_id)
       tag_name = Projectors::Streams::GetFirst.project(
         schema: Events::TagCreated::V1,
-        aggregate: Streams::Tag.new(tag_id: message.data.tag_id)
+        stream: Streams::Tag.new(tag_id: message.data.tag_id)
       ).data.name
 
       job.update!(tags: job.tags.to_set.delete(tag_name).to_a)
     end
 
     on_message Events::CareerPathCreated::V1 do |message|
-      messages = MessageService.stream_events(message.aggregate)
+      messages = MessageService.stream_events(message.stream)
       starting_path = Jobs::Projectors::CareerPaths.new.project(messages).paths.detect { |m| m.order.zero? }
-      job = Job.find_by!(job_id: message.aggregate.job_id)
+      job = Job.find_by!(job_id: message.stream.job_id)
 
       job.update!(
         starting_lower_pay: starting_path&.lower_limit.to_i,
@@ -90,9 +90,9 @@ module JobSearch
     end
 
     on_message Events::CareerPathUpdated::V1 do |message|
-      messages = MessageService.stream_events(message.aggregate)
+      messages = MessageService.stream_events(message.stream)
       starting_path = Jobs::Projectors::CareerPaths.new.project(messages).paths.detect { |m| m.order.zero? }
-      job = Job.find_by!(job_id: message.aggregate.job_id)
+      job = Job.find_by!(job_id: message.stream.job_id)
 
       job.update!(
         starting_lower_pay: starting_path&.lower_limit.to_i,
@@ -103,7 +103,7 @@ module JobSearch
     on_message Events::ApplicantStatusUpdated::V6, :sync do |message|
       data = message.data
       job = Job.find_by!(job_id: data.job_id)
-      application = Application.find_or_initialize_by(application_id: message.aggregate.application_id, search_job: job)
+      application = Application.find_or_initialize_by(application_id: message.stream.application_id, search_job: job)
 
       application.update!(
         status: data.status,
@@ -114,7 +114,7 @@ module JobSearch
 
     on_message Events::ElevatorPitchCreated::V2, :sync do |message|
       data = message.data
-      application = Application.find_by(job_id: data.job_id, seeker_id: message.aggregate.id)
+      application = Application.find_by(job_id: data.job_id, seeker_id: message.stream.id)
       return unless application
 
       application.update!(elevator_pitch: data.pitch)
@@ -123,13 +123,13 @@ module JobSearch
     on_message Events::JobSaved::V1, :sync do |message|
       data = message.data
       job = Job.find_by!(job_id: data.job_id)
-      SavedJob.find_or_create_by(search_job_id: job.id, user_id: message.aggregate.user_id)
+      SavedJob.find_or_create_by(search_job_id: job.id, user_id: message.stream.user_id)
     end
 
     on_message Events::JobUnsaved::V1, :sync do |message|
       data = message.data
       job = Job.find_by!(job_id: data.job_id)
-      SavedJob.find_by(search_job_id: job.id, user_id: message.aggregate.user_id)&.destroy
+      SavedJob.find_by(search_job_id: job.id, user_id: message.stream.user_id)&.destroy
     end
   end
 end

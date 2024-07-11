@@ -11,20 +11,20 @@ module Invites
     on_message Commands::AcceptEmployerInvite::V1 do |message|
       user_created = Projectors::Streams::GetFirst.project(
         schema: Events::UserCreated::V1,
-        aggregate: Streams::User.new(user_id: message.data.user_id)
+        stream: Streams::User.new(user_id: message.data.user_id)
       )
 
       invite_created = Projectors::Streams::GetFirst.project(
         schema: Events::EmployerInviteCreated::V1,
-        aggregate: message.aggregate
+        stream: message.stream
       )
 
       raise MissingInviteOrUserEventError if user_created.blank? || invite_created.blank?
 
       if user_created.data.email == invite_created.data.invite_email
-        message_service.create_once_for_aggregate!(
+        message_service.create_once_for_stream!(
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           schema: Events::EmployerInviteAccepted::V2,
           data: {
             user_id: message.data.user_id,
@@ -34,9 +34,9 @@ module Invites
           }
         )
       else
-        message_service.create_once_for_aggregate!(
+        message_service.create_once_for_stream!(
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           schema: Events::EmployerInviteUsedByWrongUser::V1,
           data: {
             user_id: message.data.user_id
@@ -51,9 +51,9 @@ module Invites
 
       raise MissingEmployerEventError if name.blank?
 
-      message_service.create_once_for_aggregate!(
+      message_service.create_once_for_stream!(
         trace_id: message.trace_id,
-        aggregate: message.aggregate,
+        stream: message.stream,
         schema: Events::EmployerInviteCreated::V1,
         data: {
           invite_email: message.data.invite_email,
@@ -68,20 +68,20 @@ module Invites
     on_message Commands::AcceptTrainingProviderInvite::V1 do |message|
       user_created = Projectors::Streams::GetFirst.project(
         schema: Events::UserCreated::V1,
-        aggregate: Streams::User.new(user_id: message.data.user_id)
+        stream: Streams::User.new(user_id: message.data.user_id)
       )
 
       invite_created = Projectors::Streams::GetFirst.project(
         schema: Events::TrainingProviderInviteCreated::V1,
-        aggregate: message.aggregate
+        stream: message.stream
       )
 
       raise MissingInviteOrUserEventError if user_created.blank? || invite_created.blank?
 
       if user_created.data.email == invite_created.data.invite_email
-        message_service.create_once_for_aggregate!(
+        message_service.create_once_for_stream!(
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           schema: Events::TrainingProviderInviteAccepted::V2,
           data: {
             training_provider_profile_id: SecureRandom.uuid,
@@ -92,9 +92,9 @@ module Invites
           }
         )
       else
-        message_service.create_once_for_aggregate!(
+        message_service.create_once_for_stream!(
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           schema: Events::TrainingProviderInviteUsedByWrongUser::V1,
           data: {
             user_id: message.data.user_id
@@ -106,14 +106,14 @@ module Invites
     on_message Commands::CreateTrainingProviderInvite::V1 do |message|
       name = Projectors::Streams::GetFirst.project(
         schema: Events::TrainingProviderCreated::V1,
-        aggregate: Streams::TrainingProvider.new(training_provider_id: message.data.training_provider_id)
+        stream: Streams::TrainingProvider.new(training_provider_id: message.data.training_provider_id)
       )&.data&.name
 
       raise MissingTrainingProviderEventError if name.blank?
 
-      message_service.create_once_for_aggregate!(
+      message_service.create_once_for_stream!(
         trace_id: message.trace_id,
-        aggregate: message.aggregate,
+        stream: message.stream,
         schema: Events::TrainingProviderInviteCreated::V1,
         data: {
           invite_email: message.data.invite_email,

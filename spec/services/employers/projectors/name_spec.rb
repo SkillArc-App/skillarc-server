@@ -4,13 +4,13 @@ RSpec.describe Employers::Projectors::Name do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Streams::Employer.new(employer_id:) }
+    let(:stream) { Streams::Employer.new(employer_id:) }
     let(:employer_id) { SecureRandom.uuid }
 
     let(:employer_created) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::EmployerCreated::V1,
         data: {
           name: "Employer",
@@ -23,7 +23,7 @@ RSpec.describe Employers::Projectors::Name do
     let(:employer_update) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::EmployerUpdated::V1,
         data: {
           name: "Employer2",

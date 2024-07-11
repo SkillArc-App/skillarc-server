@@ -52,7 +52,7 @@ class EmployerChats
   end
 
   def create(application_id:, job_id:, seeker_id:, title:)
-    message_service.create_once_for_aggregate!(
+    message_service.create_once_for_stream!(
       schema: Events::ChatCreated::V2,
       application_id:,
       data: {

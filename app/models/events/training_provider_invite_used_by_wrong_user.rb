@@ -14,7 +14,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Invite,
+      stream: Streams::Invite,
       message_type: MessageTypes::Invite::TRAINING_PROVIDER_INVITE_USED_BY_WRONG_USER,
       version: 1
     )

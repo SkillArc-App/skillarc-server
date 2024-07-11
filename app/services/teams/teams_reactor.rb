@@ -7,8 +7,8 @@ module Teams
     on_message Commands::Add::V1 do |message|
       return if Events::Added::V1.all_messages.any? { |m| m.data.name == message.data.name }
 
-      message_service.create_once_for_aggregate!(
-        aggregate: message.aggregate,
+      message_service.create_once_for_stream!(
+        stream: message.stream,
         trace_id: message.trace_id,
         schema: Events::Added::V1,
         data: {
@@ -21,7 +21,7 @@ module Teams
     # I'm currently unsure on this placement
     on_message Commands::AddPrimarySlackChannel::V1 do |message|
       message_service.create_once_for_trace!(
-        aggregate: message.aggregate,
+        stream: message.stream,
         trace_id: message.trace_id,
         schema: Events::PrimarySlackChannelAdded::V1,
         data: {
@@ -35,7 +35,7 @@ module Teams
     on_message Commands::SendSlackMessage::V2 do |message|
       slack_channel = ::Projectors::Streams::GetLast.project(
         schema: Events::PrimarySlackChannelAdded::V1,
-        aggregate: message.aggregate
+        stream: message.stream
       )
 
       return if slack_channel.nil?
@@ -53,13 +53,13 @@ module Teams
     end
 
     on_message Commands::AddUserToTeam::V1 do |message|
-      messages = MessageService.stream_events(message.aggregate)
+      messages = MessageService.stream_events(message.stream)
       team = Projectors::TeamMembers.new.project(messages).team
 
       return if team.include?(message.data.user_id)
 
       message_service.create_once_for_trace!(
-        aggregate: message.aggregate,
+        stream: message.stream,
         trace_id: message.trace_id,
         schema: Events::UserAddedToTeam::V1,
         data: {
@@ -69,13 +69,13 @@ module Teams
     end
 
     on_message Commands::RemoveUserFromTeam::V1 do |message|
-      messages = MessageService.stream_events(message.aggregate)
+      messages = MessageService.stream_events(message.stream)
       team = Projectors::TeamMembers.new.project(messages).team
 
       return unless team.include?(message.data.user_id)
 
       message_service.create_once_for_trace!(
-        aggregate: message.aggregate,
+        stream: message.stream,
         trace_id: message.trace_id,
         schema: Events::UserRemovedFromTeam::V1,
         data: {

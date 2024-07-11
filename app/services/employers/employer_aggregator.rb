@@ -12,7 +12,7 @@ module Employers
     on_message Events::ApplicantStatusUpdated::V6, :sync do |message|
       job = Job.find_by!(job_id: message.data.job_id)
       applicant = Applicant.find_or_initialize_by(
-        applicant_id: message.aggregate.id
+        applicant_id: message.stream.id
       )
 
       application_submit_at = if message.data.status == Applicant::StatusTypes::NEW
@@ -37,7 +37,7 @@ module Employers
 
     on_message Events::EmployerCreated::V1 do |message|
       Employer.create!(
-        employer_id: message.aggregate_id,
+        employer_id: message.stream_id,
         name: message.data.name,
         location: message.data.location,
         bio: message.data.bio,
@@ -55,7 +55,7 @@ module Employers
     end
 
     on_message Events::EmployerUpdated::V1 do |message|
-      e = Employer.find_by!(employer_id: message.aggregate_id)
+      e = Employer.find_by!(employer_id: message.stream_id)
 
       e.update!(
         **message.data.serialize
@@ -64,7 +64,7 @@ module Employers
 
     on_message Events::PersonCertified::V1 do |message|
       e = Seeker.find_or_initialize_by(
-        seeker_id: message.aggregate_id
+        seeker_id: message.stream_id
       )
 
       e.update!(
@@ -77,7 +77,7 @@ module Employers
 
       Job.create!(
         employer:,
-        job_id: message.aggregate_id,
+        job_id: message.stream_id,
         category: message.data.category,
         employment_title: message.data.employment_title,
         benefits_description: message.data.benefits_description,
@@ -94,13 +94,13 @@ module Employers
 
     on_message Events::PassReasonAdded::V1 do |message|
       PassReason.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         description: message.data.description
       )
     end
 
     on_message Events::PassReasonRemoved::V1 do |message|
-      pass_reason = Employers::PassReason.find_by(id: message.aggregate.id)
+      pass_reason = Employers::PassReason.find_by(id: message.stream.id)
       return if pass_reason.blank?
 
       pass_reason.destroy
@@ -117,7 +117,7 @@ module Employers
     end
 
     on_message Events::JobUpdated::V2 do |message|
-      job = Job.find_by!(job_id: message.aggregate_id)
+      job = Job.find_by!(job_id: message.stream_id)
 
       job.update!(
         **message.data.serialize

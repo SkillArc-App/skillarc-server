@@ -40,7 +40,7 @@ RSpec.describe Employers::EmployerReactor do
             .to receive(:create!)
             .with(
               schema: Commands::NotifyEmployerOfApplicant::V1,
-              application_id: message.aggregate.id,
+              application_id: message.stream.id,
               trace_id: message.trace_id,
               data: {
                 employment_title: message.data.employment_title,
@@ -67,7 +67,7 @@ RSpec.describe Employers::EmployerReactor do
             .to receive(:create!)
             .with(
               schema: Commands::NotifyEmployerOfApplicant::V1,
-              application_id: message.aggregate.id,
+              application_id: message.stream.id,
               trace_id: message.trace_id,
               data: {
                 employment_title: message.data.employment_title,

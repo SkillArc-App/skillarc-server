@@ -15,7 +15,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Job,
+      stream: Streams::Job,
       message_type: MessageTypes::Jobs::CAREER_PATH_UPDATED,
       version: 1
     )

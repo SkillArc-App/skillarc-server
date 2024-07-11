@@ -32,7 +32,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect { subject }.to change(JobOrders::Job, :count).from(0).to(1)
 
         job = JobOrders::Job.take(1).first
-        expect(job.id).to eq(message.aggregate.id)
+        expect(job.id).to eq(message.stream.id)
         expect(job.applicable_for_job_orders).to eq(false)
         expect(job.employer_name).to eq(message.data.employer_name)
         expect(job.employment_title).to eq(message.data.employment_title)
@@ -48,7 +48,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: Events::JobUpdated::V2,
-          aggregate_id: job.id,
+          stream_id: job.id,
           data: {
             category: Job::Categories::STAFFING,
             employment_title: "Another title",
@@ -79,7 +79,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          aggregate_id: order_status,
+          stream_id: order_status,
           schema: JobOrders::Events::TeamResponsibleForStatus::V1,
           data: {
             team_id: SecureRandom.uuid
@@ -141,7 +141,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect { subject }.to change(JobOrders::Person, :count).from(0).to(1)
 
         person = JobOrders::Person.take(1).first
-        expect(person.id).to eq(message.aggregate.id)
+        expect(person.id).to eq(message.stream.id)
         expect(person.first_name).to eq(message.data.first_name)
         expect(person.last_name).to eq(message.data.last_name)
         expect(person.email).to eq(message.data.email)
@@ -154,7 +154,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: Events::BasicInfoAdded::V1,
-          aggregate_id: person.id,
+          stream_id: person.id,
           data: {
             first_name: "Chris",
             last_name: "Brauns",
@@ -195,7 +195,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         expect { subject }.to change(JobOrders::JobOrder, :count).from(0).to(1)
 
         job_order = JobOrders::JobOrder.take(1).first
-        expect(job_order.id).to eq(message.aggregate.id)
+        expect(job_order.id).to eq(message.stream.id)
         expect(job_order.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
         expect(job_order.opened_at).to eq(message.occurred_at)
         expect(job_order.job).to eq(job)
@@ -213,7 +213,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: JobOrders::Events::OrderCountAdded::V1,
-          aggregate_id: job_order.id,
+          stream_id: job_order.id,
           data: {
             order_count: 5
           }
@@ -235,7 +235,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: JobOrders::Events::CandidateAdded::V3,
-          aggregate_id: job_order.id,
+          stream_id: job_order.id,
           data: {
             person_id: person.id
           },
@@ -302,7 +302,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: JobOrders::Events::CandidateApplied::V2,
-          aggregate_id: job_order.id,
+          stream_id: job_order.id,
           data: {
             person_id: person.id,
             applied_at: Time.zone.local(2024, 1, 1)
@@ -327,7 +327,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: JobOrders::Events::CandidateRecommended::V2,
-          aggregate_id: job_order.id,
+          stream_id: job_order.id,
           data: {
             person_id: person.id
           }
@@ -355,7 +355,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: JobOrders::Events::CandidateScreened::V1,
-          aggregate_id: job_order.id,
+          stream_id: job_order.id,
           data: {
             person_id: person.id
           }
@@ -383,7 +383,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: JobOrders::Events::CandidateHired::V2,
-          aggregate_id: job_order.id,
+          stream_id: job_order.id,
           data: {
             person_id: person.id
           }
@@ -411,7 +411,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: JobOrders::Events::CandidateRescinded::V2,
-          aggregate_id: job_order.id,
+          stream_id: job_order.id,
           data: {
             person_id: person.id
           }
@@ -468,7 +468,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           build(
             :message,
             schema: JobOrders::Events::NeedsCriteria::V1,
-            aggregate_id: job_order.id,
+            stream_id: job_order.id,
             data: Core::Nothing
           )
         end
@@ -484,7 +484,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           build(
             :message,
             schema: JobOrders::Events::Activated::V1,
-            aggregate_id: job_order.id,
+            stream_id: job_order.id,
             data: Core::Nothing
           )
         end
@@ -500,7 +500,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           build(
             :message,
             schema: JobOrders::Events::Stalled::V1,
-            aggregate_id: job_order.id,
+            stream_id: job_order.id,
             data: {
               status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
             }
@@ -518,7 +518,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           build(
             :message,
             schema: JobOrders::Events::CandidatesScreened::V1,
-            aggregate_id: job_order.id,
+            stream_id: job_order.id,
             data: Core::Nothing
           )
         end
@@ -534,7 +534,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           build(
             :message,
             schema: JobOrders::Events::Filled::V1,
-            aggregate_id: job_order.id,
+            stream_id: job_order.id,
             data: Core::Nothing
           )
         end
@@ -550,7 +550,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
           build(
             :message,
             schema: JobOrders::Events::NotFilled::V1,
-            aggregate_id: job_order.id,
+            stream_id: job_order.id,
             data: Core::Nothing
           )
         end
@@ -567,7 +567,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: JobOrders::Events::NoteAdded::V1,
-          aggregate_id: job_order.id,
+          stream_id: job_order.id,
           data: {
             originator: "john@skillarc.com",
             note_id: SecureRandom.uuid,
@@ -594,7 +594,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: JobOrders::Events::NoteModified::V1,
-          aggregate_id: job_order.id,
+          stream_id: job_order.id,
           data: {
             originator: "john@skillarc.com",
             note: "This is a new note",
@@ -619,7 +619,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         build(
           :message,
           schema: JobOrders::Events::NoteRemoved::V1,
-          aggregate_id: job_order.id,
+          stream_id: job_order.id,
           data: {
             originator: "john@skillarc.com",
             note_id: note.id

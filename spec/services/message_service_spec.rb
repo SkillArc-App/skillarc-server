@@ -6,7 +6,7 @@ RSpec.describe MessageService do
     Core::Schema.active(
       data: Events::SeekerViewed::Data::V1,
       metadata: Events::ApplicantStatusUpdated::MetaData::V1,
-      aggregate: Streams::User,
+      stream: Streams::User,
       message_type:,
       version:,
       type:
@@ -16,9 +16,9 @@ RSpec.describe MessageService do
   let(:message_type) { MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST }
   let(:version) { 3 }
 
-  describe "#create_once_for_aggregate!" do
+  describe "#create_once_for_stream!" do
     subject do
-      instance.create_once_for_aggregate!(
+      instance.create_once_for_stream!(
         id:,
         schema:,
         user_id:,
@@ -43,7 +43,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            aggregate: Streams::User.new(user_id:),
+            stream: Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -62,7 +62,7 @@ RSpec.describe MessageService do
               id:,
               occurred_at:,
               metadata:,
-              aggregate: Streams::User.new(user_id:)
+              stream: Streams::User.new(user_id:)
             )
           )
           .and_call_original
@@ -96,7 +96,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            aggregate: Streams::User.new(user_id:),
+            stream: Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -140,7 +140,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            aggregate: Streams::User.new(user_id:),
+            stream: Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -159,7 +159,7 @@ RSpec.describe MessageService do
               id:,
               occurred_at:,
               metadata:,
-              aggregate: Streams::User.new(user_id:)
+              stream: Streams::User.new(user_id:)
             )
           )
           .and_call_original
@@ -193,7 +193,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            aggregate: Streams::User.new(user_id:),
+            stream: Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -236,7 +236,7 @@ RSpec.describe MessageService do
         .with(
           schema:,
           data:,
-          aggregate: nil,
+          stream: nil,
           trace_id:,
           id:,
           occurred_at:,
@@ -255,7 +255,7 @@ RSpec.describe MessageService do
             id:,
             occurred_at:,
             metadata:,
-            aggregate: Streams::User.new(user_id:)
+            stream: Streams::User.new(user_id:)
           )
         )
         .and_call_original
@@ -312,7 +312,7 @@ RSpec.describe MessageService do
       context "when data and metadata type check" do
         it "returns the produced message" do
           expect(subject.id).to eq(id)
-          expect(subject.aggregate_id).to eq(user_id)
+          expect(subject.stream_id).to eq(user_id)
           expect(subject.schema).to eq(schema)
           expect(subject.data).to eq(data)
           expect(subject.metadata).to eq(metadata)
@@ -324,7 +324,7 @@ RSpec.describe MessageService do
 
           it "returns the produced message" do
             expect(subject.id).to eq(id)
-            expect(subject.aggregate_id).to eq(user_id)
+            expect(subject.stream_id).to eq(user_id)
             expect(subject.schema).to eq(schema)
             expect(subject.data).to eq(Events::SeekerViewed::Data::V1.new(seeker_id: data[:seeker_id]))
             expect(subject.metadata).to eq(metadata)
@@ -337,7 +337,7 @@ RSpec.describe MessageService do
 
           it "returns the produced message" do
             expect(subject.id).to eq(id)
-            expect(subject.aggregate_id).to eq(user_id)
+            expect(subject.stream_id).to eq(user_id)
             expect(subject.schema).to eq(schema)
             expect(subject.data).to eq(data)
             expect(subject.metadata).to eq(Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: metadata[:user_id]))
@@ -357,7 +357,7 @@ RSpec.describe MessageService do
       build(
         :message,
         schema:,
-        aggregate_id: SecureRandom.uuid,
+        stream_id: SecureRandom.uuid,
         data: {
           coach_id: SecureRandom.uuid
         }
@@ -369,7 +369,7 @@ RSpec.describe MessageService do
     it "persists the message" do
       expect { subject }.to change(Event, :count).by(1)
       expect(message.id).to eq(Event.last_created.message.id)
-      expect(message.aggregate_id).to eq(Event.last_created.message.aggregate_id)
+      expect(message.stream_id).to eq(Event.last_created.message.stream_id)
       expect(message.schema).to eq(Event.last_created.message.schema)
       expect(message.data).to eq(Event.last_created.message.data)
       expect(message.metadata).to eq(Event.last_created.message.metadata)
@@ -435,7 +435,7 @@ RSpec.describe MessageService do
       Core::Schema.active(
         data: Events::SeekerViewed::Data::V1,
         metadata: Events::ApplicantStatusUpdated::MetaData::V1,
-        aggregate: Streams::User,
+        stream: Streams::User,
         message_type:,
         version: 10,
         type:
@@ -546,7 +546,7 @@ RSpec.describe MessageService do
           Core::Schema.active(
             data: Core::Nothing,
             metadata: Core::Nothing,
-            aggregate: Streams::User,
+            stream: Streams::User,
             message_type: MessageTypes::User::USER_CREATED,
             type: Core::EVENT,
             version: 2
@@ -614,7 +614,7 @@ RSpec.describe MessageService do
     let(:message1) do
       build(
         :message,
-        aggregate_id: message_id,
+        stream_id: message_id,
         schema: Events::MessageSent::V1,
         data: Core::Nothing,
         occurred_at: Time.zone.local(2021, 1, 1)
@@ -623,7 +623,7 @@ RSpec.describe MessageService do
     let(:message2) do
       build(
         :message,
-        aggregate_id: message_id,
+        stream_id: message_id,
         schema: Events::SlackMessageSent::V2,
         data: {
           channel: "#cool",
@@ -641,7 +641,7 @@ RSpec.describe MessageService do
     let(:message3) do
       build(
         :message,
-        aggregate_id: message_id,
+        stream_id: message_id,
         schema: Commands::SendSlackMessage::V2,
         data: {
           channel: "#cool",
@@ -651,13 +651,13 @@ RSpec.describe MessageService do
       )
     end
 
-    context "when aggregate is a aggregate" do
-      it "returns all the events for the aggregate in order" do
+    context "when stream is a Stream" do
+      it "returns all the events for the stream in order" do
         expect(described_class.stream_events(Streams::Message.new(message_id:))).to eq([message2, message1])
       end
     end
 
-    context "when aggregate is not a aggregate" do
+    context "when stream is not a Stream" do
       it "raises a NotSchemaError" do
         expect { described_class.stream_events("cat") }.to raise_error(described_class::NotStreamError)
       end
@@ -749,7 +749,7 @@ RSpec.describe MessageService do
     let!(:message1) do
       Message.new(
         id: SecureRandom.uuid,
-        aggregate: Streams::User.new(user_id: SecureRandom.uuid),
+        stream: Streams::User.new(user_id: SecureRandom.uuid),
         trace_id: SecureRandom.uuid,
         schema:,
         occurred_at: Time.zone.parse('2000-1-1'),
@@ -760,7 +760,7 @@ RSpec.describe MessageService do
     let!(:message2) do
       Message.new(
         id: SecureRandom.uuid,
-        aggregate: Streams::User.new(user_id: SecureRandom.uuid),
+        stream: Streams::User.new(user_id: SecureRandom.uuid),
         trace_id: SecureRandom.uuid,
         schema:,
         occurred_at: Time.zone.parse('2000-1-1'),

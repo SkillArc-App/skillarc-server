@@ -17,7 +17,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Message,
+      stream: Streams::Message,
       message_type: MessageTypes::Contact::SEND_EMAIL_MESSAGE,
       version: 1
     )

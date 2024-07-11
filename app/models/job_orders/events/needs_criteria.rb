@@ -5,7 +5,7 @@ module JobOrders
         type: Core::EVENT,
         data: Core::Nothing,
         metadata: Core::Nothing,
-        aggregate: Streams::JobOrder,
+        stream: Streams::JobOrder,
         message_type: MessageTypes::JOB_ORDER_NEEDS_CRITERIA,
         version: 1
       )

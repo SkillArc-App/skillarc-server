@@ -15,7 +15,7 @@ module Teams
         type: Core::EVENT,
         data: Data::V1,
         metadata: Core::Nothing,
-        aggregate: Streams::Team,
+        stream: Streams::Team,
         message_type: MessageTypes::PRIMARY_SLACK_CHANNEL_ADDED,
         version: 1
       )

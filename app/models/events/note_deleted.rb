@@ -25,7 +25,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Seeker,
+      stream: Streams::Seeker,
       message_type: MessageTypes::Coaches::NOTE_DELETED,
       version: 1
     )
@@ -33,7 +33,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Streams::Coaches::SeekerContext,
+      stream: Streams::Coaches::SeekerContext,
       message_type: MessageTypes::Coaches::NOTE_DELETED,
       version: 2
     )
@@ -41,7 +41,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Streams::Coaches::SeekerContext,
+      stream: Streams::Coaches::SeekerContext,
       message_type: MessageTypes::Coaches::NOTE_DELETED,
       version: 3
     )
@@ -49,7 +49,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Streams::Person,
+      stream: Streams::Person,
       message_type: MessageTypes::Coaches::NOTE_DELETED,
       version: 4
     )

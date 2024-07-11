@@ -152,7 +152,8 @@ RSpec.describe Teams::TeamsReactor do
           stream:,
           schema: Teams::Commands::SendSlackMessage::V2,
           data: {
-            text: "yo"
+            text: "yo",
+            blocks: nil
           }
         )
       end

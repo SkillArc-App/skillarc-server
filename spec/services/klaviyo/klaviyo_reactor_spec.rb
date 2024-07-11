@@ -39,10 +39,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           :message,
           schema: Events::UserCreated::V1,
           data: {
-            first_name: "John",
-            last_name: "Chabot",
-            email: "example@cool.com",
-            sub: "sub"
+            first_name: "John"
           }
         )
       end
@@ -84,11 +81,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
             stream_id: person_id,
             schema: Events::PersonAdded::V1,
             data: {
-              first_name: "Hannah",
-              last_name: "Skillz",
-              phone_number: "222-222-2222",
-              email: "some@email.com",
-              date_of_birth: Time.zone.local(2020, 1, 1)
+              phone_number: "222-222-2222"
             }
           )
         end
@@ -103,12 +96,12 @@ RSpec.describe Klaviyo::KlaviyoReactor do
               event_id: message.id,
               occurred_at: message.occurred_at,
               profile_attributes: {
-                first_name: "Hannah",
-                last_name: "Skillz",
+                first_name: message.data.first_name,
+                last_name: message.data.last_name,
                 phone_number: '+12222222222'
               },
               profile_properties: {
-                date_of_birth: Time.zone.local(2020, 1, 1)
+                date_of_birth: message.data.date_of_birth
               }
             )
             .and_call_original
@@ -124,10 +117,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
             stream_id: person_id,
             schema: Events::BasicInfoAdded::V1,
             data: {
-              first_name: "Hannah",
-              last_name: "Skillz",
-              phone_number: "222-222-2222",
-              email: "some@email.com"
+              phone_number: "222-222-2222"
             }
           )
         end
@@ -143,8 +133,8 @@ RSpec.describe Klaviyo::KlaviyoReactor do
               occurred_at: message.occurred_at,
               profile_properties: {},
               profile_attributes: {
-                first_name: "Hannah",
-                last_name: "Skillz",
+                first_name: message.data.first_name,
+                last_name: message.data.last_name,
                 phone_number: '+12222222222'
               }
             )
@@ -159,15 +149,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           build(
             :message,
             stream_id: person_id,
-            schema: Events::EducationExperienceAdded::V2,
-            data: {
-              id: SecureRandom.uuid,
-              organization_name: "School",
-              title: "Student",
-              activities: "Class Clown",
-              graduation_date: "Sometime",
-              gpa: "4.2"
-            }
+            schema: Events::EducationExperienceAdded::V2
           )
         end
 
@@ -192,15 +174,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           build(
             :message,
             stream_id: person_id,
-            schema: Events::ExperienceAdded::V2,
-            data: {
-              id: SecureRandom.uuid,
-              organization_name: "Employers",
-              position: "Job",
-              start_date: "Today",
-              description: "Stuff",
-              is_current: true
-            }
+            schema: Events::ExperienceAdded::V2
           )
         end
 
@@ -225,8 +199,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           build(
             :message,
             stream_id: person_id,
-            schema: Events::OnboardingCompleted::V3,
-            data: Core::Nothing
+            schema: Events::OnboardingCompleted::V3
           )
         end
 
@@ -277,9 +250,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           schema: Events::ChatMessageSent::V2,
           stream_id: application_id,
           data: {
-            from_name: "David",
-            from_user_id:,
-            message: "Sup?"
+            from_user_id:
           }
         )
       end
@@ -337,12 +308,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         build(
           :message,
           stream_id: user_id,
-          schema: Events::JobSaved::V1,
-          data: {
-            job_id: SecureRandom.uuid,
-            employment_title: "Title",
-            employer_name: "AMC"
-          }
+          schema: Events::JobSaved::V1
         )
       end
 
@@ -356,8 +322,8 @@ RSpec.describe Klaviyo::KlaviyoReactor do
             event_id: message.id,
             event_properties: {
               job_id: message.data.job_id,
-              employment_title: "Title",
-              employer_name: "AMC"
+              employment_title: message.data.employment_title,
+              employer_name: message.data.employer_name
             },
             occurred_at: message.occurred_at
           )
@@ -373,9 +339,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           :message,
           schema: Events::EmployerInviteAccepted::V2,
           data: {
-            user_id: SecureRandom.uuid,
             invite_email: "example@email.com",
-            employer_id: SecureRandom.uuid,
             employer_name: "Employer"
           }
         )
@@ -408,10 +372,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           :message,
           schema: Events::TrainingProviderInviteAccepted::V2,
           data: {
-            training_provider_profile_id: SecureRandom.uuid,
-            user_id: SecureRandom.uuid,
             invite_email: "trainer@email.com",
-            training_provider_id: SecureRandom.uuid,
             training_provider_name: "Trainer"
           }
         )
@@ -448,9 +409,6 @@ RSpec.describe Klaviyo::KlaviyoReactor do
             applicant_last_name: "Last",
             applicant_email: "applicant@email.com",
             applicant_phone_number: "333-333-3333",
-            seeker_id: SecureRandom.uuid,
-            user_id: SecureRandom.uuid,
-            job_id: SecureRandom.uuid,
             employer_name: "Employer",
             employment_title: "Job",
             status: ApplicantStatus::StatusTypes::NEW,

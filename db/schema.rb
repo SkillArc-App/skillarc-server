@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_10_155741) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_11_201549) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -827,6 +827,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_10_155741) do
     t.datetime "updated_at", precision: 3, null: false
   end
 
+  create_table "screeners_answers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title", null: false
+    t.jsonb "question_responses", null: false
+    t.uuid "screeners_questions_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["screeners_questions_id"], name: "index_screeners_answers_on_screeners_questions_id"
+  end
+
+  create_table "screeners_questions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title", null: false
+    t.jsonb "questions", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "search_applications", force: :cascade do |t|
     t.string "status", null: false
     t.uuid "application_id", null: false
@@ -1053,6 +1069,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_10_155741) do
   add_foreign_key "profiles", "users", name: "Profile_user_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "programs", "training_providers", name: "Program_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "recruiters", "users", name: "Recruiter_user_id_fkey", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "screeners_answers", "screeners_questions", column: "screeners_questions_id"
   add_foreign_key "search_applications", "search_jobs"
   add_foreign_key "search_saved_jobs", "search_jobs"
   add_foreign_key "seeker_references", "training_providers", name: "Reference_training_provider_id_fkey", on_update: :cascade, on_delete: :restrict

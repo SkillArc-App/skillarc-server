@@ -14,7 +14,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Tag,
+      stream: Streams::Tag,
       message_type: MessageTypes::Tags::TAG_CREATED,
       version: 1
     )

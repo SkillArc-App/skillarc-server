@@ -37,7 +37,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Integration,
+      stream: Streams::Integration,
       message_type: MessageTypes::Contact::CAL_WEBHOOK_RECEIVED,
       version: 1
     )

@@ -3,12 +3,12 @@ FactoryBot.define do
     id { SecureRandom.uuid }
 
     transient do
-      aggregate_id { SecureRandom.uuid }
+      stream_id { SecureRandom.uuid }
     end
 
     schema { Events::SessionStarted::V1 }
     trace_id { SecureRandom.uuid }
-    aggregate { schema.aggregate.new(**{ schema.aggregate.id => aggregate_id }) }
+    stream { schema.stream.new(**{ schema.stream.id => stream_id }) }
     occurred_at { Time.zone.local(2020, 1, 1) }
     data { Core::Nothing }
     metadata { Core::Nothing }

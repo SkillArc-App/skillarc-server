@@ -19,7 +19,7 @@ module Projectors
 
       private
 
-      attr_reader :schema, :aggregate
+      attr_reader :schema
     end
   end
 end

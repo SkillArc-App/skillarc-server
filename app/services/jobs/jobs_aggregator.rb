@@ -17,7 +17,7 @@ module Jobs
     on_message Events::CareerPathCreated::V1, :sync do |message|
       CareerPath.create!(
         id: message.data.id,
-        job_id: message.aggregate.job_id,
+        job_id: message.stream.job_id,
         title: message.data.title,
         lower_limit: message.data.lower_limit,
         upper_limit: message.data.upper_limit,
@@ -36,7 +36,7 @@ module Jobs
     on_message Events::DesiredCertificationCreated::V1, :sync do |message|
       DesiredCertification.create!(
         id: message.data.id,
-        job_id: message.aggregate.job_id,
+        job_id: message.stream.job_id,
         master_certification_id: message.data.master_certification_id
       )
     end
@@ -48,7 +48,7 @@ module Jobs
     on_message Events::DesiredSkillCreated::V1, :sync do |message|
       DesiredSkill.create!(
         id: message.data.id,
-        job_id: message.aggregate.job_id,
+        job_id: message.stream.job_id,
         master_skill_id: message.data.master_skill_id
       )
     end
@@ -71,7 +71,7 @@ module Jobs
 
     on_message Events::TagCreated::V1 do |message|
       Tag.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         name: message.data.name
       )
     end
@@ -103,7 +103,7 @@ module Jobs
     on_message Events::TestimonialCreated::V1, :sync do |message|
       Testimonial.create!(
         id: message.data.id,
-        job_id: message.aggregate.job_id,
+        job_id: message.stream.job_id,
         name: message.data.name,
         title: message.data.title,
         testimonial: message.data.testimonial,
@@ -117,7 +117,7 @@ module Jobs
 
     on_message Events::EmployerCreated::V1 do |message|
       Employer.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         name: message.data.name,
         location: message.data.location,
         bio: message.data.bio,
@@ -127,7 +127,7 @@ module Jobs
 
     on_message Events::EmployerUpdated::V1 do |message|
       Employer.update!(
-        message.aggregate.id,
+        message.stream.id,
         name: message.data.name,
         location: message.data.location,
         bio: message.data.bio,
@@ -137,7 +137,7 @@ module Jobs
 
     on_message Events::JobCreated::V3, :sync do |message|
       Job.create!(
-        id: message.aggregate.job_id,
+        id: message.stream.job_id,
         employment_title: message.data.employment_title,
         employer_id: message.data.employer_id,
         benefits_description: message.data.benefits_description,
@@ -153,7 +153,7 @@ module Jobs
     end
 
     on_message Events::JobUpdated::V2, :sync do |message|
-      job = Job.find(message.aggregate.job_id)
+      job = Job.find(message.stream.job_id)
 
       job.update!(
         employment_title: message.data.employment_title,
@@ -173,7 +173,7 @@ module Jobs
     on_message Events::JobAttributeCreated::V1, :sync do |message|
       JobAttribute.create!(
         id: message.data.id,
-        job_id: message.aggregate.job_id,
+        job_id: message.stream.job_id,
         attribute_name: message.data.attribute_name,
         attribute_id: message.data.attribute_id,
         acceptible_set: message.data.acceptible_set

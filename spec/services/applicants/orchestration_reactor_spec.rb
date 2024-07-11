@@ -26,7 +26,7 @@ RSpec.describe Applicants::OrchestrationReactor do
             employer_name: "Skillarc",
             employment_title: "Welder"
           },
-          aggregate_id: seeker_id
+          stream_id: seeker_id
         )
       end
       let(:seeker_id) { SecureRandom.uuid }
@@ -43,7 +43,7 @@ RSpec.describe Applicants::OrchestrationReactor do
               applicant_last_name: message.data.seeker_last_name,
               applicant_email: message.data.seeker_email,
               applicant_phone_number: message.data.seeker_phone_number,
-              seeker_id: message.aggregate.id,
+              seeker_id: message.stream.id,
               user_id: message.data.user_id,
               job_id: message.data.job_id,
               employer_name: message.data.employer_name,

@@ -15,7 +15,7 @@ RSpec.describe Infrastructure::Task do
     build(
       :message,
       schema: Commands::AssignCoach::V2,
-      aggregate_id: SecureRandom.uuid,
+      stream_id: SecureRandom.uuid,
       data: {
         coach_id: SecureRandom.uuid
       }

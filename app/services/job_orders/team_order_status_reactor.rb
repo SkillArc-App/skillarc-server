@@ -11,8 +11,8 @@ module JobOrders
 
       # Determine who owns which order status
       team_status_owners = OrderStatus::ALL.each_with_object({}) do |order_status, owners|
-        owner = ::Projectors::Aggregates::GetLast.project(
-          aggregate: Aggregates::OrderStatus.new(order_status:),
+        owner = ::Projectors::Streams::GetLast.project(
+          stream: Streams::OrderStatus.new(order_status:),
           schema: Events::TeamResponsibleForStatus::V1
         )
 

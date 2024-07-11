@@ -17,7 +17,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Employer,
+      stream: Streams::Employer,
       message_type: MessageTypes::Employers::UPDATE_EMPLOYER,
       version: 1
     )

@@ -13,7 +13,7 @@ RSpec.describe TrainingProviders::TrainingProviderAggregator do
         build(
           :message,
           schema: Events::PersonTrainingProviderAdded::V1,
-          aggregate_id: SecureRandom.uuid,
+          stream_id: SecureRandom.uuid,
           data: {
             id: SecureRandom.uuid,
             status: "doing good!",
@@ -31,7 +31,7 @@ RSpec.describe TrainingProviders::TrainingProviderAggregator do
 
         seeker_training_provider = SeekerTrainingProvider.take(1).first
         expect(seeker_training_provider.id).to eq(message.data.id)
-        expect(seeker_training_provider.seeker_id).to eq(message.aggregate.id)
+        expect(seeker_training_provider.seeker_id).to eq(message.stream.id)
         expect(seeker_training_provider.program_id).to eq(message.data.program_id)
         expect(seeker_training_provider.training_provider_id).to eq(message.data.training_provider_id)
         expect(seeker_training_provider.status).to eq(message.data.status)
@@ -43,7 +43,7 @@ RSpec.describe TrainingProviders::TrainingProviderAggregator do
         build(
           :message,
           schema: Events::TrainingProviderCreated::V1,
-          aggregate_id: SecureRandom.uuid,
+          stream_id: SecureRandom.uuid,
           data: {
             name: "T",
             description: "D"
@@ -55,7 +55,7 @@ RSpec.describe TrainingProviders::TrainingProviderAggregator do
         expect { subject }.to change(TrainingProvider, :count).from(0).to(1)
 
         training_provider = TrainingProvider.first
-        expect(training_provider.id).to eq(message.aggregate.id)
+        expect(training_provider.id).to eq(message.stream.id)
         expect(training_provider.name).to eq(message.data.name)
         expect(training_provider.description).to eq(message.data.description)
       end
@@ -66,7 +66,7 @@ RSpec.describe TrainingProviders::TrainingProviderAggregator do
         build(
           :message,
           schema: Events::TrainingProviderProgramCreated::V1,
-          aggregate_id: training_provider.id,
+          stream_id: training_provider.id,
           data: {
             program_id: SecureRandom.uuid,
             name: "T",
@@ -93,7 +93,7 @@ RSpec.describe TrainingProviders::TrainingProviderAggregator do
         build(
           :message,
           schema: Events::TrainingProviderProgramUpdated::V1,
-          aggregate_id: training_provider.id,
+          stream_id: training_provider.id,
           data: {
             program_id: program.id,
             name: "T",
@@ -120,7 +120,7 @@ RSpec.describe TrainingProviders::TrainingProviderAggregator do
         build(
           :message,
           schema: Events::ReferenceCreated::V2,
-          aggregate_id: reference_id,
+          stream_id: reference_id,
           data: {
             reference_text: 'This is a reference',
             author_training_provider_profile_id:,
@@ -150,7 +150,7 @@ RSpec.describe TrainingProviders::TrainingProviderAggregator do
         build(
           :message,
           schema: Events::ReferenceUpdated::V1,
-          aggregate_id: reference_id,
+          stream_id: reference_id,
           data: {
             reference_text: 'This is another reference'
           }

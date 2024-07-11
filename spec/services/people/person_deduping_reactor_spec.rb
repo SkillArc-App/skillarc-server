@@ -20,7 +20,7 @@ RSpec.describe People::PersonDedupingReactor do
         build(
           :message,
           schema: Commands::AddPerson::V2,
-          aggregate_id: person_id,
+          stream_id: person_id,
           trace_id:,
           data: {
             user_id:,
@@ -52,7 +52,7 @@ RSpec.describe People::PersonDedupingReactor do
       let(:person_added) do
         build(
           :message,
-          aggregate_id: person_id,
+          stream_id: person_id,
           schema: Events::PersonAdded::V1,
           data: {
             first_name: "Jim",
@@ -66,7 +66,7 @@ RSpec.describe People::PersonDedupingReactor do
       let(:person_associated_email) do
         build(
           :message,
-          aggregate_id: email,
+          stream_id: email,
           schema: Events::PersonAssociatedToEmail::V1,
           data: {
             person_id:
@@ -76,7 +76,7 @@ RSpec.describe People::PersonDedupingReactor do
       let(:person_associated_phone_number) do
         build(
           :message,
-          aggregate_id: phone_number,
+          stream_id: phone_number,
           schema: Events::PersonAssociatedToPhoneNumber::V1,
           data: {
             person_id:
@@ -101,7 +101,7 @@ RSpec.describe People::PersonDedupingReactor do
 
           it "emits a person associated to user event" do
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 schema: Events::PersonAssociatedToUser::V1,
                 trace_id:,
@@ -127,7 +127,7 @@ RSpec.describe People::PersonDedupingReactor do
 
           it "associates the user" do
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 schema: Events::PersonAssociatedToUser::V1,
                 trace_id:,
@@ -167,7 +167,7 @@ RSpec.describe People::PersonDedupingReactor do
               .and_call_original
 
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 schema: Events::PersonAssociatedToUser::V1,
                 trace_id:,
@@ -179,7 +179,7 @@ RSpec.describe People::PersonDedupingReactor do
               .and_call_original
 
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 schema: Events::PersonSourced::V1,
                 trace_id:,
@@ -224,7 +224,7 @@ RSpec.describe People::PersonDedupingReactor do
               .with(
                 schema: Events::PersonAdded::V1,
                 trace_id: message.trace_id,
-                person_id: message.aggregate.id,
+                person_id: message.stream.id,
                 data: {
                   first_name: message.data.first_name,
                   last_name: message.data.last_name,
@@ -236,7 +236,7 @@ RSpec.describe People::PersonDedupingReactor do
               .and_call_original
 
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 schema: Events::PersonSourced::V1,
                 trace_id:,
@@ -261,7 +261,7 @@ RSpec.describe People::PersonDedupingReactor do
         build(
           :message,
           schema: Events::PersonAdded::V1,
-          aggregate_id: person_id,
+          stream_id: person_id,
           trace_id:,
           data: {
             first_name: "Jim",
@@ -285,7 +285,7 @@ RSpec.describe People::PersonDedupingReactor do
               trace_id: message.trace_id,
               email: message.data.email,
               data: {
-                person_id: message.aggregate.id
+                person_id: message.stream.id
               }
             )
             .twice
@@ -312,7 +312,7 @@ RSpec.describe People::PersonDedupingReactor do
               trace_id: message.trace_id,
               phone_number: message.data.phone_number,
               data: {
-                person_id: message.aggregate.id
+                person_id: message.stream.id
               }
             )
             .twice
@@ -339,7 +339,7 @@ RSpec.describe People::PersonDedupingReactor do
               trace_id: message.trace_id,
               phone_number: message.data.phone_number,
               data: {
-                person_id: message.aggregate.id
+                person_id: message.stream.id
               }
             )
             .twice
@@ -352,7 +352,7 @@ RSpec.describe People::PersonDedupingReactor do
               trace_id: message.trace_id,
               email: message.data.email,
               data: {
-                person_id: message.aggregate.id
+                person_id: message.stream.id
               }
             )
             .twice

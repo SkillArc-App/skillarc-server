@@ -19,7 +19,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Coach,
+      stream: Streams::Coach,
       message_type: MessageTypes::Coaches::LEAD_ADDED,
       version: 1
     )
@@ -27,7 +27,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Coaches::SeekerContext,
+      stream: Streams::Coaches::SeekerContext,
       message_type: MessageTypes::Coaches::LEAD_ADDED,
       version: 2
     )

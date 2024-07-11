@@ -126,14 +126,14 @@ class OnboardingSessionsController < ApplicationController
 
     Events::PersonAssociatedToUser::V1.all_messages.detect do |m|
       m.data.user_id == current_user.id
-    end&.aggregate&.id
+    end&.stream&.id
   end
 
   def serialize_onboarding_session(person_id)
     messages = if person_id.nil?
                  []
                else
-                 MessageService.aggregate_events(Aggregates::Person.new(person_id:))
+                 MessageService.stream_events(Streams::Person.new(person_id:))
                end
     status = People::Projectors::OnboardingStatus.new.project(messages)
 

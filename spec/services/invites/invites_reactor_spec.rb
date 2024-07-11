@@ -25,7 +25,7 @@ RSpec.describe Invites::InvitesReactor do
         build(
           :message,
           schema: Commands::AcceptEmployerInvite::V1,
-          aggregate_id: id,
+          stream_id: id,
           data: {
             user_id:
           }
@@ -39,7 +39,7 @@ RSpec.describe Invites::InvitesReactor do
         build(
           :message,
           schema: Events::UserCreated::V1,
-          aggregate_id: user_id,
+          stream_id: user_id,
           data: {
             email: user_created_email
           }
@@ -49,7 +49,7 @@ RSpec.describe Invites::InvitesReactor do
         build(
           :message,
           schema: Events::EmployerInviteCreated::V1,
-          aggregate_id: id,
+          stream_id: id,
           data: {
             invite_email: employer_invite_created_email,
             first_name: "Jim",
@@ -85,10 +85,10 @@ RSpec.describe Invites::InvitesReactor do
 
           it "emits a EmployerInviteUsedByWrongUser" do
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 trace_id: message.trace_id,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 schema: Events::EmployerInviteUsedByWrongUser::V1,
                 data: {
                   user_id: message.data.user_id
@@ -107,10 +107,10 @@ RSpec.describe Invites::InvitesReactor do
 
           it "emits a EmployerInviteAccepted" do
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 trace_id: message.trace_id,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 schema: Events::EmployerInviteAccepted::V2,
                 data: {
                   user_id: message.data.user_id,
@@ -133,7 +133,7 @@ RSpec.describe Invites::InvitesReactor do
         build(
           :message,
           schema: Commands::CreateEmployerInvite::V1,
-          aggregate_id: id,
+          stream_id: id,
           data: {
             invite_email: "An email",
             first_name: "First",
@@ -156,7 +156,7 @@ RSpec.describe Invites::InvitesReactor do
             build(
               :message,
               schema: Events::EmployerCreated::V1,
-              aggregate_id: employer_id,
+              stream_id: employer_id,
               data: {
                 name: "An email",
                 location: "First",
@@ -169,10 +169,10 @@ RSpec.describe Invites::InvitesReactor do
 
         it "emits an employer invite created event" do
           expect(message_service)
-            .to receive(:create_once_for_aggregate!)
+            .to receive(:create_once_for_stream!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Events::EmployerInviteCreated::V1,
               data: {
                 invite_email: message.data.invite_email,
@@ -195,7 +195,7 @@ RSpec.describe Invites::InvitesReactor do
         build(
           :message,
           schema: Commands::AcceptTrainingProviderInvite::V1,
-          aggregate_id: id,
+          stream_id: id,
           data: {
             user_id:
           }
@@ -209,7 +209,7 @@ RSpec.describe Invites::InvitesReactor do
         build(
           :message,
           schema: Events::UserCreated::V1,
-          aggregate_id: user_id,
+          stream_id: user_id,
           data: {
             email: user_created_email
           }
@@ -219,7 +219,7 @@ RSpec.describe Invites::InvitesReactor do
         build(
           :message,
           schema: Events::TrainingProviderInviteCreated::V1,
-          aggregate_id: id,
+          stream_id: id,
           data: {
             invite_email: training_provider_invite_created_email,
             first_name: "Jim",
@@ -256,10 +256,10 @@ RSpec.describe Invites::InvitesReactor do
 
           it "emits a TrainingProviderInviteUsedByWrongUser" do
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 trace_id: message.trace_id,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 schema: Events::TrainingProviderInviteUsedByWrongUser::V1,
                 data: {
                   user_id: message.data.user_id
@@ -278,10 +278,10 @@ RSpec.describe Invites::InvitesReactor do
 
           it "emits a TrainingProviderInviteAccepted" do
             expect(message_service)
-              .to receive(:create_once_for_aggregate!)
+              .to receive(:create_once_for_stream!)
               .with(
                 trace_id: message.trace_id,
-                aggregate: message.aggregate,
+                stream: message.stream,
                 schema: Events::TrainingProviderInviteAccepted::V2,
                 data: {
                   training_provider_profile_id: be_a(String),
@@ -305,7 +305,7 @@ RSpec.describe Invites::InvitesReactor do
         build(
           :message,
           schema: Commands::CreateTrainingProviderInvite::V1,
-          aggregate_id: id,
+          stream_id: id,
           data: {
             invite_email: "An email",
             first_name: "First",
@@ -329,7 +329,7 @@ RSpec.describe Invites::InvitesReactor do
             build(
               :message,
               schema: Events::TrainingProviderCreated::V1,
-              aggregate_id: training_provider_id,
+              stream_id: training_provider_id,
               data: {
                 name: "Cat",
                 description: "Meow"
@@ -340,10 +340,10 @@ RSpec.describe Invites::InvitesReactor do
 
         it "emits an employer invite created event" do
           expect(message_service)
-            .to receive(:create_once_for_aggregate!)
+            .to receive(:create_once_for_stream!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Events::TrainingProviderInviteCreated::V1,
               data: {
                 invite_email: message.data.invite_email,

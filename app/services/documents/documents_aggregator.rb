@@ -6,7 +6,7 @@ module Documents
 
     on_message Events::ResumeGenerationRequested::V1 do |message|
       Resume.create!(
-        id: message.aggregate.id,
+        id: message.stream.id,
         person_id: message.data.person_id,
         anonymized: message.data.anonymized,
         document_kind: message.data.document_kind,
@@ -18,7 +18,7 @@ module Documents
 
     on_message Events::ResumeGenerated::V1 do |message|
       Resume.update!(
-        message.aggregate.id,
+        message.stream.id,
         storage_identifier: message.data.storage_identifier,
         storage_kind: message.data.storage_kind,
         document_generated_at: message.occurred_at,
@@ -28,7 +28,7 @@ module Documents
 
     on_message Events::ResumeGenerationFailed::V1 do |message|
       Resume.update!(
-        message.aggregate.id,
+        message.stream.id,
         status: DocumentStatus::FAILED
       )
     end

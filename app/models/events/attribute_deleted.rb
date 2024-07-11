@@ -4,7 +4,7 @@ module Events
       type: Core::EVENT,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Attribute,
+      stream: Streams::Attribute,
       message_type: MessageTypes::Attributes::ATTRIBUTE_DELETED,
       version: 1
     )

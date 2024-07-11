@@ -11,7 +11,7 @@ RSpec.describe Infrastructure::InfrastructureAggregator do
         build(
           :message,
           schema: Commands::ScreenApplicant::V1,
-          aggregate_id: SecureRandom.uuid,
+          stream_id: SecureRandom.uuid,
           data: Core::Nothing
         )
       end
@@ -20,7 +20,7 @@ RSpec.describe Infrastructure::InfrastructureAggregator do
         build(
           :message,
           schema: Events::TaskScheduled::V1,
-          aggregate_id: SecureRandom.uuid,
+          stream_id: SecureRandom.uuid,
           data: {
             execute_at: Time.zone.local(2000, 1, 1),
             command:
@@ -39,7 +39,7 @@ RSpec.describe Infrastructure::InfrastructureAggregator do
 
         expect(task.execute_at).to eq(Time.zone.local(2000, 1, 1))
         expect(task.command).to eq(command)
-        expect(task.id).to eq(message.aggregate.task_id)
+        expect(task.id).to eq(message.stream.task_id)
         expect(task.state).to eq(Infrastructure::TaskStates::ENQUEUED)
       end
     end
@@ -51,7 +51,7 @@ RSpec.describe Infrastructure::InfrastructureAggregator do
         build(
           :message,
           schema: Events::TaskExecuted::V1,
-          aggregate_id: task_id,
+          stream_id: task_id,
           data: Core::Nothing
         )
       end
@@ -72,7 +72,7 @@ RSpec.describe Infrastructure::InfrastructureAggregator do
         build(
           :message,
           schema: Events::TaskCancelled::V1,
-          aggregate_id: task_id,
+          stream_id: task_id,
           data: Core::Nothing,
           metadata: {
             requestor_type: Requestor::Kinds::USER,

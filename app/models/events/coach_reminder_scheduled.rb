@@ -30,7 +30,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Coach,
+      stream: Streams::Coach,
       message_type: MessageTypes::Coaches::COACH_REMINDER_SCHEDULED,
       version: 1
     )
@@ -38,7 +38,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Coach,
+      stream: Streams::Coach,
       message_type: MessageTypes::Coaches::COACH_REMINDER_SCHEDULED,
       version: 2
     )

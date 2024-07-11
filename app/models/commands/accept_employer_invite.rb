@@ -14,7 +14,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Invite,
+      stream: Streams::Invite,
       message_type: MessageTypes::Invite::ACCEPT_EMPLOYER_INVITE,
       version: 1
     )

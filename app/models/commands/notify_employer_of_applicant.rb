@@ -22,7 +22,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Application,
+      stream: Streams::Application,
       message_type: MessageTypes::Contact::NOTIFY_EMPLOYER_OF_APPLICANT,
       version: 1
     )

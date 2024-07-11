@@ -4,7 +4,7 @@ module Events
       type: Core::EVENT,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Message,
+      stream: Streams::Message,
       message_type: MessageTypes::Contact::MESSAGE_ENQUEUED,
       version: 1
     )

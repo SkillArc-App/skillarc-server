@@ -45,9 +45,9 @@ module Jobs
     end
 
     on_message Commands::AddDesiredCertification::V1, :sync do |message|
-      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+      messages = MessageService.stream_events(message.stream).select { |m| m.occurred_at <= message.occurred_at }
 
-      return unless ::Projectors::Aggregates::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
+      return unless ::Projectors::Streams::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
 
       status = Projectors::CertificationStatus.new.project(messages)
 
@@ -55,20 +55,20 @@ module Jobs
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
-        aggregate: message.aggregate,
+        stream: message.stream,
         schema: Events::DesiredCertificationCreated::V1,
         data: {
           id: message.data.id,
-          job_id: message.aggregate.id,
+          job_id: message.stream.id,
           master_certification_id: message.data.master_certification_id
         }
       )
     end
 
     on_message Commands::RemoveDesiredCertification::V1, :sync do |message|
-      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+      messages = MessageService.stream_events(message.stream).select { |m| m.occurred_at <= message.occurred_at }
 
-      return unless ::Projectors::Aggregates::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
+      return unless ::Projectors::Streams::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
 
       status = Projectors::CertificationStatus.new.project(messages)
 
@@ -76,7 +76,7 @@ module Jobs
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
-        aggregate: message.aggregate,
+        stream: message.stream,
         schema: Events::DesiredCertificationDestroyed::V1,
         data: {
           id: message.data.id
@@ -85,9 +85,9 @@ module Jobs
     end
 
     on_message Commands::CreateEmployer::V1, :sync do |message|
-      message_service.create_once_for_aggregate!(
+      message_service.create_once_for_stream!(
         trace_id: message.trace_id,
-        aggregate: message.aggregate,
+        stream: message.stream,
         schema: Events::EmployerCreated::V1,
         data: {
           name: message.data.name,
@@ -99,13 +99,13 @@ module Jobs
     end
 
     on_message Commands::UpdateEmployer::V1, :sync do |message|
-      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+      messages = MessageService.stream_events(message.stream).select { |m| m.occurred_at <= message.occurred_at }
 
-      return unless ::Projectors::Aggregates::HasOccurred.new(schema: Events::EmployerCreated::V1).project(messages)
+      return unless ::Projectors::Streams::HasOccurred.new(schema: Events::EmployerCreated::V1).project(messages)
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
-        aggregate: message.aggregate,
+        stream: message.stream,
         schema: Events::EmployerUpdated::V1,
         data: {
           name: message.data.name,

@@ -19,7 +19,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Seeker,
+      stream: Streams::Seeker,
       message_type: MessageTypes::Person::EDUCATION_EXPERIENCE_ADDED,
       version: 1
     )
@@ -27,7 +27,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Person,
+      stream: Streams::Person,
       message_type: MessageTypes::Person::EDUCATION_EXPERIENCE_ADDED,
       version: 2
     )

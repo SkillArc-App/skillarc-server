@@ -5,7 +5,7 @@ module Teams
     end
 
     on_message Events::Added::V1 do |message|
-      Team.create!(id: message.aggregate.id, name: message.data.name)
+      Team.create!(id: message.stream.id, name: message.data.name)
     end
   end
 end

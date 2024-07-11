@@ -20,7 +20,7 @@ RSpec.describe People::OnboardingReactor do
         build(
           :message,
           schema: Events::PersonAssociatedToUser::V1,
-          aggregate_id: person_id,
+          stream_id: person_id,
           data: {
             user_id:
           }
@@ -33,7 +33,7 @@ RSpec.describe People::OnboardingReactor do
           .with(
             schema: Commands::StartOnboarding::V2,
             trace_id: message.trace_id,
-            aggregate: message.aggregate,
+            stream: message.stream,
             data: Core::Nothing
           )
           .twice
@@ -48,18 +48,18 @@ RSpec.describe People::OnboardingReactor do
         build(
           :message,
           schema: Commands::StartOnboarding::V2,
-          aggregate_id: person_id,
+          stream_id: person_id,
           data: Core::Nothing
         )
       end
 
       it "creates an onboarding complete event once for the stream" do
         expect(message_service)
-          .to receive(:create_once_for_aggregate!)
+          .to receive(:create_once_for_stream!)
           .with(
             schema: Events::OnboardingStarted::V2,
             trace_id: message.trace_id,
-            aggregate: message.aggregate,
+            stream: message.stream,
             data: Core::Nothing
           )
           .twice
@@ -74,17 +74,17 @@ RSpec.describe People::OnboardingReactor do
         build(
           :message,
           schema: Commands::CompleteOnboarding::V2,
-          aggregate_id: person_id
+          stream_id: person_id
         )
       end
 
       it "creates an onboarding complete event once for the stream" do
         expect(message_service)
-          .to receive(:create_once_for_aggregate!)
+          .to receive(:create_once_for_stream!)
           .with(
             schema: Events::OnboardingCompleted::V3,
             trace_id: message.trace_id,
-            aggregate: message.aggregate,
+            stream: message.stream,
             data: Core::Nothing
           )
           .twice
@@ -109,8 +109,8 @@ RSpec.describe People::OnboardingReactor do
 
       before do
         allow(MessageService)
-          .to receive(:aggregate_events)
-          .with(message.aggregate)
+          .to receive(:stream_events)
+          .with(message.stream)
           .and_return(messages)
 
         allow_any_instance_of(People::Projectors::OnboardingStatus)
@@ -147,10 +147,10 @@ RSpec.describe People::OnboardingReactor do
 
         it "emits an onboarding complete event" do
           expect(message_service)
-            .to receive(:create_once_for_aggregate!)
+            .to receive(:create_once_for_stream!)
             .with(
               schema: Commands::CompleteOnboarding::V2,
-              aggregate: message.aggregate,
+              stream: message.stream,
               trace_id: message.trace_id,
               data: Core::Nothing
             )

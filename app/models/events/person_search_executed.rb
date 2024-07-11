@@ -15,7 +15,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::PersonSearch,
+      stream: Streams::PersonSearch,
       message_type: MessageTypes::PersonSearch::PERSON_SEARCH_EXECUTED,
       version: 1
     )

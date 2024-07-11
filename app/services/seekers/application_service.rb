@@ -1,15 +1,15 @@
 module Seekers
   class ApplicationService
     def self.apply(seeker:, job:, message_service:)
-      aggregate = Aggregates::Person.new(person_id: seeker.id)
-      messages = MessageService.aggregate_events(aggregate)
+      stream = Streams::Person.new(person_id: seeker.id)
+      messages = MessageService.stream_events(stream)
 
       most_recent_applicaiton = Projectors::MostRecentApplication.new.project(messages).applied_at(job.id)
 
       return if most_recent_applicaiton.present?
 
       message_service.create!(
-        aggregate:,
+        stream:,
         schema: Events::PersonApplied::V1,
         data: {
           application_id: SecureRandom.uuid,

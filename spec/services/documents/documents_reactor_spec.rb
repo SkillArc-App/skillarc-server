@@ -15,7 +15,7 @@ RSpec.describe Documents::DocumentsReactor do
   let(:message_service) { MessageService.new }
   let(:trace_id) { SecureRandom.uuid }
   let(:messages) { [] }
-  let(:person_aggregate) { Aggregates::Person.new(person_id:) }
+  let(:person_stream) { Streams::Person.new(person_id:) }
   let(:person_id) { SecureRandom.uuid }
 
   describe "#handle_message" do
@@ -46,7 +46,7 @@ RSpec.describe Documents::DocumentsReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Documents::Events::ResumeGenerationRequested::V1,
               data: {
                 person_id: message.data.person_id,
@@ -61,7 +61,7 @@ RSpec.describe Documents::DocumentsReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Documents::Events::ResumeGenerationFailed::V1,
               data: {
                 person_id: message.data.person_id,
@@ -81,7 +81,7 @@ RSpec.describe Documents::DocumentsReactor do
         let(:person_added) do
           build(
             :message,
-            aggregate: person_aggregate,
+            stream: person_stream,
             schema: Events::PersonAdded::V1,
             data: {
               first_name: "Jim",
@@ -95,7 +95,7 @@ RSpec.describe Documents::DocumentsReactor do
         let(:person_about_added) do
           build(
             :message,
-            aggregate: person_aggregate,
+            stream: person_stream,
             schema: Events::PersonAboutAdded::V1,
             data: {
               about: "I'm pretty cool"
@@ -105,7 +105,7 @@ RSpec.describe Documents::DocumentsReactor do
         let(:work_experience_added) do
           build(
             :message,
-            aggregate: person_aggregate,
+            stream: person_stream,
             schema: Events::ExperienceAdded::V2,
             data: {
               id: SecureRandom.uuid,
@@ -121,7 +121,7 @@ RSpec.describe Documents::DocumentsReactor do
         let(:education_experience_added) do
           build(
             :message,
-            aggregate: person_aggregate,
+            stream: person_stream,
             schema: Events::EducationExperienceAdded::V2,
             data: {
               id: SecureRandom.uuid,
@@ -147,7 +147,7 @@ RSpec.describe Documents::DocumentsReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Documents::Events::ResumeGenerationRequested::V1,
               data: {
                 person_id: message.data.person_id,
@@ -162,7 +162,7 @@ RSpec.describe Documents::DocumentsReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Documents::Commands::GenerateResume::V3,
               data: {
                 person_id: message.data.person_id,
@@ -258,7 +258,7 @@ RSpec.describe Documents::DocumentsReactor do
           expect(document_storage)
             .to receive(:store_document)
             .with(
-              id: message.aggregate.id,
+              id: message.stream.id,
               storage_kind:,
               file_data: be_a(String),
               file_name: "First-Name-resume-test-2000-01-01-00:00.pdf"
@@ -269,14 +269,14 @@ RSpec.describe Documents::DocumentsReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Documents::Events::ResumeGenerated::V1,
               data: {
                 person_id: message.data.person_id,
                 anonymized: message.data.anonymized,
                 document_kind: message.data.document_kind,
                 storage_kind:,
-                storage_identifier: message.aggregate.id
+                storage_identifier: message.stream.id
               },
               metadata: message.metadata
             ).and_call_original
@@ -303,7 +303,7 @@ RSpec.describe Documents::DocumentsReactor do
             .to receive(:create_once_for_trace!)
             .with(
               trace_id: message.trace_id,
-              aggregate: message.aggregate,
+              stream: message.stream,
               schema: Documents::Events::ResumeGenerationFailed::V1,
               data: {
                 person_id: message.data.person_id,

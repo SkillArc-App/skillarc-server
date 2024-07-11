@@ -4,13 +4,13 @@ RSpec.describe People::Projectors::OnboardingStatus do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Aggregates::Person.new(person_id:) }
+    let(:stream) { Streams::Person.new(person_id:) }
     let(:person_id) { SecureRandom.uuid }
 
     let(:onboarding_complete) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::OnboardingCompleted::V3,
         data: Core::Nothing
       )
@@ -18,7 +18,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
     let(:onboarding_started) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::OnboardingStarted::V2,
         data: Core::Nothing
       )
@@ -26,7 +26,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
     let(:reliability_added) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::ReliabilityAdded::V2,
         data: {
           reliabilities:
@@ -36,7 +36,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
     let(:education_experience_added) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::EducationExperienceAdded::V2,
         data: {
           id: SecureRandom.uuid
@@ -46,7 +46,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
     let(:experience_added) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::ExperienceAdded::V2,
         data: {
           id: SecureRandom.uuid
@@ -56,7 +56,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
     let(:seeker_training_provider_added) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::PersonTrainingProviderAdded::V1,
         data: {
           id: SecureRandom.uuid,
@@ -69,7 +69,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
     let(:professional_interests) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Events::ProfessionalInterestsAdded::V2,
         data: {
           interests: []
@@ -79,7 +79,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
 
     let(:reliabilities) { [Reliability::JOB] }
 
-    context "when nothing is associated with the aggregate" do
+    context "when nothing is associated with the stream" do
       let(:messages) { [] }
 
       it "reports the next step is start with no progress" do

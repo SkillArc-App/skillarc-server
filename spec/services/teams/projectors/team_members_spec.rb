@@ -4,13 +4,13 @@ RSpec.describe Teams::Projectors::TeamMembers do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:aggregate) { Teams::Aggregates::Team.new(team_id:) }
+    let(:stream) { Teams::Streams::Team.new(team_id:) }
     let(:team_id) { SecureRandom.uuid }
 
     let(:user_added_to_team1) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Teams::Events::UserAddedToTeam::V1,
         data: {
           user_id: "1"
@@ -20,7 +20,7 @@ RSpec.describe Teams::Projectors::TeamMembers do
     let(:user_added_to_team2) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Teams::Events::UserAddedToTeam::V1,
         data: {
           user_id: "2"
@@ -30,7 +30,7 @@ RSpec.describe Teams::Projectors::TeamMembers do
     let(:user_removed_from_team1) do
       build(
         :message,
-        aggregate:,
+        stream:,
         schema: Teams::Events::UserRemovedFromTeam::V1,
         data: {
           user_id: "1"

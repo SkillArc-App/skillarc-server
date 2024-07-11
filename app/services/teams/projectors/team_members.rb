@@ -1,7 +1,7 @@
 module Teams
   module Projectors
     class TeamMembers < Projector
-      projection_aggregator Teams::Aggregates::Team
+      projection_aggregator Teams::Streams::Team
 
       class Projection
         extend Record

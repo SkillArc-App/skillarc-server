@@ -45,7 +45,7 @@ RSpec.describe MessageConsumer do
         Class.new(described_class) do
           on_message Core::Schema.deprecated(data: Core::Nothing,
                                              metadata: Core::Nothing,
-                                             aggregate: Aggregates::User,
+                                             stream: Streams::User,
                                              message_type: MessageTypes::TestingOnly::TEST_EVENT_TYPE_DONT_USE_OUTSIDE_OF_TEST,
                                              version: 1), &:checksum
         end

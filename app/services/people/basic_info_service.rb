@@ -9,11 +9,11 @@ module People
       seeker = user.seeker
       return unless seeker
 
-      aggregate = Aggregates::Person.new(person_id: seeker.id)
+      stream = Streams::Person.new(person_id: seeker.id)
 
       message_service.create!(
         schema: Events::BasicInfoAdded::V1,
-        aggregate:,
+        stream:,
         data: {
           first_name:,
           last_name:,
@@ -24,7 +24,7 @@ module People
 
       message_service.create!(
         schema: Events::ZipAdded::V2,
-        aggregate:,
+        stream:,
         data: {
           zip_code:
         }
@@ -32,7 +32,7 @@ module People
 
       message_service.create!(
         schema: Events::PersonAboutAdded::V1,
-        aggregate:,
+        stream:,
         data: {
           about:
         }

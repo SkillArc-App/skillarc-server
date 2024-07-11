@@ -13,10 +13,10 @@ module Slack
         as_user: true
       )
 
-      message_service.create_once_for_aggregate!(
+      message_service.create_once_for_stream!(
         schema: ::Events::SlackMessageSent::V2,
         trace_id: message.trace_id,
-        message_id: message.aggregate.message_id,
+        message_id: message.stream.message_id,
         data: message.data.to_h
       )
     end
@@ -33,8 +33,8 @@ module Slack
     end
 
     on_message ::Events::ChatMessageSent::V2 do |message|
-      applicant_status_updated = Projectors::Aggregates::GetFirst.project(
-        aggregate: Aggregates::Application.new(application_id: message.aggregate.id),
+      applicant_status_updated = Projectors::Streams::GetFirst.project(
+        stream: Streams::Application.new(application_id: message.stream.id),
         schema: ::Events::ApplicantStatusUpdated::V6
       )
 

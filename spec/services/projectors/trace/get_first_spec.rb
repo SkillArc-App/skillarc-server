@@ -36,7 +36,7 @@ RSpec.describe Projectors::Trace::GetFirst do
       end
     end
 
-    context "when the event does exist for the aggregate" do
+    context "when the event does exist for the stream" do
       before do
         Event.from_message!(message1)
         Event.from_message!(message2)

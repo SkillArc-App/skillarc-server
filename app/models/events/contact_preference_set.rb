@@ -14,7 +14,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::User,
+      stream: Streams::User,
       message_type: MessageTypes::Contact::CONTACT_PREFERENCE_SET,
       version: 1
     )
@@ -22,7 +22,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Person,
+      stream: Streams::Person,
       message_type: MessageTypes::Contact::CONTACT_PREFERENCE_SET,
       version: 2
     )

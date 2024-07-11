@@ -8,7 +8,7 @@ FactoryBot.define do
         id: SecureRandom.uuid,
         trace_id: SecureRandom.uuid,
         schema: Commands::AssignCoach::V2,
-        aggregate: Aggregates::Person.new(person_id: SecureRandom.uuid),
+        stream: Streams::Person.new(person_id: SecureRandom.uuid),
         data: Commands::AssignCoach::V2.data.new(
           coach_id: SecureRandom.uuid
         ),

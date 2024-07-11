@@ -23,7 +23,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
       let(:message) do
         build(
           :message,
-          aggregate_id: SecureRandom.uuid,
+          stream_id: SecureRandom.uuid,
           schema: Events::EmployerCreated::V1,
           data: {
             name: "Employer",
@@ -38,7 +38,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
         expect { subject }.to change(JobSearch::Employer, :count).from(0).to(1)
 
         employer = JobSearch::Employer.first
-        expect(employer.id).to eq(message.aggregate.id)
+        expect(employer.id).to eq(message.stream.id)
         expect(employer.logo_url).to eq(message.data.logo_url)
       end
     end
@@ -50,7 +50,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: employer.id,
+            stream_id: employer.id,
             schema: Events::EmployerUpdated::V1,
             data: {
               name: "Employer",
@@ -79,7 +79,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           build(
             :message,
             schema: Events::JobCreated::V3,
-            aggregate_id: SecureRandom.uuid,
+            stream_id: SecureRandom.uuid,
             data: {
               category: Job::Categories::STAFFING,
               employment_title: "Plumber",
@@ -107,7 +107,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           expect(job.hidden).to eq(message.data.hide_job)
           expect(job.location).to eq(message.data.location)
           expect(job.industries).to eq(message.data.industry)
-          expect(job.job_id).to eq(message.aggregate.id)
+          expect(job.job_id).to eq(message.stream.id)
           expect(job.employer_id).to eq(message.data.employer_id)
         end
       end
@@ -120,7 +120,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: job.job_id,
+            stream_id: job.job_id,
             schema: Events::JobUpdated::V2,
             data: {
               category: Job::Categories::MARKETPLACE,
@@ -152,7 +152,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           [
             build(
               :message,
-              aggregate_id: tag_id,
+              stream_id: tag_id,
               schema: Events::TagCreated::V1,
               data: {
                 name: "Cool"
@@ -165,7 +165,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           let(:message) do
             build(
               :message,
-              aggregate_id: job.job_id,
+              stream_id: job.job_id,
               schema: Events::JobTagCreated::V1,
               data: {
                 id: SecureRandom.uuid,
@@ -190,7 +190,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           let(:message) do
             build(
               :message,
-              aggregate_id: job.job_id,
+              stream_id: job.job_id,
               schema: Events::JobTagDestroyed::V2,
               data: {
                 job_tag_id: SecureRandom.uuid,
@@ -237,7 +237,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           let(:career_paths_created_for_job1) do
             build(
               :message,
-              aggregate_id: job.id,
+              stream_id: job.id,
               schema: Events::CareerPathCreated::V1,
               data: {
                 id: SecureRandom.uuid,
@@ -263,7 +263,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           let(:career_paths_created_for_job1) do
             build(
               :message,
-              aggregate_id: job.id,
+              stream_id: job.id,
               schema: Events::CareerPathUpdated::V1,
               data: {
                 id: SecureRandom.uuid,
@@ -286,7 +286,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: application_id,
+            stream_id: application_id,
             schema: Events::ApplicantStatusUpdated::V6,
             data: {
               applicant_first_name: "John",
@@ -340,7 +340,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: seeker_id,
+            stream_id: seeker_id,
             schema: Events::ElevatorPitchCreated::V2,
             data: {
               job_id:,
@@ -366,7 +366,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: SecureRandom.uuid,
+            stream_id: SecureRandom.uuid,
             schema: Events::JobSaved::V1,
             data: {
               job_id: job.job_id,
@@ -383,7 +383,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
 
           saved_job = JobSearch::SavedJob.first
           expect(saved_job.search_job).to eq(job)
-          expect(saved_job.user_id).to eq(message.aggregate.id)
+          expect(saved_job.user_id).to eq(message.stream.id)
         end
       end
 
@@ -391,7 +391,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
         let(:message) do
           build(
             :message,
-            aggregate_id: user_id,
+            stream_id: user_id,
             schema: Events::JobUnsaved::V1,
             data: {
               job_id: job.job_id,

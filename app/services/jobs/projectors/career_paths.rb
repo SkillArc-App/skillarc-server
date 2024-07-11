@@ -1,7 +1,7 @@
 module Jobs
   module Projectors
     class CareerPaths < Projector
-      projection_aggregator Aggregates::Job
+      projection_aggregator Streams::Job
 
       class Path
         extend Record

@@ -12,7 +12,7 @@ RSpec.describe Employers::ApplicationService do
       build(
         :message,
         schema: Events::ApplicantStatusUpdated::V6,
-        aggregate_id: application_id,
+        stream_id: application_id,
         data: {
           applicant_first_name: "first_name",
           applicant_last_name: "last_name",

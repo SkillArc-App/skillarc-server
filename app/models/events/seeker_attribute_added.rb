@@ -17,7 +17,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Seeker,
+      stream: Streams::Seeker,
       message_type: MessageTypes::Seekers::SEEKER_ATTRIBUTE_ADDED,
       version: 1
     )

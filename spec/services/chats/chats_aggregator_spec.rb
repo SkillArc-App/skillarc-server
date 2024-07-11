@@ -26,7 +26,7 @@ RSpec.describe Chats::ChatsAggregator do
         expect { subject }.to change(Chats::ApplicantChat, :count).from(0).to(1)
 
         applicant_chat = Chats::ApplicantChat.take(1).first
-        expect(applicant_chat.application_id).to eq(message.aggregate.id)
+        expect(applicant_chat.application_id).to eq(message.stream.id)
         expect(applicant_chat.chat_created_at).to eq(message.occurred_at)
         expect(applicant_chat.title).to eq("A title")
         expect(applicant_chat.employer_id).to eq(message.data.employer_id)
@@ -38,7 +38,7 @@ RSpec.describe Chats::ChatsAggregator do
       let(:message) do
         build(
           :message,
-          aggregate_id: applicant_chat.application_id,
+          stream_id: applicant_chat.application_id,
           schema: Events::ChatMessageSent::V2,
           data: {
             from_name: "Uncle Bob",
@@ -68,7 +68,7 @@ RSpec.describe Chats::ChatsAggregator do
       let(:message) do
         build(
           :message,
-          aggregate_id: applicant_chat.application_id,
+          stream_id: applicant_chat.application_id,
           schema: Events::ChatRead::V1,
           data: {
             read_by_user_id: user_id

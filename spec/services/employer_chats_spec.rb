@@ -128,7 +128,7 @@ RSpec.describe EmployerChats do
     let(:title) { "Some title" }
 
     it "emits a chat created event" do
-      expect(message_service).to receive(:create_once_for_aggregate!).with(
+      expect(message_service).to receive(:create_once_for_stream!).with(
         schema: Events::ChatCreated::V2,
         application_id:,
         data: {

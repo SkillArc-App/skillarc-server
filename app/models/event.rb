@@ -27,7 +27,7 @@ class Event < ApplicationRecord
 
     Message.new(
       id:,
-      aggregate: schema.aggregate.new(**{ schema.aggregate.id => aggregate_id }),
+      stream: schema.stream.new(**{ schema.stream.id => aggregate_id }),
       trace_id:,
       schema:,
       data: schema.data.deserialize(data),
@@ -39,7 +39,7 @@ class Event < ApplicationRecord
   def self.from_message!(message)
     create!(
       id: message.id,
-      aggregate_id: message.aggregate.id,
+      aggregate_id: message.stream.id,
       trace_id: message.trace_id,
       event_type: message.schema.message_type,
       data: message.data.serialize,

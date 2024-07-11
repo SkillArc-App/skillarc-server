@@ -15,7 +15,7 @@ module JobOrders
         type: Core::EVENT,
         data: Data::V1,
         metadata: Core::Nothing,
-        aggregate: Aggregates::JobOrder,
+        stream: Streams::JobOrder,
         message_type: MessageTypes::JOB_ORDER_ACTIVATION_FAILED,
         version: 1
       )

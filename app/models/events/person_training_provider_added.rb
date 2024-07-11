@@ -17,7 +17,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Person,
+      stream: Streams::Person,
       message_type: MessageTypes::TrainingProviders::PERSON_TRAINING_PROVIDER_ADDED,
       version: 1
     )

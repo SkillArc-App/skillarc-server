@@ -5,16 +5,16 @@ module Coaches
     end
 
     on_message Commands::AssignCoach::V2 do |message|
-      return unless Projectors::Aggregates::HasOccurred.project(
+      return unless Projectors::Streams::HasOccurred.project(
         schema: Events::PersonAdded::V1,
-        aggregate: message.aggregate
+        stream: message.stream
       )
 
       return if Events::CoachAdded::V1.all_messages.none? { |m| m.data.coach_id == message.data.coach_id }
 
       message_service.create_once_for_trace!(
         schema: Events::CoachAssigned::V3,
-        aggregate: message.aggregate,
+        stream: message.stream,
         data: {
           coach_id: message.data.coach_id
         }
@@ -28,7 +28,7 @@ module Coaches
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
-        aggregate: message.aggregate,
+        stream: message.stream,
         schema: Commands::AssignCoach::V2,
         data: {
           coach_id:
@@ -41,7 +41,7 @@ module Coaches
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
-        aggregate: message.aggregate,
+        stream: message.stream,
         schema: Commands::AssignCoach::V2,
         data: {
           coach_id: message.data.source_identifier
@@ -51,7 +51,7 @@ module Coaches
 
     on_message Events::CoachReminderCompleted::V1 do |message|
       reminder = MessageService
-                 .aggregate_events(message.aggregate)
+                 .stream_events(message.stream)
                  .detect { |m| m.schema == Events::CoachReminderScheduled::V2 && message.data.reminder_id == m.data.reminder_id }
 
       return if reminder.nil?
@@ -63,7 +63,7 @@ module Coaches
         data: Core::Nothing,
         metadata: {
           requestor_type: Requestor::Kinds::COACH,
-          requestor_id: message.aggregate.id
+          requestor_id: message.stream.id
         }
       )
     end
@@ -76,7 +76,7 @@ module Coaches
         message_id: SecureRandom.uuid,
         trace_id: message.trace_id,
         data: {
-          person_id: message.aggregate.id,
+          person_id: message.stream.id,
           title: "From your SkillArc career coach",
           body: "Check out this job",
           url: "#{ENV.fetch('FRONTEND_URL', nil)}/jobs/#{job_id}"

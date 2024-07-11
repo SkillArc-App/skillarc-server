@@ -20,7 +20,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::User,
+      stream: Streams::User,
       message_type: MessageTypes::Seekers::PERSONAL_EXPERIENCE_CREATED,
       version: 1
     )

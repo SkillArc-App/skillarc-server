@@ -15,7 +15,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::MasterSkill,
+      stream: Streams::MasterSkill,
       message_type: MessageTypes::Qualifications::MASTER_SKILL_CREATED,
       version: 1
     )

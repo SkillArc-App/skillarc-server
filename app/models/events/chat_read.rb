@@ -14,7 +14,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Application,
+      stream: Streams::Application,
       message_type: MessageTypes::Chats::CHAT_READ,
       version: 1
     )

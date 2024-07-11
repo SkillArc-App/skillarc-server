@@ -23,7 +23,7 @@ RSpec.describe Jobs::Projectors::Attributes do
       build(
         :message,
         schema: Events::JobAttributeCreated::V1,
-        aggregate_id: job_id,
+        stream_id: job_id,
         data: {
           id: id1,
           attribute_id: id3,
@@ -36,7 +36,7 @@ RSpec.describe Jobs::Projectors::Attributes do
       build(
         :message,
         schema: Events::JobAttributeCreated::V1,
-        aggregate_id: job_id,
+        stream_id: job_id,
         data: {
           id: id2,
           attribute_id: id4,
@@ -49,7 +49,7 @@ RSpec.describe Jobs::Projectors::Attributes do
       build(
         :message,
         schema: Events::JobAttributeUpdated::V1,
-        aggregate_id: job_id,
+        stream_id: job_id,
         data: {
           id: id2,
           acceptible_set: %w[D F]
@@ -60,7 +60,7 @@ RSpec.describe Jobs::Projectors::Attributes do
       build(
         :message,
         schema: Events::JobAttributeDestroyed::V1,
-        aggregate_id: job_id,
+        stream_id: job_id,
         data: {
           id: id1
         }

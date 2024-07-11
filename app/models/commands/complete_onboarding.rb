@@ -4,7 +4,7 @@ module Commands
       type: Core::COMMAND,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Seeker,
+      stream: Streams::Seeker,
       message_type: MessageTypes::Person::COMPLETE_ONBOARDING,
       version: 1
     )
@@ -12,7 +12,7 @@ module Commands
       type: Core::COMMAND,
       data: Core::Nothing,
       metadata: Core::Nothing,
-      aggregate: Aggregates::Person,
+      stream: Streams::Person,
       message_type: MessageTypes::Person::COMPLETE_ONBOARDING,
       version: 2
     )

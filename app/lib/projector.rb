@@ -1,8 +1,8 @@
 class Projector
   NotSchemaError = Class.new(StandardError)
   NotActiveSchemaError = Class.new(StandardError)
-  NotCorrectAggregateError = Class.new(StandardError)
-  NoAggregateError = Class.new(StandardError)
+  NotCorrectStreamError = Class.new(StandardError)
+  NoStreamError = Class.new(StandardError)
   WrongAggregatorError = Class.new(StandardError)
   AccumulatorChangedError = Class.new(StandardError)
 
@@ -42,8 +42,8 @@ class Projector
   def self.on_message(schema, &)
     raise NotSchemaError unless schema.is_a?(Core::Schema)
     raise NotActiveSchemaError if schema.inactive?
-    raise NoAggregateError, "Make sure to call projection_aggregator <aggregate class> at the top of this class" if aggregator.blank?
-    raise NotCorrectAggregateError, "The on_message for #{schema} has the wrong aggregate. We need a #{aggregator}" if schema.aggregate != aggregator
+    raise NoStreamError, "Make sure to call projection_aggregator <stream class> at the top of this class" if aggregator.blank?
+    raise NotCorrectStreamError, "The on_message for #{schema} has the wrong stream. We need a #{aggregator}" if schema.stream != aggregator
 
     Rails.logger.error { "#{name} is subscribed to deprecated message #{schema}" } if schema.deprecated?
 

@@ -15,7 +15,7 @@ module JobOrders
         type: Core::EVENT,
         data: Data::V1,
         metadata: Core::Nothing,
-        aggregate: Aggregates::OrderStatus,
+        stream: Streams::OrderStatus,
         message_type: MessageTypes::JOB_ORDER_TEAM_RESPONSIBLE_FOR_STATUS,
         version: 1
       )

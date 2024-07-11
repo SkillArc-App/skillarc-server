@@ -123,7 +123,7 @@ module JobOrders
         job_order_id: SecureRandom.uuid,
         trace_id: message.trace_id,
         data: {
-          job_id: message.aggregate.id
+          job_id: message.stream.id
         }
       )
     end
@@ -139,7 +139,7 @@ module JobOrders
       message_service.create_once_for_trace!(
         schema: JobOrders::Events::CandidateAdded::V3,
         trace_id: message.trace_id,
-        aggregate: active_job_order.aggregate,
+        stream: active_job_order.stream,
         data: {
           person_id: message.data.seeker_id
         },
@@ -153,7 +153,7 @@ module JobOrders
       message_service.create_once_for_trace!(
         schema: JobOrders::Events::CandidateApplied::V2,
         trace_id: message.trace_id,
-        aggregate: active_job_order.aggregate,
+        stream: active_job_order.stream,
         data: {
           person_id: message.data.seeker_id,
           applied_at: message.occurred_at
@@ -162,12 +162,12 @@ module JobOrders
     end
 
     on_message Commands::AddCandidate::V2, :sync do |message|
-      messages = MessageService.aggregate_events(message.aggregate)
+      messages = MessageService.stream_events(message.stream)
 
       unless messages.any? { |m| m.schema == Events::CandidateAdded::V3 && m.data.person_id == message.data.person_id }
         message_service.create_once_for_trace!(
           schema: Events::CandidateAdded::V3,
-          aggregate: message.aggregate,
+          stream: message.stream,
           trace_id: message.trace_id,
           data: {
             person_id: message.data.person_id
@@ -182,9 +182,9 @@ module JobOrders
     end
 
     on_message Commands::Activate::V1, :sync do |message|
-      job_order_added = ::Projectors::Aggregates::GetFirst.project(
+      job_order_added = ::Projectors::Streams::GetFirst.project(
         schema: JobOrders::Events::Added::V1,
-        aggregate: message.aggregate
+        stream: message.stream
       )
 
       if job_order_added.blank?
@@ -193,7 +193,7 @@ module JobOrders
         message_service.create_once_for_trace!(
           schema: JobOrders::Events::ActivationFailed::V1,
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           data: {
             reason: "There is an existing active job order present"
           }
@@ -202,7 +202,7 @@ module JobOrders
         message_service.create_once_for_trace!(
           schema: JobOrders::Events::Activated::V1,
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           data: Core::Nothing
         )
       end
@@ -213,7 +213,7 @@ module JobOrders
         message_service.create_once_for_trace!(
           schema: JobOrders::Events::CreationFailed::V1,
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           data: {
             job_id: message.data.job_id,
             reason: "There is an existing active job order present"
@@ -223,13 +223,13 @@ module JobOrders
         message_service.create_once_for_trace!(
           schema: JobOrders::Events::Added::V1,
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           data: {
             job_id: message.data.job_id
           }
         )
 
-        emit_criteria_met_if_necessary(::Aggregates::Job.new(job_id: message.data.job_id), message.trace_id)
+        emit_criteria_met_if_necessary(::Streams::Job.new(job_id: message.data.job_id), message.trace_id)
       end
     end
 
@@ -262,47 +262,47 @@ module JobOrders
     end
 
     on_message ::Events::JobUpdated::V2 do |message|
-      emit_criteria_met_if_necessary(message.aggregate, message.trace_id)
+      emit_criteria_met_if_necessary(message.stream, message.trace_id)
     end
 
     on_message ::Events::JobAttributeCreated::V1 do |message|
-      emit_criteria_met_if_necessary(message.aggregate, message.trace_id)
+      emit_criteria_met_if_necessary(message.stream, message.trace_id)
     end
 
     on_message ::Events::JobAttributeUpdated::V1 do |message|
-      emit_criteria_met_if_necessary(message.aggregate, message.trace_id)
+      emit_criteria_met_if_necessary(message.stream, message.trace_id)
     end
 
     on_message ::Events::JobAttributeDestroyed::V1 do |message|
-      emit_criteria_met_if_necessary(message.aggregate, message.trace_id)
+      emit_criteria_met_if_necessary(message.stream, message.trace_id)
     end
 
     private
 
-    def emit_criteria_met_if_necessary(job_aggregate, trace_id)
-      messages = MessageService.aggregate_events(job_aggregate)
+    def emit_criteria_met_if_necessary(job_stream, trace_id)
+      messages = MessageService.stream_events(job_stream)
       return unless Projectors::JobOrderCriteriaMet.new.project(messages)
 
       # Overall this is going to be pretty inefficient
       # Lots of queries. What I think might be the solution
       # Would be to emit an event on the job stream which
       # Links all of the associated job orders.
-      # Also the create once for aggregate is also going to query
+      # Also the create once for stream is also going to query
       # The events table for each job order.
       JobOrders::Events::Added::V1.all_messages.each do |m|
-        next unless m.data.job_id == job_aggregate.id
+        next unless m.data.job_id == job_stream.id
 
-        message_service.create_once_for_aggregate!(
+        message_service.create_once_for_stream!(
           schema: JobOrders::Events::CriteriaAdded::V1,
           trace_id:,
-          aggregate: m.aggregate,
+          stream: m.stream,
           data: Core::Nothing
         )
       end
     end
 
     def emit_new_status_if_necessary(message)
-      messages = MessageService.aggregate_events(message.aggregate).select { |m| m.occurred_at <= message.occurred_at }
+      messages = MessageService.stream_events(message.stream).select { |m| m.occurred_at <= message.occurred_at }
       existing_status = Projectors::JobOrderExistingStatus.new.project(messages).status
       current_status = JobOrders::Projectors::JobOrderStatus.new.project(messages).status
       return if current_status == existing_status
@@ -311,28 +311,28 @@ module JobOrders
       when JobOrders::ActivatedStatus::OPEN
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           schema: Events::Activated::V1,
           data: Core::Nothing
         )
       when ActivatedStatus::NEEDS_CRITERIA
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           schema: Events::NeedsCriteria::V1,
           data: Core::Nothing
         )
       when JobOrders::ActivatedStatus::CANDIDATES_SCREENED
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           schema: Events::CandidatesScreened::V1,
           data: Core::Nothing
         )
       when *JobOrders::StalledStatus::ALL
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           schema: Events::Stalled::V1,
           data: {
             status: current_status
@@ -341,14 +341,14 @@ module JobOrders
       when JobOrders::ClosedStatus::FILLED
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           schema: Events::Filled::V1,
           data: Core::Nothing
         )
       when JobOrders::ClosedStatus::NOT_FILLED
         message_service.create_once_for_trace!(
           trace_id: message.trace_id,
-          aggregate: message.aggregate,
+          stream: message.stream,
           schema: Events::NotFilled::V1,
           data: Core::Nothing
         )
@@ -368,7 +368,7 @@ module JobOrders
 
       # Grab the job order that is active
       job_orders.detect do |job_order|
-        messages = MessageService.aggregate_events(job_order.aggregate).select { |m| m.occurred_at <= occurred_at }
+        messages = MessageService.stream_events(job_order.stream).select { |m| m.occurred_at <= occurred_at }
 
         status = Projectors::JobOrderExistingStatus.new.project(messages).status
         JobOrders::ClosedStatus::ALL.exclude?(status)

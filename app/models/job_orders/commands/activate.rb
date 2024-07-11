@@ -5,7 +5,7 @@ module JobOrders
         type: Core::COMMAND,
         data: Core::Nothing,
         metadata: Core::Nothing,
-        aggregate: Aggregates::JobOrder,
+        stream: Streams::JobOrder,
         message_type: MessageTypes::ACTIVATE_JOB_ORDER,
         version: 1
       )

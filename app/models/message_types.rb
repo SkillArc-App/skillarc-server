@@ -334,6 +334,7 @@ module MessageTypes
     *Jobs::EVENTS,
     *Invite::EVENTS,
     *JobOrders::MessageTypes::EVENTS,
+    *Screeners::MessageTypes::EVENTS,
     *Employers::EVENTS,
     *Seekers::EVENTS,
     *Contact::EVENTS,
@@ -361,6 +362,7 @@ module MessageTypes
     *Seekers::COMMANDS,
     *Invite::COMMANDS,
     *JobOrders::MessageTypes::COMMANDS,
+    *Screeners::MessageTypes::COMMANDS,
     *JobSearch::COMMANDS,
     *Infrastructure::COMMANDS
   ].freeze

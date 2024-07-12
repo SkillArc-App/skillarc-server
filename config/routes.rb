@@ -34,6 +34,11 @@ Rails.application.routes.draw do
   end
   resources :coaches
 
+  scope module: 'screeners', path: 'screeners' do
+    resources :questions, only: %i[create update show]
+    resources :answers, only: %i[create update show]
+  end
+
   scope module: 'employers', path: 'employers' do
     resources :chats do
       post 'send_message' => 'chats#send_message', on: :collection

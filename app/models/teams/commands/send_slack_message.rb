@@ -18,7 +18,7 @@ module Teams
             blocks Either(ArrayOf(Hash), nil), default: nil
           end
 
-          def initialize(**kwarg)
+          def initialize(attributes)
             super
             raise ArgumentError unless text.present? || blocks.present?
           end

@@ -10,19 +10,25 @@ FactoryBot.define do
     trace_id { SecureRandom.uuid }
     stream { schema.stream.new(**{ schema.stream.id => stream_id }) }
     occurred_at { Time.zone.local(2020, 1, 1) }
-    data { Core::Nothing }
-    metadata { Core::Nothing }
+    data { nil }
+    metadata { nil }
 
     initialize_with do
       data =
         if attributes[:data].is_a?(Hash)
-          attributes[:schema].data.new(**attributes[:data])
+          default_values = attributes[:schema].data.generate_default_attributes
+          attributes[:schema].data.new(default_values.merge(attributes[:data]))
+        elsif attributes[:data].nil?
+          attributes[:schema].data.generate_default
         else
           attributes[:data]
         end
       metadata =
         if attributes[:metadata].is_a?(Hash)
-          attributes[:schema].metadata.new(**attributes[:metadata])
+          default_values = attributes[:schema].metadata.generate_default_attributes
+          attributes[:schema].metadata.new(default_values.merge(attributes[:metadata]))
+        elsif attributes[:metadata].nil?
+          attributes[:schema].metadata.generate_default
         else
           attributes[:metadata]
         end

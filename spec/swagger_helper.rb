@@ -150,6 +150,57 @@ RSpec.configure do |config|
               }
             }
           },
+          questions: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              title: {
+                type: :string
+              },
+              questions: {
+                type: :array,
+                items: {
+                  type: :string
+                }
+              }
+            }
+          },
+          answers: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              title: {
+                type: :string
+              },
+              screenerQuestionsId: {
+                type: :string,
+                format: :uuid
+              },
+              questionResponses: {
+                type: :array,
+                items: {
+                  '$ref' => '#/components/schemas/question_response'
+                }
+              }
+            }
+          },
+          question_response: {
+            type: :object,
+            properties: {
+              question: {
+                type: :string
+              },
+              response: {
+                type: :string
+              }
+            }
+          },
           resume: {
             type: :object,
             properties: {

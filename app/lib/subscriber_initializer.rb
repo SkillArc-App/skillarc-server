@@ -21,7 +21,8 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: Qualifications::QualificationsAggregator.new, listener_name: "qualifications_aggregator"),
       DbStreamListener.build(consumer: Documents::DocumentsAggregator.new, listener_name: "documents_aggregator"),
       DbStreamListener.build(consumer: PeopleSearch::PeopleAggregator.new, listener_name: "people_search_people_aggregator"),
-      DbStreamListener.build(consumer: Teams::TeamsAggregator.new, listener_name: "teams_aggregator")
+      DbStreamListener.build(consumer: Teams::TeamsAggregator.new, listener_name: "teams_aggregator"),
+      DbStreamListener.build(consumer: Screeners::ScreenerAggregator.new, listener_name: "screener_aggregator")
     ]
 
     reactors = [
@@ -45,7 +46,8 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: Employers::EmployerReactor.new, listener_name: "employers_application_notification_service"),
       DbStreamListener.build(consumer: TrainingProviders::TrainingProviderReactor.new, listener_name: "training_provider_reactor"),
       DbStreamListener.build(consumer: Documents::DocumentsReactor.new, listener_name: "documents_reactor"),
-      DbStreamListener.build(consumer: Teams::TeamsReactor.new, listener_name: "teams_reactor")
+      DbStreamListener.build(consumer: Teams::TeamsReactor.new, listener_name: "teams_reactor"),
+      DbStreamListener.build(consumer: Screeners::ScreenerReactor.new, listener_name: "screener_reactor")
     ]
 
     (aggregators + reactors).each do |listener|

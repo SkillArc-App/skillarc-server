@@ -22,5 +22,9 @@ module Screeners
     self.table_name = "screeners_answers"
 
     belongs_to :questions, class_name: "Screeners::Questions", foreign_key: "screeners_questions_id", inverse_of: :answers
+
+    def question_responses
+      self[:question_responses].map { |qr| QuestionResponse.new(question: qr["question"], response: qr["response"]) }
+    end
   end
 end

@@ -1,7 +1,7 @@
 module Jobs
   module Projectors
     class CertificationStatus < Projector
-      projection_aggregator Streams::Job
+      projection_stream Streams::Job
 
       class Projection
         extend Record

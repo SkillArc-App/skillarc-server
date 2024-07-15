@@ -15,5 +15,9 @@ module Core
     def self.generate_default
       self
     end
+
+    def self.generate_default_attributes
+      {}
+    end
   end
 end

@@ -178,6 +178,10 @@ RSpec.configure do |config|
               title: {
                 type: :string
               },
+              personId: {
+                type: :string,
+                format: :uuid
+              },
               screenerQuestionsId: {
                 type: :string,
                 format: :uuid

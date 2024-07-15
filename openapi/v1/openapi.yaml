@@ -3187,13 +3187,16 @@ paths:
               properties:
                 title:
                   type: string
+                personId:
+                  type: string
+                  format: uuid
                 screenerQuestionsId:
                   type: string
                   format: uuid
                 questionResponses:
                   type: array
                   items:
-                    type: string
+                    "$ref": "#/components/schemas/question_response"
               required:
               - title
               - screenerQuestionId
@@ -3270,7 +3273,7 @@ paths:
                 questionResponses:
                   type: array
                   items:
-                    type: string
+                    "$ref": "#/components/schemas/question_response"
               required:
               - title
               - screenerQuestionId
@@ -4367,6 +4370,9 @@ components:
           format: uuid
         title:
           type: string
+        personId:
+          type: string
+          format: uuid
         screenerQuestionsId:
           type: string
           format: uuid

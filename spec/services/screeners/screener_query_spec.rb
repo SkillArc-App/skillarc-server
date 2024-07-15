@@ -24,6 +24,7 @@ RSpec.describe Screeners::ScreenerQuery do
       expect(subject).to eq({
                               id: answers.id,
                               title: answers.title,
+                              person_id: answers.person_id,
                               screener_questions_id: answers.screeners_questions_id,
                               question_responses: answers.question_responses
                             })

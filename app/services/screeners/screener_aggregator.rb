@@ -25,6 +25,7 @@ module Screeners
       Answers.create!(
         id: message.stream.id,
         title: message.data.title,
+        person_id: message.data.person_id,
         screeners_questions_id: message.data.screener_questions_id,
         question_responses: message.data.question_responses
       )

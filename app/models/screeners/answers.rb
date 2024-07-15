@@ -7,6 +7,7 @@
 #  title                  :string           not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  person_id              :uuid             not null
 #  screeners_questions_id :uuid             not null
 #
 # Indexes

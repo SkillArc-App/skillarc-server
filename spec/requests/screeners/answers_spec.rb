@@ -25,7 +25,7 @@ RSpec.describe "Questions", type: :request do
           questionResponses: {
             type: :array,
             items: {
-              type: :string
+              '$ref' => '#/components/schemas/question_response'
             }
           }
         },
@@ -135,7 +135,7 @@ RSpec.describe "Questions", type: :request do
           questionResponses: {
             type: :array,
             items: {
-              type: :string
+              '$ref' => '#/components/schemas/question_response'
             }
           }
         },

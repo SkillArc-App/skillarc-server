@@ -17,10 +17,10 @@ module Documents
           }
         ),
         header: ActionController::Base.render(
-          template: 'resumes/resume_header'
+          template: 'common/header'
         ),
         footer: ActionController::Base.render(
-          template: 'resumes/resume_footer'
+          template: 'common/footer'
         )
       )
     end

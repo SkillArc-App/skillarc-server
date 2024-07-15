@@ -14,6 +14,10 @@ RSpec.describe "Questions", type: :request do
           title: {
             type: :string
           },
+          personId: {
+            type: :string,
+            format: :uuid
+          },
           screenerQuestionsId: {
             type: :string,
             format: :uuid
@@ -36,10 +40,12 @@ RSpec.describe "Questions", type: :request do
       let(:answers_params) do
         {
           title: "Sup",
+          personId: person_id,
           screenerQuestionsId: screener_questions_id,
           questionResponses: [{ question: "How are you?", response: "Good" }]
         }
       end
+      let(:person_id) { SecureRandom.uuid }
       let(:screener_questions_id) { SecureRandom.uuid }
 
       context "when authenticated" do
@@ -52,10 +58,11 @@ RSpec.describe "Questions", type: :request do
               .with(
                 trace_id: be_a(String),
                 screener_answers_id: be_a(String),
-                schema: Screeners::Commands::CreateAnswers::V1,
+                schema: Screeners::Commands::CreateAnswers::V2,
                 data: {
                   title: answers_params[:title],
                   screener_questions_id:,
+                  person_id:,
                   question_responses: [Screeners::QuestionResponse.new(question: "How are you?", response: "Good")]
                 },
                 metadata: {

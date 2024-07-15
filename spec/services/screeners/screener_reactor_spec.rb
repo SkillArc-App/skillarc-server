@@ -25,7 +25,7 @@ RSpec.describe Screeners::ScreenerReactor do
       let(:message) do
         build(
           :message,
-          schema: Screeners::Commands::CreateAnswers::V1,
+          schema: Screeners::Commands::CreateAnswers::V2,
           data: {
             screener_questions_id:
           }
@@ -49,9 +49,10 @@ RSpec.describe Screeners::ScreenerReactor do
             .with(
               trace_id: message.trace_id,
               stream: message.stream,
-              schema: Screeners::Events::AnswersCreated::V1,
+              schema: Screeners::Events::AnswersCreated::V2,
               data: {
                 title: message.data.title,
+                person_id: message.data.person_id,
                 screener_questions_id: message.data.screener_questions_id,
                 question_responses: message.data.question_responses
               },
@@ -113,7 +114,7 @@ RSpec.describe Screeners::ScreenerReactor do
           [
             build(
               :message,
-              schema: Screeners::Events::AnswersCreated::V1,
+              schema: Screeners::Events::AnswersCreated::V2,
               stream: answers_stream
             )
           ]

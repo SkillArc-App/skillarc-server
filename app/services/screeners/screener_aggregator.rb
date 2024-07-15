@@ -21,7 +21,7 @@ module Screeners
       )
     end
 
-    on_message Events::AnswersCreated::V1 do |message|
+    on_message Events::AnswersCreated::V2 do |message|
       Answers.create!(
         id: message.stream.id,
         title: message.data.title,

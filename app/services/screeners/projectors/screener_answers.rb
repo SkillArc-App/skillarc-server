@@ -21,7 +21,7 @@ module Screeners
         )
       end
 
-      on_message Events::AnswersCreated::V1 do |message, accumulator|
+      on_message Events::AnswersCreated::V2 do |message, accumulator|
         accumulator.with(
           title: message.data.title,
           person_id: message.data.person_id,

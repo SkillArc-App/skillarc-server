@@ -30,7 +30,7 @@ RSpec.describe Screeners::ScreenerAggregator do
       let(:message) do
         build(
           :message,
-          schema: Screeners::Events::AnswersCreated::V1,
+          schema: Screeners::Events::AnswersCreated::V2,
           data: {
             screener_questions_id: questions.id
           }

@@ -13,7 +13,7 @@ RSpec.describe Screeners::Projectors::ScreenerAnswers do
       build(
         :message,
         stream:,
-        schema: Screeners::Events::AnswersCreated::V1,
+        schema: Screeners::Events::AnswersCreated::V2,
         data: {
           title: "Great Screener",
           person_id: SecureRandom.uuid,

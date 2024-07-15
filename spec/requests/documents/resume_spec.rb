@@ -29,9 +29,9 @@ RSpec.describe "Resumes", type: :request do
                  }
 
           before do
-            create(:resume, requestor_id: user.id, person_id: SecureRandom.uuid)
-            create(:resume, person_id: SecureRandom.uuid)
-            create(:resume, requestor_id: user.id)
+            create(:documents__resume, requestor_id: user.id, person_id: SecureRandom.uuid)
+            create(:documents__resume, person_id: SecureRandom.uuid)
+            create(:documents__resume, requestor_id: user.id)
           end
 
           context "when just a plain user" do
@@ -215,7 +215,7 @@ RSpec.describe "Resumes", type: :request do
       include_context "olive branch camelcasing"
 
       let(:id) { resume.id }
-      let(:resume) { create(:resume, requestor_id:, storage_kind: Documents::StorageKind::POSTGRES, storage_identifier: document.id, document_generated_at: Time.zone.now) }
+      let(:resume) { create(:documents__resume, requestor_id:, storage_kind: Documents::StorageKind::POSTGRES, storage_identifier: document.id, document_generated_at: Time.zone.now) }
       let(:document) { create(:document, file_name: "cool_resume.pdf") }
       let(:requestor_id) { SecureRandom.uuid }
 

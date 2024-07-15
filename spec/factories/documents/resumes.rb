@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :resume, class: "Documents::Resume" do
+  factory :documents__resume, class: "Documents::Resume" do
     id { SecureRandom.uuid }
     document_kind { Documents::DocumentKind::PDF }
     requestor_type { Requestor::Kinds::USER }

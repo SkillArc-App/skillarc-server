@@ -65,7 +65,7 @@ RSpec.describe Documents::DocumentsAggregator do
         )
       end
 
-      let!(:resume) { create(:resume, id: resume_document_id) }
+      let!(:resume) { create(:documents__resume, id: resume_document_id) }
 
       it "updates a resume record" do
         subject
@@ -97,7 +97,7 @@ RSpec.describe Documents::DocumentsAggregator do
         )
       end
 
-      let!(:resume) { create(:resume, id: resume_document_id) }
+      let!(:resume) { create(:documents__resume, id: resume_document_id) }
 
       it "updates a resume record" do
         subject

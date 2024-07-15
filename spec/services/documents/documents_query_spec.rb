@@ -7,9 +7,9 @@ RSpec.describe Documents::DocumentsQuery do
     let(:p_id) { SecureRandom.uuid }
     let(:r_id) { SecureRandom.uuid }
 
-    let!(:resume1) { create(:resume, requestor_id: r_id, person_id: p_id, status: Documents::DocumentStatus::SUCCEEDED, document_generated_at: Time.zone.local(2023, 1, 1)) }
-    let!(:resume2) { create(:resume, requestor_id: SecureRandom.uuid, person_id: p_id) }
-    let!(:resume3) { create(:resume, requestor_id: r_id, person_id: SecureRandom.uuid) }
+    let!(:resume1) { create(:documents__resume, requestor_id: r_id, person_id: p_id, status: Documents::DocumentStatus::SUCCEEDED, document_generated_at: Time.zone.local(2023, 1, 1)) }
+    let!(:resume2) { create(:documents__resume, requestor_id: SecureRandom.uuid, person_id: p_id) }
+    let!(:resume3) { create(:documents__resume, requestor_id: r_id, person_id: SecureRandom.uuid) }
 
     let(:serialized_resume1) do
       {

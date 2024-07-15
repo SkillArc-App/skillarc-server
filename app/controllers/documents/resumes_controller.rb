@@ -41,7 +41,7 @@ module Documents
         with_message_service do
           message_service.create!(
             trace_id: request.request_id,
-            document_id: SecureRandom.uuid,
+            resume_document_id: SecureRandom.uuid,
             schema: Commands::GenerateResumeForPerson::V2,
             data: {
               person_id:,

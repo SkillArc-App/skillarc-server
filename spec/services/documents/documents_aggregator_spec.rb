@@ -4,8 +4,8 @@ RSpec.describe Documents::DocumentsAggregator do
   it_behaves_like "a replayable message consumer"
 
   let(:consumer) { described_class.new }
-  let(:stream) { Documents::Streams::Document.new(document_id:) }
-  let(:document_id) { SecureRandom.uuid }
+  let(:stream) { Documents::Streams::ResumeDocument.new(resume_document_id:) }
+  let(:resume_document_id) { SecureRandom.uuid }
   let(:person_id) { SecureRandom.uuid }
   let(:user_id) { SecureRandom.uuid }
 
@@ -56,7 +56,7 @@ RSpec.describe Documents::DocumentsAggregator do
             anonymized: true,
             document_kind: Documents::DocumentKind::PDF,
             storage_kind: Documents::StorageKind::POSTGRES,
-            storage_identifier: document_id
+            storage_identifier: resume_document_id
           },
           metadata: {
             requestor_type: Requestor::Kinds::USER,
@@ -65,7 +65,7 @@ RSpec.describe Documents::DocumentsAggregator do
         )
       end
 
-      let!(:resume) { create(:resume, id: document_id) }
+      let!(:resume) { create(:resume, id: resume_document_id) }
 
       it "updates a resume record" do
         subject
@@ -97,7 +97,7 @@ RSpec.describe Documents::DocumentsAggregator do
         )
       end
 
-      let!(:resume) { create(:resume, id: document_id) }
+      let!(:resume) { create(:resume, id: resume_document_id) }
 
       it "updates a resume record" do
         subject

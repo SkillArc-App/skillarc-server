@@ -163,7 +163,7 @@ RSpec.describe "Resumes", type: :request do
               .to receive(:create!)
               .with(
                 trace_id: be_a(String),
-                document_id: be_a(String),
+                resume_document_id: be_a(String),
                 schema: Documents::Commands::GenerateResumeForPerson::V2,
                 data: {
                   checks:,

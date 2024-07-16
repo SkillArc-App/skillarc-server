@@ -4,6 +4,7 @@
 #
 #  id                        :bigint           not null, primary key
 #  category                  :string           not null
+#  employer_name             :string
 #  employment_title          :string           not null
 #  employment_type           :string           not null
 #  job_created_at            :datetime         not null

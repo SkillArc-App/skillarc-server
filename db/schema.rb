@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_11_201549) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_16_155205) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -50,6 +50,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_201549) do
     t.datetime "order_opened_at", null: false
     t.datetime "closed_at"
     t.string "closed_status"
+    t.string "employer_name"
+    t.string "employment_title"
     t.index ["analytics_dim_jobs_id"], name: "index_analytics_dim_job_orders_on_analytics_dim_jobs_id"
     t.index ["job_order_id"], name: "index_analytics_dim_job_orders_on_job_order_id", unique: true
   end
@@ -61,6 +63,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_201549) do
     t.string "employment_type", null: false
     t.string "employment_title", null: false
     t.bigint "analytics_dim_employer_id", null: false
+    t.string "employer_name"
     t.index ["analytics_dim_employer_id"], name: "index_analytics_dim_jobs_on_analytics_dim_employer_id"
     t.index ["employment_type"], name: "index_analytics_dim_jobs_on_employment_type"
     t.index ["job_id"], name: "index_analytics_dim_jobs_on_job_id", unique: true
@@ -118,6 +121,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_201549) do
     t.datetime "added_at", null: false
     t.datetime "terminal_status_at"
     t.string "status", null: false
+    t.string "employer_name"
+    t.string "employment_title"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
     t.index ["analytics_dim_job_orders_id"], name: "index_analytics_fact_candidates_on_analytics_dim_job_orders_id"
     t.index ["analytics_dim_people_id"], name: "index_analytics_fact_candidates_on_analytics_dim_people_id"
   end

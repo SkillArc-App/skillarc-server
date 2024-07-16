@@ -5,6 +5,8 @@
 #  id                    :bigint           not null, primary key
 #  closed_at             :datetime
 #  closed_status         :string
+#  employer_name         :string
+#  employment_title      :string
 #  order_count           :integer
 #  order_opened_at       :datetime         not null
 #  analytics_dim_jobs_id :bigint           not null

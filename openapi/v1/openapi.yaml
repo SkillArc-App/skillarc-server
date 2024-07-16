@@ -3278,6 +3278,34 @@ paths:
               - title
               - screenerQuestionId
               - questionResponses
+  "/screeners/answers/{id}/produce_document":
+    post:
+      summary: request screener document generated
+      tags:
+      - Screeners
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Returns the answers
   "/screeners/questions":
     post:
       summary: create new questions

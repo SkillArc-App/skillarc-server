@@ -93,7 +93,7 @@ module Documents
         id: message.stream.id,
         storage_kind:,
         file_data: pdf,
-        file_name: "#{message.data.first_name}-#{message.data.last_name}-resume-test-#{message.occurred_at.strftime('%Y-%m-%d-%H:%M')}.pdf"
+        file_name: "#{message.data.first_name}-#{message.data.last_name}-resume-#{message.occurred_at.strftime('%Y-%m-%d-%H:%M')}.pdf"
       )
 
       message_service.create_once_for_trace!(
@@ -119,6 +119,94 @@ module Documents
         data: {
           person_id: message.data.person_id,
           anonymized: message.data.anonymized,
+          document_kind: message.data.document_kind,
+          reason: e.message
+        },
+        metadata: message.metadata
+      )
+    end
+
+    on_message Commands::GenerateScreenerForAnswers::V1 do |message|
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        stream: message.stream,
+        schema: Events::ScreenerGenerationRequested::V1,
+        data: {
+          screener_answers_id: message.data.screener_answers_id,
+          document_kind: message.data.document_kind
+        },
+        metadata: message.metadata
+      )
+
+      messages = MessageService.stream_events(::Screeners::Streams::Answers.new(screener_answers_id: message.data.screener_answers_id))
+
+      if messages.empty?
+        message_service.create_once_for_trace!(
+          trace_id: message.trace_id,
+          stream: message.stream,
+          schema: Events::ScreenerGenerationFailed::V1,
+          data: {
+            person_id: nil,
+            screener_answers_id: message.data.screener_answers_id,
+            document_kind: message.data.document_kind,
+            reason: "Screener Answers do not exist"
+          },
+          metadata: message.metadata
+        )
+
+        return
+      end
+
+      answers = Screeners::Projectors::ScreenerAnswers.new.project(messages)
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        stream: message.stream,
+        schema: Commands::GenerateScreener::V1,
+        data: {
+          screener_answers_id: message.data.screener_answers_id,
+          title: answers.title,
+          person_id: answers.person_id,
+          question_responses: answers.question_responses,
+          document_kind: message.data.document_kind
+        },
+        metadata: message.metadata
+      )
+    end
+
+    on_message Commands::GenerateScreener::V1 do |message|
+      pdf = ScreenerGenerationService.generate_from_command(message:)
+
+      result = document_storage.store_document(
+        id: message.stream.id,
+        storage_kind:,
+        file_data: pdf,
+        file_name: "screener-#{message.data.screener_answers_id}-#{message.occurred_at.strftime('%Y-%m-%d-%H:%M')}.pdf"
+      )
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        stream: message.stream,
+        schema: Events::ScreenerGenerated::V1,
+        data: {
+          person_id: message.data.person_id,
+          screener_answers_id: message.data.screener_answers_id,
+          document_kind: message.data.document_kind,
+          storage_kind: result.storage_kind,
+          storage_identifier: result.storage_identifier
+        },
+        metadata: message.metadata
+      )
+    rescue StandardError => e
+      Sentry.capture_exception(e)
+
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        stream: message.stream,
+        schema: Events::ScreenerGenerationFailed::V1,
+        data: {
+          person_id: message.data.person_id,
+          screener_answers_id: message.data.screener_answers_id,
           document_kind: message.data.document_kind,
           reason: e.message
         },

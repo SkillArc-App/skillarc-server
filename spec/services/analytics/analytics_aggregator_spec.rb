@@ -308,6 +308,8 @@ RSpec.describe Analytics::AnalyticsAggregator do
         expect(dim_job_order.dim_job).to eq(dim_job)
         expect(dim_job_order.job_order_id).to eq(message.stream.id)
         expect(dim_job_order.order_opened_at).to eq(message.occurred_at)
+        expect(dim_job_order.employment_title).to eq(dim_job.employment_title)
+        expect(dim_job_order.employer_name).to eq(dim_job.employer_name)
       end
     end
 
@@ -460,9 +462,15 @@ RSpec.describe Analytics::AnalyticsAggregator do
 
           expect(fact_candidate.dim_person).to eq(dim_person)
           expect(fact_candidate.dim_job_order).to eq(dim_job_order)
+          expect(fact_candidate.first_name).to eq(dim_person.first_name)
+          expect(fact_candidate.last_name).to eq(dim_person.last_name)
+          expect(fact_candidate.email).to eq(dim_person.email)
           expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
           expect(fact_candidate.order_candidate_number).to eq(2)
           expect(fact_candidate.added_at).to eq(message.occurred_at)
+          expect(fact_candidate.terminal_status_at).to eq(nil)
+          expect(fact_candidate.employer_name).to eq(dim_job_order.employer_name)
+          expect(fact_candidate.employment_title).to eq(dim_job_order.employment_title)
           expect(fact_candidate.terminal_status_at).to eq(nil)
         end
       end
@@ -603,6 +611,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         expect(job.employment_title).to eq(message.data.employment_title)
         expect(job.employment_type).to eq(message.data.employment_type)
         expect(job.job_created_at).to eq(message.occurred_at)
+        expect(job.employer_name).to eq(message.data.employer_name)
       end
 
       context "when the job was created hidden" do

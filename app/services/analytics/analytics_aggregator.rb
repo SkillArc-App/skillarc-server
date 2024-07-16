@@ -78,6 +78,7 @@ module Analytics
       dim_job = DimJob.create!(
         job_id: message.stream.job_id,
         category: message.data.category,
+        employer_name: message.data.employer_name,
         employment_title: message.data.employment_title,
         employment_type: message.data.employment_type,
         job_created_at: message.occurred_at,
@@ -125,6 +126,8 @@ module Analytics
       DimJobOrder.create!(
         job_order_id: message.stream.id,
         order_opened_at: message.occurred_at,
+        employer_name: dim_job.employer_name,
+        employment_title: dim_job.employment_title,
         dim_job:
       )
     end
@@ -155,6 +158,11 @@ module Analytics
 
       fact_candidate = FactCandidate.find_or_initialize_by(dim_job_order:, dim_person:)
       fact_candidate.status = JobOrders::CandidateStatus::ADDED
+      fact_candidate.first_name = dim_person.first_name
+      fact_candidate.last_name = dim_person.last_name
+      fact_candidate.email = dim_person.email
+      fact_candidate.employer_name = dim_job_order.employer_name
+      fact_candidate.employment_title = dim_job_order.employment_title
       fact_candidate.terminal_status_at = nil
 
       if fact_candidate.new_record?

@@ -4,6 +4,11 @@
 #
 #  id                          :bigint           not null, primary key
 #  added_at                    :datetime         not null
+#  email                       :string
+#  employer_name               :string
+#  employment_title            :string
+#  first_name                  :string
+#  last_name                   :string
 #  order_candidate_number      :integer          not null
 #  status                      :string           not null
 #  terminal_status_at          :datetime

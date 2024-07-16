@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_15_201025) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_16_141547) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -380,6 +380,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_201025) do
     t.string "storage_kind"
     t.string "requestor_id", null: false
     t.uuid "screener_answers_id", null: false
+    t.uuid "person_id"
+    t.index ["person_id"], name: "index_documents_screeners_on_person_id"
     t.index ["requestor_id"], name: "index_documents_screeners_on_requestor_id"
     t.index ["screener_answers_id"], name: "index_documents_screeners_on_screener_answers_id"
   end

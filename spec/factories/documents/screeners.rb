@@ -8,6 +8,7 @@ FactoryBot.define do
     screener_answers_id { SecureRandom.uuid }
     status { Documents::DocumentStatus::PROCESSING }
 
+    person_id { nil }
     storage_kind { nil }
     storage_identifier { nil }
     document_generated_at { nil }

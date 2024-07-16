@@ -36,9 +36,7 @@ Rails.application.routes.draw do
 
   scope module: 'screeners', path: 'screeners' do
     resources :questions, only: %i[create update show]
-    resources :answers, only: %i[create update show] do
-      post 'produce_document' => 'answers#produce_document'
-    end
+    resources :answers, only: %i[create update show]
   end
 
   scope module: 'employers', path: 'employers' do
@@ -72,6 +70,7 @@ Rails.application.routes.draw do
 
   scope module: 'documents', path: 'documents' do
     resources :resumes, only: %i[create index show]
+    resources :screeners, only: %i[create index show]
   end
 
   resources :employers

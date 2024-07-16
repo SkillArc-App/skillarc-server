@@ -233,6 +233,31 @@ RSpec.configure do |config|
               }
             }
           },
+          screener: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
+              },
+              status: {
+                type: :string,
+                enum: Documents::DocumentStatus::ALL
+              },
+              generateAt: {
+                type: :string,
+                format: 'date-time'
+              },
+              documentKind: {
+                type: :string,
+                enum: Documents::DocumentKind::ALL
+              },
+              personId: {
+                type: :string,
+                format: :uuid
+              }
+            }
+          },
           training_provider_invite: {
             type: :object,
             properties: {

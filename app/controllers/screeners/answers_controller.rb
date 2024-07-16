@@ -30,23 +30,6 @@ module Screeners
       head :created
     end
 
-    def produce_document
-      with_message_service do
-        message_service.create!(
-          trace_id: request.request_id,
-          screener_document_id: SecureRandom.uuid,
-          schema: Documents::Commands::GenerateScreenerForAnswers::V1,
-          data: {
-            screener_answers_id: params[:answer_id],
-            document_kind: Documents::DocumentKind::PDF
-          },
-          metadata: requestor_metadata
-        )
-      end
-
-      head :accepted
-    end
-
     def update
       with_message_service do
         message_service.create!(

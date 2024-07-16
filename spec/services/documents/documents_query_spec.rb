@@ -90,4 +90,54 @@ RSpec.describe Documents::DocumentsQuery do
       end
     end
   end
+
+  describe ".all_screeners" do
+    subject { described_class.all_screeners(person_id:) }
+
+    let(:p_id) { SecureRandom.uuid }
+    let(:r_id) { SecureRandom.uuid }
+
+    let!(:screener1) { create(:documents__screener, person_id: p_id, status: Documents::DocumentStatus::SUCCEEDED, document_generated_at: Time.zone.local(2023, 1, 1)) }
+    let!(:screener2) { create(:documents__screener, person_id: SecureRandom.uuid) }
+
+    let(:serialized_screener1) do
+      {
+        id: screener1.id,
+        document_status: screener1.status,
+        generated_at: screener1.document_generated_at,
+        document_kind: screener1.document_kind,
+        person_id: screener1.person_id
+      }
+    end
+    let(:serialized_screener2) do
+      {
+        id: screener2.id,
+        document_status: screener2.status,
+        generated_at: screener2.document_generated_at,
+        document_kind: screener2.document_kind,
+        person_id: screener2.person_id
+      }
+    end
+
+    context "when person_id and requestor_id are nil" do
+      let(:person_id) { nil }
+
+      it "returns each resume" do
+        expect(subject).to contain_exactly(
+          serialized_screener1,
+          serialized_screener2
+        )
+      end
+    end
+
+    context "when person_id is provided" do
+      let(:person_id) { p_id }
+
+      it "returns each resume for that person" do
+        expect(subject).to contain_exactly(
+          serialized_screener1
+        )
+      end
+    end
+  end
 end

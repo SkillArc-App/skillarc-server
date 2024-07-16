@@ -15,7 +15,7 @@ module Commands
 
         def initialize(attributes)
           super
-          raise ArgumentError unless kwarg.email.present? || kwarg.phone_number.present?
+          raise ArgumentError unless email.present? || phone_number.present?
         end
       end
 

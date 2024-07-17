@@ -1,5 +1,9 @@
 module Screeners
   class ScreenerQuery
+    def self.all_questions
+      Questions.all.map { |q| serialize_questions(q) }
+    end
+
     def self.find_questions(id)
       serialize_questions(Questions.find(id))
     end

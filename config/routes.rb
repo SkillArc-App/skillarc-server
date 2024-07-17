@@ -35,7 +35,7 @@ Rails.application.routes.draw do
   resources :coaches
 
   scope module: 'screeners', path: 'screeners' do
-    resources :questions, only: %i[create update show]
+    resources :questions, only: %i[index create update show]
     resources :answers, only: %i[create update show]
   end
 

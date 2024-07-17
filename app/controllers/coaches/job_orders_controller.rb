@@ -8,7 +8,7 @@ module Coaches
     before_action :coach_authorize
 
     def index
-      render json: JobOrders::JobOrdersQuery.all_orders
+      render json: JobOrders::JobOrdersQuery.all_active_orders
     end
 
     def recommend

@@ -6,6 +6,12 @@ module JobOrders
       end
     end
 
+    def self.all_active_orders
+      JobOrder.for_applicable_jobs.active.map do |job_order|
+        serialize_job_order_summary(job_order)
+      end
+    end
+
     def self.find_order(id)
       serialize_job_order(JobOrder.includes(candidates: :person).find(id))
     end

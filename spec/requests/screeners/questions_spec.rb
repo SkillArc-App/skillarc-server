@@ -64,6 +64,36 @@ RSpec.describe "Questions", type: :request do
         end
       end
     end
+
+    get "retrieve all questions" do
+      tags 'Screeners'
+      produces 'application/json'
+      security [bearer_auth: []]
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      it_behaves_like "an unauthenticated user"
+
+      context "when authenticated" do
+        include_context "coach authenticated openapi"
+
+        response '200', 'Returns the questions' do
+          schema type: :array,
+                 items: {
+                   '$ref' => '#/components/schemas/questions'
+                 }
+
+          before do
+            create(:screeners__questions)
+            create(:screeners__questions)
+            create(:screeners__questions)
+          end
+
+          run_test!
+        end
+      end
+    end
   end
 
   path '/screeners/questions/{id}' do

@@ -2,6 +2,10 @@ module Screeners
   class QuestionsController < ScreenerController
     include MessageEmitter
 
+    def index
+      render json: Screeners::ScreenerQuery.all_questions
+    end
+
     def show
       render json: Screeners::ScreenerQuery.find_questions(params[:id])
     end

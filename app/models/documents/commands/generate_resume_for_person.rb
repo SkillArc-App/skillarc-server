@@ -30,7 +30,7 @@ module Documents
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::RequestorMetadata::V1,
-        stream: Streams::Document,
+        stream: Streams::ResumeDocument,
         message_type: MessageTypes::GENERATE_RESUME_FOR_PERSON,
         version: 1
       )
@@ -38,7 +38,7 @@ module Documents
         type: Core::COMMAND,
         data: Data::V2,
         metadata: Core::RequestorMetadata::V1,
-        stream: Streams::Document,
+        stream: Streams::ResumeDocument,
         message_type: MessageTypes::GENERATE_RESUME_FOR_PERSON,
         version: 2
       )

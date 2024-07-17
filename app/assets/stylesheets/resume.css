@@ -22,6 +22,7 @@ body {
 }
 
 .normal-weight { font-weight: normal; }
+.heavy-weight { font-weight: bold; }
 
 .highlight {
   background-color: red;

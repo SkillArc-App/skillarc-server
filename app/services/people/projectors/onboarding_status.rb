@@ -1,7 +1,7 @@
 module People
   module Projectors
     class OnboardingStatus < Projector
-      projection_aggregator Streams::Person
+      projection_stream Streams::Person
 
       class Step
         extend Record

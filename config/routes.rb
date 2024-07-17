@@ -70,6 +70,7 @@ Rails.application.routes.draw do
 
   scope module: 'documents', path: 'documents' do
     resources :resumes, only: %i[create index show]
+    resources :screeners, only: %i[create index show]
   end
 
   resources :employers

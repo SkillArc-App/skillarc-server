@@ -11,10 +11,11 @@ module Screeners
         message_service.create!(
           trace_id: request.request_id,
           screener_answers_id: SecureRandom.uuid,
-          schema: Commands::CreateAnswers::V1,
+          schema: Commands::CreateAnswers::V2,
           data: {
             title: params[:title],
             screener_questions_id: params[:screener_questions_id],
+            person_id: params[:person_id],
             question_responses: params[:question_responses].map do |qr|
               QuestionResponse.new(
                 question: qr[:question],

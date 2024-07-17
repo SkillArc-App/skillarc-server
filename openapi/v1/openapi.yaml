@@ -1681,6 +1681,99 @@ paths:
           description: unauthenticated
         '200':
           description: Download a file
+  "/documents/screeners":
+    get:
+      summary: Get all screeners
+      tags:
+      - Documents
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: person_id
+        in: query
+        format: uuid
+        required: false
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Returns all resumes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/screener"
+    post:
+      summary: Create a new screener
+      tags:
+      - Documents
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Returns the answers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                screenerAnswersId:
+                  type: string
+                  format: uuid
+              required:
+              - person_id
+  "/documents/screeners/{id}":
+    get:
+      summary: Download a screener
+      tags:
+      - Documents
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Download a file
   "/profiles/{seeker_id}/education_experiences":
     post:
       summary: Create experience
@@ -3187,13 +3280,16 @@ paths:
               properties:
                 title:
                   type: string
+                personId:
+                  type: string
+                  format: uuid
                 screenerQuestionsId:
                   type: string
                   format: uuid
                 questionResponses:
                   type: array
                   items:
-                    type: string
+                    "$ref": "#/components/schemas/question_response"
               required:
               - title
               - screenerQuestionId
@@ -3270,11 +3366,39 @@ paths:
                 questionResponses:
                   type: array
                   items:
-                    type: string
+                    "$ref": "#/components/schemas/question_response"
               required:
               - title
               - screenerQuestionId
               - questionResponses
+  "/screeners/answers/{id}/produce_document":
+    post:
+      summary: request screener document generated
+      tags:
+      - Screeners
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: Returns the answers
   "/screeners/questions":
     post:
       summary: create new questions
@@ -4367,6 +4491,9 @@ components:
           format: uuid
         title:
           type: string
+        personId:
+          type: string
+          format: uuid
         screenerQuestionsId:
           type: string
           format: uuid
@@ -4389,6 +4516,28 @@ components:
           format: uuid
         anonymized:
           type: boolean
+        status:
+          type: string
+          enum:
+          - processing
+          - succeeded
+          - failed
+        generateAt:
+          type: string
+          format: date-time
+        documentKind:
+          type: string
+          enum:
+          - pdf
+        personId:
+          type: string
+          format: uuid
+    screener:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
         status:
           type: string
           enum:

@@ -371,6 +371,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_16_155205) do
     t.index ["requestor_id"], name: "index_documents_resumes_on_requestor_id"
   end
 
+  create_table "documents_screeners", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "document_generated_at"
+    t.string "document_kind", null: false
+    t.string "requestor_type", null: false
+    t.string "status", null: false
+    t.string "storage_identifier"
+    t.string "storage_kind"
+    t.string "requestor_id", null: false
+    t.uuid "screener_answers_id", null: false
+    t.uuid "person_id"
+    t.index ["person_id"], name: "index_documents_screeners_on_person_id"
+    t.index ["requestor_id"], name: "index_documents_screeners_on_requestor_id"
+    t.index ["screener_answers_id"], name: "index_documents_screeners_on_screener_answers_id"
+  end
+
   create_table "education_experiences", id: :text, force: :cascade do |t|
     t.text "organization_id"
     t.text "organization_name"
@@ -841,6 +856,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_16_155205) do
     t.uuid "screeners_questions_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "person_id", null: false
     t.index ["screeners_questions_id"], name: "index_screeners_answers_on_screeners_questions_id"
   end
 

@@ -31,19 +31,19 @@ class Projector
     end
   end
 
-  def self.projection_aggregator(aggregator)
-    @aggregator = aggregator
+  def self.projection_stream(stream)
+    @stream = stream
   end
 
   class << self
-    attr_reader :aggregator
+    attr_reader :stream
   end
 
   def self.on_message(schema, &)
     raise NotSchemaError unless schema.is_a?(Core::Schema)
     raise NotActiveSchemaError if schema.inactive?
-    raise NoStreamError, "Make sure to call projection_aggregator <stream class> at the top of this class" if aggregator.blank?
-    raise NotCorrectStreamError, "The on_message for #{schema} has the wrong stream. We need a #{aggregator}" if schema.stream != aggregator
+    raise NoStreamError, "Make sure to call projection_stream <stream class> at the top of this class" if stream.blank?
+    raise NotCorrectStreamError, "The on_message for #{schema} has the wrong stream. We need a #{stream}" if schema.stream != stream
 
     Rails.logger.error { "#{name} is subscribed to deprecated message #{schema}" } if schema.deprecated?
 
@@ -61,5 +61,5 @@ class Projector
     send(method_name, message, accumulator)
   end
 
-  attr_reader :aggregate
+  attr_reader :stream
 end

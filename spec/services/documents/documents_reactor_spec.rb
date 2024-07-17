@@ -17,6 +17,8 @@ RSpec.describe Documents::DocumentsReactor do
   let(:messages) { [] }
   let(:person_stream) { Streams::Person.new(person_id:) }
   let(:person_id) { SecureRandom.uuid }
+  let(:answers_stream) { Screeners::Streams::Answers.new(screener_answers_id:) }
+  let(:screener_answers_id) { SecureRandom.uuid }
 
   describe "#handle_message" do
     subject { consumer.handle_message(message) }
@@ -261,7 +263,7 @@ RSpec.describe Documents::DocumentsReactor do
               id: message.stream.id,
               storage_kind:,
               file_data: be_a(String),
-              file_name: "First-Name-resume-test-2000-01-01-00:00.pdf"
+              file_name: "First-Name-resume-2000-01-01-00:00.pdf"
             )
             .and_call_original
 
@@ -308,6 +310,235 @@ RSpec.describe Documents::DocumentsReactor do
               data: {
                 person_id: message.data.person_id,
                 anonymized: message.data.anonymized,
+                document_kind: message.data.document_kind,
+                reason: "Help!"
+              },
+              metadata: message.metadata
+            ).and_call_original
+
+          subject
+        end
+      end
+    end
+
+    context "when the message is generate screener for answers" do
+      let(:message) do
+        build(
+          :message,
+          schema: Documents::Commands::GenerateScreenerForAnswers::V1,
+          data: {
+            screener_answers_id:,
+            document_kind: Documents::DocumentKind::PDF
+          },
+          metadata: {
+            requestor_type: Requestor::Kinds::USER,
+            requestor_id: SecureRandom.uuid
+          }
+        )
+      end
+
+      context "when there are no messages for the answers" do
+        it "emits resume generation requested and resume generation failed events" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              trace_id: message.trace_id,
+              stream: message.stream,
+              schema: Documents::Events::ScreenerGenerationRequested::V1,
+              data: {
+                screener_answers_id: message.data.screener_answers_id,
+                document_kind: message.data.document_kind
+              },
+              metadata: message.metadata
+            )
+            .and_call_original
+
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              trace_id: message.trace_id,
+              stream: message.stream,
+              schema: Documents::Events::ScreenerGenerationFailed::V1,
+              data: {
+                person_id: nil,
+                screener_answers_id: message.data.screener_answers_id,
+                document_kind: message.data.document_kind,
+                reason: "Screener Answers do not exist"
+              },
+              metadata: message.metadata
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when there are messages for the answers" do
+        let(:answers_created) do
+          build(
+            :message,
+            stream: answers_stream,
+            schema: Screeners::Events::AnswersCreated::V2,
+            data: {
+              person_id:,
+              title: "Dude",
+              screener_questions_id: SecureRandom.uuid,
+              question_responses: [
+                Screeners::QuestionResponse.new(
+                  question: "Dude where's my car?",
+                  response: "Huh?"
+                )
+              ]
+            }
+          )
+        end
+        let(:answers_updated) do
+          build(
+            :message,
+            stream: answers_stream,
+            schema: Screeners::Events::AnswersUpdated::V1,
+            data: {
+              title: "Dude...",
+              question_responses: [
+                Screeners::QuestionResponse.new(
+                  question: "What's your favorite flavor?",
+                  response: "Cherry"
+                )
+              ]
+            },
+            occurred_at: Time.zone.local(2021, 1, 1)
+          )
+        end
+        let(:messages) do
+          [
+            answers_created,
+            answers_updated
+          ]
+        end
+
+        it "emits resume generation requested and generate resume events" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              trace_id: message.trace_id,
+              stream: message.stream,
+              schema: Documents::Events::ScreenerGenerationRequested::V1,
+              data: {
+                screener_answers_id: message.data.screener_answers_id,
+                document_kind: message.data.document_kind
+              },
+              metadata: message.metadata
+            )
+            .and_call_original
+
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              trace_id: message.trace_id,
+              stream: message.stream,
+              schema: Documents::Commands::GenerateScreener::V1,
+              data: {
+                screener_answers_id: message.data.screener_answers_id,
+                title: answers_updated.data.title,
+                person_id: answers_created.data.person_id,
+                question_responses: answers_updated.data.question_responses,
+                document_kind: message.data.document_kind
+              },
+              metadata: message.metadata
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+    end
+
+    context "when the message is generate screener" do
+      let(:message) do
+        build(
+          :message,
+          schema: Documents::Commands::GenerateScreener::V1,
+          data: {
+            person_id:,
+            screener_answers_id:,
+            title: "Bro",
+            document_kind: Documents::DocumentKind::PDF,
+            question_responses: [
+              Screeners::QuestionResponse.new(
+                question: "How old are you?",
+                response: "12"
+              )
+            ]
+          },
+          metadata: {
+            requestor_type: Requestor::Kinds::USER,
+            requestor_id: SecureRandom.uuid,
+            requestor_email: "dude@email.com"
+          },
+          occurred_at: Time.zone.local(2000, 1, 1)
+        )
+      end
+
+      context "when sucessful" do
+        it "calls the resume generation service, stores it and emits an resume generated event" do
+          expect(Documents::ScreenerGenerationService)
+            .to receive(:generate_from_command)
+            .with(message:)
+            .and_call_original
+
+          expect(document_storage)
+            .to receive(:store_document)
+            .with(
+              id: message.stream.id,
+              storage_kind:,
+              file_data: be_a(String),
+              file_name: "screener-#{screener_answers_id}-2000-01-01-00:00.pdf"
+            )
+            .and_call_original
+
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              trace_id: message.trace_id,
+              stream: message.stream,
+              schema: Documents::Events::ScreenerGenerated::V1,
+              data: {
+                person_id: message.data.person_id,
+                screener_answers_id: message.data.screener_answers_id,
+                document_kind: message.data.document_kind,
+                storage_kind:,
+                storage_identifier: message.stream.id
+              },
+              metadata: message.metadata
+            ).and_call_original
+
+          subject
+        end
+      end
+
+      context "when an error occurs" do
+        before do
+          allow(Documents::ScreenerGenerationService)
+            .to receive(:generate_from_command)
+            .and_raise(error)
+        end
+
+        let(:error) { StandardError.new("Help!") }
+
+        it "emits an resume generated failed event" do
+          expect(Sentry)
+            .to receive(:capture_exception)
+            .with(error)
+
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              trace_id: message.trace_id,
+              stream: message.stream,
+              schema: Documents::Events::ScreenerGenerationFailed::V1,
+              data: {
+                person_id: message.data.person_id,
+                screener_answers_id: message.data.screener_answers_id,
                 document_kind: message.data.document_kind,
                 reason: "Help!"
               },

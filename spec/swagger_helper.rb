@@ -178,6 +178,10 @@ RSpec.configure do |config|
               title: {
                 type: :string
               },
+              personId: {
+                type: :string,
+                format: :uuid
+              },
               screenerQuestionsId: {
                 type: :string,
                 format: :uuid
@@ -210,6 +214,31 @@ RSpec.configure do |config|
               },
               anonymized: {
                 type: :boolean
+              },
+              status: {
+                type: :string,
+                enum: Documents::DocumentStatus::ALL
+              },
+              generateAt: {
+                type: :string,
+                format: 'date-time'
+              },
+              documentKind: {
+                type: :string,
+                enum: Documents::DocumentKind::ALL
+              },
+              personId: {
+                type: :string,
+                format: :uuid
+              }
+            }
+          },
+          screener: {
+            type: :object,
+            properties: {
+              id: {
+                type: :string,
+                format: :uuid
               },
               status: {
                 type: :string,

@@ -18,7 +18,7 @@ RSpec.describe "Coaches::JobOrders", type: :request do
         response '200', 'retrieves job orders' do
           before do
             expect(JobOrders::JobOrdersQuery)
-              .to receive(:all_orders)
+              .to receive(:all_active_orders)
               .and_call_original
           end
 

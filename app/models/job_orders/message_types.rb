@@ -29,7 +29,8 @@ module JobOrders
     COMMANDS = [
       ACTIVATE_JOB_ORDER = 'activate_job_order',
       ADD_CANDIDATE = 'job_order_add_candidate',
-      ADD_JOB_ORDER = 'add_job_order'
+      ADD_JOB_ORDER = 'add_job_order',
+      ADD_ORDER_COUNT = 'job_order_add_order_count'
     ].freeze
   end
 end

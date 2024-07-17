@@ -32,10 +32,13 @@ module JobOrders
 
     def update
       with_message_service do
-        JobOrders::JobOrdersReactor.new(message_service:).add_order_count(
+        message_service.create!(
+          trace_id: request.request_id,
           job_order_id: params[:id],
-          order_count: params[:order_count],
-          trace_id: request.request_id
+          schema: Commands::AddOrderCount::V1,
+          data: {
+            order_count: params[:order_count]
+          }
         )
       end
 

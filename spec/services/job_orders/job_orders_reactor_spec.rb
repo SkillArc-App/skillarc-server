@@ -10,30 +10,6 @@ RSpec.describe JobOrders::JobOrdersReactor do
   let(:job_id) { SecureRandom.uuid }
   let(:person_id) { SecureRandom.uuid }
 
-  describe "#add_order_count" do
-    subject do
-      instance.add_order_count(job_order_id:, order_count:, trace_id:)
-    end
-
-    let(:job_order_id) { 10 }
-    let(:order_count) { 10 }
-
-    it "fires off a job order order count added event" do
-      expect(message_service)
-        .to receive(:create!)
-        .with(
-          schema: JobOrders::Events::OrderCountAdded::V1,
-          job_order_id:,
-          trace_id:,
-          data: {
-            order_count:
-          }
-        )
-
-      subject
-    end
-  end
-
   describe "#close_job_order_not_filled" do
     subject do
       instance.close_job_order_not_filled(job_order_id:, trace_id:)
@@ -341,6 +317,36 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
           subject
         end
+      end
+    end
+
+    context "when the message is add order count" do
+      let(:message) do
+        build(
+          :message,
+          schema: JobOrders::Commands::AddOrderCount::V1,
+          stream:,
+          data: {
+            order_count: 10
+          }
+        )
+      end
+      let(:stream) { JobOrders::Streams::JobOrder.new(job_order_id:) }
+
+      it "emits a order count added event" do
+        expect(message_service)
+          .to receive(:create_once_for_trace!)
+          .with(
+            schema: JobOrders::Events::OrderCountAdded::V1,
+            stream: message.stream,
+            trace_id: message.trace_id,
+            data: {
+              order_count: message.data.order_count
+            }
+          )
+          .and_call_original
+
+        subject
       end
     end
 

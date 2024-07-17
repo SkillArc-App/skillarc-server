@@ -209,12 +209,15 @@ RSpec.describe "JobOrders", type: :request do
 
         response '404', 'Job Order not found' do
           before do
-            expect_any_instance_of(JobOrders::JobOrdersReactor)
-              .to receive(:add_order_count)
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
               .with(
+                trace_id: be_a(String),
                 job_order_id: id,
-                order_count:,
-                trace_id: be_a(String)
+                schema: JobOrders::Commands::AddOrderCount::V1,
+                data: {
+                  order_count:
+                }
               )
               .and_call_original
           end
@@ -226,12 +229,15 @@ RSpec.describe "JobOrders", type: :request do
 
         response '202', 'Update the job order' do
           before do
-            expect_any_instance_of(JobOrders::JobOrdersReactor)
-              .to receive(:add_order_count)
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
               .with(
+                trace_id: be_a(String),
                 job_order_id: id,
-                order_count:,
-                trace_id: be_a(String)
+                schema: JobOrders::Commands::AddOrderCount::V1,
+                data: {
+                  order_count:
+                }
               )
               .and_call_original
           end

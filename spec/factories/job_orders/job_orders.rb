@@ -5,6 +5,7 @@ FactoryBot.define do
     opened_at { Time.zone.now }
     team_id { nil }
 
+    screener_questions_id { nil }
     status { JobOrders::ActivatedStatus::OPEN }
     applicant_count { 0 }
     candidate_count { 0 }

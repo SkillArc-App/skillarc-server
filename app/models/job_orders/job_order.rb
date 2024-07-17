@@ -2,20 +2,21 @@
 #
 # Table name: job_orders_job_orders
 #
-#  id                 :uuid             not null, primary key
-#  applicant_count    :integer          not null
-#  candidate_count    :integer          not null
-#  closed_at          :datetime
-#  hire_count         :integer          not null
-#  opened_at          :datetime         not null
-#  order_count        :integer
-#  recommended_count  :integer          not null
-#  screened_count     :integer
-#  status             :string           not null
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  job_orders_jobs_id :uuid             not null
-#  team_id            :uuid
+#  id                    :uuid             not null, primary key
+#  applicant_count       :integer          not null
+#  candidate_count       :integer          not null
+#  closed_at             :datetime
+#  hire_count            :integer          not null
+#  opened_at             :datetime         not null
+#  order_count           :integer
+#  recommended_count     :integer          not null
+#  screened_count        :integer
+#  status                :string           not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  job_orders_jobs_id    :uuid             not null
+#  screener_questions_id :uuid
+#  team_id               :uuid
 #
 # Indexes
 #

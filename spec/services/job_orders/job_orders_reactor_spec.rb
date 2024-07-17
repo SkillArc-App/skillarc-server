@@ -9,6 +9,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
   let(:job_order_id) { SecureRandom.uuid }
   let(:job_id) { SecureRandom.uuid }
   let(:person_id) { SecureRandom.uuid }
+  let(:stream) { JobOrders::Streams::JobOrder.new(job_order_id:) }
 
   describe "#close_job_order_not_filled" do
     subject do
@@ -343,6 +344,83 @@ RSpec.describe JobOrders::JobOrdersReactor do
             data: {
               order_count: message.data.order_count
             }
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+
+    context "when the message is add screener questions" do
+      let(:message) do
+        build(
+          :message,
+          schema: JobOrders::Commands::AddScreenerQuestions::V1,
+          stream:,
+          data: {
+            screener_questions_id:
+          }
+        )
+      end
+
+      let(:screener_questions_id) { SecureRandom.uuid }
+
+      context "when the screener questions exists" do
+        let(:messages) do
+          [
+            build(
+              :message,
+              schema: Screeners::Events::QuestionsCreated::V1,
+              stream_id: screener_questions_id
+            )
+          ]
+        end
+
+        it "emits a screener questions added event" do
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              schema: JobOrders::Events::ScreenerQuestionsAdded::V1,
+              stream: message.stream,
+              trace_id: message.trace_id,
+              data: {
+                screener_questions_id: message.data.screener_questions_id
+              }
+            )
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when the screener questions do not exist exists" do
+        let(:message_service) { double }
+
+        it "does nothing" do
+          subject
+        end
+      end
+    end
+
+    context "when the message is bypass screener questions" do
+      let(:message) do
+        build(
+          :message,
+          schema: JobOrders::Commands::BypassScreenerQuestions::V1,
+          stream:
+        )
+      end
+
+      let(:screener_questions_id) { SecureRandom.uuid }
+
+      it "emits a screener questions bypassed event" do
+        expect(message_service)
+          .to receive(:create_once_for_stream!)
+          .with(
+            schema: JobOrders::Events::ScreenerQuestionsBypassed::V1,
+            stream: message.stream,
+            trace_id: message.trace_id,
+            data: Core::Nothing
           )
           .and_call_original
 

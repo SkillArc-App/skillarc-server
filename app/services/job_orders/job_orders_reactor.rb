@@ -233,6 +233,31 @@ module JobOrders
       )
     end
 
+    on_message Commands::AddScreenerQuestions::V1, :sync do |message|
+      return unless ::Projectors::Streams::HasOccurred.project(
+        stream: Screeners::Streams::Questions.new(screener_questions_id: message.data.screener_questions_id),
+        schema: Screeners::Events::QuestionsCreated::V1
+      )
+
+      message_service.create_once_for_trace!(
+        schema: Events::ScreenerQuestionsAdded::V1,
+        stream: message.stream,
+        trace_id: message.trace_id,
+        data: {
+          screener_questions_id: message.data.screener_questions_id
+        }
+      )
+    end
+
+    on_message Commands::BypassScreenerQuestions::V1, :sync do |message|
+      message_service.create_once_for_stream!(
+        schema: Events::ScreenerQuestionsBypassed::V1,
+        stream: message.stream,
+        trace_id: message.trace_id,
+        data: Core::Nothing
+      )
+    end
+
     on_message Events::OrderCountAdded::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end

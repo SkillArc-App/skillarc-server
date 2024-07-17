@@ -230,6 +230,28 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       end
     end
 
+    context "when the message is job order screener questions added" do
+      let(:message) do
+        build(
+          :message,
+          schema: JobOrders::Events::ScreenerQuestionsAdded::V1,
+          stream_id: job_order.id,
+          data: {
+            screener_questions_id: SecureRandom.uuid
+          }
+        )
+      end
+
+      let!(:job_order) { create(:job_orders__job_order) }
+
+      it "updates a job order record" do
+        subject
+
+        job_order.reload
+        expect(job_order.screener_questions_id).to eq(message.data.screener_questions_id)
+      end
+    end
+
     context "when the message is job order candidate added" do
       let(:message) do
         build(

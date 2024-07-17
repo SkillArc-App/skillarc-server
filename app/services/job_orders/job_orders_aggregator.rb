@@ -75,6 +75,13 @@ module JobOrders
       )
     end
 
+    on_message Events::ScreenerQuestionsAdded::V1, :sync do |message|
+      job_order = JobOrder.find(message.stream.id)
+      job_order.update!(
+        screener_questions_id: message.data.screener_questions_id
+      )
+    end
+
     on_message Events::OrderCountAdded::V1, :sync do |message|
       job_order = JobOrder.find(message.stream.id)
       job_order.update!(

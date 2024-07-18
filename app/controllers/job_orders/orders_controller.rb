@@ -32,13 +32,39 @@ module JobOrders
 
     def update
       with_message_service do
+        if params[:order_count].present?
+          message_service.create!(
+            trace_id: request.request_id,
+            job_order_id: params[:id],
+            schema: Commands::AddOrderCount::V1,
+            data: {
+              order_count: params[:order_count]
+            }
+          )
+        end
+
+        if params[:screener_questions_id].present?
+          message_service.create!(
+            trace_id: request.request_id,
+            job_order_id: params[:id],
+            schema: Commands::AddScreenerQuestions::V1,
+            data: {
+              screener_questions_id: params[:screener_questions_id]
+            }
+          )
+        end
+      end
+
+      head :accepted
+    end
+
+    def bypass_screener_questions
+      with_message_service do
         message_service.create!(
           trace_id: request.request_id,
-          job_order_id: params[:id],
-          schema: Commands::AddOrderCount::V1,
-          data: {
-            order_count: params[:order_count]
-          }
+          job_order_id: params[:order_id],
+          schema: Commands::BypassScreenerQuestions::V1,
+          data: Core::Nothing
         )
       end
 

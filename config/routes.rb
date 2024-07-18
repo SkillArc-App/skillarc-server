@@ -61,6 +61,7 @@ Rails.application.routes.draw do
 
     resources :orders do
       resources :notes
+      post "bypass_screener_questions" => "orders#bypass_screener_questions"
       post "activate" => "orders#activate"
       post "close_not_filled" => "orders#close_not_filled"
 

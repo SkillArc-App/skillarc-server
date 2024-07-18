@@ -184,11 +184,14 @@ RSpec.describe "JobOrders", type: :request do
       parameter name: :order_params, in: :body, schema: {
         type: :object,
         properties: {
-          orderOount: {
+          orderCount: {
             type: :integer
+          },
+          screenerQuestionsId: {
+            type: :string,
+            format: :uuid
           }
-        },
-        required: %w[order_count]
+        }
       }
 
       include_context "olive branch casing parameter"
@@ -197,10 +200,12 @@ RSpec.describe "JobOrders", type: :request do
       let(:id) { SecureRandom.uuid }
       let(:order_params) do
         {
-          orderCount: order_count
+          orderCount: order_count,
+          screenerQuestionsId: screener_questions_id
         }
       end
       let(:order_count) { 10 }
+      let(:screener_questions_id) { SecureRandom.uuid }
 
       it_behaves_like "an unauthenticated user"
 
@@ -228,24 +233,56 @@ RSpec.describe "JobOrders", type: :request do
         end
 
         response '202', 'Update the job order' do
-          before do
-            expect_any_instance_of(MessageService)
-              .to receive(:create!)
-              .with(
-                trace_id: be_a(String),
-                job_order_id: id,
-                schema: JobOrders::Commands::AddOrderCount::V1,
-                data: {
-                  order_count:
-                }
-              )
-              .and_call_original
-          end
-
           let(:job_order) { create(:job_orders__job_order) }
           let(:id) { job_order.id }
 
-          run_test!
+          context "when order count is included" do
+            before do
+              expect_any_instance_of(MessageService)
+                .to receive(:create!)
+                .with(
+                  trace_id: be_a(String),
+                  job_order_id: id,
+                  schema: JobOrders::Commands::AddOrderCount::V1,
+                  data: {
+                    order_count:
+                  }
+                )
+                .and_call_original
+            end
+
+            let(:order_params) do
+              {
+                orderCount: order_count
+              }
+            end
+
+            run_test!
+          end
+
+          context "when screener question id is included" do
+            before do
+              expect_any_instance_of(MessageService)
+                .to receive(:create!)
+                .with(
+                  trace_id: be_a(String),
+                  job_order_id: id,
+                  schema: JobOrders::Commands::AddScreenerQuestions::V1,
+                  data: {
+                    screener_questions_id:
+                  }
+                )
+                .and_call_original
+            end
+
+            let(:order_params) do
+              {
+                screenerQuestionsId: screener_questions_id
+              }
+            end
+
+            run_test!
+          end
         end
       end
     end
@@ -377,6 +414,47 @@ RSpec.describe "JobOrders", type: :request do
         end
 
         response '202', 'close not filled accepted' do
+          let(:job_order) { create(:job_orders__job_order) }
+          let(:id) { job_order.id }
+
+          run_test!
+        end
+      end
+    end
+  end
+
+  path '/job_orders/orders/{id}/bypass_screener_questions' do
+    post "bypass screener questions for a job order" do
+      tags 'Job Orders'
+      security [bearer_auth: []]
+      parameter name: 'id',
+                in: :path,
+                type: :string,
+                format: :uuid
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      let(:id) { SecureRandom.uuid }
+
+      it_behaves_like "an unauthenticated user"
+
+      context "when authenticated" do
+        include_context "job order authenticated"
+
+        before do
+          expect_any_instance_of(MessageService)
+            .to receive(:create!)
+            .with(
+              trace_id: be_a(String),
+              job_order_id: id,
+              schema: JobOrders::Commands::BypassScreenerQuestions::V1,
+              data: Core::Nothing
+            )
+            .and_call_original
+        end
+
+        response '202', 'screener questions bypassed' do
           let(:job_order) { create(:job_orders__job_order) }
           let(:id) { job_order.id }
 

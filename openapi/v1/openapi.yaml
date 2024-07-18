@@ -2581,10 +2581,11 @@ paths:
             schema:
               type: object
               properties:
-                orderOount:
+                orderCount:
                   type: integer
-              required:
-              - order_count
+                screenerQuestionsId:
+                  type: string
+                  format: uuid
   "/job_orders/orders/{id}/activate":
     post:
       summary: activate a job order
@@ -2645,6 +2646,34 @@ paths:
           description: Job Order not found
         '202':
           description: close not filled accepted
+  "/job_orders/orders/{id}/bypass_screener_questions":
+    post:
+      summary: bypass screener questions for a job order
+      tags:
+      - Job Orders
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '202':
+          description: screener questions bypassed
   "/jobs/{id}":
     get:
       summary: Show a job

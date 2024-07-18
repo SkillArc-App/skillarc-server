@@ -3,6 +3,21 @@ require 'rails_helper'
 RSpec.describe Analytics::AnalyticsAggregator do
   it_behaves_like "a replayable message consumer"
 
+  shared_examples "a status updater" do |status_type|
+    it "updates the old status" do
+      expect { subject }.to change { status.reload.ended_at }.from(nil).to(message.occurred_at)
+    end
+
+    it "adds a new status" do
+      expect { subject }.to change { dim_job_order.fact_job_order_statuses.count }.by(1)
+
+      fact_job_order_status = dim_job_order.fact_job_order_statuses.where(ended_at: nil).first
+
+      expect(fact_job_order_status.status).to eq(status_type)
+      expect(fact_job_order_status.started_at).to eq(message.occurred_at)
+    end
+  end
+
   describe "#handle_message" do
     subject { described_class.new.handle_message(message) }
 
@@ -300,8 +315,10 @@ RSpec.describe Analytics::AnalyticsAggregator do
 
       let(:dim_job) { create(:analytics__dim_job) }
 
-      it "creates a dim employer for the message" do
-        expect { subject }.to change(Analytics::DimJobOrder, :count).from(0).to(1)
+      it "creates a dim job order and status for the message" do
+        expect { subject }
+          .to change(Analytics::DimJobOrder, :count).from(0).to(1)
+          .and change(Analytics::FactJobOrderStatus, :count).from(0).to(1)
 
         dim_job_order = Analytics::DimJobOrder.first
 
@@ -310,6 +327,12 @@ RSpec.describe Analytics::AnalyticsAggregator do
         expect(dim_job_order.order_opened_at).to eq(message.occurred_at)
         expect(dim_job_order.employment_title).to eq(dim_job.employment_title)
         expect(dim_job_order.employer_name).to eq(dim_job.employer_name)
+
+        fact_job_order_status = dim_job_order.fact_job_order_statuses.first
+
+        expect(fact_job_order_status.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
+        expect(fact_job_order_status.started_at).to eq(message.occurred_at)
+        expect(fact_job_order_status.ended_at).to eq(nil)
       end
     end
 
@@ -320,13 +343,41 @@ RSpec.describe Analytics::AnalyticsAggregator do
           job_order_id:,
           order_count:,
           closed_at:,
-          closed_status:
+          closed_status:,
+          fact_job_order_statuses: [status]
         )
       end
+      let(:status) { build(:analytics_fact_job_order_status, status: JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT) }
       let(:job_order_id) { SecureRandom.uuid }
       let(:order_count) { nil }
       let(:closed_at) { nil }
       let(:closed_status) { nil }
+
+      context "when the message is activated" do
+        let(:message) do
+          build(
+            :message,
+            stream_id: job_order_id,
+            schema: JobOrders::Events::Activated::V1,
+            data: Core::Nothing
+          )
+        end
+
+        it_behaves_like "a status updater", JobOrders::ActivatedStatus::OPEN
+      end
+
+      context "when the message is needs_criteria" do
+        let(:message) do
+          build(
+            :message,
+            stream_id: job_order_id,
+            schema: JobOrders::Events::NeedsCriteria::V1,
+            data: Core::Nothing
+          )
+        end
+
+        it_behaves_like "a status updater", JobOrders::ActivatedStatus::NEEDS_CRITERIA
+      end
 
       context "when the message is job_order_stalled" do
         let(:message) do
@@ -350,6 +401,8 @@ RSpec.describe Analytics::AnalyticsAggregator do
           expect(dim_job_order.closed_at).to eq(nil)
           expect(dim_job_order.closed_status).to eq(nil)
         end
+
+        it_behaves_like "a status updater", JobOrders::StalledStatus::WAITING_ON_EMPLOYER
       end
 
       context "when the message is job_order_candidates_screened" do
@@ -372,6 +425,8 @@ RSpec.describe Analytics::AnalyticsAggregator do
           expect(dim_job_order.closed_at).to eq(nil)
           expect(dim_job_order.closed_status).to eq(nil)
         end
+
+        it_behaves_like "a status updater", Analytics::ActivatedStatus::CANDIDATES_SCREENED
       end
 
       context "when the message is job_order_filled" do
@@ -391,6 +446,8 @@ RSpec.describe Analytics::AnalyticsAggregator do
           expect(dim_job_order.closed_at).to eq(message.occurred_at)
           expect(dim_job_order.closed_status).to eq(JobOrders::ClosedStatus::FILLED)
         end
+
+        it_behaves_like "a status updater", Analytics::ClosedStatus::FILLED
       end
 
       context "when the message is job_order_not_filled" do
@@ -410,6 +467,8 @@ RSpec.describe Analytics::AnalyticsAggregator do
           expect(dim_job_order.closed_at).to eq(message.occurred_at)
           expect(dim_job_order.closed_status).to eq(JobOrders::ClosedStatus::NOT_FILLED)
         end
+
+        it_behaves_like "a status updater", Analytics::ClosedStatus::NOT_FILLED
       end
 
       context "when the message is job_order_order_count_added" do

@@ -123,29 +123,53 @@ module Analytics
     on_message JobOrders::Events::Added::V1 do |message|
       dim_job = DimJob.find_by!(job_id: message.data.job_id)
 
-      DimJobOrder.create!(
+      dim_job_order = DimJobOrder.create!(
         job_order_id: message.stream.id,
         order_opened_at: message.occurred_at,
         employer_name: dim_job.employer_name,
         employment_title: dim_job.employment_title,
         dim_job:
       )
+
+      append_status(dim_job_order:, status: ActivatedStatus::NEEDS_ORDER_COUNT, started_at: message.occurred_at)
+    end
+
+    on_message JobOrders::Events::Activated::V1 do |message|
+      dim_job_order = DimJobOrder.find_by(job_order_id: message.stream.id)
+      append_status(dim_job_order:, status: ActivatedStatus::OPEN, started_at: message.occurred_at)
+    end
+
+    on_message JobOrders::Events::NeedsCriteria::V1 do |message|
+      dim_job_order = DimJobOrder.find_by(job_order_id: message.stream.id)
+      append_status(dim_job_order:, status: ActivatedStatus::NEEDS_CRITERIA, started_at: message.occurred_at)
     end
 
     on_message JobOrders::Events::Stalled::V1 do |message|
-      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: nil, closed_status: nil)
+      dim_job_order = DimJobOrder.find_by(job_order_id: message.stream.id)
+      dim_job_order.update!(closed_at: nil, closed_status: nil)
+
+      append_status(dim_job_order:, status: StalledStatus::WAITING_ON_EMPLOYER, started_at: message.occurred_at)
     end
 
     on_message JobOrders::Events::CandidatesScreened::V1 do |message|
-      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: nil, closed_status: nil)
+      dim_job_order = DimJobOrder.find_by(job_order_id: message.stream.id)
+      dim_job_order.update!(closed_at: nil, closed_status: nil)
+
+      append_status(dim_job_order:, status: ActivatedStatus::CANDIDATES_SCREENED, started_at: message.occurred_at)
     end
 
     on_message JobOrders::Events::Filled::V1 do |message|
-      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::FILLED)
+      dim_job_order = DimJobOrder.find_by(job_order_id: message.stream.id)
+      dim_job_order.update!(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::FILLED)
+
+      append_status(dim_job_order:, status: ClosedStatus::FILLED, started_at: message.occurred_at)
     end
 
     on_message JobOrders::Events::NotFilled::V1 do |message|
-      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::NOT_FILLED)
+      dim_job_order = DimJobOrder.find_by(job_order_id: message.stream.id)
+      dim_job_order.update!(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::NOT_FILLED)
+
+      append_status(dim_job_order:, status: ClosedStatus::NOT_FILLED, started_at: message.occurred_at)
     end
 
     on_message JobOrders::Events::OrderCountAdded::V1 do |message|
@@ -311,6 +335,16 @@ module Analytics
     end
 
     private
+
+    def append_status(dim_job_order:, status:, started_at:)
+      dim_job_order.fact_job_order_statuses.where(ended_at: nil).update_all(ended_at: started_at)
+
+      FactJobOrderStatus.create!(
+        dim_job_order:,
+        status:,
+        started_at:
+      )
+    end
 
     def note_action(person_id:, originator:, action:, occurred_at:)
       dim_user_executor = Analytics::DimUser.find_by(email: originator)

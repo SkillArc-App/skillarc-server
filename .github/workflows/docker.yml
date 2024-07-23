@@ -11,24 +11,24 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Server Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./server.Dockerfile
           push: true
           tags: ghcr.io/skillarc-app/server:latest
-      - name: Build and Push Resque Docker image
-        uses: docker/build-push-action@v2
+      - name: Build and Push Sidekiq Docker image
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./sidekiq.Dockerfile

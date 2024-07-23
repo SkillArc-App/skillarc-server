@@ -18,7 +18,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT_UPLOAD }}
+          password: ${{ secrets.GH_ACTION_PAT_TOKEN }}
 
       - name: Build and Push Server Docker image
         uses: docker/build-push-action@v6
@@ -39,7 +39,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT_UPLOAD }}
+          password: ${{ secrets.GH_ACTION_PAT_TOKEN }}
 
       - name: Build and Push Sidekiq Docker image
         uses: docker/build-push-action@v6

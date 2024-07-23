@@ -59,7 +59,7 @@ class TrainingProviderInvitesController < ApplicationController
       training_provider_name: invite.training_provider_name,
       training_provider_id: invite.training_provider_id,
       used_at: invite.used_at,
-      link: "#{prefix}/invites/training_providers/#{invite.id}"
+      link: "#{prefix}/invites/training-providers/#{invite.id}"
     }
   end
 end

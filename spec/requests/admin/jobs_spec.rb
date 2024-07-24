@@ -185,6 +185,9 @@ RSpec.describe "Admin::Jobs", type: :request do
                 items: {
                   type: :string
                 }
+              },
+              hide_job: {
+                type: :boolean
               }
             }
           }
@@ -205,7 +208,8 @@ RSpec.describe "Admin::Jobs", type: :request do
           schedule: "9-5",
           work_days: "M-F",
           requirements_description: "Requirements",
-          industry: [Job::Industries::MANUFACTURING]
+          industry: [Job::Industries::MANUFACTURING],
+          hide_job: false
         }
       end
 

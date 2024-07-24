@@ -58,17 +58,17 @@ module Admin # rubocop:disable Metrics/ModuleLength
 
       update_params = {
         job_id: job.id,
-        category: job_params[:category] || job.category,
-        employment_title: job_params[:employment_title] || job.employment_title,
-        benefits_description: job_params[:benefits_description] || job.benefits_description,
-        responsibilities_description: job_params[:responsibilities_description] || job.responsibilities_description,
-        location: job_params[:location] || job.location,
-        employment_type: job_params[:employment_type] || job.employment_type,
-        hide_job: job_params[:hide_job] || job.hide_job,
-        schedule: job_params[:schedule] || job.schedule,
-        work_days: job_params[:work_days] || job.work_days,
-        requirements_description: job_params[:requirements_description] || job.requirements_description,
-        industry: job_params[:industry] || job.industry
+        category: job_params[:category],
+        employment_title: job_params[:employment_title],
+        benefits_description: job_params[:benefits_description],
+        responsibilities_description: job_params[:responsibilities_description],
+        location: job_params[:location],
+        employment_type: job_params[:employment_type],
+        hide_job: job_params[:hide_job],
+        schedule: job_params[:schedule],
+        work_days: job_params[:work_days],
+        requirements_description: job_params[:requirements_description],
+        industry: job_params[:industry]
       }
 
       with_message_service do

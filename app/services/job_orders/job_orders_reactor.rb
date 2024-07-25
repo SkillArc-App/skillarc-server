@@ -4,17 +4,6 @@ module JobOrders
       true
     end
 
-    def add_order_count(job_order_id:, order_count:, trace_id:)
-      message_service.create!(
-        schema: JobOrders::Events::OrderCountAdded::V1,
-        job_order_id:,
-        trace_id:,
-        data: {
-          order_count:
-        }
-      )
-    end
-
     def close_job_order_not_filled(job_order_id:, trace_id:)
       message_service.create!(
         schema: Events::NotFilled::V1,
@@ -231,6 +220,42 @@ module JobOrders
 
         emit_criteria_met_if_necessary(::Streams::Job.new(job_id: message.data.job_id), message.trace_id)
       end
+    end
+
+    on_message Commands::AddOrderCount::V1, :sync do |message|
+      message_service.create_once_for_trace!(
+        schema: Events::OrderCountAdded::V1,
+        stream: message.stream,
+        trace_id: message.trace_id,
+        data: {
+          order_count: message.data.order_count
+        }
+      )
+    end
+
+    on_message Commands::AddScreenerQuestions::V1, :sync do |message|
+      return unless ::Projectors::Streams::HasOccurred.project(
+        stream: Screeners::Streams::Questions.new(screener_questions_id: message.data.screener_questions_id),
+        schema: Screeners::Events::QuestionsCreated::V1
+      )
+
+      message_service.create_once_for_trace!(
+        schema: Events::ScreenerQuestionsAdded::V1,
+        stream: message.stream,
+        trace_id: message.trace_id,
+        data: {
+          screener_questions_id: message.data.screener_questions_id
+        }
+      )
+    end
+
+    on_message Commands::BypassScreenerQuestions::V1, :sync do |message|
+      message_service.create_once_for_stream!(
+        schema: Events::ScreenerQuestionsBypassed::V1,
+        stream: message.stream,
+        trace_id: message.trace_id,
+        data: Core::Nothing
+      )
     end
 
     on_message Events::OrderCountAdded::V1, :sync do |message|

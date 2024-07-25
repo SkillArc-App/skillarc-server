@@ -23,13 +23,18 @@ module JobOrders
       JOB_ORDER_NOTE_REMOVED = 'job_order_note_removed',
       JOB_ORDER_ORDER_COUNT_ADDED = 'job_order_order_count_added',
       JOB_ORDER_STALLED = 'job_order_stalled',
-      JOB_ORDER_TEAM_RESPONSIBLE_FOR_STATUS = 'job_order_team_responsible_for_status'
+      JOB_ORDER_TEAM_RESPONSIBLE_FOR_STATUS = 'job_order_team_responsible_for_status',
+      SCREENER_QUESTIONS_ADDED = 'job_order_screener_questions_added',
+      SCREENER_QUESTIONS_BYPASSED = 'job_order_screener_questions_bypassed'
     ].freeze
 
     COMMANDS = [
       ACTIVATE_JOB_ORDER = 'activate_job_order',
       ADD_CANDIDATE = 'job_order_add_candidate',
-      ADD_JOB_ORDER = 'add_job_order'
+      ADD_SCREENER_QUESTIONS = 'job_order_add_screener_questions',
+      BYPASS_SCREENER_QUESTIONS = 'job_order_bypass_screener_questions',
+      ADD_JOB_ORDER = 'add_job_order',
+      ADD_ORDER_COUNT = 'job_order_add_order_count'
     ].freeze
   end
 end

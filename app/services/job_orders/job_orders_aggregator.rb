@@ -65,7 +65,7 @@ module JobOrders
         id: message.stream.id,
         job_orders_jobs_id: message.data.job_id,
         opened_at: message.occurred_at,
-        status: JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT,
+        status: OrderStatus::NEEDS_ORDER_COUNT,
         order_count: nil,
         recommended_count: 0,
         applicant_count: 0,
@@ -141,48 +141,13 @@ module JobOrders
       )
     end
 
-    on_message Events::NeedsCriteria::V1, :sync do |message|
-      update_order_status(
-        job_order_id: message.stream.id,
-        status: ActivatedStatus::NEEDS_CRITERIA
-      )
-    end
+    on_message Events::StatusUpdated::V1, :sync do |message|
+      job_order = JobOrder.find(message.stream.id)
+      status = message.data.status
+      closed_at = message.occurred_at if ClosedStatus::ALL.include?(status)
+      owner = StatusOwner.find_by(order_status: status)
 
-    on_message Events::Activated::V1, :sync do |message|
-      update_order_status(
-        job_order_id: message.stream.id,
-        status: ActivatedStatus::OPEN
-      )
-    end
-
-    on_message Events::CandidatesScreened::V1, :sync do |message|
-      update_order_status(
-        job_order_id: message.stream.id,
-        status: ActivatedStatus::CANDIDATES_SCREENED
-      )
-    end
-
-    on_message Events::Stalled::V1, :sync do |message|
-      update_order_status(
-        job_order_id: message.stream.id,
-        status: message.data.status
-      )
-    end
-
-    on_message Events::Filled::V1, :sync do |message|
-      update_order_status(
-        job_order_id: message.stream.id,
-        status: ClosedStatus::FILLED,
-        closed_at: message.occurred_at
-      )
-    end
-
-    on_message Events::NotFilled::V1, :sync do |message|
-      update_order_status(
-        job_order_id: message.stream.id,
-        status: ClosedStatus::NOT_FILLED,
-        closed_at: message.occurred_at
-      )
+      job_order.update!(closed_at:, status:, team_id: owner&.team_id)
     end
 
     on_message Events::NoteAdded::V1, :sync do |message|
@@ -207,12 +172,6 @@ module JobOrders
     end
 
     private
-
-    def update_order_status(job_order_id:, status:, closed_at: nil)
-      job_order = JobOrder.find(job_order_id)
-      owner = StatusOwner.find_by(order_status: status)
-      job_order.update!(closed_at:, status:, team_id: owner&.team_id)
-    end
 
     def update_job_order_counts(job_order)
       counts = job_order.candidates.group(:status).count

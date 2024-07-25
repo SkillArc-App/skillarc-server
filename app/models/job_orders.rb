@@ -15,33 +15,37 @@ module JobOrders
     ].freeze
   end
 
-  module ActivatedStatus
+  module OrderStatus
     ALL = [
       NEEDS_ORDER_COUNT = "needs_order_count",
       NEEDS_CRITERIA = "needs_criteria",
       OPEN = "open",
-      CANDIDATES_SCREENED = "candidates_screened"
-    ].freeze
-  end
-
-  module ClosedStatus
-    ALL = [
+      CANDIDATES_SCREENED = "candidates_screened",
+      WAITING_ON_EMPLOYER = "waiting_on_employer",
       FILLED = "filled",
       NOT_FILLED = 'not_filled'
     ].freeze
   end
 
-  module StalledStatus
+  module ActivatedStatus
     ALL = [
-      WAITING_ON_EMPLOYER = "waiting_on_employer"
+      NEEDS_ORDER_COUNT = OrderStatus::NEEDS_ORDER_COUNT,
+      NEEDS_CRITERIA = OrderStatus::NEEDS_CRITERIA,
+      OPEN = OrderStatus::OPEN,
+      CANDIDATES_SCREENED = OrderStatus::CANDIDATES_SCREENED
     ].freeze
   end
 
-  module OrderStatus
+  module ClosedStatus
     ALL = [
-      *ActivatedStatus::ALL,
-      *ClosedStatus::ALL,
-      *StalledStatus::ALL
+      FILLED = OrderStatus::FILLED,
+      NOT_FILLED = OrderStatus::NOT_FILLED
+    ].freeze
+  end
+
+  module StalledStatus
+    ALL = [
+      WAITING_ON_EMPLOYER = OrderStatus::WAITING_ON_EMPLOYER
     ].freeze
   end
 end

@@ -141,11 +141,11 @@ module Analytics
     end
 
     on_message JobOrders::Events::Filled::V1 do |message|
-      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::FILLED)
+      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::OrderStatus::FILLED)
     end
 
     on_message JobOrders::Events::NotFilled::V1 do |message|
-      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::NOT_FILLED)
+      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::OrderStatus::NOT_FILLED)
     end
 
     on_message JobOrders::Events::OrderCountAdded::V1 do |message|

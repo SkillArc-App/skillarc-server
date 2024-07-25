@@ -37,7 +37,7 @@ RSpec.describe JobOrders::JobOrdersQuery do
     let!(:job1) { create(:job_orders__job, applicable_for_job_orders: true) }
     let!(:job2) { create(:job_orders__job, applicable_for_job_orders: false) }
     let!(:job_order1) { create(:job_orders__job_order, job: job1) }
-    let!(:job_order2) { create(:job_orders__job_order, job: job2, status: JobOrders::ClosedStatus::NOT_FILLED) }
+    let!(:job_order2) { create(:job_orders__job_order, job: job2, status: JobOrders::OrderStatus::NOT_FILLED) }
 
     it "returns all open orders which have applicable jobs" do
       expected_response = [

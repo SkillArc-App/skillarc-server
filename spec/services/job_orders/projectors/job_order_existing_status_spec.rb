@@ -6,8 +6,8 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
 
     let(:stream) { JobOrders::Streams::JobOrder.new(job_order_id:) }
     let(:job_order_id) { SecureRandom.uuid }
-    let(:status1) { JobOrders::ActivatedStatus::OPEN }
-    let(:status2) { JobOrders::StalledStatus::WAITING_ON_EMPLOYER }
+    let(:status1) { JobOrders::OrderStatus::OPEN }
+    let(:status2) { JobOrders::OrderStatus::WAITING_ON_EMPLOYER }
 
     let(:now) { Time.zone.now }
 
@@ -36,7 +36,7 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
       let(:messages) { [] }
 
       it "return the open status" do
-        expect(subject.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
+        expect(subject.status).to eq(JobOrders::OrderStatus::NEEDS_ORDER_COUNT)
       end
     end
 

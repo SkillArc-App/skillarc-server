@@ -335,7 +335,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
             stream_id: job_order_id,
             schema: JobOrders::Events::Stalled::V1,
             data: {
-              status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
+              status: JobOrders::OrderStatus::WAITING_ON_EMPLOYER
             }
           )
         end
@@ -389,7 +389,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
 
           dim_job_order.reload
           expect(dim_job_order.closed_at).to eq(message.occurred_at)
-          expect(dim_job_order.closed_status).to eq(JobOrders::ClosedStatus::FILLED)
+          expect(dim_job_order.closed_status).to eq(JobOrders::OrderStatus::FILLED)
         end
       end
 
@@ -408,7 +408,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
 
           dim_job_order.reload
           expect(dim_job_order.closed_at).to eq(message.occurred_at)
-          expect(dim_job_order.closed_status).to eq(JobOrders::ClosedStatus::NOT_FILLED)
+          expect(dim_job_order.closed_status).to eq(JobOrders::OrderStatus::NOT_FILLED)
         end
       end
 

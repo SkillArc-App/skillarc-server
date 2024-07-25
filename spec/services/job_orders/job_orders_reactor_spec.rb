@@ -538,7 +538,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               schema: JobOrders::Events::StatusUpdated::V1,
               occurred_at: Time.zone.local(2019, 6, 1),
               data: {
-                status: JobOrders::ClosedStatus::NOT_FILLED
+                status: JobOrders::OrderStatus::NOT_FILLED
               }
             )
           end
@@ -786,7 +786,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
               schema: JobOrders::Events::StatusUpdated::V1,
               stream:,
               occurred_at: Time.zone.local(2019, 1, 1),
-              data: { status: JobOrders::ClosedStatus::NOT_FILLED }
+              data: { status: JobOrders::OrderStatus::NOT_FILLED }
             )
           ]
         end
@@ -862,7 +862,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
           context "when the current status and new status are the same" do
             let(:existing_status) do
-              JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ActivatedStatus::OPEN)
+              JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OrderStatus::OPEN)
             end
             let(:new_status) do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -884,7 +884,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
           context "when the current status and new status are the different" do
             context "when the new status should be need critiera" do
               let(:existing_status) do
-                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OrderStatus::WAITING_ON_EMPLOYER)
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -903,7 +903,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                     stream: message.stream,
                     schema: JobOrders::Events::StatusUpdated::V1,
                     data: {
-                      status: JobOrders::ActivatedStatus::NEEDS_CRITERIA
+                      status: JobOrders::OrderStatus::NEEDS_CRITERIA
                     }
                   )
 
@@ -913,7 +913,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             context "when the new status should be activated" do
               let(:existing_status) do
-                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OrderStatus::WAITING_ON_EMPLOYER)
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -932,7 +932,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                     stream: message.stream,
                     schema: JobOrders::Events::StatusUpdated::V1,
                     data: {
-                      status: JobOrders::ActivatedStatus::OPEN
+                      status: JobOrders::OrderStatus::OPEN
                     }
                   )
 
@@ -942,7 +942,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             context "when the new status should be candidates screened" do
               let(:existing_status) do
-                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ClosedStatus::FILLED)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OrderStatus::FILLED)
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -961,7 +961,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                     stream: message.stream,
                     schema: JobOrders::Events::StatusUpdated::V1,
                     data: {
-                      status: JobOrders::ActivatedStatus::CANDIDATES_SCREENED
+                      status: JobOrders::OrderStatus::CANDIDATES_SCREENED
                     }
                   )
 
@@ -971,7 +971,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             context "when the new status should be stalled" do
               let(:existing_status) do
-                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ActivatedStatus::OPEN)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OrderStatus::OPEN)
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -990,7 +990,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                     stream: message.stream,
                     schema: JobOrders::Events::StatusUpdated::V1,
                     data: {
-                      status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
+                      status: JobOrders::OrderStatus::WAITING_ON_EMPLOYER
                     }
                   )
 
@@ -1000,7 +1000,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             context "when the new status should be filled" do
               let(:existing_status) do
-                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ActivatedStatus::OPEN)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OrderStatus::OPEN)
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -1019,7 +1019,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                     stream: message.stream,
                     schema: JobOrders::Events::StatusUpdated::V1,
                     data: {
-                      status: JobOrders::ClosedStatus::FILLED
+                      status: JobOrders::OrderStatus::FILLED
                     }
                   )
 
@@ -1029,7 +1029,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
 
             context "when the new status should be not filled" do
               let(:existing_status) do
-                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::ActivatedStatus::OPEN)
+                JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OrderStatus::OPEN)
               end
               let(:new_status) do
                 JobOrders::Projectors::JobOrderStatus::Projection.new(
@@ -1048,7 +1048,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                     stream: message.stream,
                     schema: JobOrders::Events::StatusUpdated::V1,
                     data: {
-                      status: JobOrders::ClosedStatus::NOT_FILLED
+                      status: JobOrders::OrderStatus::NOT_FILLED
                     }
                   )
 

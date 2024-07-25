@@ -14,14 +14,14 @@ module JobOrders
         end
 
         def status
-          return ClosedStatus::NOT_FILLED if not_filled?
-          return ActivatedStatus::NEEDS_ORDER_COUNT if order_count.nil?
-          return ActivatedStatus::NEEDS_CRITERIA unless criteria_met?
-          return ClosedStatus::FILLED if hired_candidates.length >= order_count
-          return StalledStatus::WAITING_ON_EMPLOYER if recommended_candidates.length + hired_candidates.length >= order_count
-          return ActivatedStatus::CANDIDATES_SCREENED if screened_candidates.length.positive?
+          return OrderStatus::NOT_FILLED if not_filled?
+          return OrderStatus::NEEDS_ORDER_COUNT if order_count.nil?
+          return OrderStatus::NEEDS_CRITERIA unless criteria_met?
+          return OrderStatus::FILLED if hired_candidates.length >= order_count
+          return OrderStatus::WAITING_ON_EMPLOYER if recommended_candidates.length + hired_candidates.length >= order_count
+          return OrderStatus::CANDIDATES_SCREENED if screened_candidates.length.positive?
 
-          ActivatedStatus::OPEN
+          OrderStatus::OPEN
         end
 
         private

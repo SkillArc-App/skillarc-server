@@ -87,7 +87,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         )
       end
 
-      let(:order_status) { JobOrders::ActivatedStatus::CANDIDATES_SCREENED }
+      let(:order_status) { JobOrders::OrderStatus::CANDIDATES_SCREENED }
 
       context "when there is not status owner" do
         it "creates a new order status" do
@@ -196,7 +196,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
         job_order = JobOrders::JobOrder.take(1).first
         expect(job_order.id).to eq(message.stream.id)
-        expect(job_order.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
+        expect(job_order.status).to eq(JobOrders::OrderStatus::NEEDS_ORDER_COUNT)
         expect(job_order.opened_at).to eq(message.occurred_at)
         expect(job_order.job).to eq(job)
         expect(job_order.order_count).to eq(nil)
@@ -271,7 +271,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
 
       let!(:job_order) { create(:job_orders__job_order, candidate_count: 0) }
       let!(:person) { create(:job_orders__person) }
-      let(:status) { JobOrders::ActivatedStatus::ADDED }
+      let(:status) { JobOrders::OrderStatus::ADDED }
 
       it "creates a candidate record and updates the job order" do
         expect { subject }.to change(JobOrders::Candidate, :count).from(0).to(1)
@@ -485,102 +485,61 @@ RSpec.describe JobOrders::JobOrdersAggregator do
         end
       end
 
-      context "when the message is job order need criteria" do
+      context "when the message is job order status updated" do
         let(:message) do
           build(
             :message,
-            schema: JobOrders::Events::NeedsCriteria::V1,
-            stream_id: job_order.id,
-            data: Core::Nothing
-          )
-        end
-
-        let(:expected_status) { JobOrders::ActivatedStatus::NEEDS_CRITERIA }
-        let(:expected_closed_at) { nil }
-
-        it_behaves_like "a handled event that updates status and owned team"
-      end
-
-      context "when the message is job order activated" do
-        let(:message) do
-          build(
-            :message,
-            schema: JobOrders::Events::Activated::V1,
-            stream_id: job_order.id,
-            data: Core::Nothing
-          )
-        end
-
-        let(:expected_status) { JobOrders::ActivatedStatus::OPEN }
-        let(:expected_closed_at) { nil }
-
-        it_behaves_like "a handled event that updates status and owned team"
-      end
-
-      context "when the message is job order stalled" do
-        let(:message) do
-          build(
-            :message,
-            schema: JobOrders::Events::Stalled::V1,
+            schema: JobOrders::Events::StatusUpdated::V1,
             stream_id: job_order.id,
             data: {
-              status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
+              status:
             }
           )
         end
 
-        let(:expected_status) { JobOrders::StalledStatus::WAITING_ON_EMPLOYER }
-        let(:expected_closed_at) { nil }
+        let(:status) { JobOrders::OrderStatus::NEEDS_CRITERIA }
+        let!(:job_order) { create(:job_orders__job_order, closed_at: Time.utc(2024, 1, 1)) }
 
-        it_behaves_like "a handled event that updates status and owned team"
-      end
-
-      context "when the message is job order candidates screened" do
-        let(:message) do
-          build(
-            :message,
-            schema: JobOrders::Events::CandidatesScreened::V1,
-            stream_id: job_order.id,
-            data: Core::Nothing
-          )
+        context "when the status is unowned" do
+          it "does not update the team_id" do
+            expect { subject }.not_to change(job_order, :team_id)
+          end
         end
 
-        let(:expected_status) { JobOrders::ActivatedStatus::CANDIDATES_SCREENED }
-        let(:expected_closed_at) { nil }
+        context "when the status is owned" do
+          let!(:status_owner) { create(:job_orders__status_owner, order_status: status) }
 
-        it_behaves_like "a handled event that updates status and owned team"
-      end
+          it "updates the team_id" do
+            subject
 
-      context "when the message is job order filled" do
-        let(:message) do
-          build(
-            :message,
-            schema: JobOrders::Events::Filled::V1,
-            stream_id: job_order.id,
-            data: Core::Nothing
-          )
+            job_order.reload
+            expect(job_order.team_id).to eq(status_owner.team_id)
+          end
         end
 
-        let(:expected_status) { JobOrders::ClosedStatus::FILLED }
-        let(:expected_closed_at) { message.occurred_at }
+        context "when the status it not a closed status" do
+          let(:status) { JobOrders::OrderStatus::OPEN }
 
-        it_behaves_like "a handled event that updates status and owned team"
-      end
+          it "updates the job order status" do
+            subject
 
-      context "when the message is job order not filled" do
-        let(:message) do
-          build(
-            :message,
-            schema: JobOrders::Events::NotFilled::V1,
-            stream_id: job_order.id,
-            data: Core::Nothing
-          )
+            job_order.reload
+            expect(job_order.closed_at).to eq(nil)
+            expect(job_order.status).to eq(status)
+          end
         end
 
-        let(:expected_status) { JobOrders::ClosedStatus::NOT_FILLED }
-        let(:expected_closed_at) { message.occurred_at }
+        context "when the status is a closed status" do
+          let(:status) { JobOrders::OrderStatus::NOT_FILLED }
 
-        it_behaves_like "a handled event that updates status and owned team"
+          it "updates the job order status" do
+            subject
+
+            job_order.reload
+            expect(job_order.closed_at).to eq(message.occurred_at)
+            expect(job_order.status).to eq(status)
+          end
+        end
       end
     end
 

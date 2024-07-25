@@ -57,7 +57,7 @@ RSpec.describe JobOrders::TeamOrderStatusReactor do
             [
               build(
                 :message,
-                stream_id: JobOrders::ActivatedStatus::OPEN,
+                stream_id: JobOrders::OrderStatus::OPEN,
                 schema: JobOrders::Events::TeamResponsibleForStatus::V1,
                 data: {
                   team_id:
@@ -67,7 +67,7 @@ RSpec.describe JobOrders::TeamOrderStatusReactor do
           end
 
           context "when no job order has the assigned status" do
-            let!(:job_order) { create(:job_orders__job_order, status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER) }
+            let!(:job_order) { create(:job_orders__job_order, status: JobOrders::OrderStatus::WAITING_ON_EMPLOYER) }
 
             let(:message_service) { double }
 
@@ -80,8 +80,8 @@ RSpec.describe JobOrders::TeamOrderStatusReactor do
             let(:id1) { SecureRandom.uuid }
             let(:id2) { SecureRandom.uuid }
 
-            let!(:job_order1) { create(:job_orders__job_order, id: id1, job: job1, opened_at: date - 2.days, status: JobOrders::ActivatedStatus::OPEN) }
-            let!(:job_order2) { create(:job_orders__job_order, id: id2, job: job2, opened_at: date - 1.day, status: JobOrders::ActivatedStatus::OPEN) }
+            let!(:job_order1) { create(:job_orders__job_order, id: id1, job: job1, opened_at: date - 2.days, status: JobOrders::OrderStatus::OPEN) }
+            let!(:job_order2) { create(:job_orders__job_order, id: id2, job: job2, opened_at: date - 1.day, status: JobOrders::OrderStatus::OPEN) }
 
             let(:job1) { create(:job_orders__job, employment_title: "1", employer_name: "A") }
             let(:job2) { create(:job_orders__job, employment_title: "2", employer_name: "B") }

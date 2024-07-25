@@ -3,7 +3,7 @@ module JobOrders
     module StatusUpdated
       module Data
         class V1
-          extend Messages::Payload
+          extend Core::Payload
 
           schema do
             status Either(*OrderStatus::ALL)
@@ -13,7 +13,7 @@ module JobOrders
 
       V1 = Core::Schema.active(
         type: Core::EVENT,
-        data: Core::Nothing,
+        data: Data::V1,
         metadata: Core::Nothing,
         stream: Streams::JobOrder,
         message_type: MessageTypes::STATUS_UPDATED,

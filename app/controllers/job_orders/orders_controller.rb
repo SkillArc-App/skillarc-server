@@ -91,9 +91,11 @@ module JobOrders
 
     def close_not_filled
       with_message_service do
-        JobOrders::JobOrdersReactor.new(message_service:).close_job_order_not_filled(
+        message_service.create!(
+          schema: Commands::CloseAsNotFilled::V1,
           job_order_id: params[:order_id],
-          trace_id: request.request_id
+          trace_id: request.request_id,
+          data: Core::Nothing
         )
       end
 

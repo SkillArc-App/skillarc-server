@@ -340,9 +340,11 @@ RSpec.describe "JobOrders", type: :request do
         let(:order_1_not_filled) do
           build(
             :message,
-            schema: JobOrders::Events::NotFilled::V1,
+            schema: JobOrders::Events::StatusUpdated::V1,
             stream_id: id,
-            data: Core::Nothing,
+            data: {
+              status: JobOrders::OrderStatus::NOT_FILLED
+            },
             occurred_at: 4.minutes.ago
           )
         end
@@ -398,11 +400,13 @@ RSpec.describe "JobOrders", type: :request do
         include_context "job order authenticated"
 
         before do
-          expect_any_instance_of(JobOrders::JobOrdersReactor)
-            .to receive(:close_job_order_not_filled)
+          expect_any_instance_of(MessageService)
+            .to receive(:create!)
             .with(
+              schema: JobOrders::Commands::CloseAsNotFilled::V1,
               job_order_id: id,
-              trace_id: be_a(String)
+              trace_id: be_a(String),
+              data: Core::Nothing
             )
             .and_call_original
         end

@@ -28,6 +28,7 @@ module JobOrders
       def serialize_job_order_summary(job_order)
         {
           id: job_order.id,
+          screener_questions_id: job_order.screener_questions_id,
           employment_title: job_order.job.employment_title,
           employer_name: job_order.job.employer_name,
           opened_at: job_order.opened_at,

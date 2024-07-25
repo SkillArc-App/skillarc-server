@@ -1268,6 +1268,11 @@ RSpec.configure do |config|
                 type: :string,
                 format: :uuid,
                 nullable: true
+              },
+              screenerQuestionsId: {
+                type: :string,
+                format: :uuid,
+                nullable: true
               }
             }
           },

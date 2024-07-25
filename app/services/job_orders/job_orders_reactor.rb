@@ -4,15 +4,6 @@ module JobOrders
       true
     end
 
-    def close_job_order_not_filled(job_order_id:, trace_id:)
-      message_service.create!(
-        schema: Events::NotFilled::V1,
-        job_order_id:,
-        trace_id:,
-        data: Core::Nothing
-      )
-    end
-
     def add_note(job_order_id:, originator:, note:, note_id:, trace_id:)
       message_service.create!(
         schema: Events::NoteAdded::V1,
@@ -172,7 +163,7 @@ module JobOrders
 
     on_message Commands::Activate::V1, :sync do |message|
       job_order_added = ::Projectors::Streams::GetFirst.project(
-        schema: JobOrders::Events::Added::V1,
+        schema: Events::Added::V1,
         stream: message.stream
       )
 
@@ -180,7 +171,7 @@ module JobOrders
         Sentry.capture_exception(MessageConsumer::FailedToHandleMessage.new("Job Order not found", message))
       elsif active_job_order(message.occurred_at, job_order_added.data.job_id).present?
         message_service.create_once_for_trace!(
-          schema: JobOrders::Events::ActivationFailed::V1,
+          schema: Events::ActivationFailed::V1,
           trace_id: message.trace_id,
           stream: message.stream,
           data: {
@@ -189,7 +180,7 @@ module JobOrders
         )
       else
         message_service.create_once_for_trace!(
-          schema: JobOrders::Events::Activated::V1,
+          schema: Events::Reactivated::V1,
           trace_id: message.trace_id,
           stream: message.stream,
           data: Core::Nothing
@@ -220,6 +211,15 @@ module JobOrders
 
         emit_criteria_met_if_necessary(::Streams::Job.new(job_id: message.data.job_id), message.trace_id)
       end
+    end
+
+    on_message Commands::CloseAsNotFilled::V1, :sync do |message|
+      message_service.create_once_for_trace!(
+        schema: Events::ClosedNotFilled::V1,
+        stream: message.stream,
+        trace_id: message.trace_id,
+        data: Core::Nothing
+      )
     end
 
     on_message Commands::AddOrderCount::V1, :sync do |message|
@@ -259,6 +259,14 @@ module JobOrders
     end
 
     on_message Events::OrderCountAdded::V1, :sync do |message|
+      emit_new_status_if_necessary(message)
+    end
+
+    on_message Events::Reactivated::V1, :sync do |message|
+      emit_new_status_if_necessary(message)
+    end
+
+    on_message Events::ClosedNotFilled::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end
 
@@ -332,52 +340,14 @@ module JobOrders
       current_status = JobOrders::Projectors::JobOrderStatus.new.project(messages).status
       return if current_status == existing_status
 
-      case current_status
-      when JobOrders::ActivatedStatus::OPEN
-        message_service.create_once_for_trace!(
-          trace_id: message.trace_id,
-          stream: message.stream,
-          schema: Events::Activated::V1,
-          data: Core::Nothing
-        )
-      when ActivatedStatus::NEEDS_CRITERIA
-        message_service.create_once_for_trace!(
-          trace_id: message.trace_id,
-          stream: message.stream,
-          schema: Events::NeedsCriteria::V1,
-          data: Core::Nothing
-        )
-      when JobOrders::ActivatedStatus::CANDIDATES_SCREENED
-        message_service.create_once_for_trace!(
-          trace_id: message.trace_id,
-          stream: message.stream,
-          schema: Events::CandidatesScreened::V1,
-          data: Core::Nothing
-        )
-      when *JobOrders::StalledStatus::ALL
-        message_service.create_once_for_trace!(
-          trace_id: message.trace_id,
-          stream: message.stream,
-          schema: Events::Stalled::V1,
-          data: {
-            status: current_status
-          }
-        )
-      when JobOrders::ClosedStatus::FILLED
-        message_service.create_once_for_trace!(
-          trace_id: message.trace_id,
-          stream: message.stream,
-          schema: Events::Filled::V1,
-          data: Core::Nothing
-        )
-      when JobOrders::ClosedStatus::NOT_FILLED
-        message_service.create_once_for_trace!(
-          trace_id: message.trace_id,
-          stream: message.stream,
-          schema: Events::NotFilled::V1,
-          data: Core::Nothing
-        )
-      end
+      message_service.create_once_for_trace!(
+        trace_id: message.trace_id,
+        stream: message.stream,
+        schema: Events::StatusUpdated::V1,
+        data: {
+          status: current_status
+        }
+      )
     end
 
     def job_order_added_events(job_id)

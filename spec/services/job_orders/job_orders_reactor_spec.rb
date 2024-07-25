@@ -11,27 +11,6 @@ RSpec.describe JobOrders::JobOrdersReactor do
   let(:person_id) { SecureRandom.uuid }
   let(:stream) { JobOrders::Streams::JobOrder.new(job_order_id:) }
 
-  describe "#close_job_order_not_filled" do
-    subject do
-      instance.close_job_order_not_filled(job_order_id:, trace_id:)
-    end
-
-    let(:job_order_id) { 10 }
-
-    it "fires off a job order order activated event" do
-      expect(message_service)
-        .to receive(:create!)
-        .with(
-          schema: JobOrders::Events::NotFilled::V1,
-          job_order_id:,
-          trace_id:,
-          data: Core::Nothing
-        )
-
-      subject
-    end
-  end
-
   describe "#add_note" do
     subject do
       instance.add_note(
@@ -351,6 +330,32 @@ RSpec.describe JobOrders::JobOrdersReactor do
       end
     end
 
+    context "when the message is closed as not filled" do
+      let(:message) do
+        build(
+          :message,
+          schema: JobOrders::Commands::CloseAsNotFilled::V1,
+          stream:,
+          data: Core::Nothing
+        )
+      end
+      let(:stream) { JobOrders::Streams::JobOrder.new(job_order_id:) }
+
+      it "emits a closed not filled event" do
+        expect(message_service)
+          .to receive(:create_once_for_trace!)
+          .with(
+            schema: JobOrders::Events::ClosedNotFilled::V1,
+            stream: message.stream,
+            trace_id: message.trace_id,
+            data: Core::Nothing
+          )
+          .and_call_original
+
+        subject
+      end
+    end
+
     context "when the message is add screener questions" do
       let(:message) do
         build(
@@ -530,9 +535,11 @@ RSpec.describe JobOrders::JobOrdersReactor do
             build(
               :message,
               stream: job_order1.stream,
-              schema: JobOrders::Events::NotFilled::V1,
+              schema: JobOrders::Events::StatusUpdated::V1,
               occurred_at: Time.zone.local(2019, 6, 1),
-              data: Core::Nothing
+              data: {
+                status: JobOrders::ClosedStatus::NOT_FILLED
+              }
             )
           end
           let(:job_order2) do
@@ -776,10 +783,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
             ),
             build(
               :message,
-              schema: JobOrders::Events::NotFilled::V1,
+              schema: JobOrders::Events::StatusUpdated::V1,
               stream:,
               occurred_at: Time.zone.local(2019, 1, 1),
-              data: Core::Nothing
+              data: { status: JobOrders::ClosedStatus::NOT_FILLED }
             )
           ]
         end
@@ -788,7 +795,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
           expect(message_service)
             .to receive(:create_once_for_trace!)
             .with(
-              schema: JobOrders::Events::Activated::V1,
+              schema: JobOrders::Events::Reactivated::V1,
               trace_id: message.trace_id,
               stream: message.stream,
               data: Core::Nothing
@@ -894,8 +901,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .with(
                     trace_id: message.trace_id,
                     stream: message.stream,
-                    schema: JobOrders::Events::NeedsCriteria::V1,
-                    data: Core::Nothing
+                    schema: JobOrders::Events::StatusUpdated::V1,
+                    data: {
+                      status: JobOrders::ActivatedStatus::NEEDS_CRITERIA
+                    }
                   )
 
                 subject
@@ -921,8 +930,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .with(
                     trace_id: message.trace_id,
                     stream: message.stream,
-                    schema: JobOrders::Events::Activated::V1,
-                    data: Core::Nothing
+                    schema: JobOrders::Events::StatusUpdated::V1,
+                    data: {
+                      status: JobOrders::ActivatedStatus::OPEN
+                    }
                   )
 
                 subject
@@ -948,8 +959,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .with(
                     trace_id: message.trace_id,
                     stream: message.stream,
-                    schema: JobOrders::Events::CandidatesScreened::V1,
-                    data: Core::Nothing
+                    schema: JobOrders::Events::StatusUpdated::V1,
+                    data: {
+                      status: JobOrders::ActivatedStatus::CANDIDATES_SCREENED
+                    }
                   )
 
                 subject
@@ -975,7 +988,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .with(
                     trace_id: message.trace_id,
                     stream: message.stream,
-                    schema: JobOrders::Events::Stalled::V1,
+                    schema: JobOrders::Events::StatusUpdated::V1,
                     data: {
                       status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
                     }
@@ -1004,8 +1017,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .with(
                     trace_id: message.trace_id,
                     stream: message.stream,
-                    schema: JobOrders::Events::Filled::V1,
-                    data: Core::Nothing
+                    schema: JobOrders::Events::StatusUpdated::V1,
+                    data: {
+                      status: JobOrders::ClosedStatus::FILLED
+                    }
                   )
 
                 subject
@@ -1031,8 +1046,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
                   .with(
                     trace_id: message.trace_id,
                     stream: message.stream,
-                    schema: JobOrders::Events::NotFilled::V1,
-                    data: Core::Nothing
+                    schema: JobOrders::Events::StatusUpdated::V1,
+                    data: {
+                      status: JobOrders::ClosedStatus::NOT_FILLED
+                    }
                   )
 
                 subject
@@ -1069,6 +1086,30 @@ RSpec.describe JobOrders::JobOrdersReactor do
             data: {
               person_id: SecureRandom.uuid
             }
+          )
+        end
+
+        it_behaves_like "emits new status events if necessary"
+      end
+
+      context "when the message is job order closed not filled" do
+        let(:message) do
+          build(
+            :message,
+            schema: JobOrders::Events::ClosedNotFilled::V1,
+            data: Core::Nothing
+          )
+        end
+
+        it_behaves_like "emits new status events if necessary"
+      end
+
+      context "when the message is job order reactivated" do
+        let(:message) do
+          build(
+            :message,
+            schema: JobOrders::Events::Reactivated::V1,
+            data: Core::Nothing
           )
         end
 

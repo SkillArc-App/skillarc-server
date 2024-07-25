@@ -47,7 +47,8 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: TrainingProviders::TrainingProviderReactor.new, listener_name: "training_provider_reactor"),
       DbStreamListener.build(consumer: Documents::DocumentsReactor.new, listener_name: "documents_reactor"),
       DbStreamListener.build(consumer: Teams::TeamsReactor.new, listener_name: "teams_reactor"),
-      DbStreamListener.build(consumer: Screeners::ScreenerReactor.new, listener_name: "screener_reactor")
+      DbStreamListener.build(consumer: Screeners::ScreenerReactor.new, listener_name: "screener_reactor"),
+      DbStreamListener.build(consumer: JobOrders::StatusReactor.new, listener_name: "job_order_status_reactor")
     ]
 
     (aggregators + reactors).each do |listener|

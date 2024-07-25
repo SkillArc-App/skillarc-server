@@ -13,7 +13,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         stream:,
-        schema: JobOrders::Events::NotFilled::V1,
+        schema: JobOrders::Events::ClosedNotFilled::V1,
         data: Core::Nothing
       )
     end
@@ -21,7 +21,7 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         stream:,
-        schema: JobOrders::Events::Activated::V1,
+        schema: JobOrders::Events::Reactivated::V1,
         data: Core::Nothing
       )
     end

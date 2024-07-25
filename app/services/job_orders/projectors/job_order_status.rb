@@ -56,11 +56,11 @@ module JobOrders
         accumulator.with(order_count: message.data.order_count)
       end
 
-      on_message Events::NotFilled::V1 do |_, accumulator|
+      on_message Events::ClosedNotFilled::V1 do |_, accumulator|
         accumulator.with(not_filled?: true)
       end
 
-      on_message Events::Activated::V1 do |_, accumulator|
+      on_message Events::Reactivated::V1 do |_, accumulator|
         accumulator.with(not_filled?: false)
       end
 

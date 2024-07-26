@@ -132,20 +132,12 @@ module Analytics
       )
     end
 
-    on_message JobOrders::Events::Stalled::V1 do |message|
-      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: nil, closed_status: nil)
-    end
-
-    on_message JobOrders::Events::CandidatesScreened::V1 do |message|
-      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: nil, closed_status: nil)
-    end
-
-    on_message JobOrders::Events::Filled::V1 do |message|
-      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::FILLED)
-    end
-
-    on_message JobOrders::Events::NotFilled::V1 do |message|
-      DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: JobOrders::ClosedStatus::NOT_FILLED)
+    on_message JobOrders::Events::StatusUpdated::V1 do |message|
+      if JobOrders::ClosedStatus::ALL.include?(message.data.status)
+        DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: message.data.status)
+      else
+        DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: nil, closed_status: nil)
+      end
     end
 
     on_message JobOrders::Events::OrderCountAdded::V1 do |message|

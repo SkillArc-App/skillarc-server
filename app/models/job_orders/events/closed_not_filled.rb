@@ -1,12 +1,12 @@
 module JobOrders
   module Events
-    module Filled
-      V1 = Core::Schema.inactive(
+    module ClosedNotFilled
+      V1 = Core::Schema.active(
         type: Core::EVENT,
         data: Core::Nothing,
         metadata: Core::Nothing,
         stream: Streams::JobOrder,
-        message_type: MessageTypes::JOB_ORDER_FILLED,
+        message_type: MessageTypes::CLOSED_NOT_FILLED,
         version: 1
       )
     end

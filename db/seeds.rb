@@ -504,14 +504,14 @@ message_service.create!(
 
 message_service.create!(
   schema: JobOrders::Events::TeamResponsibleForStatus::V1,
-  order_status: JobOrders::ActivatedStatus::OPEN,
+  order_status: JobOrders::OrderStatus::OPEN,
   data: {
     team_id: team1_id
   }
 )
 message_service.create!(
   schema: JobOrders::Events::TeamResponsibleForStatus::V1,
-  order_status: JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT,
+  order_status: JobOrders::OrderStatus::NEEDS_ORDER_COUNT,
   data: {
     team_id: team2_id
   }

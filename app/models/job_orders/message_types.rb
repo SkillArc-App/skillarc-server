@@ -3,6 +3,7 @@
 module JobOrders
   module MessageTypes
     EVENTS = [
+      CLOSED_NOT_FILLED = "job_order_closed_not_filled",
       JOB_ORDER_ACTIVATED = 'job_order_activated',
       JOB_ORDER_ACTIVATION_FAILED = 'job_order_activation_failed',
       JOB_ORDER_ADDED = 'job_order_added',
@@ -24,17 +25,20 @@ module JobOrders
       JOB_ORDER_ORDER_COUNT_ADDED = 'job_order_order_count_added',
       JOB_ORDER_STALLED = 'job_order_stalled',
       JOB_ORDER_TEAM_RESPONSIBLE_FOR_STATUS = 'job_order_team_responsible_for_status',
+      REACTIVATED = 'job_order_reactivated',
       SCREENER_QUESTIONS_ADDED = 'job_order_screener_questions_added',
-      SCREENER_QUESTIONS_BYPASSED = 'job_order_screener_questions_bypassed'
+      SCREENER_QUESTIONS_BYPASSED = 'job_order_screener_questions_bypassed',
+      STATUS_UPDATED = 'job_order_status_updated'
     ].freeze
 
     COMMANDS = [
       ACTIVATE_JOB_ORDER = 'activate_job_order',
       ADD_CANDIDATE = 'job_order_add_candidate',
+      ADD_JOB_ORDER = 'add_job_order',
+      ADD_ORDER_COUNT = 'job_order_add_order_count',
       ADD_SCREENER_QUESTIONS = 'job_order_add_screener_questions',
       BYPASS_SCREENER_QUESTIONS = 'job_order_bypass_screener_questions',
-      ADD_JOB_ORDER = 'add_job_order',
-      ADD_ORDER_COUNT = 'job_order_add_order_count'
+      CLOSE_AS_NOT_FILLED = 'job_order_close_as_not_filled'
     ].freeze
   end
 end

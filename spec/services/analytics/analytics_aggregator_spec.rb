@@ -328,14 +328,14 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:closed_at) { nil }
       let(:closed_status) { nil }
 
-      context "when the message is job_order_stalled" do
+      context "when the message is job order status updated" do
         let(:message) do
           build(
             :message,
             stream_id: job_order_id,
-            schema: JobOrders::Events::Stalled::V1,
+            schema: JobOrders::Events::StatusUpdated::V1,
             data: {
-              status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
+              status:
             }
           )
         end
@@ -343,72 +343,28 @@ RSpec.describe Analytics::AnalyticsAggregator do
         let(:closed_at) { Time.zone.now }
         let(:closed_status) { "Closed!!" }
 
-        it "updates the dim job order to clear closed fields" do
-          subject
+        context "when the status is a closed status" do
+          let(:status) { JobOrders::OrderStatus::WAITING_ON_EMPLOYER }
 
-          dim_job_order.reload
-          expect(dim_job_order.closed_at).to eq(nil)
-          expect(dim_job_order.closed_status).to eq(nil)
-        end
-      end
+          it "updates the dim job order to clear closed fields" do
+            subject
 
-      context "when the message is job_order_candidates_screened" do
-        let(:message) do
-          build(
-            :message,
-            stream_id: job_order_id,
-            schema: JobOrders::Events::CandidatesScreened::V1,
-            data: Core::Nothing
-          )
+            dim_job_order.reload
+            expect(dim_job_order.closed_at).to eq(nil)
+            expect(dim_job_order.closed_status).to eq(nil)
+          end
         end
 
-        let(:closed_at) { Time.zone.now }
-        let(:closed_status) { "Closed!!" }
+        context "when the status is a closed status" do
+          let(:status) { JobOrders::OrderStatus::FILLED }
 
-        it "updates the dim job order to clear closed fields" do
-          subject
+          it "updates the dim job order to clear closed fields" do
+            subject
 
-          dim_job_order.reload
-          expect(dim_job_order.closed_at).to eq(nil)
-          expect(dim_job_order.closed_status).to eq(nil)
-        end
-      end
-
-      context "when the message is job_order_filled" do
-        let(:message) do
-          build(
-            :message,
-            stream_id: job_order_id,
-            schema: JobOrders::Events::Filled::V1,
-            data: Core::Nothing
-          )
-        end
-
-        it "updates the dim job order with closed fields" do
-          subject
-
-          dim_job_order.reload
-          expect(dim_job_order.closed_at).to eq(message.occurred_at)
-          expect(dim_job_order.closed_status).to eq(JobOrders::ClosedStatus::FILLED)
-        end
-      end
-
-      context "when the message is job_order_not_filled" do
-        let(:message) do
-          build(
-            :message,
-            stream_id: job_order_id,
-            schema: JobOrders::Events::NotFilled::V1,
-            data: Core::Nothing
-          )
-        end
-
-        it "updates the dim job order with closed fields" do
-          subject
-
-          dim_job_order.reload
-          expect(dim_job_order.closed_at).to eq(message.occurred_at)
-          expect(dim_job_order.closed_status).to eq(JobOrders::ClosedStatus::NOT_FILLED)
+            dim_job_order.reload
+            expect(dim_job_order.closed_at).to eq(message.occurred_at)
+            expect(dim_job_order.closed_status).to eq(JobOrders::OrderStatus::FILLED)
+          end
         end
       end
 

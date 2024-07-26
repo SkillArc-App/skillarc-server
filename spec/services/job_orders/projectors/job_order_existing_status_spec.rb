@@ -6,57 +6,29 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
 
     let(:stream) { JobOrders::Streams::JobOrder.new(job_order_id:) }
     let(:job_order_id) { SecureRandom.uuid }
+    let(:status1) { JobOrders::OrderStatus::OPEN }
+    let(:status2) { JobOrders::OrderStatus::WAITING_ON_EMPLOYER }
 
     let(:now) { Time.zone.now }
 
-    let(:job_order_activated) do
+    let(:job_order_status_updated1) do
       build(
         :message,
         stream:,
-        schema: JobOrders::Events::Activated::V1,
-        data: Core::Nothing
-      )
-    end
-    let(:job_order_need_critiera) do
-      build(
-        :message,
-        stream:,
-        schema: JobOrders::Events::NeedsCriteria::V1,
-        data: Core::Nothing
-      )
-    end
-    let(:job_order_candidates_screened) do
-      build(
-        :message,
-        stream:,
-        schema: JobOrders::Events::CandidatesScreened::V1,
-        data: Core::Nothing
-      )
-    end
-    let(:job_order_stalled) do
-      build(
-        :message,
-        stream:,
-        schema: JobOrders::Events::Stalled::V1,
+        schema: JobOrders::Events::StatusUpdated::V1,
         data: {
-          status: JobOrders::StalledStatus::WAITING_ON_EMPLOYER
+          status: status1
         }
       )
     end
-    let(:job_order_filled) do
+    let(:job_order_status_updated2) do
       build(
         :message,
         stream:,
-        schema: JobOrders::Events::Filled::V1,
-        data: Core::Nothing
-      )
-    end
-    let(:job_order_not_filled) do
-      build(
-        :message,
-        stream:,
-        schema: JobOrders::Events::NotFilled::V1,
-        data: Core::Nothing
+        schema: JobOrders::Events::StatusUpdated::V1,
+        data: {
+          status: status2
+        }
       )
     end
 
@@ -64,55 +36,15 @@ RSpec.describe JobOrders::Projectors::JobOrderExistingStatus do
       let(:messages) { [] }
 
       it "return the open status" do
-        expect(subject.status).to eq(JobOrders::ActivatedStatus::NEEDS_ORDER_COUNT)
+        expect(subject.status).to eq(JobOrders::OrderStatus::NEEDS_ORDER_COUNT)
       end
     end
 
-    context "when the last event was activated" do
-      let(:messages) { [job_order_filled, job_order_not_filled, job_order_stalled, job_order_activated] }
+    context "when there are events" do
+      let(:messages) { [job_order_status_updated1, job_order_status_updated2] }
 
-      it "return the open status" do
-        expect(subject.status).to eq(JobOrders::ActivatedStatus::OPEN)
-      end
-    end
-
-    context "when the last event was need criteria" do
-      let(:messages) { [job_order_stalled, job_order_filled, job_order_not_filled, job_order_need_critiera] }
-
-      it "return the open status" do
-        expect(subject.status).to eq(JobOrders::ActivatedStatus::NEEDS_CRITERIA)
-      end
-    end
-
-    context "when the last event was stalled" do
-      let(:messages) { [job_order_not_filled, job_order_filled, job_order_activated, job_order_stalled] }
-
-      it "return the open status" do
-        expect(subject.status).to eq(job_order_stalled.data.status)
-      end
-    end
-
-    context "when the last event was stalled" do
-      let(:messages) { [job_order_not_filled, job_order_activated, job_order_filled, job_order_candidates_screened] }
-
-      it "return the open status" do
-        expect(subject.status).to eq(JobOrders::ActivatedStatus::CANDIDATES_SCREENED)
-      end
-    end
-
-    context "when the last event was filled" do
-      let(:messages) { [job_order_activated, job_order_stalled, job_order_not_filled, job_order_filled] }
-
-      it "return the open status" do
-        expect(subject.status).to eq(JobOrders::ClosedStatus::FILLED)
-      end
-    end
-
-    context "when the last event was filled" do
-      let(:messages) { [job_order_activated, job_order_stalled, job_order_filled, job_order_not_filled] }
-
-      it "return the open status" do
-        expect(subject.status).to eq(JobOrders::ClosedStatus::NOT_FILLED)
+      it "return the last status" do
+        expect(subject.status).to eq(status2)
       end
     end
   end

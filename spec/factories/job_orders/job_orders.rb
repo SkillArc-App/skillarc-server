@@ -6,7 +6,7 @@ FactoryBot.define do
     team_id { nil }
 
     screener_questions_id { nil }
-    status { JobOrders::ActivatedStatus::OPEN }
+    status { JobOrders::OrderStatus::OPEN }
     applicant_count { 0 }
     candidate_count { 0 }
     screened_count { 0 }

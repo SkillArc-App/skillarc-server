@@ -1,7 +1,7 @@
 module JobOrders
   module Events
     module NotFilled
-      V1 = Core::Schema.active(
+      V1 = Core::Schema.inactive(
         type: Core::EVENT,
         data: Core::Nothing,
         metadata: Core::Nothing,

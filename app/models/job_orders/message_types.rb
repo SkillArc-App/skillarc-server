@@ -38,7 +38,7 @@ module JobOrders
       ADD_ORDER_COUNT = 'job_order_add_order_count',
       ADD_SCREENER_QUESTIONS = 'job_order_add_screener_questions',
       BYPASS_SCREENER_QUESTIONS = 'job_order_bypass_screener_questions',
-      CLOSE_AS_NOT_FILLED = 'job_order_close_as_not_filled',
+      CLOSE_AS_NOT_FILLED = 'job_order_close_as_not_filled'
     ].freeze
   end
 end

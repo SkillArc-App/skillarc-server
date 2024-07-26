@@ -228,7 +228,6 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
         let(:messages) do
           [
             job_order_order_count_added1,
-            job_order_criteria_met,
             job_order_candidate_added1,
             job_order_candidate_recommended1,
             job_order_candidate_hired1,

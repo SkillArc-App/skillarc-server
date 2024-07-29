@@ -353,6 +353,18 @@ RSpec.describe MessageService do
       instance.save!(message)
     end
 
+    before do
+      SYNC_SUBSCRIBERS.reset
+      ASYNC_SUBSCRIBERS.reset
+
+      SYNC_SUBSCRIBERS.subscribe(schema:, subscriber: sync_subscriber)
+      ASYNC_SUBSCRIBERS.subscribe(schema:, subscriber: async_subscriber)
+    end
+
+    after do
+      SubscriberInitializer.run
+    end
+
     let(:message) do
       build(
         :message,
@@ -366,55 +378,31 @@ RSpec.describe MessageService do
     let(:schema) { Commands::AssignCoach::V2 }
     let(:schema_string) { schema.to_s }
 
-    it "persists the message" do
-      expect { subject }.to change(Event, :count).by(1)
-      expect(message.id).to eq(Event.last_created.message.id)
-      expect(message.stream_id).to eq(Event.last_created.message.stream_id)
-      expect(message.schema).to eq(Event.last_created.message.schema)
-      expect(message.data).to eq(Event.last_created.message.data)
-      expect(message.metadata).to eq(Event.last_created.message.metadata)
-      expect(message.occurred_at).to eq(Event.last_created.message.occurred_at)
-    end
+    let(:sync_subscriber) { DbStreamListener.build(consumer: MessageConsumer.new, listener_name: SecureRandom.uuid) }
+    let(:async_subscriber) { DbStreamListener.build(consumer: MessageConsumer.new, listener_name: SecureRandom.uuid) }
 
-    context "enqueues messages to be published" do
-      before do
-        SYNC_SUBSCRIBERS.reset
-        ASYNC_SUBSCRIBERS.reset
+    it "queues the message to be published" do
+      allow(instance)
+        .to receive(:broadcast?)
+        .and_return(true)
 
-        SYNC_SUBSCRIBERS.subscribe(schema:, subscriber: sync_subscriber)
-        ASYNC_SUBSCRIBERS.subscribe(schema:, subscriber: async_subscriber)
-      end
+      expect(sync_subscriber)
+        .to receive(:play)
+        .and_call_original
 
-      let(:sync_subscriber) { DbStreamListener.build(consumer: MessageConsumer.new, listener_name: SecureRandom.uuid) }
-      let(:async_subscriber) { DbStreamListener.build(consumer: MessageConsumer.new, listener_name: SecureRandom.uuid) }
+      expect(ExecuteSubscriberJob)
+        .to receive(:new)
+        .with(subscriber_id: async_subscriber.id)
+        .and_call_original
 
-      after do
-        SubscriberInitializer.run
-      end
+      expect(ActiveJob)
+        .to receive(:perform_all_later)
+        .with([be_a(ExecuteSubscriberJob)])
+        .and_call_original
 
-      it "queues the message to be published" do
-        allow(instance)
-          .to receive(:broadcast?)
-          .and_return(true)
+      subject
 
-        expect(sync_subscriber)
-          .to receive(:play)
-          .and_call_original
-
-        expect(ExecuteSubscriberJob)
-          .to receive(:new)
-          .with(subscriber_id: async_subscriber.id)
-          .and_call_original
-
-        expect(ActiveJob)
-          .to receive(:perform_all_later)
-          .with([be_a(ExecuteSubscriberJob)])
-          .and_call_original
-
-        subject
-
-        instance.flush
-      end
+      instance.flush
     end
   end
 

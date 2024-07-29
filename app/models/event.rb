@@ -36,6 +36,23 @@ class Event < ApplicationRecord
     )
   end
 
+  def self.from_messages!(messages)
+    insert_all!( # rubocop:disable Rails/SkipsModelValidations
+      messages.map do |message|
+        {
+          id: message.id,
+          aggregate_id: message.stream.id,
+          trace_id: message.trace_id,
+          event_type: message.schema.message_type,
+          data: message.data.serialize,
+          metadata: message.metadata.serialize,
+          version: message.schema.version,
+          occurred_at: message.occurred_at
+        }
+      end
+    )
+  end
+
   def self.from_message!(message)
     create!(
       id: message.id,

@@ -5,7 +5,7 @@ RSpec.describe Employers::ApplicationService do
     subject { described_class.update_status(application_id:, status:, message_service:, user_id:, reasons:) }
 
     before do
-      message_service.save!(applicant_status_updated)
+      Event.from_message!(applicant_status_updated)
     end
 
     let(:applicant_status_updated) do

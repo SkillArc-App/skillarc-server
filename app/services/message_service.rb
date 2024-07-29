@@ -61,12 +61,12 @@ class MessageService
   end
 
   def save!(message)
-    Event.from_message!(message)
-
     messages_to_publish << message
   end
 
   def flush
+    Event.from_messages!(messages_to_publish)
+
     # uniquely determine which event type have occurred
     schema_strings = messages_to_publish.map { |m| m.schema.to_s }.uniq
     @messages_to_publish = []

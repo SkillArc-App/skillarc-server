@@ -29,6 +29,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           .and_call_original
 
         instance.handle_message(message)
+        message_service.flush
         instance.handle_message(message)
       end
     end
@@ -222,25 +223,22 @@ RSpec.describe Klaviyo::KlaviyoReactor do
 
     context "when the message is chat message sent" do
       before do
-        message_service.create!(
-          schema: Events::ApplicantStatusUpdated::V6,
-          application_id:,
-          data: {
-            applicant_first_name: "First",
-            applicant_last_name: "Last",
-            applicant_email: email,
-            applicant_phone_number: "333-333-3333",
-            seeker_id: SecureRandom.uuid,
-            user_id:,
-            job_id: SecureRandom.uuid,
-            employer_name: "Employer",
-            employment_title: "Job",
-            status: ApplicantStatus::StatusTypes::NEW,
-            reasons: []
-          },
-          metadata: {
-            user_id:
-          }
+        Event.from_message!(
+          build(
+            :message,
+            schema: Events::ApplicantStatusUpdated::V6,
+            stream_id: application_id,
+            data: {
+              applicant_email: email,
+              user_id:,
+              employer_name: "Employer",
+              employment_title: "Job",
+              status: ApplicantStatus::StatusTypes::NEW
+            },
+            metadata: {
+              user_id:
+            }
+          )
         )
       end
 
@@ -293,14 +291,15 @@ RSpec.describe Klaviyo::KlaviyoReactor do
 
     context "when the message is job saved" do
       before do
-        message_service.create!(
-          schema: Events::UserCreated::V1,
-          user_id:,
-          data: {
-            email:,
-            first_name: "Cool",
-            last_name: "Seeker"
-          }
+        Event.from_message!(
+          build(
+            :message,
+            schema: Events::UserCreated::V1,
+            stream_id: user_id,
+            data: {
+              email:
+            }
+          )
         )
       end
 

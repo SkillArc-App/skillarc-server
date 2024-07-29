@@ -92,15 +92,15 @@ RSpec.describe "Employers::Applicants", type: :request do
             user_id: SecureRandom.uuid
           }
         )
+        message_service.flush
       end
 
       let(:seeker) { create(:seeker) }
       let(:message_service) { MessageService.new }
       let(:application) { create(:employers_applicant) }
-      let(:employer_id) { job.employer.id }
+      let(:employer_id) { SecureRandom.uuid }
       let(:seeker_id) { seeker.id }
-      let(:job) { create(:job) }
-      let(:job_id) { job.id }
+      let(:job_id) { SecureRandom.uuid }
       let(:application_id) { SecureRandom.uuid }
       let(:id) { application.id }
       let(:status) { ApplicantStatus::StatusTypes::PENDING_INTRO }

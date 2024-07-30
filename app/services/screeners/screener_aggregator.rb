@@ -9,7 +9,8 @@ module Screeners
       Questions.create!(
         id: message.stream.id,
         title: message.data.title,
-        questions: message.data.questions
+        questions: message.data.questions,
+        created_at: message.occurred_at
       )
     end
 
@@ -27,7 +28,8 @@ module Screeners
         title: message.data.title,
         person_id: message.data.person_id,
         screeners_questions_id: message.data.screener_questions_id,
-        question_responses: message.data.question_responses
+        question_responses: message.data.question_responses,
+        created_at: message.occurred_at
       )
     end
 

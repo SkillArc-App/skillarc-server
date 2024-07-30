@@ -21,6 +21,7 @@ RSpec.describe Screeners::ScreenerAggregator do
 
         questions = Screeners::Questions.first
         expect(questions.id).to eq(message.stream.id)
+        expect(questions.created_at).to eq(message.occurred_at)
         expect(questions.title).to eq(message.data.title)
         expect(questions.questions).to eq(message.data.questions)
       end
@@ -44,6 +45,7 @@ RSpec.describe Screeners::ScreenerAggregator do
 
         answers = Screeners::Answers.first
         expect(answers.id).to eq(message.stream.id)
+        expect(answers.created_at).to eq(message.occurred_at)
         expect(answers.questions).to eq(questions)
         expect(answers.title).to eq(message.data.title)
         expect(answers.question_responses).to eq(message.data.question_responses)

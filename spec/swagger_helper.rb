@@ -160,6 +160,10 @@ RSpec.configure do |config|
               title: {
                 type: :string
               },
+              createdAt: {
+                type: :string,
+                format: 'date-time'
+              },
               questions: {
                 type: :array,
                 items: {

@@ -40,5 +40,27 @@ module Screeners
         question_responses: message.data.question_responses
       )
     end
+
+    on_message Documents::Events::ScreenerGenerationRequested::V1 do |message|
+      Answers.update!(
+        message.data.screener_answers_id,
+        documents_screeners_id: message.stream.id,
+        document_status: Documents::DocumentStatus::PROCESSING
+      )
+    end
+
+    on_message Documents::Events::ScreenerGenerationFailed::V1 do |message|
+      answers = Answers.find_by(documents_screeners_id: message.stream.id)
+      return if answers.nil?
+
+      answers.update!(document_status: Documents::DocumentStatus::FAILED)
+    end
+
+    on_message Documents::Events::ScreenerGenerated::V1 do |message|
+      answers = Answers.find_by(documents_screeners_id: message.stream.id)
+      return if answers.nil?
+
+      answers.update!(document_status: Documents::DocumentStatus::SUCCEEDED)
+    end
   end
 end

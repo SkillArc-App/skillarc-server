@@ -4,5 +4,7 @@ FactoryBot.define do
     title { "Questions Responses" }
     person_id { SecureRandom.uuid }
     question_responses { [{ question: "Dude where's my care", response: "No idea" }] }
+    documents_screeners_id { nil }
+    document_status { nil }
   end
 end

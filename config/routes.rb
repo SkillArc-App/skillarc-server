@@ -36,7 +36,9 @@ Rails.application.routes.draw do
 
   scope module: 'screeners', path: 'screeners' do
     resources :questions, only: %i[index create update show]
-    resources :answers, only: %i[create update show]
+    resources :answers, only: %i[index create update show] do
+      post 'generate_file' => 'answers#generate_file'
+    end
   end
 
   scope module: 'employers', path: 'employers' do

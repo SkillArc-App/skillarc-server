@@ -160,6 +160,10 @@ RSpec.configure do |config|
               title: {
                 type: :string
               },
+              createdAt: {
+                type: :string,
+                format: 'date-time'
+              },
               questions: {
                 type: :array,
                 items: {
@@ -185,6 +189,20 @@ RSpec.configure do |config|
               screenerQuestionsId: {
                 type: :string,
                 format: :uuid
+              },
+              documentsScreenersId: {
+                type: :string,
+                format: :uuid,
+                nullable: true
+              },
+              documentStatus: {
+                type: :string,
+                enum: Documents::DocumentKind::ALL,
+                nullable: true
+              },
+              createdAt: {
+                type: :string,
+                format: 'date-time'
               },
               questionResponses: {
                 type: :array,

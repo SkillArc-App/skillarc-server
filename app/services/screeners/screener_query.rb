@@ -8,6 +8,13 @@ module Screeners
       serialize_questions(Questions.find(id))
     end
 
+    def self.all_answers(person_id)
+      answers_sets = Answers.all
+      answers_sets = answers_sets.where(person_id:) if person_id.present?
+
+      answers_sets.map { |answers| serialize_answers(answers) }
+    end
+
     def self.find_answers(id)
       serialize_answers(Answers.find(id))
     end
@@ -19,7 +26,8 @@ module Screeners
         {
           id: questions.id,
           title: questions.title,
-          questions: questions.questions
+          questions: questions.questions,
+          created_at: questions.created_at
         }
       end
 
@@ -29,7 +37,10 @@ module Screeners
           title: answers.title,
           person_id: answers.person_id,
           screener_questions_id: answers.screeners_questions_id,
-          question_responses: answers.question_responses
+          documents_screeners_id: answers.documents_screeners_id,
+          document_status: answers.document_status,
+          question_responses: answers.question_responses,
+          created_at: answers.created_at
         }
       end
     end

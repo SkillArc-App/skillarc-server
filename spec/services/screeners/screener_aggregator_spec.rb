@@ -21,6 +21,7 @@ RSpec.describe Screeners::ScreenerAggregator do
 
         questions = Screeners::Questions.first
         expect(questions.id).to eq(message.stream.id)
+        expect(questions.created_at).to eq(message.occurred_at)
         expect(questions.title).to eq(message.data.title)
         expect(questions.questions).to eq(message.data.questions)
       end
@@ -44,6 +45,7 @@ RSpec.describe Screeners::ScreenerAggregator do
 
         answers = Screeners::Answers.first
         expect(answers.id).to eq(message.stream.id)
+        expect(answers.created_at).to eq(message.occurred_at)
         expect(answers.questions).to eq(questions)
         expect(answers.title).to eq(message.data.title)
         expect(answers.question_responses).to eq(message.data.question_responses)
@@ -95,6 +97,88 @@ RSpec.describe Screeners::ScreenerAggregator do
         answers.reload
         expect(answers.title).to eq(message.data.title)
         expect(answers.question_responses).to eq(message.data.question_responses)
+      end
+    end
+
+    context "when the message is screener generation requested" do
+      let(:message) do
+        build(
+          :message,
+          schema: Documents::Events::ScreenerGenerationRequested::V1,
+          data: {
+            screener_answers_id: answers.id
+          }
+        )
+      end
+
+      let(:answers) { create(:screeners__answers) }
+
+      it "update answers" do
+        subject
+
+        answers.reload
+        expect(answers.documents_screeners_id).to eq(message.stream.id)
+        expect(answers.document_status).to eq(Documents::DocumentStatus::PROCESSING)
+      end
+    end
+
+    context "when the message is screener generation failed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Documents::Events::ScreenerGenerationFailed::V1,
+          stream_id:
+        )
+      end
+
+      context "when there is an answer that points to this screener" do
+        let(:stream_id) { answers.documents_screeners_id }
+        let(:answers) { create(:screeners__answers, documents_screeners_id: SecureRandom.uuid) }
+
+        it "update answers" do
+          subject
+
+          answers.reload
+          expect(answers.document_status).to eq(Documents::DocumentStatus::FAILED)
+        end
+      end
+
+      context "when there is not an answer that points to this screener" do
+        let(:stream_id) { SecureRandom.uuid }
+
+        it "does nothing" do
+          subject
+        end
+      end
+    end
+
+    context "when the message is screener generated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Documents::Events::ScreenerGenerated::V1,
+          stream_id:
+        )
+      end
+
+      context "when there is an answer that points to this screener" do
+        let(:stream_id) { answers.documents_screeners_id }
+        let(:answers) { create(:screeners__answers, documents_screeners_id: SecureRandom.uuid) }
+
+        it "update answers" do
+          subject
+
+          answers.reload
+          expect(answers.document_status).to eq(Documents::DocumentStatus::SUCCEEDED)
+        end
+      end
+
+      context "when there is not an answer that points to this screener" do
+        let(:stream_id) { SecureRandom.uuid }
+
+        it "does nothing" do
+          subject
+        end
       end
     end
   end

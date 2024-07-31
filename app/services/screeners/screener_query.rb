@@ -37,6 +37,8 @@ module Screeners
           title: answers.title,
           person_id: answers.person_id,
           screener_questions_id: answers.screeners_questions_id,
+          documents_screeners_id: answers.documents_screeners_id,
+          document_status: answers.document_status,
           question_responses: answers.question_responses,
           created_at: answers.created_at
         }

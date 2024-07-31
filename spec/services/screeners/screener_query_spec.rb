@@ -42,6 +42,8 @@ RSpec.describe Screeners::ScreenerQuery do
         id: answers1.id,
         title: answers1.title,
         person_id: answers1.person_id,
+        documents_screeners_id: answers1.documents_screeners_id,
+        document_status: answers1.document_status,
         screener_questions_id: answers1.screeners_questions_id,
         question_responses: answers1.question_responses,
         created_at: answers1.created_at
@@ -52,6 +54,8 @@ RSpec.describe Screeners::ScreenerQuery do
         id: answers2.id,
         title: answers2.title,
         person_id: answers2.person_id,
+        documents_screeners_id: answers2.documents_screeners_id,
+        document_status: answers2.document_status,
         screener_questions_id: answers2.screeners_questions_id,
         question_responses: answers2.question_responses,
         created_at: answers2.created_at
@@ -100,6 +104,8 @@ RSpec.describe Screeners::ScreenerQuery do
                               id: answers.id,
                               title: answers.title,
                               person_id: answers.person_id,
+                              documents_screeners_id: answers.documents_screeners_id,
+                              document_status: answers.document_status,
                               screener_questions_id: answers.screeners_questions_id,
                               question_responses: answers.question_responses,
                               created_at: answers.created_at

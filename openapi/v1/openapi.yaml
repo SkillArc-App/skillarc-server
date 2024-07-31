@@ -3325,6 +3325,35 @@ paths:
               - title
               - screenerQuestionId
               - questionResponses
+    get:
+      summary: get all answers
+      tags:
+      - Screeners
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: request_params
+        in: query
+        schema:
+          type: object
+          properties:
+            personId:
+              type: string
+              format: uuid
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Retrieves all answer
   "/screeners/answers/{id}":
     get:
       summary: get a set of answers
@@ -3402,6 +3431,44 @@ paths:
               - title
               - screenerQuestionId
               - questionResponses
+  "/screeners/answers/{id}/generate_file":
+    post:
+      summary: get a set of answers
+      tags:
+      - Screeners
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: Indicates the file was created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                documentKind:
+                  type: string
+                  enum:
+                  - pdf
   "/screeners/questions":
     post:
       summary: create new questions
@@ -4527,6 +4594,18 @@ components:
         screenerQuestionsId:
           type: string
           format: uuid
+        documentsScreenersId:
+          type: string
+          format: uuid
+          nullable: true
+        documentStatus:
+          type: string
+          enum:
+          - pdf
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
         questionResponses:
           type: array
           items:
@@ -5335,10 +5414,14 @@ components:
           - needs_criteria
           - open
           - candidates_screened
+          - waiting_on_employer
           - filled
           - not_filled
-          - waiting_on_employer
         teamId:
+          type: string
+          format: uuid
+          nullable: true
+        screenerQuestionsId:
           type: string
           format: uuid
           nullable: true

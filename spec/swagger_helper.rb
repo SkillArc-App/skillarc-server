@@ -186,6 +186,20 @@ RSpec.configure do |config|
                 type: :string,
                 format: :uuid
               },
+              documentsScreenersId: {
+                type: :string,
+                format: :uuid,
+                nullable: true
+              },
+              documentStatus: {
+                type: :string,
+                enum: Documents::DocumentKind::ALL,
+                nullable: true
+              },
+              createdAt: {
+                type: :string,
+                format: 'date-time'
+              },
               questionResponses: {
                 type: :array,
                 items: {

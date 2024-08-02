@@ -101,10 +101,6 @@ RSpec.describe Coaches::CoachesQuery do
         certified_by: "person@skillarc.com"
       }
 
-      expect(subject[0]).to eq(expected_profile1)
-      expect(subject[1]).to eq(expected_profile2)
-      expect(subject[2]).to eq(expected_profile3)
-      # expect(subject[2]).to eq(expected_profile)
       expect(subject).to contain_exactly(expected_profile1, expected_profile2, expected_profile3)
     end
   end
@@ -176,6 +172,8 @@ RSpec.describe Coaches::CoachesQuery do
         phone_number: "1234567890",
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted: Time.zone.local(2010, 1, 1),
+        lead_captured_at: Time.zone.local(2000, 1, 1),
+        lead_captured_by: "someone@skillarc.com",
         assigned_coach: "coach@blocktrainapp.com",
         certified_by: "person@skillarc.com",
         attributes: [{

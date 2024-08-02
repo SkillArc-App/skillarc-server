@@ -79,17 +79,7 @@ module Coaches
 
       def serialize_person_context(person_context)
         {
-          id: person_context.id,
-          kind: person_context.kind,
-          seeker_id: person_context.id,
-          first_name: person_context.first_name,
-          last_name: person_context.last_name,
-          email: person_context.email,
-          phone_number: person_context.phone_number,
-          certified_by: person_context.certified_by,
-          last_active_on: person_context.last_active_on,
-          last_contacted: person_context.last_contacted_at || "Never",
-          assigned_coach: person_context.assigned_coach || 'none',
+          **serialize_coach_seeker_table_context(person_context),
           attributes: person_context.person_attributes.map { |a| { name: a.name, id: a.id, attribute_id: a.attribute_id, value: a.values } },
           notes: person_context.notes.map do |note|
             {

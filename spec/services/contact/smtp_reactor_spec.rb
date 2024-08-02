@@ -15,7 +15,7 @@ RSpec.describe Contact::SmtpReactor do
             employment_title: "Job Title",
             recepent_email: "recruiter@skillarc.com",
 
-            certified_by: "chris@skillarc.com",
+            certified_by: "john@skillarc.com",
             applicant_first_name: "John",
             applicant_last_name: "Chabot",
             applicant_email: "applicant@a.com",
@@ -48,7 +48,7 @@ RSpec.describe Contact::SmtpReactor do
               employment_title: "Job Title",
               recepent_email: "recruiter@skillarc.com",
 
-              certified_by: "chris@skillarc.com",
+              certified_by: "john@skillarc.com",
               applicant_first_name: "John",
               applicant_last_name: "Chabot",
               applicant_email: "applicant@a.com",
@@ -80,7 +80,7 @@ RSpec.describe Contact::SmtpReactor do
               Commands::SendWeeklyEmployerUpdate::SummaryApplicant::V1.new(
                 first_name: "John",
                 last_name: "Chabot",
-                certified_by: "chris@skillarc.com"
+                certified_by: "john@skillarc.com"
               )
             ]
           }
@@ -120,7 +120,7 @@ RSpec.describe Contact::SmtpReactor do
                 {
                   first_name: "John",
                   last_name: "Chabot",
-                  certified_by: "chris@skillarc.com"
+                  certified_by: "john@skillarc.com"
                 }
               ]
             }

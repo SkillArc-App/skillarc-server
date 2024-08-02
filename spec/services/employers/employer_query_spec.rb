@@ -35,7 +35,7 @@ RSpec.describe Employers::EmployerQuery do
     let!(:seeker) do
       create(
         :employers_seeker,
-        certified_by: "chris@skillarc.com",
+        certified_by: "john@skillarc.com",
         seeker_id: applicant.seeker_id
       )
     end
@@ -48,7 +48,7 @@ RSpec.describe Employers::EmployerQuery do
             job_id: job.id,
             chat_enabled: true,
             created_at: Time.zone.local(2023, 2, 2),
-            certified_by: "chris@skillarc.com",
+            certified_by: "john@skillarc.com",
             job_name: "Welder",
             first_name: "Hannah",
             last_name: "Block",

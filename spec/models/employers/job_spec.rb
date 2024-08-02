@@ -27,8 +27,8 @@ RSpec.describe Employers::Job, type: :model do
       end
 
       context "when there is no recruiter" do
-        it "returns chris@skillarc.com" do
-          expect(subject).to eq(["chris@skillarc.com"])
+        it "returns john@skillarc.com" do
+          expect(subject).to eq(["john@skillarc.com"])
         end
       end
     end

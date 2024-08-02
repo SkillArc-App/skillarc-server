@@ -12,6 +12,12 @@ module Coaches
       end
     end
 
+    def self.find_people(ids)
+      PersonContext.where(id: ids).map do |person_context|
+        serialize_coach_seeker_table_context(person_context)
+      end
+    end
+
     def self.find_person(id)
       person_context = PersonContext.find(id)
 
@@ -45,20 +51,18 @@ module Coaches
       private
 
       def serialize_coach_seeker_table_context(person_context)
-        barriers = Barrier.all
-
         {
           id: person_context.id,
           seeker_id: person_context.id,
           first_name: person_context.first_name,
           last_name: person_context.last_name,
           email: person_context.email,
+          kind: person_context.kind,
           phone_number: person_context.phone_number,
           last_active_on: person_context.last_active_on,
           last_contacted: person_context.last_contacted_at || "Never",
           assigned_coach: person_context.assigned_coach || 'none',
-          certified_by: person_context.certified_by,
-          barriers: person_context.barriers.map { |id| { id:, name: barriers.detect(&:barrier_id)&.name } }
+          certified_by: person_context.certified_by
         }
       end
 
@@ -78,8 +82,6 @@ module Coaches
       end
 
       def serialize_person_context(person_context)
-        barriers = Barrier.all
-
         {
           id: person_context.id,
           kind: person_context.kind,
@@ -92,7 +94,6 @@ module Coaches
           last_active_on: person_context.last_active_on,
           last_contacted: person_context.last_contacted_at || "Never",
           assigned_coach: person_context.assigned_coach || 'none',
-          barriers: person_context.barriers.map { |id| { id:, name: barriers.detect(&:barrier_id)&.name } },
           attributes: person_context.person_attributes.map { |a| { name: a.name, id: a.id, attribute_id: a.attribute_id, value: a.values } },
           notes: person_context.notes.map do |note|
             {

@@ -5,8 +5,6 @@ RSpec.describe Coaches::CoachesQuery do
     subject { described_class.all_seekers }
 
     before do
-      barrier = create(:barrier, id: "81f43abc-67b6-4531-af45-293d3fc053e5", name: "barrier2")
-
       person_context1 = create(
         :coaches__person_context,
         id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
@@ -20,7 +18,6 @@ RSpec.describe Coaches::CoachesQuery do
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted_at: Time.zone.local(2010, 1, 1),
         kind: Coaches::PersonContext::Kind::SEEKER,
-        barriers: [barrier.id],
         certified_by: "person@skillarc.com"
       )
 
@@ -110,11 +107,7 @@ RSpec.describe Coaches::CoachesQuery do
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted: Time.zone.local(2010, 1, 1),
         assigned_coach: "coach@blocktrainapp.com",
-        certified_by: "person@skillarc.com",
-        barriers: [{
-          id: "81f43abc-67b6-4531-af45-293d3fc053e5",
-          name: "barrier2"
-        }]
+        certified_by: "person@skillarc.com"
       }
       expected_other_profile = {
         id: "3e7cccaa-ec0e-4c59-a7ad-2b187b3acc4c",
@@ -126,8 +119,7 @@ RSpec.describe Coaches::CoachesQuery do
         last_active_on: Time.zone.local(2008, 1, 1),
         last_contacted: "Never",
         assigned_coach: 'none',
-        certified_by: nil,
-        barriers: []
+        certified_by: nil
       }
 
       expect(subject.length).to eq(2)
@@ -178,8 +170,6 @@ RSpec.describe Coaches::CoachesQuery do
     let(:id) { SecureRandom.uuid }
 
     before do
-      barrier = create(:barrier, id: "81f43abc-67b6-4531-af45-293d3fc053e5", name: "barrier2")
-
       person_context1 = create(
         :coaches__person_context,
         id:,
@@ -193,7 +183,6 @@ RSpec.describe Coaches::CoachesQuery do
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted_at: Time.zone.local(2010, 1, 1),
         kind: Coaches::PersonContext::Kind::SEEKER,
-        barriers: [barrier.id],
         certified_by: "person@skillarc.com"
       )
 
@@ -250,10 +239,6 @@ RSpec.describe Coaches::CoachesQuery do
           attribute_id: "3f48a475-b711-4265-9cc5-02fcfc0c40d1",
           value: ["High School"]
         }],
-        barriers: [{
-          id: "81f43abc-67b6-4531-af45-293d3fc053e5",
-          name: "barrier2"
-        }],
         notes: [
           {
             note: "This note was updated",
@@ -274,6 +259,92 @@ RSpec.describe Coaches::CoachesQuery do
       }
 
       expect(subject).to eq(expected_profile)
+    end
+  end
+
+  describe ".find_people" do
+    subject { described_class.find_people(ids) }
+
+    let(:ids) { [SecureRandom.uuid, SecureRandom.uuid] }
+
+    before do
+      create(
+        :coaches__person_context,
+        id: ids[0],
+        phone_number: "1234567890",
+        first_name: "Hannah",
+        last_name: "Block",
+        assigned_coach: "coach@blocktrainapp.com",
+        person_captured_at: Time.zone.local(2000, 1, 1),
+        email: "hannah@blocktrainapp.com",
+        captured_by: "someone@skillarc.com",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted_at: Time.zone.local(2010, 1, 1),
+        kind: Coaches::PersonContext::Kind::SEEKER,
+        certified_by: "person@skillarc.com"
+      )
+
+      create(
+        :coaches__person_context,
+        id: ids[1],
+        phone_number: "1234567890",
+        first_name: "John",
+        last_name: "Chabot",
+        assigned_coach: "coach@blocktrainapp.com",
+        person_captured_at: Time.zone.local(2000, 1, 1),
+        email: "hannah@blocktrainapp.com",
+        captured_by: "someone@skillarc.com",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted_at: Time.zone.local(2010, 1, 1),
+        kind: Coaches::PersonContext::Kind::SEEKER,
+        certified_by: "person@skillarc.com"
+      )
+
+      create(
+        :coaches__person_context,
+        phone_number: "1234567890",
+        first_name: "David",
+        last_name: "Chabot",
+        assigned_coach: "coach@blocktrainapp.com",
+        person_captured_at: Time.zone.local(2000, 1, 1),
+        email: "hannah@blocktrainapp.com",
+        captured_by: "someone@skillarc.com",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted_at: Time.zone.local(2010, 1, 1),
+        kind: Coaches::PersonContext::Kind::SEEKER,
+        certified_by: "person@skillarc.com"
+      )
+    end
+
+    it "returns the context" do
+      expected_profile1 = {
+        id: ids[0],
+        seeker_id: ids[0],
+        first_name: "Hannah",
+        last_name: "Block",
+        kind: 'seeker',
+        email: "hannah@blocktrainapp.com",
+        phone_number: "1234567890",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted: Time.zone.local(2010, 1, 1),
+        assigned_coach: "coach@blocktrainapp.com",
+        certified_by: "person@skillarc.com"
+      }
+      expected_profile2 = {
+        id: ids[1],
+        seeker_id: ids[1],
+        first_name: "John",
+        last_name: "Chabot",
+        kind: 'seeker',
+        email: "hannah@blocktrainapp.com",
+        phone_number: "1234567890",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted: Time.zone.local(2010, 1, 1),
+        assigned_coach: "coach@blocktrainapp.com",
+        certified_by: "person@skillarc.com"
+      }
+
+      expect(subject).to contain_exactly(expected_profile1, expected_profile2)
     end
   end
 

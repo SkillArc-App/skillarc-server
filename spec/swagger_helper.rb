@@ -523,51 +523,6 @@ RSpec.configure do |config|
               }
             }
           },
-          lead: {
-            type: :object,
-            properties: {
-              id: {
-                type: :string,
-                format: :uuid
-              },
-              assignedCoach: {
-                type: :string
-              },
-              email: {
-                type: :string,
-                format: :email,
-                nullable: true
-              },
-              phoneNumber: {
-                type: :string,
-                nullable: true
-              },
-              firstName: {
-                type: :string
-              },
-              lastName: {
-                type: :string
-              },
-              leadCapturedAt: {
-                type: :string,
-                format: 'date-time',
-                nullable: true
-              },
-              leadCapturedBy: {
-                type: :string,
-                format: :email,
-                nullable: true
-              },
-              kind: {
-                type: :string,
-                enum: Coaches::PersonContext::Kind::ALL
-              },
-              status: {
-                type: :string,
-                enum: ["new"]
-              }
-            }
-          },
           coach_seeker_table: {
             type: :object,
             additionalProperties: true,
@@ -585,6 +540,20 @@ RSpec.configure do |config|
               },
               lastName: {
                 type: :string,
+                nullable: true
+              },
+              kind: {
+                type: :string,
+                enum: Coaches::PersonContext::Kind::ALL
+              },
+              leadCapturedAt: {
+                type: :string,
+                format: 'date-time',
+                nullable: true
+              },
+              leadCapturedBy: {
+                type: :string,
+                format: :email,
                 nullable: true
               },
               email: {
@@ -620,12 +589,6 @@ RSpec.configure do |config|
               },
               assignedCoach: {
                 type: :string
-              },
-              barriers: {
-                type: :array,
-                items: {
-                  '$ref' => '#/components/schemas/seeker_barrier'
-                }
               }
             }
           },
@@ -641,10 +604,6 @@ RSpec.configure do |config|
                     items: {
                       '$ref' => '#/components/schemas/seeker_application'
                     }
-                  },
-                  kind: {
-                    type: :string,
-                    enum: Coaches::PersonContext::Kind::ALL
                   },
                   notes: {
                     type: :array,

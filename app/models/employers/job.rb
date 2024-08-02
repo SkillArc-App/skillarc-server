@@ -41,7 +41,7 @@ module Employers
 
       return employer.recruiters.map(&:email) if employer.recruiters.present?
 
-      ["chris@skillarc.com"]
+      ["john@skillarc.com"]
     end
   end
 end

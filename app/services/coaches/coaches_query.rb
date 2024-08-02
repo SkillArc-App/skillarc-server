@@ -1,13 +1,7 @@
 module Coaches
   class CoachesQuery
-    def self.all_leads
-      PersonContext.leads.map do |person_context|
-        serialize_seeker_lead(person_context)
-      end
-    end
-
-    def self.all_seekers
-      PersonContext.seekers.map do |person_context|
+    def self.all_people
+      PersonContext.all.map do |person_context|
         serialize_coach_seeker_table_context(person_context)
       end
     end
@@ -58,6 +52,8 @@ module Coaches
           last_name: person_context.last_name,
           email: person_context.email,
           kind: person_context.kind,
+          lead_captured_at: person_context.person_captured_at,
+          lead_captured_by: person_context.captured_by,
           phone_number: person_context.phone_number,
           last_active_on: person_context.last_active_on,
           last_contacted: person_context.last_contacted_at || "Never",
@@ -112,21 +108,6 @@ module Coaches
             }
           end,
           job_recommendations: person_context.job_recommendations.map(&:job).map(&:job_id)
-        }
-      end
-
-      def serialize_seeker_lead(person_context)
-        {
-          id: person_context.id,
-          email: person_context.email,
-          assigned_coach: person_context.assigned_coach || 'none',
-          phone_number: person_context.phone_number,
-          first_name: person_context.first_name,
-          last_name: person_context.last_name,
-          lead_captured_at: person_context.person_captured_at,
-          lead_captured_by: person_context.captured_by,
-          kind: person_context.kind,
-          status: "new"
         }
       end
     end

@@ -32,12 +32,11 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         expect(person.phone_number).to eq("555-555-5555")
         expect(person.date_of_birth).to eq(Date.new(1990, 1, 1))
         expect(person.search_vector).to eq("John Doe john.doe@skillarc.com 555-555-5555 1990-01-01")
-        expect(person.last_active_at).to eq(message.occurred_at)
       end
     end
 
     context "basic info updated" do
-      let(:person) { create(:people_search_person) }
+      let(:person) { create(:people_search__person) }
 
       let(:message) do
         build(
@@ -100,8 +99,8 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         )
       end
 
-      let(:coach) { create(:people_search_coach) }
-      let(:person) { create(:people_search_person) }
+      let(:coach) { create(:people_search__coach) }
+      let(:person) { create(:people_search__person) }
 
       it "updates the assigned_coach field" do
         subject
@@ -113,7 +112,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
     end
 
     context "experience added" do
-      let(:person) { create(:people_search_person) }
+      let(:person) { create(:people_search__person) }
 
       let(:message) do
         build(
@@ -152,8 +151,8 @@ RSpec.describe PeopleSearch::PeopleAggregator do
     end
 
     context "experience removed" do
-      let(:person) { create(:people_search_person) }
-      let!(:experience) { create(:people_search_person_experience, person:) }
+      let(:person) { create(:people_search__person) }
+      let!(:experience) { create(:people_search__person_experience, person:) }
       let(:message) do
         build(
           :message,
@@ -179,7 +178,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
     end
 
     context "education experience added" do
-      let(:person) { create(:people_search_person) }
+      let(:person) { create(:people_search__person) }
 
       let(:message) do
         build(
@@ -213,8 +212,8 @@ RSpec.describe PeopleSearch::PeopleAggregator do
     end
 
     context "education experience removed" do
-      let(:person) { create(:people_search_person) }
-      let!(:education_experience) { create(:people_search_person_education_experience, person:) }
+      let(:person) { create(:people_search__person) }
+      let!(:education_experience) { create(:people_search__person_education_experience, person:) }
 
       let(:message) do
         build(
@@ -241,7 +240,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
     end
 
     context "note added" do
-      let(:person) { create(:people_search_person) }
+      let(:person) { create(:people_search__person) }
 
       let(:message) do
         build(
@@ -257,71 +256,76 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       end
       let(:id) { SecureRandom.uuid }
 
-      it "updates the person last_contactedat" do
-        expect { subject }.to change { person.reload.last_contacted_at }.from(nil).to(message.occurred_at)
+      it "creates adds a new note record" do
+        expect { subject }.to change(PeopleSearch::Note, :count).from(0).to(1)
+      end
+
+      it "updates the search vector" do
+        subject
+
+        person.reload
+
+        expected_vector =
+          "John Doe john.doe@skillarc.com 555-555-5555 1990-01-01 This is a note"
+        expect(person.search_vector).to eq(expected_vector)
       end
     end
 
-    context "person associated to user" do
+    context "note modified" do
+      let(:person) { create(:people_search__person) }
+      let(:note) { create(:people_search__note, person:) }
+
       let(:message) do
         build(
           :message,
-          schema: Events::PersonAssociatedToUser::V1,
+          schema: Events::NoteModified::V4,
           stream_id: person.id,
           data: {
-            user_id:
+            originator: "foo",
+            note: "This is an updated note",
+            note_id: note.id
           }
         )
       end
-      let(:user_id) { SecureRandom.uuid }
-      let(:person) { create(:people_search_person) }
 
-      it "updates the person record" do
+      it "updates the search vector" do
         subject
 
-        expect(person.reload.user_id).to eq(user_id)
+        person.reload
+
+        expected_vector =
+          "John Doe john.doe@skillarc.com 555-555-5555 1990-01-01 This is an updated note"
+        expect(person.search_vector).to eq(expected_vector)
       end
     end
 
-    context "person certified" do
+    context "note deleted" do
+      let(:person) { create(:people_search__person) }
+      let!(:note) { create(:people_search__note, person:) }
+
       let(:message) do
         build(
           :message,
-          schema: Events::PersonCertified::V1,
+          schema: Events::NoteDeleted::V4,
           stream_id: person.id,
           data: {
-            coach_first_name: "Coach",
-            coach_last_name: "Doe",
-            coach_email: "coach_email",
-            coach_id:
+            note_id: note.id
           }
         )
       end
-      let(:coach) { create(:people_search_coach) }
-      let(:coach_id) { coach.id }
-      let(:person) { create(:people_search_person) }
 
-      it "updates the person" do
+      it "creates adds a new note record" do
+        expect { subject }.to change(PeopleSearch::Note, :count).from(1).to(0)
+      end
+
+      it "updates the search vector" do
         subject
 
-        expect(person.reload.certified_by).to eq("coach_email")
-      end
-    end
+        person.reload
 
-    context "session started" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::SessionStarted::V1,
-          stream_id: person.user_id
-        )
-      end
-      let(:person) { create(:people_search_person) }
-
-      it "updates the person" do
-        subject
-
-        expect(person.reload.last_active_at).to eq(message.occurred_at)
+        expected_vector =
+          "John Doe john.doe@skillarc.com 555-555-5555 1990-01-01"
+        expect(person.search_vector).to eq(expected_vector)
       end
     end
   end

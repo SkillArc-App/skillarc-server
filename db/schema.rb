@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_30_215352) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_05_172707) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -765,6 +765,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_30_215352) do
     t.string "email", null: false
   end
 
+  create_table "people_search_notes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "person_id", null: false
+    t.text "note", null: false
+    t.index ["person_id"], name: "index_people_search_notes_on_person_id"
+  end
+
   create_table "people_search_people", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email"
     t.string "assigned_coach"
@@ -774,8 +780,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_30_215352) do
     t.date "date_of_birth"
     t.text "search_vector", null: false
     t.string "certified_by"
-    t.datetime "last_active_at"
-    t.datetime "last_contacted_at"
     t.string "user_id"
   end
 
@@ -1089,6 +1093,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_30_215352) do
   add_foreign_key "learned_skills", "jobs", name: "LearnedSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "other_experiences", "organizations", name: "OtherExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "other_experiences", "seekers"
+  add_foreign_key "people_search_notes", "people_search_people", column: "person_id", on_delete: :cascade
   add_foreign_key "people_search_person_education_experiences", "people_search_people", column: "person_id", on_delete: :cascade
   add_foreign_key "people_search_person_experiences", "people_search_people", column: "person_id", on_delete: :cascade
   add_foreign_key "personal_experiences", "seekers"

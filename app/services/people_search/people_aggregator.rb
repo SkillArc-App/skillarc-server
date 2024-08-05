@@ -15,7 +15,6 @@ module PeopleSearch
       person.email = message.data.email
       person.phone_number = message.data.phone_number
       person.date_of_birth = message.data.date_of_birth
-      person.last_active_at = message.occurred_at
 
       person.search_vector = search_vector(person)
 
@@ -103,8 +102,6 @@ module PeopleSearch
     on_message Events::NoteAdded::V4 do |message|
       person = find_person(message.stream.id)
 
-      person.last_contacted_at = message.occurred_at
-
       person.save!
     end
 
@@ -120,16 +117,6 @@ module PeopleSearch
       person = find_person(message.stream.id)
 
       person.certified_by = message.data.coach_email
-
-      person.save!
-    end
-
-    on_message Events::SessionStarted::V1 do |message|
-      person = Person.find_by(user_id: message.stream.id)
-
-      return unless person
-
-      person.last_active_at = message.occurred_at
 
       person.save!
     end

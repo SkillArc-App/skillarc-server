@@ -32,7 +32,6 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         expect(person.phone_number).to eq("555-555-5555")
         expect(person.date_of_birth).to eq(Date.new(1990, 1, 1))
         expect(person.search_vector).to eq("John Doe john.doe@skillarc.com 555-555-5555 1990-01-01")
-        expect(person.last_active_at).to eq(message.occurred_at)
       end
     end
 
@@ -257,8 +256,8 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       end
       let(:id) { SecureRandom.uuid }
 
-      it "updates the person last_contactedat" do
-        expect { subject }.to change { person.reload.last_contacted_at }.from(nil).to(message.occurred_at)
+      it "does nothing" do
+        subject
       end
     end
 
@@ -305,23 +304,6 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         subject
 
         expect(person.reload.certified_by).to eq("coach_email")
-      end
-    end
-
-    context "session started" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::SessionStarted::V1,
-          stream_id: person.user_id
-        )
-      end
-      let(:person) { create(:people_search_person) }
-
-      it "updates the person" do
-        subject
-
-        expect(person.reload.last_active_at).to eq(message.occurred_at)
       end
     end
   end

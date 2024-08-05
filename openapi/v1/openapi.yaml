@@ -1042,33 +1042,6 @@ paths:
               required:
               - seeker_id
   "/coaches/leads":
-    get:
-      summary: Retrieve all leads
-      tags:
-      - Coaches
-      security:
-      - bearer_auth: []
-      parameters:
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      responses:
-        '401':
-          description: unauthenticated
-        '200':
-          description: retrieve all seekers
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  "$ref": "#/components/schemas/lead"
     post:
       summary: Create new lead
       tags:
@@ -4857,42 +4830,6 @@ components:
             - work
         user:
           "$ref": "#/components/schemas/user"
-    lead:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        assignedCoach:
-          type: string
-        email:
-          type: string
-          format: email
-          nullable: true
-        phoneNumber:
-          type: string
-          nullable: true
-        firstName:
-          type: string
-        lastName:
-          type: string
-        leadCapturedAt:
-          type: string
-          format: date-time
-          nullable: true
-        leadCapturedBy:
-          type: string
-          format: email
-          nullable: true
-        kind:
-          type: string
-          enum:
-          - seeker
-          - lead
-        status:
-          type: string
-          enum:
-          - new
     coach_seeker_table:
       type: object
       additionalProperties: true
@@ -4908,6 +4845,19 @@ components:
         lastName:
           type: string
           nullable: true
+        kind:
+          type: string
+          enum:
+          - seeker
+          - lead
+        leadCapturedAt:
+          type: string
+          format: date-time
+          nullable: true
+        leadCapturedBy:
+          type: string
+          format: email
+          nullable: true
         email:
           type: string
           format: email
@@ -4920,22 +4870,15 @@ components:
           format: date-time
           nullable: true
         lastContacted:
-          oneOf:
-          - type: string
-            format: date-time
-          - type: string
-            enum:
-            - Never
+          type: string
+          format: date-time
           nullable: true
         certifiedBy:
           type: string
           nullable: true
         assignedCoach:
           type: string
-        barriers:
-          type: array
-          items:
-            "$ref": "#/components/schemas/seeker_barrier"
+          nullable: true
     coach_seeker:
       allOf:
       - "$ref": "#/components/schemas/coach_seeker_table"
@@ -4946,11 +4889,6 @@ components:
             type: array
             items:
               "$ref": "#/components/schemas/seeker_application"
-          kind:
-            type: string
-            enum:
-            - seeker
-            - lead
           notes:
             type: array
             items:

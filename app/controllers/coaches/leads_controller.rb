@@ -8,10 +8,6 @@ module Coaches
     before_action :coach_authorize
     before_action :set_coach
 
-    def index
-      render json: CoachesQuery.all_leads
-    end
-
     def create
       lead = params.require(:lead).permit(
         :lead_id,

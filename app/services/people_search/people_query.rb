@@ -3,11 +3,11 @@ module PeopleSearch
     include MessageEmitter
 
     def search(search_terms:, attributes:, user:, utm_source:)
-      people = Person.where("search_vector ilike '%#{search_terms}%'")
+      people_ids = Person.where("search_vector ilike '%#{search_terms}%'").pluck(:id)
 
       emit_event(search_terms, attributes || {}, user, utm_source)
 
-      people
+      people_ids
     end
 
     private

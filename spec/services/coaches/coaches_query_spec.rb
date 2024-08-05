@@ -1,13 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Coaches::CoachesQuery do
-  describe ".all_seekers" do
-    subject { described_class.all_seekers }
+  describe ".all_people" do
+    subject { described_class.all_people }
 
     before do
-      barrier = create(:barrier, id: "81f43abc-67b6-4531-af45-293d3fc053e5", name: "barrier2")
-
-      person_context1 = create(
+      create(
         :coaches__person_context,
         id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
         phone_number: "1234567890",
@@ -20,11 +18,10 @@ RSpec.describe Coaches::CoachesQuery do
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted_at: Time.zone.local(2010, 1, 1),
         kind: Coaches::PersonContext::Kind::SEEKER,
-        barriers: [barrier.id],
         certified_by: "person@skillarc.com"
       )
 
-      person_context2 = create(
+      create(
         :coaches__person_context,
         id: "3e7cccaa-ec0e-4c59-a7ad-2b187b3acc4c",
         phone_number: nil,
@@ -55,120 +52,56 @@ RSpec.describe Coaches::CoachesQuery do
         kind: Coaches::PersonContext::Kind::LEAD,
         certified_by: "person@skillarc.com"
       )
-
-      create(
-        :coaches__person_note,
-        person_context: person_context1,
-        note: "This note was updated",
-        id: "a2dd7180-6c3d-46ad-9bd7-413314b7a849",
-        note_taken_at: Time.zone.local(2020, 1, 1),
-        note_taken_by: "coach@blocktrainapp.com"
-      )
-
-      create(
-        :coaches__person_application,
-        person_context: person_context1,
-        job_id: "2e6a7696-08e6-4e95-aa95-166fc2b43dcf",
-        status: "Actively failing an interview",
-        employer_name: "Cool",
-        employment_title: "A title"
-      )
-
-      create(
-        :coaches__person_application,
-        person_context: person_context2,
-        job_id: "23642aea-8f58-4a0c-8799-5d80591b84ad",
-        status: "Actively failing an interview",
-        employer_name: "Not Cool",
-        employment_title: "A title"
-      )
-
-      create(
-        :coaches__person_application,
-        person_context: person_context2,
-        job_id: "6f6dc17a-1f3b-44b6-aa5f-25da193943c5",
-        status: "Actively chillin at an interview",
-        employer_name: "Cool",
-        employment_title: "A bad title"
-      )
-
-      create(
-        :coaches__person_job_recommendation,
-        person_context: person_context1,
-        job: create(:coaches__job, id: "d4cd7594-bc68-44cd-b22c-246979a9ea0f")
-      )
     end
 
     it "returns an empty array" do
-      expected_profile = {
+      expected_profile1 = {
         id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
         seeker_id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",
         first_name: "Hannah",
         last_name: "Block",
+        kind: Coaches::PersonContext::Kind::SEEKER,
+        lead_captured_at: Time.zone.local(2000, 1, 1),
+        lead_captured_by: "someone@skillarc.com",
         email: "hannah@blocktrainapp.com",
         phone_number: "1234567890",
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted: Time.zone.local(2010, 1, 1),
         assigned_coach: "coach@blocktrainapp.com",
-        certified_by: "person@skillarc.com",
-        barriers: [{
-          id: "81f43abc-67b6-4531-af45-293d3fc053e5",
-          name: "barrier2"
-        }]
+        certified_by: "person@skillarc.com"
       }
-      expected_other_profile = {
+      expected_profile2 = {
         id: "3e7cccaa-ec0e-4c59-a7ad-2b187b3acc4c",
         seeker_id: "3e7cccaa-ec0e-4c59-a7ad-2b187b3acc4c",
         first_name: "Katina",
         last_name: "Hall",
+        kind: Coaches::PersonContext::Kind::SEEKER,
+        lead_captured_at: Time.zone.local(2001, 1, 1),
+        lead_captured_by: "someone@skillarc.com",
         email: "katina@gmail.com",
         phone_number: nil,
         last_active_on: Time.zone.local(2008, 1, 1),
         last_contacted: "Never",
         assigned_coach: 'none',
-        certified_by: nil,
-        barriers: []
+        certified_by: nil
       }
-
-      expect(subject.length).to eq(2)
-      expect(subject).to include(expected_profile)
-      expect(subject).to include(expected_other_profile)
-    end
-  end
-
-  describe ".all_leads" do
-    subject { described_class.all_leads }
-
-    before do
-      create(
-        :coaches__person_context,
-        id: "2df13b05-fff6-43be-b4fd-2c688ca4ee38",
-        phone_number: "0987654321",
-        first_name: "Not",
-        last_name: "Converted",
-        assigned_coach: nil,
-        person_captured_at: Time.zone.local(2000, 1, 1),
-        email: nil,
-        captured_by: "someone@skillarc.com",
-        kind: Coaches::PersonContext::Kind::LEAD
-      )
-    end
-
-    it "returns all leads" do
-      expected_lead = {
-        id: "2df13b05-fff6-43be-b4fd-2c688ca4ee38",
-        phone_number: "0987654321",
-        assigned_coach: 'none',
-        first_name: "Not",
-        last_name: "Converted",
-        email: nil,
+      expected_profile3 = {
+        id: "ec9ea4ff-7655-435b-a6dc-0de8427d6cb6",
+        seeker_id: "ec9ea4ff-7655-435b-a6dc-0de8427d6cb6",
+        phone_number: "1234567890",
+        first_name: "Jim",
+        last_name: "Jimson",
+        kind: Coaches::PersonContext::Kind::LEAD,
         lead_captured_at: Time.zone.local(2000, 1, 1),
         lead_captured_by: "someone@skillarc.com",
-        kind: Coaches::PersonContext::Kind::LEAD,
-        status: "new"
+        email: "hannah@blocktrainapp.com",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted: Time.zone.local(2010, 1, 1),
+        assigned_coach: 'none',
+        certified_by: "person@skillarc.com"
       }
 
-      expect(subject).to eq([expected_lead])
+      expect(subject).to contain_exactly(expected_profile1, expected_profile2, expected_profile3)
     end
   end
 
@@ -178,8 +111,6 @@ RSpec.describe Coaches::CoachesQuery do
     let(:id) { SecureRandom.uuid }
 
     before do
-      barrier = create(:barrier, id: "81f43abc-67b6-4531-af45-293d3fc053e5", name: "barrier2")
-
       person_context1 = create(
         :coaches__person_context,
         id:,
@@ -193,7 +124,6 @@ RSpec.describe Coaches::CoachesQuery do
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted_at: Time.zone.local(2010, 1, 1),
         kind: Coaches::PersonContext::Kind::SEEKER,
-        barriers: [barrier.id],
         certified_by: "person@skillarc.com"
       )
 
@@ -242,6 +172,8 @@ RSpec.describe Coaches::CoachesQuery do
         phone_number: "1234567890",
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted: Time.zone.local(2010, 1, 1),
+        lead_captured_at: Time.zone.local(2000, 1, 1),
+        lead_captured_by: "someone@skillarc.com",
         assigned_coach: "coach@blocktrainapp.com",
         certified_by: "person@skillarc.com",
         attributes: [{
@@ -249,10 +181,6 @@ RSpec.describe Coaches::CoachesQuery do
           id: '2527d624-d0c4-48d4-856b-369ff767f29d',
           attribute_id: "3f48a475-b711-4265-9cc5-02fcfc0c40d1",
           value: ["High School"]
-        }],
-        barriers: [{
-          id: "81f43abc-67b6-4531-af45-293d3fc053e5",
-          name: "barrier2"
         }],
         notes: [
           {
@@ -274,6 +202,96 @@ RSpec.describe Coaches::CoachesQuery do
       }
 
       expect(subject).to eq(expected_profile)
+    end
+  end
+
+  describe ".find_people" do
+    subject { described_class.find_people(ids) }
+
+    let(:ids) { [SecureRandom.uuid, SecureRandom.uuid] }
+
+    before do
+      create(
+        :coaches__person_context,
+        id: ids[0],
+        phone_number: "1234567890",
+        first_name: "Hannah",
+        last_name: "Block",
+        assigned_coach: "coach@blocktrainapp.com",
+        person_captured_at: Time.zone.local(2000, 1, 1),
+        email: "hannah@blocktrainapp.com",
+        captured_by: "someone@skillarc.com",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted_at: Time.zone.local(2010, 1, 1),
+        kind: Coaches::PersonContext::Kind::SEEKER,
+        certified_by: "person@skillarc.com"
+      )
+
+      create(
+        :coaches__person_context,
+        id: ids[1],
+        phone_number: "1234567890",
+        first_name: "John",
+        last_name: "Chabot",
+        assigned_coach: "coach@blocktrainapp.com",
+        person_captured_at: Time.zone.local(2000, 1, 1),
+        email: "hannah@blocktrainapp.com",
+        captured_by: "someone@skillarc.com",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted_at: Time.zone.local(2010, 1, 1),
+        kind: Coaches::PersonContext::Kind::SEEKER,
+        certified_by: "person@skillarc.com"
+      )
+
+      create(
+        :coaches__person_context,
+        phone_number: "1234567890",
+        first_name: "David",
+        last_name: "Chabot",
+        assigned_coach: "coach@blocktrainapp.com",
+        person_captured_at: Time.zone.local(2000, 1, 1),
+        email: "hannah@blocktrainapp.com",
+        captured_by: "someone@skillarc.com",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted_at: Time.zone.local(2010, 1, 1),
+        kind: Coaches::PersonContext::Kind::SEEKER,
+        certified_by: "person@skillarc.com"
+      )
+    end
+
+    it "returns the context" do
+      expected_profile1 = {
+        id: ids[0],
+        seeker_id: ids[0],
+        first_name: "Hannah",
+        last_name: "Block",
+        kind: 'seeker',
+        email: "hannah@blocktrainapp.com",
+        lead_captured_at: Time.zone.local(2000, 1, 1),
+        lead_captured_by: "someone@skillarc.com",
+        phone_number: "1234567890",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted: Time.zone.local(2010, 1, 1),
+        assigned_coach: "coach@blocktrainapp.com",
+        certified_by: "person@skillarc.com"
+      }
+      expected_profile2 = {
+        id: ids[1],
+        seeker_id: ids[1],
+        first_name: "John",
+        last_name: "Chabot",
+        kind: 'seeker',
+        email: "hannah@blocktrainapp.com",
+        phone_number: "1234567890",
+        lead_captured_at: Time.zone.local(2000, 1, 1),
+        lead_captured_by: "someone@skillarc.com",
+        last_active_on: Time.zone.local(2005, 1, 1),
+        last_contacted: Time.zone.local(2010, 1, 1),
+        assigned_coach: "coach@blocktrainapp.com",
+        certified_by: "person@skillarc.com"
+      }
+
+      expect(subject).to contain_exactly(expected_profile1, expected_profile2)
     end
   end
 

@@ -24,7 +24,7 @@ RSpec.describe PeopleSearch::PeopleQuery do
     end
 
     it "returns a list of people" do
-      expect(subject).to contain_exactly(person)
+      expect(subject).to contain_exactly(person.id)
     end
 
     it "emits an event" do

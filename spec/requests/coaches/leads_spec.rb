@@ -3,43 +3,6 @@ require 'swagger_helper'
 
 RSpec.describe "Leads", type: :request do
   path "/coaches/leads" do
-    get "Retrieve all leads" do
-      tags 'Coaches'
-      produces 'application/json'
-      security [bearer_auth: []]
-
-      include_context "olive branch casing parameter"
-      include_context "olive branch camelcasing"
-
-      it_behaves_like "coach spec unauthenticated openapi"
-
-      context "when authenticated" do
-        include_context "coach authenticated openapi"
-
-        response '200', 'retrieve all seekers' do
-          schema type: :array,
-                 items: {
-                   '$ref' => '#/components/schemas/lead'
-                 }
-
-          context "when are no seekers" do
-            run_test!
-          end
-
-          context "when there are many leads" do
-            before do
-              create(:coaches__person_context, :lead)
-              create(:coaches__person_context, :lead)
-            end
-
-            run_test!
-          end
-        end
-      end
-    end
-  end
-
-  path "/coaches/leads" do
     post "Create new lead" do
       tags 'Coaches'
       consumes 'application/json'

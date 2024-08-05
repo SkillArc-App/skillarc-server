@@ -18,5 +18,8 @@ module PeopleSearch
     has_many :experiences, class_name: "PeopleSearch::PersonExperience", dependent: :delete_all
     has_many :education_experiences, class_name: "PeopleSearch::PersonEducationExperience", dependent: :delete_all
     has_many :notes, class_name: "PeopleSearch::Note", dependent: :delete_all
+
+    has_many :attributes_people, class_name: "PeopleSearch::AttributePerson", dependent: :delete_all
+    has_many :person_attributes, through: :attributes_people
   end
 end

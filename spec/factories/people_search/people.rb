@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :people_search_person, class: 'PeopleSearch::Person' do
+  factory :people_search__person, class: 'PeopleSearch::Person' do
     first_name { "John" }
     last_name { "Doe" }
     email { "john.doe@skillarc.com" }

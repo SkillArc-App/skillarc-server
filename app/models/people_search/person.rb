@@ -15,7 +15,8 @@
 #
 module PeopleSearch
   class Person < ApplicationRecord
-    has_many :experiences, class_name: "PeopleSearch::PersonExperience", dependent: :destroy
-    has_many :education_experiences, class_name: "PeopleSearch::PersonEducationExperience", dependent: :destroy
+    has_many :experiences, class_name: "PeopleSearch::PersonExperience", dependent: :delete_all
+    has_many :education_experiences, class_name: "PeopleSearch::PersonEducationExperience", dependent: :delete_all
+    has_many :notes, class_name: "PeopleSearch::Note", dependent: :delete_all
   end
 end

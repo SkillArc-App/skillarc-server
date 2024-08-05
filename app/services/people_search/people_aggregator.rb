@@ -22,7 +22,7 @@ module PeopleSearch
     end
 
     on_message Events::BasicInfoAdded::V1 do |message|
-      person = find_person(message.stream.id)
+      person = find_person_for_search_vector(message.stream.id)
 
       person.first_name = message.data.first_name
       person.last_name = message.data.last_name
@@ -42,7 +42,7 @@ module PeopleSearch
     end
 
     on_message Events::CoachAssigned::V3 do |message|
-      person = find_person(message.stream.id)
+      person = find_person_for_search_vector(message.stream.id)
 
       coach = Coach.find(message.data.coach_id)
 
@@ -52,7 +52,7 @@ module PeopleSearch
     end
 
     on_message Events::ExperienceAdded::V2 do |message|
-      person = find_person(message.stream.id)
+      person = find_person_for_search_vector(message.stream.id)
 
       experience = person.experiences.find_or_initialize_by(id: message.data.id)
 
@@ -66,7 +66,7 @@ module PeopleSearch
     end
 
     on_message Events::ExperienceRemoved::V2 do |message|
-      person = find_person(message.stream.id)
+      person = find_person_for_search_vector(message.stream.id)
 
       person.experiences.find(message.data.id).destroy!
 
@@ -76,13 +76,13 @@ module PeopleSearch
     end
 
     on_message Events::EducationExperienceAdded::V2 do |message|
-      person = find_person(message.stream.id)
+      person = find_person_for_search_vector(message.stream.id)
 
-      ee = person.education_experiences.find_or_initialize_by(id: message.data.id)
+      education_experience = person.education_experiences.find_or_initialize_by(id: message.data.id)
 
-      ee.title = message.data.title
-      ee.organization_name = message.data.organization_name
-      ee.activities = message.data.activities
+      education_experience.title = message.data.title
+      education_experience.organization_name = message.data.organization_name
+      education_experience.activities = message.data.activities
 
       person.search_vector = search_vector(person)
 
@@ -90,7 +90,7 @@ module PeopleSearch
     end
 
     on_message Events::EducationExperienceDeleted::V2 do |message|
-      person = find_person(message.stream.id)
+      person = find_person_for_search_vector(message.stream.id)
 
       person.education_experiences.find(message.data.id).destroy!
 
@@ -100,31 +100,41 @@ module PeopleSearch
     end
 
     on_message Events::NoteAdded::V4 do |message|
-      person = find_person(message.stream.id)
+      person = find_person_for_search_vector(message.stream.id)
+
+      person.notes.create!(
+        id: message.data.note_id,
+        note: message.data.note
+      )
+
+      person.search_vector = search_vector(person)
 
       person.save!
     end
 
-    on_message Events::PersonAssociatedToUser::V1 do |message|
-      person = find_person(message.stream.id)
+    on_message Events::NoteModified::V4 do |message|
+      Note.update!(
+        message.data.note_id,
+        note: message.data.note
+      )
 
-      person.user_id = message.data.user_id
-
+      person = find_person_for_search_vector(message.stream.id)
+      person.search_vector = search_vector(person)
       person.save!
     end
 
-    on_message Events::PersonCertified::V1 do |message|
-      person = find_person(message.stream.id)
+    on_message Events::NoteDeleted::V4 do |message|
+      Note.destroy(message.data.note_id)
 
-      person.certified_by = message.data.coach_email
-
+      person = find_person_for_search_vector(message.stream.id)
+      person.search_vector = search_vector(person)
       person.save!
     end
 
     private
 
-    def find_person(id)
-      Person.includes(:experiences, :education_experiences).find(id)
+    def find_person_for_search_vector(id)
+      Person.includes(:experiences, :education_experiences, :notes).find(id)
     end
 
     def search_vector(person)
@@ -146,6 +156,10 @@ module PeopleSearch
         vector << education_experience.organization_name
         vector << education_experience.title
         vector << education_experience.activities
+      end
+
+      person.notes.each do |note|
+        vector << note.note
       end
 
       vector.join(" ")

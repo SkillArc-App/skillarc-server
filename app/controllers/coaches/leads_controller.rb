@@ -8,7 +8,6 @@ module Coaches
     before_action :coach_authorize
     before_action :set_coach
 
-
     def create
       lead = params.require(:lead).permit(
         :lead_id,

@@ -571,16 +571,8 @@ RSpec.configure do |config|
                 nullable: true
               },
               lastContacted: {
-                oneOf: [
-                  {
-                    type: :string,
-                    format: 'date-time'
-                  },
-                  {
-                    type: :string,
-                    enum: ['Never']
-                  }
-                ],
+                type: :string,
+                format: 'date-time',
                 nullable: true
               },
               certifiedBy: {
@@ -588,7 +580,8 @@ RSpec.configure do |config|
                 nullable: true
               },
               assignedCoach: {
-                type: :string
+                type: :string,
+                nullable: true
               }
             }
           },

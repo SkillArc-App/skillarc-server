@@ -56,8 +56,8 @@ module Coaches
           lead_captured_by: person_context.captured_by,
           phone_number: person_context.phone_number,
           last_active_on: person_context.last_active_on,
-          last_contacted: person_context.last_contacted_at || "Never",
-          assigned_coach: person_context.assigned_coach || 'none',
+          last_contacted: person_context.last_contacted_at,
+          assigned_coach: person_context.assigned_coach,
           certified_by: person_context.certified_by
         }
       end

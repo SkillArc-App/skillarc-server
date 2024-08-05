@@ -81,8 +81,8 @@ RSpec.describe Coaches::CoachesQuery do
         email: "katina@gmail.com",
         phone_number: nil,
         last_active_on: Time.zone.local(2008, 1, 1),
-        last_contacted: "Never",
-        assigned_coach: 'none',
+        last_contacted: nil,
+        assigned_coach: nil,
         certified_by: nil
       }
       expected_profile3 = {
@@ -97,7 +97,7 @@ RSpec.describe Coaches::CoachesQuery do
         email: "hannah@blocktrainapp.com",
         last_active_on: Time.zone.local(2005, 1, 1),
         last_contacted: Time.zone.local(2010, 1, 1),
-        assigned_coach: 'none',
+        assigned_coach: nil,
         certified_by: "person@skillarc.com"
       }
 

@@ -18,7 +18,7 @@ RSpec.describe PeopleSearch::PeopleQuery do
 
     let!(:person) do
       create(
-        :people_search_person,
+        :people_search__person,
         search_vector: "John Chabot 555-555-5555 john.chabot@skillarc.com"
       )
     end
@@ -31,8 +31,8 @@ RSpec.describe PeopleSearch::PeopleQuery do
       expect_any_instance_of(MessageService)
         .to receive(:create!)
         .with(
-          schema: Events::PersonSearchExecuted::V1,
-          person_search_id: user.id,
+          schema: Events::PersonSearchExecuted::V2,
+          user_id: user.id,
           data: {
             search_terms:,
             attributes: {}

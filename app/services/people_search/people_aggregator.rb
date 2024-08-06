@@ -48,6 +48,40 @@ module PeopleSearch
       )
     end
 
+    on_message Events::AttributeCreated::V1 do |message|
+      Attribute.create!(
+        message.data.set.map do |value|
+          {
+            value:,
+            attribute_id: message.stream.id
+          }
+        end
+      )
+    end
+
+    on_message Events::AttributeUpdated::V1 do |message|
+      attributes = Attribute.where(attribute_id: message.stream.id)
+      current_values = attributes.map(&:value)
+      new_values = message.data.set
+
+      add_values = new_values - current_values
+      remove_values = current_values - new_values
+
+      Attribute.where(attribute_id: message.stream.id, value: remove_values).destroy_all
+      Attribute.create!(
+        add_values.map do |value|
+          {
+            value:,
+            attribute_id: message.stream.id
+          }
+        end
+      )
+    end
+
+    on_message Events::AttributeDeleted::V1 do |message|
+      Attribute.where(attribute_id: message.stream.id).destroy_all
+    end
+
     on_message Events::ExperienceAdded::V2 do |message|
       person = find_person_for_search_vector(message.stream.id)
 

@@ -89,6 +89,70 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       end
     end
 
+    context "attribute created" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::AttributeCreated::V1,
+          stream_id: SecureRandom.uuid,
+          data: {
+            set: %w[cat dog]
+          }
+        )
+      end
+
+      it "creates an attribute for each value" do
+        expect { subject }.to change(PeopleSearch::Attribute, :count).from(0).to(2)
+
+        PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "cat")
+        PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "dog")
+      end
+    end
+
+    context "attribute updated" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::AttributeUpdated::V1,
+          stream_id: attribute_id,
+          data: {
+            set: %w[cat dog]
+          }
+        )
+      end
+
+      let(:attribute_id) { SecureRandom.uuid }
+      let!(:attribute1) { create(:people_search__attribute, attribute_id:, value: "parrot") }
+      let!(:attribute2) { create(:people_search__attribute, attribute_id:, value: "cat") }
+
+      it "creates new records and destroys records where needed" do
+        expect { subject }.not_to change(PeopleSearch::Attribute, :count)
+
+        existing = PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "cat")
+        expect(existing.id).to eq(attribute2.id)
+
+        PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "dog")
+        expect(PeopleSearch::Attribute.find_by(attribute_id: message.stream.id, value: "parrot")).to eq(nil)
+      end
+    end
+
+    context "attribute destroyed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::AttributeDeleted::V1,
+          stream_id: attribute_id
+        )
+      end
+
+      let(:attribute_id) { SecureRandom.uuid }
+      let!(:attribute1) { create(:people_search__attribute, attribute_id:, value: "parrot") }
+
+      it "destroy all attributes associated with the id" do
+        expect { subject }.to change(PeopleSearch::Attribute, :count).from(1).to(0)
+      end
+    end
+
     context "experience added" do
       let(:person) { create(:people_search__person) }
 

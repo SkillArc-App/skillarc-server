@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_05_172707) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_06_195436) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -761,8 +761,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_172707) do
     t.index ["seeker_id"], name: "index_other_experiences_on_seeker_id"
   end
 
-  create_table "people_search_coaches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "email", null: false
+  create_table "people_search_attributes", force: :cascade do |t|
+    t.uuid "attribute_id", null: false
+    t.text "value", null: false
+    t.index ["attribute_id"], name: "index_people_search_attributes_on_attribute_id"
+    t.index ["value"], name: "index_people_search_attributes_on_value"
+  end
+
+  create_table "people_search_attributes_people", id: false, force: :cascade do |t|
+    t.uuid "person_id", null: false
+    t.bigint "attribute_id", null: false
+    t.uuid "id", null: false
+    t.index ["attribute_id"], name: "index_people_search_attributes_people_on_attribute_id"
+    t.index ["id"], name: "index_people_search_attributes_people_on_id"
+    t.index ["person_id"], name: "index_people_search_attributes_people_on_person_id"
   end
 
   create_table "people_search_notes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -773,14 +785,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_172707) do
 
   create_table "people_search_people", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email"
-    t.string "assigned_coach"
     t.string "first_name"
     t.string "last_name"
     t.string "phone_number"
     t.date "date_of_birth"
     t.text "search_vector", null: false
-    t.string "certified_by"
-    t.string "user_id"
+    t.uuid "assigned_coach_id"
+    t.index ["assigned_coach_id"], name: "index_people_search_people_on_assigned_coach_id"
   end
 
   create_table "people_search_person_education_experiences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -788,8 +799,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_172707) do
     t.string "organization_name"
     t.string "title"
     t.text "activities"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["person_id"], name: "index_people_search_person_education_experiences_on_person_id"
   end
 
@@ -798,8 +807,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_172707) do
     t.string "organization_name"
     t.string "position"
     t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["person_id"], name: "index_people_search_person_experiences_on_person_id"
   end
 
@@ -1093,6 +1100,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_172707) do
   add_foreign_key "learned_skills", "jobs", name: "LearnedSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "other_experiences", "organizations", name: "OtherExperience_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "other_experiences", "seekers"
+  add_foreign_key "people_search_attributes_people", "people_search_attributes", column: "attribute_id", on_delete: :cascade
+  add_foreign_key "people_search_attributes_people", "people_search_people", column: "person_id", on_delete: :cascade
   add_foreign_key "people_search_notes", "people_search_people", column: "person_id", on_delete: :cascade
   add_foreign_key "people_search_person_education_experiences", "people_search_people", column: "person_id", on_delete: :cascade
   add_foreign_key "people_search_person_experiences", "people_search_people", column: "person_id", on_delete: :cascade

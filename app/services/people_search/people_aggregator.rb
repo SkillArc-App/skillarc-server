@@ -34,21 +34,64 @@ module PeopleSearch
       person.save!
     end
 
-    on_message Events::CoachAdded::V1 do |message|
-      Coach.create!(
-        id: message.data.coach_id,
-        email: message.data.email
+    on_message Events::CoachAssigned::V3 do |message|
+      Person.update!(
+        message.stream.id,
+        assigned_coach_id: message.data.coach_id
       )
     end
 
-    on_message Events::CoachAssigned::V3 do |message|
-      person = find_person_for_search_vector(message.stream.id)
+    on_message Events::AttributeCreated::V1 do |message|
+      Attribute.create!(
+        message.data.set.map do |value|
+          {
+            value:,
+            attribute_id: message.stream.id
+          }
+        end
+      )
+    end
 
-      coach = Coach.find(message.data.coach_id)
+    on_message Events::AttributeUpdated::V1 do |message|
+      attributes = Attribute.where(attribute_id: message.stream.id)
+      current_values = attributes.map(&:value)
+      new_values = message.data.set
 
-      person.assigned_coach = coach.email
+      add_values = new_values - current_values
+      remove_values = current_values - new_values
 
-      person.save!
+      Attribute.where(attribute_id: message.stream.id, value: remove_values).delete_all
+      Attribute.create!(
+        add_values.map do |value|
+          {
+            value:,
+            attribute_id: message.stream.id
+          }
+        end
+      )
+    end
+
+    on_message Events::AttributeDeleted::V1 do |message|
+      Attribute.where(attribute_id: message.stream.id).delete_all
+    end
+
+    on_message Events::PersonAttributeAdded::V1 do |message|
+      attribute_values = Attribute.where(attribute_id: message.data.attribute_id, value: message.data.attribute_values)
+
+      AttributePerson.where(id: message.data.id).delete_all
+      AttributePerson.create!(
+        attribute_values.map do |a|
+          {
+            id: message.data.id,
+            person_id: message.stream.id,
+            attribute_id: a.id
+          }
+        end
+      )
+    end
+
+    on_message Events::PersonAttributeRemoved::V1 do |message|
+      AttributePerson.where(id: message.data.id).delete_all
     end
 
     on_message Events::ExperienceAdded::V2 do |message|
@@ -68,7 +111,7 @@ module PeopleSearch
     on_message Events::ExperienceRemoved::V2 do |message|
       person = find_person_for_search_vector(message.stream.id)
 
-      person.experiences.find(message.data.id).destroy!
+      person.experiences.find(message.data.id).delete
 
       person.search_vector = search_vector(person.reload)
 
@@ -92,7 +135,7 @@ module PeopleSearch
     on_message Events::EducationExperienceDeleted::V2 do |message|
       person = find_person_for_search_vector(message.stream.id)
 
-      person.education_experiences.find(message.data.id).destroy!
+      person.education_experiences.find(message.data.id).delete
 
       person.search_vector = search_vector(person.reload)
 
@@ -124,7 +167,7 @@ module PeopleSearch
     end
 
     on_message Events::NoteDeleted::V4 do |message|
-      Note.destroy(message.data.note_id)
+      Note.delete(message.data.note_id)
 
       person = find_person_for_search_vector(message.stream.id)
       person.search_vector = search_vector(person)

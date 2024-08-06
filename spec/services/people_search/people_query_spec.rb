@@ -3,13 +3,14 @@ require 'rails_helper'
 RSpec.describe PeopleSearch::PeopleQuery do
   describe ".search" do
     subject do
-      instance.search(
+      described_class.search(
         search_terms:,
         attributes:,
-        user:
+        user:,
+        message_service:,
       )
     end
-    let(:instance) { described_class.new }
+    let(:message_service) { MessageService.new }
     let(:user) { create(:user) }
     let(:attribute_id1) { SecureRandom.uuid }
     let(:attribute_id2) { SecureRandom.uuid }
@@ -84,7 +85,7 @@ RSpec.describe PeopleSearch::PeopleQuery do
       end
 
       it "emits an event" do
-        expect_any_instance_of(MessageService)
+        expect(message_service)
           .to receive(:create!)
           .with(
             schema: Events::PersonSearchExecuted::V3,
@@ -113,7 +114,7 @@ RSpec.describe PeopleSearch::PeopleQuery do
       end
 
       it "emits an event" do
-        expect_any_instance_of(MessageService)
+        expect(message_service)
           .to receive(:create!)
           .with(
             schema: Events::PersonSearchExecuted::V3,

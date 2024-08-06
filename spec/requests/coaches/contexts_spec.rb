@@ -6,12 +6,17 @@ RSpec.describe "Coaches::Contexts", type: :request do
     get "Retrieve all contexts" do
       tags 'Coaches'
       produces 'application/json'
+      parameter name: :utm_term, in: :query, type: :string
+      parameter name: :attributes, in: :query, type: :string
       security [bearer_auth: []]
 
       include_context "olive branch casing parameter"
       include_context "olive branch camelcasing"
 
       it_behaves_like "coach spec unauthenticated openapi"
+
+      let(:utm_term) { nil }
+      let(:attributes) { nil }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -22,18 +27,47 @@ RSpec.describe "Coaches::Contexts", type: :request do
                    '$ref' => '#/components/schemas/coach_seeker_table'
                  }
 
-          context "when are no seekers" do
+          let(:attribute_id) { SecureRandom.uuid }
+
+          before do
+            person_context1 = create(:coaches__person_context)
+            person_context2 = create(:coaches__person_context)
+
+            create(:people_search__person, id: person_context1.id)
+            create(:people_search__person, id: person_context2.id)
+
+            create(:coaches__person_note, person_context: person_context1)
+            create(:coaches__person_application, person_context: person_context2)
+            create(:coaches__person_job_recommendation, person_context: person_context2)
+          end
+
+          context "when no search params are provided" do
+            let(:utm_term) { nil }
+            let(:attributes) { nil }
+
             run_test!
           end
 
-          context "when there are many seekers" do
-            before do
-              person_context1 = create(:coaches__person_context, barriers: [create(:barrier).id])
-              person_context2 = create(:coaches__person_context)
+          context "when search params are provided" do
+            let(:utm_term) { "trainer" }
+            let(:attributes) do
+              {
+                attribute_id => ["Example"]
+              }.to_json
+            end
 
-              create(:coaches__person_note, person_context: person_context1)
-              create(:coaches__person_application, person_context: person_context2)
-              create(:coaches__person_job_recommendation, person_context: person_context2)
+            before do
+              expect(PeopleSearch::PeopleQuery)
+                .to receive(:search)
+                .with(
+                  search_terms: utm_term,
+                  attributes: {
+                    attribute_id => ["Example"]
+                  },
+                  user:,
+                  message_service: be_a(MessageService)
+                )
+                .and_call_original
             end
 
             run_test!

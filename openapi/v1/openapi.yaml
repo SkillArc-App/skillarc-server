@@ -766,9 +766,15 @@ paths:
       summary: Retrieve all contexts
       tags:
       - Coaches
-      security:
-      - bearer_auth: []
       parameters:
+      - name: utm_term
+        in: query
+        schema:
+          type: string
+      - name: attributes
+        in: query
+        schema:
+          type: string
       - name: Key-Inflection
         in: header
         schema:
@@ -778,6 +784,8 @@ paths:
           - dash
           - snake
           - pascale
+      security:
+      - bearer_auth: []
       responses:
         '401':
           description: unauthenticated

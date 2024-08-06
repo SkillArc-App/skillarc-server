@@ -9,15 +9,17 @@ module Coaches
     before_action :set_coach, only: %i[recommend_job show]
 
     def index
-      if params[:utm_term].present? || params[:attributes].present? || params[:utm_source].present?
-        people_ids = PeopleSearch::PeopleQuery.new.search(
-          search_terms: params[:utm_term],
-          attributes: params[:attributes],
-          user: current_user,
-          utm_source: params[:utm_source]
-        )
+      if params[:utm_term].present? || params[:attributes].present?
+        with_message_service do
+          people_ids = PeopleSearch::PeopleQuery.search(
+            search_terms: params[:utm_term],
+            attributes: JSON.parse(params[:attributes] || {}),
+            user: current_user,
+            message_service:
+          )
 
-        render json: Coaches::CoachesQuery.find_people(people_ids)
+          render json: Coaches::CoachesQuery.find_people(people_ids)
+        end
       else
         render json: Coaches::CoachesQuery.all_people
       end

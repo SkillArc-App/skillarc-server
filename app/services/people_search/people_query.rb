@@ -1,8 +1,6 @@
 module PeopleSearch
-  class PeopleQuery < MessageConsumer
-    include MessageEmitter
-
-    def search(search_terms:, user:, attributes:)
+  class PeopleQuery
+    def self.search(search_terms:, user:, attributes:, message_service:)
       people = if attributes.empty?
                  Person.all
                else
@@ -15,29 +13,21 @@ module PeopleSearch
 
       people = Person.where("search_vector ilike '%#{search_terms}%'") if search_terms.present?
 
-      emit_event(search_terms, attributes, user)
+      message_service.create!(
+        schema: Events::PersonSearchExecuted::V3,
+        user_id: user.id,
+        data: {
+          search_terms:,
+          attributes: attributes.map do |key, values|
+            Events::PersonSearchExecuted::Attribute::V1.new(
+              id: key,
+              values:
+            )
+          end
+        }
+      )
 
       people.pluck(:id)
-    end
-
-    private
-
-    def emit_event(search_terms, attributes, user)
-      with_message_service do
-        message_service.create!(
-          schema: Events::PersonSearchExecuted::V3,
-          user_id: user.id,
-          data: {
-            search_terms:,
-            attributes: attributes.map do |key, values|
-              Events::PersonSearchExecuted::Attribute::V1.new(
-                id: key,
-                values:
-              )
-            end
-          }
-        )
-      end
     end
   end
 end

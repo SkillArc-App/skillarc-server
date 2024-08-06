@@ -34,13 +34,6 @@ module PeopleSearch
       person.save!
     end
 
-    on_message Events::CoachAdded::V1 do |message|
-      Coach.create!(
-        id: message.data.coach_id,
-        email: message.data.email
-      )
-    end
-
     on_message Events::CoachAssigned::V3 do |message|
       Person.update!(
         message.stream.id,

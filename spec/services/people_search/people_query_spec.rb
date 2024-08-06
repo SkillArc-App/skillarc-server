@@ -7,7 +7,7 @@ RSpec.describe PeopleSearch::PeopleQuery do
         search_terms:,
         attributes:,
         user:,
-        message_service:,
+        message_service:
       )
     end
     let(:message_service) { MessageService.new }

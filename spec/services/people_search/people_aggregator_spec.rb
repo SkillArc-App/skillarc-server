@@ -66,27 +66,6 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       end
     end
 
-    context "coach added" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::CoachAdded::V1,
-          data: {
-            coach_id: SecureRandom.uuid,
-            email: "coach@skillarc.com"
-          }
-        )
-      end
-
-      it "creates a new coach record" do
-        expect { subject }.to change(PeopleSearch::Coach, :count).from(0).to(1)
-
-        coach = PeopleSearch::Coach.last
-
-        expect(coach.email).to eq("coach@skillarc.com")
-      end
-    end
-
     context "coach assigned" do
       let(:message) do
         build(
@@ -94,19 +73,19 @@ RSpec.describe PeopleSearch::PeopleAggregator do
           schema: Events::CoachAssigned::V3,
           stream_id: person.id,
           data: {
-            coach_id: coach.id
+            coach_id: SecureRandom.uuid
           }
         )
       end
 
       let(:person) { create(:people_search__person) }
 
-      it "updates the assigned_coach field" do
+      it "updates the assigned_coach_id field" do
         subject
 
         person.reload
 
-        expect(person.assigned_coach).to eq(coach.email)
+        expect(person.assigned_coach_id).to eq(message.data.coach_id)
       end
     end
 

@@ -42,13 +42,10 @@ module PeopleSearch
     end
 
     on_message Events::CoachAssigned::V3 do |message|
-      person = find_person_for_search_vector(message.stream.id)
-
-      coach = Coach.find(message.data.coach_id)
-
-      person.assigned_coach = coach.email
-
-      person.save!
+      Person.update!(
+        message.stream.id,
+        assigned_coach_id: message.data.coach_id
+      )
     end
 
     on_message Events::ExperienceAdded::V2 do |message|

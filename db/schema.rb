@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_06_125512) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_06_153247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -771,7 +771,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_06_125512) do
   create_table "people_search_attributes_people", id: false, force: :cascade do |t|
     t.uuid "person_id", null: false
     t.bigint "attribute_id", null: false
+    t.uuid "id", null: false
     t.index ["attribute_id"], name: "index_people_search_attributes_people_on_attribute_id"
+    t.index ["id"], name: "index_people_search_attributes_people_on_id"
     t.index ["person_id"], name: "index_people_search_attributes_people_on_person_id"
   end
 

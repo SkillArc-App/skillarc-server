@@ -2,16 +2,20 @@
 #
 # Table name: people_search_people
 #
-#  id             :uuid             not null, primary key
-#  assigned_coach :string
-#  certified_by   :string
-#  date_of_birth  :date
-#  email          :string
-#  first_name     :string
-#  last_name      :string
-#  phone_number   :string
-#  search_vector  :text             not null
-#  user_id        :string
+#  id                :uuid             not null, primary key
+#  certified_by      :string
+#  date_of_birth     :date
+#  email             :string
+#  first_name        :string
+#  last_name         :string
+#  phone_number      :string
+#  search_vector     :text             not null
+#  assigned_coach_id :uuid
+#  user_id           :string
+#
+# Indexes
+#
+#  index_people_search_people_on_assigned_coach_id  (assigned_coach_id)
 #
 module PeopleSearch
   class Person < ApplicationRecord

@@ -99,7 +99,6 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         )
       end
 
-      let(:coach) { create(:people_search__coach) }
       let(:person) { create(:people_search__person) }
 
       it "updates the assigned_coach field" do

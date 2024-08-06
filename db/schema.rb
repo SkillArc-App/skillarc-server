@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_05_202100) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_06_125512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -775,10 +775,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_202100) do
     t.index ["person_id"], name: "index_people_search_attributes_people_on_person_id"
   end
 
-  create_table "people_search_coaches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "email", null: false
-  end
-
   create_table "people_search_notes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "person_id", null: false
     t.text "note", null: false
@@ -787,7 +783,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_202100) do
 
   create_table "people_search_people", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email"
-    t.string "assigned_coach"
     t.string "first_name"
     t.string "last_name"
     t.string "phone_number"
@@ -795,6 +790,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_05_202100) do
     t.text "search_vector", null: false
     t.string "certified_by"
     t.string "user_id"
+    t.uuid "assigned_coach_id"
+    t.index ["assigned_coach_id"], name: "index_people_search_people_on_assigned_coach_id"
   end
 
   create_table "people_search_person_education_experiences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

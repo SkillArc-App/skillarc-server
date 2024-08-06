@@ -1,7 +1,9 @@
 module PeopleSearch
   class PeopleAggregator < MessageConsumer
     def reset_for_replay
-      Coach.delete_all
+      Attribute.delete_all
+      AttributePerson.delete_all
+      Note.delete_all
       PersonExperience.delete_all
       PersonEducationExperience.delete_all
       Person.delete_all

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_06_153247) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_06_195436) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -790,8 +790,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_06_153247) do
     t.string "phone_number"
     t.date "date_of_birth"
     t.text "search_vector", null: false
-    t.string "certified_by"
-    t.string "user_id"
     t.uuid "assigned_coach_id"
     t.index ["assigned_coach_id"], name: "index_people_search_people_on_assigned_coach_id"
   end
@@ -801,8 +799,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_06_153247) do
     t.string "organization_name"
     t.string "title"
     t.text "activities"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["person_id"], name: "index_people_search_person_education_experiences_on_person_id"
   end
 
@@ -811,8 +807,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_06_153247) do
     t.string "organization_name"
     t.string "position"
     t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.index ["person_id"], name: "index_people_search_person_experiences_on_person_id"
   end
 

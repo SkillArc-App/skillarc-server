@@ -3,7 +3,6 @@
 # Table name: people_search_people
 #
 #  id                :uuid             not null, primary key
-#  certified_by      :string
 #  date_of_birth     :date
 #  email             :string
 #  first_name        :string
@@ -11,7 +10,6 @@
 #  phone_number      :string
 #  search_vector     :text             not null
 #  assigned_coach_id :uuid
-#  user_id           :string
 #
 # Indexes
 #

@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe PeopleSearch::PeopleAggregator do
+  it_behaves_like "a replayable message consumer"
+
   describe "#handle_message" do
     subject { instance.handle_message(message) }
 

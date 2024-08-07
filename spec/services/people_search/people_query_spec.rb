@@ -74,6 +74,11 @@ RSpec.describe PeopleSearch::PeopleQuery do
         person: person1,
         person_attribute: attribute22
       )
+      create(
+        :people_search__attribute_person,
+        person: person2,
+        person_attribute: attribute22
+      )
     end
 
     context "when only search terms are provided" do
@@ -126,6 +131,39 @@ RSpec.describe PeopleSearch::PeopleQuery do
                   id: attribute_id1,
                   values: %w[dog cat]
                 ),
+                Events::PersonSearchExecuted::Attribute::V1.new(
+                  id: attribute_id2,
+                  values: %w[blue]
+                )
+              ]
+            }
+          ).and_call_original
+
+        subject
+      end
+    end
+
+    context "when attributes and terms are are provided" do
+      let(:search_terms) { "John" }
+      let(:attributes) do
+        {
+          attribute_id2 => ["blue"]
+        }
+      end
+
+      it "returns a list of people" do
+        expect(subject).to contain_exactly(person1.id)
+      end
+
+      it "emits an event" do
+        expect(message_service)
+          .to receive(:create!)
+          .with(
+            schema: Events::PersonSearchExecuted::V3,
+            user_id: user.id,
+            data: {
+              search_terms:,
+              attributes: [
                 Events::PersonSearchExecuted::Attribute::V1.new(
                   id: attribute_id2,
                   values: %w[blue]

@@ -11,7 +11,7 @@ module PeopleSearch
                    .having("COUNT(DISTINCT person_attribute.attribute_id) = #{attributes.keys.length}")
                end
 
-      people = Person.where("search_vector ilike '%#{search_terms}%'") if search_terms.present?
+      people = people.where("search_vector ilike '%#{search_terms}%'") if search_terms.present?
 
       message_service.create!(
         schema: Events::PersonSearchExecuted::V3,

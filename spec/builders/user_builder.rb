@@ -11,8 +11,7 @@ module Builders
       email: Faker::Internet.email,
       phone_number: Faker::PhoneNumber.phone_number,
       roles: [],
-      sub: Faker::Internet.uuid,
-      person_id: nil
+      sub: Faker::Internet.uuid
     )
       user = User.create!(
         id:,
@@ -20,8 +19,7 @@ module Builders
         last_name:,
         email:,
         phone_number:,
-        sub:,
-        person_id:
+        sub:
       )
 
       message_service.create!(

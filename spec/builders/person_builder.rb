@@ -14,7 +14,7 @@ module Builders
       **
     )
       user_id = SecureRandom.uuid
-      user = UserBuilder.new(message_service).build(id: user_id, first_name:, last_name:, email:, phone_number:, person_id: id, **)
+      user = UserBuilder.new(message_service).build(id: user_id, first_name:, last_name:, email:, phone_number:, **)
 
       message_service.create!(
         person_id: id,
@@ -34,7 +34,6 @@ module Builders
           user_id:
         }
       )
-
       message_service.create!(
         person_id: id,
         schema: Events::OnboardingStarted::V2,

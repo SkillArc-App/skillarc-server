@@ -8,13 +8,13 @@ RSpec.describe Attributes::AttributesQuery do
 
     it "returns all attributes" do
       expect(subject).to eq([{
-        id: attribute.id,
-        default: attribute.default,
-        description: attribute.description,
-        machine_derived: attribute.machine_derived,
-        name: attribute.name,
-        set: attribute.set,
-      }])
+                              id: attribute.id,
+                              default: attribute.default,
+                              description: attribute.description,
+                              machine_derived: attribute.machine_derived,
+                              name: attribute.name,
+                              set: attribute.set
+                            }])
     end
   end
 
@@ -26,13 +26,13 @@ RSpec.describe Attributes::AttributesQuery do
 
     it "returns the attribute" do
       expect(subject).to eq({
-        id: attribute.id,
-        default: attribute.default,
-        description: attribute.description,
-        machine_derived: attribute.machine_derived,
-        name: attribute.name,
-        set: attribute.set,
-      })
+                              id: attribute.id,
+                              default: attribute.default,
+                              description: attribute.description,
+                              machine_derived: attribute.machine_derived,
+                              name: attribute.name,
+                              set: attribute.set
+                            })
     end
   end
 end

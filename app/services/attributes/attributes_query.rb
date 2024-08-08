@@ -18,7 +18,7 @@ module Attributes
           description: attribute.description,
           machine_derived: attribute.machine_derived,
           name: attribute.name,
-          set: attribute.set,
+          set: attribute.set
         }
       end
     end

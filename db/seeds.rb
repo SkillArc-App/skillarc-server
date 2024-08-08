@@ -554,9 +554,10 @@ message_service.create!(
 )
 
 message_service.create!(
-  schema: Events::AttributeCreated::V1,
+  schema: Events::AttributeCreated::V2,
   attribute_id: SecureRandom.uuid,
   data: {
+    machine_derived: false,
     name: "Background",
     description: "The candidate has a criminal background that may be a barrier to employment",
     set: %w[Misdemeanor Felony Violent],

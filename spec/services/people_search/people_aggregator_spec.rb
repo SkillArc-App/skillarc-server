@@ -95,7 +95,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::AttributeCreated::V1,
+          schema: Events::AttributeCreated::V2,
           stream_id: SecureRandom.uuid,
           data: {
             set: %w[cat dog]

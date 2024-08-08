@@ -12,7 +12,7 @@ RSpec.describe Attributes::AttributesAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::AttributeCreated::V1,
+          schema: Events::AttributeCreated::V2,
           data: {
             name: "name",
             description: "description",

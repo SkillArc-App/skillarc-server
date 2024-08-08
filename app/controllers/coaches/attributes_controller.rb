@@ -13,7 +13,7 @@ module Coaches
     end
 
     def create
-      attribute_name = Attributes::AttributesQuery.find(params[:attribute_id]).name
+      attribute_name = Attributes::AttributesQuery.find(params[:attribute_id])[:name]
 
       with_message_service do
         CoachesEventEmitter.new(message_service:).add_attribute(
@@ -30,7 +30,7 @@ module Coaches
     end
 
     def update
-      attribute_name = Attributes::AttributesQuery.find(params[:attribute_id]).name
+      attribute_name = Attributes::AttributesQuery.find(params[:attribute_id])[:name]
 
       with_message_service do
         CoachesEventEmitter.new(message_service:).add_attribute(

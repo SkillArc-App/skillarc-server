@@ -17,9 +17,10 @@ RSpec.describe Attributes::AttributesReactor do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::AttributeCreated::V1,
+        schema: Events::AttributeCreated::V2,
         attribute_id:,
         data: {
+          machine_derived: false,
           name:,
           description:,
           set:,

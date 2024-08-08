@@ -2,9 +2,10 @@ module Attributes
   class AttributesReactor < MessageReactor
     def create(attribute_id:, name:, description:, set:, default:)
       message_service.create!(
-        schema: Events::AttributeCreated::V1,
+        schema: Events::AttributeCreated::V2,
         attribute_id:,
         data: {
+          machine_derived: false,
           name:,
           description:,
           set:,

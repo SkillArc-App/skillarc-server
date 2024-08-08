@@ -4,7 +4,7 @@ module Attributes
       Attribute.delete_all
     end
 
-    on_message Events::AttributeCreated::V1, :sync do |message|
+    on_message Events::AttributeCreated::V2, :sync do |message|
       Attribute.create!(
         id: message.stream.attribute_id,
         name: message.data.name,

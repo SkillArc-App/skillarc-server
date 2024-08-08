@@ -43,7 +43,7 @@ module PeopleSearch
       )
     end
 
-    on_message Events::AttributeCreated::V1 do |message|
+    on_message Events::AttributeCreated::V2 do |message|
       Attribute.create!(
         message.data.set.map do |value|
           {

@@ -23,6 +23,7 @@ RSpec.describe "Attributes", type: :request do
                    properties: {
                      id: { type: :string, format: :uuid },
                      description: { type: :string, nullable: true },
+                     machineDerived: { type: :boolean },
                      name: { type: :string },
                      set: { type: :array, items: { type: :string } },
                      default: { type: :array, items: { type: :string } }

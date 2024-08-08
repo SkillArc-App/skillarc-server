@@ -25,6 +25,7 @@ RSpec.describe "Attributes", type: :request do
                      description: { type: :string, nullable: true },
                      name: { type: :string },
                      set: { type: :array, items: { type: :string } },
+                     machineDerived: { type: :boolean },
                      default: { type: :array, items: { type: :string } }
                    }
                  }

@@ -3,5 +3,6 @@ FactoryBot.define do
     name { "attribute_name" }
     set { %w[1 2] }
     default { ["1"] }
+    machine_derived { false }
   end
 end

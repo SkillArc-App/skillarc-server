@@ -20,6 +20,7 @@ RSpec.describe JobOrders::JobOrdersQuery do
           closed_at: job_order1.closed_at,
           order_count: job_order1.order_count,
           hire_count: job_order1.hire_count,
+          candidate_count: job_order1.candidate_count,
           recommended_count: job_order1.recommended_count,
           status: job_order1.status,
           team_id: job_order1.team_id,
@@ -50,6 +51,7 @@ RSpec.describe JobOrders::JobOrdersQuery do
           closed_at: job_order1.closed_at,
           order_count: job_order1.order_count,
           hire_count: job_order1.hire_count,
+          candidate_count: job_order1.candidate_count,
           recommended_count: job_order1.recommended_count,
           status: job_order1.status,
           team_id: job_order1.team_id,
@@ -105,6 +107,7 @@ RSpec.describe JobOrders::JobOrdersQuery do
         hire_count: job_order.hire_count,
         team_id: job_order.team_id,
         screener_questions_id: job_order.screener_questions_id,
+        candidate_count: job_order.candidate_count,
         recommended_count: job_order.recommended_count,
         status: job_order.status,
         candidates: [

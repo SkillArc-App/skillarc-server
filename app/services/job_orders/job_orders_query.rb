@@ -35,6 +35,7 @@ module JobOrders
           closed_at: job_order.closed_at,
           order_count: job_order.order_count,
           hire_count: job_order.hire_count,
+          candidate_count: job_order.candidate_count,
           recommended_count: job_order.recommended_count,
           status: job_order.status,
           job_id: job_order.job.id,

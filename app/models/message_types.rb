@@ -11,14 +11,6 @@ module MessageTypes
     ].freeze
   end
 
-  module Attributes
-    EVENTS = [
-      ATTRIBUTE_CREATED = 'attribute_created',
-      ATTRIBUTE_UPDATED = 'attribute_updated',
-      ATTRIBUTE_DELETED = 'attribute_deleted'
-    ].freeze
-  end
-
   module Qualifications
     EVENTS = [
       MASTER_SKILL_CREATED = 'master_skill_created',
@@ -327,12 +319,12 @@ module MessageTypes
     *PersonSearch::EVENTS,
     *Email::EVENTS,
     *Phone::EVENTS,
-    *Attributes::EVENTS,
     *Applications::EVENTS,
     *Coaches::EVENTS,
     *Chats::EVENTS,
     *Jobs::EVENTS,
     *Invite::EVENTS,
+    *Attributes::MessageTypes::EVENTS,
     *JobOrders::MessageTypes::EVENTS,
     *Screeners::MessageTypes::EVENTS,
     *Employers::EVENTS,
@@ -361,6 +353,7 @@ module MessageTypes
     *Coaches::COMMANDS,
     *Seekers::COMMANDS,
     *Invite::COMMANDS,
+    *Attributes::MessageTypes::COMMANDS,
     *JobOrders::MessageTypes::COMMANDS,
     *Screeners::MessageTypes::COMMANDS,
     *JobSearch::COMMANDS,

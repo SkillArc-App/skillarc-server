@@ -17,7 +17,7 @@ RSpec.describe Attributes::AttributesReactor do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::AttributeCreated::V2,
+        schema: Attributes::Events::Created::V2,
         attribute_id:,
         data: {
           machine_derived: false,
@@ -43,7 +43,7 @@ RSpec.describe Attributes::AttributesReactor do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::AttributeUpdated::V1,
+        schema: Attributes::Events::Updated::V1,
         attribute_id:,
         data: {
           name:,
@@ -64,7 +64,7 @@ RSpec.describe Attributes::AttributesReactor do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::AttributeDeleted::V1,
+        schema: Attributes::Events::Deleted::V1,
         attribute_id:,
         data: Core::Nothing
       )

@@ -554,7 +554,7 @@ message_service.create!(
 )
 
 message_service.create!(
-  schema: Events::AttributeCreated::V2,
+  schema: Attributes::Events::Created::V2,
   attribute_id: SecureRandom.uuid,
   data: {
     machine_derived: false,

@@ -43,7 +43,7 @@ module PeopleSearch
       )
     end
 
-    on_message Events::AttributeCreated::V2 do |message|
+    on_message Attributes::Events::Created::V2 do |message|
       Attribute.create!(
         message.data.set.map do |value|
           {
@@ -54,7 +54,7 @@ module PeopleSearch
       )
     end
 
-    on_message Events::AttributeUpdated::V1 do |message|
+    on_message Attributes::Events::Updated::V1 do |message|
       attributes = Attribute.where(attribute_id: message.stream.id)
       current_values = attributes.map(&:value)
       new_values = message.data.set
@@ -73,7 +73,7 @@ module PeopleSearch
       )
     end
 
-    on_message Events::AttributeDeleted::V1 do |message|
+    on_message Attributes::Events::Deleted::V1 do |message|
       Attribute.where(attribute_id: message.stream.id).delete_all
     end
 

@@ -2,7 +2,7 @@ module Attributes
   class AttributesReactor < MessageReactor
     def create(attribute_id:, name:, description:, set:, default:)
       message_service.create!(
-        schema: Events::AttributeCreated::V2,
+        schema: Events::Created::V2,
         attribute_id:,
         data: {
           machine_derived: false,
@@ -16,7 +16,7 @@ module Attributes
 
     def update(attribute_id:, name:, description:, set:, default:)
       message_service.create!(
-        schema: Events::AttributeUpdated::V1,
+        schema: Events::Updated::V1,
         attribute_id:,
         data: {
           name:,
@@ -29,7 +29,7 @@ module Attributes
 
     def destroy(attribute_id:)
       message_service.create!(
-        schema: Events::AttributeDeleted::V1,
+        schema: Events::Deleted::V1,
         attribute_id:,
         data: Core::Nothing
       )

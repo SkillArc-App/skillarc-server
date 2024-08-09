@@ -123,20 +123,31 @@ module Analytics
     on_message JobOrders::Events::Added::V1 do |message|
       dim_job = DimJob.find_by!(job_id: message.data.job_id)
 
-      DimJobOrder.create!(
+      dim_job_order = DimJobOrder.create!(
         job_order_id: message.stream.id,
         order_opened_at: message.occurred_at,
         employer_name: dim_job.employer_name,
         employment_title: dim_job.employment_title,
         dim_job:
       )
+
+      FactJobOrderStatus.create!(
+        dim_job_order:,
+        status: JobOrders::OrderStatus::NEEDS_ORDER_COUNT,
+        status_started: message.occurred_at
+      )
     end
 
     on_message JobOrders::Events::StatusUpdated::V1 do |message|
+      dim_job_order = DimJobOrder.find_by(job_order_id: message.stream.id)
+
+      dim_job_order.fact_job_order_statuses.where(status_ended: nil).update_all(status_ended: message.occurred_at)
+      FactJobOrderStatus.create!(dim_job_order:, status: message.data.status, status_started: message.occurred_at)
+
       if JobOrders::ClosedStatus::ALL.include?(message.data.status)
-        DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: message.data.status)
+        dim_job_order.update!(closed_at: message.occurred_at, closed_status: message.data.status)
       else
-        DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: nil, closed_status: nil)
+        dim_job_order.update(closed_at: nil, closed_status: nil)
       end
     end
 
@@ -145,52 +156,23 @@ module Analytics
     end
 
     on_message JobOrders::Events::CandidateAdded::V3 do |message|
-      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
-      dim_job_order = DimJobOrder.find_by!(job_order_id: message.stream.id)
-
-      fact_candidate = FactCandidate.find_or_initialize_by(dim_job_order:, dim_person:)
-      fact_candidate.status = JobOrders::CandidateStatus::ADDED
-      fact_candidate.first_name = dim_person.first_name
-      fact_candidate.last_name = dim_person.last_name
-      fact_candidate.email = dim_person.email
-      fact_candidate.employer_name = dim_job_order.employer_name
-      fact_candidate.employment_title = dim_job_order.employment_title
-      fact_candidate.terminal_status_at = nil
-
-      if fact_candidate.new_record?
-        fact_candidate.order_candidate_number = dim_job_order.fact_candidates.count + 1
-        fact_candidate.added_at = message.occurred_at
-      end
-
-      fact_candidate.save!
+      fact_candidate(message, JobOrders::CandidateStatus::ADDED)
     end
 
     on_message JobOrders::Events::CandidateHired::V2 do |message|
-      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
-      dim_job_order = DimJobOrder.find_by!(job_order_id: message.stream.id)
-
-      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::HIRED, terminal_status_at: message.occurred_at)
+      fact_candidate(message, JobOrders::CandidateStatus::HIRED)
     end
 
     on_message JobOrders::Events::CandidateRecommended::V2 do |message|
-      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
-      dim_job_order = DimJobOrder.find_by!(job_order_id: message.stream.id)
-
-      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::RECOMMENDED, terminal_status_at: nil)
+      fact_candidate(message, JobOrders::CandidateStatus::RECOMMENDED)
     end
 
     on_message JobOrders::Events::CandidateScreened::V1 do |message|
-      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
-      dim_job_order = DimJobOrder.find_by!(job_order_id: message.stream.id)
-
-      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::SCREENED, terminal_status_at: nil)
+      fact_candidate(message, JobOrders::CandidateStatus::SCREENED)
     end
 
     on_message JobOrders::Events::CandidateRescinded::V2 do |message|
-      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
-      dim_job_order = DimJobOrder.find_by!(job_order_id: message.stream.id)
-
-      FactCandidate.find_by!(dim_job_order:, dim_person:).update!(status: JobOrders::CandidateStatus::RESCINDED, terminal_status_at: message.occurred_at)
+      fact_candidate(message, JobOrders::CandidateStatus::RESCINDED)
     end
 
     on_message Events::EmployerCreated::V1 do |message|
@@ -303,6 +285,14 @@ module Analytics
     end
 
     private
+
+    def fact_candidate(message, status)
+      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
+      dim_job_order = DimJobOrder.find_by!(job_order_id: message.stream.id)
+
+      FactCandidate.where(dim_job_order:, dim_person:, status_ended: nil).update_all(status_ended: message.occurred_at)
+      FactCandidate.create!(dim_job_order:, dim_person:, status:, status_started: message.occurred_at)
+    end
 
     def note_action(person_id:, originator:, action:, occurred_at:)
       dim_user_executor = Analytics::DimUser.find_by(email: originator)

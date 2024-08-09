@@ -301,7 +301,11 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:dim_job) { create(:analytics__dim_job) }
 
       it "creates a dim employer for the message" do
-        expect { subject }.to change(Analytics::DimJobOrder, :count).from(0).to(1)
+        expect do
+          expect do
+            subject
+          end.to change(Analytics::DimJobOrder, :count).from(0).to(1)
+        end.to change(Analytics::FactJobOrderStatus, :count).from(0).to(1)
 
         dim_job_order = Analytics::DimJobOrder.first
 
@@ -310,6 +314,12 @@ RSpec.describe Analytics::AnalyticsAggregator do
         expect(dim_job_order.order_opened_at).to eq(message.occurred_at)
         expect(dim_job_order.employment_title).to eq(dim_job.employment_title)
         expect(dim_job_order.employer_name).to eq(dim_job.employer_name)
+
+        fact_job_order_status = Analytics::FactJobOrderStatus.first
+        expect(fact_job_order_status.dim_job_order).to eq(dim_job_order)
+        expect(fact_job_order_status.status).to eq(JobOrders::OrderStatus::NEEDS_ORDER_COUNT)
+        expect(fact_job_order_status.status_started).to eq(message.occurred_at)
+        expect(fact_job_order_status.status_ended).to eq(nil)
       end
     end
 
@@ -342,6 +352,29 @@ RSpec.describe Analytics::AnalyticsAggregator do
 
         let(:closed_at) { Time.zone.now }
         let(:closed_status) { "Closed!!" }
+        let(:status) { JobOrders::OrderStatus::WAITING_ON_EMPLOYER }
+
+        it "creates a new status record" do
+          expect { subject }.to change(Analytics::FactJobOrderStatus, :count).from(0).to(1)
+
+          job_order_status = Analytics::FactJobOrderStatus.first
+
+          expect(job_order_status.dim_job_order).to eq(dim_job_order)
+          expect(job_order_status.status).to eq(status)
+          expect(job_order_status.status_started).to eq(message.occurred_at)
+          expect(job_order_status.status_ended).to eq(nil)
+        end
+
+        context "when an existing status exists" do
+          let!(:fact_job_order_status) { create(:analytics__fact_job_order_status, dim_job_order:, status_ended: nil) }
+
+          it "closes it's window" do
+            subject
+
+            fact_job_order_status.reload
+            expect(fact_job_order_status.status_ended).to eq(message.occurred_at)
+          end
+        end
 
         context "when the status is a closed status" do
           let(:status) { JobOrders::OrderStatus::WAITING_ON_EMPLOYER }
@@ -389,147 +422,117 @@ RSpec.describe Analytics::AnalyticsAggregator do
       end
     end
 
-    context "when the message is job_order_candidate_added" do
-      let(:message) do
-        build(
-          :message,
-          stream_id: dim_job_order.job_order_id,
-          schema: JobOrders::Events::CandidateAdded::V3,
-          data: {
-            person_id: dim_person.person_id
-          },
-          metadata: {
-            requestor_type: Requestor::Kinds::COACH,
-            requestor_id: SecureRandom.uuid,
-            requestor_email: "foo@skillarc.com"
-          }
-        )
-      end
-
+    context "for candidate status updates" do
       let(:dim_person) { create(:analytics__dim_person) }
       let(:dim_job_order) { create(:analytics__dim_job_order) }
-      let!(:other_canidate) { create(:analytics__fact_candidate, dim_job_order:) }
 
-      context "when ther candidate is new" do
-        it "creates a new fact candidate with the appropriate values" do
-          expect { subject }.to change(Analytics::FactCandidate, :count).from(1).to(2)
+      shared_examples "a candidate status update" do
+        it "creates a new status record" do
+          expect { subject }.to change(Analytics::FactCandidate, :count).from(0).to(1)
 
-          fact_candidate = Analytics::FactCandidate.find_by(dim_person:)
+          candidate = Analytics::FactCandidate.first
 
-          expect(fact_candidate.dim_person).to eq(dim_person)
-          expect(fact_candidate.dim_job_order).to eq(dim_job_order)
-          expect(fact_candidate.first_name).to eq(dim_person.first_name)
-          expect(fact_candidate.last_name).to eq(dim_person.last_name)
-          expect(fact_candidate.email).to eq(dim_person.email)
-          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
-          expect(fact_candidate.order_candidate_number).to eq(2)
-          expect(fact_candidate.added_at).to eq(message.occurred_at)
-          expect(fact_candidate.terminal_status_at).to eq(nil)
-          expect(fact_candidate.employer_name).to eq(dim_job_order.employer_name)
-          expect(fact_candidate.employment_title).to eq(dim_job_order.employment_title)
-          expect(fact_candidate.terminal_status_at).to eq(nil)
+          expect(candidate.dim_job_order).to eq(dim_job_order)
+          expect(candidate.dim_person).to eq(dim_person)
+          expect(candidate.status).to eq(expected_status)
+          expect(candidate.status_started).to eq(message.occurred_at)
+        end
+
+        context "when an existing status exists" do
+          let!(:fact_candidate) { create(:analytics__fact_candidate, dim_job_order:, dim_person:, status_ended: nil) }
+
+          it "closes it's window" do
+            subject
+
+            fact_candidate.reload
+            expect(fact_candidate.status_ended).to eq(message.occurred_at)
+          end
         end
       end
 
-      context "when ther candidate is existing" do
-        let!(:fact_candidate) { create(:analytics__fact_candidate, dim_job_order:, dim_person:) }
-
-        it "updates the fact candidate with the appropriate values" do
-          expect { subject }.not_to change(Analytics::FactCandidate, :count)
-
-          fact_candidate.reload
-
-          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::ADDED)
-          expect(fact_candidate.terminal_status_at).to eq(nil)
+      context "when the message is job_order_candidate_added" do
+        let(:message) do
+          build(
+            :message,
+            stream_id: dim_job_order.job_order_id,
+            schema: JobOrders::Events::CandidateAdded::V3,
+            data: {
+              person_id: dim_person.person_id
+            }
+          )
         end
-      end
-    end
 
-    context "for an existing candidate" do
-      let!(:fact_candidate) { create(:analytics__fact_candidate) }
+        let(:expected_status) { JobOrders::CandidateStatus::ADDED }
+
+        it_behaves_like "a candidate status update"
+      end
 
       context "when the message is job_order_candidate_hired" do
         let(:message) do
           build(
             :message,
-            stream_id: fact_candidate.dim_job_order.job_order_id,
+            stream_id: dim_job_order.job_order_id,
             schema: JobOrders::Events::CandidateHired::V2,
             data: {
-              person_id: fact_candidate.dim_person.person_id
+              person_id: dim_person.person_id
             }
           )
         end
 
-        it "updates the fact candidate status" do
-          subject
+        let(:expected_status) { JobOrders::CandidateStatus::HIRED }
 
-          fact_candidate.reload
-          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::HIRED)
-          expect(fact_candidate.terminal_status_at).to eq(message.occurred_at)
-        end
+        it_behaves_like "a candidate status update"
       end
 
       context "when the message is job_order_candidate_recommended" do
         let(:message) do
           build(
             :message,
-            stream_id: fact_candidate.dim_job_order.job_order_id,
+            stream_id: dim_job_order.job_order_id,
             schema: JobOrders::Events::CandidateRecommended::V2,
             data: {
-              person_id: fact_candidate.dim_person.person_id
+              person_id: dim_person.person_id
             }
           )
         end
 
-        it "updates the fact candidate status" do
-          subject
+        let(:expected_status) { JobOrders::CandidateStatus::RECOMMENDED }
 
-          fact_candidate.reload
-          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::RECOMMENDED)
-          expect(fact_candidate.terminal_status_at).to eq(nil)
-        end
+        it_behaves_like "a candidate status update"
       end
 
       context "when the message is job_order_candidate_screened" do
         let(:message) do
           build(
             :message,
-            stream_id: fact_candidate.dim_job_order.job_order_id,
+            stream_id: dim_job_order.job_order_id,
             schema: JobOrders::Events::CandidateScreened::V1,
             data: {
-              person_id: fact_candidate.dim_person.person_id
+              person_id: dim_person.person_id
             }
           )
         end
 
-        it "updates the fact candidate status" do
-          subject
+        let(:expected_status) { JobOrders::CandidateStatus::SCREENED }
 
-          fact_candidate.reload
-          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::SCREENED)
-          expect(fact_candidate.terminal_status_at).to eq(nil)
-        end
+        it_behaves_like "a candidate status update"
       end
 
       context "when the message is job_order_candidate_rescinded" do
         let(:message) do
           build(
             :message,
-            stream_id: fact_candidate.dim_job_order.job_order_id,
+            stream_id: dim_job_order.job_order_id,
             schema: JobOrders::Events::CandidateRescinded::V2,
             data: {
-              person_id: fact_candidate.dim_person.person_id
+              person_id: dim_person.person_id
             }
           )
         end
 
-        it "updates the fact candidate status" do
-          subject
+        let(:expected_status) { JobOrders::CandidateStatus::RESCINDED }
 
-          fact_candidate.reload
-          expect(fact_candidate.status).to eq(JobOrders::CandidateStatus::RESCINDED)
-          expect(fact_candidate.terminal_status_at).to eq(message.occurred_at)
-        end
+        it_behaves_like "a candidate status update"
       end
     end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_08_202711) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_09_150500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -117,15 +117,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_08_202711) do
   create_table "analytics_fact_candidates", force: :cascade do |t|
     t.bigint "analytics_dim_people_id", null: false
     t.bigint "analytics_dim_job_orders_id", null: false
-    t.integer "order_candidate_number", null: false
-    t.datetime "added_at", null: false
-    t.datetime "terminal_status_at"
     t.string "status", null: false
-    t.string "employer_name"
-    t.string "employment_title"
-    t.string "first_name"
-    t.string "last_name"
-    t.string "email"
+    t.datetime "status_started", null: false
+    t.datetime "status_ended"
     t.index ["analytics_dim_job_orders_id"], name: "index_analytics_fact_candidates_on_analytics_dim_job_orders_id"
     t.index ["analytics_dim_people_id"], name: "index_analytics_fact_candidates_on_analytics_dim_people_id"
   end
@@ -138,6 +132,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_08_202711) do
     t.index ["action"], name: "index_analytics_fact_coach_actions_on_action"
     t.index ["analytics_dim_person_target_id"], name: "idx_on_analytics_dim_person_target_id_a665f20399"
     t.index ["analytics_dim_users_id"], name: "index_analytics_fact_coach_actions_on_analytics_dim_users_id"
+  end
+
+  create_table "analytics_fact_job_order_statuses", force: :cascade do |t|
+    t.bigint "analytics_dim_job_orders_id", null: false
+    t.string "status", null: false
+    t.datetime "status_started", null: false
+    t.datetime "status_ended"
+    t.index ["analytics_dim_job_orders_id"], name: "idx_on_analytics_dim_job_orders_id_3b66b7e1ac"
   end
 
   create_table "analytics_fact_job_visibilities", force: :cascade do |t|
@@ -268,6 +270,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_08_202711) do
     t.uuid "attribute_id", null: false
     t.string "name", null: false
     t.string "values", default: [], array: true
+    t.boolean "machine_derived", default: false, null: false
     t.index ["coaches_person_context_id"], name: "index_coaches_person_attributes_on_coaches_person_context_id"
   end
 
@@ -1073,6 +1076,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_08_202711) do
   add_foreign_key "analytics_fact_candidates", "analytics_dim_job_orders", column: "analytics_dim_job_orders_id"
   add_foreign_key "analytics_fact_candidates", "analytics_dim_people", column: "analytics_dim_people_id"
   add_foreign_key "analytics_fact_coach_actions", "analytics_dim_people", column: "analytics_dim_person_target_id"
+  add_foreign_key "analytics_fact_job_order_statuses", "analytics_dim_job_orders", column: "analytics_dim_job_orders_id"
   add_foreign_key "analytics_fact_job_visibilities", "analytics_dim_jobs"
   add_foreign_key "analytics_fact_person_vieweds", "analytics_dim_people", column: "analytics_dim_person_viewed_id"
   add_foreign_key "applicant_statuses", "applicants", name: "ApplicantStatus_applicant_id_fkey", on_update: :cascade, on_delete: :restrict

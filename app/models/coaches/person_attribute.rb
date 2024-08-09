@@ -3,6 +3,7 @@
 # Table name: coaches_person_attributes
 #
 #  id                        :uuid             not null, primary key
+#  machine_derived           :boolean          default(FALSE), not null
 #  name                      :string           not null
 #  values                    :string           default([]), is an Array
 #  attribute_id              :uuid             not null

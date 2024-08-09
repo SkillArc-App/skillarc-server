@@ -123,20 +123,31 @@ module Analytics
     on_message JobOrders::Events::Added::V1 do |message|
       dim_job = DimJob.find_by!(job_id: message.data.job_id)
 
-      DimJobOrder.create!(
+      dim_job_order = DimJobOrder.create!(
         job_order_id: message.stream.id,
         order_opened_at: message.occurred_at,
         employer_name: dim_job.employer_name,
         employment_title: dim_job.employment_title,
         dim_job:
       )
+
+      FactJobOrderStatus.create!(
+        dim_job_order:,
+        status: JobOrders::OrderStatus::NEEDS_ORDER_COUNT,
+        status_started: message.occurred_at
+      )
     end
 
     on_message JobOrders::Events::StatusUpdated::V1 do |message|
+      dim_job_order = DimJobOrder.find_by(job_order_id: message.stream.id)
+
+      dim_job_order.fact_job_order_statuses.where(status_ended: nil).update_all(status_ended: message.occurred_at)
+      FactJobOrderStatus.create!(dim_job_order:, status: message.data.status, status_started: message.occurred_at)
+
       if JobOrders::ClosedStatus::ALL.include?(message.data.status)
-        DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: message.occurred_at, closed_status: message.data.status)
+        dim_job_order.update!(closed_at: message.occurred_at, closed_status: message.data.status)
       else
-        DimJobOrder.where(job_order_id: message.stream.id).update_all(closed_at: nil, closed_status: nil)
+        dim_job_order.update(closed_at: nil, closed_status: nil)
       end
     end
 

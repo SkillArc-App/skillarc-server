@@ -301,7 +301,11 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:dim_job) { create(:analytics__dim_job) }
 
       it "creates a dim employer for the message" do
-        expect { subject }.to change(Analytics::DimJobOrder, :count).from(0).to(1)
+        expect do
+          expect do
+            subject
+          end.to change(Analytics::DimJobOrder, :count).from(0).to(1)
+        end.to change(Analytics::FactJobOrderStatus, :count).from(0).to(1)
 
         dim_job_order = Analytics::DimJobOrder.first
 
@@ -310,6 +314,12 @@ RSpec.describe Analytics::AnalyticsAggregator do
         expect(dim_job_order.order_opened_at).to eq(message.occurred_at)
         expect(dim_job_order.employment_title).to eq(dim_job.employment_title)
         expect(dim_job_order.employer_name).to eq(dim_job.employer_name)
+
+        fact_job_order_status = Analytics::FactJobOrderStatus.first
+        expect(fact_job_order_status.dim_job_order).to eq(dim_job_order)
+        expect(fact_job_order_status.status).to eq(JobOrders::OrderStatus::NEEDS_ORDER_COUNT)
+        expect(fact_job_order_status.status_started).to eq(message.occurred_at)
+        expect(fact_job_order_status.status_ended).to eq(nil)
       end
     end
 
@@ -342,6 +352,29 @@ RSpec.describe Analytics::AnalyticsAggregator do
 
         let(:closed_at) { Time.zone.now }
         let(:closed_status) { "Closed!!" }
+        let(:status) { JobOrders::OrderStatus::WAITING_ON_EMPLOYER }
+
+        it "creates a new status record" do
+          expect { subject }.to change(Analytics::FactJobOrderStatus, :count).from(0).to(1)
+
+          job_order_status = Analytics::FactJobOrderStatus.first
+
+          expect(job_order_status.dim_job_order).to eq(dim_job_order)
+          expect(job_order_status.status).to eq(status)
+          expect(job_order_status.status_started).to eq(message.occurred_at)
+          expect(job_order_status.status_ended).to eq(nil)
+        end
+
+        context "when an existing status exists" do
+          let!(:fact_job_order_status) { create(:analytics__fact_job_order_status, dim_job_order:, status_ended: nil) }
+
+          it "closes it's window" do
+            subject
+
+            fact_job_order_status.reload
+            expect(fact_job_order_status.status_ended).to eq(message.occurred_at)
+          end
+        end
 
         context "when the status is a closed status" do
           let(:status) { JobOrders::OrderStatus::WAITING_ON_EMPLOYER }

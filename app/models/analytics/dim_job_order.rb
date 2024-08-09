@@ -26,5 +26,6 @@ module Analytics
     belongs_to :dim_job, class_name: "Analytics::DimJob", foreign_key: "analytics_dim_jobs_id", inverse_of: :dim_jobs
 
     has_many :fact_candidates, class_name: "Analytics::FactCandidate", inverse_of: :dim_job_order, dependent: :delete_all
+    has_many :fact_job_order_statuses, class_name: "Analytics::FactJobOrderStatus", inverse_of: :dim_job_order, dependent: :delete_all
   end
 end

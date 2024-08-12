@@ -14,12 +14,17 @@ module Admin
       description = params[:description]
 
       with_message_service do
-        Attributes::AttributesReactor.new(message_service:).create(
+        message_service.create!(
+          schema: Attributes::Commands::Create::V1,
+          trace_id: request.request_id,
           attribute_id:,
-          name:,
-          description:,
-          set:,
-          default:
+          data: {
+            machine_derived: false,
+            name:,
+            description:,
+            set:,
+            default:
+          }
         )
       end
 
@@ -34,12 +39,16 @@ module Admin
       description = params[:description]
 
       with_message_service do
-        Attributes::AttributesReactor.new(message_service:).update(
+        message_service.create!(
+          schema: Attributes::Commands::Update::V1,
+          trace_id: request.request_id,
           attribute_id:,
-          name:,
-          description:,
-          set:,
-          default:
+          data: {
+            name:,
+            description:,
+            set:,
+            default:
+          }
         )
       end
     end
@@ -48,8 +57,11 @@ module Admin
       attribute_id = params[:id]
 
       with_message_service do
-        Attributes::AttributesReactor.new(message_service:).destroy(
-          attribute_id:
+        message_service.create!(
+          schema: Attributes::Commands::Delete::V1,
+          trace_id: request.request_id,
+          attribute_id:,
+          data: Core::Nothing
         )
       end
     end

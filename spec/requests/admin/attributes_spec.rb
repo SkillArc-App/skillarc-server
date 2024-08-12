@@ -79,9 +79,20 @@ RSpec.describe "Attributes", type: :request do
 
         response '201', 'Creates an attribute' do
           before do
-            expect_any_instance_of(Attributes::AttributesReactor)
-              .to receive(:create)
-              .with(attribute_id: anything, name: "name", description: "description", set: %w[A B], default: ["B"])
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                schema: Attributes::Commands::Create::V1,
+                trace_id: be_a(String),
+                attribute_id: be_a(String),
+                data: {
+                  machine_derived: false,
+                  name: "name",
+                  description: "description",
+                  set: %w[A B],
+                  default: ["B"]
+                }
+              )
               .and_call_original
           end
 
@@ -128,9 +139,19 @@ RSpec.describe "Attributes", type: :request do
 
         response '204', 'Updates an attribute' do
           before do
-            expect_any_instance_of(Attributes::AttributesReactor)
-              .to receive(:update)
-              .with(attribute_id: id, name: "new name", description: "new description", set: %w[C D], default: ["D"])
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                schema: Attributes::Commands::Update::V1,
+                trace_id: be_a(String),
+                attribute_id: id,
+                data: {
+                  name: "new name",
+                  description: "new description",
+                  set: %w[C D],
+                  default: ["D"]
+                }
+              )
               .and_call_original
           end
 
@@ -157,9 +178,14 @@ RSpec.describe "Attributes", type: :request do
 
         response '204', 'Deletes an attribute' do
           before do
-            expect_any_instance_of(Attributes::AttributesReactor)
-              .to receive(:destroy)
-              .with(attribute_id: id)
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                schema: Attributes::Commands::Delete::V1,
+                trace_id: be_a(String),
+                attribute_id: id,
+                data: Core::Nothing
+              )
               .and_call_original
           end
 

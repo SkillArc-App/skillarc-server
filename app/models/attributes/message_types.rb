@@ -9,7 +9,9 @@ module Attributes
     ].freeze
 
     COMMANDS = [
-
+      CREATE_ATTRIBUTE = 'create_attribute',
+      UPDATE_ATTRIBUTE = 'update_attribute',
+      DELETE_ATTRIBUTE = 'delete_attribute'
     ].freeze
   end
 end

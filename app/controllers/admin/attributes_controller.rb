@@ -24,7 +24,8 @@ module Admin
             description:,
             set:,
             default:
-          }
+          },
+          metadata: requestor_metadata
         )
       end
 
@@ -48,7 +49,8 @@ module Admin
             description:,
             set:,
             default:
-          }
+          },
+          metadata: requestor_metadata
         )
       end
     end
@@ -61,7 +63,8 @@ module Admin
           schema: Attributes::Commands::Delete::V1,
           trace_id: request.request_id,
           attribute_id:,
-          data: Core::Nothing
+          data: Core::Nothing,
+          metadata: requestor_metadata
         )
       end
     end

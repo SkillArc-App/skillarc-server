@@ -91,6 +91,10 @@ RSpec.describe "Attributes", type: :request do
                   description: "description",
                   set: %w[A B],
                   default: ["B"]
+                },
+                metadata: {
+                  requestor_id: user.id,
+                  requestor_type: Requestor::Kinds::USER
                 }
               )
               .and_call_original
@@ -150,6 +154,10 @@ RSpec.describe "Attributes", type: :request do
                   description: "new description",
                   set: %w[C D],
                   default: ["D"]
+                },
+                metadata: {
+                  requestor_id: user.id,
+                  requestor_type: Requestor::Kinds::USER
                 }
               )
               .and_call_original
@@ -184,7 +192,11 @@ RSpec.describe "Attributes", type: :request do
                 schema: Attributes::Commands::Delete::V1,
                 trace_id: be_a(String),
                 attribute_id: id,
-                data: Core::Nothing
+                data: Core::Nothing,
+                metadata: {
+                  requestor_id: user.id,
+                  requestor_type: Requestor::Kinds::USER
+                }
               )
               .and_call_original
           end

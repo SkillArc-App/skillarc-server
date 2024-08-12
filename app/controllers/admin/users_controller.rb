@@ -1,5 +1,5 @@
 module Admin
-  class UsersController < AdminController
+  class UsersController < ApplicationController
     def index
       render json: User.all
     end

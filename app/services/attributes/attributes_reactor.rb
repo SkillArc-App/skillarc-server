@@ -1,37 +1,77 @@
 module Attributes
   class AttributesReactor < MessageReactor
-    def create(attribute_id:, name:, description:, set:, default:)
-      message_service.create!(
-        schema: Events::AttributeCreated::V2,
-        attribute_id:,
+    def can_replay?
+      true
+    end
+
+    NON_UNIQUE = "attribute set is not unique".freeze
+    DOES_NOT_EXIST = "attribute does not exist".freeze
+    UNAUTHORIZED = "users cannot altered machined derived attributes".freeze
+
+    on_message Commands::Create::V1, :sync do |message|
+      return failed(NON_UNIQUE, message) if message.data.set.length != Set.new(message.data.set).length
+
+      message_service.create_once_for_trace!(
+        schema: Events::Created::V3,
+        trace_id: message.trace_id,
+        stream: message.stream,
         data: {
-          machine_derived: false,
-          name:,
-          description:,
-          set:,
-          default:
-        }
+          **message.data.to_h
+        },
+        metadata: message.metadata
       )
     end
 
-    def update(attribute_id:, name:, description:, set:, default:)
-      message_service.create!(
-        schema: Events::AttributeUpdated::V1,
-        attribute_id:,
+    on_message Commands::Update::V1, :sync do |message|
+      return failed(NON_UNIQUE, message) if message.data.set.length != Set.new(message.data.set).length
+
+      attributed_created = Projectors::Streams::GetFirst.project(
+        stream: message.stream,
+        schema: Events::Created::V3
+      )
+
+      return failed(DOES_NOT_EXIST, message) if attributed_created.nil?
+      return failed(UNAUTHORIZED, message) if attributed_created.data.machine_derived && message.metadata.requestor_type != Requestor::Kinds::SERVER
+
+      message_service.create_once_for_trace!(
+        schema: Events::Updated::V2,
+        trace_id: message.trace_id,
+        stream: message.stream,
         data: {
-          name:,
-          description:,
-          set:,
-          default:
-        }
+          **message.data.to_h
+        },
+        metadata: message.metadata
       )
     end
 
-    def destroy(attribute_id:)
-      message_service.create!(
-        schema: Events::AttributeDeleted::V1,
-        attribute_id:,
-        data: Core::Nothing
+    on_message Commands::Delete::V1, :sync do |message|
+      attributed_created = Projectors::Streams::GetFirst.project(
+        stream: message.stream,
+        schema: Events::Created::V3
+      )
+      return failed(DOES_NOT_EXIST, message) if attributed_created.nil?
+      return failed(UNAUTHORIZED, message) if attributed_created.data.machine_derived && message.metadata.requestor_type != Requestor::Kinds::SERVER
+
+      message_service.create_once_for_trace!(
+        schema: Events::Deleted::V2,
+        trace_id: message.trace_id,
+        stream: message.stream,
+        data: Core::Nothing,
+        metadata: message.metadata
+      )
+    end
+
+    private
+
+    def failed(reason, message)
+      message_service.create_once_for_trace!(
+        schema: Events::CommandFailed::V1,
+        trace_id: message.trace_id,
+        stream: message.stream,
+        data: {
+          reason:
+        },
+        metadata: message.metadata
       )
     end
   end

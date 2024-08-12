@@ -95,7 +95,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::AttributeCreated::V2,
+          schema: Attributes::Events::Created::V3,
           stream_id: SecureRandom.uuid,
           data: {
             set: %w[cat dog]
@@ -115,7 +115,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::AttributeUpdated::V1,
+          schema: Attributes::Events::Updated::V2,
           stream_id: attribute_id,
           data: {
             set: %w[cat dog]
@@ -142,7 +142,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::AttributeDeleted::V1,
+          schema: Attributes::Events::Deleted::V2,
           stream_id: attribute_id
         )
       end

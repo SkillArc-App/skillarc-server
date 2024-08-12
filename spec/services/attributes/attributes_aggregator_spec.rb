@@ -12,18 +12,26 @@ RSpec.describe Attributes::AttributesAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::AttributeCreated::V2,
+          schema: Attributes::Events::Created::V3,
           data: {
             name: "name",
             description: "description",
             set: %w[A B],
-            default: ["B"]
+            default: ["B"],
+            machine_derived: true
           }
         )
       end
 
       it "creates an attribute" do
-        expect { subject }.to change { Attributes::Attribute.count }.by(1)
+        expect { subject }.to change(Attributes::Attribute, :count).from(0).to(1)
+
+        attribute = Attributes::Attribute.first
+        expect(attribute.name).to eq(message.data.name)
+        expect(attribute.description).to eq(message.data.description)
+        expect(attribute.set).to eq(message.data.set)
+        expect(attribute.default).to eq(message.data.default)
+        expect(attribute.machine_derived).to eq(message.data.machine_derived)
       end
     end
 
@@ -31,7 +39,7 @@ RSpec.describe Attributes::AttributesAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::AttributeUpdated::V1,
+          schema: Attributes::Events::Updated::V2,
           stream_id: attribute.id,
           data: {
             name: "name",
@@ -57,7 +65,7 @@ RSpec.describe Attributes::AttributesAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::AttributeDeleted::V1,
+          schema: Attributes::Events::Deleted::V2,
           stream_id: attribute.id
         )
       end

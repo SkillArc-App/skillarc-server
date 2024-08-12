@@ -18,7 +18,7 @@ module Attributes
       V1 = Core::Schema.active(
         type: Core::COMMAND,
         data: Data::V1,
-        metadata: Core::Nothing,
+        metadata: Core::RequestorMetadata::V1,
         stream: Streams::Attribute,
         message_type: MessageTypes::CREATE_ATTRIBUTE,
         version: 1

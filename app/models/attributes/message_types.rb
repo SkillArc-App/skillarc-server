@@ -3,6 +3,7 @@
 module Attributes
   module MessageTypes
     EVENTS = [
+      ATTRIBUTE_COMMAND_FAILED = 'attribute_command_failed',
       ATTRIBUTE_CREATED = 'attribute_created',
       ATTRIBUTE_UPDATED = 'attribute_updated',
       ATTRIBUTE_DELETED = 'attribute_deleted'

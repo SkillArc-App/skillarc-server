@@ -34,13 +34,21 @@ module Attributes
         message_type: MessageTypes::ATTRIBUTE_CREATED,
         version: 1
       )
-      V2 = Core::Schema.active(
+      V2 = Core::Schema.inactive(
         type: Core::EVENT,
         data: Data::V2,
         metadata: Core::Nothing,
         stream: Streams::Attribute,
         message_type: MessageTypes::ATTRIBUTE_CREATED,
         version: 2
+      )
+      V3 = Core::Schema.active(
+        type: Core::EVENT,
+        data: Data::V2,
+        metadata: Core::RequestorMetadata::V1,
+        stream: Streams::Attribute,
+        message_type: MessageTypes::ATTRIBUTE_CREATED,
+        version: 3
       )
     end
   end

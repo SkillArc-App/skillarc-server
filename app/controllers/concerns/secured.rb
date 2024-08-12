@@ -21,6 +21,13 @@ module Secured
     render json: REQUIRES_AUTHENTICATION, status: :unauthorized unless current_user
   end
 
+  def requestor_metadata
+    {
+      requestor_type: Requestor::Kinds::USER,
+      requestor_id: current_user.id
+    }
+  end
+
   def set_current_user(user_finder: UserFinder.new)
     token = token_from_request
 

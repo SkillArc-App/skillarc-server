@@ -150,7 +150,10 @@ Rails.application.routes.draw do
     resources :jobs do
       resources :job_attributes
     end
-    resources :users
+
+    if Rails.env.development?
+      resources :users
+    end
   end
 
   resources :employer_invites do

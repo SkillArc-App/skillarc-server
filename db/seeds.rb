@@ -568,6 +568,21 @@ message_service.create!(
     requestor_id: admin_user.id
   }
 )
+message_service.create!(
+  schema: Attributes::Events::Created::V3,
+  attribute_id: SecureRandom.uuid,
+  data: {
+    machine_derived: true,
+    name: "Transportation",
+    description: "Does this candidate have transportation",
+    set: %w[Have],
+    default: ["Have"]
+  },
+  metadata: {
+    requestor_type: Requestor::Kinds::USER,
+    requestor_id: admin_user.id
+  }
+)
 
 message_service.create!(
   schema: Events::BarrierAdded::V1,

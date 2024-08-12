@@ -33,4 +33,3 @@ module Attributes
     end
   end
 end
-

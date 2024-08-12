@@ -17,13 +17,21 @@ RSpec.describe Attributes::AttributesAggregator do
             name: "name",
             description: "description",
             set: %w[A B],
-            default: ["B"]
+            default: ["B"],
+            machine_derived: true
           }
         )
       end
 
       it "creates an attribute" do
-        expect { subject }.to change { Attributes::Attribute.count }.by(1)
+        expect { subject }.to change(Attributes::Attribute, :count).from(0).to(1)
+
+        attribute = Attributes::Attribute.first
+        expect(attribute.name).to eq(message.data.name)
+        expect(attribute.description).to eq(message.data.description)
+        expect(attribute.set).to eq(message.data.set)
+        expect(attribute.default).to eq(message.data.default)
+        expect(attribute.machine_derived).to eq(message.data.machine_derived)
       end
     end
 

@@ -9,6 +9,7 @@ module Attributes
         id: message.stream.attribute_id,
         name: message.data.name,
         description: message.data.description,
+        machine_derived: message.data.machine_derived,
         set: message.data.set,
         default: message.data.default
       )

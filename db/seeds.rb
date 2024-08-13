@@ -277,6 +277,14 @@ tags.each do |tag|
   )
 end
 
+message_service.create!(
+  schema: Interests::Events::InterestsSet::V1,
+  stream: Interests::INTEREST_STREAM,
+  data: {
+    interests: %w[construction manufacturing healthcare logistics]
+  }
+)
+
 trained_seeker_with_reference = Builders::PersonBuilder.new(message_service).build(
   first_name: 'Tom',
   last_name: 'Hanks',

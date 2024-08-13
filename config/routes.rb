@@ -76,6 +76,7 @@ Rails.application.routes.draw do
     resources :screeners, only: %i[create index show]
   end
 
+  resources :interests, only: [:index]
   resources :employers
   resources :session, only: [:create]
 

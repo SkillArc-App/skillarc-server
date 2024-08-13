@@ -1,6 +1,6 @@
 class CreateDocumentsResumes < ActiveRecord::Migration[7.1]
   def change
-    create_table :documents_resumes, id: :uuid do |t| # rubocop:disable Rails/CreateTableWithTimestamps
+    create_table :documents_resumes, id: :uuid do |t|
       t.string :document_kind, null: false
 
       t.string :requestor_type, null: false

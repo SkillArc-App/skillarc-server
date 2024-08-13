@@ -18,3 +18,7 @@ Metrics/BlockLength:
 
 Metrics/ClassLength:
   Enabled: false
+
+Rails/CreateTableWithTimestamps:
+  Enabled: false
+

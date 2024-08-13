@@ -1,6 +1,6 @@
 class CreateTrainingProviderInvites < ActiveRecord::Migration[7.1]
   def change
-    create_table :invites_training_provider_invites, id: :uuid do |t| # rubocop:disable Rails/CreateTableWithTimestamps
+    create_table :invites_training_provider_invites, id: :uuid do |t|
       t.string :email, null: false
       t.string :first_name, null: false
       t.string :last_name, null: false

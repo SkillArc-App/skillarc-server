@@ -1,6 +1,6 @@
 class CreateAnalyticsDimJobOrders < ActiveRecord::Migration[7.1]
   def change
-    create_table :analytics_dim_job_orders do |t| # rubocop:disable Rails/CreateTableWithTimestamps
+    create_table :analytics_dim_job_orders do |t|
       t.references :analytics_dim_jobs, foreign_key: true, null: false
       t.uuid :job_order_id, null: false, index: { unique: true }
       t.integer :order_count

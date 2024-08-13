@@ -1,6 +1,6 @@
 class CreateAnalyticsDimCandidates < ActiveRecord::Migration[7.1]
   def change
-    create_table :analytics_fact_candidates do |t| # rubocop:disable Rails/CreateTableWithTimestamps
+    create_table :analytics_fact_candidates do |t|
       t.references :analytics_dim_people, foreign_key: true, null: false
       t.references :analytics_dim_job_orders, foreign_key: true, null: false
       t.integer :order_candidate_number, null: false

@@ -1,6 +1,6 @@
 class CreateScreeners < ActiveRecord::Migration[7.1]
   def change
-    create_table :documents_screeners, id: :uuid do |t| # rubocop:disable Rails/CreateTableWithTimestamps
+    create_table :documents_screeners, id: :uuid do |t|
       t.datetime :document_generated_at
       t.string :document_kind, null: false
       t.string :requestor_type, null: false

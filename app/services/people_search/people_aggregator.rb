@@ -54,7 +54,7 @@ module PeopleSearch
           add_values.map do |value|
             {
               value:,
-              attribute_id: message.stream.id
+              attribute_id: message.data.attribute_id
             }
           end
         )

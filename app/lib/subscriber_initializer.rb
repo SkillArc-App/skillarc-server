@@ -37,6 +37,7 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: Contact::ContactReactor.new, listener_name: "contact_reactor"),
       DbStreamListener.build(consumer: People::OnboardingReactor.new, listener_name: "onboarding_reactor"),
       DbStreamListener.build(consumer: People::PersonDedupingReactor.new, listener_name: "person_deduping_reactor"),
+      DbStreamListener.build(consumer: People::PersonAttributeReactor.new, listener_name: "person_attributes_reactor"),
       DbStreamListener.build(consumer: JobOrders::JobOrdersReactor.new, listener_name: "job_orders_reactor"),
       DbStreamListener.build(consumer: JobOrders::TeamOrderStatusReactor.new, listener_name: "team_order_status_reactor"),
       DbStreamListener.build(consumer: Infrastructure::InfrastructureReactor.new, listener_name: "infrastructure_reactor"),

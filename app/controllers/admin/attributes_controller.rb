@@ -41,10 +41,11 @@ module Admin
 
       with_message_service do
         message_service.create!(
-          schema: Attributes::Commands::Update::V1,
+          schema: Attributes::Commands::Create::V1,
           trace_id: request.request_id,
           attribute_id:,
           data: {
+            machine_derived: false,
             name:,
             description:,
             set:,

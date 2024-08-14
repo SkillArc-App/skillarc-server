@@ -126,7 +126,17 @@ RSpec.describe "Attributes", type: :request do
       include_context "olive branch casing parameter"
       include_context "olive branch camelcasing"
 
-      let(:id) { create(:attributes_attribute).id }
+      before do
+        Event.from_message!(
+          build(
+            :message,
+            schema: Attributes::Events::Created::V3,
+            stream: Attributes::Streams::Attribute.new(attribute_id: id)
+          )
+        )
+      end
+
+      let(:id) { SecureRandom.uuid }
       let(:attribute) do
         {
           name: "new name",
@@ -146,10 +156,11 @@ RSpec.describe "Attributes", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Attributes::Commands::Update::V1,
+                schema: Attributes::Commands::Create::V1,
                 trace_id: be_a(String),
                 attribute_id: id,
                 data: {
+                  machine_derived: false,
                   name: "new name",
                   description: "new description",
                   set: %w[C D],

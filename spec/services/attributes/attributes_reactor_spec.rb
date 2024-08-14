@@ -58,86 +58,25 @@ RSpec.describe Attributes::AttributesReactor do
         end
       end
 
-      context "when the set is unique" do
-        let(:set) { %w[cat dog] }
-
-        it "emits a created event" do
-          expect(message_service)
-            .to receive(:create_once_for_trace!)
-            .with(
-              schema: Attributes::Events::Created::V3,
-              trace_id: message.trace_id,
-              stream: message.stream,
-              data: {
-                **message.data.to_h
-              },
-              metadata: message.metadata
-            )
-            .twice
-            .and_call_original
-
-          subject
-        end
-      end
-    end
-
-    context "when the message is update" do
-      let(:message) do
-        build(
-          :message,
-          stream:,
-          schema: Attributes::Commands::Update::V1,
-          data: {
-            name: "Attribute",
-            description: "Description",
-            set:,
-            default: []
-          },
-          metadata: {
-            requestor_type:
-          }
-        )
-      end
-      let(:set) { %w[cat dog] }
-      let(:requestor_type) { Requestor::Kinds::USER }
-
-      context "when the set is not unique" do
-        let(:set) { %w[cat cat] }
-
-        it "emits a command failed event" do
-          expect(message_service)
-            .to receive(:create_once_for_trace!)
-            .with(
-              schema: Attributes::Events::CommandFailed::V1,
-              trace_id: message.trace_id,
-              stream: message.stream,
-              data: {
-                reason: described_class::NON_UNIQUE
-              },
-              metadata: message.metadata
-            )
-            .twice
-            .and_call_original
-
-          subject
-        end
-      end
-
       context "when the attributes are unique" do
         let(:set) { %w[cat dog] }
 
         context "when there is not an attribute" do
           let(:messages) { [] }
 
-          it "emits a command failed event" do
+          it "emits a created event" do
             expect(message_service)
               .to receive(:create_once_for_trace!)
               .with(
-                schema: Attributes::Events::CommandFailed::V1,
+                schema: Attributes::Events::Created::V3,
                 trace_id: message.trace_id,
                 stream: message.stream,
                 data: {
-                  reason: described_class::DOES_NOT_EXIST
+                  machine_derived: message.data.machine_derived,
+                  name: message.data.name,
+                  description: message.data.description,
+                  set: message.data.set,
+                  default: message.data.default
                 },
                 metadata: message.metadata
               )
@@ -196,7 +135,10 @@ RSpec.describe Attributes::AttributesReactor do
                   trace_id: message.trace_id,
                   stream: message.stream,
                   data: {
-                    **message.data.to_h
+                    name: message.data.name,
+                    description: message.data.description,
+                    set: message.data.set,
+                    default: message.data.default
                   },
                   metadata: message.metadata
                 )

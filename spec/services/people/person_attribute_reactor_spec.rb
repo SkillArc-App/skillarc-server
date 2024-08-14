@@ -88,7 +88,7 @@ RSpec.describe People::PersonAttributeReactor do
       end
     end
 
-    context "when the message add person attribute" do
+    context "when the message is remove person attribute" do
       let(:message) do
         build(
           :message,
@@ -140,6 +140,39 @@ RSpec.describe People::PersonAttributeReactor do
 
           subject
         end
+      end
+    end
+
+    context "when the message is personal interest added" do
+      let(:message) do
+        build(
+          :message,
+          schema: People::Events::ProfessionalInterestsAdded::V2,
+          stream:,
+          data: {
+            interests: %w[healthcare construction]
+          }
+        )
+      end
+
+      it "fires off a add person attribute command" do
+        expect(message_service)
+          .to receive(:create_once_for_trace!)
+          .with(
+            schema: People::Commands::AddPersonAttribute::V1,
+            trace_id: message.trace_id,
+            stream: message.stream,
+            data: {
+              id: be_a(String),
+              attribute_id: Attributes::INDUSTRIES_STREAM.attribute_id,
+              attribute_name: Attributes::INDUSTRIES_NAME,
+              attribute_values: message.data.interests
+            }
+          )
+          .twice
+          .and_call_original
+
+        subject
       end
     end
   end

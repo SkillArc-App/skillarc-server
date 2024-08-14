@@ -42,5 +42,19 @@ module People
         }
       )
     end
+
+    on_message Events::ProfessionalInterestsAdded::V2 do |message|
+      message_service.create_once_for_trace!(
+        schema: Commands::AddPersonAttribute::V1,
+        trace_id: message.trace_id,
+        stream: message.stream,
+        data: {
+          id: SecureRandom.uuid,
+          attribute_id: Attributes::INDUSTRIES_STREAM.attribute_id,
+          attribute_name: Attributes::INDUSTRIES_NAME,
+          attribute_values: message.data.interests
+        }
+      )
+    end
   end
 end

@@ -278,10 +278,10 @@ tags.each do |tag|
 end
 
 message_service.create!(
-  schema: Interests::Events::InterestsSet::V1,
-  stream: Interests::INTEREST_STREAM,
+  schema: Industries::Events::IndustriesSet::V1,
+  stream: Industries::INDUSTRIES_STREAM,
   data: {
-    interests: %w[construction manufacturing healthcare logistics]
+    industries: %w[construction manufacturing healthcare logistics]
   }
 )
 

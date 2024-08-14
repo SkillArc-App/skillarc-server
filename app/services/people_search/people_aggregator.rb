@@ -43,53 +43,45 @@ module PeopleSearch
       )
     end
 
-    on_message Attributes::Events::Created::V3 do |message|
-      Attribute.create!(
-        message.data.set.map do |value|
-          {
-            value:,
-            attribute_id: message.stream.id
-          }
-        end
-      )
-    end
-
-    on_message Attributes::Events::Updated::V2 do |message|
-      attributes = Attribute.where(attribute_id: message.stream.id)
-      current_values = attributes.map(&:value)
-      new_values = message.data.set
-
-      add_values = new_values - current_values
-      remove_values = current_values - new_values
-
-      Attribute.where(attribute_id: message.stream.id, value: remove_values).delete_all
-      Attribute.create!(
-        add_values.map do |value|
-          {
-            value:,
-            attribute_id: message.stream.id
-          }
-        end
-      )
-    end
-
-    on_message Attributes::Events::Deleted::V2 do |message|
-      Attribute.where(attribute_id: message.stream.id).delete_all
-    end
-
     on_message People::Events::PersonAttributeAdded::V1 do |message|
-      attribute_values = Attribute.where(attribute_id: message.data.attribute_id, value: message.data.attribute_values)
+      attributes = Attribute.where(attribute_id: message.data.attribute_id, value: message.data.attribute_values).to_a
 
-      AttributePerson.where(id: message.data.id).delete_all
-      AttributePerson.create!(
-        attribute_values.map do |a|
-          {
-            id: message.data.id,
-            person_id: message.stream.id,
-            attribute_id: a.id
-          }
-        end
-      )
+      current_values = attributes.map(&:value)
+      add_values = message.data.attribute_values - current_values
+
+      if add_values.present?
+        new_attributes = Attribute.create!(
+          add_values.map do |value|
+            {
+              value:,
+              attribute_id: message.stream.id
+            }
+          end
+        )
+
+        attributes = new_attributes + attributes
+      end
+
+      person_attributes = AttributePerson.where(id: message.data.id)
+      current_ids = person_attributes.map(&:attribute_id)
+      new_ids = attributes.map(&:id)
+
+      add_ids = new_ids - current_ids
+      delete_ids = current_ids - new_ids
+
+      if add_ids.present?
+        AttributePerson.create!(
+          add_ids.map do |attribute_id|
+            {
+              id: message.data.id,
+              person_id: message.stream.id,
+              attribute_id:
+            }
+          end
+        )
+      end
+
+      AttributePerson.where(id: message.data.id, person_id: message.stream.id, attribute_id: delete_ids).delete_all if delete_ids.present?
     end
 
     on_message People::Events::PersonAttributeRemoved::V1 do |message|

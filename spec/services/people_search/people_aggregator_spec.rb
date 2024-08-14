@@ -91,69 +91,69 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       end
     end
 
-    context "attribute created" do
-      let(:message) do
-        build(
-          :message,
-          schema: Attributes::Events::Created::V3,
-          stream_id: SecureRandom.uuid,
-          data: {
-            set: %w[cat dog]
-          }
-        )
-      end
+    # context "attribute created" do
+    #   let(:message) do
+    #     build(
+    #       :message,
+    #       schema: Attributes::Events::Created::V3,
+    #       stream_id: SecureRandom.uuid,
+    #       data: {
+    #         set: %w[cat dog]
+    #       }
+    #     )
+    #   end
 
-      it "creates an attribute for each value" do
-        expect { subject }.to change(PeopleSearch::Attribute, :count).from(0).to(2)
+    #   it "creates an attribute for each value" do
+    #     expect { subject }.to change(PeopleSearch::Attribute, :count).from(0).to(2)
 
-        PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "cat")
-        PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "dog")
-      end
-    end
+    #     PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "cat")
+    #     PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "dog")
+    #   end
+    # end
 
-    context "attribute updated" do
-      let(:message) do
-        build(
-          :message,
-          schema: Attributes::Events::Updated::V2,
-          stream_id: attribute_id,
-          data: {
-            set: %w[cat dog]
-          }
-        )
-      end
+    # context "attribute updated" do
+    #   let(:message) do
+    #     build(
+    #       :message,
+    #       schema: Attributes::Events::Updated::V2,
+    #       stream_id: attribute_id,
+    #       data: {
+    #         set: %w[cat dog]
+    #       }
+    #     )
+    #   end
 
-      let(:attribute_id) { SecureRandom.uuid }
-      let!(:attribute1) { create(:people_search__attribute, attribute_id:, value: "parrot") }
-      let!(:attribute2) { create(:people_search__attribute, attribute_id:, value: "cat") }
+    #   let(:attribute_id) { SecureRandom.uuid }
+    #   let!(:attribute1) { create(:people_search__attribute, attribute_id:, value: "parrot") }
+    #   let!(:attribute2) { create(:people_search__attribute, attribute_id:, value: "cat") }
 
-      it "creates new records and destroys records where needed" do
-        expect { subject }.not_to change(PeopleSearch::Attribute, :count)
+    #   it "creates new records and destroys records where needed" do
+    #     expect { subject }.not_to change(PeopleSearch::Attribute, :count)
 
-        existing = PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "cat")
-        expect(existing.id).to eq(attribute2.id)
+    #     existing = PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "cat")
+    #     expect(existing.id).to eq(attribute2.id)
 
-        PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "dog")
-        expect(PeopleSearch::Attribute.find_by(attribute_id: message.stream.id, value: "parrot")).to eq(nil)
-      end
-    end
+    #     PeopleSearch::Attribute.find_by!(attribute_id: message.stream.id, value: "dog")
+    #     expect(PeopleSearch::Attribute.find_by(attribute_id: message.stream.id, value: "parrot")).to eq(nil)
+    #   end
+    # end
 
-    context "attribute destroyed" do
-      let(:message) do
-        build(
-          :message,
-          schema: Attributes::Events::Deleted::V2,
-          stream_id: attribute_id
-        )
-      end
+    # context "attribute destroyed" do
+    #   let(:message) do
+    #     build(
+    #       :message,
+    #       schema: Attributes::Events::Deleted::V2,
+    #       stream_id: attribute_id
+    #     )
+    #   end
 
-      let(:attribute_id) { SecureRandom.uuid }
-      let!(:attribute1) { create(:people_search__attribute, attribute_id:, value: "parrot") }
+    #   let(:attribute_id) { SecureRandom.uuid }
+    #   let!(:attribute1) { create(:people_search__attribute, attribute_id:, value: "parrot") }
 
-      it "destroy all attributes associated with the id" do
-        expect { subject }.to change(PeopleSearch::Attribute, :count).from(1).to(0)
-      end
-    end
+    #   it "destroy all attributes associated with the id" do
+    #     expect { subject }.to change(PeopleSearch::Attribute, :count).from(1).to(0)
+    #   end
+    # end
 
     context "person attribute added" do
       let(:message) do
@@ -164,7 +164,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
           data: {
             id:,
             attribute_id:,
-            attribute_values: [attribute2.value]
+            attribute_values: ["dog"]
           }
         )
       end
@@ -174,14 +174,17 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:id) { SecureRandom.uuid }
       let!(:attribute_person) { create(:people_search__attribute_person, id:, person_attribute: attribute1) }
       let!(:attribute1) { create(:people_search__attribute, attribute_id:, value: "cat") }
-      let!(:attribute2) { create(:people_search__attribute, attribute_id:, value: "dog") }
 
       it "creates new records and destroys records where needed" do
-        expect { subject }.not_to change(PeopleSearch::AttributePerson, :count)
+        expect do
+          expect do
+            subject
+          end.not_to change(PeopleSearch::AttributePerson, :count)
+        end.to change(PeopleSearch::Attribute, :count).from(1).to(2)
 
         person.reload
         expect(person.person_attributes.length).to eq(1)
-        expect(person.person_attributes[0]).to eq(attribute2)
+        expect(person.person_attributes[0].value).to eq("dog")
       end
     end
 

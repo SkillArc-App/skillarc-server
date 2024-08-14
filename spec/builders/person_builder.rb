@@ -18,7 +18,7 @@ module Builders
 
       message_service.create!(
         person_id: id,
-        schema: Events::PersonAdded::V1,
+        schema: People::Events::PersonAdded::V1,
         data: {
           first_name:,
           last_name:,
@@ -29,19 +29,19 @@ module Builders
       )
       message_service.create!(
         person_id: id,
-        schema: Events::PersonAssociatedToUser::V1,
+        schema: People::Events::PersonAssociatedToUser::V1,
         data: {
           user_id:
         }
       )
       message_service.create!(
         person_id: id,
-        schema: Events::OnboardingStarted::V2,
+        schema: People::Events::OnboardingStarted::V2,
         data: Core::Nothing
       )
       message_service.create!(
         person_id: id,
-        schema: Events::OnboardingCompleted::V3,
+        schema: People::Events::OnboardingCompleted::V3,
         data: Core::Nothing
       )
 
@@ -66,7 +66,7 @@ module Builders
 
       message_service.create!(
         person_id: person.id,
-        schema: Events::PersonTrainingProviderAdded::V1,
+        schema: ::People::Events::PersonTrainingProviderAdded::V1,
         data: {
           training_provider_id:,
           program_id:,

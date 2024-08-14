@@ -12,7 +12,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonAdded::V1,
+          schema: People::Events::PersonAdded::V1,
           data: {
             first_name: "John",
             last_name: "Doe",
@@ -43,7 +43,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::BasicInfoAdded::V1,
+          schema: People::Events::BasicInfoAdded::V1,
           stream_id: person.id,
           data: {
             first_name: "Khushi",
@@ -72,7 +72,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::CoachAssigned::V3,
+          schema: People::Events::CoachAssigned::V3,
           stream_id: person.id,
           data: {
             coach_id: SecureRandom.uuid
@@ -159,7 +159,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonAttributeAdded::V1,
+          schema: People::Events::PersonAttributeAdded::V1,
           stream_id: person.id,
           data: {
             id:,
@@ -189,7 +189,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonAttributeRemoved::V1,
+          schema: People::Events::PersonAttributeRemoved::V1,
           stream_id: person.id,
           data: {
             id:
@@ -213,7 +213,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::ExperienceAdded::V2,
+          schema: People::Events::ExperienceAdded::V2,
           stream_id: person.id,
           data: {
             id:,
@@ -252,7 +252,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::ExperienceRemoved::V2,
+          schema: People::Events::ExperienceRemoved::V2,
           stream_id: person.id,
           data: {
             id: experience.id
@@ -279,7 +279,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::EducationExperienceAdded::V2,
+          schema: People::Events::EducationExperienceAdded::V2,
           stream_id: person.id,
           data: {
             id:,
@@ -314,7 +314,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::EducationExperienceDeleted::V2,
+          schema: People::Events::EducationExperienceDeleted::V2,
           stream_id: person.id,
           data: {
             id: education_experience.id
@@ -341,7 +341,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::NoteAdded::V4,
+          schema: People::Events::NoteAdded::V4,
           stream_id: person.id,
           data: {
             originator: "foo",
@@ -374,7 +374,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::NoteModified::V4,
+          schema: People::Events::NoteModified::V4,
           stream_id: person.id,
           data: {
             originator: "foo",
@@ -402,7 +402,7 @@ RSpec.describe PeopleSearch::PeopleAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::NoteDeleted::V4,
+          schema: People::Events::NoteDeleted::V4,
           stream_id: person.id,
           data: {
             note_id: note.id

@@ -20,7 +20,7 @@ RSpec.describe Projectors::Streams::HasOccurred do
         Event.from_message!(
           build(
             :message,
-            schema: Events::ZipAdded::V2,
+            schema: People::Events::ZipAdded::V2,
             stream_id: task_id,
             data: {
               zip_code: "43202"
@@ -46,7 +46,7 @@ RSpec.describe Projectors::Streams::HasOccurred do
         Event.from_message!(
           build(
             :message,
-            schema: Events::ZipAdded::V2,
+            schema: People::Events::ZipAdded::V2,
             stream_id: task_id,
             data: {
               zip_code: "43202"

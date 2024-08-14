@@ -4,14 +4,14 @@ RSpec.describe Contact::Projectors::ContactPreference do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:stream) { Streams::Person.new(person_id:) }
+    let(:stream) { People::Streams::Person.new(person_id:) }
     let(:person_id) { SecureRandom.uuid }
 
     let(:person_added) do
       build(
         :message,
         stream:,
-        schema: Events::PersonAdded::V1,
+        schema: People::Events::PersonAdded::V1,
         data: {
           email: "a@b.c",
           phone_number: nil,
@@ -25,7 +25,7 @@ RSpec.describe Contact::Projectors::ContactPreference do
       build(
         :message,
         stream:,
-        schema: Events::BasicInfoAdded::V1,
+        schema: People::Events::BasicInfoAdded::V1,
         data: {
           email: "d@e.f",
           first_name: "Some",
@@ -38,7 +38,7 @@ RSpec.describe Contact::Projectors::ContactPreference do
       build(
         :message,
         stream:,
-        schema: Events::SlackIdAdded::V2,
+        schema: People::Events::SlackIdAdded::V2,
         data: {
           slack_id: 'slack'
         }
@@ -48,7 +48,7 @@ RSpec.describe Contact::Projectors::ContactPreference do
       build(
         :message,
         stream:,
-        schema: Events::PersonAssociatedToUser::V1,
+        schema: People::Events::PersonAssociatedToUser::V1,
         data: {
           user_id: "user1"
         }
@@ -58,7 +58,7 @@ RSpec.describe Contact::Projectors::ContactPreference do
       build(
         :message,
         stream:,
-        schema: Events::ContactPreferenceSet::V2,
+        schema: People::Events::ContactPreferenceSet::V2,
         data: {
           preference: Contact::ContactPreference::EMAIL
         }

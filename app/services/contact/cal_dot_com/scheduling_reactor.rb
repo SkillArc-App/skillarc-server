@@ -22,7 +22,7 @@ module Contact
         message_service.create!(
           trace_id:,
           person_id: SecureRandom.uuid,
-          schema: Commands::AddPerson::V2,
+          schema: People::Commands::AddPerson::V2,
           data: {
             user_id: nil,
             date_of_birth: nil,

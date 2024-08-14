@@ -38,7 +38,7 @@ module People
       # If we have a phone associate it
       if message.data.phone_number.present?
         message_service.create_once_for_trace!(
-          schema: Events::PersonAssociatedToPhoneNumber::V1,
+          schema: ::Events::PersonAssociatedToPhoneNumber::V1,
           trace_id: message.trace_id,
           phone_number: message.data.phone_number,
           data: {
@@ -50,7 +50,7 @@ module People
       # If we have an email associate it
       if message.data.email.present?
         message_service.create_once_for_trace!(
-          schema: Events::PersonAssociatedToEmail::V1,
+          schema: ::Events::PersonAssociatedToEmail::V1,
           trace_id: message.trace_id,
           email: message.data.email,
           data: {
@@ -63,10 +63,10 @@ module People
     private
 
     def matching_email?(email, user_id, trace_id)
-      stream = Streams::Email.new(email:)
+      stream = ::Streams::Email.new(email:)
       person_associated_email = ::Projectors::Streams::GetLast.project(
         stream:,
-        schema: Events::PersonAssociatedToEmail::V1
+        schema: ::Events::PersonAssociatedToEmail::V1
       )
 
       return false if person_associated_email.nil?
@@ -77,10 +77,10 @@ module People
     end
 
     def matching_phone_number?(phone_number, user_id, trace_id)
-      stream = Streams::Phone.new(phone_number:)
+      stream = ::Streams::Phone.new(phone_number:)
       person_associated_email = ::Projectors::Streams::GetLast.project(
         stream:,
-        schema: Events::PersonAssociatedToPhoneNumber::V1
+        schema: ::Events::PersonAssociatedToPhoneNumber::V1
       )
 
       return false if person_associated_email.nil?
@@ -95,7 +95,7 @@ module People
 
       person_associated_user = ::Projectors::Streams::GetLast.project(
         stream: Streams::Person.new(person_id:),
-        schema: Events::PersonAssociatedToPhoneNumber::V1
+        schema: ::Events::PersonAssociatedToPhoneNumber::V1
       )
 
       if person_associated_user.present?

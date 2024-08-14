@@ -1,6 +1,6 @@
 module Applicants
   class OrchestrationReactor < MessageReactor
-    on_message Events::PersonApplied::V1, :sync do |message|
+    on_message People::Events::PersonApplied::V1, :sync do |message|
       message_service.create!(
         application_id: message.data.application_id,
         trace_id: message.trace_id,

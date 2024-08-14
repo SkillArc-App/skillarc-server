@@ -27,7 +27,7 @@ RSpec.describe Coaches::CoachesReactor do
         build(
           :message,
           stream_id: person_id,
-          schema: Commands::AssignCoach::V2,
+          schema: People::Commands::AssignCoach::V2,
           data: {
             coach_id:
           }
@@ -38,7 +38,7 @@ RSpec.describe Coaches::CoachesReactor do
         build(
           :message,
           stream_id: person_id,
-          schema: Events::PersonAdded::V1,
+          schema: People::Events::PersonAdded::V1,
           data: {
             first_name: "Jim",
             last_name: "Jim",
@@ -89,7 +89,7 @@ RSpec.describe Coaches::CoachesReactor do
             expect(message_service)
               .to receive(:create_once_for_trace!)
               .with(
-                schema: Events::CoachAssigned::V3,
+                schema: People::Events::CoachAssigned::V3,
                 stream: message.stream,
                 data: {
                   coach_id: message.data.coach_id
@@ -108,7 +108,7 @@ RSpec.describe Coaches::CoachesReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::JobRecommended::V3,
+          schema: People::Events::JobRecommended::V3,
           stream_id: person_id,
           data: {
             job_id:,
@@ -214,7 +214,7 @@ RSpec.describe Coaches::CoachesReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonAdded::V1,
+          schema: People::Events::PersonAdded::V1,
           stream_id: person_id,
           data: {
             first_name: "John",
@@ -252,7 +252,7 @@ RSpec.describe Coaches::CoachesReactor do
             .with(
               trace_id: message.trace_id,
               stream: message.stream,
-              schema: Commands::AssignCoach::V2,
+              schema: People::Commands::AssignCoach::V2,
               data: {
                 coach_id:
               }
@@ -269,7 +269,7 @@ RSpec.describe Coaches::CoachesReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonSourced::V1,
+          schema: People::Events::PersonSourced::V1,
           stream_id: person_id,
           data: {
             source_kind:,
@@ -300,7 +300,7 @@ RSpec.describe Coaches::CoachesReactor do
             .with(
               trace_id: message.trace_id,
               stream: message.stream,
-              schema: Commands::AssignCoach::V2,
+              schema: People::Commands::AssignCoach::V2,
               data: {
                 coach_id: message.data.source_identifier
               }

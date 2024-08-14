@@ -6,7 +6,7 @@ module Users
       TrainingProviderProfile.delete_all
     end
 
-    on_message Events::PersonAssociatedToUser::V1 do |message|
+    on_message People::Events::PersonAssociatedToUser::V1 do |message|
       user = User.find(message.data.user_id)
 
       user.update!(person_id: message.stream.id)

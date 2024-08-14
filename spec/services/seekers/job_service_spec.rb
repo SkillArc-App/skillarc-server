@@ -14,7 +14,7 @@ RSpec.describe Seekers::JobService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::ElevatorPitchCreated::V2,
+        schema: People::Events::ElevatorPitchCreated::V2,
         person_id: seeker.id,
         data: {
           job_id: job.id,

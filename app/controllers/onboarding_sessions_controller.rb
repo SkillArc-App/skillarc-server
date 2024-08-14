@@ -17,7 +17,7 @@ class OnboardingSessionsController < ApplicationController
       if person_id.present?
         message_service.create!(
           person_id:,
-          schema: Events::BasicInfoAdded::V1,
+          schema: People::Events::BasicInfoAdded::V1,
           trace_id: request.request_id,
           data: {
             email: current_user.email,
@@ -28,7 +28,7 @@ class OnboardingSessionsController < ApplicationController
         )
         message_service.create!(
           person_id:,
-          schema: Events::DateOfBirthAdded::V1,
+          schema: People::Events::DateOfBirthAdded::V1,
           trace_id: request.request_id,
           data: {
             date_of_birth: filtered[:date_of_birth]
@@ -37,7 +37,7 @@ class OnboardingSessionsController < ApplicationController
       else
         message_service.create!(
           person_id: SecureRandom.uuid,
-          schema: Commands::AddPerson::V2,
+          schema: People::Commands::AddPerson::V2,
           trace_id: request.request_id,
           data: {
             user_id: current_user.id,
@@ -124,7 +124,7 @@ class OnboardingSessionsController < ApplicationController
   def find_person_id
     return current_user.person_id if current_user.person_id.present?
 
-    Events::PersonAssociatedToUser::V1.all_messages.detect do |m|
+    People::Events::PersonAssociatedToUser::V1.all_messages.detect do |m|
       m.data.user_id == current_user.id
     end&.stream&.id
   end
@@ -133,7 +133,7 @@ class OnboardingSessionsController < ApplicationController
     messages = if person_id.nil?
                  []
                else
-                 MessageService.stream_events(Streams::Person.new(person_id:))
+                 MessageService.stream_events(People::Streams::Person.new(person_id:))
                end
     status = People::Projectors::OnboardingStatus.new.project(messages)
 

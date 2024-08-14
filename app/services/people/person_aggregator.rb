@@ -86,7 +86,7 @@ module People
       Story.find(message.data.id).destroy!
     end
 
-    on_message Events::ApplicantStatusUpdated::V6, :sync do |message|
+    on_message ::Events::ApplicantStatusUpdated::V6, :sync do |message|
       application = Applicant.find_or_initialize_by(
         id: message.stream.id
       )

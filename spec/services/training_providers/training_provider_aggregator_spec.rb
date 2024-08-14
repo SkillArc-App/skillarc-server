@@ -12,7 +12,7 @@ RSpec.describe TrainingProviders::TrainingProviderAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonTrainingProviderAdded::V1,
+          schema: People::Events::PersonTrainingProviderAdded::V1,
           stream_id: SecureRandom.uuid,
           data: {
             id: SecureRandom.uuid,

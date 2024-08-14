@@ -21,7 +21,7 @@ module Klaviyo
       end
     end
 
-    on_message Events::PersonAdded::V1 do |message|
+    on_message People::Events::PersonAdded::V1 do |message|
       email = email_for_person_stream(message.stream)
       return if email.blank?
 
@@ -42,7 +42,7 @@ module Klaviyo
       end
     end
 
-    on_message Events::BasicInfoAdded::V1 do |message|
+    on_message People::Events::BasicInfoAdded::V1 do |message|
       email = email_for_person_stream(message.stream)
       return if email.blank?
 
@@ -61,7 +61,7 @@ module Klaviyo
       end
     end
 
-    on_message Events::EducationExperienceAdded::V2 do |message|
+    on_message People::Events::EducationExperienceAdded::V2 do |message|
       email = email_for_person_stream(message.stream)
       return if email.blank?
 
@@ -104,7 +104,7 @@ module Klaviyo
       end
     end
 
-    on_message Events::ExperienceAdded::V2 do |message|
+    on_message People::Events::ExperienceAdded::V2 do |message|
       email = email_for_person_stream(message.stream)
       return if email.blank?
 
@@ -117,7 +117,7 @@ module Klaviyo
       end
     end
 
-    on_message Events::OnboardingCompleted::V3 do |message|
+    on_message People::Events::OnboardingCompleted::V3 do |message|
       email = email_for_person_stream(message.stream)
       return if email.blank?
 

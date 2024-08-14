@@ -14,7 +14,7 @@ module Attributes
         end
       end
 
-      V1 = Core::Schema.active(
+      V1 = Core::Schema.inactive(
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::RequestorMetadata::V1,

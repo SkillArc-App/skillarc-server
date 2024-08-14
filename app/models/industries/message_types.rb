@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-module Interests
+module Industries
   module MessageTypes
     EVENTS = [
-      SET_INTERESTS = "set_interests"
+      SET_INDUSTRIES = "set_industries"
     ].freeze
 
     COMMANDS = [
-      INTERESTS_SET = "interests_set"
+      INDUSTRIES_SET = "industries_set"
     ].freeze
   end
 end

@@ -1,9 +1,9 @@
 require 'rails_helper'
 require 'swagger_helper'
 
-RSpec.describe "Interests", type: :request do
-  path '/interests' do
-    get "Get all interests" do
+RSpec.describe "Industries", type: :request do
+  path '/industries' do
+    get "Get all industries" do
       tags 'Other'
       produces 'application/json'
       security [bearer_auth: []]
@@ -23,7 +23,7 @@ RSpec.describe "Interests", type: :request do
                  }
 
           before do
-            create(:interests__interest)
+            create(:industries__industry)
           end
 
           run_test!

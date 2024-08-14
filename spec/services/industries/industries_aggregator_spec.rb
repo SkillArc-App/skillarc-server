@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Interests::InterestsAggregator do
+RSpec.describe Industries::IndustriesAggregator do
   it_behaves_like "a replayable message consumer"
 
   describe "#handle_message" do
@@ -10,20 +10,20 @@ RSpec.describe Interests::InterestsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Interests::Events::InterestsSet::V1,
+          schema: Industries::Events::IndustriesSet::V1,
           data: {
-            interests: %w[cat dog]
+            industries: %w[cat dog]
           }
         )
       end
 
-      let!(:interests) { create(:interests__interest) }
+      let!(:interests) { create(:industries__industry) }
 
       it "creates interests" do
-        expect { subject }.not_to change(Interests::Interest, :count)
+        expect { subject }.not_to change(Industries::Industry, :count)
 
-        team = Interests::Interest.first
-        expect(team.interests).to eq(message.data.interests)
+        team = Industries::Industry.first
+        expect(team.industries).to eq(message.data.industries)
       end
     end
   end

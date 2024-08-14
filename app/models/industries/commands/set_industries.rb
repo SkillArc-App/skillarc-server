@@ -1,22 +1,22 @@
-module Interests
-  module Events
-    module InterestsSet
+module Industries
+  module Commands
+    module SetIndustries
       module Data
         class V1
           extend Core::Payload
 
           schema do
-            interests ArrayOf(String)
+            industries ArrayOf(String)
           end
         end
       end
 
       V1 = Core::Schema.active(
-        type: Core::EVENT,
+        type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::Nothing,
-        stream: Streams::Interest,
-        message_type: MessageTypes::INTERESTS_SET,
+        stream: Streams::Industries,
+        message_type: MessageTypes::SET_INDUSTRIES,
         version: 1
       )
     end

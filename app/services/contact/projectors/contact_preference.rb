@@ -1,7 +1,7 @@
 module Contact
   module Projectors
     class ContactPreference < Projector
-      projection_stream Streams::Person
+      projection_stream People::Streams::Person
 
       class Projection
         NoValidOption = Class.new(StandardError)
@@ -62,27 +62,27 @@ module Contact
         )
       end
 
-      on_message Events::PersonAdded::V1 do |message, accumulator|
+      on_message People::Events::PersonAdded::V1 do |message, accumulator|
         accumulator = accumulator.with(phone_number: message.data.phone_number) if message.data.phone_number.present?
         accumulator = accumulator.with(email: message.data.email) if message.data.email.present?
         accumulator
       end
 
-      on_message Events::BasicInfoAdded::V1 do |message, accumulator|
+      on_message People::Events::BasicInfoAdded::V1 do |message, accumulator|
         accumulator = accumulator.with(phone_number: message.data.phone_number) if message.data.phone_number.present?
         accumulator = accumulator.with(email: message.data.email) if message.data.email.present?
         accumulator
       end
 
-      on_message Events::SlackIdAdded::V2 do |message, accumulator|
+      on_message People::Events::SlackIdAdded::V2 do |message, accumulator|
         accumulator.with(slack_id: message.data.slack_id)
       end
 
-      on_message Events::PersonAssociatedToUser::V1 do |message, accumulator|
+      on_message People::Events::PersonAssociatedToUser::V1 do |message, accumulator|
         accumulator.with(notification_user_id: message.data.user_id)
       end
 
-      on_message Events::ContactPreferenceSet::V2 do |message, accumulator|
+      on_message People::Events::ContactPreferenceSet::V2 do |message, accumulator|
         accumulator.with(requested_preference: message.data.preference)
       end
     end

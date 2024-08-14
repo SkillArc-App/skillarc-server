@@ -112,7 +112,7 @@ module JobSearch
       )
     end
 
-    on_message Events::ElevatorPitchCreated::V2, :sync do |message|
+    on_message People::Events::ElevatorPitchCreated::V2, :sync do |message|
       data = message.data
       application = Application.find_by(job_id: data.job_id, seeker_id: message.stream.id)
       return unless application

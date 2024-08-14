@@ -40,7 +40,7 @@ module JobOrders
       JobOrder.where(status: message.stream.order_status).update_all(team_id: message.data.team_id) # rubocop:disable Rails/SkipsModelValidations
     end
 
-    on_message ::Events::PersonAdded::V1 do |message|
+    on_message People::Events::PersonAdded::V1 do |message|
       Person.create!(
         id: message.stream.id,
         first_name: message.data.first_name,
@@ -50,7 +50,7 @@ module JobOrders
       )
     end
 
-    on_message ::Events::BasicInfoAdded::V1 do |message|
+    on_message People::Events::BasicInfoAdded::V1 do |message|
       Person.update(
         message.stream.id,
         first_name: message.data.first_name,

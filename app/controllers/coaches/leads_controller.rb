@@ -21,7 +21,7 @@ module Coaches
         message_service.create!(
           person_id: SecureRandom.uuid,
           trace_id: request.request_id,
-          schema: Commands::AddPerson::V2,
+          schema: People::Commands::AddPerson::V2,
           data: {
             user_id: nil,
             date_of_birth: nil,

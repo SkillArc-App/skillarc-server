@@ -13,7 +13,7 @@ module Analytics
       DimEmployer.delete_all
     end
 
-    on_message Events::PersonAssociatedToUser::V1 do |message|
+    on_message People::Events::PersonAssociatedToUser::V1 do |message|
       user = DimUser.find_by!(user_id: message.data.user_id)
 
       DimPerson.where(person_id: message.stream.person_id).update_all(analytics_dim_user_id: user.id, kind: DimPerson::Kind::SEEKER)
@@ -32,7 +32,7 @@ module Analytics
       )
     end
 
-    on_message Events::BasicInfoAdded::V1 do |message|
+    on_message People::Events::BasicInfoAdded::V1 do |message|
       DimPerson.where(person_id: message.stream.person_id).update_all(
         first_name: message.data.first_name,
         last_name: message.data.last_name,
@@ -41,7 +41,7 @@ module Analytics
       )
     end
 
-    on_message Events::PersonAdded::V1 do |message|
+    on_message People::Events::PersonAdded::V1 do |message|
       DimPerson.create!(
         person_id: message.stream.person_id,
         email: message.data.email,
@@ -52,7 +52,7 @@ module Analytics
       )
     end
 
-    on_message Events::OnboardingCompleted::V3 do |message|
+    on_message People::Events::OnboardingCompleted::V3 do |message|
       DimPerson.where(person_id: message.stream.person_id).update_all(onboarding_completed_at: message.occurred_at)
     end
 
@@ -233,7 +233,7 @@ module Analytics
       )
     end
 
-    on_message Events::NoteAdded::V4 do |message|
+    on_message People::Events::NoteAdded::V4 do |message|
       note_action(
         person_id: message.stream.person_id,
         originator: message.data.originator,
@@ -242,7 +242,7 @@ module Analytics
       )
     end
 
-    on_message Events::NoteModified::V4 do |message|
+    on_message People::Events::NoteModified::V4 do |message|
       note_action(
         person_id: message.stream.person_id,
         originator: message.data.originator,
@@ -251,7 +251,7 @@ module Analytics
       )
     end
 
-    on_message Events::NoteDeleted::V4 do |message|
+    on_message People::Events::NoteDeleted::V4 do |message|
       note_action(
         person_id: message.stream.person_id,
         originator: message.data.originator,
@@ -260,7 +260,7 @@ module Analytics
       )
     end
 
-    on_message Events::JobRecommended::V3 do |message|
+    on_message People::Events::JobRecommended::V3 do |message|
       dim_user_executor = Analytics::DimUser.find_by!(coach_id: message.data.coach_id)
       dim_person_target = Analytics::DimPerson.find_by!(person_id: message.stream.person_id)
 
@@ -272,7 +272,7 @@ module Analytics
       )
     end
 
-    on_message Events::PersonCertified::V1 do |message|
+    on_message People::Events::PersonCertified::V1 do |message|
       dim_user_executor = Analytics::DimUser.find_by!(coach_id: message.data.coach_id)
       dim_person_target = Analytics::DimPerson.find_by!(person_id: message.stream.person_id)
 

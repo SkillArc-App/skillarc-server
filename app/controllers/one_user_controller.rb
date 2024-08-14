@@ -28,7 +28,7 @@ class OneUserController < ApplicationController
     if seeker&.id.present?
       completed_at = Projectors::Streams::GetFirst.project(
         stream: Streams::Seeker.new(seeker_id: seeker&.id),
-        schema: Events::OnboardingCompleted::V3
+        schema: People::Events::OnboardingCompleted::V3
       )&.occurred_at
     end
 

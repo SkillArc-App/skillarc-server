@@ -32,7 +32,7 @@ RSpec.describe People::PersonEventEmitter do
       expect(message_service)
         .to receive(:create!)
         .with(
-          schema: Events::EducationExperienceAdded::V2,
+          schema: People::Events::EducationExperienceAdded::V2,
           trace_id:,
           person_id:,
           data: {
@@ -72,7 +72,7 @@ RSpec.describe People::PersonEventEmitter do
         .with(
           person_id:,
           trace_id:,
-          schema: Events::PersonTrainingProviderAdded::V1,
+          schema: People::Events::PersonTrainingProviderAdded::V1,
           data: {
             id:,
             status:,
@@ -102,7 +102,7 @@ RSpec.describe People::PersonEventEmitter do
         .with(
           person_id:,
           trace_id:,
-          schema: Events::ReliabilityAdded::V2,
+          schema: People::Events::ReliabilityAdded::V2,
           data: {
             reliabilities:
           }
@@ -129,7 +129,7 @@ RSpec.describe People::PersonEventEmitter do
         .with(
           person_id:,
           trace_id:,
-          schema: Events::ProfessionalInterestsAdded::V2,
+          schema: People::Events::ProfessionalInterestsAdded::V2,
           data: {
             interests:
           }
@@ -153,7 +153,7 @@ RSpec.describe People::PersonEventEmitter do
         .with(
           person_id:,
           trace_id:,
-          schema: Commands::CompleteOnboarding::V2,
+          schema: People::Commands::CompleteOnboarding::V2,
           data: Core::Nothing
         )
 
@@ -176,7 +176,7 @@ RSpec.describe People::PersonEventEmitter do
       expect(message_service)
         .to receive(:create!)
         .with(
-          schema: Events::EducationExperienceDeleted::V2,
+          schema: People::Events::EducationExperienceDeleted::V2,
           trace_id:,
           person_id:,
           data: {
@@ -211,7 +211,7 @@ RSpec.describe People::PersonEventEmitter do
       expect(message_service)
         .to receive(:create!)
         .with(
-          schema: Events::PersonalExperienceAdded::V2,
+          schema: People::Events::PersonalExperienceAdded::V2,
           trace_id:,
           person_id:,
           data: {
@@ -242,7 +242,7 @@ RSpec.describe People::PersonEventEmitter do
       expect(message_service)
         .to receive(:create!)
         .with(
-          schema: Events::PersonalExperienceRemoved::V2,
+          schema: People::Events::PersonalExperienceRemoved::V2,
           trace_id:,
           person_id:,
           data: {
@@ -279,7 +279,7 @@ RSpec.describe People::PersonEventEmitter do
       expect(message_service)
         .to receive(:create!)
         .with(
-          schema: Events::ExperienceAdded::V2,
+          schema: People::Events::ExperienceAdded::V2,
           trace_id:,
           person_id:,
           data: {
@@ -312,7 +312,7 @@ RSpec.describe People::PersonEventEmitter do
       expect(message_service)
         .to receive(:create!)
         .with(
-          schema: Events::ExperienceRemoved::V2,
+          schema: People::Events::ExperienceRemoved::V2,
           trace_id:,
           person_id:,
           data: {

@@ -46,7 +46,7 @@ RSpec.describe "OnboardingSessions", type: :request do
               expect_any_instance_of(MessageService)
                 .to receive(:create!)
                 .with(
-                  schema: Events::BasicInfoAdded::V1,
+                  schema: People::Events::BasicInfoAdded::V1,
                   trace_id: be_a(String),
                   person_id: be_a(String),
                   data: {
@@ -61,7 +61,7 @@ RSpec.describe "OnboardingSessions", type: :request do
               expect_any_instance_of(MessageService)
                 .to receive(:create!)
                 .with(
-                  schema: Events::DateOfBirthAdded::V1,
+                  schema: People::Events::DateOfBirthAdded::V1,
                   trace_id: be_a(String),
                   person_id: be_a(String),
                   data: {
@@ -79,7 +79,7 @@ RSpec.describe "OnboardingSessions", type: :request do
               expect_any_instance_of(MessageService)
                 .to receive(:create!)
                 .with(
-                  schema: Commands::AddPerson::V2,
+                  schema: People::Commands::AddPerson::V2,
                   trace_id: be_a(String),
                   person_id: be_a(String),
                   data: {

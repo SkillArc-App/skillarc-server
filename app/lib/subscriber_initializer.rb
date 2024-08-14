@@ -1,5 +1,5 @@
 module SubscriberInitializer
-  def self.run
+  def self.run # rubocop:disable Metrics/AbcSize
     ASYNC_SUBSCRIBERS.reset
     SYNC_SUBSCRIBERS.reset
 
@@ -23,7 +23,7 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: PeopleSearch::PeopleAggregator.new, listener_name: "people_search_people_aggregator"),
       DbStreamListener.build(consumer: Teams::TeamsAggregator.new, listener_name: "teams_aggregator"),
       DbStreamListener.build(consumer: Screeners::ScreenerAggregator.new, listener_name: "screener_aggregator"),
-      DbStreamListener.build(consumer: Interests::InterestsAggregator.new, listener_name: "interests_aggregator")
+      DbStreamListener.build(consumer: Industries::IndustriesAggregator.new, listener_name: "interests_aggregator")
     ]
 
     reactors = [
@@ -37,6 +37,7 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: Contact::ContactReactor.new, listener_name: "contact_reactor"),
       DbStreamListener.build(consumer: People::OnboardingReactor.new, listener_name: "onboarding_reactor"),
       DbStreamListener.build(consumer: People::PersonDedupingReactor.new, listener_name: "person_deduping_reactor"),
+      DbStreamListener.build(consumer: People::PersonAttributeReactor.new, listener_name: "person_attributes_reactor"),
       DbStreamListener.build(consumer: JobOrders::JobOrdersReactor.new, listener_name: "job_orders_reactor"),
       DbStreamListener.build(consumer: JobOrders::TeamOrderStatusReactor.new, listener_name: "team_order_status_reactor"),
       DbStreamListener.build(consumer: Infrastructure::InfrastructureReactor.new, listener_name: "infrastructure_reactor"),
@@ -51,7 +52,7 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: Screeners::ScreenerReactor.new, listener_name: "screener_reactor"),
       DbStreamListener.build(consumer: JobOrders::StatusReactor.new, listener_name: "job_order_status_reactor"),
       DbStreamListener.build(consumer: JobOrders::CriteriaMetReactor.new, listener_name: "job_order_criteria_met_reactor"),
-      DbStreamListener.build(consumer: Interests::InterestsReactor.new, listener_name: "interests_reactor")
+      DbStreamListener.build(consumer: Industries::IndustriesReactor.new, listener_name: "interests_reactor")
     ]
 
     (aggregators + reactors).each do |listener|

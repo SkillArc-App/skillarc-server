@@ -15,7 +15,7 @@ RSpec.describe Documents::DocumentsReactor do
   let(:message_service) { MessageService.new }
   let(:trace_id) { SecureRandom.uuid }
   let(:messages) { [] }
-  let(:person_stream) { Streams::Person.new(person_id:) }
+  let(:person_stream) { People::Streams::Person.new(person_id:) }
   let(:person_id) { SecureRandom.uuid }
   let(:answers_stream) { Screeners::Streams::Answers.new(screener_answers_id:) }
   let(:screener_answers_id) { SecureRandom.uuid }
@@ -84,7 +84,7 @@ RSpec.describe Documents::DocumentsReactor do
           build(
             :message,
             stream: person_stream,
-            schema: Events::PersonAdded::V1,
+            schema: People::Events::PersonAdded::V1,
             data: {
               first_name: "Jim",
               last_name: "Bo",
@@ -98,7 +98,7 @@ RSpec.describe Documents::DocumentsReactor do
           build(
             :message,
             stream: person_stream,
-            schema: Events::PersonAboutAdded::V1,
+            schema: People::Events::PersonAboutAdded::V1,
             data: {
               about: "I'm pretty cool"
             }
@@ -108,7 +108,7 @@ RSpec.describe Documents::DocumentsReactor do
           build(
             :message,
             stream: person_stream,
-            schema: Events::ExperienceAdded::V2,
+            schema: People::Events::ExperienceAdded::V2,
             data: {
               id: SecureRandom.uuid,
               organization_name: "SuperQuik",
@@ -124,7 +124,7 @@ RSpec.describe Documents::DocumentsReactor do
           build(
             :message,
             stream: person_stream,
-            schema: Events::EducationExperienceAdded::V2,
+            schema: People::Events::EducationExperienceAdded::V2,
             data: {
               id: SecureRandom.uuid,
               organization_name: "Westervill High School",

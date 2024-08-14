@@ -8,7 +8,7 @@ module Coaches
 
     def add_attribute(person_id:, person_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) # rubocop:disable Metrics/ParameterLists
       message_service.create!(
-        schema: Events::PersonAttributeAdded::V1,
+        schema: People::Events::PersonAttributeAdded::V1,
         person_id:,
         trace_id:,
         data: {
@@ -22,7 +22,7 @@ module Coaches
 
     def remove_attribute(person_id:, person_attribute_id:, trace_id:)
       message_service.create!(
-        schema: Events::PersonAttributeRemoved::V1,
+        schema: People::Events::PersonAttributeRemoved::V1,
         person_id:,
         trace_id:,
         data: {
@@ -33,7 +33,7 @@ module Coaches
 
     def add_note(person_id:, originator:, note:, note_id:, trace_id:)
       message_service.create!(
-        schema: Events::NoteAdded::V4,
+        schema: People::Events::NoteAdded::V4,
         person_id:,
         trace_id:,
         data: {
@@ -46,7 +46,7 @@ module Coaches
 
     def delete_note(person_id:, originator:, note_id:, trace_id:)
       message_service.create!(
-        schema: Events::NoteDeleted::V4,
+        schema: People::Events::NoteDeleted::V4,
         person_id:,
         trace_id:,
         data: {
@@ -58,7 +58,7 @@ module Coaches
 
     def modify_note(person_id:, originator:, note_id:, note:, trace_id:)
       message_service.create!(
-        schema: Events::NoteModified::V4,
+        schema: People::Events::NoteModified::V4,
         person_id:,
         trace_id:,
         data: {
@@ -73,7 +73,7 @@ module Coaches
       user = User.find(coach.user_id)
 
       message_service.create!(
-        schema: Events::PersonCertified::V1,
+        schema: People::Events::PersonCertified::V1,
         person_id:,
         trace_id:,
         data: {
@@ -87,7 +87,7 @@ module Coaches
 
     def recommend_job(person_id:, job_id:, coach:, trace_id:)
       message_service.create!(
-        schema: Events::JobRecommended::V3,
+        schema: People::Events::JobRecommended::V3,
         person_id:,
         trace_id:,
         data: {
@@ -99,7 +99,7 @@ module Coaches
 
     def update_barriers(person_id:, barriers:, trace_id:)
       message_service.create!(
-        schema: Events::BarrierUpdated::V3,
+        schema: People::Events::BarrierUpdated::V3,
         person_id:,
         trace_id:,
         data: {
@@ -110,7 +110,7 @@ module Coaches
 
     def assign_coach(person_id:, coach_id:, trace_id:)
       message_service.create!(
-        schema: Events::CoachAssigned::V3,
+        schema: People::Events::CoachAssigned::V3,
         person_id:,
         trace_id:,
         data: {
@@ -121,7 +121,7 @@ module Coaches
 
     def update_skill_level(person_id:, skill_level:, trace_id:)
       message_service.create!(
-        schema: Events::SkillLevelUpdated::V3,
+        schema: People::Events::SkillLevelUpdated::V3,
         person_id:,
         trace_id:,
         data: {

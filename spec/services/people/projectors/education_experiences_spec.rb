@@ -4,7 +4,7 @@ RSpec.describe People::Projectors::EducationExperiences do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:stream) { Streams::Person.new(person_id:) }
+    let(:stream) { People::Streams::Person.new(person_id:) }
     let(:person_id) { SecureRandom.uuid }
     let(:education_experience_id1) { SecureRandom.uuid }
     let(:education_experience_id2) { SecureRandom.uuid }
@@ -22,7 +22,7 @@ RSpec.describe People::Projectors::EducationExperiences do
       build(
         :message,
         stream:,
-        schema: Events::EducationExperienceAdded::V2,
+        schema: People::Events::EducationExperienceAdded::V2,
         data: {
           id: education_experience_id1,
           organization_name: "1",
@@ -37,7 +37,7 @@ RSpec.describe People::Projectors::EducationExperiences do
       build(
         :message,
         stream:,
-        schema: Events::EducationExperienceAdded::V2,
+        schema: People::Events::EducationExperienceAdded::V2,
         data: {
           id: education_experience_id1,
           organization_name: "2",
@@ -52,7 +52,7 @@ RSpec.describe People::Projectors::EducationExperiences do
       build(
         :message,
         stream:,
-        schema: Events::EducationExperienceAdded::V2,
+        schema: People::Events::EducationExperienceAdded::V2,
         data: {
           id: education_experience_id2,
           organization_name: "3",
@@ -67,7 +67,7 @@ RSpec.describe People::Projectors::EducationExperiences do
       build(
         :message,
         stream:,
-        schema: Events::EducationExperienceDeleted::V2,
+        schema: People::Events::EducationExperienceDeleted::V2,
         data: {
           id: education_experience_id2
         }

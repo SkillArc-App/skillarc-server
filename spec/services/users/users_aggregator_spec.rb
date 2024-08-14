@@ -44,7 +44,7 @@ RSpec.describe Users::UsersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonAssociatedToUser::V1,
+          schema: People::Events::PersonAssociatedToUser::V1,
           stream_id: id,
           data: {
             user_id: user.id

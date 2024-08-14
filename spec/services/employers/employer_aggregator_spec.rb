@@ -112,7 +112,7 @@ RSpec.describe Employers::EmployerAggregator do
     let(:person_certified) do
       build(
         :message,
-        schema: Events::PersonCertified::V1,
+        schema: People::Events::PersonCertified::V1,
         data: {
           coach_first_name: nil,
           coach_last_name: nil,

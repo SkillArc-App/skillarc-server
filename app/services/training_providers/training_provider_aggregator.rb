@@ -7,7 +7,7 @@ module TrainingProviders
       TrainingProvider.delete_all
     end
 
-    on_message Events::PersonTrainingProviderAdded::V1 do |message|
+    on_message People::Events::PersonTrainingProviderAdded::V1 do |message|
       seeker_training_provider_created = SeekerTrainingProvider.find_or_initialize_by(id: message.data.id)
 
       seeker_training_provider_created.update!(

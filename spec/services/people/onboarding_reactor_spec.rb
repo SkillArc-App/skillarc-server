@@ -19,7 +19,7 @@ RSpec.describe People::OnboardingReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonAssociatedToUser::V1,
+          schema: People::Events::PersonAssociatedToUser::V1,
           stream_id: person_id,
           data: {
             user_id:
@@ -31,7 +31,7 @@ RSpec.describe People::OnboardingReactor do
         expect(message_service)
           .to receive(:create_once_for_trace!)
           .with(
-            schema: Commands::StartOnboarding::V2,
+            schema: People::Commands::StartOnboarding::V2,
             trace_id: message.trace_id,
             stream: message.stream,
             data: Core::Nothing
@@ -47,7 +47,7 @@ RSpec.describe People::OnboardingReactor do
       let(:message) do
         build(
           :message,
-          schema: Commands::StartOnboarding::V2,
+          schema: People::Commands::StartOnboarding::V2,
           stream_id: person_id,
           data: Core::Nothing
         )
@@ -57,7 +57,7 @@ RSpec.describe People::OnboardingReactor do
         expect(message_service)
           .to receive(:create_once_for_stream!)
           .with(
-            schema: Events::OnboardingStarted::V2,
+            schema: People::Events::OnboardingStarted::V2,
             trace_id: message.trace_id,
             stream: message.stream,
             data: Core::Nothing
@@ -73,7 +73,7 @@ RSpec.describe People::OnboardingReactor do
       let(:message) do
         build(
           :message,
-          schema: Commands::CompleteOnboarding::V2,
+          schema: People::Commands::CompleteOnboarding::V2,
           stream_id: person_id
         )
       end
@@ -82,7 +82,7 @@ RSpec.describe People::OnboardingReactor do
         expect(message_service)
           .to receive(:create_once_for_stream!)
           .with(
-            schema: Events::OnboardingCompleted::V3,
+            schema: People::Events::OnboardingCompleted::V3,
             trace_id: message.trace_id,
             stream: message.stream,
             data: Core::Nothing
@@ -98,7 +98,7 @@ RSpec.describe People::OnboardingReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::ReliabilityAdded::V2,
+          schema: People::Events::ReliabilityAdded::V2,
           data: {
             reliabilities: [Reliability::JOB]
           }
@@ -149,7 +149,7 @@ RSpec.describe People::OnboardingReactor do
           expect(message_service)
             .to receive(:create_once_for_stream!)
             .with(
-              schema: Commands::CompleteOnboarding::V2,
+              schema: People::Commands::CompleteOnboarding::V2,
               stream: message.stream,
               trace_id: message.trace_id,
               data: Core::Nothing

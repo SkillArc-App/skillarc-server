@@ -13,7 +13,7 @@ RSpec.describe Seekers::StoriesService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::StoryCreated::V2,
+        schema: People::Events::StoryCreated::V2,
         person_id: seeker.id,
         data: {
           id: kind_of(String),
@@ -35,7 +35,7 @@ RSpec.describe Seekers::StoriesService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::StoryUpdated::V2,
+        schema: People::Events::StoryUpdated::V2,
         person_id: seeker.id,
         data: {
           id: story.id,
@@ -55,7 +55,7 @@ RSpec.describe Seekers::StoriesService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::StoryDestroyed::V2,
+        schema: People::Events::StoryDestroyed::V2,
         person_id: seeker.id,
         data: {
           id: story.id

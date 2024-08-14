@@ -70,7 +70,7 @@ RSpec.describe "EducationExperiences", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::EducationExperienceAdded::V2,
+                schema: People::Events::EducationExperienceAdded::V2,
                 person_id: seeker.id,
                 trace_id: be_a(String),
                 data: {
@@ -165,7 +165,7 @@ RSpec.describe "EducationExperiences", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::EducationExperienceAdded::V2,
+                schema: People::Events::EducationExperienceAdded::V2,
                 person_id: seeker.id,
                 trace_id: be_a(String),
                 data: {
@@ -212,7 +212,7 @@ RSpec.describe "EducationExperiences", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::EducationExperienceDeleted::V2,
+                schema: People::Events::EducationExperienceDeleted::V2,
                 person_id: seeker.id,
                 trace_id: be_a(String),
                 data: {

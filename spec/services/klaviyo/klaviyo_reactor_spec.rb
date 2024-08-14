@@ -80,7 +80,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           build(
             :message,
             stream_id: person_id,
-            schema: Events::PersonAdded::V1,
+            schema: People::Events::PersonAdded::V1,
             data: {
               phone_number: "222-222-2222"
             }
@@ -116,7 +116,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           build(
             :message,
             stream_id: person_id,
-            schema: Events::BasicInfoAdded::V1,
+            schema: People::Events::BasicInfoAdded::V1,
             data: {
               phone_number: "222-222-2222"
             }
@@ -150,7 +150,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           build(
             :message,
             stream_id: person_id,
-            schema: Events::EducationExperienceAdded::V2
+            schema: People::Events::EducationExperienceAdded::V2
           )
         end
 
@@ -175,7 +175,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           build(
             :message,
             stream_id: person_id,
-            schema: Events::ExperienceAdded::V2
+            schema: People::Events::ExperienceAdded::V2
           )
         end
 
@@ -200,7 +200,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
           build(
             :message,
             stream_id: person_id,
-            schema: Events::OnboardingCompleted::V3
+            schema: People::Events::OnboardingCompleted::V3
           )
         end
 

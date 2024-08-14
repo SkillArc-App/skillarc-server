@@ -375,7 +375,7 @@ RSpec.describe MessageService do
         }
       )
     end
-    let(:schema) { Commands::AssignCoach::V2 }
+    let(:schema) { People::Commands::AssignCoach::V2 }
     let(:schema_string) { schema.to_s }
 
     let(:sync_subscriber) { DbStreamListener.build(consumer: MessageConsumer.new, listener_name: SecureRandom.uuid) }

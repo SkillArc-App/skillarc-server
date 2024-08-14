@@ -7,7 +7,7 @@ RSpec.describe ExecuteTasksJob do
   let(:message1) do
     build(
       :message,
-      schema: Commands::AssignCoach::V2,
+      schema: People::Commands::AssignCoach::V2,
       stream_id: SecureRandom.uuid,
       data: {
         coach_id: SecureRandom.uuid
@@ -17,7 +17,7 @@ RSpec.describe ExecuteTasksJob do
   let(:message2) do
     build(
       :message,
-      schema: Commands::AssignCoach::V2,
+      schema: People::Commands::AssignCoach::V2,
       stream_id: SecureRandom.uuid,
       data: {
         coach_id: SecureRandom.uuid

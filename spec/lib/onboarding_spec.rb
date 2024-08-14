@@ -31,7 +31,7 @@ RSpec.describe Onboarding do
           .with(
             person_id:,
             trace_id:,
-            schema: Events::ExperienceAdded::V2,
+            schema: People::Events::ExperienceAdded::V2,
             data: {
               id: be_present,
               organization_name: "Company",
@@ -68,7 +68,7 @@ RSpec.describe Onboarding do
           .with(
             person_id:,
             trace_id:,
-            schema: Events::EducationExperienceAdded::V2,
+            schema: People::Events::EducationExperienceAdded::V2,
             data: {
               id: be_present,
               activities: "Football",
@@ -101,7 +101,7 @@ RSpec.describe Onboarding do
           .with(
             person_id:,
             trace_id:,
-            schema: Events::PersonTrainingProviderAdded::V1,
+            schema: People::Events::PersonTrainingProviderAdded::V1,
             data: {
               id: be_present,
               status: "Enrolled",
@@ -129,7 +129,7 @@ RSpec.describe Onboarding do
           .with(
             person_id:,
             trace_id:,
-            schema: Events::ProfessionalInterestsAdded::V2,
+            schema: People::Events::ProfessionalInterestsAdded::V2,
             data: {
               interests: ["construction"]
             }
@@ -159,7 +159,7 @@ RSpec.describe Onboarding do
           .with(
             person_id:,
             trace_id:,
-            schema: Events::PersonalExperienceAdded::V2,
+            schema: People::Events::PersonalExperienceAdded::V2,
             data: {
               id: be_present,
               activity: "Activity",
@@ -193,7 +193,7 @@ RSpec.describe Onboarding do
             .with(
               person_id:,
               trace_id:,
-              schema: Events::ReliabilityAdded::V2,
+              schema: People::Events::ReliabilityAdded::V2,
               data: {
                 reliabilities: [Reliability::JOB, Reliability::EDUCATION, Reliability::TRAINING_PROGRAM]
               }
@@ -234,7 +234,7 @@ RSpec.describe Onboarding do
           .with(
             person_id:,
             trace_id:,
-            schema: Events::ReliabilityAdded::V2,
+            schema: People::Events::ReliabilityAdded::V2,
             data: {
               reliabilities: [Reliability::JOB, Reliability::EDUCATION, Reliability::TRAINING_PROGRAM]
             }

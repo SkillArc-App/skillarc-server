@@ -49,7 +49,7 @@ RSpec.describe Contact::CalDotCom::SchedulingReactor do
               .with(
                 trace_id:,
                 person_id: be_a(String),
-                schema: Commands::AddPerson::V2,
+                schema: People::Commands::AddPerson::V2,
                 data: {
                   user_id: nil,
                   date_of_birth: nil,

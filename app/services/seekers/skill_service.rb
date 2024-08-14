@@ -10,7 +10,7 @@ module Seekers
       master_skill = MasterSkill.find(master_skill_id)
 
       message_service.create!(
-        schema: Events::PersonSkillAdded::V1,
+        schema: People::Events::PersonSkillAdded::V1,
         person_id: seeker.id,
         data: {
           description:,
@@ -23,7 +23,7 @@ module Seekers
 
     def update(skill, description:)
       message_service.create!(
-        schema: Events::PersonSkillUpdated::V1,
+        schema: People::Events::PersonSkillUpdated::V1,
         person_id: seeker.id,
         data: {
           description:,
@@ -36,7 +36,7 @@ module Seekers
 
     def destroy(skill)
       message_service.create!(
-        schema: Events::PersonSkillRemoved::V1,
+        schema: People::Events::PersonSkillRemoved::V1,
         person_id: seeker.id,
         data: {
           description: skill.description,

@@ -14,7 +14,7 @@ RSpec.describe Applicants::OrchestrationReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonApplied::V1,
+          schema: People::Events::PersonApplied::V1,
           data: {
             application_id: SecureRandom.uuid,
             seeker_first_name: "Katina",

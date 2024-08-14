@@ -56,7 +56,7 @@ module Coaches
       )
     end
 
-    on_message Events::PersonAttributeAdded::V1, :sync do |message|
+    on_message People::Events::PersonAttributeAdded::V1, :sync do |message|
       person_context = PersonContext.find(message.stream.id)
       seeker_attribute = PersonAttribute.find_or_initialize_by(id: message.data.id)
 
@@ -68,7 +68,7 @@ module Coaches
       )
     end
 
-    on_message Events::PersonAttributeRemoved::V1, :sync do |message|
+    on_message People::Events::PersonAttributeRemoved::V1, :sync do |message|
       PersonAttribute.find(message.data.id).destroy!
     end
 
@@ -120,20 +120,20 @@ module Coaches
       )
     end
 
-    on_message Events::BarrierUpdated::V3, :sync do |message|
+    on_message People::Events::BarrierUpdated::V3, :sync do |message|
       person_context = PersonContext.find(message.stream.id)
 
       person_context.update!(barriers: message.data.barriers)
     end
 
-    on_message Events::CoachAssigned::V3, :sync do |message|
+    on_message People::Events::CoachAssigned::V3, :sync do |message|
       person_context = PersonContext.find(message.stream.id)
       coach = Coach.find(message.data.coach_id)
 
       person_context.update!(assigned_coach: coach.email)
     end
 
-    on_message Events::JobRecommended::V3, :sync do |message|
+    on_message People::Events::JobRecommended::V3, :sync do |message|
       person_context = PersonContext.find(message.stream.id)
       job = Coaches::Job.find_by!(job_id: message.data.job_id)
 
@@ -144,20 +144,20 @@ module Coaches
       )
     end
 
-    on_message Events::PersonCertified::V1, :sync do |message|
+    on_message People::Events::PersonCertified::V1, :sync do |message|
       person_context = PersonContext.find(message.stream.id)
       person_context.update!(certified_by: Coach.find(message.data.coach_id).email)
     end
 
-    on_message Events::NoteDeleted::V4, :sync do |message|
+    on_message People::Events::NoteDeleted::V4, :sync do |message|
       PersonNote.find(message.data.note_id).destroy
     end
 
-    on_message Events::NoteModified::V4, :sync do |message|
+    on_message People::Events::NoteModified::V4, :sync do |message|
       PersonNote.find(message.data.note_id).update!(note: message.data.note)
     end
 
-    on_message Events::NoteAdded::V4, :sync do |message|
+    on_message People::Events::NoteAdded::V4, :sync do |message|
       person_context = PersonContext.find(message.stream.id)
       person_context.update!(last_contacted_at: message.occurred_at)
 
@@ -170,7 +170,7 @@ module Coaches
       )
     end
 
-    on_message Events::BasicInfoAdded::V1 do |message|
+    on_message People::Events::BasicInfoAdded::V1 do |message|
       person_context = PersonContext.find(message.stream.id)
 
       person_context.update!(
@@ -181,7 +181,7 @@ module Coaches
       )
     end
 
-    on_message Events::PersonAdded::V1 do |message|
+    on_message People::Events::PersonAdded::V1 do |message|
       PersonContext.create!(
         id: message.stream_id,
         email: message.data.email,
@@ -194,7 +194,7 @@ module Coaches
       )
     end
 
-    on_message Events::PersonSourced::V1 do |message|
+    on_message People::Events::PersonSourced::V1 do |message|
       return if message.data.source_kind != People::SourceKind::COACH
 
       person_context = PersonContext.find(message.stream.id)
@@ -205,7 +205,7 @@ module Coaches
       )
     end
 
-    on_message Events::PersonAssociatedToUser::V1 do |message|
+    on_message People::Events::PersonAssociatedToUser::V1 do |message|
       person_context = PersonContext.find(message.stream.id)
 
       person_context.update!(

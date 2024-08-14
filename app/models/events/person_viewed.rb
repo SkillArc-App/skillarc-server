@@ -15,7 +15,7 @@ module Events
       data: Data::V1,
       metadata: Core::Nothing,
       stream: Streams::User,
-      message_type: MessageTypes::Person::PERSON_VIEWED,
+      message_type: MessageTypes::User::PERSON_VIEWED,
       version: 1
     )
   end

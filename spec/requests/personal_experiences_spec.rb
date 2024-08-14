@@ -65,7 +65,7 @@ RSpec.describe "PersonalExperiences", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::PersonalExperienceAdded::V2,
+                schema: People::Events::PersonalExperienceAdded::V2,
                 person_id: seeker.id,
                 trace_id: be_a(String),
                 data: {
@@ -153,7 +153,7 @@ RSpec.describe "PersonalExperiences", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::PersonalExperienceAdded::V2,
+                schema: People::Events::PersonalExperienceAdded::V2,
                 person_id: seeker.id,
                 trace_id: be_a(String),
                 data: {
@@ -199,7 +199,7 @@ RSpec.describe "PersonalExperiences", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::PersonalExperienceRemoved::V2,
+                schema: People::Events::PersonalExperienceRemoved::V2,
                 person_id: seeker.id,
                 trace_id: be_a(String),
                 data: {

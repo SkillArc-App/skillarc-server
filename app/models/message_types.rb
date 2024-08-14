@@ -20,47 +20,6 @@ module MessageTypes
     COMMANDS = [].freeze
   end
 
-  module Person
-    EVENTS = [
-      BASIC_INFO_ADDED = 'basic_info_added',
-      DATE_OF_BIRTH_ADDED = 'date_of_birth_added',
-      EDUCATION_EXPERIENCE_ADDED = 'education_experience_added',
-      EDUCATION_EXPERIENCE_DELETED = 'education_experience_deleted',
-      ELEVATOR_PITCH_CREATED = 'elevator_pitch_created',
-      EXPERIENCE_ADDED = 'experience_added',
-      EXPERIENCE_REMOVED = 'experience_removed',
-      ONBOARDING_COMPLETED = 'onboarding_completed',
-      ONBOARDING_STARTED = 'onboarding_started',
-      PERSON_ABOUT_ADDED = 'person_about_added',
-      PERSON_ADDED = 'person_added',
-      PERSON_ALREADY_ASSOCIATED_TO_USER = 'person_already_associated_to_user',
-      PERSON_APPLIED = 'person_applied',
-      PERSON_ASSOCIATED_TO_USER = 'person_associated_to_user',
-      PERSON_ATTRIBUTE_ADDED = 'person_attribute_added',
-      PERSON_ATTRIBUTE_REMOVED = 'person_attribute_removed',
-      PERSON_CERTIFIED = 'person_certified',
-      PERSON_SOURCED = 'person_sourced',
-      PERSON_SKILL_ADDED = 'person_skill_added',
-      PERSON_SKILL_REMOVED = 'person_skill_removed',
-      PERSON_SKILL_UPDATED = 'person_skill_updated',
-      PERSON_VIEWED = 'person_viewed',
-      PERSONAL_EXPERIENCE_ADDED = 'personal_experience_added',
-      PERSONAL_EXPERIENCE_REMOVED = 'personal_experience_removed',
-      PROFESSIONAL_INTERESTS = "professional_interests",
-      RELIABILITY_ADDED = 'relability_added',
-      STORY_CREATED = 'story_created',
-      STORY_DESTROYED = 'story_destroyed',
-      STORY_UPDATED = 'story_updated',
-      ZIP_ADDED = 'zip_added'
-    ].freeze
-
-    COMMANDS = [
-      ADD_PERSON = 'add_person',
-      COMPLETE_ONBOARDING = 'complete_onboarding',
-      START_ONBOARDING = "start_onboarding"
-    ].freeze
-  end
-
   module PersonSearch
     EVENTS = [
       PERSON_SEARCH_EXECUTED = 'person_search_executed'
@@ -86,27 +45,18 @@ module MessageTypes
   module Coaches
     EVENTS = [
       BARRIER_ADDED = 'barrier_added',
-      BARRIERS_UPDATED = 'barriers_updated',
       COACH_ADDED = 'coach_added',
-      COACH_ASSIGNED = 'coach_assigned',
       COACH_ASSIGNMENT_WEIGHT_ADDED = 'coach_assignment_weight_added',
       COACH_REMINDER_COMPLETED = 'coach_reminder_completed',
       COACH_REMINDER_SCHEDULED = 'coach_reminder_scheduled',
-      JOB_RECOMMENDED = 'job_recommended',
       LEAD_ADDED = 'lead_added',
-      NOTE_ADDED = 'note_added',
-      NOTE_DELETED = 'note_deleted',
-      NOTE_MODIFIED = 'note_modified',
       PERSON_VIEWED_IN_COACHING = 'person_viewed_in_coaching',
       SEEKER_CERTIFIED = 'seeker_certified',
-      SKILL_LEVEL_UPDATED = 'skill_level_updated'
     ].freeze
 
     COMMANDS = [
-      ADD_NOTE = "add_note",
       ADD_LEAD = "add_lead",
       ADD_COACH_SEEKER_REMINDER = "add_coach_seeker_reminder",
-      ASSIGN_COACH = "assign_coach"
     ].freeze
   end
 
@@ -218,7 +168,6 @@ module MessageTypes
 
   module Contact
     EVENTS = [
-      CONTACT_PREFERENCE_SET = "contact_preference_set",
       MESSAGE_SENT = "message_sent",
       MESSAGE_ENQUEUED = "message_enqueued",
       SMS_MESSAGE_SENT = 'sms_sent',
@@ -227,7 +176,6 @@ module MessageTypes
       EMAIL_MESSAGE_SENT = "email_message_sent",
       SMTP_SENT = 'smtp_sent',
       CAL_WEBHOOK_RECEIVED = 'cal_webhook_received',
-      SLACK_ID_ADDED = "slack_id_added"
     ].freeze
 
     COMMANDS = [
@@ -256,6 +204,7 @@ module MessageTypes
 
   module User
     EVENTS = [
+      PERSON_VIEWED = 'person_viewed',
       JOB_SAVED = 'job_saved',
       JOB_SEARCH = 'job_search',
       JOB_UNSAVED = 'job_unsaved',
@@ -275,7 +224,6 @@ module MessageTypes
 
   module TrainingProviders
     EVENTS = [
-      PERSON_TRAINING_PROVIDER_ADDED = 'person_training_provider_added',
       REFERENCE_CREATED = 'reference_created',
       REFERENCE_UPDATED = 'reference_updated',
       SEEKER_TRAINING_PROVIDER_CREATED = 'seeker_training_provider_created',
@@ -315,7 +263,6 @@ module MessageTypes
     *Qualifications::EVENTS,
     *Tags::EVENTS,
     *User::EVENTS,
-    *Person::EVENTS,
     *PersonSearch::EVENTS,
     *Email::EVENTS,
     *Phone::EVENTS,
@@ -324,6 +271,7 @@ module MessageTypes
     *Chats::EVENTS,
     *Jobs::EVENTS,
     *Invite::EVENTS,
+    *People::MessageTypes::EVENTS,
     *Interests::MessageTypes::EVENTS,
     *Attributes::MessageTypes::EVENTS,
     *JobOrders::MessageTypes::EVENTS,
@@ -343,7 +291,6 @@ module MessageTypes
     *Qualifications::COMMANDS,
     *Applications::COMMANDS,
     *Tags::COMMANDS,
-    *Person::COMMANDS,
     *Email::COMMANDS,
     *Jobs::COMMANDS,
     *Employers::COMMANDS,
@@ -354,6 +301,7 @@ module MessageTypes
     *Coaches::COMMANDS,
     *Seekers::COMMANDS,
     *Invite::COMMANDS,
+    *People::MessageTypes::COMMANDS,
     *Attributes::MessageTypes::COMMANDS,
     *Interests::MessageTypes::COMMANDS,
     *JobOrders::MessageTypes::COMMANDS,

@@ -105,7 +105,7 @@ RSpec.describe "Jobs", type: :request do
             create(:job_search__job, job_id: id)
             create(:employers_job, job_id: id)
 
-            expect(Seekers::ApplicationService)
+            expect(People::ApplicationService)
               .to receive(:apply)
               .with(seeker:, job:, message_service: be_a(MessageService))
               .and_call_original

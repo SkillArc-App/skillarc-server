@@ -115,7 +115,7 @@ class TestController < ApplicationController
   def create_seeker_lead
     with_message_service do
       message = message_service.create!(
-        schema: Events::PersonAdded::V1,
+        schema: People::Events::PersonAdded::V1,
         person_id: SecureRandom.uuid,
         data: {
           first_name: Faker::Name.first_name,

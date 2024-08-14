@@ -14,7 +14,7 @@ RSpec.describe People::PersonAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonAdded::V1,
+          schema: People::Events::PersonAdded::V1,
           stream_id: SecureRandom.uuid,
           data: {
             first_name: "John",
@@ -45,7 +45,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::PersonAssociatedToUser::V1,
+            schema: People::Events::PersonAssociatedToUser::V1,
             stream_id: seeker.id,
             data: {
               user_id: user.id
@@ -65,7 +65,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::BasicInfoAdded::V1,
+            schema: People::Events::BasicInfoAdded::V1,
             stream_id: seeker.id,
             data: {
               first_name: "John",
@@ -91,7 +91,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::ZipAdded::V2,
+            schema: People::Events::ZipAdded::V2,
             stream_id: seeker.id,
             data: {
               zip_code: "43202"
@@ -111,7 +111,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::PersonAboutAdded::V1,
+            schema: People::Events::PersonAboutAdded::V1,
             stream_id: seeker.id,
             data: {
               about: "I'm pretty cool"
@@ -131,7 +131,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::ExperienceAdded::V2,
+            schema: People::Events::ExperienceAdded::V2,
             stream_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
@@ -184,7 +184,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::ExperienceRemoved::V2,
+            schema: People::Events::ExperienceRemoved::V2,
             stream_id: seeker.id,
             data: {
               id:
@@ -203,7 +203,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::StoryCreated::V2,
+            schema: People::Events::StoryCreated::V2,
             stream_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
@@ -228,7 +228,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::StoryUpdated::V2,
+            schema: People::Events::StoryUpdated::V2,
             stream_id: seeker.id,
             data: {
               id: story.id,
@@ -312,7 +312,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::StoryDestroyed::V2,
+            schema: People::Events::StoryDestroyed::V2,
             stream_id: seeker.id,
             data: {
               id: story.id
@@ -331,7 +331,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::EducationExperienceAdded::V2,
+            schema: People::Events::EducationExperienceAdded::V2,
             stream_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
@@ -381,7 +381,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::EducationExperienceDeleted::V2,
+            schema: People::Events::EducationExperienceDeleted::V2,
             stream_id: seeker.id,
             data: {
               id:
@@ -400,7 +400,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::PersonalExperienceAdded::V2,
+            schema: People::Events::PersonalExperienceAdded::V2,
             stream_id: seeker.id,
             data: {
               id: SecureRandom.uuid,
@@ -447,7 +447,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::PersonalExperienceRemoved::V2,
+            schema: People::Events::PersonalExperienceRemoved::V2,
             stream_id: seeker.id,
             data: {
               id:
@@ -466,7 +466,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::OnboardingStarted::V2,
+            schema: People::Events::OnboardingStarted::V2,
             stream_id: seeker.id,
             data: Core::Nothing
           )
@@ -485,7 +485,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::ElevatorPitchCreated::V2,
+            schema: People::Events::ElevatorPitchCreated::V2,
             stream_id: seeker.id,
             data: {
               job_id: applicant.job_id,
@@ -508,7 +508,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::OnboardingCompleted::V3,
+            schema: People::Events::OnboardingCompleted::V3,
             stream_id: seeker.id,
             data: Core::Nothing
           )
@@ -538,7 +538,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::PersonSkillAdded::V1,
+            schema: People::Events::PersonSkillAdded::V1,
             stream_id: seeker.id,
             data: {
               skill_id: master_skill.id,
@@ -565,7 +565,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::PersonSkillUpdated::V1,
+            schema: People::Events::PersonSkillUpdated::V1,
             stream_id: seeker.id,
             data: {
               skill_id: master_skill.id,
@@ -591,7 +591,7 @@ RSpec.describe People::PersonAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::PersonSkillRemoved::V1,
+            schema: People::Events::PersonSkillRemoved::V1,
             stream_id: seeker.id,
             data: {
               skill_id: master_skill.id,

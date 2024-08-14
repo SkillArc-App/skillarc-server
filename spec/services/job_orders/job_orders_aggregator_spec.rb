@@ -126,7 +126,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonAdded::V1,
+          schema: People::Events::PersonAdded::V1,
           data: {
             first_name: "King",
             last_name: "David",
@@ -153,7 +153,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::BasicInfoAdded::V1,
+          schema: People::Events::BasicInfoAdded::V1,
           stream_id: person.id,
           data: {
             first_name: "Chris",

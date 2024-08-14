@@ -21,7 +21,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::PersonAttributeAdded::V1,
+        schema: People::Events::PersonAttributeAdded::V1,
         person_id:,
         trace_id:,
         data: {
@@ -43,7 +43,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::PersonAttributeRemoved::V1,
+        schema: People::Events::PersonAttributeRemoved::V1,
         person_id:,
         trace_id:,
         data: {
@@ -62,7 +62,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::NoteAdded::V4,
+        schema: People::Events::NoteAdded::V4,
         person_id:,
         trace_id:,
         data: {
@@ -83,7 +83,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::NoteDeleted::V4,
+        schema: People::Events::NoteDeleted::V4,
         person_id:,
         trace_id:,
         data: {
@@ -103,7 +103,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::NoteModified::V4,
+        schema: People::Events::NoteModified::V4,
         person_id:,
         trace_id:,
         data: {
@@ -256,7 +256,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::JobRecommended::V3,
+        schema: People::Events::JobRecommended::V3,
         person_id:,
         trace_id:,
         data: {
@@ -277,7 +277,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::PersonCertified::V1,
+        schema: People::Events::PersonCertified::V1,
         person_id:,
         trace_id:,
         data: {
@@ -299,7 +299,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::BarrierUpdated::V3,
+        schema: People::Events::BarrierUpdated::V3,
         person_id:,
         trace_id:,
         data: {
@@ -318,7 +318,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::CoachAssigned::V3,
+        schema: People::Events::CoachAssigned::V3,
         person_id:,
         trace_id:,
         data: {
@@ -335,7 +335,7 @@ RSpec.describe Coaches::CoachesEventEmitter do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::SkillLevelUpdated::V3,
+        schema: People::Events::SkillLevelUpdated::V3,
         person_id:,
         trace_id:,
         data: {

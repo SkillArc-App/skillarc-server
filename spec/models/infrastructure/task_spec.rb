@@ -14,7 +14,7 @@ RSpec.describe Infrastructure::Task do
   let(:command) do
     build(
       :message,
-      schema: Commands::AssignCoach::V2,
+      schema: People::Commands::AssignCoach::V2,
       stream_id: SecureRandom.uuid,
       data: {
         coach_id: SecureRandom.uuid

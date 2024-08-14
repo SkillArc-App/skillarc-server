@@ -4,16 +4,16 @@ module Coaches
       true
     end
 
-    on_message Commands::AssignCoach::V2 do |message|
+    on_message People::Commands::AssignCoach::V2 do |message|
       return unless Projectors::Streams::HasOccurred.project(
-        schema: Events::PersonAdded::V1,
+        schema: People::Events::PersonAdded::V1,
         stream: message.stream
       )
 
       return if Events::CoachAdded::V1.all_messages.none? { |m| m.data.coach_id == message.data.coach_id }
 
       message_service.create_once_for_trace!(
-        schema: Events::CoachAssigned::V3,
+        schema: People::Events::CoachAssigned::V3,
         stream: message.stream,
         data: {
           coach_id: message.data.coach_id
@@ -21,7 +21,7 @@ module Coaches
       )
     end
 
-    on_message Events::PersonAdded::V1 do |message|
+    on_message People::Events::PersonAdded::V1 do |message|
       coach_id = CoachAssignmentService.round_robin_assignment
 
       return if coach_id.nil?
@@ -29,20 +29,20 @@ module Coaches
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
         stream: message.stream,
-        schema: Commands::AssignCoach::V2,
+        schema: People::Commands::AssignCoach::V2,
         data: {
           coach_id:
         }
       )
     end
 
-    on_message Events::PersonSourced::V1 do |message|
+    on_message People::Events::PersonSourced::V1 do |message|
       return if message.data.source_kind != People::SourceKind::COACH
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
         stream: message.stream,
-        schema: Commands::AssignCoach::V2,
+        schema: People::Commands::AssignCoach::V2,
         data: {
           coach_id: message.data.source_identifier
         }
@@ -68,7 +68,7 @@ module Coaches
       )
     end
 
-    on_message Events::JobRecommended::V3 do |message|
+    on_message People::Events::JobRecommended::V3 do |message|
       job_id = message.data.job_id
 
       message_service.create_once_for_trace!(

@@ -4,14 +4,14 @@ RSpec.describe People::Projectors::OnboardingStatus do
   describe ".project" do
     subject { described_class.new.project(messages) }
 
-    let(:stream) { Streams::Person.new(person_id:) }
+    let(:stream) { People::Streams::Person.new(person_id:) }
     let(:person_id) { SecureRandom.uuid }
 
     let(:onboarding_complete) do
       build(
         :message,
         stream:,
-        schema: Events::OnboardingCompleted::V3,
+        schema: People::Events::OnboardingCompleted::V3,
         data: Core::Nothing
       )
     end
@@ -19,7 +19,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
       build(
         :message,
         stream:,
-        schema: Events::OnboardingStarted::V2,
+        schema: People::Events::OnboardingStarted::V2,
         data: Core::Nothing
       )
     end
@@ -27,7 +27,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
       build(
         :message,
         stream:,
-        schema: Events::ReliabilityAdded::V2,
+        schema: People::Events::ReliabilityAdded::V2,
         data: {
           reliabilities:
         }
@@ -37,7 +37,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
       build(
         :message,
         stream:,
-        schema: Events::EducationExperienceAdded::V2,
+        schema: People::Events::EducationExperienceAdded::V2,
         data: {
           id: SecureRandom.uuid
         }
@@ -47,7 +47,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
       build(
         :message,
         stream:,
-        schema: Events::ExperienceAdded::V2,
+        schema: People::Events::ExperienceAdded::V2,
         data: {
           id: SecureRandom.uuid
         }
@@ -57,7 +57,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
       build(
         :message,
         stream:,
-        schema: Events::PersonTrainingProviderAdded::V1,
+        schema: People::Events::PersonTrainingProviderAdded::V1,
         data: {
           id: SecureRandom.uuid,
           status: "cool beans",
@@ -70,7 +70,7 @@ RSpec.describe People::Projectors::OnboardingStatus do
       build(
         :message,
         stream:,
-        schema: Events::ProfessionalInterestsAdded::V2,
+        schema: People::Events::ProfessionalInterestsAdded::V2,
         data: {
           interests: []
         }

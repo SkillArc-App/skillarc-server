@@ -10,7 +10,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonAssociatedToUser::V1,
+          schema: People::Events::PersonAssociatedToUser::V1,
           stream_id: person_id,
           data: {
             user_id:
@@ -65,7 +65,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
         build(
           :message,
           stream_id: person_id,
-          schema: Events::PersonAdded::V1,
+          schema: People::Events::PersonAdded::V1,
           data: {
             first_name: "John",
             last_name: "Chabot",
@@ -109,7 +109,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
           build(
             :message,
             stream_id: person_id,
-            schema: Events::BasicInfoAdded::V1,
+            schema: People::Events::BasicInfoAdded::V1,
             data: {
               first_name: "John",
               last_name: "Chabot",
@@ -136,7 +136,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
           build(
             :message,
             stream_id: person_id,
-            schema: Events::OnboardingCompleted::V3,
+            schema: People::Events::OnboardingCompleted::V3,
             data: Core::Nothing
           )
         end
@@ -842,7 +842,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::NoteAdded::V4,
+          schema: People::Events::NoteAdded::V4,
           stream_id: dim_person_target.person_id,
           data: {
             originator: email,
@@ -874,7 +874,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::NoteModified::V4,
+          schema: People::Events::NoteModified::V4,
           stream_id: person_id,
           data: {
             originator: email,
@@ -906,7 +906,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::NoteDeleted::V4,
+          schema: People::Events::NoteDeleted::V4,
           stream_id: person_id,
           data: {
             originator: email,
@@ -937,7 +937,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobRecommended::V3,
+          schema: People::Events::JobRecommended::V3,
           stream_id: person_id,
           data: {
             job_id: SecureRandom.uuid,
@@ -968,7 +968,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonCertified::V1,
+          schema: People::Events::PersonCertified::V1,
           stream_id: person_id,
           data: {
             coach_email: Faker::Internet.email,

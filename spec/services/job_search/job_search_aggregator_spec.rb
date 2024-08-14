@@ -341,7 +341,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           build(
             :message,
             stream_id: seeker_id,
-            schema: Events::ElevatorPitchCreated::V2,
+            schema: People::Events::ElevatorPitchCreated::V2,
             data: {
               job_id:,
               pitch: "I'm going to be the very best"

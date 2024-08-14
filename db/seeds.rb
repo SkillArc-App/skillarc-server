@@ -429,7 +429,7 @@ Builders::UserBuilder.new(message_service).build(
 )
 
 message_service.create!(
-  schema: Events::PersonTrainingProviderAdded::V1,
+  schema: People::Events::PersonTrainingProviderAdded::V1,
   person_id: trained_seeker_with_reference.id,
   data: {
     id: SecureRandom.uuid,
@@ -440,7 +440,7 @@ message_service.create!(
 )
 
 message_service.create!(
-  schema: Events::PersonTrainingProviderAdded::V1,
+  schema: People::Events::PersonTrainingProviderAdded::V1,
   person_id: trained_seeker.id,
   data: {
     id: SecureRandom.uuid,
@@ -451,7 +451,7 @@ message_service.create!(
 )
 
 message_service.create!(
-  schema: Events::PersonTrainingProviderAdded::V1,
+  schema: People::Events::PersonTrainingProviderAdded::V1,
   person_id: trained_seeker.id,
   data: {
     id: SecureRandom.uuid,
@@ -462,7 +462,7 @@ message_service.create!(
 )
 
 message_service.create!(
-  schema: Events::PersonTrainingProviderAdded::V1,
+  schema: People::Events::PersonTrainingProviderAdded::V1,
   person_id: trained_seeker_with_reference.id,
   data: {
     id: SecureRandom.uuid,

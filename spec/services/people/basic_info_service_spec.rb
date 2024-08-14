@@ -14,12 +14,12 @@ RSpec.describe People::BasicInfoService do
     let(:phone_number) { "1234567890" }
     let(:email) { "A@B.C" }
     let(:zip_code) { "12345" }
-    let(:stream) { Streams::Person.new(person_id: seeker.id) }
+    let(:stream) { People::Streams::Person.new(person_id: seeker.id) }
 
     it "publishes a basic info added event" do
       allow(message_service).to receive(:create!)
       expect(message_service).to receive(:create!).with(
-        schema: Events::BasicInfoAdded::V1,
+        schema: People::Events::BasicInfoAdded::V1,
         stream:,
         data: {
           first_name:,
@@ -30,7 +30,7 @@ RSpec.describe People::BasicInfoService do
       ).and_call_original
 
       expect(message_service).to receive(:create!).with(
-        schema: Events::ZipAdded::V2,
+        schema: People::Events::ZipAdded::V2,
         stream:,
         data: {
           zip_code:
@@ -38,7 +38,7 @@ RSpec.describe People::BasicInfoService do
       ).and_call_original
 
       expect(message_service).to receive(:create!).with(
-        schema: Events::PersonAboutAdded::V1,
+        schema: People::Events::PersonAboutAdded::V1,
         stream:,
         data: {
           about:

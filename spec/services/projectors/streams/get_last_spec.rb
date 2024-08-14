@@ -24,7 +24,7 @@ RSpec.describe Projectors::Streams::GetLast do
       let(:message2) do
         build(
           :message,
-          schema: Events::ZipAdded::V2,
+          schema: People::Events::ZipAdded::V2,
           stream_id: task_id,
           data: {
             zip_code: "43202"

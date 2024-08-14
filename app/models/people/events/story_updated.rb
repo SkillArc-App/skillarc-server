@@ -32,4 +32,3 @@ module People
     end
   end
 end
-

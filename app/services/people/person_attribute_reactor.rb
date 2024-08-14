@@ -51,7 +51,7 @@ module People
         data: {
           id: SecureRandom.uuid,
           attribute_id: Attributes::INDUSTRIES_STREAM.attribute_id,
-          attribute_name: Attributes::INDUSTRIES_NAME,
+          attribute_name: Industries::INDUSTRIES_NAME,
           attribute_values: message.data.interests
         }
       )

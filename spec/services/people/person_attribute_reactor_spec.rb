@@ -165,7 +165,7 @@ RSpec.describe People::PersonAttributeReactor do
             data: {
               id: be_a(String),
               attribute_id: Attributes::INDUSTRIES_STREAM.attribute_id,
-              attribute_name: Attributes::INDUSTRIES_NAME,
+              attribute_name: Industries::INDUSTRIES_NAME,
               attribute_values: message.data.interests
             }
           )

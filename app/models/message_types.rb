@@ -51,12 +51,12 @@ module MessageTypes
       COACH_REMINDER_SCHEDULED = 'coach_reminder_scheduled',
       LEAD_ADDED = 'lead_added',
       PERSON_VIEWED_IN_COACHING = 'person_viewed_in_coaching',
-      SEEKER_CERTIFIED = 'seeker_certified',
+      SEEKER_CERTIFIED = 'seeker_certified'
     ].freeze
 
     COMMANDS = [
       ADD_LEAD = "add_lead",
-      ADD_COACH_SEEKER_REMINDER = "add_coach_seeker_reminder",
+      ADD_COACH_SEEKER_REMINDER = "add_coach_seeker_reminder"
     ].freeze
   end
 
@@ -175,7 +175,7 @@ module MessageTypes
       SLACK_MESSAGE_SENT = "slack_message_sent",
       EMAIL_MESSAGE_SENT = "email_message_sent",
       SMTP_SENT = 'smtp_sent',
-      CAL_WEBHOOK_RECEIVED = 'cal_webhook_received',
+      CAL_WEBHOOK_RECEIVED = 'cal_webhook_received'
     ].freeze
 
     COMMANDS = [

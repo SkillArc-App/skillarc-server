@@ -1,5 +1,5 @@
 module SubscriberInitializer
-  def self.run
+  def self.run # rubocop:disable Metrics/AbcSize
     ASYNC_SUBSCRIBERS.reset
     SYNC_SUBSCRIBERS.reset
 

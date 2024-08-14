@@ -185,6 +185,9 @@ RSpec.describe PeopleSearch::PeopleAggregator do
         person.reload
         expect(person.person_attributes.length).to eq(1)
         expect(person.person_attributes[0].value).to eq("dog")
+
+        attribute = PeopleSearch::Attribute.find_by(value: "dog")
+        expect(attribute.attribute_id).to eq(attribute_id)
       end
     end
 

@@ -56,5 +56,24 @@ module People
         }
       )
     end
+
+    on_message Events::PersonTrainingProviderAdded::V1 do |message|
+      training_provider_name = ::Projectors::Streams::GetFirst.project(
+        schema: ::Events::TrainingProviderCreated::V1,
+        stream: ::Streams::TrainingProvider.new(training_provider_id: message.data.training_provider_id)
+      ).data.name
+
+      message_service.create_once_for_trace!(
+        schema: Commands::AddPersonAttribute::V1,
+        trace_id: message.trace_id,
+        stream: message.stream,
+        data: {
+          id: SecureRandom.uuid,
+          attribute_id: Attributes::TRAINING_PROVIDER_STREAM.attribute_id,
+          attribute_name: TrainingProviders::TRAINING_PROVIDER_ATTRIBUTE_NAME,
+          attribute_values: [training_provider_name]
+        }
+      )
+    end
   end
 end

@@ -5,14 +5,25 @@ module Attributes
     end
 
     on_message Events::Created::V3, :sync do |message|
-      Attribute.create!(
-        id: message.stream.attribute_id,
-        name: message.data.name,
-        description: message.data.description,
-        machine_derived: message.data.machine_derived,
-        set: message.data.set,
-        default: message.data.default
-      )
+      # Temp hack around how we are batch inserting events
+      if Attribute.find_by(id: message.stream.attribute_id)
+        attribute = Attribute.find(message.stream.attribute_id)
+        attribute.update!(
+          name: message.data.name,
+          description: message.data.description,
+          set: message.data.set,
+          default: message.data.default
+        )
+      else
+        Attribute.create!(
+          id: message.stream.attribute_id,
+          name: message.data.name,
+          description: message.data.description,
+          machine_derived: message.data.machine_derived,
+          set: message.data.set,
+          default: message.data.default
+        )
+      end
     end
 
     on_message Events::Updated::V2, :sync do |message|

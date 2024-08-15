@@ -1,6 +1,7 @@
 module Analytics
   class AnalyticsAggregator < MessageConsumer
     def reset_for_replay
+      FactJobOrderStatus.delete_all
       FactCandidate.delete_all
       FactApplication.delete_all
       FactJobVisibility.delete_all

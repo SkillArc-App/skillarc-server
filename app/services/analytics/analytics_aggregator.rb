@@ -6,11 +6,24 @@ module Analytics
       FactJobVisibility.delete_all
       FactPersonViewed.delete_all
       FactCoachAction.delete_all
+      DimDate.delete_all
       DimPerson.delete_all
       DimJobOrder.delete_all
       DimJob.delete_all
       DimUser.delete_all
       DimEmployer.delete_all
+    end
+
+    on_message Events::DayElapsed::V2 do |message|
+      date = message.data.date
+
+      DimDate.create!(
+        date:,
+        datetime: date.to_datetime,
+        day: date.day,
+        month: date.month,
+        day_of_week: message.data.day_of_week
+      )
     end
 
     on_message People::Events::PersonAssociatedToUser::V1 do |message|

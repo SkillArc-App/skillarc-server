@@ -6,6 +6,33 @@ RSpec.describe Analytics::AnalyticsAggregator do
   describe "#handle_message" do
     subject { described_class.new.handle_message(message) }
 
+    context "when the message is day elapsed" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::DayElapsed::V2,
+          stream_id: date.to_s,
+          data: {
+            date:,
+            day_of_week:
+          }
+        )
+      end
+      let(:date) { Date.new(2023, 6, 23) }
+      let(:day_of_week) { Events::DayElapsed::Data::DaysOfWeek::MONDAY }
+
+      it "creates a dim date" do
+        expect { subject }.to change(Analytics::DimDate, :count).from(0).to(1)
+
+        dim_date = Analytics::DimDate.first
+        expect(dim_date.date).to eq(date)
+        expect(dim_date.day_of_week).to eq(day_of_week)
+        expect(dim_date.datetime).to eq(date.to_datetime)
+        expect(dim_date.day).to eq(23)
+        expect(dim_date.month).to eq(6)
+      end
+    end
+
     context "when the message is person_associated_to_user" do
       let(:message) do
         build(

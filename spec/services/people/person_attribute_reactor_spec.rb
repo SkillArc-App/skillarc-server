@@ -175,5 +175,51 @@ RSpec.describe People::PersonAttributeReactor do
         subject
       end
     end
+
+    context "when the message is person training provider added" do
+      let(:message) do
+        build(
+          :message,
+          schema: People::Events::PersonTrainingProviderAdded::V1,
+          stream:,
+          data: {
+            training_provider_id:
+          }
+        )
+      end
+      let(:training_provider_id) { SecureRandom.uuid }
+      let(:messages) do
+        [
+          build(
+            :message,
+            schema: Events::TrainingProviderCreated::V1,
+            stream_id: training_provider_id,
+            data: {
+              name: "A name"
+            }
+          )
+        ]
+      end
+
+      it "fires off a add person attribute command" do
+        expect(message_service)
+          .to receive(:create_once_for_trace!)
+          .with(
+            schema: People::Commands::AddPersonAttribute::V1,
+            trace_id: message.trace_id,
+            stream: message.stream,
+            data: {
+              id: be_a(String),
+              attribute_id: Attributes::TRAINING_PROVIDER_STREAM.attribute_id,
+              attribute_name: TrainingProviders::TRAINING_PROVIDER_ATTRIBUTE_NAME,
+              attribute_values: ["A name"]
+            }
+          )
+          .twice
+          .and_call_original
+
+        subject
+      end
+    end
   end
 end

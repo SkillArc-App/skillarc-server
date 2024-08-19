@@ -2,9 +2,12 @@ class UserFinder
   include MessageEmitter
 
   def find_or_create(sub:, token:, auth_client:)
-    u = User.find_by(sub:)
+    user = User.find_by(sub:)
 
-    return u if u
+    if user.present?
+      Sentry.set_user(email: user.email, id: user.id, person_id: user.person_id)
+      return user
+    end
 
     info = auth_client.get_user_info(token)
 
@@ -31,6 +34,7 @@ class UserFinder
         )
       end
 
+      Sentry.set_user(email: new_user.email, id: new_user.id)
       new_user
     rescue ActiveRecord::RecordNotUnique
       # We had a race condition and a user was created

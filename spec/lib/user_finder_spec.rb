@@ -19,6 +19,14 @@ RSpec.describe UserFinder do
       let!(:user) { create(:user, sub:) }
 
       it "returns the existing user" do
+        expect(Sentry)
+          .to receive(:set_user)
+          .with(
+            email: user.email,
+            id: user.id
+          )
+          .and_call_original
+
         expect(subject).to eq(user)
       end
     end
@@ -40,6 +48,14 @@ RSpec.describe UserFinder do
       let(:image) { 'an image' }
 
       it "creates a user record and enqueues a create event job" do
+        expect(Sentry)
+          .to receive(:set_user)
+          .with(
+            email:,
+            id: be_a(String)
+          )
+          .and_call_original
+
         expect(subject).to be_a(User)
         expect(subject.email).to eq(email)
         expect(subject.email_verified).to eq(email_verified)

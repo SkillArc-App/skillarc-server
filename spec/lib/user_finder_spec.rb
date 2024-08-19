@@ -16,14 +16,15 @@ RSpec.describe UserFinder do
     let(:sub) { "sup" }
 
     context "when a user already exists for a provided sub" do
-      let!(:user) { create(:user, sub:) }
+      let!(:user) { create(:user, sub:, person_id: SecureRandom.uuid) }
 
       it "returns the existing user" do
         expect(Sentry)
           .to receive(:set_user)
           .with(
             email: user.email,
-            id: user.id
+            id: user.id,
+            person_id: user.person_id
           )
           .and_call_original
 

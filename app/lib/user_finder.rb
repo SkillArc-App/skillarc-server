@@ -5,7 +5,7 @@ class UserFinder
     user = User.find_by(sub:)
 
     if user.present?
-      Sentry.set_user(email: user.email, id: user.id)
+      Sentry.set_user(email: user.email, id: user.id, person_id: user.person_id)
       return user
     end
 

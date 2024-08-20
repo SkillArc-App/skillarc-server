@@ -610,8 +610,6 @@ message_service.create!(
   }
 )
 
-message_service.flush
-
 message_service.create!(
   job_id: mechanic_job.id,
   schema: Events::JobTagCreated::V1,

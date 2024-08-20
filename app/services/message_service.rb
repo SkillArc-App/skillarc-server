@@ -12,10 +12,7 @@ class MessageService
     stream = get_stream(stream:, schema:, **)
     message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, stream:, **)
 
-    projection = Projectors::Trace::HasOccurred.project(trace_id:, schema:)
-    raise MessageService::NotBooleanProjection unless [true, false].include?(projection)
-
-    save!(message) unless projection
+    save!(message) unless query.by_trace(trace_id).by_schema(schema).exists?
 
     message
   end
@@ -24,10 +21,7 @@ class MessageService
     stream = get_stream(stream:, schema:, **)
     message = build(schema:, data:, trace_id:, id:, occurred_at:, metadata:, stream:, **)
 
-    projection = Projectors::Streams::HasOccurred.project(stream:, schema:)
-    raise MessageService::NotBooleanProjection unless [true, false].include?(projection)
-
-    save!(message) unless projection
+    save!(message) unless query.by_stream(stream).by_schema(schema).exists?
 
     message
   end
@@ -60,6 +54,13 @@ class MessageService
     )
   end
 
+  def query
+    Messages::Query.new(query_container: Messages::QueryContainer.new(
+      messages: messages_to_publish,
+      relation: Event.all
+    ))
+  end
+
   def save!(message)
     messages_to_publish << message
   end
@@ -76,7 +77,7 @@ class MessageService
       ASYNC_SUBSCRIBERS.get_subscribers_for_schema(schema_string:)
     end.uniq
 
-    # publish all execute job at once
+    # publish all execute jobs at once
     ActiveJob.perform_all_later(async_subscribers.map { |subscriber| ExecuteSubscriberJob.new(subscriber_id: subscriber.id) }) if broadcast?
 
     # get each sync subscriber uniquely
@@ -128,12 +129,6 @@ class MessageService
     raise NotTraceIdError unless trace_id.is_a?(String)
 
     order_and_map(Event.where(trace_id:)).select { |m| m.schema.type == Core::EVENT }
-  end
-
-  def self.migrate_event(schema:, &block)
-    Event.where(event_type: schema.message_type, version: schema.version).find_each do |e|
-      block.call(e.message)
-    end
   end
 
   def self.all_schemas

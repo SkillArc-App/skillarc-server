@@ -73,21 +73,17 @@ RSpec.describe MessageService do
 
     context "when the event has already occured" do
       before do
-        expect(described_class)
-          .to receive(:stream_events)
-          .with(Streams::User.new(user_id:))
-          .and_return([
-                        build(
-                          :message,
-                          schema:,
-                          data: {
-                            seeker_id: SecureRandom.uuid
-                          },
-                          metadata: {
-                            user_id: SecureRandom.uuid
-                          }
-                        )
-                      ])
+        Event.from_message!(build(
+                              :message,
+                              schema:,
+                              stream: Streams::User.new(user_id:),
+                              data: {
+                                seeker_id: SecureRandom.uuid
+                              },
+                              metadata: {
+                                user_id: SecureRandom.uuid
+                              }
+                            ))
       end
 
       it "calls build but not save!" do
@@ -170,21 +166,17 @@ RSpec.describe MessageService do
 
     context "when the event has already occured" do
       before do
-        expect(described_class)
-          .to receive(:trace_id_events)
-          .with(trace_id)
-          .and_return([
-                        build(
-                          :message,
-                          schema:,
-                          data: {
-                            seeker_id: SecureRandom.uuid
-                          },
-                          metadata: {
-                            user_id: SecureRandom.uuid
-                          }
-                        )
-                      ])
+        Event.from_message!(build(
+                              :message,
+                              schema:,
+                              trace_id:,
+                              data: {
+                                seeker_id: SecureRandom.uuid
+                              },
+                              metadata: {
+                                user_id: SecureRandom.uuid
+                              }
+                            ))
       end
 
       it "calls build but not save!" do
@@ -403,6 +395,30 @@ RSpec.describe MessageService do
       subject
 
       instance.flush
+    end
+  end
+
+  describe "#query" do
+    subject { instance.query }
+
+    it "returns a message query" do
+      expect(subject).to be_a(Messages::Query)
+    end
+
+    context "when there are cached messages" do
+      let(:message1) { build(:message, schema: Events::SessionStarted::V1) }
+      let(:message2) { build(:message, schema: Events::SessionStarted::V1) }
+      let(:message3) { build(:message, schema: Events::SessionStarted::V1) }
+
+      before do
+        instance.save!(message1)
+        instance.save!(message2)
+        instance.save!(message3)
+      end
+
+      it "passes them to the message query" do
+        expect(subject.by_schema(Events::SessionStarted::V1).fetch).to contain_exactly(message1, message2, message3)
+      end
     end
   end
 
@@ -727,41 +743,6 @@ RSpec.describe MessageService do
     context "when the schema exists" do
       it "returns the schema" do
         expect(described_class.get_schema(message_type:, version:)).to eq(schema)
-      end
-    end
-  end
-
-  describe ".migrate_event" do
-    let(:schema) { Events::UserCreated::V1 }
-
-    let!(:message1) do
-      Message.new(
-        id: SecureRandom.uuid,
-        stream: Streams::User.new(user_id: SecureRandom.uuid),
-        trace_id: SecureRandom.uuid,
-        schema:,
-        occurred_at: Time.zone.parse('2000-1-1'),
-        data: Events::UserCreated::Data::V1.new(first_name: "John"),
-        metadata: Core::Nothing
-      )
-    end
-    let!(:message2) do
-      Message.new(
-        id: SecureRandom.uuid,
-        stream: Streams::User.new(user_id: SecureRandom.uuid),
-        trace_id: SecureRandom.uuid,
-        schema:,
-        occurred_at: Time.zone.parse('2000-1-1'),
-        data: Events::UserCreated::Data::V1.new(first_name: "Chris"),
-        metadata: Core::Nothing
-      )
-    end
-    let!(:event1) { Event.from_message!(message1) }
-    let!(:event2) { Event.from_message!(message2) }
-
-    it "passes each message for the schema to the provided block" do
-      described_class.migrate_event(schema:) do |message|
-        expect([message1, message2]).to include(message)
       end
     end
   end

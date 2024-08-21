@@ -8,7 +8,7 @@ module Messages
     def execute(query_container)
       QueryContainer.new(
         relation: query_container.relation.where(aggregate_id: @stream.id),
-        messages: query_container.messages.select { |m| m.schema == @stream }
+        messages: query_container.messages.select { |m| m.stream == @stream }
       )
     end
 

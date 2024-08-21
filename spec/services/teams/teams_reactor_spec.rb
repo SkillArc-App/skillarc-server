@@ -150,10 +150,11 @@ RSpec.describe Teams::TeamsReactor do
         build(
           :message,
           stream:,
-          schema: Teams::Commands::SendSlackMessage::V2,
+          schema: Teams::Commands::SendSlackMessage::V3,
           data: {
             text: "yo",
-            blocks: nil
+            blocks: nil,
+            message_id: SecureRandom.uuid,
           }
         )
       end
@@ -182,9 +183,9 @@ RSpec.describe Teams::TeamsReactor do
 
         it "emits a send slack message command" do
           expect(message_service)
-            .to receive(:create_once_for_trace!)
+            .to receive(:create_once_for_stream!)
             .with(
-              message_id: be_a(String),
+              message_id: message.data.message_id,
               trace_id: message.trace_id,
               schema: Commands::SendSlackMessage::V2,
               data: {

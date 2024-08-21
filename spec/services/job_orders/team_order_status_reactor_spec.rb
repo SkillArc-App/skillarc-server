@@ -97,8 +97,9 @@ RSpec.describe JobOrders::TeamOrderStatusReactor do
                 .with(
                   trace_id: message.trace_id,
                   team_id:,
-                  schema: Teams::Commands::SendSlackMessage::V2,
+                  schema: Teams::Commands::SendSlackMessage::V3,
                   data: {
+                    message_id: be_a(String),
                     blocks: [
                       {
                         type: "header",

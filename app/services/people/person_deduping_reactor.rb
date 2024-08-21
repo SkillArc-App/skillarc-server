@@ -6,10 +6,7 @@ module People
 
     on_message Commands::AddPerson::V2 do |message|
       # If we already created the person return
-      return if ::Projectors::Streams::HasOccurred.project(
-        stream: message.stream,
-        schema: Events::PersonAdded::V1
-      )
+      return if message_service.query.by_stream(message.stream).by_schema(Events::PersonAdded::V1).exists?
 
       # if we have a matching email or phone
       return if matching_email?(message.data.email, message.data.user_id, message.trace_id)

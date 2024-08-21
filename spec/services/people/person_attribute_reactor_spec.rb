@@ -35,9 +35,10 @@ RSpec.describe People::PersonAttributeReactor do
       let(:attribute_values) { [] }
 
       context "when the person stream doesn't exist" do
-        let(:message_service) { double }
-
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end
@@ -54,10 +55,12 @@ RSpec.describe People::PersonAttributeReactor do
         end
 
         context "when the values are not unique" do
-          let(:message_service) { double }
           let(:attribute_values) { %w[cat cat] }
 
           it "does nothing" do
+            allow(message_service).to receive(:query).and_call_original
+            expect(message_service).not_to receive(:save!)
+
             subject
           end
         end
@@ -103,9 +106,10 @@ RSpec.describe People::PersonAttributeReactor do
       let(:id) { SecureRandom.uuid }
 
       context "when there is not an attribute on the person stream" do
-        let(:message_service) { double }
-
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end

@@ -5,10 +5,9 @@ module Screeners
     end
 
     on_message Commands::CreateAnswers::V2 do |message|
-      return unless ::Projectors::Streams::HasOccurred.project(
-        stream: Streams::Questions.new(screener_questions_id: message.data.screener_questions_id),
-        schema: Events::QuestionsCreated::V1
-      )
+      return unless message_service.query.by_stream(Streams::Questions.new(screener_questions_id: message.data.screener_questions_id))
+                                   .by_schema(Events::QuestionsCreated::V1)
+                                   .exists?
 
       message_service.create_once_for_stream!(
         trace_id: message.trace_id,
@@ -25,7 +24,7 @@ module Screeners
     end
 
     on_message Commands::UpdateAnswers::V1 do |message|
-      return unless ::Projectors::Streams::HasOccurred.project(stream: message.stream, schema: Events::AnswersCreated::V2)
+      return unless message_service.query.by_stream(message.stream).by_schema(Events::AnswersCreated::V2).exists?
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
@@ -53,7 +52,7 @@ module Screeners
     end
 
     on_message Commands::UpdateQuestions::V1 do |message|
-      return unless ::Projectors::Streams::HasOccurred.project(stream: message.stream, schema: Events::QuestionsCreated::V1)
+      return unless message_service.query.by_stream(message.stream).by_schema(Events::QuestionsCreated::V1).exists?
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,

@@ -185,7 +185,7 @@ module Klaviyo
     def dedup_messages(message)
       stream = Streams::Message.new(message_id: message.id)
 
-      return if Projectors::Streams::HasOccurred.project(stream:, schema: Events::KlaviyoEventPushed::V1)
+      return if message_service.query.by_stream(stream).by_schema(Events::KlaviyoEventPushed::V1).exists?
 
       yield
 

@@ -232,10 +232,10 @@ module JobOrders
     end
 
     on_message Commands::AddScreenerQuestions::V1, :sync do |message|
-      return unless ::Projectors::Streams::HasOccurred.project(
-        stream: Screeners::Streams::Questions.new(screener_questions_id: message.data.screener_questions_id),
-        schema: Screeners::Events::QuestionsCreated::V1
-      )
+      return unless message_service.query
+                                   .by_stream(Screeners::Streams::Questions.new(screener_questions_id: message.data.screener_questions_id))
+                                   .by_schema(Screeners::Events::QuestionsCreated::V1)
+                                   .exists?
 
       message_service.create_once_for_trace!(
         schema: Events::ScreenerQuestionsAdded::V1,

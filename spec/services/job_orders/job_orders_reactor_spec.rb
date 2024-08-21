@@ -399,9 +399,10 @@ RSpec.describe JobOrders::JobOrdersReactor do
       end
 
       context "when the screener questions do not exist exists" do
-        let(:message_service) { double }
-
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end

@@ -6,10 +6,7 @@ module People
 
     on_message Commands::AddPersonAttribute::V1 do |message|
       # Make sure the stream exists
-      return unless ::Projectors::Streams::HasOccurred.project(
-        stream: message.stream,
-        schema: Events::PersonAdded::V1
-      )
+      return unless message_service.query.by_stream(message.stream).by_schema(Events::PersonAdded::V1).exists?
 
       return if message.data.attribute_values.length != message.data.attribute_values.to_set.length
 

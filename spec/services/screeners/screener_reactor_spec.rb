@@ -65,9 +65,10 @@ RSpec.describe Screeners::ScreenerReactor do
       end
 
       context "when the associated questions doesn't exists" do
-        let(:message_service) { double }
-
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end
@@ -140,9 +141,10 @@ RSpec.describe Screeners::ScreenerReactor do
       end
 
       context "when there are not answer" do
-        let(:message_service) { double }
-
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end
@@ -188,9 +190,10 @@ RSpec.describe Screeners::ScreenerReactor do
       end
 
       context "when there are not answer" do
-        let(:message_service) { double }
-
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end

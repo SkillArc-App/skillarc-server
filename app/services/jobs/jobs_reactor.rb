@@ -45,9 +45,9 @@ module Jobs
     end
 
     on_message Commands::AddDesiredCertification::V1, :sync do |message|
-      messages = MessageService.stream_events(message.stream).select { |m| m.occurred_at <= message.occurred_at }
+      messages = message_service.query.by_stream(message.stream).before(message).fetch
 
-      return unless ::Projectors::Streams::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
+      return unless ::Projectors::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
 
       status = Projectors::CertificationStatus.new.project(messages)
 
@@ -66,9 +66,9 @@ module Jobs
     end
 
     on_message Commands::RemoveDesiredCertification::V1, :sync do |message|
-      messages = MessageService.stream_events(message.stream).select { |m| m.occurred_at <= message.occurred_at }
+      messages = message_service.query.by_stream(message.stream).before(message).fetch
 
-      return unless ::Projectors::Streams::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
+      return unless ::Projectors::HasOccurred.new(schema: Events::JobCreated::V3).project(messages)
 
       status = Projectors::CertificationStatus.new.project(messages)
 
@@ -99,9 +99,9 @@ module Jobs
     end
 
     on_message Commands::UpdateEmployer::V1, :sync do |message|
-      messages = MessageService.stream_events(message.stream).select { |m| m.occurred_at <= message.occurred_at }
+      messages = message_service.query.by_stream(message.stream).before(message).fetch
 
-      return unless ::Projectors::Streams::HasOccurred.new(schema: Events::EmployerCreated::V1).project(messages)
+      return unless ::Projectors::HasOccurred.new(schema: Events::EmployerCreated::V1).project(messages)
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,

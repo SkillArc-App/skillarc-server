@@ -150,18 +150,22 @@ RSpec.describe Jobs::JobsReactor do
 
       context "when the job has not been created" do
         let(:messages) { [] }
-        let(:message_service) { double }
 
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end
 
       context "when the certification has already been added" do
         let(:messages) { [job_created, desired_certification_created] }
-        let(:message_service) { double }
 
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end
@@ -204,18 +208,22 @@ RSpec.describe Jobs::JobsReactor do
 
       context "when the job has not been created" do
         let(:messages) { [] }
-        let(:message_service) { double }
 
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end
 
       context "when the certification has not already been added" do
         let(:messages) { [job_created] }
-        let(:message_service) { double }
 
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end
@@ -295,9 +303,11 @@ RSpec.describe Jobs::JobsReactor do
 
       context "when the employer has not been created" do
         let(:messages) { [] }
-        let(:message_service) { double }
 
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end

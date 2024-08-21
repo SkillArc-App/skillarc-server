@@ -53,8 +53,9 @@ module JobOrders
             command: message_service.build(
               trace_id: message.trace_id,
               team_id:,
-              schema: Teams::Commands::SendSlackMessage::V2,
+              schema: Teams::Commands::SendSlackMessage::V3,
               data: {
+                message_id: SecureRandom.uuid,
                 blocks: slack_message_blocks(job_orders)
               }
             )

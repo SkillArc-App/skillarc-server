@@ -32,7 +32,7 @@ module Teams
 
     # This should maybe be owned by the contact system.
     # I'm currently unsure on this placement
-    on_message Commands::SendSlackMessage::V2 do |message|
+    on_message Commands::SendSlackMessage::V3 do |message|
       slack_channel = ::Projectors::Streams::GetLast.project(
         schema: Events::PrimarySlackChannelAdded::V1,
         stream: message.stream
@@ -40,8 +40,8 @@ module Teams
 
       return if slack_channel.nil?
 
-      message_service.create_once_for_trace!(
-        message_id: SecureRandom.uuid,
+      message_service.create_once_for_stream!(
+        message_id: message.data.message_id,
         trace_id: message.trace_id,
         schema: ::Commands::SendSlackMessage::V2,
         data: {

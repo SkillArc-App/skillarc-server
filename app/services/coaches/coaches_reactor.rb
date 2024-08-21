@@ -5,10 +5,10 @@ module Coaches
     end
 
     on_message People::Commands::AssignCoach::V2 do |message|
-      return unless Projectors::Streams::HasOccurred.project(
-        schema: People::Events::PersonAdded::V1,
-        stream: message.stream
-      )
+      return unless message_service.query
+                                   .by_stream(message.stream)
+                                   .by_schema(People::Events::PersonAdded::V1)
+                                   .exists?
 
       return if Events::CoachAdded::V1.all_messages.none? { |m| m.data.coach_id == message.data.coach_id }
 

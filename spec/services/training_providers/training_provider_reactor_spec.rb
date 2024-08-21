@@ -103,9 +103,10 @@ RSpec.describe TrainingProviders::TrainingProviderReactor do
       end
 
       context "when there has not been a traing provider created" do
-        let(:message_service) { double }
-
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end

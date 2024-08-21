@@ -105,17 +105,9 @@ RSpec.describe People::OnboardingReactor do
         )
       end
 
-      let(:messages) { [] }
-
       before do
-        allow(MessageService)
-          .to receive(:stream_events)
-          .with(message.stream)
-          .and_return(messages)
-
         allow_any_instance_of(People::Projectors::OnboardingStatus)
           .to receive(:project)
-          .with(messages)
           .and_return(projection)
       end
 
@@ -146,6 +138,7 @@ RSpec.describe People::OnboardingReactor do
         end
 
         it "emits an onboarding complete event" do
+          allow(message_service).to receive(:query).and_call_original
           expect(message_service)
             .to receive(:create_once_for_stream!)
             .with(

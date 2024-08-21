@@ -12,7 +12,6 @@ RSpec.describe People::PersonDedupingReactor do
   describe "#handle_message" do
     subject do
       consumer.handle_message(message)
-      message_service.flush
       consumer.handle_message(message)
     end
 
@@ -87,9 +86,11 @@ RSpec.describe People::PersonDedupingReactor do
 
       context "when person added has already executed" do
         let(:messages) { [person_added] }
-        let(:message_service) { double(flush: nil) }
 
         it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
           subject
         end
       end
@@ -202,18 +203,22 @@ RSpec.describe People::PersonDedupingReactor do
 
         context "when there is a matching email" do
           let(:messages) { [person_associated_email] }
-          let(:message_service) { double(flush: nil) }
 
           it "does nothing" do
+            allow(message_service).to receive(:query).and_call_original
+            expect(message_service).not_to receive(:save!)
+
             subject
           end
         end
 
         context "when there is a matching phone" do
           let(:messages) { [person_associated_phone_number] }
-          let(:message_service) { double(flush: nil) }
 
           it "does nothing" do
+            allow(message_service).to receive(:query).and_call_original
+            expect(message_service).not_to receive(:save!)
+
             subject
           end
         end

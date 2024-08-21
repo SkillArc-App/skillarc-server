@@ -60,11 +60,11 @@ RSpec.describe Coaches::CoachesReactor do
       end
 
       context "When person added as not occurred" do
-        let(:message_service) { double }
         let(:messages) { [] }
 
         it "does nothing" do
-          expect(message_service)
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
 
           subject
         end
@@ -72,11 +72,11 @@ RSpec.describe Coaches::CoachesReactor do
 
       context "When person added has occured" do
         context "when the coach does not exist" do
-          let(:message_service) { double }
           let(:messages) { [person_added] }
 
           it "does nothing" do
-            expect(message_service)
+            allow(message_service).to receive(:query).and_call_original
+            expect(message_service).not_to receive(:create_once_for_trace!)
 
             subject
           end

@@ -7,56 +7,6 @@ RSpec.describe Slack::SlackReactor do
     let(:client) { Slack::FakeClient.new }
     let(:message_service) { MessageService.new }
 
-    context "when the message is applicant status updated" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::ApplicantStatusUpdated::V6,
-          data: {
-            applicant_first_name: "John",
-            applicant_last_name: "Chabot",
-            applicant_email: "john@skillarc.com",
-            seeker_id: "d9956e79-c5f3-41c8-9150-9fa799e0f33f",
-            user_id: SecureRandom.uuid,
-            job_id: SecureRandom.uuid,
-            employer_name: "Employer",
-            employment_title: "A title",
-            status:
-          },
-          metadata: {
-            user_id: SecureRandom.uuid
-          }
-        )
-      end
-
-      context "when the applicant status is not new" do
-        let(:status) { ApplicantStatus::StatusTypes::PASS }
-
-        it "does not send a message" do
-          expect(client)
-            .not_to receive(:chat_postMessage)
-
-          subject
-        end
-      end
-
-      context "when the applicant status is new" do
-        let(:status) { ApplicantStatus::StatusTypes::NEW }
-
-        it "does not send a message" do
-          expect(client)
-            .to receive(:chat_postMessage)
-            .with(
-              channel: '#feed',
-              text: "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/d9956e79-c5f3-41c8-9150-9fa799e0f33f|john@skillarc.com> has applied to *A title* at *Employer*",
-              as_user: true
-            )
-
-          subject
-        end
-      end
-    end
-
     context "when the message is chat message sent" do
       before do
         Event.from_message!(applicant_status_updated)

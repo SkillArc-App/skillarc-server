@@ -66,5 +66,53 @@ RSpec.describe Applications::ApplicationsReactor do
         subject
       end
     end
+
+    describe "when message is applicant status update" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::ApplicantStatusUpdated::V6,
+          data: {
+            status:,
+            seeker_id: SecureRandom.uuid,
+            applicant_email: "an@email.com",
+            employment_title: "Job",
+            employer_name: "Employer"
+          }
+        )
+      end
+
+      context "when status is new" do
+        let(:status) { ApplicantStatus::StatusTypes::NEW }
+
+        it "emits a applicant status updated" do
+          expect(message_service)
+            .to receive(:create_once_for_stream!)
+            .with(
+              trace_id: message.trace_id,
+              schema: Commands::SendSlackMessage::V2,
+              message_id: Digest::UUID.uuid_v3(Digest::UUID::DNS_NAMESPACE, message.stream.id),
+              data: {
+                channel: "#feed",
+                text: "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{message.data.seeker_id}|#{message.data.applicant_email}> has applied to *#{message.data.employment_title}* at *#{message.data.employer_name}*"
+              }
+            )
+            .twice
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when status is not new" do
+        let(:status) { ApplicantStatus::StatusTypes::PENDING_INTRO }
+
+        it "emits a applicant status updated" do
+          expect(message_service).not_to receive(:save!)
+
+          subject
+        end
+      end
+    end
   end
 end

@@ -21,17 +21,6 @@ module Slack
       )
     end
 
-    on_message ::Events::ApplicantStatusUpdated::V6 do |message|
-      data = message.data
-      return unless data.status == ApplicantStatus::StatusTypes::NEW
-
-      client.chat_postMessage(
-        channel: '#feed',
-        text: "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{data.seeker_id}|#{data.applicant_email}> has applied to *#{data.employment_title}* at *#{data.employer_name}*",
-        as_user: true
-      )
-    end
-
     on_message ::Events::ChatMessageSent::V2 do |message|
       applicant_status_updated = Projectors::Streams::GetFirst.project(
         stream: Streams::Application.new(application_id: message.stream.id),

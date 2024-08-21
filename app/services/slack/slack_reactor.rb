@@ -21,29 +21,6 @@ module Slack
       )
     end
 
-    on_message ::Events::ChatMessageSent::V2 do |message|
-      applicant_status_updated = Projectors::Streams::GetFirst.project(
-        stream: Streams::Application.new(application_id: message.stream.id),
-        schema: ::Events::ApplicantStatusUpdated::V6
-      )
-
-      return if applicant_status_updated.blank?
-
-      data = applicant_status_updated.data
-
-      message = if data.user_id == message.data.from_user_id
-                  "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{data.seeker_id}|#{data.applicant_email}> has *sent* a message to *#{data.employer_name}* for their applcation to *#{data.employment_title}*."
-                else
-                  "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{data.seeker_id}|#{data.applicant_email}> has *received* a message from *#{data.employer_name}* for their applcation to *#{data.employment_title}*."
-                end
-
-      client.chat_postMessage(
-        channel: '#feed',
-        text: message,
-        as_user: true
-      )
-    end
-
     private
 
     attr_reader :client

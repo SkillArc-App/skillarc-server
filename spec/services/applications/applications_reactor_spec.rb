@@ -114,5 +114,91 @@ RSpec.describe Applications::ApplicationsReactor do
         end
       end
     end
+
+    context "when the message is chat message sent" do
+      before do
+        Event.from_message!(applicant_status_updated)
+      end
+
+      let(:applicant_status_updated) do
+        build(
+          :message,
+          stream_id: application_id,
+          schema: Events::ApplicantStatusUpdated::V6,
+          data: {
+            applicant_first_name: "John",
+            applicant_last_name: "Chabot",
+            applicant_email: "some@email.com",
+            seeker_id:,
+            user_id: SecureRandom.uuid,
+            job_id: SecureRandom.uuid,
+            employer_name: "Employer",
+            employment_title: "A job",
+            status: ApplicantStatus::StatusTypes::NEW
+          },
+          metadata: {
+            user_id: SecureRandom.uuid
+          }
+        )
+      end
+
+      let(:message) do
+        build(
+          :message,
+          stream_id: application_id,
+          schema: Events::ChatMessageSent::V2,
+          data: {
+            from_user_id:
+          }
+        )
+      end
+
+      let(:application_id) { SecureRandom.uuid }
+      let(:seeker_id) { SecureRandom.uuid }
+
+      context "when the from_user_id is the seeker" do
+        let(:from_user_id) { applicant_status_updated.data.user_id }
+
+        it "sends a slack message to the #feed channel" do
+          expect(message_service)
+            .to receive(:create_once_for_stream!)
+            .with(
+              trace_id: message.trace_id,
+              schema: Commands::SendSlackMessage::V2,
+              message_id: Digest::UUID.uuid_v3(Digest::UUID::DNS_NAMESPACE, message.stream.id + message.occurred_at.to_s),
+              data: {
+                channel: "#feed",
+                text: "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker_id}|some@email.com> has *sent* a message to *Employer* for their applcation to *A job*."
+              }
+            )
+            .twice
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when the from_user_id is not the seeker" do
+        let(:from_user_id) { SecureRandom.uuid }
+
+        it "sends a slack message to the #feed channel" do
+          expect(message_service)
+            .to receive(:create_once_for_stream!)
+            .with(
+              trace_id: message.trace_id,
+              schema: Commands::SendSlackMessage::V2,
+              message_id: Digest::UUID.uuid_v3(Digest::UUID::DNS_NAMESPACE, message.stream.id + message.occurred_at.to_s),
+              data: {
+                channel: "#feed",
+                text: "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker_id}|some@email.com> has *received* a message from *Employer* for their applcation to *A job*."
+              }
+            )
+            .twice
+            .and_call_original
+
+          subject
+        end
+      end
+    end
   end
 end

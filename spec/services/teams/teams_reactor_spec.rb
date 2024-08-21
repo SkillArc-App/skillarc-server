@@ -154,7 +154,7 @@ RSpec.describe Teams::TeamsReactor do
           data: {
             text: "yo",
             blocks: nil,
-            message_id: SecureRandom.uuid,
+            message_id: SecureRandom.uuid
           }
         )
       end

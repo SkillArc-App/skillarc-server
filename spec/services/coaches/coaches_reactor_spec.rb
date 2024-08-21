@@ -65,7 +65,7 @@ RSpec.describe Coaches::CoachesReactor do
         it "does nothing" do
           allow(message_service).to receive(:query).and_call_original
           expect(message_service).not_to receive(:save!)
-          
+
           subject
         end
       end

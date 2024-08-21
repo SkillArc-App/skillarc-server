@@ -9,7 +9,7 @@ module Contact
           integration: "cal.com",
           data: {
             cal_trigger_event_type: webhook["triggerEvent"],
-            payload: webhook["payload"].deep_symbolize_keys
+            payload: (webhook["payload"] || {}).deep_symbolize_keys
           },
           occurred_at: webhook["createdAt"]
         )

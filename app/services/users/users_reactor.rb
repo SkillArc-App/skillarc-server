@@ -24,5 +24,17 @@ module Users
         }
       )
     end
+
+    on_message Events::UserCreated::V1 do |message|
+      message_service.create_once_for_stream!(
+        trace_id: message.trace_id,
+        schema: Commands::SendSlackMessage::V2,
+        message_id: message.deterministic_uuid,
+        data: {
+          channel: "#feed",
+          text: "New user signed up: *#{message.data.email}*"
+        }
+      )
+    end
   end
 end

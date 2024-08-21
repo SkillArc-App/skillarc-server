@@ -123,6 +123,16 @@ RSpec.describe Message do
     end
   end
 
+  describe "#deterministic_uuid" do
+    let(:message) { build(:message) }
+
+    it "produces the same uuid" do
+      expect(message.deterministic_uuid).to be_a(String)
+      expect(Uuid === message.deterministic_uuid).to be_truthy # rubocop:disable Style/CaseEquality
+      expect(message.deterministic_uuid).to eq(message.deterministic_uuid)
+    end
+  end
+
   describe ".deserialize" do
     let(:serilized_message) do
       {

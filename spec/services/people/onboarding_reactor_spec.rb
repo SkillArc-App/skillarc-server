@@ -8,11 +8,16 @@ RSpec.describe People::OnboardingReactor do
   let(:trace_id) { SecureRandom.uuid }
   let(:user_id) { SecureRandom.uuid }
   let(:person_id) { SecureRandom.uuid }
+  let(:messages) { [] }
 
   describe "#handle_message" do
     subject do
       consumer.handle_message(message)
       consumer.handle_message(message)
+    end
+
+    before do
+      Event.from_messages!(messages)
     end
 
     context "when the message is person associated to user" do
@@ -91,6 +96,79 @@ RSpec.describe People::OnboardingReactor do
           .and_call_original
 
         subject
+      end
+    end
+
+    context "when an existing email is need" do
+      let(:messages) do
+        [
+          build(
+            :message,
+            stream:,
+            schema: People::Events::PersonAdded::V1,
+            data: {
+              email: "some@email.com"
+            }
+          )
+        ]
+      end
+
+      let(:stream) { People::Streams::Person.new(person_id:) }
+
+      context "when the message is onboarding started" do
+        let(:message) do
+          build(
+            :message,
+            schema: People::Events::OnboardingStarted::V2,
+            stream:
+          )
+        end
+
+        it "creates an send slack message command" do
+          expect(message_service)
+            .to receive(:create_once_for_stream!)
+            .with(
+              trace_id: message.trace_id,
+              schema: Commands::SendSlackMessage::V2,
+              message_id: message.deterministic_uuid,
+              data: {
+                channel: "#feed",
+                text: "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{message.stream.id}|some@email.com> has started onboarding"
+              }
+            )
+            .twice
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context "when the message is onboarding started" do
+        let(:message) do
+          build(
+            :message,
+            schema: People::Events::OnboardingCompleted::V3,
+            stream:
+          )
+        end
+
+        it "creates an send slack message command" do
+          expect(message_service)
+            .to receive(:create_once_for_stream!)
+            .with(
+              trace_id: message.trace_id,
+              schema: Commands::SendSlackMessage::V2,
+              message_id: message.deterministic_uuid,
+              data: {
+                channel: "#feed",
+                text: "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{message.stream.id}|some@email.com> has completed onboarding"
+              }
+            )
+            .twice
+            .and_call_original
+
+          subject
+        end
       end
     end
 

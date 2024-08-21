@@ -1,8 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Users::UsersReactor do
+  it_behaves_like "a replayable message consumer"
+
   describe "#handle_message" do
-    subject { instance.handle_message(message) }
+    subject do
+      instance.handle_message(message)
+      instance.handle_message(message)
+    end
 
     let(:message_service) { MessageService.new }
     let(:instance) { described_class.new(message_service:) }
@@ -94,11 +99,39 @@ RSpec.describe Users::UsersReactor do
                   email:
                 }
               )
+              .twice
               .and_call_original
 
             subject
           end
         end
+      end
+    end
+
+    context "when message is user create" do
+      let(:message) do
+        build(
+          :message,
+          schema: Events::UserCreated::V1
+        )
+      end
+
+      it "emits a send slack message command" do
+        expect(message_service)
+          .to receive(:create_once_for_stream!)
+          .with(
+            trace_id: message.trace_id,
+            schema: Commands::SendSlackMessage::V2,
+            message_id: message.deterministic_uuid,
+            data: {
+              channel: "#feed",
+              text: "New user signed up: *#{message.data.email}*"
+            }
+          )
+          .twice
+          .and_call_original
+
+        subject
       end
     end
   end

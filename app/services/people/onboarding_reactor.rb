@@ -31,8 +31,36 @@ module People
       )
     end
 
+    on_message Events::OnboardingCompleted::V3 do |message|
+      messages = message_service.query.by_stream(message.stream).fetch
+      email = Projectors::Email.new.project(messages).current_email
+
+      message_service.create_once_for_stream!(
+        trace_id: message.trace_id,
+        schema: ::Commands::SendSlackMessage::V2,
+        message_id: message.deterministic_uuid,
+        data: {
+          channel: "#feed",
+          text: "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{message.stream.id}|#{email}> has completed onboarding"
+        }
+      )
+    end
+
     on_message Events::OnboardingStarted::V2 do |message|
-      emit_complete_onboarding_if_applicable(message)
+      messages = emit_complete_onboarding_if_applicable(message)
+      email = Projectors::Email.new.project(messages).current_email
+
+      return if email.blank?
+
+      message_service.create_once_for_stream!(
+        trace_id: message.trace_id,
+        schema: ::Commands::SendSlackMessage::V2,
+        message_id: message.deterministic_uuid,
+        data: {
+          channel: "#feed",
+          text: "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{message.stream.id}|#{email}> has started onboarding"
+        }
+      )
     end
 
     on_message Events::BasicInfoAdded::V1 do |message|
@@ -64,10 +92,10 @@ module People
     def emit_complete_onboarding_if_applicable(message)
       messages = message_service.query.by_stream(message.stream).fetch
 
-      return if ::Projectors::HasOccurred.new(schema: Events::OnboardingCompleted::V3).project(messages)
+      return messages if ::Projectors::HasOccurred.new(schema: Events::OnboardingCompleted::V3).project(messages)
 
       status = Projectors::OnboardingStatus.new.project(messages)
-      return unless status.next_step == Onboarding::Steps::COMPLETE_LOADING
+      return messages unless status.next_step == Onboarding::Steps::COMPLETE_LOADING
 
       message_service.create_once_for_stream!(
         schema: Commands::CompleteOnboarding::V2,
@@ -75,6 +103,8 @@ module People
         trace_id: message.trace_id,
         data: Core::Nothing
       )
+
+      messages
     end
   end
 end

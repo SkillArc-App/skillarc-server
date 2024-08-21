@@ -91,7 +91,7 @@ RSpec.describe Applications::ApplicationsReactor do
             .with(
               trace_id: message.trace_id,
               schema: Commands::SendSlackMessage::V2,
-              message_id: Digest::UUID.uuid_v3(Digest::UUID::DNS_NAMESPACE, message.stream.id),
+              message_id: message.deterministic_uuid,
               data: {
                 channel: "#feed",
                 text: "<#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{message.data.seeker_id}|#{message.data.applicant_email}> has applied to *#{message.data.employment_title}* at *#{message.data.employer_name}*"
@@ -165,7 +165,7 @@ RSpec.describe Applications::ApplicationsReactor do
             .with(
               trace_id: message.trace_id,
               schema: Commands::SendSlackMessage::V2,
-              message_id: Digest::UUID.uuid_v3(Digest::UUID::DNS_NAMESPACE, message.stream.id + message.occurred_at.to_s),
+              message_id: message.deterministic_uuid,
               data: {
                 channel: "#feed",
                 text: "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker_id}|some@email.com> has *sent* a message to *Employer* for their applcation to *A job*."
@@ -187,7 +187,7 @@ RSpec.describe Applications::ApplicationsReactor do
             .with(
               trace_id: message.trace_id,
               schema: Commands::SendSlackMessage::V2,
-              message_id: Digest::UUID.uuid_v3(Digest::UUID::DNS_NAMESPACE, message.stream.id + message.occurred_at.to_s),
+              message_id: message.deterministic_uuid,
               data: {
                 channel: "#feed",
                 text: "Applicant <#{ENV.fetch('FRONTEND_URL', nil)}/profiles/#{seeker_id}|some@email.com> has *received* a message from *Employer* for their applcation to *A job*."

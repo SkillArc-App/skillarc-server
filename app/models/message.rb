@@ -35,6 +35,10 @@ class Message
     }
   end
 
+  def deterministic_uuid
+    @deterministic_uuid ||= Digest::UUID.uuid_v3(Digest::UUID::DNS_NAMESPACE, id)
+  end
+
   def self.deserialize(hash)
     schema = Core::Schema.deserialize(hash[:schema])
 

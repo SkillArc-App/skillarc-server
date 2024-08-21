@@ -7,32 +7,6 @@ RSpec.describe Slack::SlackReactor do
     let(:client) { Slack::FakeClient.new }
     let(:message_service) { MessageService.new }
 
-    context "when the message is user_created" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::UserCreated::V1,
-          stream_id: SecureRandom.uuid,
-          data: {
-            email:
-          }
-        )
-      end
-      let(:email) { "some@email.com" }
-
-      it "sends a slack message to the #feed channel" do
-        expect(client)
-          .to receive(:chat_postMessage)
-          .with(
-            channel: '#feed',
-            text: "New user signed up: *some@email.com*",
-            as_user: true
-          )
-
-        subject
-      end
-    end
-
     context "when the message is applicant status updated" do
       let(:message) do
         build(

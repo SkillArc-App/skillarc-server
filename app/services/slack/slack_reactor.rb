@@ -55,14 +55,6 @@ module Slack
       )
     end
 
-    on_message ::Events::UserCreated::V1 do |message|
-      client.chat_postMessage(
-        channel: '#feed',
-        text: "New user signed up: *#{message.data.email}*",
-        as_user: true
-      )
-    end
-
     private
 
     attr_reader :client

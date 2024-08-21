@@ -2,6 +2,7 @@ module Events
   module CalWebhookReceived
     module CalTriggerEventTypes
       ALL = [
+        PING = "PING".freeze,
         BOOKING_CREATED = 'BOOKING_CREATED'.freeze,
         BOOKING_RESCHEDULED = 'BOOKING_RESCHEDULED'.freeze,
         BOOKING_CANCELLED = 'BOOKING_CANCELLED'.freeze,

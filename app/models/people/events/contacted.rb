@@ -16,7 +16,7 @@ module People
 
       V1 = Core::Schema.active(
         type: Core::EVENT,
-        data: Core::Nothing,
+        data: Data::V1,
         metadata: Core::Nothing,
         stream: Streams::Person,
         message_type: MessageTypes::CONTACTED,

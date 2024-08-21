@@ -1,7 +1,11 @@
-module Applicants
-  class OrchestrationReactor < MessageReactor
+module Applications
+  class ApplicationsReactor < MessageReactor
+    def can_replay?
+      true
+    end
+
     on_message People::Events::PersonApplied::V1, :sync do |message|
-      message_service.create!(
+      message_service.create_once_for_stream!(
         application_id: message.data.application_id,
         trace_id: message.trace_id,
         schema: Events::ApplicantStatusUpdated::V6,

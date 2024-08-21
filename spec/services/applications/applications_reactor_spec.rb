@@ -1,14 +1,19 @@
 require 'rails_helper'
 
-RSpec.describe Applicants::OrchestrationReactor do
-  let(:instance) do
-    described_class.new(message_service:)
-  end
-
-  let(:message_service) { MessageService.new }
+RSpec.describe Applications::ApplicationsReactor do
+  it_behaves_like "a replayable message consumer"
 
   describe "#handle_message" do
-    subject { instance.handle_message(message) }
+    subject do
+      instance.handle_message(message)
+      instance.handle_message(message)
+    end
+
+    let(:instance) do
+      described_class.new(message_service:)
+    end
+
+    let(:message_service) { MessageService.new }
 
     describe "when message is seeker applied" do
       let(:message) do
@@ -33,7 +38,7 @@ RSpec.describe Applicants::OrchestrationReactor do
 
       it "emits a applicant status updated" do
         expect(message_service)
-          .to receive(:create!)
+          .to receive(:create_once_for_stream!)
           .with(
             application_id: message.data.application_id,
             trace_id: message.trace_id,
@@ -54,7 +59,9 @@ RSpec.describe Applicants::OrchestrationReactor do
             metadata: {
               user_id: message.data.user_id
             }
-          ).and_call_original
+          )
+          .twice
+          .and_call_original
 
         subject
       end

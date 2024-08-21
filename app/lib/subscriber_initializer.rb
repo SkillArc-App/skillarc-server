@@ -29,7 +29,7 @@ module SubscriberInitializer
     reactors = [
       DbStreamListener.build(consumer: Coaches::CoachesReactor.new, listener_name: "coach_seekers_reactor"),
       DbStreamListener.build(consumer: Klaviyo::KlaviyoReactor.new, listener_name: "klayvio_reactor"),
-      DbStreamListener.build(consumer: Applicants::OrchestrationReactor.new, listener_name: "applicants_orchestration_reactor"),
+      DbStreamListener.build(consumer: Applications::ApplicationsReactor.new, listener_name: "applicants_orchestration_reactor"),
       DbStreamListener.build(consumer: Attributes::AttributesReactor.new, listener_name: "attributes_reactor"),
       DbStreamListener.build(consumer: Jobs::JobsReactor.new, listener_name: "jobs_reactor"),
       DbStreamListener.build(consumer: Invites::InvitesReactor.new, listener_name: "invites_reactor"),

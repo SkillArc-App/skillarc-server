@@ -156,9 +156,14 @@ module Coaches
     end
 
     on_message Users::Events::Contacted::V1, :sync do |message|
-      PersonContext.update!(
-        message.data.person_id,
-        last_contacted_at: message.occurred_at
+      person_context = PersonContext.find(message.data.person_id)
+
+      person_context.update!(last_contacted_at: message.occurred_at)
+      person_context.contacts.create!(
+        note: message.data.note,
+        contacted_at: message.occurred_at,
+        contact_type: message.data.contact_type,
+        contact_direction: message.data.contact_direction
       )
     end
 

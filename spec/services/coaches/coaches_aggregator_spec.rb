@@ -546,11 +546,18 @@ RSpec.describe Coaches::CoachesAggregator do
           )
         end
 
-        it "Updates the person context" do
-          subject
+        it "Updates the person context and creates a contact record" do
+          expect { subject }.to change(Coaches::Contact, :count).from(0).to(1)
 
           person_context.reload
           expect(person_context.last_contacted_at).to eq(message.occurred_at)
+
+          contact = Coaches::Contact.first
+          expect(contact.person_context).to eq(person_context)
+          expect(contact.contacted_at).to eq(message.occurred_at)
+          expect(contact.note).to eq(message.data.note)
+          expect(contact.contact_type).to eq(message.data.contact_type)
+          expect(contact.contact_direction).to eq(message.data.contact_direction)
         end
       end
 

@@ -102,3 +102,34 @@ jobs:
       # Add or replace any other lints here
       - name: Lint Ruby files
         run: bundle exec rubocop --parallel
+
+  brakeman:
+    runs-on:
+      group: organization/Default
+    steps:
+      - name: Collect Workflow Telemetry
+        uses: catchpoint/workflow-telemetry-action@v2
+        with:
+          comment_on_pr: false
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Checkout Skillarc GH action
+        uses: actions/checkout@v4
+        with:
+          repository: SkillArc-App/skillarc-ci-action
+          ref: v0.1.4
+          ssh-key: ${{ secrets.SKILLARC_CI_ACTION_ACCESS }}
+          path: .github/actions/skillarc-ci-action
+      - name: Run SkillArc GH action
+        uses: ./.github/actions/skillarc-ci-action
+        with:
+          alert_threshold: 120
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTION_PAT_TOKEN }}
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      # Add or replace any other lints here
+      - name: Brakeman Server
+        run: bundle exec brakeman

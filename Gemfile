@@ -29,6 +29,7 @@ gem "twilio-ruby"
 gem 'value_semantics'
 
 group :development, :test do
+  gem 'brakeman', require: false
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "dotenv-rails"
   gem "factory_bot_rails"

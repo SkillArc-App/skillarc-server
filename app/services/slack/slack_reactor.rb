@@ -6,12 +6,20 @@ module Slack
     end
 
     on_message Commands::SendSlackMessage::V2 do |message|
-      client.chat_postMessage(
-        channel: message.data.channel,
-        text: message.data.text,
-        blocks: message.data.blocks,
-        as_user: true
-      )
+      if message.data.blocks.present?
+        client.chat_postMessage(
+          channel: message.data.channel,
+          blocks: message.data.blocks,
+          text: message.data.text,
+          as_user: true
+        )
+      else
+        client.chat_postMessage(
+          channel: message.data.channel,
+          text: message.data.text,
+          as_user: true
+        )
+      end
 
       message_service.create_once_for_stream!(
         schema: ::Events::SlackMessageSent::V2,

@@ -14,36 +14,71 @@ RSpec.describe Slack::SlackReactor do
           schema: Commands::SendSlackMessage::V2,
           data: {
             channel: "#somechannel",
-            text: "*some text*",
-            blocks: nil
+            text:,
+            blocks:
           }
         )
       end
 
-      it "sends a slack message to the provided channel and emits and event" do
-        expect(message_service)
-          .to receive(:create_once_for_stream!)
-          .with(
-            schema: Events::SlackMessageSent::V2,
-            trace_id: message.trace_id,
-            message_id: message.stream.message_id,
-            data: {
-              channel: "#somechannel",
-              text: "*some text*",
-              blocks: nil
-            }
-          )
+      context "when just text is sent" do
+        let(:text) { "*some text*" }
+        let(:blocks) { nil }
 
-        expect(client)
-          .to receive(:chat_postMessage)
-          .with(
-            channel: '#somechannel',
-            text: "*some text*",
-            blocks: nil,
-            as_user: true
-          )
+        it "sends a slack message to the provided channel and emits and event" do
+          expect(message_service)
+            .to receive(:create_once_for_stream!)
+            .with(
+              schema: Events::SlackMessageSent::V2,
+              trace_id: message.trace_id,
+              message_id: message.stream.message_id,
+              data: {
+                channel: "#somechannel",
+                text:,
+                blocks:
+              }
+            )
 
-        subject
+          expect(client)
+            .to receive(:chat_postMessage)
+            .with(
+              channel: '#somechannel',
+              text:,
+              as_user: true
+            )
+
+          subject
+        end
+      end
+
+      context "when text and blocks are sent" do
+        let(:text) { "*some text*" }
+        let(:blocks) { [{ "some" => "block" }] }
+
+        it "sends a slack message to the provided channel and emits and event" do
+          expect(message_service)
+            .to receive(:create_once_for_stream!)
+            .with(
+              schema: Events::SlackMessageSent::V2,
+              trace_id: message.trace_id,
+              message_id: message.stream.message_id,
+              data: {
+                channel: "#somechannel",
+                text:,
+                blocks:
+              }
+            )
+
+          expect(client)
+            .to receive(:chat_postMessage)
+            .with(
+              channel: '#somechannel',
+              text:,
+              blocks:,
+              as_user: true
+            )
+
+          subject
+        end
       end
     end
   end

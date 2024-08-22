@@ -97,17 +97,6 @@ module Coaches
       )
     end
 
-    def update_barriers(person_id:, barriers:, trace_id:)
-      message_service.create!(
-        schema: People::Events::BarrierUpdated::V3,
-        person_id:,
-        trace_id:,
-        data: {
-          barriers:
-        }
-      )
-    end
-
     def assign_coach(person_id:, coach_id:, trace_id:)
       message_service.create!(
         schema: People::Events::CoachAssigned::V3,

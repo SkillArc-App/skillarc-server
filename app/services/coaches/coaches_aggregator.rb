@@ -7,17 +7,9 @@ module Coaches
       Reminder.delete_all
       Coaches::PersonAttribute.delete_all
       PersonContext.delete_all
-      Barrier.delete_all
       Coach.delete_all
       Job.delete_all
       FeedEvent.delete_all
-    end
-
-    on_message Events::BarrierAdded::V1, :sync do |message|
-      Barrier.create!(
-        barrier_id: message.data.barrier_id,
-        name: message.data.name
-      )
     end
 
     on_message Events::CoachAdded::V1, :sync do |message|
@@ -118,12 +110,6 @@ module Coaches
         description:
           "#{first_name} #{last_name}'s application for #{data.employment_title} at #{data.employer_name} has been updated to #{status}."
       )
-    end
-
-    on_message People::Events::BarrierUpdated::V3, :sync do |message|
-      person_context = PersonContext.find(message.stream.id)
-
-      person_context.update!(barriers: message.data.barriers)
     end
 
     on_message People::Events::CoachAssigned::V3, :sync do |message|

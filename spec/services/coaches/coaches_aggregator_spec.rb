@@ -9,29 +9,6 @@ RSpec.describe Coaches::CoachesAggregator do
   describe "#handle_message" do
     subject { consumer.handle_message(message) }
 
-    context "when the message is barrier_added" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::BarrierAdded::V1,
-          data: {
-            barrier_id: id,
-            name: "A lame barrier"
-          }
-        )
-      end
-
-      it "Creates a barrier record" do
-        expect { subject }.to change {
-          Barrier.count
-        }.from(0).to(1)
-
-        barrier = Barrier.last_created
-        expect(barrier.barrier_id).to eq(id)
-        expect(barrier.name).to eq("A lame barrier")
-      end
-    end
-
     context "when the message is person added" do
       let(:message) do
         build(
@@ -321,26 +298,6 @@ RSpec.describe Coaches::CoachesAggregator do
           expect(seeker_note.note_taken_by).to eq(message.data.originator)
           expect(seeker_note.id).to eq(message.data.note_id)
           expect(seeker_note.note).to eq(message.data.note)
-        end
-      end
-
-      context "when the message is barrier updated" do
-        let(:message) do
-          build(
-            :message,
-            schema: People::Events::BarrierUpdated::V3,
-            stream_id: person_id,
-            data: {
-              barriers: [SecureRandom.uuid]
-            }
-          )
-        end
-
-        it "Updates barriers" do
-          subject
-
-          person_context.reload
-          expect(person_context.barriers).to eq(message.data.barriers)
         end
       end
 

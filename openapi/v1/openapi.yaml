@@ -45,6 +45,8 @@ paths:
                       type: array
                       items:
                         type: string
+                    machineDerived:
+                      type: boolean
                     default:
                       type: array
                       items:
@@ -627,6 +629,8 @@ paths:
                     description:
                       type: string
                       nullable: true
+                    machineDerived:
+                      type: boolean
                     name:
                       type: string
                     set:
@@ -1222,45 +1226,6 @@ paths:
               required:
               - context_id
               - note
-  "/coaches/contexts/{id}/update_barriers":
-    put:
-      summary: update barriers
-      tags:
-      - Coaches
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      security:
-      - bearer_auth: []
-      responses:
-        '401':
-          description: unauthenticated
-        '202':
-          description: Update barriers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                barriers:
-                  type: array
-                  items:
-                    type: string
-              required:
-              - barriers
   "/coaches/seekers/{id}/certify":
     post:
       summary: Certify a seeker
@@ -2238,6 +2203,34 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/employer"
+  "/industries":
+    get:
+      summary: Get all industries
+      tags:
+      - Other
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Retrieve all employers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
   "/job_orders/orders/{id}/candidates/{person_id}":
     put:
       summary: updates a candidate status

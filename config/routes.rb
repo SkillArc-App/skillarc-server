@@ -14,7 +14,6 @@ Rails.application.routes.draw do
       post 'skill-levels' => 'contexts#update_skill_level'
       post 'assign_coach' => 'contexts#assign'
       post 'recommend_job' => 'contexts#recommend_job'
-      put 'update_barriers' => 'seeker_barriers#update_all'
     end
     resources :tasks, only: %i[index]
     scope path: 'tasks' do

@@ -11,7 +11,7 @@ module Events
       end
     end
 
-    V1 = Core::Schema.active(
+    V1 = Core::Schema.inactive(
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,

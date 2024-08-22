@@ -292,25 +292,6 @@ RSpec.describe Coaches::CoachesEventEmitter do
     end
   end
 
-  describe "#update_barriers" do
-    subject { instance.update_barriers(person_id:, barriers: [barrier.barrier_id], trace_id:) }
-
-    let(:barrier) { create(:barrier) }
-
-    it "creates an event" do
-      expect(message_service).to receive(:create!).with(
-        schema: People::Events::BarrierUpdated::V3,
-        person_id:,
-        trace_id:,
-        data: {
-          barriers: [barrier.barrier_id]
-        }
-      ).and_call_original
-
-      subject
-    end
-  end
-
   describe "#assign_coach" do
     subject { instance.assign_coach(person_id:, coach_id:, trace_id:) }
 

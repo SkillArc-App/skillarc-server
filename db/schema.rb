@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_22_145833) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_22_195227) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -237,6 +237,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_22_145833) do
     t.string "email"
     t.string "user_id", null: false
     t.index ["user_id"], name: "index_coaches_coaches_on_user_id"
+  end
+
+  create_table "coaches_contacts", force: :cascade do |t|
+    t.uuid "coaches_person_context_id"
+    t.text "note", null: false
+    t.string "contact_direction", null: false
+    t.string "contact_type", null: false
+    t.datetime "contacted_at", null: false
+    t.index ["coaches_person_context_id"], name: "index_coaches_contacts_on_coaches_person_context_id"
   end
 
   create_table "coaches_feed_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1090,6 +1099,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_22_145833) do
   add_foreign_key "career_paths", "jobs", name: "CareerPath_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "chats_messages", "chats_applicant_chats", column: "chats_applicant_chats_id"
   add_foreign_key "chats_read_receipts", "chats_applicant_chats", column: "chats_applicant_chats_id"
+  add_foreign_key "coaches_contacts", "coaches_person_contexts"
   add_foreign_key "credentials", "organizations", name: "Credential_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "desired_certifications", "jobs", name: "DesiredCertification_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_skills", "jobs", name: "DesiredSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict

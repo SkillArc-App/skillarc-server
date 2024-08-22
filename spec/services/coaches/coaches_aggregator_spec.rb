@@ -316,7 +316,7 @@ RSpec.describe Coaches::CoachesAggregator do
 
         let(:coach) { create(:coaches__coach) }
 
-        it "Updates the coach seeker context" do
+        it "Updates the person context" do
           subject
 
           person_context.reload
@@ -405,7 +405,7 @@ RSpec.describe Coaches::CoachesAggregator do
           )
         end
 
-        it "Updates the coach seeker context" do
+        it "Updates the person context" do
           subject
 
           person_context.reload
@@ -499,7 +499,7 @@ RSpec.describe Coaches::CoachesAggregator do
 
         let(:user_id) { nil }
 
-        it "Updates the coach seeker context" do
+        it "Updates the person context" do
           subject
 
           person_context.reload
@@ -523,7 +523,7 @@ RSpec.describe Coaches::CoachesAggregator do
           )
         end
 
-        it "Updates the coach seeker context" do
+        it "Updates the person context" do
           subject
 
           person_context.reload
@@ -531,6 +531,26 @@ RSpec.describe Coaches::CoachesAggregator do
           expect(person_context.last_name).to eq(message.data.last_name)
           expect(person_context.phone_number).to eq(message.data.phone_number)
           expect(person_context.email).to eq(message.data.email)
+        end
+      end
+
+      context "when the message is contacted" do
+        let(:message) do
+          build(
+            :message,
+            schema: Users::Events::Contacted::V1,
+            data: {
+              person_id:
+            },
+            occurred_at: Time.zone.local(1999, 1, 1)
+          )
+        end
+
+        it "Updates the person context" do
+          subject
+
+          person_context.reload
+          expect(person_context.last_contacted_at).to eq(message.occurred_at)
         end
       end
 

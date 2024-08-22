@@ -53,7 +53,8 @@ module SubscriberInitializer
       DbStreamListener.build(consumer: JobOrders::StatusReactor.new, listener_name: "job_order_status_reactor"),
       DbStreamListener.build(consumer: JobOrders::CriteriaMetReactor.new, listener_name: "job_order_criteria_met_reactor"),
       DbStreamListener.build(consumer: Industries::IndustriesReactor.new, listener_name: "interests_reactor"),
-      DbStreamListener.build(consumer: TrainingProviders::TrainingProviderAttributeReactor.new, listener_name: "training_provider_attribute_reactor")
+      DbStreamListener.build(consumer: TrainingProviders::TrainingProviderAttributeReactor.new, listener_name: "training_provider_attribute_reactor"),
+      DbStreamListener.build(consumer: People::PersonContactedReactor.new, listener_name: "person_contact_reactor")
     ]
 
     (aggregators + reactors).each do |listener|

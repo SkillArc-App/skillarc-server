@@ -6,6 +6,7 @@ module People
       BARRIERS_UPDATED = 'barriers_updated',
       BASIC_INFO_ADDED = 'basic_info_added',
       COACH_ASSIGNED = 'coach_assigned',
+      CONTACTED = 'contacted',
       CONTACT_PREFERENCE_SET = "contact_preference_set",
       DATE_OF_BIRTH_ADDED = 'date_of_birth_added',
       EDUCATION_EXPERIENCE_ADDED = 'education_experience_added',
@@ -51,6 +52,7 @@ module People
       ADD_PERSON_ATTRIBUTE = 'add_person_attribute',
       ASSIGN_COACH = "assign_coach",
       COMPLETE_ONBOARDING = 'complete_onboarding',
+      CONTACT = 'contact',
       REMOVE_PERSON_ATTRIBUTE = 'remove_person_attribute',
       START_ONBOARDING = "start_onboarding"
     ].freeze

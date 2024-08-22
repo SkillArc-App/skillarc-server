@@ -1,19 +1,29 @@
+# frozen_string_literal: true
+
 module Contact
+  module ContactType
+    ALL = [
+      EMAIL = "email",
+      PHONE = "phone",
+      SMS = "sms"
+    ].freeze
+  end
+
   module ContactPreference
     ALL = [
-      SLACK = "slack".freeze,
-      EMAIL = "email".freeze,
-      SMS = "sms".freeze,
-      IN_APP_NOTIFICATION = "in_app_notification".freeze,
-      NONE = "none".freeze
+      SLACK = "slack",
+      EMAIL = "email",
+      SMS = "sms",
+      IN_APP_NOTIFICATION = "in_app_notification",
+      NONE = "none"
     ].freeze
   end
 
   module MessageStates
     ALL = [
-      ENQUEUED = "enqueued".freeze,
-      COMPLETED = "completed".freeze,
-      FAILED = "failed".freeze
+      ENQUEUED = "enqueued",
+      COMPLETED = "completed",
+      FAILED = "failed"
     ].freeze
   end
 end

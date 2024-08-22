@@ -8,10 +8,10 @@ module PeopleSearch
                    .joins(attributes_people: :person_attribute)
                    .where(person_attribute: { attribute_id: attributes.keys, value: attributes.values.flatten })
                    .group('people_search_people.id')
-                   .having("COUNT(DISTINCT person_attribute.attribute_id) = #{attributes.keys.length}")
+                   .having("COUNT(DISTINCT person_attribute.attribute_id) = ?", attributes.keys.length)
                end
 
-      people = people.where("search_vector ilike '%#{search_terms}%'") if search_terms.present?
+      people = people.where("search_vector ilike ?", "%#{search_terms}%") if search_terms.present?
 
       message_service.create!(
         schema: Events::PersonSearchExecuted::V3,

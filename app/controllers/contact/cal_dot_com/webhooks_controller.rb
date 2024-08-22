@@ -14,10 +14,10 @@ module Contact
           return
         end
 
-        params.permit!
+        result = params.permit(:triggerEvent, :payload, :createdAt)
 
         with_message_service do
-          WebhookService.handle_webhook(params.to_h)
+          WebhookService.handle_webhook(result.to_h)
         end
 
         head :accepted

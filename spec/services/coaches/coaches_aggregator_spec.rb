@@ -46,7 +46,7 @@ RSpec.describe Coaches::CoachesAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::CoachAdded::V1,
+          schema: Users::Events::CoachAdded::V1,
           data: {
             email: "some@email.com",
             coach_id: id
@@ -399,7 +399,7 @@ RSpec.describe Coaches::CoachesAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::SessionStarted::V1,
+            schema: Users::Events::SessionStarted::V1,
             stream_id: user_id,
             data: Core::Nothing
           )

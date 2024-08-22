@@ -15,7 +15,7 @@ module People
         type: Core::EVENT,
         data: Data::V1,
         metadata: Core::Nothing,
-        stream: ::Streams::User,
+        stream: Users::Streams::User,
         message_type: MessageTypes::SLACK_ID_ADDED,
         version: 1
       )

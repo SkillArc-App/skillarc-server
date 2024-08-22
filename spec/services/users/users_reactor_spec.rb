@@ -9,6 +9,11 @@ RSpec.describe Users::UsersReactor do
       instance.handle_message(message)
     end
 
+    before do
+      Event.from_messages!(messages)
+    end
+
+    let(:messages) { [] }
     let(:message_service) { MessageService.new }
     let(:instance) { described_class.new(message_service:) }
 
@@ -16,7 +21,7 @@ RSpec.describe Users::UsersReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::RoleAdded::V2,
+          schema: Users::Events::RoleAdded::V2,
           stream_id: user_id,
           data: {
             role:
@@ -48,7 +53,7 @@ RSpec.describe Users::UsersReactor do
         let(:user_created) do
           build(
             :message,
-            schema: Events::UserCreated::V1,
+            schema: Users::Events::UserCreated::V1,
             stream_id: user_id,
             data: {
               email:
@@ -58,7 +63,7 @@ RSpec.describe Users::UsersReactor do
 
         let(:email) { nil }
         let(:role) { Role::Types::COACH }
-        let(:stream) { Streams::User.new(user_id:) }
+        let(:stream) { Users::Streams::User.new(user_id:) }
 
         context "when a user created does not exist" do
           let(:messages) { [] }
@@ -92,7 +97,7 @@ RSpec.describe Users::UsersReactor do
               .to receive(:create_once_for_stream!)
               .with(
                 trace_id: message.trace_id,
-                schema: Events::CoachAdded::V1,
+                schema: Users::Events::CoachAdded::V1,
                 user_id: message.stream.id,
                 data: {
                   coach_id: be_a(String),
@@ -112,7 +117,7 @@ RSpec.describe Users::UsersReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::UserCreated::V1
+          schema: Users::Events::UserCreated::V1
         )
       end
 
@@ -132,6 +137,64 @@ RSpec.describe Users::UsersReactor do
           .and_call_original
 
         subject
+      end
+    end
+
+    context "when the message is contact" do
+      let(:message) do
+        build(
+          :message,
+          schema: Users::Commands::Contact::V1,
+          data: {
+            person_id:
+          }
+        )
+      end
+
+      let(:person_id) { SecureRandom.uuid }
+
+      let(:person) do
+        build(
+          :message,
+          stream_id: person_id,
+          schema: People::Events::PersonAdded::V1
+        )
+      end
+
+      context "when the the person is missing" do
+        let(:messages) { [] }
+
+        it "does nothing" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service).not_to receive(:save!)
+
+          subject
+        end
+      end
+
+      context "when the person is present" do
+        let(:messages) { [person] }
+
+        it "emits a contacted event" do
+          allow(message_service).to receive(:query).and_call_original
+          expect(message_service)
+            .to receive(:create_once_for_trace!)
+            .with(
+              schema: Users::Events::Contacted::V1,
+              trace_id: message.trace_id,
+              stream: message.stream,
+              data: {
+                person_id: message.data.person_id,
+                note: message.data.note,
+                contact_direction: message.data.contact_direction,
+                contact_type: message.data.contact_type
+              }
+            )
+            .twice
+            .and_call_original
+
+          subject
+        end
       end
     end
   end

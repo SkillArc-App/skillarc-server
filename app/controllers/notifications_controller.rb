@@ -9,7 +9,7 @@ class NotificationsController < ApplicationController
 
     with_message_service do
       message_service.create!(
-        schema: Events::NotificationMarkedRead::V2,
+        schema: Users::Events::NotificationMarkedRead::V2,
         user_id: current_user.id,
         data: {
           notification_ids:

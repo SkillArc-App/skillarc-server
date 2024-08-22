@@ -22,7 +22,7 @@ module Commands
       type: Core::COMMAND,
       data: Data::V1,
       metadata: Core::Nothing,
-      stream: Streams::User,
+      stream: Users::Streams::User,
       message_type: MessageTypes::Seekers::ADD_SEEKER,
       version: 1
     )

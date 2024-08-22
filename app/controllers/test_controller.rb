@@ -18,7 +18,7 @@ class TestController < ApplicationController
 
       message_service.create!(
         user_id: person.user_id,
-        schema: Events::RoleAdded::V2,
+        schema: Users::Events::RoleAdded::V2,
         data: {
           role: Role::Types::COACH
         }

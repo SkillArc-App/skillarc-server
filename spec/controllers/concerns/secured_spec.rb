@@ -35,7 +35,7 @@ RSpec.describe ApplicationController, type: :controller do
         .to receive(:create!)
         .with(
           user_id: be_a(String),
-          schema: Events::UserCreated::V1,
+          schema: Users::Events::UserCreated::V1,
           data: {
             email:,
             first_name: nil,

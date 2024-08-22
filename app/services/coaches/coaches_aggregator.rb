@@ -12,7 +12,7 @@ module Coaches
       FeedEvent.delete_all
     end
 
-    on_message Events::CoachAdded::V1, :sync do |message|
+    on_message Users::Events::CoachAdded::V1, :sync do |message|
       Coach.create!(
         id: message.data.coach_id,
         user_id: message.stream.id,
@@ -145,7 +145,19 @@ module Coaches
 
     on_message People::Events::NoteAdded::V4, :sync do |message|
       person_context = PersonContext.find(message.stream.id)
-      person_context.update!(last_contacted_at: message.occurred_at)
+
+      PersonNote.create!(
+        person_context:,
+        note_taken_at: message.occurred_at,
+        note_taken_by: message.data.originator,
+        id: message.data.note_id,
+        note: message.data.note
+      )
+    end
+
+    on_message Users::Events::Contacted::V1, :sync do |message|
+      PersonContext.find(message.data.from_person_id)
+      PersonContext.find(message.data.to_person_id)
 
       PersonNote.create!(
         person_context:,
@@ -200,7 +212,7 @@ module Coaches
       )
     end
 
-    on_message Events::SessionStarted::V1 do |message|
+    on_message Users::Events::SessionStarted::V1 do |message|
       person_context = PersonContext.find_by(user_id: message.stream.id)
       return if person_context.nil?
 

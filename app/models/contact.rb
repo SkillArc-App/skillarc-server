@@ -9,6 +9,13 @@ module Contact
     ].freeze
   end
 
+  module ContactDirection
+    ALL = [
+      SENT = "sent",
+      RECEIVED = "received"
+    ].freeze
+  end
+
   module ContactPreference
     ALL = [
       SLACK = "slack",

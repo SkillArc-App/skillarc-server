@@ -1,15 +1,12 @@
-module People
+module Users
   module Events
-    module Contacted
+    module PersonViewed
       module Data
         class V1
           extend Core::Payload
 
           schema do
-            from_person_id Uuid
-            to_person_id Uuid
-            note String
-            contact_type Either(*::Contact::ContactType::ALL)
+            person_id Uuid
           end
         end
       end
@@ -18,8 +15,8 @@ module People
         type: Core::EVENT,
         data: Data::V1,
         metadata: Core::Nothing,
-        stream: Streams::Person,
-        message_type: MessageTypes::CONTACTED,
+        stream: Streams::User,
+        message_type: MessageTypes::PERSON_VIEWED,
         version: 1
       )
     end

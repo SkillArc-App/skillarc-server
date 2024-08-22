@@ -1,4 +1,4 @@
-module People
+module Users
   module Commands
     module Contact
       module Data
@@ -6,9 +6,9 @@ module People
           extend Core::Payload
 
           schema do
-            from_person_id Uuid
-            to_person_id Uuid
+            person_id Uuid
             note String
+            contact_direction Either(*::Contact::ContactDirection::ALL)
             contact_type Either(*::Contact::ContactType::ALL)
           end
         end
@@ -18,7 +18,7 @@ module People
         type: Core::COMMAND,
         data: Data::V1,
         metadata: Core::Nothing,
-        stream: Streams::Person,
+        stream: Streams::User,
         message_type: MessageTypes::CONTACT,
         version: 1
       )

@@ -189,7 +189,7 @@ RSpec.describe SeekerService do
         expect_any_instance_of(MessageService)
           .to receive(:create!)
           .with(
-            schema: Events::PersonViewed::V1,
+            schema: Users::Events::PersonViewed::V1,
             user_id:,
             data: {
               person_id: seeker.id

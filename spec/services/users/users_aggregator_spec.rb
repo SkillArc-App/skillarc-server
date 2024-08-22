@@ -10,7 +10,7 @@ RSpec.describe Users::UsersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::RoleAdded::V2,
+          schema: Users::Events::RoleAdded::V2,
           stream_id: user.id,
           data: {
             role:

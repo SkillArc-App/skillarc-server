@@ -10,8 +10,8 @@ module Invites
 
     on_message Commands::AcceptEmployerInvite::V1 do |message|
       user_created = Projectors::Streams::GetFirst.project(
-        schema: Events::UserCreated::V1,
-        stream: Streams::User.new(user_id: message.data.user_id)
+        schema: Users::Events::UserCreated::V1,
+        stream: Users::Streams::User.new(user_id: message.data.user_id)
       )
 
       invite_created = Projectors::Streams::GetFirst.project(
@@ -67,8 +67,8 @@ module Invites
 
     on_message Commands::AcceptTrainingProviderInvite::V1 do |message|
       user_created = Projectors::Streams::GetFirst.project(
-        schema: Events::UserCreated::V1,
-        stream: Streams::User.new(user_id: message.data.user_id)
+        schema: Users::Events::UserCreated::V1,
+        stream: Users::Streams::User.new(user_id: message.data.user_id)
       )
 
       invite_created = Projectors::Streams::GetFirst.project(

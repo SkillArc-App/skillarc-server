@@ -23,7 +23,7 @@ module Users
       )
     end
 
-    on_message Events::TrainingProviderInviteAccepted::V2 do |message|
+    on_message ::Events::TrainingProviderInviteAccepted::V2 do |message|
       TrainingProviderProfile.create!(
         id: message.data.training_provider_profile_id,
         user_id: message.data.user_id,
@@ -31,7 +31,7 @@ module Users
       )
     end
 
-    on_message Events::EmployerInviteAccepted::V2 do |message|
+    on_message ::Events::EmployerInviteAccepted::V2 do |message|
       Recruiter.create!(
         id: SecureRandom.uuid,
         user_id: message.data.user_id,

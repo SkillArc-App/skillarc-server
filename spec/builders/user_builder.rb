@@ -24,7 +24,7 @@ module Builders
 
       message_service.create!(
         user_id: id,
-        schema: Events::UserCreated::V1,
+        schema: Users::Events::UserCreated::V1,
         data: {
           first_name:,
           last_name:,
@@ -36,7 +36,7 @@ module Builders
       roles.each do |role|
         message_service.create!(
           user_id: id,
-          schema: Events::RoleAdded::V2,
+          schema: Users::Events::RoleAdded::V2,
           data: {
             role:
           }

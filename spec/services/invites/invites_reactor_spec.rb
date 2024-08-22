@@ -38,7 +38,7 @@ RSpec.describe Invites::InvitesReactor do
       let(:user_created) do
         build(
           :message,
-          schema: Events::UserCreated::V1,
+          schema: Users::Events::UserCreated::V1,
           stream_id: user_id,
           data: {
             email: user_created_email
@@ -208,7 +208,7 @@ RSpec.describe Invites::InvitesReactor do
       let(:user_created) do
         build(
           :message,
-          schema: Events::UserCreated::V1,
+          schema: Users::Events::UserCreated::V1,
           stream_id: user_id,
           data: {
             email: user_created_email

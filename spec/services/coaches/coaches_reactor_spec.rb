@@ -51,7 +51,7 @@ RSpec.describe Coaches::CoachesReactor do
       let(:coach_added) do
         build(
           :message,
-          schema: Events::CoachAdded::V1,
+          schema: Users::Events::CoachAdded::V1,
           data: {
             coach_id:,
             email: "coach@B.com"

@@ -66,7 +66,7 @@ RSpec.describe Attributes::AttributesReactor do
 
           it "emits a created event" do
             expect(message_service)
-              .to receive(:create_once_for_trace!)
+              .to receive(:create_once_for_stream!)
               .with(
                 schema: Attributes::Events::Created::V3,
                 trace_id: message.trace_id,

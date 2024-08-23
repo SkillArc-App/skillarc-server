@@ -11,7 +11,7 @@ module Attributes
     on_message Commands::Create::V1, :sync do |message|
       return failed(NON_UNIQUE, message) if message.data.set.length != Set.new(message.data.set).length
 
-      messages = MessageService.stream_events(message.stream).select { |m| m.occurred_at <= message.occurred_at }
+      messages = message_service.query.by_stream(message.stream).before(message).fetch
       attributed_created = Projectors::Streams::GetFirst.new(schema: Events::Created::V3).project(messages)
 
       return failed(UNAUTHORIZED, message) if attributed_created&.data&.machine_derived && message.metadata.requestor_type != Requestor::Kinds::SERVER
@@ -30,7 +30,9 @@ module Attributes
           metadata: message.metadata
         )
       else
-        message_service.create_once_for_trace!(
+        # TODO: We shouldn't fundamentally need to do this once for stream as
+        # we should be able to catch it above on GetFirst. investigate this hack
+        message_service.create_once_for_stream!(
           schema: Events::Created::V3,
           trace_id: message.trace_id,
           stream: message.stream,

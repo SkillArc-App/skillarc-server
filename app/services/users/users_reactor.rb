@@ -37,7 +37,7 @@ module Users
       )
     end
 
-    on_message Commands::Contact::V1 do |message|
+    on_message Commands::Contact::V1, :sync do |message|
       return unless message_service.query.by_stream(People::Streams::Person.new(person_id: message.data.person_id)).by_schema(People::Events::PersonAdded::V1).exists?
 
       message_service.create_once_for_trace!(

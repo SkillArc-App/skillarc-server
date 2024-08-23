@@ -105,8 +105,8 @@ RSpec.describe "Coaches::Contexts", type: :request do
           schema '$ref' => '#/components/schemas/coach_seeker'
 
           before do
-            person_context.update(barriers: [create(:barrier).id])
             create(:coaches__person_note, person_context:)
+            create(:coaches__contact, person_context:)
             create(:coaches__person_application, person_context:)
             create(:coaches__person_job_recommendation, person_context:)
 
@@ -123,52 +123,6 @@ RSpec.describe "Coaches::Contexts", type: :request do
             expect(Coaches::CoachesQuery)
               .to receive(:find_person)
               .with(id)
-              .and_call_original
-          end
-
-          run_test!
-        end
-      end
-    end
-  end
-
-  path '/coaches/contexts/{id}/skill-levels' do
-    post "Update a skill level" do
-      tags 'Seekers'
-      consumes 'application/json'
-      parameter name: :id, in: :path, type: :string
-      parameter name: :update, in: :body, schema: {
-        type: :object,
-        properties: {
-          level: {
-            type: :string
-          }
-        },
-        required: %w[level]
-      }
-      security [bearer_auth: []]
-
-      include_context "olive branch casing parameter"
-      include_context "olive branch camelcasing"
-
-      it_behaves_like "coach spec unauthenticated openapi"
-
-      let(:person_context) { create(:coaches__person_context) }
-      let(:id) { person_context.id }
-      let(:update) do
-        {
-          level: "advanced"
-        }
-      end
-
-      context "when authenticated" do
-        include_context "coach authenticated openapi"
-
-        response '202', 'retrieve all seekers' do
-          before do
-            expect_any_instance_of(Coaches::CoachesEventEmitter)
-              .to receive(:update_skill_level)
-              .with(person_id: id, skill_level: update[:level], trace_id: be_a(String))
               .and_call_original
           end
 

@@ -21,7 +21,7 @@ module Seekers
     def save
       with_message_service do
         message_service.create!(
-          schema: Events::JobSaved::V1,
+          schema: Users::Events::JobSaved::V1,
           user_id: current_user.id,
           data: {
             job_id: job.id,
@@ -37,7 +37,7 @@ module Seekers
     def unsave
       with_message_service do
         message_service.create!(
-          schema: Events::JobUnsaved::V1,
+          schema: Users::Events::JobUnsaved::V1,
           user_id: current_user.id,
           data: {
             job_id: job.id,

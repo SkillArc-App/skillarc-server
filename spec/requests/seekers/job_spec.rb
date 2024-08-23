@@ -157,7 +157,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::JobSaved::V1,
+                schema: Users::Events::JobSaved::V1,
                 user_id: user.id,
                 data: {
                   job_id: job.id,
@@ -197,7 +197,7 @@ RSpec.describe "Seekers::JobsController", type: :request do
             expect_any_instance_of(MessageService)
               .to receive(:create!)
               .with(
-                schema: Events::JobUnsaved::V1,
+                schema: Users::Events::JobUnsaved::V1,
                 user_id: user.id,
                 data: {
                   job_id: job.id,

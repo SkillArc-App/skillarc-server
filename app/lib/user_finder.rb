@@ -23,7 +23,7 @@ class UserFinder
       with_message_service do
         message_service.create!(
           user_id: new_user.id,
-          schema: Events::UserCreated::V1,
+          schema: Users::Events::UserCreated::V1,
           data: {
             first_name: new_user.first_name,
             last_name: new_user.last_name,

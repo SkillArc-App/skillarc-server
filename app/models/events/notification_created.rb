@@ -39,7 +39,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      stream: Streams::User,
+      stream: Users::Streams::User,
       message_type: MessageTypes::NOTIFICATION_CREATED,
       version: 1
     )
@@ -47,7 +47,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      stream: Streams::User,
+      stream: Users::Streams::User,
       message_type: MessageTypes::NOTIFICATION_CREATED,
       version: 2
     )

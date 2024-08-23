@@ -45,6 +45,8 @@ paths:
                       type: array
                       items:
                         type: string
+                    machineDerived:
+                      type: boolean
                     default:
                       type: array
                       items:
@@ -627,6 +629,8 @@ paths:
                     description:
                       type: string
                       nullable: true
+                    machineDerived:
+                      type: boolean
                     name:
                       type: string
                     set:
@@ -761,6 +765,61 @@ paths:
           description: unauthenticated
         '202':
           description: Removes an attribute
+  "/coaches/contexts/{id}/contacts":
+    post:
+      summary: Create a contact
+      tags:
+      - Coaches
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        schema:
+          type: string
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: unauthenticated
+        '201':
+          description: tracks communication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job:
+                  type: object
+                  properties:
+                    note:
+                      type: string
+                    contactDirection:
+                      type: string
+                      enum:
+                      - sent
+                      - received
+                    contactType:
+                      type: string
+                      enum:
+                      - email
+                      - phone
+                      - sms
+              required:
+              - personId
+              - note
+              - contactDirection
+              - contactType
   "/coaches/contexts":
     get:
       summary: Retrieve all contexts
@@ -830,43 +889,6 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/coach_seeker"
-  "/coaches/contexts/{id}/skill-levels":
-    post:
-      summary: Update a skill level
-      tags:
-      - Seekers
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      security:
-      - bearer_auth: []
-      responses:
-        '401':
-          description: unauthenticated
-        '202':
-          description: retrieve all seekers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                level:
-                  type: string
-              required:
-              - level
   "/coaches/contexts/{id}/assign_coach":
     post:
       summary: Update a skill level
@@ -1222,45 +1244,6 @@ paths:
               required:
               - context_id
               - note
-  "/coaches/contexts/{id}/update_barriers":
-    put:
-      summary: update barriers
-      tags:
-      - Coaches
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: Key-Inflection
-        in: header
-        schema:
-          type: string
-          enum:
-          - camel
-          - dash
-          - snake
-          - pascale
-      security:
-      - bearer_auth: []
-      responses:
-        '401':
-          description: unauthenticated
-        '202':
-          description: Update barriers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                barriers:
-                  type: array
-                  items:
-                    type: string
-              required:
-              - barriers
   "/coaches/seekers/{id}/certify":
     post:
       summary: Certify a seeker
@@ -2238,6 +2221,34 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/employer"
+  "/industries":
+    get:
+      summary: Get all industries
+      tags:
+      - Other
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '200':
+          description: Retrieve all employers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
   "/job_orders/orders/{id}/candidates/{person_id}":
     put:
       summary: updates a candidate status
@@ -4901,20 +4912,15 @@ components:
             type: array
             items:
               "$ref": "#/components/schemas/seeker_note"
+          contacts:
+            type: array
+            items:
+              "$ref": "#/components/schemas/coach_contact"
           jobRecommendations:
             type: array
             items:
               type: string
               format: uuid
-    seeker_barrier:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          format: uuid
     seeker_note:
       type: object
       properties:
@@ -4927,6 +4933,25 @@ components:
           type: string
           nullable: true
         date:
+          type: string
+          format: date-time
+    coach_contact:
+      type: object
+      properties:
+        note:
+          type: string
+        contactDirection:
+          type: string
+          enum:
+          - sent
+          - received
+        contactType:
+          type: string
+          enum:
+          - email
+          - phone
+          - sms
+        contactedAt:
           type: string
           format: date-time
     seeker_application:

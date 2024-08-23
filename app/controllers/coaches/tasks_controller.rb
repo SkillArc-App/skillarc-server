@@ -1,11 +1,5 @@
 module Coaches
-  class TasksController < ApplicationController
-    include Secured
-    include CoachAuth
-    include MessageEmitter
-
-    before_action :authorize
-    before_action :coach_authorize
+  class TasksController < CoachesController
     before_action :set_coach
 
     def index
@@ -42,18 +36,12 @@ module Coaches
 
     private
 
-    attr_reader :coach
-
     def reminder_hash
       params.require(:reminder).permit(
         :context_id,
         :note,
         :reminder_at
       ).to_h.symbolize_keys
-    end
-
-    def set_coach
-      @coach = Coach.find_by(user_id: current_user.id)
     end
   end
 end

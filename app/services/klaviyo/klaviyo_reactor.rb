@@ -11,7 +11,7 @@ module Klaviyo
       @client = client
     end
 
-    on_message Events::UserCreated::V1 do |message|
+    on_message Users::Events::UserCreated::V1 do |message|
       dedup_messages(message) do
         client.user_signup(
           email: message.data.email,
@@ -165,7 +165,7 @@ module Klaviyo
       end
     end
 
-    on_message Events::JobSaved::V1 do |message|
+    on_message Users::Events::JobSaved::V1 do |message|
       dedup_messages(message) do
         client.job_saved(
           email: email_for_user_stream(message.stream),
@@ -207,7 +207,7 @@ module Klaviyo
     def email_for_user_stream(stream)
       user_created = Projectors::Streams::GetFirst.project(
         stream:,
-        schema: Events::UserCreated::V1
+        schema: Users::Events::UserCreated::V1
       )
 
       raise UnableToRetrieveEmailError if user_created.nil?

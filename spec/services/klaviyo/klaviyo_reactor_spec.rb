@@ -38,7 +38,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::UserCreated::V1,
+          schema: Users::Events::UserCreated::V1,
           data: {
             first_name: "John"
           }
@@ -294,7 +294,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         Event.from_message!(
           build(
             :message,
-            schema: Events::UserCreated::V1,
+            schema: Users::Events::UserCreated::V1,
             stream_id: user_id,
             data: {
               email:
@@ -307,7 +307,7 @@ RSpec.describe Klaviyo::KlaviyoReactor do
         build(
           :message,
           stream_id: user_id,
-          schema: Events::JobSaved::V1
+          schema: Users::Events::JobSaved::V1
         )
       end
 

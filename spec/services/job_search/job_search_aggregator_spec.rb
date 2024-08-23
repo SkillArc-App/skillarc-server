@@ -367,7 +367,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           build(
             :message,
             stream_id: SecureRandom.uuid,
-            schema: Events::JobSaved::V1,
+            schema: Users::Events::JobSaved::V1,
             data: {
               job_id: job.job_id,
               employment_title: "A Job",
@@ -392,7 +392,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           build(
             :message,
             stream_id: user_id,
-            schema: Events::JobUnsaved::V1,
+            schema: Users::Events::JobUnsaved::V1,
             data: {
               job_id: job.job_id,
               employment_title: "A Job",

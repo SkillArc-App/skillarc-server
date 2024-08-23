@@ -26,7 +26,7 @@ RSpec.describe Projectors::HasOccurred do
           ),
           build(
             :message,
-            schema: Events::SessionStarted::V1,
+            schema: Users::Events::SessionStarted::V1,
             trace_id:
           )
         ]

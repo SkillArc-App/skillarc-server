@@ -106,7 +106,7 @@ module Employers
       pass_reason.destroy
     end
 
-    on_message Events::JobOwnerAssigned::V1 do |message|
+    on_message Users::Events::JobOwnerAssigned::V1 do |message|
       job = Job.find_by!(job_id: message.data.job_id)
       recruiter = Recruiter.find_by!(email: message.data.owner_email)
 

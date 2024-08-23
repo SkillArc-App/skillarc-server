@@ -10,7 +10,7 @@ module Coaches
                                    .by_schema(People::Events::PersonAdded::V1)
                                    .exists?
 
-      return if Events::CoachAdded::V1.all_messages.none? { |m| m.data.coach_id == message.data.coach_id }
+      return if Users::Events::CoachAdded::V1.all_messages.none? { |m| m.data.coach_id == message.data.coach_id }
 
       message_service.create_once_for_trace!(
         schema: People::Events::CoachAssigned::V3,

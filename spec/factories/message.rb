@@ -6,7 +6,7 @@ FactoryBot.define do
       stream_id { SecureRandom.uuid }
     end
 
-    schema { Events::SessionStarted::V1 }
+    schema { Users::Events::SessionStarted::V1 }
     trace_id { SecureRandom.uuid }
     stream { schema.stream.new(**{ schema.stream.id => stream_id }) }
     occurred_at { Time.zone.local(2020, 1, 1) }

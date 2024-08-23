@@ -37,7 +37,7 @@ RSpec.describe Contact::ContactAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::NotificationMarkedRead::V2,
+          schema: Users::Events::NotificationMarkedRead::V2,
           data: {
             notification_ids: [notification1.id, notification2.id]
           }

@@ -14,7 +14,7 @@ module Contact
       )
     end
 
-    on_message Events::NotificationMarkedRead::V2, :sync do |message|
+    on_message Users::Events::NotificationMarkedRead::V2, :sync do |message|
       notification = Contact::Notification.where(id: message.data.notification_ids)
       notification.update_all(read_at: message.occurred_at) # rubocop:disable Rails/SkipsModelValidations
     end

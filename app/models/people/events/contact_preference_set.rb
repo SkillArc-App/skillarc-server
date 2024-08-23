@@ -15,7 +15,7 @@ module People
         type: Core::EVENT,
         data: Data::V1,
         metadata: Core::Nothing,
-        stream: ::Streams::User,
+        stream: Users::Streams::User,
         message_type: MessageTypes::CONTACT_PREFERENCE_SET,
         version: 1
       )

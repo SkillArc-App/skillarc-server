@@ -9,29 +9,6 @@ RSpec.describe Coaches::CoachesAggregator do
   describe "#handle_message" do
     subject { consumer.handle_message(message) }
 
-    context "when the message is barrier_added" do
-      let(:message) do
-        build(
-          :message,
-          schema: Events::BarrierAdded::V1,
-          data: {
-            barrier_id: id,
-            name: "A lame barrier"
-          }
-        )
-      end
-
-      it "Creates a barrier record" do
-        expect { subject }.to change {
-          Barrier.count
-        }.from(0).to(1)
-
-        barrier = Barrier.last_created
-        expect(barrier.barrier_id).to eq(id)
-        expect(barrier.name).to eq("A lame barrier")
-      end
-    end
-
     context "when the message is person added" do
       let(:message) do
         build(
@@ -69,7 +46,7 @@ RSpec.describe Coaches::CoachesAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::CoachAdded::V1,
+          schema: Users::Events::CoachAdded::V1,
           data: {
             email: "some@email.com",
             coach_id: id
@@ -324,26 +301,6 @@ RSpec.describe Coaches::CoachesAggregator do
         end
       end
 
-      context "when the message is barrier updated" do
-        let(:message) do
-          build(
-            :message,
-            schema: People::Events::BarrierUpdated::V3,
-            stream_id: person_id,
-            data: {
-              barriers: [SecureRandom.uuid]
-            }
-          )
-        end
-
-        it "Updates barriers" do
-          subject
-
-          person_context.reload
-          expect(person_context.barriers).to eq(message.data.barriers)
-        end
-      end
-
       context "when the message is person sourced" do
         let(:message) do
           build(
@@ -359,7 +316,7 @@ RSpec.describe Coaches::CoachesAggregator do
 
         let(:coach) { create(:coaches__coach) }
 
-        it "Updates the coach seeker context" do
+        it "Updates the person context" do
           subject
 
           person_context.reload
@@ -442,13 +399,13 @@ RSpec.describe Coaches::CoachesAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::SessionStarted::V1,
+            schema: Users::Events::SessionStarted::V1,
             stream_id: user_id,
             data: Core::Nothing
           )
         end
 
-        it "Updates the coach seeker context" do
+        it "Updates the person context" do
           subject
 
           person_context.reload
@@ -542,7 +499,7 @@ RSpec.describe Coaches::CoachesAggregator do
 
         let(:user_id) { nil }
 
-        it "Updates the coach seeker context" do
+        it "Updates the person context" do
           subject
 
           person_context.reload
@@ -566,7 +523,7 @@ RSpec.describe Coaches::CoachesAggregator do
           )
         end
 
-        it "Updates the coach seeker context" do
+        it "Updates the person context" do
           subject
 
           person_context.reload
@@ -574,6 +531,33 @@ RSpec.describe Coaches::CoachesAggregator do
           expect(person_context.last_name).to eq(message.data.last_name)
           expect(person_context.phone_number).to eq(message.data.phone_number)
           expect(person_context.email).to eq(message.data.email)
+        end
+      end
+
+      context "when the message is contacted" do
+        let(:message) do
+          build(
+            :message,
+            schema: Users::Events::Contacted::V1,
+            data: {
+              person_id:
+            },
+            occurred_at: Time.zone.local(1999, 1, 1)
+          )
+        end
+
+        it "Updates the person context and creates a contact record" do
+          expect { subject }.to change(Coaches::Contact, :count).from(0).to(1)
+
+          person_context.reload
+          expect(person_context.last_contacted_at).to eq(message.occurred_at)
+
+          contact = Coaches::Contact.first
+          expect(contact.person_context).to eq(person_context)
+          expect(contact.contacted_at).to eq(message.occurred_at)
+          expect(contact.note).to eq(message.data.note)
+          expect(contact.contact_type).to eq(message.data.contact_type)
+          expect(contact.contact_direction).to eq(message.data.contact_direction)
         end
       end
 

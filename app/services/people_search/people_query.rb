@@ -14,12 +14,12 @@ module PeopleSearch
       people = people.where("search_vector ilike ?", "%#{search_terms}%") if search_terms.present?
 
       message_service.create!(
-        schema: Events::PersonSearchExecuted::V3,
+        schema: Users::Events::PersonSearchExecuted::V3,
         user_id: user.id,
         data: {
           search_terms:,
           attributes: attributes.map do |key, values|
-            Events::PersonSearchExecuted::Attribute::V1.new(
+            Users::Events::PersonSearchExecuted::Attribute::V1.new(
               id: key,
               values:
             )

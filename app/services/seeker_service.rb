@@ -8,7 +8,7 @@ class SeekerService
   def get(user_id: nil, seeker_editor: false)
     if user_id.present? && user_id != seeker.user_id
       message_service.create!(
-        schema: Events::PersonViewed::V1,
+        schema: Users::Events::PersonViewed::V1,
         user_id:,
         data: {
           person_id: seeker.id

@@ -32,7 +32,7 @@ module Analytics
       DimPerson.where(person_id: message.stream.person_id).update_all(analytics_dim_user_id: user.id, kind: DimPerson::Kind::SEEKER)
     end
 
-    on_message Events::UserCreated::V1 do |message|
+    on_message Users::Events::UserCreated::V1 do |message|
       data = message.data
 
       DimUser.create!(
@@ -69,11 +69,11 @@ module Analytics
       DimPerson.where(person_id: message.stream.person_id).update_all(onboarding_completed_at: message.occurred_at)
     end
 
-    on_message Events::SessionStarted::V1 do |message|
+    on_message Users::Events::SessionStarted::V1 do |message|
       DimUser.where(user_id: message.stream.user_id).update_all(last_active_at: message.occurred_at)
     end
 
-    on_message Events::CoachAdded::V1 do |message|
+    on_message Users::Events::CoachAdded::V1 do |message|
       DimUser.where(user_id: message.stream.user_id).update_all(kind: DimUser::Kind::COACH, coach_id: message.data.coach_id)
     end
 
@@ -222,7 +222,7 @@ module Analytics
       end
     end
 
-    on_message Events::PersonViewed::V1 do |message|
+    on_message Users::Events::PersonViewed::V1 do |message|
       dim_user_viewer = Analytics::DimUser.find_by!(user_id: message.stream.user_id)
       dim_person_viewed = Analytics::DimPerson.find_by!(person_id: message.data.person_id)
 

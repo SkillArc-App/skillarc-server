@@ -32,6 +32,7 @@ module Coaches
     end
 
     has_many :notes, dependent: :destroy, class_name: "Coaches::PersonNote", inverse_of: :person_context
+    has_many :contacts, dependent: :destroy, class_name: "Coaches::Contact", inverse_of: :person_context
     has_many :applications, dependent: :destroy, class_name: "Coaches::PersonApplication", inverse_of: :person_context
     has_many :job_recommendations, dependent: :destroy, class_name: "Coaches::PersonJobRecommendation", inverse_of: :person_context
     has_many :person_attributes, dependent: :destroy, class_name: "Coaches::PersonAttribute", inverse_of: :person_context

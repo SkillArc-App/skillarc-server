@@ -4,9 +4,9 @@ RSpec.describe MessageService do
   let(:instance) { described_class.new }
   let!(:schema) do
     Core::Schema.active(
-      data: Events::SeekerViewed::Data::V1,
+      data: Users::Events::SeekerViewed::Data::V1,
       metadata: Events::ApplicantStatusUpdated::MetaData::V1,
-      stream: Streams::User,
+      stream: Users::Streams::User,
       message_type:,
       version:,
       type:
@@ -31,7 +31,7 @@ RSpec.describe MessageService do
 
     let(:user_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
-    let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
+    let(:data) { Users::Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
     let(:id) { SecureRandom.uuid }
@@ -43,7 +43,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            stream: Streams::User.new(user_id:),
+            stream: Users::Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -62,7 +62,7 @@ RSpec.describe MessageService do
               id:,
               occurred_at:,
               metadata:,
-              stream: Streams::User.new(user_id:)
+              stream: Users::Streams::User.new(user_id:)
             )
           )
           .and_call_original
@@ -76,7 +76,7 @@ RSpec.describe MessageService do
         Event.from_message!(build(
                               :message,
                               schema:,
-                              stream: Streams::User.new(user_id:),
+                              stream: Users::Streams::User.new(user_id:),
                               data: {
                                 seeker_id: SecureRandom.uuid
                               },
@@ -92,7 +92,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            stream: Streams::User.new(user_id:),
+            stream: Users::Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -124,7 +124,7 @@ RSpec.describe MessageService do
 
     let(:user_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
-    let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
+    let(:data) { Users::Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
     let(:id) { SecureRandom.uuid }
@@ -136,7 +136,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            stream: Streams::User.new(user_id:),
+            stream: Users::Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -155,7 +155,7 @@ RSpec.describe MessageService do
               id:,
               occurred_at:,
               metadata:,
-              stream: Streams::User.new(user_id:)
+              stream: Users::Streams::User.new(user_id:)
             )
           )
           .and_call_original
@@ -185,7 +185,7 @@ RSpec.describe MessageService do
           .with(
             schema:,
             data:,
-            stream: Streams::User.new(user_id:),
+            stream: Users::Streams::User.new(user_id:),
             trace_id:,
             id:,
             occurred_at:,
@@ -217,7 +217,7 @@ RSpec.describe MessageService do
 
     let(:user_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
-    let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
+    let(:data) { Users::Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
     let(:id) { SecureRandom.uuid }
@@ -247,7 +247,7 @@ RSpec.describe MessageService do
             id:,
             occurred_at:,
             metadata:,
-            stream: Streams::User.new(user_id:)
+            stream: Users::Streams::User.new(user_id:)
           )
         )
         .and_call_original
@@ -271,7 +271,7 @@ RSpec.describe MessageService do
 
     let(:user_id) { SecureRandom.uuid }
     let(:trace_id) { SecureRandom.uuid }
-    let(:data) { Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
+    let(:data) { Users::Events::SeekerViewed::Data::V1.new(seeker_id: SecureRandom.uuid) }
     let(:occurred_at) { DateTime.new(2000, 1, 1) }
     let(:metadata) { Events::ApplicantStatusUpdated::MetaData::V1.new(user_id: SecureRandom.uuid) }
     let(:id) { SecureRandom.uuid }
@@ -318,7 +318,7 @@ RSpec.describe MessageService do
             expect(subject.id).to eq(id)
             expect(subject.stream_id).to eq(user_id)
             expect(subject.schema).to eq(schema)
-            expect(subject.data).to eq(Events::SeekerViewed::Data::V1.new(seeker_id: data[:seeker_id]))
+            expect(subject.data).to eq(Users::Events::SeekerViewed::Data::V1.new(seeker_id: data[:seeker_id]))
             expect(subject.metadata).to eq(metadata)
             expect(subject.occurred_at).to eq(occurred_at)
           end
@@ -406,9 +406,9 @@ RSpec.describe MessageService do
     end
 
     context "when there are cached messages" do
-      let(:message1) { build(:message, schema: Events::SessionStarted::V1) }
-      let(:message2) { build(:message, schema: Events::SessionStarted::V1) }
-      let(:message3) { build(:message, schema: Events::SessionStarted::V1) }
+      let(:message1) { build(:message, schema: Users::Events::SessionStarted::V1) }
+      let(:message2) { build(:message, schema: Users::Events::SessionStarted::V1) }
+      let(:message3) { build(:message, schema: Users::Events::SessionStarted::V1) }
 
       before do
         instance.save!(message1)
@@ -417,7 +417,7 @@ RSpec.describe MessageService do
       end
 
       it "passes them to the message query" do
-        expect(subject.by_schema(Events::SessionStarted::V1).fetch).to contain_exactly(message1, message2, message3)
+        expect(subject.by_schema(Users::Events::SessionStarted::V1).fetch).to contain_exactly(message1, message2, message3)
       end
     end
   end
@@ -437,9 +437,9 @@ RSpec.describe MessageService do
 
     let!(:other_schema) do
       Core::Schema.active(
-        data: Events::SeekerViewed::Data::V1,
+        data: Users::Events::SeekerViewed::Data::V1,
         metadata: Events::ApplicantStatusUpdated::MetaData::V1,
-        stream: Streams::User,
+        stream: Users::Streams::User,
         message_type:,
         version: 10,
         type:
@@ -537,7 +537,7 @@ RSpec.describe MessageService do
     end
 
     context "when passed an existing registered schema" do
-      let(:schema) { Events::UserCreated::V1 }
+      let(:schema) { Users::Events::UserCreated::V1 }
 
       it "raises a SchemaAlreadyDefinedError" do
         expect { subject }.to raise_error(described_class::SchemaAlreadyDefinedError)
@@ -550,8 +550,8 @@ RSpec.describe MessageService do
           Core::Schema.active(
             data: Core::Nothing,
             metadata: Core::Nothing,
-            stream: Streams::User,
-            message_type: MessageTypes::User::USER_CREATED,
+            stream: Users::Streams::User,
+            message_type: Users::MessageTypes::USER_CREATED,
             type: Core::EVENT,
             version: 2
           )
@@ -590,7 +590,7 @@ RSpec.describe MessageService do
     let(:message3) do
       build(
         :message,
-        schema: Events::SessionStarted::V1
+        schema: Users::Events::SessionStarted::V1
       )
     end
 

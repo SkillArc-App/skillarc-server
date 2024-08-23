@@ -7,11 +7,11 @@ RSpec.describe Messages::BySchema do
     end
 
     let(:active_only) { true }
-    let(:schema) { Events::SessionStarted::V1 }
+    let(:schema) { Users::Events::SessionStarted::V1 }
     let(:yes1) { build(:message, schema:) }
     let(:yes2) { build(:message, schema:) }
-    let(:no1) { build(:message, schema: Events::UserCreated::V1) }
-    let(:no2) { build(:message, schema: Events::UserCreated::V1) }
+    let(:no1) { build(:message, schema: Users::Events::UserCreated::V1) }
+    let(:no2) { build(:message, schema: Users::Events::UserCreated::V1) }
     let(:messages) { [yes2, no2] }
     let(:query_container) { build(:messages__query_container, messages:, relation: Event.all) }
 

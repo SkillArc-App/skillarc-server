@@ -7,7 +7,7 @@ class SessionController < ApplicationController
   def create
     with_message_service do
       message_service.create!(
-        schema: Events::SessionStarted::V1,
+        schema: Users::Events::SessionStarted::V1,
         user_id: current_user.id,
         data: Core::Nothing
       )

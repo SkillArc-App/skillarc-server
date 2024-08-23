@@ -5,7 +5,7 @@ RSpec.describe Projector do
     context "when no stream is given" do
       let(:sub_klass) do
         Class.new(described_class) do
-          on_message Events::SessionStarted::V1 do |_|
+          on_message Users::Events::SessionStarted::V1 do |_|
             true
           end
         end
@@ -21,7 +21,7 @@ RSpec.describe Projector do
         Class.new(described_class) do
           projection_stream Streams::Coach
 
-          on_message Events::SessionStarted::V1 do |_|
+          on_message Users::Events::SessionStarted::V1 do |_|
             true
           end
         end
@@ -37,7 +37,7 @@ RSpec.describe Projector do
     context "when called without an init method" do
       let(:sub_klass) do
         Class.new(described_class) do
-          projection_stream Streams::User
+          projection_stream Users::Streams::User
         end
       end
 
@@ -49,13 +49,13 @@ RSpec.describe Projector do
     context "when the reduces changes the accumulation type" do
       let(:sub_klass) do
         Class.new(described_class) do
-          projection_stream Streams::User
+          projection_stream Users::Streams::User
 
           def init
             10
           end
 
-          on_message Events::SessionStarted::V1 do |m, accumulator|
+          on_message Users::Events::SessionStarted::V1 do |m, accumulator|
             accumulator.to_s + m.trace_id
           end
         end
@@ -65,7 +65,7 @@ RSpec.describe Projector do
         [
           build(
             :message,
-            schema: Events::SessionStarted::V1,
+            schema: Users::Events::SessionStarted::V1,
             stream_id: user_id,
             data: Core::Nothing
           )
@@ -81,13 +81,13 @@ RSpec.describe Projector do
     context "when everything works" do
       let(:sub_klass) do
         Class.new(described_class) do
-          projection_stream Streams::User
+          projection_stream Users::Streams::User
 
           def init
             0
           end
 
-          on_message Events::SessionStarted::V1 do |_m, accumulator|
+          on_message Users::Events::SessionStarted::V1 do |_m, accumulator|
             accumulator + 1
           end
         end
@@ -98,7 +98,7 @@ RSpec.describe Projector do
         build_list(
           :message,
           count,
-          schema: Events::SessionStarted::V1,
+          schema: Users::Events::SessionStarted::V1,
           stream_id: user_id,
           data: Core::Nothing
         )

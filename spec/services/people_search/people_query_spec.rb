@@ -93,7 +93,7 @@ RSpec.describe PeopleSearch::PeopleQuery do
         expect(message_service)
           .to receive(:create!)
           .with(
-            schema: Events::PersonSearchExecuted::V3,
+            schema: Users::Events::PersonSearchExecuted::V3,
             user_id: user.id,
             data: {
               search_terms:,
@@ -122,16 +122,16 @@ RSpec.describe PeopleSearch::PeopleQuery do
         expect(message_service)
           .to receive(:create!)
           .with(
-            schema: Events::PersonSearchExecuted::V3,
+            schema: Users::Events::PersonSearchExecuted::V3,
             user_id: user.id,
             data: {
               search_terms:,
               attributes: [
-                Events::PersonSearchExecuted::Attribute::V1.new(
+                Users::Events::PersonSearchExecuted::Attribute::V1.new(
                   id: attribute_id1,
                   values: %w[dog cat]
                 ),
-                Events::PersonSearchExecuted::Attribute::V1.new(
+                Users::Events::PersonSearchExecuted::Attribute::V1.new(
                   id: attribute_id2,
                   values: %w[blue]
                 )
@@ -159,12 +159,12 @@ RSpec.describe PeopleSearch::PeopleQuery do
         expect(message_service)
           .to receive(:create!)
           .with(
-            schema: Events::PersonSearchExecuted::V3,
+            schema: Users::Events::PersonSearchExecuted::V3,
             user_id: user.id,
             data: {
               search_terms:,
               attributes: [
-                Events::PersonSearchExecuted::Attribute::V1.new(
+                Users::Events::PersonSearchExecuted::Attribute::V1.new(
                   id: attribute_id2,
                   values: %w[blue]
                 )

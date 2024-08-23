@@ -8,7 +8,7 @@ RSpec.describe Messages::Query do
       described_class.new(query_container:).by_stream(stream)
     end
 
-    let(:stream) { Streams::User.new(user_id: SecureRandom.uuid) }
+    let(:stream) { Users::Streams::User.new(user_id: SecureRandom.uuid) }
 
     it "creates a new query with a ByStream filter" do
       expect(subject.query_container).to eq(query_container)
@@ -36,7 +36,7 @@ RSpec.describe Messages::Query do
       described_class.new(query_container:).by_schema(schema)
     end
 
-    let(:schema) { Events::SessionStarted::V1 }
+    let(:schema) { Users::Events::SessionStarted::V1 }
 
     it "creates a new query with a ByTrace filter" do
       expect(subject.query_container).to eq(query_container)

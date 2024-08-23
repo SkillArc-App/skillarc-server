@@ -7,7 +7,7 @@ RSpec.describe SubscriberRegistry do
     end
 
     let(:registry) { described_class.new }
-    let(:schema) { Events::SessionStarted::V1 }
+    let(:schema) { Users::Events::SessionStarted::V1 }
 
     context "when subscriber is not a stream listener" do
       let(:subscriber) { ["cat"] }

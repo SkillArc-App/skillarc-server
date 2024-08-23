@@ -89,6 +89,14 @@ module Coaches
               date: note.note_taken_at
             }
           end,
+          contacts: person_context.contacts.map do |contact|
+            {
+              contacted_at: contact.contacted_at,
+              contact_type: contact.contact_type,
+              contact_direction: contact.contact_direction,
+              note: contact.note
+            }
+          end,
           applications: person_context.applications.map do |application|
             {
               status: application.status,

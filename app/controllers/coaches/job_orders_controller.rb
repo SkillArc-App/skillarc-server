@@ -1,12 +1,5 @@
 module Coaches
-  class JobOrdersController < ApplicationController
-    include Secured
-    include CoachAuth
-    include MessageEmitter
-
-    before_action :authorize
-    before_action :coach_authorize
-
+  class JobOrdersController < CoachesController
     def index
       render json: JobOrders::JobOrdersQuery.all_active_orders
     end

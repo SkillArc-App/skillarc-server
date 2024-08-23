@@ -7,20 +7,12 @@ module Coaches
       Reminder.delete_all
       Coaches::PersonAttribute.delete_all
       PersonContext.delete_all
-      Barrier.delete_all
       Coach.delete_all
       Job.delete_all
       FeedEvent.delete_all
     end
 
-    on_message Events::BarrierAdded::V1, :sync do |message|
-      Barrier.create!(
-        barrier_id: message.data.barrier_id,
-        name: message.data.name
-      )
-    end
-
-    on_message Events::CoachAdded::V1, :sync do |message|
+    on_message Users::Events::CoachAdded::V1, :sync do |message|
       Coach.create!(
         id: message.data.coach_id,
         user_id: message.stream.id,
@@ -120,12 +112,6 @@ module Coaches
       )
     end
 
-    on_message People::Events::BarrierUpdated::V3, :sync do |message|
-      person_context = PersonContext.find(message.stream.id)
-
-      person_context.update!(barriers: message.data.barriers)
-    end
-
     on_message People::Events::CoachAssigned::V3, :sync do |message|
       person_context = PersonContext.find(message.stream.id)
       coach = Coach.find(message.data.coach_id)
@@ -159,7 +145,6 @@ module Coaches
 
     on_message People::Events::NoteAdded::V4, :sync do |message|
       person_context = PersonContext.find(message.stream.id)
-      person_context.update!(last_contacted_at: message.occurred_at)
 
       PersonNote.create!(
         person_context:,
@@ -167,6 +152,18 @@ module Coaches
         note_taken_by: message.data.originator,
         id: message.data.note_id,
         note: message.data.note
+      )
+    end
+
+    on_message Users::Events::Contacted::V1, :sync do |message|
+      person_context = PersonContext.find(message.data.person_id)
+
+      person_context.update!(last_contacted_at: message.occurred_at)
+      person_context.contacts.create!(
+        note: message.data.note,
+        contacted_at: message.occurred_at,
+        contact_type: message.data.contact_type,
+        contact_direction: message.data.contact_direction
       )
     end
 
@@ -214,7 +211,7 @@ module Coaches
       )
     end
 
-    on_message Events::SessionStarted::V1 do |message|
+    on_message Users::Events::SessionStarted::V1 do |message|
       person_context = PersonContext.find_by(user_id: message.stream.id)
       return if person_context.nil?
 

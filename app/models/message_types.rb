@@ -20,12 +20,6 @@ module MessageTypes
     COMMANDS = [].freeze
   end
 
-  module PersonSearch
-    EVENTS = [
-      PERSON_SEARCH_EXECUTED = 'person_search_executed'
-    ].freeze
-  end
-
   module Phone
     EVENTS = [
       PERSON_ASSOCIATED_TO_PHONE_NUMBER = 'person_associated_to_phone_number'
@@ -44,8 +38,6 @@ module MessageTypes
 
   module Coaches
     EVENTS = [
-      BARRIER_ADDED = 'barrier_added',
-      COACH_ADDED = 'coach_added',
       COACH_ASSIGNMENT_WEIGHT_ADDED = 'coach_assignment_weight_added',
       COACH_REMINDER_COMPLETED = 'coach_reminder_completed',
       COACH_REMINDER_SCHEDULED = 'coach_reminder_scheduled',
@@ -136,8 +128,7 @@ module MessageTypes
 
     EVENTS = [
       EMPLOYER_CREATED = 'employer_created',
-      EMPLOYER_UPDATED = 'employer_updated',
-      JOB_OWNER_ASSIGNED = 'job_owner_assigned'
+      EMPLOYER_UPDATED = 'employer_updated'
     ].freeze
   end
 
@@ -147,11 +138,6 @@ module MessageTypes
     ].freeze
 
     EVENTS = [
-      EDUCATION_EXPERIENCE_CREATED = 'education_experience_created',
-      EDUCATION_EXPERIENCE_UPDATED = 'education_experience_updated',
-      EXPERIENCE_CREATED = 'experience_created',
-      PERSONAL_EXPERIENCE_CREATED = 'personal_experience_created',
-      PROFILE_CREATED = 'profile_created',
       SEEKER_APPLIED = 'seeker_applied',
       SEEKER_ATTRIBUTE_ADDED = 'seeker_attribute_added',
       SEEKER_ATTRIBUTE_REMOVED = 'seeker_attribute_removed',
@@ -161,7 +147,6 @@ module MessageTypes
       SEEKER_SKILL_DESTROYED = 'seeker_skill_destroyed',
       SEEKER_SKILL_UPDATED = 'seeker_skill_updated',
       SEEKER_UPDATED = 'seeker_updated',
-      SEEKER_VIEWED = 'seeker_viewed',
       USER_BASIC_INFO_ADDED = 'user_basic_info_added'
     ].freeze
   end
@@ -183,7 +168,6 @@ module MessageTypes
       SEND_MESSAGE = "send_message",
       SEND_SLACK_MESSAGE = "send_slack_message",
       SEND_EMAIL_MESSAGE = "send_email_message",
-      SET_CONTACT_PREFERENCE = "set_contact_preference",
       NOTIFY_EMPLOYER_OF_APPLICANT = 'notify_employer_of_applicant',
       SEND_WEEKLY_EMPLOYER_UPDATE = 'send_weekly_employer_update'
     ].freeze
@@ -199,18 +183,6 @@ module MessageTypes
     COMMANDS = [
       SCHEDULE_TASK = 'schedule_task',
       CANCEL_TASK = 'cancel_task'
-    ].freeze
-  end
-
-  module User
-    EVENTS = [
-      PERSON_VIEWED = 'person_viewed',
-      JOB_SAVED = 'job_saved',
-      JOB_SEARCH = 'job_search',
-      JOB_UNSAVED = 'job_unsaved',
-      ROLE_ADDED = 'role_added',
-      USER_CREATED = 'user_created',
-      USER_UPDATED = 'user_updated'
     ].freeze
   end
 
@@ -251,19 +223,12 @@ module MessageTypes
 
   EVENTS = [
     APPLICANT_STATUS_UPDATED = 'applicant_status_updated',
-
     DAY_ELAPSED = 'day_elapsed',
-    MET_CAREER_COACH_UPDATED = 'met_career_coach_updated',
     NOTIFICATION_CREATED = 'notification_created',
-    NOTIFICATIONS_MARKED_READ = 'notifications_marked_read',
-    REASON_CREATED = 'reason_created',
-    SESSION_STARTED = 'session_started',
     *Documents::MessageTypes::EVENTS,
     *Teams::MessageTypes::EVENTS,
     *Qualifications::EVENTS,
     *Tags::EVENTS,
-    *User::EVENTS,
-    *PersonSearch::EVENTS,
     *Email::EVENTS,
     *Phone::EVENTS,
     *Applications::EVENTS,
@@ -272,6 +237,7 @@ module MessageTypes
     *Jobs::EVENTS,
     *Invite::EVENTS,
     *People::MessageTypes::EVENTS,
+    *Users::MessageTypes::EVENTS,
     *Industries::MessageTypes::EVENTS,
     *Attributes::MessageTypes::EVENTS,
     *JobOrders::MessageTypes::EVENTS,
@@ -301,6 +267,7 @@ module MessageTypes
     *Coaches::COMMANDS,
     *Seekers::COMMANDS,
     *Invite::COMMANDS,
+    *Users::MessageTypes::COMMANDS,
     *People::MessageTypes::COMMANDS,
     *Attributes::MessageTypes::COMMANDS,
     *Industries::MessageTypes::COMMANDS,

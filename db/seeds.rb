@@ -593,24 +593,6 @@ message_service.create!(
 )
 
 message_service.create!(
-  schema: Events::BarrierAdded::V1,
-  user_id: admin_user.id,
-  data: {
-    barrier_id: SecureRandom.uuid,
-    name: "Unable to Drive"
-  }
-)
-
-message_service.create!(
-  schema: Events::BarrierAdded::V1,
-  user_id: admin_user.id,
-  data: {
-    barrier_id: SecureRandom.uuid,
-    name: "Background"
-  }
-)
-
-message_service.create!(
   job_id: mechanic_job.id,
   schema: Events::JobTagCreated::V1,
   data: {

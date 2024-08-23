@@ -1,12 +1,6 @@
 module Coaches
-  class ContextsController < ApplicationController
-    include Secured
-    include CoachAuth
-    include MessageEmitter
-
-    before_action :authorize
-    before_action :coach_authorize
-    before_action :set_coach, only: %i[recommend_job show]
+  class ContextsController < CoachesController
+    before_action :set_coach, only: %i[show recommend_job]
 
     def index
       if params[:utm_term].present? || params[:attributes].present?
@@ -66,26 +60,6 @@ module Coaches
       end
 
       head :accepted
-    end
-
-    def update_skill_level
-      with_message_service do
-        CoachesEventEmitter.new(message_service:).update_skill_level(
-          person_id: params[:context_id],
-          skill_level: params[:level],
-          trace_id: request.request_id
-        )
-      end
-
-      head :accepted
-    end
-
-    private
-
-    attr_reader :coach
-
-    def set_coach
-      @coach = Coach.find_by(user_id: current_user.id)
     end
   end
 end

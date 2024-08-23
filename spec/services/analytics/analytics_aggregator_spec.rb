@@ -59,7 +59,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::UserCreated::V1,
+          schema: Users::Events::UserCreated::V1,
           stream_id: user_id,
           data: {
             email: "an@email.com",
@@ -182,7 +182,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
           build(
             :message,
             stream_id: user.user_id,
-            schema: Events::SessionStarted::V1,
+            schema: Users::Events::SessionStarted::V1,
             data: Core::Nothing
           )
         end
@@ -200,7 +200,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
           build(
             :message,
             stream_id: user_id,
-            schema: Events::CoachAdded::V1,
+            schema: Users::Events::CoachAdded::V1,
             data: {
               email: "an@email.com",
               coach_id: SecureRandom.uuid
@@ -811,7 +811,7 @@ RSpec.describe Analytics::AnalyticsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::PersonViewed::V1,
+          schema: Users::Events::PersonViewed::V1,
           stream_id: user_id,
           data: {
             person_id:

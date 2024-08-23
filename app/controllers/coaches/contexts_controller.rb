@@ -68,18 +68,6 @@ module Coaches
       head :accepted
     end
 
-    def update_skill_level
-      with_message_service do
-        CoachesEventEmitter.new(message_service:).update_skill_level(
-          person_id: params[:context_id],
-          skill_level: params[:level],
-          trace_id: request.request_id
-        )
-      end
-
-      head :accepted
-    end
-
     private
 
     attr_reader :coach

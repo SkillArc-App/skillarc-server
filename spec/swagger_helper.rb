@@ -604,6 +604,12 @@ RSpec.configure do |config|
                       '$ref' => '#/components/schemas/seeker_note'
                     }
                   },
+                  contacts: {
+                    type: :array,
+                    items: {
+                      '$ref' => '#/components/schemas/coach_contact'
+                    }
+                  },
                   jobRecommendations: {
                     type: :array,
                     items: {
@@ -614,19 +620,6 @@ RSpec.configure do |config|
                 }
               }
             ]
-          },
-          seeker_barrier: {
-            type: :object,
-            properties: {
-              id: {
-                type: :string,
-                format: :uuid
-              },
-              name: {
-                type: :string,
-                format: :uuid
-              }
-            }
           },
           seeker_note: {
             type: :object,
@@ -643,6 +636,26 @@ RSpec.configure do |config|
                 nullable: true
               },
               date: {
+                type: :string,
+                format: 'date-time'
+              }
+            }
+          },
+          coach_contact: {
+            type: :object,
+            properties: {
+              note: {
+                type: :string
+              },
+              contactDirection: {
+                type: :string,
+                enum: Contact::ContactDirection::ALL
+              },
+              contactType: {
+                type: :string,
+                enum: Contact::ContactType::ALL
+              },
+              contactedAt: {
                 type: :string,
                 format: 'date-time'
               }

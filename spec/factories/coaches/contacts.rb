@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :coaches__contacts, class: "Coaches::Contact" do
+  factory :coaches__contact, class: "Coaches::Contact" do
     person_context factory: %i[coaches__person_context]
 
     note { "This is a note" }

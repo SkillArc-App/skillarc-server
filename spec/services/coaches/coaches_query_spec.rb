@@ -137,6 +137,15 @@ RSpec.describe Coaches::CoachesQuery do
       )
 
       create(
+        :coaches__contact,
+        person_context: person_context1,
+        note: "This person was contacted",
+        contacted_at: Time.zone.local(2007, 1, 1),
+        contact_type: Contact::ContactType::SMS,
+        contact_direction: Contact::ContactDirection::SENT,
+      )
+
+      create(
         :coaches__person_application,
         person_context: person_context1,
         job_id: "2e6a7696-08e6-4e95-aa95-166fc2b43dcf",
@@ -181,6 +190,12 @@ RSpec.describe Coaches::CoachesQuery do
           id: '2527d624-d0c4-48d4-856b-369ff767f29d',
           attribute_id: "3f48a475-b711-4265-9cc5-02fcfc0c40d1",
           value: ["High School"]
+        }],
+        contacts: [{
+          contacted_at: Time.zone.local(2007, 1, 1),
+          contact_type: Contact::ContactType::SMS,
+          contact_direction: Contact::ContactDirection::SENT,
+          note: "This person was contacted"
         }],
         notes: [
           {

@@ -11,7 +11,6 @@ Rails.application.routes.draw do
     resources :contexts do
       resources :notes, only: %i[create update destroy]
 
-      post 'skill-levels' => 'contexts#update_skill_level'
       post 'assign_coach' => 'contexts#assign'
       post 'recommend_job' => 'contexts#recommend_job'
     end

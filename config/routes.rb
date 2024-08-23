@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :attributes
     resources :contexts do
       resources :notes, only: %i[create update destroy]
+      resources :contacts, only: %i[create]
 
       post 'assign_coach' => 'contexts#assign'
       post 'recommend_job' => 'contexts#recommend_job'

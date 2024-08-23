@@ -1,11 +1,5 @@
 module Coaches
-  class NotesController < ApplicationController
-    include Secured
-    include CoachAuth
-    include MessageEmitter
-
-    before_action :authorize
-    before_action :coach_authorize
+  class NotesController < CoachesController
     before_action :set_coach
 
     def create
@@ -47,14 +41,6 @@ module Coaches
       end
 
       head :accepted
-    end
-
-    private
-
-    attr_reader :coach
-
-    def set_coach
-      @coach = Coach.find_by(user_id: current_user.id)
     end
   end
 end

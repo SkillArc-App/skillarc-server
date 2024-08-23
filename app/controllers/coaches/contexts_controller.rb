@@ -1,12 +1,6 @@
 module Coaches
-  class ContextsController < ApplicationController
-    include Secured
-    include CoachAuth
-    include MessageEmitter
-
-    before_action :authorize
-    before_action :coach_authorize
-    before_action :set_coach, only: %i[recommend_job show]
+  class ContextsController < CoachesController
+    before_action :set_coach, only: %i[show recommend_job]
 
     def index
       if params[:utm_term].present? || params[:attributes].present?
@@ -66,14 +60,6 @@ module Coaches
       end
 
       head :accepted
-    end
-
-    private
-
-    attr_reader :coach
-
-    def set_coach
-      @coach = Coach.find_by(user_id: current_user.id)
     end
   end
 end

@@ -128,7 +128,7 @@ module MessageTypes
 
     EVENTS = [
       EMPLOYER_CREATED = 'employer_created',
-      EMPLOYER_UPDATED = 'employer_updated',
+      EMPLOYER_UPDATED = 'employer_updated'
     ].freeze
   end
 

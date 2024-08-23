@@ -142,7 +142,7 @@ RSpec.describe Coaches::CoachesQuery do
         note: "This person was contacted",
         contacted_at: Time.zone.local(2007, 1, 1),
         contact_type: Contact::ContactType::SMS,
-        contact_direction: Contact::ContactDirection::SENT,
+        contact_direction: Contact::ContactDirection::SENT
       )
 
       create(

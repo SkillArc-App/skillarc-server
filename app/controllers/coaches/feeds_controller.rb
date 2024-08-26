@@ -1,7 +1,7 @@
 module Coaches
   class FeedsController < CoachesController
     def index
-      feed_events = FeedEvent.all.map do |feed_event|
+      feed_events = FeedEvent.order(occurred_at: :desc).take(300).map do |feed_event|
         {
           id: feed_event.id.to_s,
           context_id: feed_event.person_id,

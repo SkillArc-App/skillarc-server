@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :coaches__feed_event, class: "Coaches::FeedEvent" do
-    context_id { SecureRandom.uuid }
-    seeker_email { Faker::Internet.email }
+    person_id { SecureRandom.uuid }
+    person_email { Faker::Internet.email }
+    person_phone { Faker::PhoneNumber.phone_number }
     occurred_at { Time.current }
-    description { Faker::Lorem.sentence }
   end
 end

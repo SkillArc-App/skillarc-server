@@ -9,7 +9,6 @@ module Coaches
       PersonContext.delete_all
       Coach.delete_all
       Job.delete_all
-      FeedEvent.delete_all
     end
 
     on_message Users::Events::CoachAdded::V1, :sync do |message|
@@ -101,14 +100,6 @@ module Coaches
         employer_name: data.employer_name,
         job_id: data.job_id,
         employment_title: data.employment_title
-      )
-
-      FeedEvent.create!(
-        context_id: person_context.id,
-        occurred_at: message.occurred_at,
-        seeker_email: email,
-        description:
-          "#{first_name} #{last_name}'s application for #{data.employment_title} at #{data.employer_name} has been updated to #{status}."
       )
     end
 

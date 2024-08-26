@@ -1,7 +1,18 @@
 module Coaches
   class FeedsController < CoachesController
     def index
-      render json: FeedEvent.all.map { |feed_event| feed_event.as_json(only: %i[id context_id description occurred_at seeker_email]) }
+      feed_events = FeedEvent.all.map do |feed_event|
+        {
+          id: feed_event.id.to_s,
+          context_id: feed_event.person_id,
+          description: feed_event.description,
+          occurred_at: feed_event.occurred_at,
+          seeker_email: feed_event.person_email,
+          seeker_phone_number: feed_event.person_phone
+        }
+      end
+
+      render json: feed_events
     end
   end
 end

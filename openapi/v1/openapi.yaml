@@ -2878,6 +2878,38 @@ paths:
                   type: object
               required:
               - onboarding_session
+  "/onboarding_sessions/bypass":
+    post:
+      summary: Bypass onboarding
+      tags:
+      - Seekers
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Key-Inflection
+        in: header
+        schema:
+          type: string
+          enum:
+          - camel
+          - dash
+          - snake
+          - pascale
+      responses:
+        '401':
+          description: unauthenticated
+        '400':
+          description: Bad request no seeker
+          content:
+            application/json:
+              schema:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+        '202':
+          description: Create an experience
   "/one_user":
     get:
       summary: The current user

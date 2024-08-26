@@ -56,6 +56,26 @@ class OnboardingSessionsController < ApplicationController
     head :created
   end
 
+  def bypass
+    person_id = find_person_id
+
+    if person_id.blank?
+      render json: { error: 'Seeker not found' }, status: :bad_request
+      return
+    end
+
+    with_message_service do
+      message_service.create!(
+        person_id:,
+        schema: People::Commands::CompleteOnboarding::V2,
+        trace_id: request.request_id,
+        data: Core::Nothing
+      )
+    end
+
+    head :accepted
+  end
+
   def update
     person_id = find_person_id
 

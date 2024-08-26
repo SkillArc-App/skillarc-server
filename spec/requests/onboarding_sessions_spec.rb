@@ -189,4 +189,54 @@ RSpec.describe "OnboardingSessions", type: :request do
       end
     end
   end
+
+  path "/onboarding_sessions/bypass" do
+    post "Bypass onboarding" do
+      tags "Seekers"
+      security [bearer_auth: []]
+      consumes 'application/json'
+      produces 'application/json'
+
+      include_context "olive branch casing parameter"
+      include_context "olive branch camelcasing"
+
+      it_behaves_like "spec unauthenticated openapi"
+
+      context "when authenticated" do
+        include_context "authenticated openapi"
+
+        response '400', 'Bad request no seeker' do
+          schema schema: {
+            type: :object,
+            properties: {
+              error: {
+                type: :string
+              }
+            }
+          }
+
+          run_test!
+        end
+
+        response '202', 'Create an experience' do
+          before do
+            seeker = create(:seeker, user_id: user.id)
+            user.update!(person_id: seeker.id)
+
+            expect_any_instance_of(MessageService)
+              .to receive(:create!)
+              .with(
+                schema: People::Commands::CompleteOnboarding::V2,
+                trace_id: be_a(String),
+                person_id: seeker.id,
+                data: Core::Nothing
+              )
+              .and_call_original
+          end
+
+          run_test!
+        end
+      end
+    end
+  end
 end

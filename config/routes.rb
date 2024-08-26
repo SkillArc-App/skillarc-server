@@ -93,6 +93,7 @@ Rails.application.routes.draw do
   resources :pass_reasons
 
   post 'onboarding_sessions' => 'onboarding_sessions#create'
+  post 'onboarding_sessions/bypass' => 'onboarding_sessions#bypass'
   put 'onboarding_sessions' => 'onboarding_sessions#update'
   get 'onboarding_sessions' => 'onboarding_sessions#show'
 

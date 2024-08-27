@@ -310,22 +310,19 @@ seeker_with_profile = Builders::PersonBuilder.new(message_service).build(
 )
 
 message_service.create!(
-  application_id: SecureRandom.uuid,
-  schema: Events::ApplicantStatusUpdated::V6,
+  person_id: seeker_with_profile.id,
+  schema: People::Events::PersonApplied::V1,
   data: {
-    applicant_first_name: seeker_with_profile.first_name,
-    applicant_last_name: seeker_with_profile.last_name,
-    applicant_email: seeker_with_profile.email,
-    applicant_phone_number: seeker_with_profile.phone_number,
-    seeker_id: seeker_with_profile.id,
+    application_id: SecureRandom.uuid,
+    seeker_first_name: seeker_with_profile.first_name,
+    seeker_last_name: seeker_with_profile.last_name,
+    seeker_email: seeker_with_profile.email,
+    seeker_phone_number: seeker_with_profile.phone_number,
     user_id: seeker_with_profile.user_id,
     job_id: mechanic_job.id,
     employer_name: mechanic_job.employer.name,
-    employment_title: mechanic_job.employment_title,
-    status: ApplicantStatus::StatusTypes::NEW,
-    reasons: []
-  },
-  metadata: {}
+    employment_title: mechanic_job.employment_title
+  }
 )
 
 message_service.create!(

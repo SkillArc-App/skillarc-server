@@ -49,13 +49,13 @@ class TestController < ApplicationController
       )
 
       person = Builders::PersonBuilder.new(message_service).build
-      status = create_application_with_message(message_service:, job:, person:)
+      create_application_with_message(message_service:, job:, person:)
 
       render json: {
         recruiter: recruiter_user,
         job:,
         applicant: person,
-        applicant_status: { status: }
+        applicant_status: { status: ApplicantStatus::StatusTypes::NEW }
       }
     end
   end
@@ -190,23 +190,18 @@ class TestController < ApplicationController
 
   def create_application_with_message(message_service:, job:, person:)
     message_service.create!(
-      schema: Events::ApplicantStatusUpdated::V6,
-      application_id: SecureRandom.uuid,
+      schema: People::Events::PersonApplied::V1,
+      person_id: person.id,
       data: {
-        applicant_first_name: person.first_name,
-        applicant_last_name: person.last_name,
-        applicant_email: person.email,
-        applicant_phone_number: person.phone_number,
-        seeker_id: person.id,
+        application_id: SecureRandom.uuid,
+        seeker_first_name: person.first_name,
+        seeker_last_name: person.last_name,
+        seeker_email: person.email,
+        seeker_phone_number: person.phone_number,
         user_id: person.user_id,
         job_id: job.id,
         employer_name: job.employer.name,
-        employment_title: job.employment_title,
-        status: ApplicantStatus::StatusTypes::NEW,
-        reasons: []
-      },
-      metadata: {
-        user_id: person.user_id
+        employment_title: job.employment_title
       }
     )
 

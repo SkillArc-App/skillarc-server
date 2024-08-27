@@ -988,7 +988,7 @@ paths:
         '401':
           description: unauthenticated
         '200':
-          description: retrieve all seekers
+          description: retrieve all feed events
           content:
             application/json:
               schema:
@@ -998,7 +998,6 @@ paths:
                   properties:
                     id:
                       type: string
-                      format: uuid
                     contextId:
                       type: string
                     description:
@@ -1009,9 +1008,12 @@ paths:
                     seekerEmail:
                       type: string
                       format: email
+                    seekerPhoneNumber:
+                      type: string
                   required:
                   - id
-                  - seekerEmail
+                  - occurredAt
+                  - description
   "/coaches/job_orders":
     get:
       summary: Retrieves all job orders

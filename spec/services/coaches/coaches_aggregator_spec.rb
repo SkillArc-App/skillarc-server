@@ -226,18 +226,6 @@ RSpec.describe Coaches::CoachesAggregator do
         let(:job_id) { SecureRandom.uuid }
         let(:applicant_id) { SecureRandom.uuid }
 
-        it "Creates a feed event" do
-          expect { subject }.to change {
-            Coaches::FeedEvent.count
-          }.from(0).to(1)
-
-          feed_event = Coaches::FeedEvent.last_created
-          expect(feed_event.context_id).to eq(person_context.id)
-          expect(feed_event.occurred_at).to eq(message.occurred_at)
-          expect(feed_event.seeker_email).to eq("hannah@hannah.com")
-          expect(feed_event.description).to eq("Hannah Block's application for Software Engineer at Employer has been updated to new.")
-        end
-
         context "when there is an existing seeker application" do
           before do
             create(

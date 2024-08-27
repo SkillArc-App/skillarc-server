@@ -16,27 +16,26 @@ RSpec.describe "Coaches::Feeds", type: :request do
       context "when authenticated" do
         include_context "coach authenticated openapi"
 
-        response '200', 'retrieve all seekers' do
+        response '200', 'retrieve all feed events' do
           schema type: :array,
                  items: {
                    type: :object,
                    properties: {
-                     id: { type: :string, format: :uuid },
+                     id: { type: :string },
                      contextId: { type: :string },
                      description: { type: :string },
                      occurredAt: { type: :string, format: :datetime },
-                     seekerEmail: { type: :string, format: :email }
+                     seekerEmail: { type: :string, format: :email },
+                     seekerPhoneNumber: { type: :string }
                    },
-                   required: %w[id seekerEmail]
+                   required: %w[id occurredAt description]
                  }
 
-          context "" do
-            before do
-              create(:coaches__feed_event)
-            end
-
-            run_test!
+          before do
+            create(:coaches__feed_event)
           end
+
+          run_test!
         end
       end
     end

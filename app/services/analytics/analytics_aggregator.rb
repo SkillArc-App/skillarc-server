@@ -6,6 +6,8 @@ module Analytics
       FactJobVisibility.delete_all
       FactPersonViewed.delete_all
       FactCoachAction.delete_all
+      FactJobOrderStatus.delete_all
+      FactCommunication.delete_all
       DimDate.delete_all
       DimPerson.delete_all
       DimJobOrder.delete_all

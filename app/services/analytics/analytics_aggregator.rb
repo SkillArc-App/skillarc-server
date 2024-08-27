@@ -26,6 +26,19 @@ module Analytics
       )
     end
 
+    on_message Users::Events::Contacted::V1 do |message|
+      dim_user = Analytics::DimUser.find_by(user_id: message.stream.id)
+      dim_person = DimPerson.find_by!(person_id: message.data.person_id)
+
+      FactCommunication.create!(
+        dim_user:,
+        dim_person:,
+        direction: message.data.contact_direction,
+        kind: message.data.contact_type,
+        occurred_at: message.occurred_at
+      )
+    end
+
     on_message People::Events::PersonAssociatedToUser::V1 do |message|
       user = DimUser.find_by!(user_id: message.data.user_id)
 

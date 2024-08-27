@@ -29,5 +29,6 @@ module Analytics
     end
 
     validates :kind, presence: true, inclusion: { in: Kind::ALL }
+    has_many :fact_communications, class_name: "Analytics::FactCommunication", foreign_key: "analytics_dim_people_id", inverse_of: :dim_user, dependent: :delete_all
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_26_202907) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_27_213933) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -142,6 +142,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_26_202907) do
     t.index ["action"], name: "index_analytics_fact_coach_actions_on_action"
     t.index ["analytics_dim_person_target_id"], name: "idx_on_analytics_dim_person_target_id_a665f20399"
     t.index ["analytics_dim_users_id"], name: "index_analytics_fact_coach_actions_on_analytics_dim_users_id"
+  end
+
+  create_table "analytics_fact_communications", force: :cascade do |t|
+    t.bigint "analytics_dim_people_id", null: false
+    t.bigint "analytics_dim_users_id", null: false
+    t.datetime "occurred_at", null: false
+    t.string "kind", null: false
+    t.string "direction", null: false
+    t.index ["analytics_dim_people_id"], name: "index_analytics_fact_communications_on_analytics_dim_people_id"
+    t.index ["analytics_dim_users_id"], name: "index_analytics_fact_communications_on_analytics_dim_users_id"
   end
 
   create_table "analytics_fact_job_order_statuses", force: :cascade do |t|
@@ -1090,6 +1100,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_26_202907) do
   add_foreign_key "analytics_fact_candidates", "analytics_dim_job_orders", column: "analytics_dim_job_orders_id"
   add_foreign_key "analytics_fact_candidates", "analytics_dim_people", column: "analytics_dim_people_id"
   add_foreign_key "analytics_fact_coach_actions", "analytics_dim_people", column: "analytics_dim_person_target_id"
+  add_foreign_key "analytics_fact_communications", "analytics_dim_people", column: "analytics_dim_people_id"
+  add_foreign_key "analytics_fact_communications", "analytics_dim_users", column: "analytics_dim_users_id"
   add_foreign_key "analytics_fact_job_order_statuses", "analytics_dim_job_orders", column: "analytics_dim_job_orders_id"
   add_foreign_key "analytics_fact_job_visibilities", "analytics_dim_jobs"
   add_foreign_key "analytics_fact_person_vieweds", "analytics_dim_people", column: "analytics_dim_person_viewed_id"

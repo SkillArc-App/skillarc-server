@@ -1,4 +1,4 @@
-FROM ruby:3.2.2
+FROM ruby:3.3.3
 
 ENV INSTALL_PATH /app
 ENV BUNDLE_WITHOUT="development:test"

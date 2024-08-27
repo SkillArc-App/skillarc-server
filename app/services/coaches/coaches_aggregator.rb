@@ -85,10 +85,10 @@ module Coaches
       data = message.data
       person_context = PersonContext.find(data.seeker_id)
 
-      first_name = data.applicant_first_name
-      last_name = data.applicant_last_name
-      email = data.applicant_email
-      status = data.status
+      data.applicant_first_name
+      data.applicant_last_name
+      data.applicant_email
+      data.status
 
       application = PersonApplication.find_or_initialize_by(
         person_context:,

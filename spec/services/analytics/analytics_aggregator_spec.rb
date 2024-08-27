@@ -118,18 +118,44 @@ RSpec.describe Analytics::AnalyticsAggregator do
     end
 
     context "for an existing dim_person" do
-      before do
+      let!(:dim_user) { create(:analytics__dim_user) }
+      let!(:dim_person) do
         create(
           :analytics__dim_person,
           :seeker,
-          email:,
-          person_id:
+          email:
         )
       end
-
-      let(:user_id) { SecureRandom.uuid }
+      let(:user_id) { dim_user.user_id }
       let(:email) { Faker::Internet.email }
-      let(:person_id) { SecureRandom.uuid }
+      let(:person_id) { dim_person.person_id }
+
+      describe "when the message is contacted" do
+        let(:message) do
+          build(
+            :message,
+            schema: Users::Events::Contacted::V1,
+            stream_id: user_id,
+            data: {
+              person_id:,
+              contact_direction: Contact::ContactDirection::RECEIVED,
+              contact_type: Contact::ContactType::SMS
+            }
+          )
+        end
+
+        it "create a fact communication" do
+          expect { subject }.to change(Analytics::FactCommunication, :count).from(0).to(1)
+
+          fact_communication = Analytics::FactCommunication.first
+
+          expect(fact_communication.dim_user).to eq(dim_user)
+          expect(fact_communication.dim_person).to eq(dim_person)
+          expect(fact_communication.direction).to eq(Contact::ContactDirection::RECEIVED)
+          expect(fact_communication.kind).to eq(Contact::ContactType::SMS)
+          expect(fact_communication.occurred_at).to eq(message.occurred_at)
+        end
+      end
 
       describe "when the message is basic info added" do
         let(:message) do

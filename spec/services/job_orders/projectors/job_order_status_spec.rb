@@ -37,14 +37,14 @@ RSpec.describe JobOrders::Projectors::JobOrderStatus do
       build(
         :message,
         stream:,
-        schema: JobOrders::Events::ScreenerQuestionsAdded::V1,
+        schema: JobOrders::Events::ScreenerQuestionsAdded::V1
       )
     end
     let(:job_order_screener_bypassed) do
       build(
         :message,
         stream:,
-        schema: JobOrders::Events::ScreenerQuestionsBypassed::V1,
+        schema: JobOrders::Events::ScreenerQuestionsBypassed::V1
       )
     end
     let(:job_order_order_count_added1) do

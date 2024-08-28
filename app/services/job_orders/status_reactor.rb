@@ -8,6 +8,14 @@ module JobOrders
       emit_new_status_if_necessary(message)
     end
 
+    on_message Events::ScreenerQuestionsAdded::V1, :sync do |message|
+      emit_new_status_if_necessary(message)
+    end
+
+    on_message Events::ScreenerQuestionsBypassed::V1, :sync do |message|
+      emit_new_status_if_necessary(message)
+    end
+
     on_message Events::Reactivated::V1, :sync do |message|
       emit_new_status_if_necessary(message)
     end

@@ -12,7 +12,7 @@ module JobOrders
       end
 
       V1 = Core::Schema.active(
-        type: Core::COMMAND,
+        type: Core::EVENT,
         data: Data::V1,
         metadata: Core::Nothing,
         stream: Streams::JobOrder,

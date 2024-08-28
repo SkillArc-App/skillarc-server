@@ -9,6 +9,7 @@ module JobOrders
         schema do
           order_count Either(Integer, nil)
           criteria_met? Bool()
+          screener_added_or_bypassed? Bool()
           candidates Hash
           not_filled? Bool()
         end
@@ -18,6 +19,7 @@ module JobOrders
           return OrderStatus::NEEDS_ORDER_COUNT if order_count.nil?
           return OrderStatus::FILLED if hired_candidates.length >= order_count
           return OrderStatus::NEEDS_CRITERIA unless criteria_met?
+          return OrderStatus::NEEDS_SCREENER_OR_BYPASS unless screener_added_or_bypassed?
           return OrderStatus::WAITING_ON_EMPLOYER if recommended_candidates.length + hired_candidates.length >= order_count
           return OrderStatus::CANDIDATES_SCREENED if screened_candidates.length.positive?
 
@@ -47,6 +49,7 @@ module JobOrders
         Projection.new(
           order_count: nil,
           criteria_met?: false,
+          screener_added_or_bypassed?: false,
           candidates: {},
           not_filled?: false
         )
@@ -66,6 +69,14 @@ module JobOrders
 
       on_message Events::CriteriaAdded::V1 do |_, accumulator|
         accumulator.with(criteria_met?: true)
+      end
+
+      on_message Events::ScreenerQuestionsAdded::V1 do |_, accumulator|
+        accumulator.with(screener_added_or_bypassed?: true)
+      end
+
+      on_message Events::ScreenerQuestionsBypassed::V1 do |_, accumulator|
+        accumulator.with(screener_added_or_bypassed?: true)
       end
 
       on_message Events::CandidateAdded::V3 do |message, accumulator|

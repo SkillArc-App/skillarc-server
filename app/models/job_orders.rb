@@ -19,6 +19,7 @@ module JobOrders
     ALL = [
       NEEDS_ORDER_COUNT = "needs_order_count",
       NEEDS_CRITERIA = "needs_criteria",
+      NEEDS_SCREENER_OR_BYPASS = "needs_screener_or_bypass",
       OPEN = "open",
       CANDIDATES_SCREENED = "candidates_screened",
       WAITING_ON_EMPLOYER = "waiting_on_employer",

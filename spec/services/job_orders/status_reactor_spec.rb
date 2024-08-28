@@ -81,6 +81,7 @@ RSpec.describe JobOrders::StatusReactor do
           let(:new_status) do
             JobOrders::Projectors::JobOrderStatus::Projection.new(
               order_count: 1,
+              screener_added_or_bypassed?: true,
               criteria_met?: true,
               candidates: {},
               not_filled?: false
@@ -104,12 +105,13 @@ RSpec.describe JobOrders::StatusReactor do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
                 order_count: 2,
                 criteria_met?: false,
+                screener_added_or_bypassed?: true,
                 candidates: {},
                 not_filled?: false
               )
             end
 
-            it "emits an activated event" do
+            it "emits a new status needs criteria" do
               expect(message_service)
                 .to receive(:create_once_for_trace!)
                 .with(
@@ -125,6 +127,36 @@ RSpec.describe JobOrders::StatusReactor do
             end
           end
 
+          context "when the new status should be need screener or bypass" do
+            let(:existing_status) do
+              JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OrderStatus::WAITING_ON_EMPLOYER)
+            end
+            let(:new_status) do
+              JobOrders::Projectors::JobOrderStatus::Projection.new(
+                order_count: 2,
+                criteria_met?: true,
+                screener_added_or_bypassed?: false,
+                candidates: {},
+                not_filled?: false
+              )
+            end
+
+            it "emits a new status needs screener or bypass" do
+              expect(message_service)
+                .to receive(:create_once_for_trace!)
+                .with(
+                  trace_id: message.trace_id,
+                  stream: message.stream,
+                  schema: JobOrders::Events::StatusUpdated::V1,
+                  data: {
+                    status: JobOrders::OrderStatus::NEEDS_SCREENER_OR_BYPASS
+                  }
+                )
+
+              subject
+            end
+          end
+
           context "when the new status should be activated" do
             let(:existing_status) do
               JobOrders::Projectors::JobOrderExistingStatus::Projection.new(status: JobOrders::OrderStatus::WAITING_ON_EMPLOYER)
@@ -133,6 +165,7 @@ RSpec.describe JobOrders::StatusReactor do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
                 order_count: 2,
                 criteria_met?: true,
+                screener_added_or_bypassed?: true,
                 candidates: {},
                 not_filled?: false
               )
@@ -162,6 +195,7 @@ RSpec.describe JobOrders::StatusReactor do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
                 order_count: 2,
                 criteria_met?: true,
+                screener_added_or_bypassed?: true,
                 candidates: { one: :screened },
                 not_filled?: false
               )
@@ -191,6 +225,7 @@ RSpec.describe JobOrders::StatusReactor do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
                 order_count: 2,
                 criteria_met?: true,
+                screener_added_or_bypassed?: true,
                 candidates: { one: :recommended, two: :recommended },
                 not_filled?: false
               )
@@ -220,6 +255,7 @@ RSpec.describe JobOrders::StatusReactor do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
                 order_count: 1,
                 criteria_met?: true,
+                screener_added_or_bypassed?: true,
                 candidates: { one: :hired },
                 not_filled?: false
               )
@@ -249,6 +285,7 @@ RSpec.describe JobOrders::StatusReactor do
               JobOrders::Projectors::JobOrderStatus::Projection.new(
                 order_count: 1,
                 criteria_met?: true,
+                screener_added_or_bypassed?: true,
                 candidates: { one: :hired },
                 not_filled?: true
               )
@@ -324,6 +361,28 @@ RSpec.describe JobOrders::StatusReactor do
           :message,
           schema: JobOrders::Events::Reactivated::V1,
           data: Core::Nothing
+        )
+      end
+
+      it_behaves_like "emits new status events if necessary"
+    end
+
+    context "when the message is job order screener added" do
+      let(:message) do
+        build(
+          :message,
+          schema: JobOrders::Events::ScreenerQuestionsAdded::V1
+        )
+      end
+
+      it_behaves_like "emits new status events if necessary"
+    end
+
+    context "when the message is job order screener bypassed" do
+      let(:message) do
+        build(
+          :message,
+          schema: JobOrders::Events::ScreenerQuestionsAdded::V1
         )
       end
 

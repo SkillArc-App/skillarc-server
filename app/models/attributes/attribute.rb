@@ -3,11 +3,11 @@
 # Table name: attributes_attributes
 #
 #  id              :uuid             not null, primary key
-#  default         :string           not null, is an Array
+#  default         :jsonb            not null
 #  description     :text
 #  machine_derived :boolean          default(FALSE), not null
 #  name            :string           not null
-#  set             :string           not null, is an Array
+#  set             :jsonb            not null
 #
 module Attributes
   class Attribute < ApplicationRecord

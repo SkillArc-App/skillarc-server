@@ -8,16 +8,19 @@ RSpec.describe Attributes::AttributesAggregator do
   describe "#handle_message" do
     subject { consumer.handle_message(message) }
 
+    let(:id_a) { SecureRandom.uuid }
+    let(:id_b) { SecureRandom.uuid }
+
     context "AttributeCreated" do
       let(:message) do
         build(
           :message,
-          schema: Attributes::Events::Created::V3,
+          schema: Attributes::Events::Created::V4,
           data: {
             name: "name",
             description: "description",
-            set: %w[A B],
-            default: ["B"],
+            set: { id_a => "A", id_b => "B" },
+            default: { id_b => "B" },
             machine_derived: true
           }
         )
@@ -39,13 +42,13 @@ RSpec.describe Attributes::AttributesAggregator do
       let(:message) do
         build(
           :message,
-          schema: Attributes::Events::Updated::V2,
+          schema: Attributes::Events::Updated::V3,
           stream_id: attribute.id,
           data: {
             name: "name",
             description: "description",
-            set: %w[A B],
-            default: ["B"]
+            set: { id_a => "A", id_b => "B" },
+            default: { id_b => "B" },
           }
         )
       end
@@ -55,9 +58,11 @@ RSpec.describe Attributes::AttributesAggregator do
       it "updates an attribute" do
         subject
 
-        expect(attribute.reload.name).to eq("name")
-        expect(attribute.set).to eq(%w[A B])
-        expect(attribute.default).to eq(["B"])
+        attribute.reload
+        expect(attribute.name).to eq(message.data.name)
+        expect(attribute.description).to eq(message.data.description)
+        expect(attribute.set).to eq(message.data.set)
+        expect(attribute.default).to eq(message.data.default)
       end
     end
 

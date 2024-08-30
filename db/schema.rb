@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_27_213933) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_30_140846) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -196,11 +196,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_27_213933) do
   end
 
   create_table "attributes_attributes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
+    t.jsonb "default", null: false
+    t.jsonb "set", null: false
     t.text "description"
-    t.string "set", null: false, array: true
-    t.string "default", null: false, array: true
     t.boolean "machine_derived", default: false, null: false
+    t.string "name", null: false
   end
 
   create_table "career_paths", id: :text, force: :cascade do |t|

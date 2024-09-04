@@ -76,7 +76,7 @@ RSpec.describe Attributes::AttributesAggregator do
                 key: id_b,
                 value: "B"
               )
-            ],
+            ]
           }
         )
       end

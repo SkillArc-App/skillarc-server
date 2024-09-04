@@ -54,7 +54,6 @@ RSpec.describe Coaches::CoachesQuery do
       )
     end
 
-
     it "returns an empty array" do
       expected_profile1 = {
         id: "ab36d8fe-5bf0-47c3-9c79-fc461799287e",

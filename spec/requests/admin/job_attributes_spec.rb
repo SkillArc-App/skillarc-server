@@ -128,7 +128,7 @@ RSpec.describe "Admin::JobAttributes", type: :request do
               .with(
                 job_id: id,
                 job_attribute_id:,
-                acceptible_set: acceptible_set
+                acceptible_set:
               )
               .and_call_original
           end

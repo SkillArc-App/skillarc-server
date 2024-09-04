@@ -12,7 +12,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobCreated::V3,
+          schema: Jobs::Events::JobCreated::V3,
           data: {
             category: Job::Categories::MARKETPLACE,
             employment_title: "A title",
@@ -47,7 +47,7 @@ RSpec.describe JobOrders::JobOrdersAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobUpdated::V2,
+          schema: Jobs::Events::JobUpdated::V2,
           stream_id: job.id,
           data: {
             category: Job::Categories::STAFFING,

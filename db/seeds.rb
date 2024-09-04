@@ -182,7 +182,7 @@ Builders::UserBuilder.new(message_service).build_as_recruiter(
 
 message_service.create!(
   job_id: mechanic_job.id,
-  schema: Events::JobCreated::V3,
+  schema: Jobs::Events::JobCreated::V3,
   data: {
     category: mechanic_job.category,
     employment_title: mechanic_job.employment_title,
@@ -202,7 +202,7 @@ message_service.create!(
 
 message_service.create!(
   job_id: earthwork_job.id,
-  schema: Events::JobCreated::V3,
+  schema: Jobs::Events::JobCreated::V3,
   data: {
     category: earthwork_job.category,
     employment_title: earthwork_job.employment_title,
@@ -222,7 +222,7 @@ message_service.create!(
 
 message_service.create!(
   job_id: contractor.id,
-  schema: Events::JobCreated::V3,
+  schema: Jobs::Events::JobCreated::V3,
   data: {
     category: contractor.category,
     employment_title: contractor.employment_title,
@@ -558,15 +558,22 @@ message_service.create!(
   }
 )
 
+misdemeanor_id = SecureRandom.uuid
+have_id = SecureRandom.uuid
+
 message_service.create!(
-  schema: Attributes::Events::Created::V3,
+  schema: Attributes::Events::Created::V4,
   attribute_id: SecureRandom.uuid,
   data: {
     machine_derived: false,
     name: "Background",
     description: "The candidate has a criminal background that may be a barrier to employment",
-    set: %w[Misdemeanor Felony Violent],
-    default: ["Misdemeanor"]
+    set: [
+      Core::UuidKeyValuePair.new(key: misdemeanor_id, value: "Misdemeanor"),
+      Core::UuidKeyValuePair.new(key: SecureRandom.uuid, value: "Felony"),
+      Core::UuidKeyValuePair.new(key: SecureRandom.uuid, value: "Violent"),
+    ],
+    default: [Core::UuidKeyValuePair.new(key: misdemeanor_id, value: "Misdemeanor")]
   },
   metadata: {
     requestor_type: Requestor::Kinds::USER,
@@ -574,14 +581,14 @@ message_service.create!(
   }
 )
 message_service.create!(
-  schema: Attributes::Events::Created::V3,
+  schema: Attributes::Events::Created::V4,
   attribute_id: SecureRandom.uuid,
   data: {
     machine_derived: true,
     name: "Transportation",
     description: "Does this candidate have transportation",
-    set: %w[Have],
-    default: ["Have"]
+    set: [Core::UuidKeyValuePair.new(key: have_id, value: "Have")],
+    default: [Core::UuidKeyValuePair.new(key: have_id, value: "Have")]
   },
   metadata: {
     requestor_type: Requestor::Kinds::USER,
@@ -591,7 +598,7 @@ message_service.create!(
 
 message_service.create!(
   job_id: mechanic_job.id,
-  schema: Events::JobTagCreated::V1,
+  schema: Jobs::Events::JobTagCreated::V1,
   data: {
     id: SecureRandom.uuid,
     job_id: mechanic_job.id,
@@ -669,7 +676,7 @@ career_paths = [
 career_paths.each do |career_path|
   message_service.create!(
     job_id: career_path[:job_id],
-    schema: Events::CareerPathCreated::V1,
+    schema: Jobs::Events::CareerPathCreated::V1,
     data: {
       id: career_path[:id],
       job_id: career_path[:job_id],
@@ -735,7 +742,7 @@ jobs_photos = [
 jobs_photos.each do |job_photo|
   message_service.create!(
     job_id: job_photo[:job_id],
-    schema: Events::JobPhotoCreated::V1,
+    schema: Jobs::Events::JobPhotoCreated::V1,
     data: {
       id: job_photo[:id],
       job_id: job_photo[:job_id],
@@ -787,7 +794,7 @@ testimonials = [
 testimonials.each do |testimonial|
   message_service.create!(
     job_id: testimonial[:job_id],
-    schema: Events::TestimonialCreated::V1,
+    schema: Jobs::Events::TestimonialCreated::V1,
     data: {
       id: testimonial[:id],
       job_id: testimonial[:job_id],
@@ -1124,7 +1131,7 @@ desired_skills = [
 desired_skills.each do |desired_skill|
   message_service.create!(
     job_id: desired_skill[:job_id],
-    schema: Events::DesiredSkillCreated::V1,
+    schema: Jobs::Events::DesiredSkillCreated::V1,
     data: {
       id: desired_skill[:id],
       job_id: desired_skill[:job_id],
@@ -1174,7 +1181,7 @@ learned_skills = [
 learned_skills.each do |learned_skill|
   message_service.create!(
     job_id: learned_skill[:job_id],
-    schema: Events::LearnedSkillCreated::V1,
+    schema: Jobs::Events::LearnedSkillCreated::V1,
     data: {
       id: learned_skill[:id],
       job_id: learned_skill[:job_id],

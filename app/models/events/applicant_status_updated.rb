@@ -129,7 +129,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      stream: Streams::Job,
+      stream: Jobs::Streams::Job,
       message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 1
     )
@@ -138,7 +138,7 @@ module Events
       type: Core::EVENT,
       data: Data::V2,
       metadata: Core::Nothing,
-      stream: Streams::Job,
+      stream: Jobs::Streams::Job,
       message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 2
     )
@@ -147,7 +147,7 @@ module Events
       type: Core::EVENT,
       data: Data::V3,
       metadata: Core::Nothing,
-      stream: Streams::Job,
+      stream: Jobs::Streams::Job,
       message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 3
     )
@@ -156,7 +156,7 @@ module Events
       type: Core::EVENT,
       data: Data::V4,
       metadata: Core::Nothing,
-      stream: Streams::Job,
+      stream: Jobs::Streams::Job,
       message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 4
     )
@@ -165,7 +165,7 @@ module Events
       type: Core::EVENT,
       data: Data::V4,
       metadata: MetaData::V1,
-      stream: Streams::Job,
+      stream: Jobs::Streams::Job,
       message_type: MessageTypes::APPLICANT_STATUS_UPDATED,
       version: 5
     )

@@ -6,7 +6,7 @@ module PeopleSearch
                else
                  Person
                    .joins(attributes_people: :person_attribute)
-                   .where(person_attribute: { attribute_id: attributes.keys, value: attributes.values.flatten })
+                   .where(person_attribute: { attribute_id: attributes.keys, attribute_value_id: attributes.values.flatten })
                    .group('people_search_people.id')
                    .having("COUNT(DISTINCT person_attribute.attribute_id) = ?", attributes.keys.length)
                end

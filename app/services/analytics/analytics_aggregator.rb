@@ -100,7 +100,7 @@ module Analytics
       DimUser.where(user_id: message.data.user_id).update_all(kind: DimUser::Kind::TRAINING_PROVIDER)
     end
 
-    on_message Events::JobCreated::V3 do |message|
+    on_message Jobs::Events::JobCreated::V3 do |message|
       employer = DimEmployer.find_by(employer_id: message.data.employer_id)
 
       dim_job = DimJob.create!(
@@ -121,7 +121,7 @@ module Analytics
       end
     end
 
-    on_message Events::JobUpdated::V2 do |message|
+    on_message Jobs::Events::JobUpdated::V2 do |message|
       dim_job = Analytics::DimJob.find_by!(job_id: message.stream.job_id)
 
       dim_job.update!(

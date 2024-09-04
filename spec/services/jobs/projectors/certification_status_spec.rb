@@ -18,7 +18,7 @@ RSpec.describe Jobs::Projectors::CertificationStatus do
     let(:desired_certifcation_created1) do
       build(
         :message,
-        schema: Events::DesiredCertificationCreated::V1,
+        schema: Jobs::Events::DesiredCertificationCreated::V1,
         stream_id: job_id,
         data: {
           id:,
@@ -30,7 +30,7 @@ RSpec.describe Jobs::Projectors::CertificationStatus do
     let(:desired_certifcation_destory) do
       build(
         :message,
-        schema: Events::DesiredCertificationDestroyed::V1,
+        schema: Jobs::Events::DesiredCertificationDestroyed::V1,
         stream_id: job_id,
         data: {
           id:
@@ -40,7 +40,7 @@ RSpec.describe Jobs::Projectors::CertificationStatus do
     let(:desired_certifcation_created2) do
       build(
         :message,
-        schema: Events::DesiredCertificationCreated::V1,
+        schema: Jobs::Events::DesiredCertificationCreated::V1,
         stream_id: job_id,
         data: {
           id: SecureRandom.uuid,

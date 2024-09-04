@@ -69,7 +69,7 @@ module Jobs
       JobPhoto.find(message.data.id).destroy!
     end
 
-    on_message Events::TagCreated::V1 do |message|
+    on_message ::Events::TagCreated::V1 do |message|
       Tag.create!(
         id: message.stream.id,
         name: message.data.name
@@ -115,7 +115,7 @@ module Jobs
       Testimonial.find(message.data.id).destroy!
     end
 
-    on_message Events::EmployerCreated::V1 do |message|
+    on_message ::Events::EmployerCreated::V1 do |message|
       Employer.create!(
         id: message.stream.id,
         name: message.data.name,
@@ -125,7 +125,7 @@ module Jobs
       )
     end
 
-    on_message Events::EmployerUpdated::V1 do |message|
+    on_message ::Events::EmployerUpdated::V1 do |message|
       Employer.update!(
         message.stream.id,
         name: message.data.name,
@@ -170,26 +170,25 @@ module Jobs
       )
     end
 
-    on_message Events::JobAttributeCreated::V1, :sync do |message|
+    on_message Events::JobAttributeCreated::V2, :sync do |message|
       JobAttribute.create!(
-        id: message.data.id,
+        id: message.data.job_attribute_id,
         job_id: message.stream.job_id,
-        attribute_name: message.data.attribute_name,
         attribute_id: message.data.attribute_id,
-        acceptible_set: message.data.acceptible_set
+        attribute_value_ids: message.data.acceptible_set
       )
     end
 
-    on_message Events::JobAttributeUpdated::V1, :sync do |message|
-      job_attribute = JobAttribute.find(message.data.id)
+    on_message Events::JobAttributeUpdated::V2, :sync do |message|
+      job_attribute = JobAttribute.find(message.data.job_attribute_id)
 
       job_attribute.update!(
-        acceptible_set: message.data.acceptible_set
+        attribute_value_ids: message.data.acceptible_set
       )
     end
 
-    on_message Events::JobAttributeDestroyed::V1, :sync do |message|
-      JobAttribute.find(message.data.id).destroy!
+    on_message Events::JobAttributeDestroyed::V2, :sync do |message|
+      JobAttribute.find(message.data.job_attribute_id).destroy!
     end
   end
 end

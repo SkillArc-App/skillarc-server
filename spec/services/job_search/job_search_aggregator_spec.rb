@@ -78,7 +78,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
         let(:message) do
           build(
             :message,
-            schema: Events::JobCreated::V3,
+            schema: Jobs::Events::JobCreated::V3,
             stream_id: SecureRandom.uuid,
             data: {
               category: Job::Categories::STAFFING,
@@ -121,7 +121,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
           build(
             :message,
             stream_id: job.job_id,
-            schema: Events::JobUpdated::V2,
+            schema: Jobs::Events::JobUpdated::V2,
             data: {
               category: Job::Categories::MARKETPLACE,
               employment_title: "Senior Plumber",
@@ -166,7 +166,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
             build(
               :message,
               stream_id: job.job_id,
-              schema: Events::JobTagCreated::V1,
+              schema: Jobs::Events::JobTagCreated::V1,
               data: {
                 id: SecureRandom.uuid,
                 job_id: job.job_id,
@@ -191,7 +191,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
             build(
               :message,
               stream_id: job.job_id,
-              schema: Events::JobTagDestroyed::V2,
+              schema: Jobs::Events::JobTagDestroyed::V2,
               data: {
                 job_tag_id: SecureRandom.uuid,
                 job_id: job.job_id,
@@ -238,7 +238,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
             build(
               :message,
               stream_id: job.id,
-              schema: Events::CareerPathCreated::V1,
+              schema: Jobs::Events::CareerPathCreated::V1,
               data: {
                 id: SecureRandom.uuid,
                 job_id: job.id,
@@ -264,7 +264,7 @@ RSpec.describe JobSearch::JobSearchAggregator do
             build(
               :message,
               stream_id: job.id,
-              schema: Events::CareerPathUpdated::V1,
+              schema: Jobs::Events::CareerPathUpdated::V1,
               data: {
                 id: SecureRandom.uuid,
                 order: 0

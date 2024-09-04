@@ -52,9 +52,10 @@ RSpec.describe "Coaches::Contexts", type: :request do
             let(:utm_term) { "trainer" }
             let(:attributes) do
               {
-                attribute_id => ["Example"]
+                attribute_id => [example]
               }.to_json
             end
+            let(:example) { SecureRandom.uuid }
 
             before do
               expect(PeopleSearch::PeopleQuery)
@@ -62,7 +63,7 @@ RSpec.describe "Coaches::Contexts", type: :request do
                 .with(
                   search_terms: utm_term,
                   attributes: {
-                    attribute_id => ["Example"]
+                    attribute_id => [example]
                   },
                   user:,
                   message_service: be_a(MessageService)

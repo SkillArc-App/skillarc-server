@@ -19,8 +19,22 @@ RSpec.describe Attributes::AttributesAggregator do
           data: {
             name: "name",
             description: "description",
-            set: { id_a => "A", id_b => "B" },
-            default: { id_b => "B" },
+            set: [
+              Core::UuidKeyValuePair.new(
+                key: id_a,
+                value: "A"
+              ),
+              Core::UuidKeyValuePair.new(
+                key: id_b,
+                value: "B"
+              )
+            ],
+            default: [
+              Core::UuidKeyValuePair.new(
+                key: id_b,
+                value: "B"
+              )
+            ],
             machine_derived: true
           }
         )
@@ -32,8 +46,8 @@ RSpec.describe Attributes::AttributesAggregator do
         attribute = Attributes::Attribute.first
         expect(attribute.name).to eq(message.data.name)
         expect(attribute.description).to eq(message.data.description)
-        expect(attribute.set).to eq(message.data.set)
-        expect(attribute.default).to eq(message.data.default)
+        expect(attribute.set).to eq({ id_a => "A", id_b => "B" })
+        expect(attribute.default).to eq({ id_b => "B" })
         expect(attribute.machine_derived).to eq(message.data.machine_derived)
       end
     end
@@ -47,8 +61,22 @@ RSpec.describe Attributes::AttributesAggregator do
           data: {
             name: "name",
             description: "description",
-            set: { id_a => "A", id_b => "B" },
-            default: { id_b => "B" },
+            set: [
+              Core::UuidKeyValuePair.new(
+                key: id_a,
+                value: "A"
+              ),
+              Core::UuidKeyValuePair.new(
+                key: id_b,
+                value: "B"
+              )
+            ],
+            default: [
+              Core::UuidKeyValuePair.new(
+                key: id_b,
+                value: "B"
+              )
+            ],
           }
         )
       end
@@ -61,8 +89,8 @@ RSpec.describe Attributes::AttributesAggregator do
         attribute.reload
         expect(attribute.name).to eq(message.data.name)
         expect(attribute.description).to eq(message.data.description)
-        expect(attribute.set).to eq(message.data.set)
-        expect(attribute.default).to eq(message.data.default)
+        expect(attribute.set).to eq({ id_a => "A", id_b => "B" })
+        expect(attribute.default).to eq({ id_b => "B" })
       end
     end
 

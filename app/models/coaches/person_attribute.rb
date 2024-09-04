@@ -3,15 +3,18 @@
 # Table name: coaches_person_attributes
 #
 #  id                        :uuid             not null, primary key
+#  attribute_value_ids       :uuid             not null, is an Array
 #  machine_derived           :boolean          default(FALSE), not null
-#  name                      :string           not null
-#  values                    :string           default([]), is an Array
 #  attribute_id              :uuid             not null
-#  coaches_person_context_id :uuid             not null
+#  coaches_person_context_id :uuid
 #
 # Indexes
 #
 #  index_coaches_person_attributes_on_coaches_person_context_id  (coaches_person_context_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (coaches_person_context_id => coaches_person_contexts.id)
 #
 module Coaches
   class PersonAttribute < ApplicationRecord

@@ -12,20 +12,21 @@ module Attributes
       return failed(NON_UNIQUE, message) if message.data.set.length != Set.new(message.data.set).length
 
       messages = message_service.query.by_stream(message.stream).before(message).fetch
-      attributed_created = Projectors::Streams::GetFirst.new(schema: Events::Created::V3).project(messages)
+      attributed_created = ::Projectors::Streams::GetFirst.new(schema: Events::Created::V4).project(messages)
 
+      # TODO: we probably need to prevent updates after delete
       return failed(UNAUTHORIZED, message) if attributed_created&.data&.machine_derived && message.metadata.requestor_type != Requestor::Kinds::SERVER
 
       if attributed_created.present?
         message_service.create_once_for_trace!(
-          schema: Events::Updated::V2,
+          schema: Events::Updated::V3,
           trace_id: message.trace_id,
           stream: message.stream,
           data: {
             name: message.data.name,
             description: message.data.description,
-            set: message.data.set,
-            default: message.data.default
+            set: message.data.set.map { |v| pick_kvp(attributed_created.data.set, v) },
+            default: message.data.default.map { |v| pick_kvp(attributed_created.data.default, v) }
           },
           metadata: message.metadata
         )
@@ -33,15 +34,15 @@ module Attributes
         # TODO: We shouldn't fundamentally need to do this once for stream as
         # we should be able to catch it above on GetFirst. investigate this hack
         message_service.create_once_for_stream!(
-          schema: Events::Created::V3,
+          schema: Events::Created::V4,
           trace_id: message.trace_id,
           stream: message.stream,
           data: {
             machine_derived: message.data.machine_derived,
             name: message.data.name,
             description: message.data.description,
-            set: message.data.set,
-            default: message.data.default
+            set: message.data.set.map { |value| Core::UuidKeyValuePair.new(key: SecureRandom.uuid, value:) },
+            default: message.data.default.map { |value| Core::UuidKeyValuePair.new(key: SecureRandom.uuid, value:) }
           },
           metadata: message.metadata
         )
@@ -49,9 +50,9 @@ module Attributes
     end
 
     on_message Commands::Delete::V1, :sync do |message|
-      attributed_created = Projectors::Streams::GetFirst.project(
+      attributed_created = ::Projectors::Streams::GetFirst.project(
         stream: message.stream,
-        schema: Events::Created::V3
+        schema: Events::Created::V4
       )
       return failed(DOES_NOT_EXIST, message) if attributed_created.nil?
       return failed(UNAUTHORIZED, message) if attributed_created.data.machine_derived && message.metadata.requestor_type != Requestor::Kinds::SERVER
@@ -77,6 +78,13 @@ module Attributes
         },
         metadata: message.metadata
       )
+    end
+
+    def pick_kvp(existing_values, value)
+      existing_kvp = existing_values.detect { |kvp| kvp.value == value }
+      return existing_kvp if existing_kvp.present?
+
+      Core::UuidKeyValuePair.new(key: SecureRandom.uuid, value:)
     end
   end
 end

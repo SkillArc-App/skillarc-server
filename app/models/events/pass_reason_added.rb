@@ -15,7 +15,7 @@ module Events
       data: Data::V1,
       metadata: Core::Nothing,
       stream: Streams::PassReason,
-      message_type: MessageTypes::Jobs::PASS_REASON_ADDED,
+      message_type: MessageTypes::PassReason::PASS_REASON_ADDED,
       version: 1
     )
   end

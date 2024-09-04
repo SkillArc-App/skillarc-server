@@ -34,7 +34,7 @@ RSpec.describe "DesiredCertifications", type: :request do
               .with(
                 trace_id: be_a(String),
                 job_id:,
-                schema: Commands::AddDesiredCertification::V1,
+                schema: Jobs::Commands::AddDesiredCertification::V1,
                 data: {
                   id: be_a(String),
                   master_certification_id: desired_certification_params[:masterCertificationId]
@@ -74,7 +74,7 @@ RSpec.describe "DesiredCertifications", type: :request do
               .with(
                 trace_id: be_a(String),
                 job_id:,
-                schema: Commands::RemoveDesiredCertification::V1,
+                schema: Jobs::Commands::RemoveDesiredCertification::V1,
                 data: {
                   id:
                 }

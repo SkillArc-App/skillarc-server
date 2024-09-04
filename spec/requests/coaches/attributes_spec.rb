@@ -25,8 +25,14 @@ RSpec.describe "Attributes", type: :request do
                      description: { type: :string, nullable: true },
                      machineDerived: { type: :boolean },
                      name: { type: :string },
-                     set: { type: :array, items: { type: :string } },
-                     default: { type: :array, items: { type: :string } }
+                     set: {
+                       type: :object,
+                       additionalProperties: { type: :string }
+                     },
+                     default: {
+                       type: :object,
+                       additionalProperties: { type: :string }
+                     }
                    }
                  }
 
@@ -58,7 +64,7 @@ RSpec.describe "Attributes", type: :request do
             type: :string,
             format: :uuid
           },
-          values: {
+          attributeValueIds: {
             type: :array,
             items: {
               type: :string
@@ -79,11 +85,11 @@ RSpec.describe "Attributes", type: :request do
       let(:attribute_params) do
         {
           attributeId: attribute_id,
-          values:
+          attributeValueIds: attribute_value_ids
         }
       end
       let(:attribute_id) { attribute.id }
-      let(:values) { ["A value"] }
+      let(:attribute_value_ids) { [SecureRandom.uuid] }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -96,8 +102,7 @@ RSpec.describe "Attributes", type: :request do
                 person_attribute_id: be_a(String),
                 person_id:,
                 attribute_id:,
-                attribute_name: attribute.name,
-                attribute_values: values,
+                attribute_value_ids:,
                 trace_id: be_a(String)
               )
               .and_call_original
@@ -124,7 +129,7 @@ RSpec.describe "Attributes", type: :request do
             type: :string,
             format: :uuid
           },
-          value: {
+          attributeValueIds: {
             type: :array,
             items: {
               type: :string
@@ -147,11 +152,11 @@ RSpec.describe "Attributes", type: :request do
       let(:attribute_params) do
         {
           attributeId: attribute_id,
-          values:
+          attributeValueIds: attribute_value_ids
         }
       end
       let(:attribute_id) { attribute.id }
-      let(:values) { ["A value"] }
+      let(:attribute_value_ids) { [SecureRandom.uuid] }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -164,8 +169,7 @@ RSpec.describe "Attributes", type: :request do
                 person_attribute_id: id,
                 person_id:,
                 attribute_id:,
-                attribute_name: attribute.name,
-                attribute_values: values,
+                attribute_value_ids:,
                 trace_id: be_a(String)
               )
               .and_call_original

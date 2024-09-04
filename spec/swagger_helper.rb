@@ -957,18 +957,16 @@ RSpec.configure do |config|
                       type: :string,
                       format: :uuid
                     },
-                    acceptibleSet: {
+                    attributeValueIds: {
                       type: :array,
                       items: {
-                        type: :string
+                        type: :string,
+                        format: :uuid
                       }
                     },
                     attributeId: {
                       type: :string,
                       format: :uuid
-                    },
-                    attributeName: {
-                      type: :string
                     }
                   }
                 }

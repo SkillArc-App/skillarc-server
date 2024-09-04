@@ -19,8 +19,8 @@ module Attributes
           schema do
             name String
             description String
-            set HashOf(Uuid => String)
-            default HashOf(Uuid => String)
+            set ArrayOf(Core::UuidKeyValuePair)
+            default ArrayOf(Core::UuidKeyValuePair)
           end
         end
       end

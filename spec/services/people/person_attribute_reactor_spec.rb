@@ -23,16 +23,18 @@ RSpec.describe People::PersonAttributeReactor do
       let(:message) do
         build(
           :message,
-          schema: People::Commands::AddPersonAttribute::V1,
+          schema: People::Commands::AddPersonAttribute::V2,
           stream:,
           data: {
             id:,
-            attribute_values:
+            attribute_value_ids:
           }
         )
       end
       let(:id) { SecureRandom.uuid }
-      let(:attribute_values) { [] }
+      let(:cat) { SecureRandom.uuid }
+      let(:dog) { SecureRandom.uuid }
+      let(:attribute_value_ids) { [] }
 
       context "when the person stream doesn't exist" do
         it "does nothing" do
@@ -55,7 +57,7 @@ RSpec.describe People::PersonAttributeReactor do
         end
 
         context "when the values are not unique" do
-          let(:attribute_values) { %w[cat cat] }
+          let(:attribute_value_ids) { [cat, cat] }
 
           it "does nothing" do
             allow(message_service).to receive(:query).and_call_original
@@ -66,20 +68,19 @@ RSpec.describe People::PersonAttributeReactor do
         end
 
         context "when the values are unique" do
-          let(:attribute_values) { %w[cat dog] }
+          let(:attribute_value_ids) { [cat, dog] }
 
           it "emits a person attributed added event" do
             expect(message_service)
               .to receive(:create_once_for_trace!)
               .with(
-                schema: People::Events::PersonAttributeAdded::V1,
+                schema: People::Events::PersonAttributeAdded::V2,
                 trace_id: message.trace_id,
                 stream: message.stream,
                 data: {
                   id: message.data.id,
                   attribute_id: message.data.attribute_id,
-                  attribute_name: message.data.attribute_name,
-                  attribute_values: message.data.attribute_values
+                  attribute_value_ids:
                 }
               )
               .twice
@@ -119,7 +120,7 @@ RSpec.describe People::PersonAttributeReactor do
           [
             build(
               :message,
-              schema: People::Events::PersonAttributeAdded::V1,
+              schema: People::Events::PersonAttributeAdded::V2,
               stream:,
               data: {
                 id:
@@ -154,23 +155,45 @@ RSpec.describe People::PersonAttributeReactor do
           schema: People::Events::ProfessionalInterestsAdded::V2,
           stream:,
           data: {
-            interests: %w[healthcare construction]
+            interests: %w[construction]
           }
         )
+      end
+      let(:healthcare_id) { SecureRandom.uuid }
+      let(:construction_id) { SecureRandom.uuid }
+      let(:messages) do
+        [
+          build(
+            :message,
+            schema: Attributes::Events::Created::V4,
+            stream_id: Attributes::INDUSTRIES_STREAM.attribute_id,
+            data: {
+              set: [
+                Core::UuidKeyValuePair.new(
+                  key: healthcare_id,
+                  value: "healthcare"
+                ),
+                Core::UuidKeyValuePair.new(
+                  key: construction_id,
+                  value: "construction"
+                )
+              ]
+            }
+          )
+        ]
       end
 
       it "fires off a add person attribute command" do
         expect(message_service)
           .to receive(:create_once_for_trace!)
           .with(
-            schema: People::Commands::AddPersonAttribute::V1,
+            schema: People::Commands::AddPersonAttribute::V2,
             trace_id: message.trace_id,
             stream: message.stream,
             data: {
               id: be_a(String),
               attribute_id: Attributes::INDUSTRIES_STREAM.attribute_id,
-              attribute_name: Industries::INDUSTRIES_NAME,
-              attribute_values: message.data.interests
+              attribute_value_ids: [construction_id]
             }
           )
           .twice
@@ -192,6 +215,7 @@ RSpec.describe People::PersonAttributeReactor do
         )
       end
       let(:training_provider_id) { SecureRandom.uuid }
+      let(:attribute_set_id) { SecureRandom.uuid }
       let(:messages) do
         [
           build(
@@ -201,6 +225,19 @@ RSpec.describe People::PersonAttributeReactor do
             data: {
               name: "A name"
             }
+          ),
+          build(
+            :message,
+            schema: Attributes::Events::Created::V4,
+            stream_id: Attributes::TRAINING_PROVIDER_STREAM.attribute_id,
+            data: {
+              set: [
+                Core::UuidKeyValuePair.new(
+                  key: attribute_set_id,
+                  value: "A name"
+                )
+              ]
+            }
           )
         ]
       end
@@ -209,14 +246,13 @@ RSpec.describe People::PersonAttributeReactor do
         expect(message_service)
           .to receive(:create_once_for_trace!)
           .with(
-            schema: People::Commands::AddPersonAttribute::V1,
+            schema: People::Commands::AddPersonAttribute::V2,
             trace_id: message.trace_id,
             stream: message.stream,
             data: {
               id: be_a(String),
               attribute_id: Attributes::TRAINING_PROVIDER_STREAM.attribute_id,
-              attribute_name: TrainingProviders::TRAINING_PROVIDER_ATTRIBUTE_NAME,
-              attribute_values: ["A name"]
+              attribute_value_ids: [attribute_set_id]
             }
           )
           .twice

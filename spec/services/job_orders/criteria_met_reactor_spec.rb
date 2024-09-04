@@ -8,7 +8,7 @@ RSpec.describe JobOrders::CriteriaMetReactor do
   let(:trace_id) { SecureRandom.uuid }
   let(:job_order_id) { SecureRandom.uuid }
   let(:job_id) { SecureRandom.uuid }
-  let(:job_stream) { Streams::Job.new(job_id:) }
+  let(:job_stream) { Jobs::Streams::Job.new(job_id:) }
   let(:person_id) { SecureRandom.uuid }
   let(:job_order_stream) { JobOrders::Streams::JobOrder.new(job_order_id: SecureRandom.uuid) }
 
@@ -44,7 +44,7 @@ RSpec.describe JobOrders::CriteriaMetReactor do
         let(:message1) do
           build(
             :message,
-            schema: Events::JobCreated::V3,
+            schema: Jobs::Events::JobCreated::V3,
             stream: job_stream,
             data: {
               category: Job::Categories::STAFFING,
@@ -62,13 +62,12 @@ RSpec.describe JobOrders::CriteriaMetReactor do
         let(:message2) do
           build(
             :message,
-            schema: Events::JobAttributeCreated::V1,
+            schema: Jobs::Events::JobAttributeCreated::V2,
             stream: job_stream,
             data: {
-              id: SecureRandom.uuid,
-              attribute_name: "name",
+              job_attribute_id: SecureRandom.uuid,
               attribute_id: SecureRandom.uuid,
-              acceptible_set: %w[A B]
+              acceptible_set: [cat, dog]
             }
           )
         end
@@ -93,6 +92,10 @@ RSpec.describe JobOrders::CriteriaMetReactor do
           )
         end
 
+        let(:cat) { SecureRandom.uuid }
+        let(:dog) { SecureRandom.uuid }
+        let(:parrot) { SecureRandom.uuid }
+        let(:bunny) { SecureRandom.uuid }
         let(:job_messages) { [message1, message2] }
         let(:messages) { [message1, message2, message3, message4] }
 
@@ -143,7 +146,7 @@ RSpec.describe JobOrders::CriteriaMetReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::JobUpdated::V2,
+          schema: Jobs::Events::JobCreated::V3,
           stream: job_stream,
           data: {
             category: Job::Categories::STAFFING,
@@ -161,13 +164,12 @@ RSpec.describe JobOrders::CriteriaMetReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::JobAttributeCreated::V1,
+          schema: Jobs::Events::JobAttributeCreated::V2,
           stream: job_stream,
           data: {
-            id: SecureRandom.uuid,
-            attribute_name: "name",
+            job_attribute_id: SecureRandom.uuid,
             attribute_id: SecureRandom.uuid,
-            acceptible_set: %w[A B]
+            acceptible_set: [cat, dog]
           }
         )
       end
@@ -179,11 +181,11 @@ RSpec.describe JobOrders::CriteriaMetReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::JobAttributeUpdated::V1,
+          schema: Jobs::Events::JobAttributeUpdated::V2,
           stream: job_stream,
           data: {
-            id: SecureRandom.uuid,
-            acceptible_set: %w[D F]
+            job_attribute_id: SecureRandom.uuid,
+            acceptible_set: [parrot, bunny]
           }
         )
       end
@@ -195,10 +197,10 @@ RSpec.describe JobOrders::CriteriaMetReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::JobAttributeDestroyed::V1,
+          schema: Jobs::Events::JobAttributeDestroyed::V2,
           stream: job_stream,
           data: {
-            id: SecureRandom.uuid
+            job_attribute_id: SecureRandom.uuid
           }
         )
       end

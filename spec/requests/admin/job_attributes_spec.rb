@@ -23,7 +23,8 @@ RSpec.describe "Admin::JobAttributes", type: :request do
               acceptible_set: {
                 type: :array,
                 items: {
-                  type: :string
+                  type: :string,
+                  format: :uuid
                 }
               }
             },
@@ -44,13 +45,14 @@ RSpec.describe "Admin::JobAttributes", type: :request do
 
         let(:job_attribute) do
           {
-            job_attribute: {
-              attribute_id: attribute.id,
-              acceptible_set: %w[A]
+            jobAttribute: {
+              attributeId: attribute.id,
+              acceptibleSet: acceptible_set
             }
           }
         end
-        let(:attribute) { create(:attributes_attribute, set: %w[A B]) }
+        let(:acceptible_set) { [SecureRandom.uuid, SecureRandom.uuid] }
+        let(:attribute) { create(:attributes_attribute, set: [SecureRandom.uuid]) }
 
         response '201', 'Creates a job attribute' do
           before do
@@ -59,7 +61,7 @@ RSpec.describe "Admin::JobAttributes", type: :request do
               .with(
                 job_id: job.id,
                 attribute_id: attribute.id,
-                acceptible_set: %w[A]
+                acceptible_set:
               )
               .and_call_original
           end
@@ -89,7 +91,8 @@ RSpec.describe "Admin::JobAttributes", type: :request do
               acceptible_set: {
                 type: :array,
                 items: {
-                  type: :string
+                  type: :string,
+                  format: :uuid
                 }
               }
             },
@@ -111,11 +114,12 @@ RSpec.describe "Admin::JobAttributes", type: :request do
 
         let(:job_attribute) do
           {
-            job_attribute: {
-              acceptible_set: %w[A]
+            jobAttribute: {
+              acceptibleSet: acceptible_set
             }
           }
         end
+        let(:acceptible_set) { [SecureRandom.uuid] }
 
         response '204', 'Updates a job attribute' do
           before do
@@ -124,7 +128,7 @@ RSpec.describe "Admin::JobAttributes", type: :request do
               .with(
                 job_id: id,
                 job_attribute_id:,
-                acceptible_set: %w[A]
+                acceptible_set: acceptible_set
               )
               .and_call_original
           end

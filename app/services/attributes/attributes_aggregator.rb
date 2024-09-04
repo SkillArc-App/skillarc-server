@@ -10,8 +10,8 @@ module Attributes
         name: message.data.name,
         description: message.data.description,
         machine_derived: message.data.machine_derived,
-        set: message.data.set,
-        default: message.data.default
+        set: message.data.set.to_h { |kvp| [kvp.key, kvp.value] },
+        default: message.data.default.to_h { |kvp| [kvp.key, kvp.value] }
       )
     end
 
@@ -20,8 +20,8 @@ module Attributes
       attribute.update!(
         name: message.data.name,
         description: message.data.description,
-        set: message.data.set,
-        default: message.data.default
+        set: message.data.set.to_h { |kvp| [kvp.key, kvp.value] },
+        default: message.data.default.to_h { |kvp| [kvp.key, kvp.value] }
       )
     end
 

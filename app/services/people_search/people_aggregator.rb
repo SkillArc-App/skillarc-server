@@ -43,17 +43,17 @@ module PeopleSearch
       )
     end
 
-    on_message People::Events::PersonAttributeAdded::V1 do |message|
-      attributes = Attribute.where(attribute_id: message.data.attribute_id, value: message.data.attribute_values).to_a
+    on_message People::Events::PersonAttributeAdded::V2 do |message|
+      attributes = Attribute.where(attribute_id: message.data.attribute_id, attribute_value_id: message.data.attribute_value_ids).to_a
 
-      current_values = attributes.map(&:value)
-      add_values = message.data.attribute_values - current_values
+      current_values = attributes.map(&:attribute_value_id)
+      add_values = message.data.attribute_value_ids - current_values
 
       if add_values.present?
         new_attributes = Attribute.create!(
           add_values.map do |value|
             {
-              value:,
+              attribute_value_id: value,
               attribute_id: message.data.attribute_id
             }
           end

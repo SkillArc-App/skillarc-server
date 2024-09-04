@@ -97,7 +97,7 @@ module JobOrders
       end
     end
 
-    on_message ::Events::JobCreated::V3 do |message|
+    on_message ::Jobs::Events::JobCreated::V3 do |message|
       message_service.create_once_for_trace!(
         schema: Events::Added::V1,
         job_order_id: SecureRandom.uuid,

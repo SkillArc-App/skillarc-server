@@ -30,7 +30,7 @@ module Events
       type: Core::EVENT,
       data: Data::V1,
       metadata: Core::Nothing,
-      stream: Streams::Job,
+      stream: Jobs::Streams::Job,
       message_type: MessageTypes::Chats::CHAT_MESSAGE_SENT,
       version: 1
     )

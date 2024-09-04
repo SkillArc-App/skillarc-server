@@ -5,7 +5,7 @@ module Events
       data: Core::Nothing,
       metadata: Core::Nothing,
       stream: Streams::PassReason,
-      message_type: MessageTypes::Jobs::PASS_REASON_REMOVED,
+      message_type: MessageTypes::PassReason::PASS_REASON_REMOVED,
       version: 1
     )
   end

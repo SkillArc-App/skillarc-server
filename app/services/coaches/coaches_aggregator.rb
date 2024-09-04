@@ -47,15 +47,14 @@ module Coaches
       )
     end
 
-    on_message People::Events::PersonAttributeAdded::V1, :sync do |message|
+    on_message People::Events::PersonAttributeAdded::V2, :sync do |message|
       person_context = PersonContext.find(message.stream.id)
-      seeker_attribute = PersonAttribute.find_or_initialize_by(id: message.data.id)
+      person_attribute = PersonAttribute.find_or_initialize_by(id: message.data.id)
 
-      seeker_attribute.update!(
+      person_attribute.update!(
         person_context:,
         attribute_id: message.data.attribute_id,
-        name: message.data.attribute_name,
-        values: message.data.attribute_values
+        attribute_value_ids: message.data.attribute_value_ids
       )
     end
 
@@ -63,7 +62,7 @@ module Coaches
       PersonAttribute.find(message.data.id).destroy!
     end
 
-    on_message Events::JobCreated::V3 do |message|
+    on_message Jobs::Events::JobCreated::V3 do |message|
       Job.create!(
         job_id: message.stream_id,
         employment_title: message.data.employment_title,
@@ -72,7 +71,7 @@ module Coaches
       )
     end
 
-    on_message Events::JobUpdated::V2 do |message|
+    on_message Jobs::Events::JobUpdated::V2 do |message|
       job = Job.find_by!(job_id: message.stream_id)
 
       job.update!(

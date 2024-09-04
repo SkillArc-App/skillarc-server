@@ -10,17 +10,16 @@ RSpec.describe Jobs::JobsReactor do
     subject { consumer.create_job_attribute(job_id:, attribute_id:, acceptible_set:) }
 
     let(:job_id) { create(:job).id }
-    let(:attribute) { create(:attributes_attribute, set: %w[A B]) }
+    let(:attribute) { create(:attributes_attribute, set: [SecureRandom.uuid, SecureRandom.uuid]) }
     let(:attribute_id) { attribute.id }
-    let(:acceptible_set) { %w[A] }
+    let(:acceptible_set) { [attribute.set[0]] }
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::JobAttributeCreated::V1,
+        schema: Jobs::Events::JobAttributeCreated::V2,
         job_id:,
         data: {
-          id: kind_of(String),
-          attribute_name: attribute.name,
+          job_attribute_id: kind_of(String),
           attribute_id:,
           acceptible_set:
         }
@@ -33,16 +32,16 @@ RSpec.describe Jobs::JobsReactor do
   describe "#update_job_attribute" do
     subject { consumer.update_job_attribute(job_id: job_attribute.job_id, job_attribute_id:, acceptible_set:) }
 
-    let(:job_attribute) { create(:job_attribute, acceptible_set: %w[A B]) }
+    let(:job_attribute) { create(:job_attribute, attribute_value_ids: [SecureRandom.uuid, SecureRandom.uuid]) }
     let(:job_attribute_id) { job_attribute.id }
-    let(:acceptible_set) { %w[A] }
+    let(:acceptible_set) { [job_attribute.attribute_value_ids[0]] }
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::JobAttributeUpdated::V1,
+        schema: Jobs::Events::JobAttributeUpdated::V2,
         job_id: job_attribute.job_id,
         data: {
-          id: job_attribute.id,
+          job_attribute_id: job_attribute.id,
           acceptible_set:
         }
       ).and_call_original
@@ -59,10 +58,10 @@ RSpec.describe Jobs::JobsReactor do
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: Events::JobAttributeDestroyed::V1,
+        schema: Jobs::Events::JobAttributeDestroyed::V2,
         job_id: job_attribute.job_id,
         data: {
-          id: job_attribute.id
+          job_attribute_id:
         }
       ).and_call_original
 
@@ -83,7 +82,7 @@ RSpec.describe Jobs::JobsReactor do
     end
 
     let(:messages) { [] }
-    let(:stream) { Streams::Job.new(job_id:) }
+    let(:stream) { Jobs::Streams::Job.new(job_id:) }
     let(:id) { SecureRandom.uuid }
     let(:job_id) { SecureRandom.uuid }
     let(:employer_id) { SecureRandom.uuid }
@@ -93,7 +92,7 @@ RSpec.describe Jobs::JobsReactor do
       build(
         :message,
         stream:,
-        schema: Events::JobCreated::V3,
+        schema: Jobs::Events::JobCreated::V3,
         data: {
           category: Job::Categories::MARKETPLACE,
           employment_title: "A title",
@@ -126,7 +125,7 @@ RSpec.describe Jobs::JobsReactor do
       build(
         :message,
         stream:,
-        schema: Events::DesiredCertificationCreated::V1,
+        schema: Jobs::Events::DesiredCertificationCreated::V1,
         data: {
           id:,
           job_id:,
@@ -140,7 +139,7 @@ RSpec.describe Jobs::JobsReactor do
         build(
           :message,
           stream:,
-          schema: Commands::AddDesiredCertification::V1,
+          schema: Jobs::Commands::AddDesiredCertification::V1,
           data: {
             id:,
             master_certification_id:
@@ -179,7 +178,7 @@ RSpec.describe Jobs::JobsReactor do
             .with(
               trace_id: message.trace_id,
               stream: message.stream,
-              schema: Events::DesiredCertificationCreated::V1,
+              schema: Jobs::Events::DesiredCertificationCreated::V1,
               data: {
                 id: message.data.id,
                 job_id: message.stream.id,
@@ -199,7 +198,7 @@ RSpec.describe Jobs::JobsReactor do
         build(
           :message,
           stream:,
-          schema: Commands::RemoveDesiredCertification::V1,
+          schema: Jobs::Commands::RemoveDesiredCertification::V1,
           data: {
             id:
           }
@@ -237,7 +236,7 @@ RSpec.describe Jobs::JobsReactor do
             .with(
               trace_id: message.trace_id,
               stream: message.stream,
-              schema: Events::DesiredCertificationDestroyed::V1,
+              schema: Jobs::Events::DesiredCertificationDestroyed::V1,
               data: {
                 id: message.data.id
               }

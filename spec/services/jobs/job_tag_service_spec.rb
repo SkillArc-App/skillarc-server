@@ -11,7 +11,7 @@ RSpec.describe Jobs::JobTagService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::JobTagCreated::V1,
+        schema: Jobs::Events::JobTagCreated::V1,
         job_id: be_present,
         data: {
           id: be_a(String),
@@ -33,7 +33,7 @@ RSpec.describe Jobs::JobTagService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::JobTagDestroyed::V2,
+        schema: Jobs::Events::JobTagDestroyed::V2,
         job_id: job_tag.job_id,
         data: {
           tag_id: job_tag.tag_id,

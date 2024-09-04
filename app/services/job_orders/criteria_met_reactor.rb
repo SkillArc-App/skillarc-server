@@ -5,22 +5,22 @@ module JobOrders
     end
 
     on_message Events::Added::V1 do |message|
-      emit_criteria_met_if_necessary(::Streams::Job.new(job_id: message.data.job_id), message.trace_id)
+      emit_criteria_met_if_necessary(::Jobs::Streams::Job.new(job_id: message.data.job_id), message.trace_id)
     end
 
-    on_message ::Events::JobUpdated::V2 do |message|
+    on_message Jobs::Events::JobCreated::V3 do |message|
       emit_criteria_met_if_necessary(message.stream, message.trace_id)
     end
 
-    on_message ::Events::JobAttributeCreated::V1 do |message|
+    on_message Jobs::Events::JobAttributeCreated::V2 do |message|
       emit_criteria_met_if_necessary(message.stream, message.trace_id)
     end
 
-    on_message ::Events::JobAttributeUpdated::V1 do |message|
+    on_message Jobs::Events::JobAttributeUpdated::V2 do |message|
       emit_criteria_met_if_necessary(message.stream, message.trace_id)
     end
 
-    on_message ::Events::JobAttributeDestroyed::V1 do |message|
+    on_message Jobs::Events::JobAttributeDestroyed::V2 do |message|
       emit_criteria_met_if_necessary(message.stream, message.trace_id)
     end
 

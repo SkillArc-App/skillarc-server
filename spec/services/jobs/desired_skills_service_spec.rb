@@ -11,7 +11,7 @@ RSpec.describe Jobs::DesiredSkillService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::DesiredSkillCreated::V1,
+        schema: Jobs::Events::DesiredSkillCreated::V1,
         job_id: job.id,
         data: {
           id: be_present,
@@ -33,7 +33,7 @@ RSpec.describe Jobs::DesiredSkillService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::DesiredSkillDestroyed::V1,
+        schema: Jobs::Events::DesiredSkillDestroyed::V1,
         job_id: desired_skill.job_id,
         data: {
           id: desired_skill.id

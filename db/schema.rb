@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_30_140846) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_30_200710) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -286,11 +286,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_30_140846) do
   end
 
   create_table "coaches_person_attributes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coaches_person_context_id", null: false
-    t.uuid "attribute_id", null: false
-    t.string "name", null: false
-    t.string "values", default: [], array: true
     t.boolean "machine_derived", default: false, null: false
+    t.uuid "attribute_id", null: false
+    t.uuid "coaches_person_context_id"
+    t.uuid "attribute_value_ids", null: false, array: true
     t.index ["coaches_person_context_id"], name: "index_coaches_person_attributes_on_coaches_person_context_id"
   end
 
@@ -586,10 +585,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_30_140846) do
   end
 
   create_table "job_attributes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.text "job_id", null: false
-    t.string "acceptible_set", default: [], null: false, array: true
+    t.uuid "attribute_value_ids", null: false, array: true
     t.uuid "attribute_id", null: false
-    t.string "attribute_name", null: false
+    t.text "job_id", null: false
     t.index ["job_id"], name: "index_job_attributes_on_job_id"
   end
 
@@ -791,9 +789,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_30_140846) do
 
   create_table "people_search_attributes", force: :cascade do |t|
     t.uuid "attribute_id", null: false
-    t.text "value", null: false
+    t.uuid "attribute_value_id", null: false
     t.index ["attribute_id"], name: "index_people_search_attributes_on_attribute_id"
-    t.index ["value"], name: "index_people_search_attributes_on_value"
+    t.index ["attribute_value_id"], name: "index_people_search_attributes_on_attribute_value_id"
   end
 
   create_table "people_search_attributes_people", id: false, force: :cascade do |t|
@@ -1111,6 +1109,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_30_140846) do
   add_foreign_key "chats_messages", "chats_applicant_chats", column: "chats_applicant_chats_id"
   add_foreign_key "chats_read_receipts", "chats_applicant_chats", column: "chats_applicant_chats_id"
   add_foreign_key "coaches_contacts", "coaches_person_contexts"
+  add_foreign_key "coaches_person_attributes", "coaches_person_contexts"
   add_foreign_key "credentials", "organizations", name: "Credential_organization_id_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "desired_certifications", "jobs", name: "DesiredCertification_job_id_fkey", on_update: :cascade, on_delete: :restrict
   add_foreign_key "desired_skills", "jobs", name: "DesiredSkill_job_id_fkey", on_update: :cascade, on_delete: :restrict

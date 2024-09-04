@@ -12,23 +12,22 @@ RSpec.describe Coaches::CoachesEventEmitter do
   let(:message_service) { MessageService.new }
 
   describe "#add_attribute" do
-    subject { instance.add_attribute(person_id:, person_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) }
+    subject { instance.add_attribute(person_id:, person_attribute_id:, attribute_id:, attribute_value_ids:, trace_id:) }
 
     let(:person_attribute_id) { SecureRandom.uuid }
     let(:attribute_id) { SecureRandom.uuid }
-    let(:attribute_name) { "Cool factor" }
-    let(:attribute_values) { ["Cool"] }
+    let(:attribute_value_ids) { [cool] }
+    let(:cool) { SecureRandom.uuid }
 
     it "creates an event" do
       expect(message_service).to receive(:create!).with(
-        schema: People::Events::PersonAttributeAdded::V1,
+        schema: People::Events::PersonAttributeAdded::V2,
         person_id:,
         trace_id:,
         data: {
           id: person_attribute_id,
           attribute_id:,
-          attribute_name:,
-          attribute_values:
+          attribute_value_ids:
         }
       ).and_call_original
 

@@ -72,7 +72,7 @@ module Employers
       )
     end
 
-    on_message Events::JobCreated::V3 do |message|
+    on_message Jobs::Events::JobCreated::V3 do |message|
       employer = Employer.find_by!(employer_id: message.data.employer_id)
 
       Job.create!(
@@ -116,7 +116,7 @@ module Employers
       )
     end
 
-    on_message Events::JobUpdated::V2 do |message|
+    on_message Jobs::Events::JobUpdated::V2 do |message|
       job = Job.find_by!(job_id: message.stream_id)
 
       job.update!(

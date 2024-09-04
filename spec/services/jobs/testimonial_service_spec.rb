@@ -15,7 +15,7 @@ RSpec.describe Jobs::TestimonialService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::TestimonialCreated::V1,
+        schema: Jobs::Events::TestimonialCreated::V1,
         job_id: job.id,
         data: {
           id: be_a(String),
@@ -40,7 +40,7 @@ RSpec.describe Jobs::TestimonialService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::TestimonialDestroyed::V1,
+        schema: Jobs::Events::TestimonialDestroyed::V1,
         job_id: testimonial.job_id,
         data: {
           id: testimonial.id

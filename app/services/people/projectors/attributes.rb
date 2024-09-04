@@ -8,7 +8,7 @@ module People
 
         schema do
           id Uuid
-          values ArrayOf(String)
+          attribute_value_ids ArrayOf(String)
         end
       end
 
@@ -26,10 +26,10 @@ module People
         )
       end
 
-      on_message Events::PersonAttributeAdded::V1 do |message, accumulator|
+      on_message Events::PersonAttributeAdded::V2 do |message, accumulator|
         person_attribute = PersonAttribute.new(
           id: message.data.attribute_id,
-          values: message.data.attribute_values
+          attribute_value_ids: message.data.attribute_value_ids
         )
 
         Projection.new(attributes: accumulator.attributes.merge({ message.data.id => person_attribute }))

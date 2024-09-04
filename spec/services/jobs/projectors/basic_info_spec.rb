@@ -16,7 +16,7 @@ RSpec.describe Jobs::Projectors::BasicInfo do
     let(:job_created) do
       build(
         :message,
-        schema: Events::JobCreated::V3,
+        schema: Jobs::Events::JobCreated::V3,
         stream_id: job_id,
         data: {
           category: Job::Categories::MARKETPLACE,
@@ -34,7 +34,7 @@ RSpec.describe Jobs::Projectors::BasicInfo do
     let(:job_updated) do
       build(
         :message,
-        schema: Events::JobUpdated::V2,
+        schema: Jobs::Events::JobUpdated::V2,
         stream_id: job_id,
         data: {
           category: Job::Categories::MARKETPLACE,

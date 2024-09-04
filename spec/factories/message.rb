@@ -33,7 +33,7 @@ FactoryBot.define do
           attributes[:metadata]
         end
 
-      raise Message::InvalidSchemaError if attributes[:schema].inactive? || attributes[:schema].destroyed?
+      raise Message::InvalidSchemaError, "Schema #{attributes[:schema]} is inactive" if attributes[:schema].inactive? || attributes[:schema].destroyed?
 
       Message.new(
         **attributes,

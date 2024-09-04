@@ -18,7 +18,7 @@ RSpec.describe Jobs::Projectors::CareerPaths do
     let(:career_path_created) do
       build(
         :message,
-        schema: Events::CareerPathCreated::V1,
+        schema: Jobs::Events::CareerPathCreated::V1,
         stream_id: job_id,
         data: {
           id: SecureRandom.uuid,
@@ -33,7 +33,7 @@ RSpec.describe Jobs::Projectors::CareerPaths do
     let(:career_path_updated) do
       build(
         :message,
-        schema: Events::CareerPathUpdated::V1,
+        schema: Jobs::Events::CareerPathUpdated::V1,
         stream_id: job_id,
         data: {
           id: career_path_created.data[:id],
@@ -44,7 +44,7 @@ RSpec.describe Jobs::Projectors::CareerPaths do
     let(:career_path_created2) do
       build(
         :message,
-        schema: Events::CareerPathCreated::V1,
+        schema: Jobs::Events::CareerPathCreated::V1,
         stream_id: job_id,
         data: {
           id: SecureRandom.uuid,
@@ -59,7 +59,7 @@ RSpec.describe Jobs::Projectors::CareerPaths do
     let(:career_path_destroyed) do
       build(
         :message,
-        schema: Events::CareerPathDestroyed::V1,
+        schema: Jobs::Events::CareerPathDestroyed::V1,
         stream_id: job_id,
         data: {
           id: career_path_created2.data[:id]

@@ -19,30 +19,35 @@ RSpec.describe PeopleSearch::PeopleQuery do
       create(
         :people_search__attribute,
         attribute_id: attribute_id1,
-        value: "dog"
+        attribute_value_id: dog
       )
     end
     let!(:attribute12) do
       create(
         :people_search__attribute,
         attribute_id: attribute_id1,
-        value: "cat"
+        attribute_value_id: cat
       )
     end
     let!(:attribute21) do
       create(
         :people_search__attribute,
         attribute_id: attribute_id2,
-        value: "red"
+        attribute_value_id: red
       )
     end
     let!(:attribute22) do
       create(
         :people_search__attribute,
         attribute_id: attribute_id2,
-        value: "blue"
+        attribute_value_id: blue
       )
     end
+
+    let(:red) { SecureRandom.uuid }
+    let(:blue) { SecureRandom.uuid }
+    let(:dog) { SecureRandom.uuid }
+    let(:cat) { SecureRandom.uuid }
 
     let!(:person1) do
       create(
@@ -109,8 +114,8 @@ RSpec.describe PeopleSearch::PeopleQuery do
       let(:search_terms) { nil }
       let(:attributes) do
         {
-          attribute_id1 => %w[dog cat],
-          attribute_id2 => ["blue"]
+          attribute_id1 => [dog, cat],
+          attribute_id2 => [blue]
         }
       end
 
@@ -129,11 +134,11 @@ RSpec.describe PeopleSearch::PeopleQuery do
               attributes: [
                 Users::Events::PersonSearchExecuted::Attribute::V1.new(
                   id: attribute_id1,
-                  values: %w[dog cat]
+                  values: [dog, cat]
                 ),
                 Users::Events::PersonSearchExecuted::Attribute::V1.new(
                   id: attribute_id2,
-                  values: %w[blue]
+                  values: [blue]
                 )
               ]
             }
@@ -147,7 +152,7 @@ RSpec.describe PeopleSearch::PeopleQuery do
       let(:search_terms) { "John" }
       let(:attributes) do
         {
-          attribute_id2 => ["blue"]
+          attribute_id2 => [blue]
         }
       end
 
@@ -166,7 +171,7 @@ RSpec.describe PeopleSearch::PeopleQuery do
               attributes: [
                 Users::Events::PersonSearchExecuted::Attribute::V1.new(
                   id: attribute_id2,
-                  values: %w[blue]
+                  values: [blue]
                 )
               ]
             }

@@ -8,7 +8,7 @@ module JobOrders
       Person.delete_all
     end
 
-    on_message ::Events::JobCreated::V3 do |message|
+    on_message Jobs::Events::JobCreated::V3 do |message|
       Job.create!(
         id: message.stream.id,
         applicable_for_job_orders: message.data.category == ::Job::Categories::STAFFING,
@@ -21,7 +21,7 @@ module JobOrders
       )
     end
 
-    on_message ::Events::JobUpdated::V2 do |message|
+    on_message Jobs::Events::JobUpdated::V2 do |message|
       job = Job.find(message.stream.id)
 
       job.update!(

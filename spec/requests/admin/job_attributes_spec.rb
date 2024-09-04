@@ -13,21 +13,18 @@ RSpec.describe "Admin::JobAttributes", type: :request do
       parameter name: :job_attribute, in: :body, schema: {
         type: :object,
         properties: {
-          job_attribute: {
-            type: :object,
-            properties: {
-              attribute_id: {
+          properties: {
+            attribute_id: {
+              type: :string,
+              format: :uuid
+            },
+            acceptible_set: {
+              type: :array,
+              items: {
                 type: :string,
                 format: :uuid
-              },
-              acceptible_set: {
-                type: :array,
-                items: {
-                  type: :string
-                }
               }
-            },
-            required: %w[attribute_id acceptible_set]
+            }
           }
         },
         required: %w[job_attribute]
@@ -44,13 +41,12 @@ RSpec.describe "Admin::JobAttributes", type: :request do
 
         let(:job_attribute) do
           {
-            job_attribute: {
-              attribute_id: attribute.id,
-              acceptible_set: %w[A]
-            }
+            attributeId: attribute.id,
+            acceptibleSet: acceptible_set
           }
         end
-        let(:attribute) { create(:attributes_attribute, set: %w[A B]) }
+        let(:acceptible_set) { [SecureRandom.uuid, SecureRandom.uuid] }
+        let(:attribute) { create(:attributes_attribute, set: [SecureRandom.uuid]) }
 
         response '201', 'Creates a job attribute' do
           before do
@@ -59,7 +55,7 @@ RSpec.describe "Admin::JobAttributes", type: :request do
               .with(
                 job_id: job.id,
                 attribute_id: attribute.id,
-                acceptible_set: %w[A]
+                acceptible_set:
               )
               .and_call_original
           end
@@ -83,17 +79,14 @@ RSpec.describe "Admin::JobAttributes", type: :request do
       parameter name: :job_attribute, in: :body, schema: {
         type: :object,
         properties: {
-          job_attribute: {
-            type: :object,
-            properties: {
-              acceptible_set: {
-                type: :array,
-                items: {
-                  type: :string
-                }
+          properties: {
+            acceptible_set: {
+              type: :array,
+              items: {
+                type: :string,
+                format: :uuid
               }
-            },
-            required: %w[acceptible_set]
+            }
           }
         },
         required: %w[job_attribute]
@@ -111,11 +104,10 @@ RSpec.describe "Admin::JobAttributes", type: :request do
 
         let(:job_attribute) do
           {
-            job_attribute: {
-              acceptible_set: %w[A]
-            }
+            acceptibleSet: acceptible_set
           }
         end
+        let(:acceptible_set) { [SecureRandom.uuid] }
 
         response '204', 'Updates a job attribute' do
           before do
@@ -124,7 +116,7 @@ RSpec.describe "Admin::JobAttributes", type: :request do
               .with(
                 job_id: id,
                 job_attribute_id:,
-                acceptible_set: %w[A]
+                acceptible_set:
               )
               .and_call_original
           end

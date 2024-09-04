@@ -23,7 +23,7 @@ module JobSearch
       Job.where(employer_id: message.stream.id).update_all(employer_logo_url: message.data.logo_url) # rubocop:disable Rails/SkipsModelValidations
     end
 
-    on_message Events::JobCreated::V3 do |message|
+    on_message Jobs::Events::JobCreated::V3 do |message|
       data = message.data
 
       employer = Employer.find(data.employer_id)
@@ -42,7 +42,7 @@ module JobSearch
       )
     end
 
-    on_message Events::JobUpdated::V2 do |message|
+    on_message Jobs::Events::JobUpdated::V2 do |message|
       job = Job.find_by!(job_id: message.stream.job_id)
 
       data = message.data
@@ -56,7 +56,7 @@ module JobSearch
       )
     end
 
-    on_message Events::JobTagCreated::V1 do |message|
+    on_message Jobs::Events::JobTagCreated::V1 do |message|
       job = Job.find_by!(job_id: message.stream.job_id)
 
       # TODO: we should probably aggregate these tags as well
@@ -68,7 +68,7 @@ module JobSearch
       job.update!(tags: job.tags.to_set.add(tag_name).to_a)
     end
 
-    on_message Events::JobTagDestroyed::V2 do |message|
+    on_message Jobs::Events::JobTagDestroyed::V2 do |message|
       job = Job.find_by!(job_id: message.stream.job_id)
       tag_name = Projectors::Streams::GetFirst.project(
         schema: Events::TagCreated::V1,
@@ -78,7 +78,7 @@ module JobSearch
       job.update!(tags: job.tags.to_set.delete(tag_name).to_a)
     end
 
-    on_message Events::CareerPathCreated::V1 do |message|
+    on_message Jobs::Events::CareerPathCreated::V1 do |message|
       messages = MessageService.stream_events(message.stream)
       starting_path = Jobs::Projectors::CareerPaths.new.project(messages).paths.detect { |m| m.order.zero? }
       job = Job.find_by!(job_id: message.stream.job_id)
@@ -89,7 +89,7 @@ module JobSearch
       )
     end
 
-    on_message Events::CareerPathUpdated::V1 do |message|
+    on_message Jobs::Events::CareerPathUpdated::V1 do |message|
       messages = MessageService.stream_events(message.stream)
       starting_path = Jobs::Projectors::CareerPaths.new.project(messages).paths.detect { |m| m.order.zero? }
       job = Job.find_by!(job_id: message.stream.job_id)

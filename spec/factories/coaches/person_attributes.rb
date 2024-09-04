@@ -3,7 +3,7 @@ FactoryBot.define do
     person_context factory: %i[coaches__person_context]
     id { SecureRandom.uuid }
     attribute_id { SecureRandom.uuid }
-    name { "Favorite Sport" }
-    values { ["Football"] }
+    machine_derived { false }
+    attribute_value_ids { [SecureRandom.uuid] }
   end
 end

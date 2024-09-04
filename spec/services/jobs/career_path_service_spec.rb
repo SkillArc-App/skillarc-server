@@ -13,7 +13,7 @@ RSpec.describe Jobs::CareerPathService do
 
     it "publishes an event" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::CareerPathCreated::V1,
+        schema: Jobs::Events::CareerPathCreated::V1,
         job_id: job.id,
         data: {
           id: be_a(String),
@@ -48,7 +48,7 @@ RSpec.describe Jobs::CareerPathService do
 
     it "publishes events" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::CareerPathUpdated::V1,
+        schema: Jobs::Events::CareerPathUpdated::V1,
         job_id: upper_career_path.job_id,
         data: {
           id: upper_career_path.id,
@@ -57,7 +57,7 @@ RSpec.describe Jobs::CareerPathService do
       ).and_call_original
 
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::CareerPathUpdated::V1,
+        schema: Jobs::Events::CareerPathUpdated::V1,
         job_id: career_path.job_id,
         data: {
           id: career_path.id,
@@ -87,7 +87,7 @@ RSpec.describe Jobs::CareerPathService do
 
       it "publishes events" do
         expect_any_instance_of(MessageService).to receive(:create!).with(
-          schema: Events::CareerPathUpdated::V1,
+          schema: Jobs::Events::CareerPathUpdated::V1,
           job_id: lower_career_path.job_id,
           data: {
             id: lower_career_path.id,
@@ -96,7 +96,7 @@ RSpec.describe Jobs::CareerPathService do
         ).and_call_original
 
         expect_any_instance_of(MessageService).to receive(:create!).with(
-          schema: Events::CareerPathUpdated::V1,
+          schema: Jobs::Events::CareerPathUpdated::V1,
           job_id: career_path.job_id,
           data: {
             id: career_path.id,
@@ -119,7 +119,7 @@ RSpec.describe Jobs::CareerPathService do
     let!(:higher_career_path_created) do
       message = build(
         :message,
-        schema: Events::CareerPathCreated::V1,
+        schema: Jobs::Events::CareerPathCreated::V1,
         stream_id: career_path.job_id,
         data: {
           id: SecureRandom.uuid,
@@ -136,7 +136,7 @@ RSpec.describe Jobs::CareerPathService do
 
     it "publishes events" do
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::CareerPathUpdated::V1,
+        schema: Jobs::Events::CareerPathUpdated::V1,
         job_id: career_path.job_id,
         data: {
           id: be_a(String),
@@ -145,7 +145,7 @@ RSpec.describe Jobs::CareerPathService do
       ).and_call_original
 
       expect_any_instance_of(MessageService).to receive(:create!).with(
-        schema: Events::CareerPathDestroyed::V1,
+        schema: Jobs::Events::CareerPathDestroyed::V1,
         job_id: career_path.job_id,
         data: {
           id: career_path.id

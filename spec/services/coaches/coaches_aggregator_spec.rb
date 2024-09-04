@@ -93,7 +93,7 @@ RSpec.describe Coaches::CoachesAggregator do
         build(
           :message,
           stream_id: id,
-          schema: Events::JobCreated::V3,
+          schema: Jobs::Events::JobCreated::V3,
           data: {
             category: Job::Categories::MARKETPLACE,
             employment_title: "Laborer",
@@ -130,7 +130,7 @@ RSpec.describe Coaches::CoachesAggregator do
         build(
           :message,
           stream_id: id,
-          schema: Events::JobUpdated::V2,
+          schema: Jobs::Events::JobUpdated::V2,
           data: {
             category: Job::Categories::MARKETPLACE,
             employment_title: "Laborer",
@@ -360,16 +360,16 @@ RSpec.describe Coaches::CoachesAggregator do
         let(:message) do
           build(
             :message,
-            schema: People::Events::PersonAttributeAdded::V1,
+            schema: People::Events::PersonAttributeAdded::V2,
             stream_id: person_id,
             data: {
               id: SecureRandom.uuid,
               attribute_id: SecureRandom.uuid,
-              attribute_name: "HS Cliques",
-              attribute_values: ["Jock"]
+              attribute_value_ids: [jock]
             }
           )
         end
+        let(:jock) { SecureRandom.uuid }
 
         it "Creates a Seeker Attribute" do
           expect { subject }.to change(Coaches::PersonAttribute, :count).from(0).to(1)
@@ -378,8 +378,7 @@ RSpec.describe Coaches::CoachesAggregator do
           expect(seeker_attribute.person_context).to eq(person_context)
           expect(seeker_attribute.id).to eq(message.data.id)
           expect(seeker_attribute.attribute_id).to eq(message.data.attribute_id)
-          expect(seeker_attribute.name).to eq("HS Cliques")
-          expect(seeker_attribute.values).to eq(["Jock"])
+          expect(seeker_attribute.attribute_value_ids).to eq([jock])
         end
       end
 

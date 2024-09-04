@@ -3,46 +3,6 @@ require 'swagger_helper'
 
 RSpec.describe "Attributes", type: :request do
   path '/admin/attributes' do
-    get "get all attributes" do
-      tags 'Admin'
-      produces 'application/json'
-      security [bearer_auth: []]
-
-      include_context "olive branch casing parameter"
-      include_context "olive branch camelcasing"
-
-      it_behaves_like "admin spec unauthenticated openapi"
-
-      context "when authenticated" do
-        include_context "admin authenticated openapi"
-
-        response '200', 'Returns all attributes' do
-          schema type: :array,
-                 items: {
-                   type: :object,
-                   properties: {
-                     id: { type: :string, format: :uuid },
-                     description: { type: :string, nullable: true },
-                     name: { type: :string },
-                     set: { type: :array, items: { type: :string } },
-                     machineDerived: { type: :boolean },
-                     default: { type: :array, items: { type: :string } }
-                   }
-                 }
-
-          let!(:attribute) { create(:attributes_attribute) }
-
-          before do
-            expect(Attributes::AttributesQuery)
-              .to receive(:all)
-              .and_call_original
-          end
-
-          run_test!
-        end
-      end
-    end
-
     post "create an attribute" do
       tags 'Admin'
       produces 'application/json'
@@ -130,7 +90,7 @@ RSpec.describe "Attributes", type: :request do
         Event.from_message!(
           build(
             :message,
-            schema: Attributes::Events::Created::V3,
+            schema: Attributes::Events::Created::V4,
             stream: Attributes::Streams::Attribute.new(attribute_id: id)
           )
         )

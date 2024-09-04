@@ -68,15 +68,18 @@ RSpec.describe Attributes::AttributesReactor do
             expect(message_service)
               .to receive(:create_once_for_stream!)
               .with(
-                schema: Attributes::Events::Created::V3,
+                schema: Attributes::Events::Created::V4,
                 trace_id: message.trace_id,
                 stream: message.stream,
                 data: {
                   machine_derived: message.data.machine_derived,
                   name: message.data.name,
                   description: message.data.description,
-                  set: message.data.set,
-                  default: message.data.default
+                  set: [
+                    be_a(Core::UuidKeyValuePair),
+                    be_a(Core::UuidKeyValuePair)
+                  ],
+                  default: []
                 },
                 metadata: message.metadata
               )
@@ -92,10 +95,13 @@ RSpec.describe Attributes::AttributesReactor do
             [
               build(
                 :message,
-                schema: Attributes::Events::Created::V3,
+                schema: Attributes::Events::Created::V4,
                 stream:,
                 data: {
-                  machine_derived:
+                  machine_derived:,
+                  set: [
+                    Core::UuidKeyValuePair.new(key: SecureRandom.uuid, value: "cat")
+                  ]
                 }
               )
             ]
@@ -127,18 +133,21 @@ RSpec.describe Attributes::AttributesReactor do
           context "when the attribue is not machine derived" do
             let(:machine_derived) { false }
 
-            it "emits a created event" do
+            it "emits a update event" do
               expect(message_service)
                 .to receive(:create_once_for_trace!)
                 .with(
-                  schema: Attributes::Events::Updated::V2,
+                  schema: Attributes::Events::Updated::V3,
                   trace_id: message.trace_id,
                   stream: message.stream,
                   data: {
                     name: message.data.name,
                     description: message.data.description,
-                    set: message.data.set,
-                    default: message.data.default
+                    set: [
+                      messages[0].data.set[0],
+                      be_a(Core::UuidKeyValuePair)
+                    ],
+                    default: []
                   },
                   metadata: message.metadata
                 )
@@ -193,7 +202,7 @@ RSpec.describe Attributes::AttributesReactor do
           [
             build(
               :message,
-              schema: Attributes::Events::Created::V3,
+              schema: Attributes::Events::Created::V4,
               stream:,
               data: {
                 machine_derived:

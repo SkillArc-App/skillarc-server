@@ -145,9 +145,10 @@ Rails.application.routes.draw do
       post 'mark_read' => 'chats#mark_read', on: :collection
     end
   end
+  resources :attributes, only: [:index]
 
   namespace :admin do
-    resources :attributes
+    resources :attributes, only: %i[create update destroy]
     resources :jobs do
       resources :job_attributes
     end

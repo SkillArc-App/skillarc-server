@@ -8,8 +8,8 @@ module Admin
       with_message_service do
         Jobs::JobsReactor.new(message_service:).create_job_attribute(
           job_id: job.id,
-          attribute_id: params[:job_attribute][:attribute_id],
-          acceptible_set: params[:job_attribute][:acceptible_set]
+          attribute_id: params[:attribute_id],
+          acceptible_set: params[:acceptible_set]
         )
       end
 
@@ -21,7 +21,7 @@ module Admin
         Jobs::JobsReactor.new(message_service:).update_job_attribute(
           job_id: job.id,
           job_attribute_id: params[:id],
-          acceptible_set: params[:job_attribute][:acceptible_set]
+          acceptible_set: params[:acceptible_set]
         )
       end
     end

@@ -2,48 +2,6 @@ require 'rails_helper'
 require 'swagger_helper'
 
 RSpec.describe "Attributes", type: :request do
-  path '/coaches/attributes' do
-    get "Get all attributes" do
-      tags 'Coaches'
-      produces 'application/json'
-      security [bearer_auth: []]
-
-      include_context "olive branch casing parameter"
-      include_context "olive branch camelcasing"
-
-      it_behaves_like "coach spec unauthenticated openapi"
-
-      context "when authenticated" do
-        include_context "coach authenticated openapi"
-
-        response '200', 'Returns all attributes' do
-          schema type: :array,
-                 items: {
-                   type: :object,
-                   properties: {
-                     id: { type: :string, format: :uuid },
-                     description: { type: :string, nullable: true },
-                     machineDerived: { type: :boolean },
-                     name: { type: :string },
-                     set: { type: :array, items: { type: :string } },
-                     default: { type: :array, items: { type: :string } }
-                   }
-                 }
-
-          let!(:attribute) { create(:attributes_attribute) }
-
-          before do
-            expect(Attributes::AttributesQuery)
-              .to receive(:all)
-              .and_call_original
-          end
-
-          run_test!
-        end
-      end
-    end
-  end
-
   path '/coaches/seekers/{person_id}/attributes' do
     let(:attribute) { create(:attributes_attribute) }
 
@@ -58,7 +16,7 @@ RSpec.describe "Attributes", type: :request do
             type: :string,
             format: :uuid
           },
-          values: {
+          attributeValueIds: {
             type: :array,
             items: {
               type: :string
@@ -79,11 +37,11 @@ RSpec.describe "Attributes", type: :request do
       let(:attribute_params) do
         {
           attributeId: attribute_id,
-          values:
+          attributeValueIds: attribute_value_ids
         }
       end
       let(:attribute_id) { attribute.id }
-      let(:values) { ["A value"] }
+      let(:attribute_value_ids) { [SecureRandom.uuid] }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -96,8 +54,7 @@ RSpec.describe "Attributes", type: :request do
                 person_attribute_id: be_a(String),
                 person_id:,
                 attribute_id:,
-                attribute_name: attribute.name,
-                attribute_values: values,
+                attribute_value_ids:,
                 trace_id: be_a(String)
               )
               .and_call_original
@@ -124,7 +81,7 @@ RSpec.describe "Attributes", type: :request do
             type: :string,
             format: :uuid
           },
-          value: {
+          attributeValueIds: {
             type: :array,
             items: {
               type: :string
@@ -147,11 +104,11 @@ RSpec.describe "Attributes", type: :request do
       let(:attribute_params) do
         {
           attributeId: attribute_id,
-          values:
+          attributeValueIds: attribute_value_ids
         }
       end
       let(:attribute_id) { attribute.id }
-      let(:values) { ["A value"] }
+      let(:attribute_value_ids) { [SecureRandom.uuid] }
 
       context "when authenticated" do
         include_context "coach authenticated openapi"
@@ -164,8 +121,7 @@ RSpec.describe "Attributes", type: :request do
                 person_attribute_id: id,
                 person_id:,
                 attribute_id:,
-                attribute_name: attribute.name,
-                attribute_values: values,
+                attribute_value_ids:,
                 trace_id: be_a(String)
               )
               .and_call_original

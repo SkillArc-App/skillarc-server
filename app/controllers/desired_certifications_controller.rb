@@ -11,7 +11,7 @@ class DesiredCertificationsController < ApplicationController
       message_service.create!(
         trace_id: request.request_id,
         job_id: params[:job_id],
-        schema: Commands::AddDesiredCertification::V1,
+        schema: Jobs::Commands::AddDesiredCertification::V1,
         data: {
           id: SecureRandom.uuid,
           master_certification_id: params[:master_certification_id]
@@ -27,7 +27,7 @@ class DesiredCertificationsController < ApplicationController
       message_service.create!(
         trace_id: request.request_id,
         job_id: params[:job_id],
-        schema: Commands::RemoveDesiredCertification::V1,
+        schema: Jobs::Commands::RemoveDesiredCertification::V1,
         data: {
           id: params[:id]
         }

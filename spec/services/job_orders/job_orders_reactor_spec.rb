@@ -438,7 +438,7 @@ RSpec.describe JobOrders::JobOrdersReactor do
       let(:message) do
         build(
           :message,
-          schema: Events::JobCreated::V3,
+          schema: Jobs::Events::JobCreated::V3,
           data: {
             category: Job::Categories::MARKETPLACE,
             employment_title: "A title",

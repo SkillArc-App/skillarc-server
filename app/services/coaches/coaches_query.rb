@@ -80,7 +80,7 @@ module Coaches
       def serialize_person_context(person_context)
         {
           **serialize_coach_seeker_table_context(person_context),
-          attributes: person_context.person_attributes.map { |a| { name: a.name, id: a.id, attribute_id: a.attribute_id, value: a.values } },
+          attributes: person_context.person_attributes.map { |a| { id: a.id, attribute_id: a.attribute_id, attribute_value_ids: a.attribute_value_ids } },
           notes: person_context.notes.map do |note|
             {
               note: note.note,

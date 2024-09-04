@@ -5,7 +5,7 @@ RSpec.describe JobOrders::Projectors::JobOrderCriteriaMet do
     subject { described_class.new.project(messages) }
 
     let(:messages) { [] }
-    let(:stream) { Streams::Job.new(job_id:) }
+    let(:stream) { Jobs::Streams::Job.new(job_id:) }
     let(:job_id) { SecureRandom.uuid }
 
     let(:now) { Time.zone.now }
@@ -13,7 +13,7 @@ RSpec.describe JobOrders::Projectors::JobOrderCriteriaMet do
     let(:job_created) do
       build(
         :message,
-        schema: Events::JobCreated::V3,
+        schema: Jobs::Events::JobCreated::V3,
         stream_id: job_id,
         data: {
           category: Job::Categories::MARKETPLACE,
@@ -32,14 +32,8 @@ RSpec.describe JobOrders::Projectors::JobOrderCriteriaMet do
     let(:job_attribute_created) do
       build(
         :message,
-        schema: Events::JobAttributeCreated::V1,
-        stream:,
-        data: {
-          id: SecureRandom.uuid,
-          attribute_id: SecureRandom.uuid,
-          attribute_name: "Name1",
-          acceptible_set: %w[A B]
-        }
+        schema: Jobs::Events::JobAttributeCreated::V2,
+        stream:
       )
     end
 

@@ -7,7 +7,6 @@ module Jobs
         extend Record
 
         schema do
-          name String
           id Uuid
           acceptible_set ArrayOf(String)
         end
@@ -25,24 +24,23 @@ module Jobs
         Projection.new(attributes: {})
       end
 
-      on_message Events::JobAttributeCreated::V1 do |message, accumulator|
-        accumulator.attributes[message.data.id] = Attribute.new(
-          name: message.data.attribute_name,
+      on_message Events::JobAttributeCreated::V2 do |message, accumulator|
+        accumulator.attributes[message.data.job_attribute_id] = Attribute.new(
           id: message.data.attribute_id,
           acceptible_set: message.data.acceptible_set
         )
         accumulator
       end
 
-      on_message Events::JobAttributeUpdated::V1 do |message, accumulator|
-        accumulator.attributes[message.data.id] = accumulator.attributes[message.data.id].with(
+      on_message Events::JobAttributeUpdated::V2 do |message, accumulator|
+        accumulator.attributes[message.data.job_attribute_id] = accumulator.attributes[message.data.job_attribute_id].with(
           acceptible_set: message.data.acceptible_set
         )
         accumulator
       end
 
-      on_message Events::JobAttributeDestroyed::V1 do |message, accumulator|
-        accumulator.attributes.delete(message.data.id)
+      on_message Events::JobAttributeDestroyed::V2 do |message, accumulator|
+        accumulator.attributes.delete(message.data.job_attribute_id)
         accumulator
       end
     end

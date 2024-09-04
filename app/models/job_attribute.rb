@@ -2,11 +2,10 @@
 #
 # Table name: job_attributes
 #
-#  id             :uuid             not null, primary key
-#  acceptible_set :string           default([]), not null, is an Array
-#  attribute_name :string           not null
-#  attribute_id   :uuid             not null
-#  job_id         :text             not null
+#  id                  :uuid             not null, primary key
+#  attribute_value_ids :uuid             not null, is an Array
+#  attribute_id        :uuid             not null
+#  job_id              :text             not null
 #
 # Indexes
 #

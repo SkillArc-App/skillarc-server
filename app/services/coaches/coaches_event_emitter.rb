@@ -6,16 +6,15 @@ module Coaches
       @message_service = message_service
     end
 
-    def add_attribute(person_id:, person_attribute_id:, attribute_id:, attribute_name:, attribute_values:, trace_id:) # rubocop:disable Metrics/ParameterLists
+    def add_attribute(person_id:, person_attribute_id:, attribute_id:, attribute_value_ids:, trace_id:)
       message_service.create!(
-        schema: People::Events::PersonAttributeAdded::V1,
+        schema: People::Events::PersonAttributeAdded::V2,
         person_id:,
         trace_id:,
         data: {
           id: person_attribute_id,
           attribute_id:,
-          attribute_name:,
-          attribute_values:
+          attribute_value_ids:
         }
       )
     end

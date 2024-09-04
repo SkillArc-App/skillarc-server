@@ -164,11 +164,12 @@ RSpec.describe Coaches::CoachesQuery do
         :coaches__person_attribute,
         id: '2527d624-d0c4-48d4-856b-369ff767f29d',
         person_context: person_context1,
-        name: "Education Level",
-        values: ["High School"],
+        attribute_value_ids: [high_school],
         attribute_id: "3f48a475-b711-4265-9cc5-02fcfc0c40d1"
       )
     end
+
+    let(:high_school) { SecureRandom.uuid }
 
     it "returns the context" do
       expected_profile = {
@@ -186,10 +187,9 @@ RSpec.describe Coaches::CoachesQuery do
         assigned_coach: "coach@blocktrainapp.com",
         certified_by: "person@skillarc.com",
         attributes: [{
-          name: "Education Level",
           id: '2527d624-d0c4-48d4-856b-369ff767f29d',
           attribute_id: "3f48a475-b711-4265-9cc5-02fcfc0c40d1",
-          value: ["High School"]
+          attribute_value_ids: [high_school]
         }],
         contacts: [{
           contacted_at: Time.zone.local(2007, 1, 1),

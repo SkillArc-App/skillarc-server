@@ -179,7 +179,7 @@ module Admin # rubocop:disable Metrics/ModuleLength
   end
 
   def serialize_job_attribute(job_attribute)
-    job_attribute.slice(:id, :acceptible_set, :attribute_id, :attribute_name)
+    job_attribute.slice(:id, :attribute_value_ids, :attribute_id)
   end
 
   def serialize_master_skill(master_skill)

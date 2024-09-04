@@ -18,9 +18,9 @@ class Message
   def initialize(**kwarg)
     super
 
-    raise InvalidSchemaError unless schema.stream === stream # rubocop:disable Style/CaseEquality
-    raise InvalidSchemaError unless schema.data === data # rubocop:disable Style/CaseEquality
-    raise InvalidSchemaError unless schema.metadata === metadata # rubocop:disable Style/CaseEquality
+    raise InvalidSchemaError, "Incorrect stream" unless schema.stream === stream # rubocop:disable Style/CaseEquality
+    raise InvalidSchemaError, "Incorrect data" unless schema.data === data # rubocop:disable Style/CaseEquality
+    raise InvalidSchemaError, "Incorrect metadata" unless schema.metadata === metadata # rubocop:disable Style/CaseEquality
   end
 
   def serialize

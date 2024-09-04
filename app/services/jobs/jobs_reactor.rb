@@ -5,14 +5,11 @@ module Jobs
     end
 
     def create_job_attribute(job_id:, attribute_id:, acceptible_set:)
-      attribute_name = Attributes::Attribute.find(attribute_id).name
-
       message_service.create!(
-        schema: Events::JobAttributeCreated::V1,
+        schema: Events::JobAttributeCreated::V2,
         job_id:,
         data: {
-          id: SecureRandom.uuid,
-          attribute_name:,
+          job_attribute_id: SecureRandom.uuid,
           attribute_id:,
           acceptible_set:
         }
@@ -20,26 +17,22 @@ module Jobs
     end
 
     def update_job_attribute(job_id:, job_attribute_id:, acceptible_set:)
-      job_attribute = JobAttribute.find(job_attribute_id)
-
       message_service.create!(
-        schema: Events::JobAttributeUpdated::V1,
+        schema: Events::JobAttributeUpdated::V2,
         job_id:,
         data: {
-          id: job_attribute.id,
+          job_attribute_id:,
           acceptible_set:
         }
       )
     end
 
     def destroy_job_attribute(job_id:, job_attribute_id:)
-      job_attribute = JobAttribute.find(job_attribute_id)
-
       message_service.create!(
-        schema: Events::JobAttributeDestroyed::V1,
+        schema: Events::JobAttributeDestroyed::V2,
         job_id:,
         data: {
-          id: job_attribute.id
+          job_attribute_id:
         }
       )
     end
@@ -84,11 +77,11 @@ module Jobs
       )
     end
 
-    on_message Commands::CreateEmployer::V1, :sync do |message|
+    on_message ::Commands::CreateEmployer::V1, :sync do |message|
       message_service.create_once_for_stream!(
         trace_id: message.trace_id,
         stream: message.stream,
-        schema: Events::EmployerCreated::V1,
+        schema: ::Events::EmployerCreated::V1,
         data: {
           name: message.data.name,
           location: message.data.location,
@@ -98,15 +91,15 @@ module Jobs
       )
     end
 
-    on_message Commands::UpdateEmployer::V1, :sync do |message|
+    on_message ::Commands::UpdateEmployer::V1, :sync do |message|
       messages = message_service.query.by_stream(message.stream).before(message).fetch
 
-      return unless ::Projectors::HasOccurred.new(schema: Events::EmployerCreated::V1).project(messages)
+      return unless ::Projectors::HasOccurred.new(schema: ::Events::EmployerCreated::V1).project(messages)
 
       message_service.create_once_for_trace!(
         trace_id: message.trace_id,
         stream: message.stream,
-        schema: Events::EmployerUpdated::V1,
+        schema: ::Events::EmployerUpdated::V1,
         data: {
           name: message.data.name,
           location: message.data.location,

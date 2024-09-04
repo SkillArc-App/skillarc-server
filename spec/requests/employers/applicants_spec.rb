@@ -55,7 +55,7 @@ RSpec.describe "Employers::Applicants", type: :request do
           }
         )
         message_service.create!(
-          schema: Events::JobCreated::V3,
+          schema: Jobs::Events::JobCreated::V3,
           job_id:,
           data: {
             category: Job::Categories::MARKETPLACE,

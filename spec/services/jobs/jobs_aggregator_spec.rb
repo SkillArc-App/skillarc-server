@@ -13,7 +13,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::CareerPathCreated::V1,
+          schema: Jobs::Events::CareerPathCreated::V1,
           stream_id: job.id,
           data: {
             id:,
@@ -37,7 +37,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::CareerPathUpdated::V1,
+          schema: Jobs::Events::CareerPathUpdated::V1,
           stream_id: career_path.job_id,
           data: {
             id: career_path.id,
@@ -56,7 +56,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::CareerPathDestroyed::V1,
+          schema: Jobs::Events::CareerPathDestroyed::V1,
           stream_id: career_path.job_id,
           data: {
             id: career_path.id
@@ -74,7 +74,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::DesiredCertificationCreated::V1,
+          schema: Jobs::Events::DesiredCertificationCreated::V1,
           stream_id: job.id,
           data: {
             id:,
@@ -102,7 +102,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::DesiredCertificationDestroyed::V1,
+          schema: Jobs::Events::DesiredCertificationDestroyed::V1,
           stream_id: desired_certification.job_id,
           data: {
             id: desired_certification.id
@@ -120,7 +120,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::DesiredSkillCreated::V1,
+          schema: Jobs::Events::DesiredSkillCreated::V1,
           stream_id: job.id,
           data: {
             id:,
@@ -148,7 +148,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::DesiredSkillDestroyed::V1,
+          schema: Jobs::Events::DesiredSkillDestroyed::V1,
           stream_id: desired_skill.job_id,
           data: {
             id: desired_skill.id
@@ -166,7 +166,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobPhotoCreated::V1,
+          schema: Jobs::Events::JobPhotoCreated::V1,
           stream_id: job.id,
           data: {
             id: SecureRandom.uuid,
@@ -192,7 +192,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobPhotoDestroyed::V1,
+          schema: Jobs::Events::JobPhotoDestroyed::V1,
           stream_id: job_photo.job_id,
           data: {
             id: job_photo.id
@@ -232,7 +232,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobTagCreated::V1,
+          schema: Jobs::Events::JobTagCreated::V1,
           stream_id: job.id,
           data: {
             id: SecureRandom.uuid,
@@ -259,7 +259,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobTagDestroyed::V2,
+          schema: Jobs::Events::JobTagDestroyed::V2,
           stream_id: job_tag.job_id,
           data: {
             job_id: job_tag.job_id,
@@ -279,7 +279,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::LearnedSkillCreated::V1,
+          schema: Jobs::Events::LearnedSkillCreated::V1,
           stream_id: job.id,
           data: {
             id:,
@@ -307,7 +307,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::LearnedSkillDestroyed::V1,
+          schema: Jobs::Events::LearnedSkillDestroyed::V1,
           stream_id: learned_skill.job_id,
           data: {
             id: learned_skill.id
@@ -325,7 +325,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::TestimonialCreated::V1,
+          schema: Jobs::Events::TestimonialCreated::V1,
           stream_id: job.id,
           data: {
             id:,
@@ -358,7 +358,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::TestimonialDestroyed::V1,
+          schema: Jobs::Events::TestimonialDestroyed::V1,
           stream_id: testimonial.job_id,
           data: {
             id: testimonial.id
@@ -433,7 +433,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobCreated::V3,
+          schema: Jobs::Events::JobCreated::V3,
           stream_id: id,
           data: {
             category:,
@@ -491,7 +491,7 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobUpdated::V2,
+          schema: Jobs::Events::JobUpdated::V2,
           stream_id: job.id,
           data: {
             category:,
@@ -542,29 +542,29 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobAttributeCreated::V1,
+          schema: Jobs::Events::JobAttributeCreated::V2,
           stream_id: job.id,
           data: {
-            id:,
-            attribute_name: "name",
+            job_attribute_id:,
             attribute_id:,
-            acceptible_set: %w[A B]
+            acceptible_set: [cat, dog]
           }
         )
       end
-      let(:id) { SecureRandom.uuid }
+      let(:job_attribute_id) { SecureRandom.uuid }
       let(:attribute_id) { SecureRandom.uuid }
       let(:job) { create(:job) }
+      let(:cat) { SecureRandom.uuid }
+      let(:dog) { SecureRandom.uuid }
 
       it "creates a job attribute" do
         expect { subject }.to change { JobAttribute.count }.by(1)
 
         job_attribute = JobAttribute.last
 
-        expect(job_attribute.id).to eq(id)
+        expect(job_attribute.id).to eq(job_attribute_id)
         expect(job_attribute.attribute_id).to eq(attribute_id)
-        expect(job_attribute.attribute_name).to eq("name")
-        expect(job_attribute.acceptible_set).to eq(%w[A B])
+        expect(job_attribute.attribute_value_ids).to eq([cat, dog])
       end
     end
 
@@ -572,20 +572,22 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobAttributeUpdated::V1,
+          schema: Jobs::Events::JobAttributeUpdated::V2,
           stream_id: job_attribute.job_id,
           data: {
-            id: job_attribute.id,
-            acceptible_set: %w[A B]
+            job_attribute_id: job_attribute.id,
+            acceptible_set: [cat, dog]
           }
         )
       end
-      let(:job_attribute) { create(:job_attribute, acceptible_set: %w[A]) }
+      let(:cat) { SecureRandom.uuid }
+      let(:dog) { SecureRandom.uuid }
+      let(:job_attribute) { create(:job_attribute, attribute_value_ids: [cat]) }
 
       it "updates a job attribute" do
         subject
 
-        expect(job_attribute.reload.acceptible_set).to eq(%w[A B])
+        expect(job_attribute.reload.attribute_value_ids).to eq([cat, dog])
       end
     end
 
@@ -593,10 +595,10 @@ RSpec.describe Jobs::JobsAggregator do
       let(:message) do
         build(
           :message,
-          schema: Events::JobAttributeDestroyed::V1,
+          schema: Jobs::Events::JobAttributeDestroyed::V2,
           stream_id: job_attribute.job_id,
           data: {
-            id: job_attribute.id
+            job_attribute_id: job_attribute.id
           }
         )
       end

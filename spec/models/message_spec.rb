@@ -7,7 +7,7 @@ RSpec.describe Message do
         expect do
           described_class.new(
             id: SecureRandom.uuid,
-            stream: Streams::Job.new(job_id: SecureRandom.uuid),
+            stream: Jobs::Streams::Job.new(job_id: SecureRandom.uuid),
             trace_id: SecureRandom.uuid,
             schema: Events::ApplicantStatusUpdated::V1,
             metadata: {},

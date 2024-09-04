@@ -13,22 +13,18 @@ RSpec.describe "Admin::JobAttributes", type: :request do
       parameter name: :job_attribute, in: :body, schema: {
         type: :object,
         properties: {
-          job_attribute: {
-            type: :object,
-            properties: {
-              attribute_id: {
+          properties: {
+            attribute_id: {
+              type: :string,
+              format: :uuid
+            },
+            acceptible_set: {
+              type: :array,
+              items: {
                 type: :string,
                 format: :uuid
-              },
-              acceptible_set: {
-                type: :array,
-                items: {
-                  type: :string,
-                  format: :uuid
-                }
               }
-            },
-            required: %w[attribute_id acceptible_set]
+            }
           }
         },
         required: %w[job_attribute]
@@ -45,10 +41,8 @@ RSpec.describe "Admin::JobAttributes", type: :request do
 
         let(:job_attribute) do
           {
-            jobAttribute: {
-              attributeId: attribute.id,
-              acceptibleSet: acceptible_set
-            }
+            attributeId: attribute.id,
+            acceptibleSet: acceptible_set
           }
         end
         let(:acceptible_set) { [SecureRandom.uuid, SecureRandom.uuid] }
@@ -85,18 +79,14 @@ RSpec.describe "Admin::JobAttributes", type: :request do
       parameter name: :job_attribute, in: :body, schema: {
         type: :object,
         properties: {
-          job_attribute: {
-            type: :object,
-            properties: {
-              acceptible_set: {
-                type: :array,
-                items: {
-                  type: :string,
-                  format: :uuid
-                }
+          properties: {
+            acceptible_set: {
+              type: :array,
+              items: {
+                type: :string,
+                format: :uuid
               }
-            },
-            required: %w[acceptible_set]
+            }
           }
         },
         required: %w[job_attribute]
@@ -114,9 +104,7 @@ RSpec.describe "Admin::JobAttributes", type: :request do
 
         let(:job_attribute) do
           {
-            jobAttribute: {
-              acceptibleSet: acceptible_set
-            }
+            acceptibleSet: acceptible_set
           }
         end
         let(:acceptible_set) { [SecureRandom.uuid] }
